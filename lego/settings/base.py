@@ -29,8 +29,6 @@ ROOT_URLCONF = 'lego.urls'
 
 WSGI_APPLICATION = 'lego.wsgi.application'
 
-
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
