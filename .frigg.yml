@@ -4,3 +4,5 @@ tasks:
 
 webhooks:
   - https://chewie.abakus.no/api/frigg/
+
+comment: false
