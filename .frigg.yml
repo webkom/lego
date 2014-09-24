@@ -1,0 +1,6 @@
+tasks:
+  - tox
+  - flake8 
+
+webhooks:
+  - https://chewie.abakus.no/api/frigg/
