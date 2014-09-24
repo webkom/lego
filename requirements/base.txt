@@ -1,2 +1,12 @@
 django==1.7
 psycopg2
+sorl-thumbnail==11.12.1b
+markdown
+unicode-slugify
+
+django-basis
+django-extensions
+django-tastypie
+django-haystack
+django-secure
+django-autoslug

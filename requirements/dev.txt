@@ -1,1 +1,1 @@
-django==1.7
+-r base.txt
