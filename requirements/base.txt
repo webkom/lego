@@ -1,0 +1,14 @@
+django>=1.7,<1.8
+
+psycopg2
+sorl-thumbnail==11.12.1b
+markdown
+unicode-slugify
+
+djangorestframework
+django-basis
+django-extensions
+django-haystack
+django-secure
+django-autoslug
+django-filter

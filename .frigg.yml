@@ -1,0 +1,5 @@
+tasks:
+  - tox
+  - flake8 
+
+comment: false
