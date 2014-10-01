@@ -56,3 +56,4 @@ target/
 
 venv/
 lego/settings/local.py
+lego/db.sqlite
