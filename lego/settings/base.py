@@ -3,9 +3,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'This is supersecret'
 
-DEBUG = False
-ALLOWED_HOSTS = ['.abakus.no']
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,6 +30,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+DEBUG = True
 
 STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
