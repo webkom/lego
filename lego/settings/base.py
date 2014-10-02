@@ -3,9 +3,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'This is supersecret'
 
-DEBUG = True
-TEMPLATE_DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ['.abakus.no']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
