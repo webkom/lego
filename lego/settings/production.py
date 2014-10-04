@@ -17,7 +17,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'lego',
         'USER': 'lego',
-        'PASSWORD': os.environ['DB_PASSWORD'].strip(),
+        'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': '129.241.208.149',
         'PORT': '',
         'OPTIONS': {
