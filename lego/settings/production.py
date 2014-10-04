@@ -1,4 +1,6 @@
 # -*- coding: utf8 -*-
+import os
+
 DEBUG = False
 ALLOWED_HOSTS = ['.abakus.no']
 
@@ -10,15 +12,12 @@ CACHES = {
     }
 }
 
-with open('/home/webkom/webapps/passwords/lego_db', 'rb') as f:
-    db_password = f.readline()
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'lego',
         'USER': 'lego',
-        'PASSWORD': db_password.strip(),
+        'PASSWORD': os.environ['DB_PASSWORD'].strip(),
         'HOST': '129.241.208.149',
         'PORT': '',
         'OPTIONS': {
