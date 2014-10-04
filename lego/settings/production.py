@@ -33,3 +33,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 LOG_PRINT_LEVEL = 1
 
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECRET_KEY = os.environ['SECRET_KEY']
