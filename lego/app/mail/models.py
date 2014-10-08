@@ -38,7 +38,7 @@ class GenericMappingMixin(models.Model):
         abstract = True
 
 
-class GenericMapping(MailMapping):
+class GenericMapping(BasisModel):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -60,7 +60,7 @@ class GenericMapping(MailMapping):
 
 
 
-class RestrictedMapping(MailMapping):
+class OneTimeMapping(BasisModel):
     user_mapping = models.ForeignKey(UserMapping, verbose_name=_('User Mapping'),
                                      related_name='restricted_mail_mappings', null=True)
     group_mapping = models.ForeignKey(GroupMapping, verbose_name=_('Group Mapping'),
