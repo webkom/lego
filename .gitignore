@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+	# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 
@@ -53,6 +53,8 @@ docs/_build/
 # PyBuilder
 target/
 
+# Pycharm
+.idea/
 
 venv/
 lego/settings/local.py
