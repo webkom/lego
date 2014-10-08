@@ -14,6 +14,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'lego.app.mail',
 )
 
 MIDDLEWARE_CLASSES = (
