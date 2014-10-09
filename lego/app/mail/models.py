@@ -46,9 +46,6 @@ class GenericMapping(BasisModel):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def get_recipients(self):
-        """
-        Get a list of recipients addresses from a generic object
-        """
         generic_object = self.content_object
         get_mail_recipients = getattr(generic_object, 'get_mail_recipients', None)
         if callable(get_mail_recipients):
