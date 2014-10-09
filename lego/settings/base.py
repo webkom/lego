@@ -15,7 +15,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'lego.utils',
 )
 
 MIDDLEWARE_CLASSES = (
