@@ -5,6 +5,7 @@ from django.contrib.auth.models import GroupManager, AbstractBaseUser, UserManag
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from .validators import username_validator
@@ -47,6 +48,10 @@ class AbakusGroup(models.Model):
     class Meta:
         verbose_name = _('group')
         verbose_name_plural = _('groups')
+
+    @cached_property
+    def is_committee(self):
+        return self.parent.name == 'Abakom'
 
     def __str__(self):
         return self.name
@@ -171,14 +176,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-class Role(BasisModel):
-    name = models.CharField(_('name'), max_length=30)
-    description = models.CharField(_('description'), max_length=150)
-
-    def __str__(self):
-        return self.name
-
-
 class Membership(BasisModel):
     DEPRECATED = 0
     ACTIVE_RETIREE = 1
@@ -194,7 +191,7 @@ class Membership(BasisModel):
 
     user = models.ForeignKey(User, verbose_name=_('user'))
     group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
-    role = models.ForeignKey(Role, verbose_name=_('role'))
+    title = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
 
     start_date = models.DateField(_('start date'))
     end_date = models.DateField(_('end date'), blank=True)
