@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
-import logging, syslog
+import logging
+import syslog
 
 
 class SyslogHandler(logging.Handler):
