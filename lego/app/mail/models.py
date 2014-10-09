@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 import collections
 from datetime import datetime, timedelta
 

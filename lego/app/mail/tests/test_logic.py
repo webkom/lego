@@ -1,6 +1,7 @@
+# -*- coding: utf8 -*-
 from django.test import TestCase
 
-from ..logic import handle_mail
+from lego.app.mail.logic import handle_mail
 
 
 class LogicTestCase(TestCase):

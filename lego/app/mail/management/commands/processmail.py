@@ -1,8 +1,9 @@
+# -*- coding: utf8 -*-
 import email, sys, logging
 
 from django.core.management.base import BaseCommand, CommandError
 
-from ...logic import handle_mail
+from lego.app.mail.logic import handle_mail
 
 
 class Command(BaseCommand):

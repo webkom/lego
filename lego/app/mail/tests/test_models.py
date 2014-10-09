@@ -1,9 +1,10 @@
+# -*- coding: utf8 -*-
 from basis.models import BasisModel
 from django.test import TestCase
 from django.db import models
 from django.contrib.auth.models import User
 
-from ..models import GenericMappingMixin, GenericMapping
+from lego.app.mail.models import GenericMappingMixin, GenericMapping
 
 
 class GenericModelTest(BasisModel, GenericMappingMixin):

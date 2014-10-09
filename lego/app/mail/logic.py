@@ -1,4 +1,4 @@
-
+# -*- coding: utf8 -*-
 
 
 def handle_mail(msg, sender, recipient) -> (None):
