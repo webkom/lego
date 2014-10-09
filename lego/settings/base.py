@@ -38,8 +38,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+DEBUG = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, '../static')
+MEDIA_URL = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../uploads')
+
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
