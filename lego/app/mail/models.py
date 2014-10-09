@@ -45,7 +45,7 @@ class GenericMapping(BasisModel):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def get_recipients(self) -> (list):
+    def get_recipients(self):
         """
         Get a list of recipients addresses from a generic object
         """
