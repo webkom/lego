@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*
 import subprocess
+import logging
 from copy import copy
 
 from django.conf import settings
@@ -19,8 +20,18 @@ def __sendmail(args, msg):
 
 
 def send_message(message, addresses, sender):
+    logger = logging.getLogger(__name__)
     try:
         validate_email(sender)
+
+        for recipient_index in range(len(addresses)):
+            recipient = addresses[recipient_index]
+            try:
+                validate_email(recipient)
+            except ValidationError:
+                logger.warning('Removed %s from recipient list, invalid email.' % (recipient, ))
+                addresses.pop(recipient_index)
+
         common_arguments = [settings.MAIL_SENDMAIL_EXECUTABLE, '-G', '-i', '-f', sender]
         for i in range(0, len(addresses), settings.MAIL_BATCH_LENGTH):
             current_addresses = addresses[i: i+settings.MAIL_BATCH_LENGTH]
@@ -28,6 +39,7 @@ def send_message(message, addresses, sender):
             current_arguments.extend(current_addresses)
             __sendmail(current_arguments, message)
     except ValidationError:
+        logger.error('Can\'t process mail, invalid sender address %s' % (sender, ))
         return False
 
 
