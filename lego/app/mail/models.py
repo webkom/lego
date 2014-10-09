@@ -1,3 +1,4 @@
+import collections
 from datetime import datetime, timedelta
 
 from django.db import models
@@ -52,10 +53,11 @@ class GenericMapping(BasisModel):
         if callable(get_mail_recipients):
             users = get_mail_recipients()
             recipent_list = []
-            for user in users:
-                if isinstance(user, User):
-                    recipent_list.append(user.email)
-            return recipent_list
+            if isinstance(users, collections.Iterable):
+                for user in users:
+                    if isinstance(user, User):
+                        recipent_list.append(user.email)
+                return recipent_list
         return []
 
 

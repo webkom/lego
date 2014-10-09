@@ -1,5 +1,6 @@
 from basis.models import BasisModel
 from django.test import TestCase
+from django.db import models
 from django.contrib.auth.models import User
 
 from ..models import GenericMappingMixin, GenericMapping
@@ -10,8 +11,15 @@ class GenericModelTest(BasisModel, GenericMappingMixin):
     This class is a example class used for testing the generic mail mapping.
     This is typically a class like the Event or Group class
     """
+    empty_queryset = models.NullBooleanField()
+
     def get_mail_recipients(self):
-        return User.objects.all()
+        if self.empty_queryset is None:
+            return TestCase() # Just return some shit..
+        elif self.empty_queryset:
+            return User.objects.filter(username='abakus') # Empty queryset
+        else:
+            return User.objects.all()
 
 
 class ModelsTestCase(TestCase):
@@ -22,10 +30,31 @@ class ModelsTestCase(TestCase):
         user2 = User(username='user2', email='user2@abakus.no')
         user2.save()
 
-    def test_generic_mappings_recipients_list(self):
-        genericModelTest = GenericModelTest()
+    def test_generic_mappings_recipients_list_valid_queryset(self):
+        genericModelTest = GenericModelTest(empty_queryset=False)
         genericModelTest.save()
-        genericMapping1 = GenericMapping(content_object=genericModelTest)
-        genericMapping1.save()
-        self.assertEqual(genericMapping1.get_recipients(), ['user1@abakus.no', 'user2@abakus.no'])
+        genericMapping = GenericMapping(content_object=genericModelTest)
+        genericMapping.save()
+        self.assertEqual(genericMapping.get_recipients(), ['user1@abakus.no', 'user2@abakus.no'])
+
+    def test_generic_mappings_recipients_list_invalid_queryset(self):
+        genericModelTest = GenericModelTest(empty_queryset=None)
+        genericModelTest.save()
+        genericMapping = GenericMapping(content_object=genericModelTest)
+        genericMapping.save()
+        self.assertEqual(genericMapping.get_recipients(), [])
+
+    def test_generic_mappings_recipients_list_empty_queryset(self):
+        genericModelTest = GenericModelTest(empty_queryset=True)
+        genericModelTest.save()
+        genericMapping = GenericMapping(content_object=genericModelTest)
+        genericMapping.save()
+        self.assertEqual(genericMapping.get_recipients(), [])
+
+    def test_generic_mapping_mixin(self):
+        try:
+            mixin = GenericMappingMixin()
+            mixin.get_mail_recipients()
+        except Exception as ex:
+            self.assertEqual(isinstance(ex, NotImplementedError), True)
 
