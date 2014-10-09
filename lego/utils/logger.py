@@ -23,9 +23,6 @@ class SyslogHandler(logging.Handler):
             'CRITICAL': syslog.LOG_CRIT,
         }
 
-        try:
-            syslog.openlog(ident='lego', logoption=syslog.LOG_PID, facility=syslog.LOG_DAEMON)
-            syslog.syslog(priority_levels[record.levelname], record.getMessage())
-            syslog.closelog()
-        except:
-            pass # LEL, WAT TO DO
+        syslog.openlog(ident='lego', logoption=syslog.LOG_PID, facility=syslog.LOG_DAEMON)
+        syslog.syslog(priority_levels[record.levelname], record.getMessage())
+        syslog.closelog()
