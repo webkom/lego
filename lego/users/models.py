@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from basis.models import BasisModel
 from django.contrib import auth
 from django.contrib.auth.models import GroupManager, AbstractBaseUser, UserManager, Permission
 from django.core.mail import send_mail
@@ -39,6 +40,7 @@ class AbakusGroup(models.Model):
     leader = models.ForeignKey('users.User',  blank=True, null=True, on_delete=models.SET_NULL,
                                verbose_name=_('leader'))
     permissions = models.ManyToManyField(Permission, blank=True, verbose_name=_('permissions'))
+    is_committee = models.BooleanField(_('is committee'), default=False)
 
     objects = GroupManager()
 
@@ -62,6 +64,8 @@ class PermissionsMixin(models.Model):
     )
     groups = models.ManyToManyField(
         AbakusGroup,
+        through='Membership',
+        through_fields=('user', 'group'),
         verbose_name=_('groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of their groups.'),
@@ -165,3 +169,41 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class Role(BasisModel):
+    name = models.CharField(_('name'), max_length=30)
+    description = models.CharField(_('description'), max_length=150)
+
+    def __str__(self):
+        return self.name
+
+
+class Membership(BasisModel):
+    DEPRECATED = 0
+    ACTIVE_RETIREE = 1
+    MEMBER = 2
+    LEADER = 3
+
+    PERMISSION_TYPES = (
+        (DEPRECATED, _('Previous member')),
+        (ACTIVE_RETIREE, _('Previous member who\'s still active')),
+        (MEMBER, _('Active member')),
+        (LEADER, _('Leader'))
+    )
+
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
+    role = models.ForeignKey(Role, verbose_name=_('role'))
+
+    start_date = models.DateField(_('start date'))
+    end_date = models.DateField(_('end date'), blank=True)
+
+    permission_status = models.PositiveSmallIntegerField(
+        _('permission status'),
+        choices=PERMISSION_TYPES,
+        default=MEMBER
+    )
+
+    def __str__(self):
+        return self.role
