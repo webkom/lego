@@ -64,7 +64,7 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'syslog': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'filters': ['require_debug_false'],
             'class': 'lego.utils.logger.SyslogHandler'
         }
