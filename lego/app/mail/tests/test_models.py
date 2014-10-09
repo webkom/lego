@@ -16,9 +16,9 @@ class GenericModelTest(BasisModel, GenericMappingMixin):
 
     def get_mail_recipients(self):
         if self.empty_queryset is None:
-            return TestCase() # Just return some shit..
+            return TestCase()  # Just return some shit..
         elif self.empty_queryset:
-            return User.objects.filter(username='abakus') # Empty queryset
+            return User.objects.filter(username='abakus')  # Empty queryset
         else:
             return User.objects.all()
 
@@ -32,25 +32,25 @@ class ModelsTestCase(TestCase):
         user2.save()
 
     def test_generic_mappings_recipients_list_valid_queryset(self):
-        genericModelTest = GenericModelTest(empty_queryset=False)
-        genericModelTest.save()
-        genericMapping = GenericMapping(content_object=genericModelTest)
-        genericMapping.save()
-        self.assertEqual(genericMapping.get_recipients(), ['user1@abakus.no', 'user2@abakus.no'])
+        generic_model_test = GenericModelTest(empty_queryset=False)
+        generic_model_test.save()
+        generic_mapping = GenericMapping(content_object=generic_model_test)
+        generic_mapping.save()
+        self.assertEqual(generic_mapping.get_recipients(), ['user1@abakus.no', 'user2@abakus.no'])
 
     def test_generic_mappings_recipients_list_invalid_queryset(self):
-        genericModelTest = GenericModelTest(empty_queryset=None)
-        genericModelTest.save()
-        genericMapping = GenericMapping(content_object=genericModelTest)
-        genericMapping.save()
-        self.assertEqual(genericMapping.get_recipients(), [])
+        generic_model_test = GenericModelTest(empty_queryset=None)
+        generic_model_test.save()
+        generic_mapping = GenericMapping(content_object=generic_model_test)
+        generic_mapping.save()
+        self.assertEqual(generic_mapping.get_recipients(), [])
 
     def test_generic_mappings_recipients_list_empty_queryset(self):
-        genericModelTest = GenericModelTest(empty_queryset=True)
-        genericModelTest.save()
-        genericMapping = GenericMapping(content_object=genericModelTest)
-        genericMapping.save()
-        self.assertEqual(genericMapping.get_recipients(), [])
+        generic_model_test = GenericModelTest(empty_queryset=True)
+        generic_model_test.save()
+        generic_mapping = GenericMapping(content_object=generic_model_test)
+        generic_mapping.save()
+        self.assertEqual(generic_mapping.get_recipients(), [])
 
     def test_generic_mapping_mixin(self):
         try:
@@ -58,4 +58,3 @@ class ModelsTestCase(TestCase):
             mixin.get_mail_recipients()
         except Exception as ex:
             self.assertEqual(isinstance(ex, NotImplementedError), True)
-

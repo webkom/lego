@@ -14,3 +14,4 @@ CACHES = {
         'LOCATION': 'unique-snowflake'
     }
 }
+

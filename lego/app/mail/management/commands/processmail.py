@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
-import email, sys, logging
+import email
+import sys
 
 from django.core.management.base import BaseCommand, CommandError
 

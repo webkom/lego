@@ -8,7 +8,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 
 from basis.models import BasisModel
-from django.contrib.auth.models import User, Group  #TODO: Change this to custom user and group classes.
+# TODO: Change this to custom user and group classes.
+from django.contrib.auth.models import User, Group
 
 
 class MailMapping(BasisModel):
@@ -31,7 +32,6 @@ class RawMapping(MailMapping):
     description = models.TextField(verbose_name=_('Description'))
 
 
-
 class GenericMappingMixin(models.Model):
     def get_mail_recipients(self):
         raise NotImplementedError()
@@ -46,6 +46,9 @@ class GenericMapping(BasisModel):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def get_recipients(self):
+        """
+        Get a list of recipients addresses from a generic object
+        """
         generic_object = self.content_object
         get_mail_recipients = getattr(generic_object, 'get_mail_recipients', None)
         if callable(get_mail_recipients):
@@ -59,7 +62,6 @@ class GenericMapping(BasisModel):
         return []
 
 
-
 class OneTimeMapping(BasisModel):
     user_mapping = models.ForeignKey(UserMapping, verbose_name=_('User Mapping'),
                                      related_name='restricted_mail_mappings', null=True)
@@ -68,5 +70,6 @@ class OneTimeMapping(BasisModel):
     generic_mapping = models.ForeignKey(GenericMapping, verbose_name=_('Generic Mapping'),
                                         related_name='restricted_mail_mappings', null=True)
     token = models.CharField(max_length=80, verbose_name=_('Token'))
-    timeout = models.DateTimeField(verbose_name=_('Timeout'), default=datetime.now() + timedelta(minutes=15))
+    timeout = models.DateTimeField(verbose_name=_('Timeout'),
+                                   default=datetime.now() + timedelta(minutes=15))
     sender = models.EmailField(verbose_name=_('Sender Mail'))

@@ -12,3 +12,5 @@ except ImportError as e:
 
 if 'debug_toolbar' in INSTALLED_APPS:
     from lego.settings.debug_toolbar import *
+
+from lego.settings.mail import *
