@@ -12,7 +12,11 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': '127.0.0.1:11211',
-        'KEY_PREFIX': 'legoprod'
+        'KEY_PREFIX': 'legoprod',
+        'TIMEOUT': 604800,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
     }
 }
 
