@@ -10,20 +10,19 @@ from lego import settings
 from lego.users.models import AbakusGroup
 
 
-def create_if_missing(group):
-    try:
-        AbakusGroup.objects.get(id=group.object.id)
-    except AbakusGroup.DoesNotExist:
-        group.save()
+def create_if_missing(obj, model):
+    if not model.objects.filter(pk=obj.object.pk).exists():
+        obj.save()
 
 
-def load_groups():
-    group_path = os.path.join(settings.BASE_DIR, 'users', 'fixtures', 'initial_groups.yaml')
+def load_from_fixture(fixture_path, model):
+    fixture_file = os.path.join(settings.BASE_DIR, fixture_path)
 
-    with open(group_path) as init_groups:
-        for group in serializers.deserialize('yaml', init_groups):
-            create_if_missing(group)
+    with open(fixture_file) as fixture:
+        for obj in serializers.deserialize('yaml', fixture):
+            create_if_missing(obj, model)
+
 
 @receiver(post_migrate)
 def load_initial_data(sender, **kwargs):
-    load_groups()
+    load_from_fixture('users/fixtures/initial_groups.yaml', AbakusGroup)
