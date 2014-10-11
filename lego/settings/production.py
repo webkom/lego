@@ -28,6 +28,7 @@ DATABASES = {
         'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': '129.241.208.149',
         'PORT': '',
+        'CONN_MAX_AGE': 300,
         'OPTIONS': {
             'autocommit': True,
         },
