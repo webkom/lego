@@ -38,8 +38,6 @@ def _user_has_module_perms(user, app_label):
 class AbakusGroup(models.Model):
     name = models.CharField(_('name'), max_length=80, unique=True)
     parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
-    leader = models.ForeignKey('users.User',  blank=True, null=True, on_delete=models.SET_NULL,
-                               verbose_name=_('leader'))
     permissions = models.ManyToManyField(Permission, blank=True, verbose_name=_('permissions'))
 
     objects = GroupManager()
@@ -50,7 +48,9 @@ class AbakusGroup(models.Model):
 
     @cached_property
     def is_committee(self):
-        return self.parent.name == 'Abakom'
+        if self.parent:
+            return self.parent.name == 'Abakom'
+        return False
 
     def __str__(self):
         return self.name
@@ -169,10 +169,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
 
     def get_full_name(self):
-        return '%s %s' % (self.first_name, self.last_name).strip()
+        return '{0} {1}'.format(self.first_name, self.last_name).strip()
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def natural_key(self):
+        return self.username,
 
 
 class Membership(BasisModel):
