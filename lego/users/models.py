@@ -41,7 +41,6 @@ class AbakusGroup(models.Model):
     leader = models.ForeignKey('users.User',  blank=True, null=True, on_delete=models.SET_NULL,
                                verbose_name=_('leader'))
     permissions = models.ManyToManyField(Permission, blank=True, verbose_name=_('permissions'))
-    is_committee = models.BooleanField(_('is committee'), default=False)
 
     objects = GroupManager()
 
