@@ -1,9 +1,11 @@
 # -*- coding: utf8 -*-
+from basis.models import BasisModel
 from django.contrib import auth
 from django.contrib.auth.models import GroupManager, AbstractBaseUser, UserManager, Permission
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from .validators import username_validator
@@ -36,8 +38,6 @@ def _user_has_module_perms(user, app_label):
 class AbakusGroup(models.Model):
     name = models.CharField(_('name'), max_length=80, unique=True)
     parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
-    leader = models.ForeignKey('users.User',  blank=True, null=True, on_delete=models.SET_NULL,
-                               verbose_name=_('leader'))
     permissions = models.ManyToManyField(Permission, blank=True, verbose_name=_('permissions'))
 
     objects = GroupManager()
@@ -45,6 +45,12 @@ class AbakusGroup(models.Model):
     class Meta:
         verbose_name = _('group')
         verbose_name_plural = _('groups')
+
+    @cached_property
+    def is_committee(self):
+        if self.parent:
+            return self.parent.name == 'Abakom'
+        return False
 
     def __str__(self):
         return self.name
@@ -62,6 +68,8 @@ class PermissionsMixin(models.Model):
     )
     groups = models.ManyToManyField(
         AbakusGroup,
+        through='Membership',
+        through_fields=('user', 'group'),
         verbose_name=_('groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of their groups.'),
@@ -161,7 +169,40 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
 
     def get_full_name(self):
-        return '%s %s' % (self.first_name, self.last_name).strip()
+        return '{0} {1}'.format(self.first_name, self.last_name).strip()
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def natural_key(self):
+        return self.username,
+
+
+class Membership(BasisModel):
+    DEPRECATED = 0
+    ACTIVE_RETIREE = 1
+    MEMBER = 2
+    LEADER = 3
+
+    PERMISSION_TYPES = (
+        (DEPRECATED, _('Previous member')),
+        (ACTIVE_RETIREE, _('Previous member who\'s still active')),
+        (MEMBER, _('Active member')),
+        (LEADER, _('Leader'))
+    )
+
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
+    title = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
+
+    start_date = models.DateField(_('start date'))
+    end_date = models.DateField(_('end date'), blank=True)
+
+    permission_status = models.PositiveSmallIntegerField(
+        _('permission status'),
+        choices=PERMISSION_TYPES,
+        default=MEMBER
+    )
+
+    def __str__(self):
+        return self.role
