@@ -4,7 +4,6 @@ import os
 
 from django.core import serializers
 from django.db.models.signals import post_migrate
-from django.dispatch import receiver
 
 from lego import settings
 from lego.users.models import AbakusGroup
@@ -23,6 +22,9 @@ def load_from_fixture(fixture_path, model):
             create_if_missing(obj, model)
 
 
-@receiver(post_migrate)
-def load_initial_data(sender, **kwargs):
-    load_from_fixture('users/fixtures/initial_groups.yaml', AbakusGroup)
+def load_fixture_callback(sender, **kwargs):
+        load_from_fixture('users/fixtures/initial_groups.yaml', AbakusGroup)
+
+
+def attach_signals():
+    post_migrate.connect(load_fixture_callback)
