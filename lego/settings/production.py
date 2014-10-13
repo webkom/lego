@@ -10,9 +10,13 @@ ADMINS = (
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': '127.0.0.1:11211',
-        'KEY_PREFIX': 'legoprod'
+        'KEY_PREFIX': 'legoprod',
+        'TIMEOUT': 604800,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
     }
 }
 
@@ -24,6 +28,7 @@ DATABASES = {
         'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': '129.241.208.149',
         'PORT': '',
+        'CONN_MAX_AGE': 300,
         'OPTIONS': {
             'autocommit': True,
         },
