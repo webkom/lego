@@ -3,6 +3,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'This is supersecret'
 
+DEBUG = True
+TEMPLATE_DEBUG = True
+ALLOWED_HOSTS = []
+
+AUTH_USER_MODEL = 'users.User'
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -11,6 +17,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'lego.apps.LegoConfig',
+    'lego.users',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -4,6 +4,7 @@ psycopg2
 sorl-thumbnail==11.12.1b
 markdown
 unicode-slugify
+pyyaml
 
 djangorestframework
 django-basis

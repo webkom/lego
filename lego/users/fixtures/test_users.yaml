@@ -1,0 +1,15 @@
+- model: users.User
+  pk: 1
+  fields:
+    username: test1
+    first_name: test
+    last_name: user1
+    email: test1@user.com
+
+- model: users.User
+  pk: 2
+  fields:
+    username: test2
+    first_name: test
+    last_name: user2
+    email: test2@user.com
