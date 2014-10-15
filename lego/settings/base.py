@@ -21,6 +21,7 @@ INSTALLED_APPS = (
 
     'lego.apps.LegoConfig',
     'lego.users',
+    'lego.app.flatpages',
 )
 
 MIDDLEWARE_CLASSES = (
