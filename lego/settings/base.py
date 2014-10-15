@@ -17,6 +17,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+
     'lego.apps.LegoConfig',
     'lego.users',
 )

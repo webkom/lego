@@ -9,15 +9,16 @@ urlpatterns = patterns(
     '',
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include('lego.api.urls')),
 )
 
 if not settings.DEBUG:
-    urlpatterns = patterns(
+    urlpatterns += patterns(
         '',
         url(r'^$', TemplateView.as_view(template_name="before_launch.html"), name='landing_page'),
     )
 else:
-    urlpatterns = patterns(
+    urlpatterns += patterns(
         '',
         url(r'^$', TemplateView.as_view(template_name="base.html"), name='landing_page'),
     )
