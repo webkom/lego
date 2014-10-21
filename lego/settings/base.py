@@ -1,7 +1,10 @@
+import sys
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'This is supersecret'
+
+TESTING = 'test' in sys.argv  # Check if manage.py test has been run
 
 DEBUG = True
 TEMPLATE_DEBUG = True

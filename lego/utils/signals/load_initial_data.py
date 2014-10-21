@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from lego.app.oauth.models import APIApplication
 
 import os
 
@@ -6,7 +7,7 @@ from django.core import serializers
 from django.db.models.signals import post_migrate
 
 from lego import settings
-from lego.users.models import AbakusGroup
+from lego.users.models import AbakusGroup, User
 
 
 def create_if_missing(obj, model):
@@ -23,8 +24,11 @@ def load_from_fixture(fixture_path, model):
 
 
 def load_fixture_callback(sender, **kwargs):
-        load_from_fixture('users/fixtures/initial_groups.yaml', AbakusGroup)
+    load_from_fixture('users/fixtures/initial_groups.yaml', AbakusGroup)
+    load_from_fixture('users/fixtures/initial_users.yaml', User)
+    load_from_fixture('app/oauth/fixtures/initial_applications.yaml', APIApplication)
 
 
 def attach_signals():
-    post_migrate.connect(load_fixture_callback)
+    if not settings.TESTING:
+        post_migrate.connect(load_fixture_callback)
