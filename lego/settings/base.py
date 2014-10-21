@@ -20,18 +20,35 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'oauth2_provider',
+
     'lego.apps.LegoConfig',
     'lego.users',
+
+    'lego.app.oauth',
+)
+
+AUTHENTICATION_BACKEND = (
+    'oauth2_provider.backends.OAuth2Backend'
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    )
+}
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
 
 ROOT_URLCONF = 'lego.urls'
 

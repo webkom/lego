@@ -1,0 +1,8 @@
+- model: oauth.APIApplication
+  pk: 1
+  fields:
+    user: 1
+    client_type: public
+    authorization_grant_type: password
+    name: webapp
+    description: webkom's webapp
