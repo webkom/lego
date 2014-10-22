@@ -9,9 +9,13 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
+    url(r'^api/', include('lego.api.urls')),
+
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$', auth.views.login, {'template_name': 'login.html'}),
+
+
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    url(r'^accounts/login/$', auth.views.login, {'template_name': 'login.html'})
 )
 
 if not settings.DEBUG:

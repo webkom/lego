@@ -21,6 +21,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'oauth2_provider',
+    'rest_framework',
 
     'lego.apps.LegoConfig',
     'lego.users',
@@ -41,12 +42,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
-    )
-}
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
 
