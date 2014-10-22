@@ -16,6 +16,28 @@ class GroupTestCase(TestCase):
         self.assertFalse(self.non_committee.is_committee)
 
 
+class GroupHierarchyTestcase(TestCase):
+    fixtures = ['initial_groups.yaml']
+
+    def setUp(self):
+        self.abakom = AbakusGroup.objects.get(name='Abakom')
+
+    def test_find_all_children(self):
+        committees = AbakusGroup.objects.filter(parent=1)
+        children = self.abakom.get_children()
+        self.assertEqual(len(committees), len(children))
+
+    def test_abakom_is_root(self):
+        self.assertTrue(self.abakom.is_root_node())
+
+    def test_get_descendants(self):
+        webkom = AbakusGroup.objects.get(name='Webkom')
+        under_webkom = AbakusGroup(name='under_group', parent=webkom)
+        under_webkom.save()
+        descendant = webkom.get_descendants()[0]
+        self.assertEqual(under_webkom, descendant)
+
+
 class UserTestCase(TestCase):
     fixtures = ['test_users.yaml']
 

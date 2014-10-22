@@ -7,6 +7,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
 from .validators import username_validator
 
@@ -35,9 +37,10 @@ def _user_has_module_perms(user, app_label):
     return False
 
 
-class AbakusGroup(models.Model):
+class AbakusGroup(MPTTModel):
     name = models.CharField(_('name'), max_length=80, unique=True)
-    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
+    parent = TreeForeignKey('self', blank=True, null=True, related_name='children',
+                            verbose_name=_('parent'))
     permissions = models.ManyToManyField(Permission, blank=True, verbose_name=_('permissions'))
 
     objects = GroupManager()
