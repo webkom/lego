@@ -13,3 +13,4 @@ django-haystack
 django-secure
 django-autoslug
 django-filter
+django-mptt

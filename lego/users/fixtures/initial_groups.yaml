@@ -1,53 +1,90 @@
-- model: users.AbakusGroup
-  pk: 1
-  fields:
+- fields:
+    level: 0
+    lft: 1
     name: Abakom
-
-- model: users.AbakusGroup
-  pk: 2
-  fields:
+    parent: null
+    permissions: []
+    rght: 18
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 1
+- fields:
+    level: 1
+    lft: 2
     name: Arrkom
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 3
-  fields:
+    permissions: []
+    rght: 3
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 2
+- fields:
+    level: 1
+    lft: 4
     name: backup
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 4
-  fields:
+    permissions: []
+    rght: 5
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 3
+- fields:
+    level: 1
+    lft: 6
     name: Bedkom
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 5
-  fields:
+    permissions: []
+    rght: 7
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 4
+- fields:
+    level: 1
+    lft: 8
     name: Fagkom
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 6
-  fields:
+    permissions: []
+    rght: 9
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 5
+- fields:
+    level: 1
+    lft: 10
     name: LaBamba
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 7
-  fields:
+    permissions: []
+    rght: 11
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 6
+- fields:
+    level: 1
+    lft: 12
     name: PR
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 8
-  fields:
+    permissions: []
+    rght: 13
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 7
+- fields:
+    level: 1
+    lft: 14
     name: readme
     parent: 1
-
-- model: users.AbakusGroup
-  pk: 9
-  fields:
+    permissions: []
+    rght: 15
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 8
+- fields:
+    level: 1
+    lft: 16
     name: Webkom
     parent: 1
-
+    permissions: []
+    rght: 17
+    tree_id: 1
+  model: users.abakusgroup
+  pk: 9
