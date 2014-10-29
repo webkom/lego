@@ -8,8 +8,12 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
-    url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('lego.api.urls')),
+
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
+
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 )
 
 if not settings.DEBUG:
