@@ -4,6 +4,6 @@
     user: 1
     client_type: public
     authorization_grant_type: password
-    name: webapp
-    description: webkom's webapp
-    client_id: webkomwebappid
+    name: test
+    description: test api application
+    client_id: testid
