@@ -6,8 +6,6 @@ SECRET_KEY = 'This is supersecret'
 
 TESTING = 'test' in sys.argv  # Check if manage.py test has been run
 
-DEBUG = True
-TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'users.User'
