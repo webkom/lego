@@ -6,5 +6,6 @@ from .v1 import router as v1
 
 urlpatterns = patterns(
     '',
-    url(r'^v1/', include(v1.urls))
+    url(r'', include(v1.urls)),
+    url(r'^v1/', include(v1.urls)),
 )
