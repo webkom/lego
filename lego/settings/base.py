@@ -69,3 +69,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '../uploads')
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
+
+MAIL_MASTER_DOMAIN = 'abakus.no'
