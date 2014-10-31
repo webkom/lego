@@ -6,7 +6,7 @@ SECRET_KEY = 'This is supersecret'
 
 TESTING = 'test' in sys.argv  # Check if manage.py test has been run
 
-SHELL_PLUS = "ipython"
+SHELL_PLUS = 'ipython'
 
 DEBUG = True
 TEMPLATE_DEBUG = True
