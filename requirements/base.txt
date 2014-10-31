@@ -1,9 +1,11 @@
 django>=1.7,<1.8
+ipython
 
 psycopg2
 sorl-thumbnail==11.12.1b
 markdown
 unicode-slugify
+pyyaml
 
 djangorestframework
 django-basis
@@ -12,3 +14,4 @@ django-haystack
 django-secure
 django-autoslug
 django-filter
+django-oauth-toolkit

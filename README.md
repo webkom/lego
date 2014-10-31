@@ -1,4 +1,10 @@
-LEGO Er Ganske Oppdelt
-====
+# LEGO Er Ganske Oppdelt
+[![Build status](https://ci.frigg.io/badges/webkom/lego/)](https://ci.frigg.io/webkom/lego/)
 
-Abakus.no 3.0
+```bash
+$ make 
+  dev        - install dev requirements
+  prod       - install prod requirements
+  venv       - create virtualenv venv-folder
+  production - deploy production (used by chewie)
+```
