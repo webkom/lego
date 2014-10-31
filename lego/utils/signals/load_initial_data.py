@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
 from lego.app.oauth.models import APIApplication
-from oauth2_provider.models import AccessToken
 
 import os
 
@@ -32,7 +31,7 @@ def load_fixture_callback(sender, **kwargs):
     if settings.DEVELOPMENT:
         load_from_fixture('users/fixtures/development_users.yaml', User)
         load_from_fixture('app/oauth/fixtures/development_applications.yaml', APIApplication)
-        load_from_fixture('app/oauth/fixtures/test_access_tokens.yaml', AccessToken)
+
 
 def attach_signals():
     if not settings.TESTING:
