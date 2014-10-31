@@ -193,16 +193,19 @@ class Membership(BasisModel):
 
     user = models.ForeignKey(User, verbose_name=_('user'))
     group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
-    title = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
+    role = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
 
-    start_date = models.DateField(_('start date'))
-    end_date = models.DateField(_('end date'), blank=True)
+    start_date = models.DateField(_('start date'), auto_now=True, blank=True)
+    end_date = models.DateField(_('end date'), null=True, blank=True)
 
     permission_status = models.PositiveSmallIntegerField(
         _('permission status'),
         choices=PERMISSION_TYPES,
         default=MEMBER
     )
+
+    class Meta:
+        unique_together = ('user', 'group')
 
     def __str__(self):
         return self.role

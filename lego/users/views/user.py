@@ -1,12 +1,12 @@
 # -*- coding: utf8 -*-
-from lego.users.models import User
-from lego.users.serializers import UserSerializer, PublicUserSerializer
 from rest_framework import viewsets
-from rest_framework.decorators import list_route
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.response import Response
+
+from lego.users.models import User
+from lego.users.serializers import UserSerializer, PublicUserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
