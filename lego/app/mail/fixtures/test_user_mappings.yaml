@@ -1,0 +1,11 @@
+- model: mail.UserMapping
+  pk: 1
+  fields:
+    address: testuser1mapping1
+    user: 1
+
+- model: mail.UserMapping
+  pk: 2
+  fields:
+    address: testuser1mapping2
+    user: 1
