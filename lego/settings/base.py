@@ -4,6 +4,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'This is supersecret'
 
+API_VERSION = 'v1'
+
 TESTING = 'test' in sys.argv  # Check if manage.py test has been run
 
 SHELL_PLUS = 'ipython'
