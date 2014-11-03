@@ -6,6 +6,8 @@ SECRET_KEY = 'This is supersecret'
 
 TESTING = 'test' in sys.argv  # Check if manage.py test has been run
 
+SHELL_PLUS = 'ipython'
+
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'users.User'
@@ -17,6 +19,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django_extensions',
 
     'oauth2_provider',
     'rest_framework',
