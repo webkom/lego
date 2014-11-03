@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
 from lego.settings.rest_framework import *
-
 from .base import *
 
 DATABASES = {
