@@ -52,16 +52,25 @@ class GetUsersAPITestCase(APITestCase):
 
     def test_with_normal_user(self):
         force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request, 1)
+        response = self.view(self.request, pk=1)
         user = response.data
         keys = set(user.keys())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(keys, set(PublicUserSerializer.Meta.fields))
 
+    def test_self_with_normal_user(self):
+        force_authenticate(self.request, user=self.normal_user)
+        response = self.view(self.request, pk=self.normal_user.pk)
+        user = response.data
+        keys = set(user.keys())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(keys, set(UserSerializer.Meta.fields))
+
     def test_with_super_user(self):
         force_authenticate(self.request, user=self.super_user)
-        response = self.view(self.request, 1)
+        response = self.view(self.request, pk=1)
         user = response.data
         keys = set(user.keys())
 
@@ -117,13 +126,6 @@ class UpdateUsersAPITestCase(APITestCase):
     super_user = User.objects.filter(is_superuser=True)[0]
     normal_user = User.objects.filter(is_superuser=False)[0]
 
-    pre_modified_user = {
-        'username': 'pre_modified_user',
-        'first_name': 'pre_modified',
-        'last_name': 'pre_user',
-        'email': 'pre_modified@testuser.com',
-    }
-
     modified_user = {
         'username': 'modified_user',
         'first_name': 'modified',
@@ -134,10 +136,19 @@ class UpdateUsersAPITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'put': 'update'})
-        self.test_user = User(**self.pre_modified_user)
-        self.test_user.save()
-        self.request = self.factory.put('/api/users/{0}/'.format(self.test_user.pk),
+        self.test_user = User.objects.get(pk=1)
+        self.request = self.factory.put('/api/users/',
                                         self.modified_user)
+
+    def test_update_self_with_normal_user(self):
+        force_authenticate(self.request, user=self.normal_user)
+        response = self.view(self.request, pk=self.normal_user.pk)
+        user = User.objects.get(pk=self.normal_user.pk)
+
+        self.assertEqual(response.status_code, 200)
+
+        for key, value in self.modified_user.items():
+            self.assertEqual(getattr(user, key), value)
 
     def test_update_other_with_normal_user(self):
         force_authenticate(self.request, user=self.normal_user)
@@ -173,8 +184,7 @@ class DeleteUsersAPITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'delete': 'destroy'})
-        self.test_user = User(**self.test_user_json)
-        self.test_user.save()
+        self.test_user = User.objects.get(pk=1)
         self.request = self.factory.delete('/api/users/{0}/'.format(self.test_user.pk))
 
     def test_delete_with_normal_user(self):

@@ -7,30 +7,33 @@ from rest_framework.response import Response
 
 from lego.users.models import User
 from lego.users.serializers import UserSerializer, PublicUserSerializer
+from lego.users.permissions import AbakusModelPermissions
 
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated, DjangoModelPermissions)
+    permission_classes = (IsAuthenticated, AbakusModelPermissions)
 
     def list(self, request, *args, **kwargs):
         if not request.user.is_superuser:
             raise PermissionDenied()
 
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-
-        return Response(serializer.data)
+        return super(UsersViewSet, self).list(request, *args, **kwargs)
 
     def retrieve(self, request, pk=None, *args, **kwargs):
         queryset = User.objects.all()
         user = get_object_or_404(queryset, pk=pk)
 
-        if not request.user.is_superuser:
+        if not request.user.is_superuser and self.get_object_or_none() != request.user:
             serializer = PublicUserSerializer(user)
         else:
             serializer = UserSerializer(user)
 
         return Response(serializer.data)
 
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_superuser and request.user.pk != kwargs['pk']:
+            raise PermissionDenied()
+
+        return super(UsersViewSet, self).update(request, *args, **kwargs)
