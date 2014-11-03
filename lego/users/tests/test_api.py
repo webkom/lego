@@ -157,3 +157,37 @@ class UpdateUsersAPITestCase(APITestCase):
         for key, value in self.modified_user.items():
             self.assertEqual(getattr(user, key), value)
 
+
+class DeleteUsersAPITestCase(APITestCase):
+    fixtures = ['test_users.yaml']
+    super_user = User.objects.filter(is_superuser=True)[0]
+    normal_user = User.objects.filter(is_superuser=False)[0]
+
+    test_user_json = {
+        'username': 'new_testuser',
+        'first_name': 'new',
+        'last_name': 'test_user',
+        'email': 'new@testuser.com',
+    }
+
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.view = UsersViewSet.as_view({'delete': 'destroy'})
+        self.test_user = User(**self.test_user_json)
+        self.test_user.save()
+        self.request = self.factory.delete('/api/users/{0}/'.format(self.test_user.pk))
+
+    def test_delete_with_normal_user(self):
+        force_authenticate(self.request, user=self.normal_user)
+        response = self.view(self.request, pk=self.test_user.pk)
+        users = User.objects.filter(pk=self.test_user.pk)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(len(users))
+
+    def test_delete_with_super_user(self):
+        force_authenticate(self.request, user=self.super_user)
+        response = self.view(self.request, pk=self.test_user.pk)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
