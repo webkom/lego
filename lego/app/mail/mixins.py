@@ -11,7 +11,4 @@ class GenericMappingMixin(object):
         """
         :return: user queryset
         """
-        raise NotImplementedError()
-
-    class Meta:
-        abstract = True
+        raise NotImplementedError('Please implement the get_mail_recipients method.')
