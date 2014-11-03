@@ -2,16 +2,16 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
 import lego.app.mail.mixins
 from django.conf import settings
+import datetime
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('users', '0002_auto_20141031_1555'),
+        ('users', '0001_initial'),
         ('contenttypes', '0001_initial'),
     ]
 
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GenericMapping',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField()),
                 ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
             ],
@@ -30,10 +30,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GroupMapping',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('address', models.CharField(verbose_name='Addess', max_length=100, unique=True)),
-                ('additional_users', models.ManyToManyField(blank=True, verbose_name='Additional Users', to=settings.AUTH_USER_MODEL)),
-                ('group', models.ForeignKey(to='users.AbakusGroup', verbose_name='Group', related_name='mail_mappings')),
+                ('additional_users', models.ManyToManyField(verbose_name='Additional Users', blank=True, to=settings.AUTH_USER_MODEL)),
+                ('group', models.ForeignKey(verbose_name='Group', related_name='mail_mappings', to='users.AbakusGroup')),
             ],
             options={
                 'abstract': False,
@@ -43,13 +43,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OneTimeMapping',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('address', models.CharField(verbose_name='Addess', max_length=100, unique=True)),
-                ('token', models.CharField(verbose_name='Token', max_length=36, default='1a68bad1-437e-4b5a-b225-8446b59623a0', unique=True)),
+                ('token', models.CharField(verbose_name='Token', max_length=36, default='50fe7e48-999b-48b9-9faf-2401efc62be7', unique=True)),
                 ('from_address', models.EmailField(verbose_name='From Address', max_length=75)),
-                ('timeout', models.DateTimeField(verbose_name='Timeout', default=datetime.datetime(2014, 10, 31, 17, 28, 37, 732110))),
-                ('generic_mappings', models.ManyToManyField(to='mail.GenericMapping', verbose_name='Generic Mappings', related_name='one_time_mappings')),
-                ('group_mappings', models.ManyToManyField(to='mail.GroupMapping', verbose_name='Groups', related_name='one_time_mappings')),
+                ('timeout', models.DateTimeField(verbose_name='Timeout', default=datetime.datetime(2014, 11, 3, 12, 5, 10, 210893))),
+                ('generic_mappings', models.ManyToManyField(verbose_name='Generic Mappings', related_name='one_time_mappings', to='mail.GenericMapping')),
+                ('group_mappings', models.ManyToManyField(verbose_name='Groups', related_name='one_time_mappings', to='mail.GroupMapping')),
             ],
             options={
                 'abstract': False,
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RawMapping',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('address', models.CharField(verbose_name='Addess', max_length=100, unique=True)),
             ],
             options={
@@ -70,9 +70,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RawMappingElement',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('email', models.EmailField(verbose_name='Raw email', max_length=75)),
-                ('raw_mapping', models.ForeignKey(to='mail.RawMapping', verbose_name='Raw Mail Mapping', related_name='recipients')),
+                ('raw_mapping', models.ForeignKey(verbose_name='Raw Mail Mapping', related_name='recipients', to='mail.RawMapping')),
             ],
             options={
             },
@@ -81,9 +81,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserMapping',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('address', models.CharField(verbose_name='Addess', max_length=100, unique=True)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name='User', related_name='mail_mappings')),
+                ('user', models.ForeignKey(verbose_name='User', related_name='mail_mappings', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
