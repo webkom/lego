@@ -1,9 +1,19 @@
 # -*- coding: utf8 -*-
 from datetime import date
 from django.test import TestCase
-from lego.app.mail.models import UserMapping, GroupMapping, RawMapping, RawMappingElement, \
+from django.core.validators import ValidationError
+from lego.app.mail.models import UserMapping, GroupMapping, RawMapping, \
     GenericMapping, OneTimeMapping
 from lego.users.models import User, AbakusGroup as Group, Membership
+
+
+class AddressTestCase(TestCase):
+    fixtures = ['test_users.yaml']
+
+    def test_local_part(self):
+        user = User.objects.get(pk=1)
+        mapping = UserMapping(address='!#$%*/?^`{|}~€', user=user)
+        self.assertRaises(ValidationError, mapping.save)
 
 
 class UserMappingTestCase(TestCase):
@@ -60,3 +70,7 @@ class RawMappingTestCase(TestCase):
         self.assertEquals(len(recipients), 2)
         for recipient in recipients:
             self.assertIn(recipient, ['test1@abakus.no', 'test2@abakus.no'])
+
+
+class GenericMailMapping(TestCase):
+    pass

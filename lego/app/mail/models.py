@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import validate_email, ValidationError
 
 from lego.users.models import User, AbakusGroup as Group
 from .mixins import MappingResult
@@ -18,6 +19,13 @@ class MailMapping(models.Model):
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        try:
+            validate_email('%s@abakus.no' % self.address)
+        except ValidationError as ex:
+            raise ValidationError('Invalid local part.')
+        super(MailMapping, self).save(*args, **kwargs)
 
 
 class UserMapping(MailMapping, MappingResult):
@@ -138,6 +146,8 @@ class OneTimeMapping(MailMapping, MappingResult):
 
         return set(recipients)
 
+    def add_generic_mapping(self, object):
+        self.generic_mappings.add(object.get_generic_mapping())
 
-
-
+    def add_group_mapping(self, group_mapping):
+        self.group_mappings.add(group_mapping)

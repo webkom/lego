@@ -12,3 +12,8 @@ class GenericMappingMixin(object):
         :return: user queryset
         """
         raise NotImplementedError('Please implement the get_mail_recipients method.')
+
+    def get_generic_mapping(self):
+        from.models import GenericMapping
+        obj, created = GenericMapping.objects.get_or_create(content_object=self)
+        return obj
