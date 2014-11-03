@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 from lego.settings.base import *
+from lego.settings.lego import *
 
 if 'compressor' in INSTALLED_APPS:
     from lego.settings.compress import *
