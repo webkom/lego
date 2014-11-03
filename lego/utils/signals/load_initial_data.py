@@ -1,5 +1,4 @@
 # -*- coding: utf8 -*-
-
 import os
 
 from django.core import serializers
