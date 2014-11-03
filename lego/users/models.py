@@ -182,33 +182,28 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Membership(BasisModel):
-    DEPRECATED = 0
-    ACTIVE_RETIREE = 1
-    MEMBER = 2
-    LEADER = 3
+    MEMBER = 'M'
+    LEADER = 'L'
+    CO_LEADER = 'CL'
+    TREASURER = 'T'
 
-    PERMISSION_TYPES = (
-        (DEPRECATED, _('Previous member')),
-        (ACTIVE_RETIREE, _('Previous member who\'s still active')),
-        (MEMBER, _('Active member')),
-        (LEADER, _('Leader'))
+    ROLES = (
+        (MEMBER, _('Member')),
+        (LEADER, _('Leader')),
+        (CO_LEADER, _('Co-Leader')),
+        (TREASURER, _('Treasurer'))
     )
 
     user = models.ForeignKey(User, verbose_name=_('user'))
     group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
-    role = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
+    role = models.CharField(_('role'), max_length=2, choices=ROLES, default=MEMBER)
+    is_active = models.BooleanField(_('is active'), default=True)
 
     start_date = models.DateField(_('start date'), auto_now=True, blank=True)
     end_date = models.DateField(_('end date'), null=True, blank=True)
-
-    permission_status = models.PositiveSmallIntegerField(
-        _('permission status'),
-        choices=PERMISSION_TYPES,
-        default=MEMBER
-    )
 
     class Meta:
         unique_together = ('user', 'group')
 
     def __str__(self):
-        return self.role
+        return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.group)
