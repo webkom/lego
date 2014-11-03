@@ -30,6 +30,7 @@ INSTALLED_APPS = (
     'lego.app.oauth',
     'lego.app.articles',
     'lego.app.content',
+    'lego.app.events',
     'lego.app.flatpages',
     'lego.app.comments',
 )
