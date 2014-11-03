@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
-from lego.users.views.users import UsersViewSet
 from rest_framework import routers
+
+from lego.users.views.users import UsersViewSet
 
 
 router = routers.DefaultRouter()

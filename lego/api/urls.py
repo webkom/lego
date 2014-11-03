@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .v1 import router as v1
 
+
 @csrf_exempt
 def version_redirect(request, url_ending):
     return HttpResponseRedirect('/api/{0}/{1}'.format(settings.API_VERSION, url_ending))
