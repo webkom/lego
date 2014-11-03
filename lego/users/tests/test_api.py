@@ -3,7 +3,7 @@ from lego.users.serializers import UserSerializer, PublicUserSerializer
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
 from lego.users.models import User
-from lego.users.views.user import UserViewSet
+from lego.users.views.users import UsersViewSet
 
 
 class ListUsersAPITestCase(APITestCase):
@@ -16,7 +16,7 @@ class ListUsersAPITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.request = self.factory.get('/api/users/')
-        self.view = UserViewSet.as_view({'get': 'list'})
+        self.view = UsersViewSet.as_view({'get': 'list'})
 
     def test_without_auth(self):
         response = self.view(self.request)
@@ -44,7 +44,7 @@ class GetUsersAPITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.request = self.factory.get('/api/users/')
-        self.view = UserViewSet.as_view({'get': 'retrieve'})
+        self.view = UsersViewSet.as_view({'get': 'retrieve'})
 
     def test_without_auth(self):
         response = self.view(self.request)
@@ -69,7 +69,7 @@ class GetUsersAPITestCase(APITestCase):
         self.assertEqual(keys, set(UserSerializer.Meta.fields))
 
 
-class ModifyUsersAPITestCase(APITestCase):
+class CreateUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
     super_user = User.objects.filter(is_superuser=True)[0]
     normal_user = User.objects.filter(is_superuser=False)[0]
@@ -83,20 +83,18 @@ class ModifyUsersAPITestCase(APITestCase):
 
     def setUp(self):
         self.factory = APIRequestFactory()
+        self.view = UsersViewSet.as_view({'post': 'create'})
+        self.request = self.factory.post('/api/users', self.test_user_json)
 
     def test_create_with_normal_user(self):
-        request = self.factory.post('/api/users/', self.test_user_json)
-        force_authenticate(request, user=self.normal_user)
-        view = UserViewSet.as_view({'post': 'create'})
-        response = view(request)
+        force_authenticate(self.request, user=self.normal_user)
+        response = self.view(self.request)
 
         self.assertEqual(response.status_code, 403)
 
     def test_create_with_super_user(self):
-        request = self.factory.post('/api/users/', self.test_user_json)
-        force_authenticate(request, user=self.super_user)
-        view = UserViewSet.as_view({'post': 'create'})
-        response = view(request)
+        force_authenticate(self.request, user=self.super_user)
+        response = self.view(self.request)
 
         self.assertEqual(response.status_code, 201)
         created_user = User.objects.get(username=self.test_user_json['username'])
@@ -108,9 +106,54 @@ class ModifyUsersAPITestCase(APITestCase):
         existing_user = User(**self.test_user_json)
         existing_user.save()
 
-        request = self.factory.post('/api/users/', self.test_user_json)
-        force_authenticate(request, user=self.super_user)
-        view = UserViewSet.as_view({'post': 'create'})
-        response = view(request)
+        force_authenticate(self.request, user=self.super_user)
+        response = self.view(self.request)
 
         self.assertEqual(response.status_code, 400)
+
+
+class UpdateUsersAPITestCase(APITestCase):
+    fixtures = ['test_users.yaml']
+    super_user = User.objects.filter(is_superuser=True)[0]
+    normal_user = User.objects.filter(is_superuser=False)[0]
+
+    pre_modified_user = {
+        'username': 'pre_modified_user',
+        'first_name': 'pre_modified',
+        'last_name': 'pre_user',
+        'email': 'pre_modified@testuser.com',
+    }
+
+    modified_user = {
+        'username': 'modified_user',
+        'first_name': 'modified',
+        'last_name': 'user',
+        'email': 'modified@testuser.com',
+    }
+
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.view = UsersViewSet.as_view({'put': 'update'})
+        self.test_user = User(**self.pre_modified_user)
+        self.test_user.save()
+        self.request = self.factory.put('/api/users/{0}/'.format(self.test_user.pk),
+                                        self.modified_user)
+
+    def test_update_other_with_normal_user(self):
+        force_authenticate(self.request, user=self.normal_user)
+        response = self.view(self.request, pk=self.test_user.pk)
+        user = User.objects.get(pk=self.test_user.pk)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(user, self.test_user)
+
+    def test_update_with_super_user(self):
+        force_authenticate(self.request, user=self.super_user)
+        response = self.view(self.request, pk=self.test_user.pk)
+        user = User.objects.get(pk=self.test_user.pk)
+
+        self.assertEqual(response.status_code, 200)
+
+        for key, value in self.modified_user.items():
+            self.assertEqual(getattr(user, key), value)
+
