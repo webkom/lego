@@ -24,11 +24,11 @@ def get_test_user():
 class ListUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
 
-    all_users = User.objects.all()
-    super_user = all_users.filter(is_superuser=True)[0]
-    normal_user = all_users.filter(is_superuser=False)[0]
-
     def setUp(self):
+        self.all_users = User.objects.all()
+        self.super_user = self.all_users.filter(is_superuser=True).first()
+        self.normal_user = self.all_users.filter(is_superuser=False).first()
+
         self.factory = APIRequestFactory()
         self.request = self.factory.get('/api/users/')
         self.view = UsersViewSet.as_view({'get': 'list'})
@@ -53,10 +53,12 @@ class ListUsersAPITestCase(APITestCase):
 
 class GetUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
-    super_user = User.objects.filter(is_superuser=True)[0]
-    normal_user = User.objects.filter(is_superuser=False)[0]
 
     def setUp(self):
+        self.all_users = User.objects.all()
+        self.super_user = self.all_users.filter(is_superuser=True).first()
+        self.normal_user = self.all_users.filter(is_superuser=False).first()
+
         self.factory = APIRequestFactory()
         self.request = self.factory.get('/api/users/')
         self.view = UsersViewSet.as_view({'get': 'retrieve'})
@@ -95,10 +97,12 @@ class GetUsersAPITestCase(APITestCase):
 
 class CreateUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
-    super_user = User.objects.filter(is_superuser=True)[0]
-    normal_user = User.objects.filter(is_superuser=False)[0]
 
     def setUp(self):
+        self.all_users = User.objects.all()
+        self.super_user = self.all_users.filter(is_superuser=True).first()
+        self.normal_user = self.all_users.filter(is_superuser=False).first()
+
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'post': 'create'})
         self.request = self.factory.post('/api/users', test_user_data)
@@ -130,8 +134,6 @@ class CreateUsersAPITestCase(APITestCase):
 
 class UpdateUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
-    super_user = User.objects.filter(is_superuser=True)[0]
-    normal_user = User.objects.filter(is_superuser=False)[0]
 
     modified_user = {
         'username': 'modified_user',
@@ -141,6 +143,10 @@ class UpdateUsersAPITestCase(APITestCase):
     }
 
     def setUp(self):
+        self.all_users = User.objects.all()
+        self.super_user = self.all_users.filter(is_superuser=True).first()
+        self.normal_user = self.all_users.filter(is_superuser=False).first()
+
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'put': 'update'})
         self.test_user = get_test_user()
@@ -178,8 +184,6 @@ class UpdateUsersAPITestCase(APITestCase):
 
 class DeleteUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
-    super_user = User.objects.filter(is_superuser=True)[0]
-    normal_user = User.objects.filter(is_superuser=False)[0]
 
     test_user_data = {
         'username': 'new_testuser',
@@ -189,6 +193,10 @@ class DeleteUsersAPITestCase(APITestCase):
     }
 
     def setUp(self):
+        self.all_users = User.objects.all()
+        self.super_user = self.all_users.filter(is_superuser=True).first()
+        self.normal_user = self.all_users.filter(is_superuser=False).first()
+
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'delete': 'destroy'})
         self.test_user = get_test_user()
