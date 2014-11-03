@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
-from lego.users.models import User
 from rest_framework import serializers
+
+from lego.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):

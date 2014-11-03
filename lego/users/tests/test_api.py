@@ -1,10 +1,9 @@
 # -*- coding: utf8 -*-
-from lego.users.serializers import UserSerializer, PublicUserSerializer
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
 from lego.users.models import User
 from lego.users.views.users import UsersViewSet
-
+from lego.users.serializers import UserSerializer, PublicUserSerializer
 
 test_user_data = {
     'username': 'new_testuser',
@@ -125,8 +124,7 @@ class CreateUsersAPITestCase(APITestCase):
             self.assertEqual(getattr(created_user, key), value)
 
     def test_create_existing_username(self):
-        existing_user = get_test_user()
-
+        get_test_user()
         force_authenticate(self.request, user=self.super_user)
         response = self.view(self.request)
 
