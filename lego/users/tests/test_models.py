@@ -34,8 +34,9 @@ class MembershipTestCase(TestCase):
         self.test_membership = Membership(
             user=self.test_user,
             group=self.test_committee,
-            title='The Best Test User',
+            role='The Best Test User',
         )
+        self.test_membership.save()
 
     def test_permission_status(self):
         self.assertEqual(self.test_membership.permission_status, Membership.MEMBER)
