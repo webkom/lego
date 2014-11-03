@@ -198,7 +198,7 @@ class Membership(BasisModel):
     group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
     role = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
 
-    start_date = models.DateField(_('start date'), auto_now=True, blank=True)
+    start_date = models.DateField(_('start date'), auto_now_add=True, blank=True)
     end_date = models.DateField(_('end date'), null=True, blank=True)
 
     permission_status = models.PositiveSmallIntegerField(
