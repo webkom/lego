@@ -1,53 +1,59 @@
 - model: users.AbakusGroup
   pk: 1
   fields:
-    name: Abakom
-
+    name: Abakus
+    
 - model: users.AbakusGroup
   pk: 2
   fields:
-    name: Arrkom
+    name: Abakom
     parent: 1
-
+    
 - model: users.AbakusGroup
   pk: 3
   fields:
-    name: backup
-    parent: 1
+    name: Arrkom
+    parent: 2
 
 - model: users.AbakusGroup
   pk: 4
   fields:
-    name: Bedkom
-    parent: 1
+    name: backup
+    parent: 2
 
 - model: users.AbakusGroup
   pk: 5
   fields:
-    name: Fagkom
-    parent: 1
+    name: Bedkom
+    parent: 2
 
 - model: users.AbakusGroup
   pk: 6
   fields:
-    name: LaBamba
-    parent: 1
+    name: Fagkom
+    parent: 2
 
 - model: users.AbakusGroup
   pk: 7
   fields:
-    name: PR
-    parent: 1
+    name: LaBamba
+    parent: 2
 
 - model: users.AbakusGroup
   pk: 8
   fields:
-    name: readme
-    parent: 1
+    name: PR
+    parent: 2
 
 - model: users.AbakusGroup
   pk: 9
   fields:
+    name: readme
+    parent: 2
+
+- model: users.AbakusGroup
+  pk: 10
+  fields:
     name: Webkom
-    parent: 1
+    parent: 2
 

@@ -4,12 +4,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = 'This is supersecret'
 
+API_VERSION = 'v1'
+
 TESTING = 'test' in sys.argv  # Check if manage.py test has been run
 
 SHELL_PLUS = 'ipython'
 
-DEBUG = True
-TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'users.User'
@@ -34,16 +34,17 @@ INSTALLED_APPS = (
     'lego.app.oauth',
 )
 
-AUTHENTICATION_BACKEND = (
-    'oauth2_provider.backends.OAuth2Backend'
+AUTHENTICATION_BACKENDS = (
+    'lego.backends.AbakusModelBackend',
+    'oauth2_provider.backends.OAuth2Backend',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )

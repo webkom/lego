@@ -14,14 +14,14 @@ from .validators import username_validator
 def _user_get_all_permissions(user, obj):
     permissions = set()
     for backend in auth.get_backends():
-        if hasattr(backend, "get_all_permissions"):
+        if hasattr(backend, 'get_all_permissions'):
             permissions.update(backend.get_all_permissions(user, obj))
     return permissions
 
 
 def _user_has_perm(user, perm, obj):
     for backend in auth.get_backends():
-        if hasattr(backend, "has_perm"):
+        if hasattr(backend, 'has_perm'):
             if backend.has_perm(user, perm, obj):
                 return True
     return False
@@ -29,7 +29,7 @@ def _user_has_perm(user, perm, obj):
 
 def _user_has_module_perms(user, app_label):
     for backend in auth.get_backends():
-        if hasattr(backend, "has_module_perms"):
+        if hasattr(backend, 'has_module_perms'):
             if backend.has_module_perms(user, app_label):
                 return True
     return False
@@ -73,16 +73,16 @@ class PermissionsMixin(models.Model):
         verbose_name=_('groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of their groups.'),
-        related_name="user_set",
-        related_query_name="user"
+        related_name='users',
+        related_query_name='user'
     )
     user_permissions = models.ManyToManyField(
         Permission,
         verbose_name=_('user permissions'),
         blank=True,
         help_text=_('Specific permissions for this user.'),
-        related_name="user_set",
-        related_query_name="user"
+        related_name='users',
+        related_query_name='user'
     )
 
     class Meta:
@@ -96,7 +96,7 @@ class PermissionsMixin(models.Model):
         """
         permissions = set()
         for backend in auth.get_backends():
-            if hasattr(backend, "get_group_permissions"):
+            if hasattr(backend, 'get_group_permissions'):
                 permissions.update(backend.get_group_permissions(self, obj))
         return permissions
 
@@ -140,7 +140,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_('Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.'),
         validators=[username_validator],
         error_messages={
-            'unique': _("A user with that username already exists."),
+            'unique': _('A user with that username already exists.'),
         }
     )
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
@@ -171,6 +171,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name).strip()
 
+    def get_short_name(self):
+        return self.first_name
+
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
@@ -193,16 +196,19 @@ class Membership(BasisModel):
 
     user = models.ForeignKey(User, verbose_name=_('user'))
     group = models.ForeignKey(AbakusGroup, verbose_name=_('group'))
-    title = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
+    role = models.CharField(_('role'), max_length=30, blank=True, default=_('Member'))
 
-    start_date = models.DateField(_('start date'))
-    end_date = models.DateField(_('end date'), blank=True)
+    start_date = models.DateField(_('start date'), auto_now=True, blank=True)
+    end_date = models.DateField(_('end date'), null=True, blank=True)
 
     permission_status = models.PositiveSmallIntegerField(
         _('permission status'),
         choices=PERMISSION_TYPES,
         default=MEMBER
     )
+
+    class Meta:
+        unique_together = ('user', 'group')
 
     def __str__(self):
         return self.role

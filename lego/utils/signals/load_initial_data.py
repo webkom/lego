@@ -28,6 +28,10 @@ def load_fixture_callback(sender, **kwargs):
     load_from_fixture('users/fixtures/initial_users.yaml', User)
     load_from_fixture('app/oauth/fixtures/initial_applications.yaml', APIApplication)
 
+    if settings.DEVELOPMENT:
+        load_from_fixture('users/fixtures/development_users.yaml', User)
+        load_from_fixture('app/oauth/fixtures/development_applications.yaml', APIApplication)
+
 
 def attach_signals():
     if not settings.TESTING:

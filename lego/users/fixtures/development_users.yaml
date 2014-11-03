@@ -1,25 +1,17 @@
 - model: users.User
-  pk: 1
+  pk: 2
   fields:
     username: test1
+    password: pbkdf2_sha256$12000$BwZLLK4uY2QT$sGobGSPIS/lcHGDOV0agcHVHxzzm9mkBtM+2bCLEA7w= # test1
     first_name: test
     last_name: user1
     email: test1@user.com
 
 - model: users.User
-  pk: 2
+  pk: 3
   fields:
     username: test2
+    password: pbkdf2_sha256$12000$pY1QWLbBakIA$xsNjE4caw2HB9YJtey88K2ab2yHNlpl/lOkmBIiPi4M= # test2
     first_name: test
     last_name: user2
     email: test2@user.com
-
-- model: users.User
-  pk: 3
-  fields:
-    username: test_super
-    first_name: super
-    last_name: user
-    email: super@user.com
-    is_staff: True
-    is_superuser: True
