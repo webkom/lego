@@ -9,7 +9,7 @@ from lego.users.models import User
 from lego.users.serializers import UserSerializer, PublicUserSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, DjangoModelPermissions)
