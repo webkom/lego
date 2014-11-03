@@ -6,6 +6,21 @@ from lego.users.models import User
 from lego.users.views.users import UsersViewSet
 
 
+test_user_data = {
+    'username': 'new_testuser',
+    'first_name': 'new',
+    'last_name': 'test_user',
+    'email': 'new@testuser.com',
+}
+
+
+def get_test_user():
+    user = User(**test_user_data)
+    user.save()
+
+    return user
+
+
 class ListUsersAPITestCase(APITestCase):
     fixtures = ['test_users.yaml']
 
@@ -83,17 +98,10 @@ class CreateUsersAPITestCase(APITestCase):
     super_user = User.objects.filter(is_superuser=True)[0]
     normal_user = User.objects.filter(is_superuser=False)[0]
 
-    test_user_json = {
-        'username': 'new_testuser',
-        'first_name': 'new',
-        'last_name': 'test_user',
-        'email': 'new@testuser.com',
-    }
-
     def setUp(self):
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'post': 'create'})
-        self.request = self.factory.post('/api/users', self.test_user_json)
+        self.request = self.factory.post('/api/users', test_user_data)
 
     def test_create_with_normal_user(self):
         force_authenticate(self.request, user=self.normal_user)
@@ -106,14 +114,13 @@ class CreateUsersAPITestCase(APITestCase):
         response = self.view(self.request)
 
         self.assertEqual(response.status_code, 201)
-        created_user = User.objects.get(username=self.test_user_json['username'])
+        created_user = User.objects.get(username=test_user_data['username'])
 
-        for key, value in self.test_user_json.items():
+        for key, value in test_user_data.items():
             self.assertEqual(getattr(created_user, key), value)
 
     def test_create_existing_username(self):
-        existing_user = User(**self.test_user_json)
-        existing_user.save()
+        existing_user = get_test_user()
 
         force_authenticate(self.request, user=self.super_user)
         response = self.view(self.request)
@@ -136,7 +143,7 @@ class UpdateUsersAPITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'put': 'update'})
-        self.test_user = User.objects.get(pk=1)
+        self.test_user = get_test_user()
         self.request = self.factory.put('/api/users/',
                                         self.modified_user)
 
@@ -174,7 +181,7 @@ class DeleteUsersAPITestCase(APITestCase):
     super_user = User.objects.filter(is_superuser=True)[0]
     normal_user = User.objects.filter(is_superuser=False)[0]
 
-    test_user_json = {
+    test_user_data = {
         'username': 'new_testuser',
         'first_name': 'new',
         'last_name': 'test_user',
@@ -184,7 +191,7 @@ class DeleteUsersAPITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'delete': 'destroy'})
-        self.test_user = User.objects.get(pk=1)
+        self.test_user = get_test_user()
         self.request = self.factory.delete('/api/users/{0}/'.format(self.test_user.pk))
 
     def test_delete_with_normal_user(self):
