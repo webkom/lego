@@ -13,3 +13,13 @@
     first_name: test
     last_name: user2
     email: test2@user.com
+
+- model: users.User
+  pk: 3
+  fields:
+    username: test_super
+    first_name: super
+    last_name: user
+    email: super@user.com
+    is_staff: True
+    is_superuser: True
