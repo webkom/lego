@@ -23,7 +23,7 @@ class MailMapping(models.Model):
     def save(self, *args, **kwargs):
         try:
             validate_email('%s@abakus.no' % self.address)
-        except ValidationError as ex:
+        except ValidationError:
             raise ValidationError('Invalid local part.')
         super(MailMapping, self).save(*args, **kwargs)
 
@@ -116,8 +116,8 @@ class GenericMapping(models.Model, MappingResult):
 
 
 class OneTimeMapping(MailMapping, MappingResult):
-    token = models.CharField(max_length=36, verbose_name=_('Token'), default=str(uuid.uuid4())
-                             , unique=True)
+    token = models.CharField(max_length=36, verbose_name=_('Token'), default=str(uuid.uuid4()),
+                             unique=True)
     from_address = models.EmailField(verbose_name=_('From Address'))
     timeout = models.DateTimeField(verbose_name=_('Timeout'),
                                    default=datetime.now() + timedelta(minutes=15))

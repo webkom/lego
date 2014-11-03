@@ -2,8 +2,7 @@
 from datetime import date
 from django.test import TestCase
 from django.core.validators import ValidationError
-from lego.app.mail.models import UserMapping, GroupMapping, RawMapping, \
-    GenericMapping, OneTimeMapping
+from lego.app.mail.models import UserMapping, GroupMapping, RawMapping
 from lego.users.models import User, AbakusGroup as Group, Membership
 
 
