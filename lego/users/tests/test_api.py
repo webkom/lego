@@ -58,6 +58,7 @@ class GetUsersAPITestCase(APITestCase):
         self.all_users = User.objects.all()
         self.super_user = self.all_users.filter(is_superuser=True).first()
         self.normal_user = self.all_users.filter(is_superuser=False).first()
+        self.test_user = get_test_user()
 
         self.factory = APIRequestFactory()
         self.request = self.factory.get('/api/users/')
@@ -69,7 +70,7 @@ class GetUsersAPITestCase(APITestCase):
 
     def test_with_normal_user(self):
         force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request, pk=1)
+        response = self.view(self.request, pk=self.test_user.pk)
         user = response.data
         keys = set(user.keys())
 
@@ -87,7 +88,7 @@ class GetUsersAPITestCase(APITestCase):
 
     def test_with_super_user(self):
         force_authenticate(self.request, user=self.super_user)
-        response = self.view(self.request, pk=1)
+        response = self.view(self.request, pk=self.test_user.pk)
         user = response.data
         keys = set(user.keys())
 
@@ -153,7 +154,7 @@ class UpdateUsersAPITestCase(APITestCase):
         self.request = self.factory.put('/api/users/',
                                         self.modified_user)
 
-    def test_update_self_with_normal_user(self):
+    def test_update_self(self):
         force_authenticate(self.request, user=self.normal_user)
         response = self.view(self.request, pk=self.normal_user.pk)
         user = User.objects.get(pk=self.normal_user.pk)
