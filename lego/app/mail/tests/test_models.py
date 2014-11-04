@@ -3,6 +3,7 @@ from datetime import date
 from django.test import TestCase
 from django.core.validators import ValidationError
 from lego.app.mail.models import UserMapping, GroupMapping, RawMapping
+from lego.app.mail.mixins import GenericMappingMixin
 from lego.users.models import User, AbakusGroup as Group, Membership
 
 
@@ -71,5 +72,19 @@ class RawMappingTestCase(TestCase):
             self.assertIn(recipient, ['test1@abakus.no', 'test2@abakus.no'])
 
 
-class GenericMailMapping(TestCase):
+class GenericMappingTestObject(GenericMappingMixin):
+    def get_mail_recipients(self):
+        return ['test1@abakus.no', 'test1@abakus.no', 'test2@abakus.no']
+
+
+class GenericMappingTestObjectNoRecipients(GenericMappingMixin):
     pass
+
+
+class GenericMailMapping(TestCase):
+    def test_generic_mapping(self):
+        link_object = GenericMappingTestObject()
+        mapping = link_object.get_generic_mapping()
+        self.assertEquals(len(mapping.get_recipients()), 2)
+        for recipient in mapping.get_recipients():
+            self.assertIn(recipient, ['test1@abakus.no', 'test2@abakus.no'])

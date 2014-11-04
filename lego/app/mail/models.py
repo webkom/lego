@@ -129,7 +129,8 @@ class OneTimeMapping(MailMapping, MappingResult):
     def delete(self, delete_generic_mappings=True, *args, **kwargs):
         if delete_generic_mappings:
             for generic_mapping in self.generic_mappings.all():
-                generic_mapping.delete()
+                if generic_mapping.one_time_mappings.count() == 1:
+                    generic_mapping.delete()
         super(OneTimeMapping, self).delete(*args, **kwargs)
 
     def get_recipients(self):

@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from django.contrib.contenttypes.models import ContentType
 
 
 class MappingResult(object):
@@ -15,5 +16,8 @@ class GenericMappingMixin(object):
 
     def get_generic_mapping(self):
         from.models import GenericMapping
-        obj, created = GenericMapping.objects.get_or_create(content_object=self)
+        obj, created = GenericMapping.objects.get_or_create(
+            content_id=self.id,
+            content_type=ContentType.objects.get_for_model(self)
+        )
         return obj
