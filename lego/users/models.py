@@ -40,10 +40,10 @@ class PermissionsMixin(models.Model):
         help_text=_('Designates that this user has all permissions without '
                     'explicitly assigning them.')
     )
-    groups = models.ManyToManyField(
+    abakus_groups = models.ManyToManyField(
         'abakusgroups.AbakusGroup',
         through='abakusgroups.Membership',
-        through_fields=('user', 'abakusgroup'),
+        through_fields=('user', 'abakus_group'),
         verbose_name=_('abakus groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of their groups.'),

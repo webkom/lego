@@ -15,7 +15,7 @@ class AbakusGroup(BasisModel):
     permission_groups = models.ManyToManyField(
         Group,
         verbose_name=_('permission groups'), blank=True,
-        related_name='abakusgroups', related_query_name='abakusgroups'
+        related_name='abakus_groups', related_query_name='abakus_groups'
     )
 
     class Meta:
@@ -49,7 +49,7 @@ class Membership(BasisModel):
     )
 
     user = models.ForeignKey('users.User', verbose_name=_('user'))
-    abakusgroup = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
+    abakus_group = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
     role = models.CharField(_('role'), max_length=2, choices=ROLES, default=MEMBER)
     is_active = models.BooleanField(_('is active'), default=True)
 
@@ -57,7 +57,7 @@ class Membership(BasisModel):
     end_date = models.DateField(_('end date'), null=True, blank=True)
 
     class Meta:
-        unique_together = ('user', 'abakusgroup')
+        unique_together = ('user', 'abakus_group')
 
     def __str__(self):
         return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.group)
