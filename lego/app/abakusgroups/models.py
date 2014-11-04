@@ -5,7 +5,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from basis.models import BasisModel
-from lego.users.models import User
 
 
 class AbakusGroup(BasisModel):
@@ -49,8 +48,8 @@ class Membership(BasisModel):
         (TREASURER, _('Treasurer'))
     )
 
-    user = models.ForeignKey(User, verbose_name=_('user'))
-    abakus_group = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
+    user = models.ForeignKey('users.User', verbose_name=_('user'))
+    abakusgroup = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
     role = models.CharField(_('role'), max_length=2, choices=ROLES, default=MEMBER)
     is_active = models.BooleanField(_('is active'), default=True)
 
@@ -58,7 +57,7 @@ class Membership(BasisModel):
     end_date = models.DateField(_('end date'), null=True, blank=True)
 
     class Meta:
-        unique_together = ('user', 'group')
+        unique_together = ('user', 'abakusgroup')
 
     def __str__(self):
         return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.group)

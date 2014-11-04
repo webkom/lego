@@ -6,7 +6,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from lego.app.abakusgroups.models import AbakusGroup
 from .validators import username_validator
 
 
@@ -42,8 +41,8 @@ class PermissionsMixin(models.Model):
                     'explicitly assigning them.')
     )
     groups = models.ManyToManyField(
-        AbakusGroup,
-        through='Membership',
+        'abakusgroups.AbakusGroup',
+        through='abakusgroups.Membership',
         through_fields=('user', 'abakusgroup'),
         verbose_name=_('abakus groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
