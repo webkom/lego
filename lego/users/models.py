@@ -1,14 +1,12 @@
 # -*- coding: utf8 -*-
-from basis.models import BasisModel
 from django.contrib import auth
-from django.contrib.auth.models import GroupManager, AbstractBaseUser, UserManager, Permission
+from django.contrib.auth.models import AbstractBaseUser, UserManager
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
-from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from lego.app.abakusgroups.models import AbakusGroup, Membership
+from lego.app.abakusgroups.models import AbakusGroup
 from .validators import username_validator
 
 
