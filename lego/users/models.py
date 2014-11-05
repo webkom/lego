@@ -30,6 +30,10 @@ class AbakusGroup(BasisModel):
             return self.parent.name == 'Abakom'
         return False
 
+    def add_user(self, user, **kwargs):
+        membership = Membership(user=user, abakus_group=self, **kwargs)
+        membership.save()
+
     def __str__(self):
         return self.name
 
@@ -200,4 +204,4 @@ class Membership(BasisModel):
         unique_together = ('user', 'abakus_group')
 
     def __str__(self):
-        return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.group)
+        return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.abakus_group)
