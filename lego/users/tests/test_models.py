@@ -3,8 +3,8 @@ from django.test import TestCase
 from lego.users.models import AbakusGroup, User, Membership
 
 
-class GroupTestCase(TestCase):
-    fixtures = ['initial_groups.yaml']
+class AbakusGroupTestCase(TestCase):
+    fixtures = ['initial_abakus_groups.yaml']
 
     def setUp(self):
         self.non_committee = AbakusGroup(name='testgroup')
