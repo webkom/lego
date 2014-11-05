@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-from lego.users.models import User
+from lego.users.models import User, AbakusGroup
 
 
 class Article(BasisModel):
@@ -13,7 +13,9 @@ class Article(BasisModel):
     ingress = models.TextField(_('ingress'))
     text = models.TextField(_('article text'), blank=True)
 
-    can_edit = models.ManyToManyField(User, related_name='editable_articles')
+    users_can_edit = models.ManyToManyField(User, related_name='editable_articles')
+    groups_can_edit = models.ManyToManyField(AbakusGroup, related_name='editable_articles')
+    can_view = models.ManyToManyField(AbakusGroup, related_name='viewable_articles')
 
     def __str__(self):
         return self.title
