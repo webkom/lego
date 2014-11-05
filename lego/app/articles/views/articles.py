@@ -1,8 +1,24 @@
 from rest_framework import viewsets
+from rest_framework.response import  Response
 
 from lego.app.articles.models import Article
 from lego.app.articles.serializers import ArticleSerializer
 
 class ArticlesViewSet(viewsets.ModelViewSet):
-    queryset = Article.get.all()
+    queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+
+    def list(self, request, *args, **kwargs):
+        def can_view(article):
+            intersect = request.user.groups & article.can_view
+            return  len(intersect) != 0
+        articles = self.queryset.filter(can_view)
+
+        serializer = ArticleSerializer(articles, many=True)
+        return Response(serializer)
+
+    def retrieve(self, request, *args, **kwargs):
+        pass
+
+    def update(self, request, *args, **kwargs):
+        pass
