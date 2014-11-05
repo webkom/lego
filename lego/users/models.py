@@ -1,12 +1,40 @@
 # -*- coding: utf8 -*-
+from basis.models import BasisModel
 from django.contrib import auth
-from django.contrib.auth.models import AbstractBaseUser, UserManager
+from django.contrib.auth.models import AbstractBaseUser, UserManager, Group
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from .validators import username_validator
+
+
+class AbakusGroup(BasisModel):
+    name = models.CharField(_('name'), max_length=80, unique=True)
+    description = models.CharField(_('description'), blank=True, max_length=200)
+    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
+
+    permission_groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('permission groups'), blank=True,
+        related_name='abakus_groups', related_query_name='abakus_groups'
+    )
+
+    class Meta:
+        verbose_name = _('abakus group')
+        verbose_name_plural = _('abakus groups')
+
+    def is_committee(self):
+        if self.parent:
+            return self.parent.name == 'Abakom'
+        return False
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        return self.name,
 
 
 def _user_get_all_permissions(user, obj):
@@ -41,8 +69,8 @@ class PermissionsMixin(models.Model):
                     'explicitly assigning them.')
     )
     abakus_groups = models.ManyToManyField(
-        'abakusgroups.AbakusGroup',
-        through='abakusgroups.Membership',
+        AbakusGroup,
+        through='users.Membership',
         through_fields=('user', 'abakus_group'),
         verbose_name=_('abakus groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
@@ -147,3 +175,29 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username,
 
 
+class Membership(BasisModel):
+    MEMBER = 'M'
+    LEADER = 'L'
+    CO_LEADER = 'CL'
+    TREASURER = 'T'
+
+    ROLES = (
+        (MEMBER, _('Member')),
+        (LEADER, _('Leader')),
+        (CO_LEADER, _('Co-Leader')),
+        (TREASURER, _('Treasurer'))
+    )
+
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    abakus_group = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
+    role = models.CharField(_('role'), max_length=2, choices=ROLES, default=MEMBER)
+    is_active = models.BooleanField(_('is active'), default=True)
+
+    start_date = models.DateField(_('start date'), auto_now_add=True, blank=True)
+    end_date = models.DateField(_('end date'), null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'abakus_group')
+
+    def __str__(self):
+        return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.group)

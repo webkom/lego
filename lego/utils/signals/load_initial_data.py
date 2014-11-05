@@ -5,9 +5,8 @@ from django.core import serializers
 from django.conf import settings
 from django.db.models.signals import post_migrate
 
-from lego.users.models import User
+from lego.users.models import User, AbakusGroup
 from lego.app.oauth.models import APIApplication
-from lego.app.abakusgroups.models import AbakusGroup
 
 
 def create_if_missing(obj, model):

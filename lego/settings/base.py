@@ -27,7 +27,6 @@ INSTALLED_APPS = (
     'lego.users',
 
     'lego.app.oauth',
-    'lego.app.abakusgroups',
 )
 
 AUTHENTICATION_BACKENDS = (
