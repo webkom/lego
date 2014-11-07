@@ -7,10 +7,13 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from lego.users.managers import AbakusGroupManager
 from .validators import username_validator
 
 
 class AbakusGroup(PersistentModel):
+    objects = AbakusGroupManager()
+
     name = models.CharField(_('name'), max_length=80, unique=True)
     description = models.CharField(_('description'), blank=True, max_length=200)
     parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
@@ -23,6 +26,7 @@ class AbakusGroup(PersistentModel):
     )
 
     class Meta:
+        unique_together = 'name',
         verbose_name = _('abakus group')
         verbose_name_plural = _('abakus groups')
 
@@ -40,7 +44,7 @@ class AbakusGroup(PersistentModel):
         return self.name
 
     def natural_key(self):
-        return self.name,
+        return self.name.lower(),
 
 
 def _user_get_all_permissions(user, obj):
@@ -167,6 +171,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+        permissions = ('retrieve_user', 'Can retrieve user'), ('list_user', 'Can list users')
 
     def get_full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name).strip()
