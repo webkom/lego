@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from basis.models import BasisModel
+from basis.models import BasisModel, PersistentModel
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser, UserManager, Group
 from django.core.mail import send_mail
@@ -10,21 +10,23 @@ from django.utils.translation import ugettext_lazy as _
 from .validators import username_validator
 
 
-class AbakusGroup(BasisModel):
+class AbakusGroup(PersistentModel):
     name = models.CharField(_('name'), max_length=80, unique=True)
     description = models.CharField(_('description'), blank=True, max_length=200)
     parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
 
     permission_groups = models.ManyToManyField(
         Group,
-        verbose_name=_('permission groups'), blank=True,
-        related_name='abakus_groups', related_query_name='abakus_groups'
+        verbose_name=_('permission groups'),
+        related_name='abakus_groups',
+        blank=True
     )
 
     class Meta:
         verbose_name = _('abakus group')
         verbose_name_plural = _('abakus groups')
 
+    @property
     def is_committee(self):
         if self.parent:
             return self.parent.name == 'Abakom'
@@ -74,7 +76,7 @@ class PermissionsMixin(models.Model):
     )
     abakus_groups = models.ManyToManyField(
         AbakusGroup,
-        through='users.Membership',
+        through='Membership',
         through_fields=('user', 'abakus_group'),
         verbose_name=_('abakus groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
@@ -194,6 +196,7 @@ class Membership(BasisModel):
 
     user = models.ForeignKey(User, verbose_name=_('user'))
     abakus_group = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
+
     role = models.CharField(_('role'), max_length=2, choices=ROLES, default=MEMBER)
     is_active = models.BooleanField(_('is active'), default=True)
 

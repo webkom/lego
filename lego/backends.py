@@ -1,7 +1,6 @@
 # -*- coding: utf8 -*-
-from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 
 
 class AbakusModelBackend(ModelBackend):
@@ -16,9 +15,16 @@ class AbakusModelBackend(ModelBackend):
             if user_obj.is_superuser:
                 perms = Permission.objects.all()
             else:
-                user_groups_field = get_user_model()._meta.get_field('groups')
-                user_groups_query = 'abakusgroup__%s' % user_groups_field.related_query_name()
-                perms = Permission.objects.filter(**{user_groups_query: user_obj})
+                abakus_groups = user_obj.abakus_groups.all()
+                permission_groups = Group.objects.filter(abakus_groups=abakus_groups)
+                perms = Permission.objects.filter(group=permission_groups)
+
             perms = perms.values_list('content_type__app_label', 'codename').order_by()
             user_obj._group_perm_cache = set("%s.%s" % (ct, name) for ct, name in perms)
+
         return user_obj._group_perm_cache
+
+    def get_all_permissions(self, user_obj, obj=None):
+        if user_obj.is_anonymous() or obj is not None:
+            return set()
+        return self.get_group_permissions(user_obj, obj)
