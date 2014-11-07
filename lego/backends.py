@@ -16,8 +16,8 @@ class AbakusModelBackend(ModelBackend):
                 perms = Permission.objects.all()
             else:
                 abakus_groups = user_obj.abakus_groups.all()
-                permission_groups = Group.objects.filter(abakus_groups=abakus_groups)
-                perms = Permission.objects.filter(group=permission_groups)
+                permission_groups = Group.objects.filter(abakus_groups=abakus_groups).distinct()
+                perms = Permission.objects.filter(group=permission_groups).distinct()
 
             perms = perms.values_list('content_type__app_label', 'codename').order_by()
             user_obj._group_perm_cache = set("%s.%s" % (ct, name) for ct, name in perms)
