@@ -1,0 +1,5 @@
+- model: users.AbakusGroup
+  fields:
+    name: UserAdminTest
+    permission_groups:
+      - 1
