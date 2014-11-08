@@ -3,9 +3,10 @@ import os
 
 from django.core import serializers
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.db.models.signals import post_migrate
 
-from lego.users.models import AbakusGroup, User
+from lego.users.models import User, AbakusGroup
 from lego.app.oauth.models import APIApplication
 
 
@@ -23,7 +24,8 @@ def load_from_fixture(fixture_path, model):
 
 
 def load_fixture_callback(sender, **kwargs):
-    load_from_fixture('users/fixtures/initial_groups.yaml', AbakusGroup)
+    load_from_fixture('users/fixtures/initial_permission_groups.yaml', Group)
+    load_from_fixture('users/fixtures/initial_abakus_groups.yaml', AbakusGroup)
     load_from_fixture('users/fixtures/initial_users.yaml', User)
     load_from_fixture('app/oauth/fixtures/initial_applications.yaml', APIApplication)
 

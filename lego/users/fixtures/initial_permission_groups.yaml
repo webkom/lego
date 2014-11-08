@@ -1,0 +1,25 @@
+- model: auth.Group
+  pk: 1
+  fields:
+    name: UserAdmin
+    permissions:
+      -
+        - delete_user
+        - users
+        - user
+      -
+        - add_user
+        - users
+        - user
+      -
+        - change_user
+        - users
+        - user
+      -
+        - retrieve_user
+        - users
+        - user
+      -
+        - list_user
+        - users
+        - user

@@ -3,8 +3,8 @@ from django.test import TestCase
 from lego.users.models import AbakusGroup, User, Membership
 
 
-class GroupTestCase(TestCase):
-    fixtures = ['initial_groups.yaml']
+class AbakusGroupTestCase(TestCase):
+    fixtures = ['initial_abakus_groups.yaml']
 
     def setUp(self):
         self.non_committee = AbakusGroup(name='testgroup')
@@ -31,14 +31,14 @@ class UserTestCase(TestCase):
 
 
 class MembershipTestCase(TestCase):
-    fixtures = ['initial_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.test_committee = AbakusGroup.objects.get(name='Webkom')
         self.test_user = User.objects.get(pk=1)
         self.test_membership = Membership(
             user=self.test_user,
-            group=self.test_committee,
+            abakus_group=self.test_committee,
             role=Membership.TREASURER
         )
         self.test_membership.save()
@@ -49,6 +49,6 @@ class MembershipTestCase(TestCase):
             '{0} is {1} in {2}'.format(
                 self.test_membership.user,
                 self.test_membership.get_role_display(),
-                self.test_membership.group
+                self.test_membership.abakus_group
             )
         )
