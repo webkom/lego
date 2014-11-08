@@ -9,3 +9,15 @@
   fields:
     address: testuser1mapping2
     user: 1
+
+- model: mail.UserMapping
+  pk: 3
+  fields:
+    address: testuser2mapping3
+    user: 2
+
+- model: mail.UserMapping
+  pk: 4
+  fields:
+    address: testuser3mapping4
+    user: 3

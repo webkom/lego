@@ -1,7 +1,9 @@
 # -*- coding: utf8 -*-
 import uuid
-from datetime import datetime, timedelta
+from datetime import timedelta
 import collections
+
+from basis.models import TimeStampModel
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -9,12 +11,13 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import validate_email, ValidationError
+from django.utils import timezone
 
 from lego.users.models import User, AbakusGroup as Group
 from .mixins import MappingResult
 
 
-class MailMapping(models.Model):
+class MailMapping(TimeStampModel):
     address = models.CharField(max_length=100, verbose_name=_('Addess'), unique=True)
 
     class Meta:
@@ -25,6 +28,9 @@ class MailMapping(models.Model):
             validate_email('%s@abakus.no' % self.address)
         except ValidationError:
             raise ValidationError('Invalid local part.')
+
+        self.address = self.address.lower()
+
         super(MailMapping, self).save(*args, **kwargs)
 
 
@@ -60,39 +66,6 @@ class GroupMapping(MailMapping, MappingResult):
         return set(recipients_list)
 
 
-class RawMapping(MailMapping, MappingResult):
-
-    def __str__(self):
-        return _('%s@%s -> %s raw mappings') % (self.address, settings.MAIL_MASTER_DOMAIN,
-                                                self.recipients.count())
-
-    def delete(self, *args, **kwargs):
-        for element in self.recipients.all():
-            element.delete()
-
-        super(RawMapping, self).delete(*args, **kwargs)
-
-    def get_recipients(self):
-        recipients_list = []
-
-        def get_mail(recipient):
-            if recipient.email:
-                return recipient.email
-
-        recipients_list += map(get_mail, self.recipients.all())
-
-        return set(recipients_list)
-
-
-class RawMappingElement(models.Model):
-    email = models.EmailField(verbose_name=_('Raw email'))
-    raw_mapping = models.ForeignKey(RawMapping, verbose_name=_('Raw Mail Mapping'),
-                                    related_name='recipients')
-
-    def __str__(self):
-        return '%s@%s -> %s' % (self.raw_mapping.address, settings.MAIL_MASTER_DOMAIN, self.email)
-
-
 class GenericMapping(models.Model, MappingResult):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -115,23 +88,16 @@ class GenericMapping(models.Model, MappingResult):
         return []
 
 
-class OneTimeMapping(MailMapping, MappingResult):
+class OneTimeMapping(TimeStampModel, MappingResult):
     token = models.CharField(max_length=36, verbose_name=_('Token'), default=str(uuid.uuid4()),
                              unique=True)
     from_address = models.EmailField(verbose_name=_('From Address'))
     timeout = models.DateTimeField(verbose_name=_('Timeout'),
-                                   default=datetime.now() + timedelta(minutes=15))
+                                   default=timezone.now() + timedelta(minutes=15))
     group_mappings = models.ManyToManyField(GroupMapping, verbose_name=_('Groups'),
                                             related_name='one_time_mappings')
     generic_mappings = models.ManyToManyField(GenericMapping, verbose_name=_('Generic Mappings'),
                                               related_name='one_time_mappings')
-
-    def delete(self, delete_generic_mappings=True, *args, **kwargs):
-        if delete_generic_mappings:
-            for generic_mapping in self.generic_mappings.all():
-                if generic_mapping.one_time_mappings.count() == 1:
-                    generic_mapping.delete()
-        super(OneTimeMapping, self).delete(*args, **kwargs)
 
     def get_recipients(self):
         recipients = []
@@ -143,12 +109,13 @@ class OneTimeMapping(MailMapping, MappingResult):
             return recipients
 
         recipients += get_gueryset_mappings(self.group_mappings.all())
-        recipients += get_gueryset_mappings(self.group_mappings.all())
+        recipients += get_gueryset_mappings(self.generic_mappings.all())
 
         return set(recipients)
 
     def add_generic_mapping(self, object):
         self.generic_mappings.add(object.get_generic_mapping())
 
-    def add_group_mapping(self, group_mapping):
-        self.group_mappings.add(group_mapping)
+    @property
+    def is_valid(self):
+        return self.timeout > timezone.now()

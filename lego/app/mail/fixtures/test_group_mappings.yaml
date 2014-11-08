@@ -1,6 +1,13 @@
 - model: mail.GroupMapping
   pk: 1
   fields:
+    address: readme
+    group: 8
+    additional_users: [3, ]
+
+- model: mail.GroupMapping
+  pk: 2
+  fields:
     address: webkom
     group: 9
     additional_users: [1, 2]

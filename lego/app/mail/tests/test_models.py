@@ -1,10 +1,11 @@
 # -*- coding: utf8 -*-
-from datetime import date
 from django.test import TestCase
 from django.core.validators import ValidationError
-from lego.app.mail.models import UserMapping, GroupMapping, RawMapping
-from lego.app.mail.mixins import GenericMappingMixin
-from lego.users.models import User, AbakusGroup as Group, Membership
+from django.utils import timezone
+
+from lego.app.mail.models import UserMapping, GroupMapping, OneTimeMapping
+from lego.users.models import User
+from lego.users.models import AbakusGroup
 
 
 class AddressTestCase(TestCase):
@@ -14,6 +15,13 @@ class AddressTestCase(TestCase):
         user = User.objects.get(pk=1)
         mapping = UserMapping(address='!#$%*/?^`{|}~€', user=user)
         self.assertRaises(ValidationError, mapping.save)
+
+    def test_lower_local_part(self):
+        user = User.objects.get(pk=1)
+        mapping = UserMapping(address='WebKom', user=user)
+        mapping.save()
+        self.assertEqual(mapping.address, 'webkom')
+        self.assertNotEquals(mapping.address, 'WebKom')
 
 
 class UserMappingTestCase(TestCase):
@@ -38,53 +46,51 @@ class UserMappingTestCase(TestCase):
 class GroupMappingTestCase(TestCase):
     fixtures = ['test_users.yaml', 'initial_groups.yaml', 'test_group_mappings.yaml']
 
-    def setUp(self):
-        group = Group.objects.get(pk=9)
-        user = User.objects.get(pk=1)
-        membership = Membership(user=user, group=group, start_date=date.today())
-        membership.save()
-
     def test_group_mapping(self):
-        mapping = GroupMapping.objects.get(pk=1)
-        group = Group.objects.get(pk=9)
-        self.assertEquals(mapping.group, group)
+        group_mapping = GroupMapping.objects.get(address='webkom')
+        recipients = group_mapping.get_recipients()
+        for recipient in recipients:
+            self.assertIn(recipient, ['test1@user.com', 'test2@user.com'])
+            self.assertNotEqual(recipient, 'super@user.com')
 
-        get_mapping = GroupMapping.objects.get(address='webkom')
-        self.assertEquals(mapping, get_mapping)
+    def test_additional_user(self):
+        group_mapping = GroupMapping.objects.get(address='webkom')
+        user_to_add = User.objects.get(pk=3)
+        group_mapping.additional_users.add(user_to_add)
+        group_mapping.save()
+        for recipient in group_mapping.get_recipients():
+            self.assertIn(recipient, ['test1@user.com', 'test2@user.com', 'super@user.com'])
 
-        self.assertEquals(len(mapping.get_recipients()), 2)
 
-        for recipient in mapping.get_recipients():
-            self.assertIn(recipient, [User.objects.get(pk=1).email, User.objects.get(pk=2).email])
+class OneTimeMappingTestCase(TestCase):
+    fixtures = ['test_users.yaml', 'initial_groups.yaml']
 
-
-class RawMappingTestCase(TestCase):
-    fixtures = ['test_raw_mappings.yaml']
+    # TODO: Test generic model malling, needs a model that implements the GenericMappingMixin mixin
 
     def setUp(self):
-        pass
+        one_time_mapping = OneTimeMapping.objects.create(from_address='otm@site.com')
+        one_time_mapping.save()
 
-    def test_taw_mapping(self):
-        raw_mapping = RawMapping.objects.get(pk=1)
-        recipients = raw_mapping.get_recipients()
-        self.assertEquals(len(recipients), 2)
+    def test_one_time_mapping_creation(self):
+        one_time_mapping = OneTimeMapping.objects.get(from_address='otm@site.com')
+        self.assertEqual(one_time_mapping.from_address, 'otm@site.com')
+        self.assertEqual(len(one_time_mapping.token), 36)
+
+        self.assertEqual(one_time_mapping.is_valid, True)
+
+        one_time_mapping.timeout = timezone.now()
+        one_time_mapping.save()
+
+        self.assertEqual(one_time_mapping.is_valid, False)
+
+    def test_one_time_mapping_group(self):
+        one_time_mapping = OneTimeMapping.objects.get(from_address='otm@site.com')
+        group_to_add = AbakusGroup.objects.get(pk=1)
+        group_to_add.add_user(User.objects.get(pk=1))
+        group_to_add.save()
+        one_time_mapping.groups.add(group_to_add)
+        one_time_mapping.save()
+
+        recipients = one_time_mapping.get_recipents()
         for recipient in recipients:
-            self.assertIn(recipient, ['test1@abakus.no', 'test2@abakus.no'])
-
-
-class GenericMappingTestObject(GenericMappingMixin):
-    def get_mail_recipients(self):
-        return ['test1@abakus.no', 'test1@abakus.no', 'test2@abakus.no']
-
-
-class GenericMappingTestObjectNoRecipients(GenericMappingMixin):
-    pass
-
-
-class GenericMailMapping(TestCase):
-    def test_generic_mapping(self):
-        link_object = GenericMappingTestObject()
-        mapping = link_object.get_generic_mapping()
-        self.assertEquals(len(mapping.get_recipients()), 2)
-        for recipient in mapping.get_recipients():
-            self.assertIn(recipient, ['test1@abakus.no', 'test2@abakus.no'])
+            self.assertEqual(recipient, 'test1@user.com')
