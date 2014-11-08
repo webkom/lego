@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 from basis.models import BasisModel, PersistentModel
+
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser, UserManager, Group
 from django.core.mail import send_mail
