@@ -10,25 +10,21 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.core.validators import validate_email, ValidationError
 from django.utils import timezone
 
 from lego.users.models import User, AbakusGroup as Group
 from .mixins import MappingResult
+from .validators import validate_local_part
 
 
 class MailMapping(TimeStampModel):
-    address = models.CharField(max_length=100, verbose_name=_('Addess'), unique=True)
+    address = models.CharField(max_length=100, verbose_name=_('Address'), unique=True,
+                               validators=[validate_local_part, ])
 
     class Meta:
         abstract = True
 
     def save(self, *args, **kwargs):
-        try:
-            validate_email('%s@abakus.no' % self.address)
-        except ValidationError:
-            raise ValidationError('Invalid local part.')
-
         self.address = self.address.lower()
 
         super(MailMapping, self).save(*args, **kwargs)
