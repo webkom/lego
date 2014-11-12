@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'lego.users',
 
     'lego.app.oauth',
+    'lego.app.objectpermissions',
 )
 
 AUTHENTICATION_BACKENDS = (
