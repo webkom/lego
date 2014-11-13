@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import basis.models
 from django.conf import settings
-import datetime
 
 
 class Migration(migrations.Migration):
@@ -16,18 +16,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Page',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
-                ('deleted', models.BooleanField(default=False, editable=False)),
-                ('created_at', models.DateTimeField(default=datetime.datetime.now, auto_now_add=True)),
-                ('updated_at', models.DateTimeField(default=datetime.datetime.now, auto_now=True)),
-                ('title', models.CharField(verbose_name='title', max_length=200)),
-                ('slug', models.CharField(db_index=True, unique=True, verbose_name='slug', max_length=100)),
+                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
+                ('created_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('updated_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('deleted', models.BooleanField(editable=False, default=False)),
+                ('title', models.CharField(max_length=200, verbose_name='title')),
+                ('slug', models.CharField(verbose_name='slug', db_index=True, unique=True, max_length=100)),
                 ('content', models.TextField(verbose_name='content')),
                 ('toc', models.BooleanField(default=False, verbose_name='Needs table of contents')),
                 ('require_auth', models.BooleanField(default=False, verbose_name='Can only be viewed by authenticated users')),
                 ('require_abakom', models.BooleanField(default=False, verbose_name='Can only be viewed by abakom users')),
-                ('created_by', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='page_created', null=True, default=None, editable=False)),
-                ('updated_by', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='page_updated', null=True, default=None, editable=False)),
+                ('created_by', models.ForeignKey(editable=False, to=settings.AUTH_USER_MODEL, null=True, related_name='page_created', default=None)),
+                ('updated_by', models.ForeignKey(editable=False, to=settings.AUTH_USER_MODEL, null=True, related_name='page_updated', default=None)),
             ],
             options={
                 'verbose_name': 'flatpage',
