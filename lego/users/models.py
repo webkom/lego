@@ -1,10 +1,12 @@
 # -*- coding: utf8 -*-
 from basis.models import BasisModel, PersistentModel
+
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser, UserManager, Group
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from lego.users.managers import AbakusGroupManager
@@ -16,7 +18,8 @@ class AbakusGroup(PersistentModel):
 
     name = models.CharField(_('name'), max_length=80, unique=True)
     description = models.CharField(_('description'), blank=True, max_length=200)
-    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
+    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'),
+                               related_name='children')
 
     permission_groups = models.ManyToManyField(
         Group,
@@ -35,6 +38,32 @@ class AbakusGroup(PersistentModel):
         if self.parent:
             return self.parent.name == 'Abakom'
         return False
+
+    @property
+    def is_root_node(self):
+        return not self.parent
+
+    def get_ancestors(self, include_self=False):
+        abakus_groups = []
+
+        if include_self:
+            abakus_groups.append(self)
+
+        if self.parent:
+            abakus_groups.extend(self.parent.get_ancestors(True))
+
+        return abakus_groups
+
+    def get_descendants(self, include_self=False):
+        abakus_groups = []
+
+        if include_self:
+            abakus_groups.append(self)
+
+        for child in self.children.all():
+            abakus_groups.extend(child.get_descendants(True))
+
+        return abakus_groups
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
@@ -172,6 +201,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
         permissions = ('retrieve_user', 'Can retrieve user'), ('list_user', 'Can list users')
+
+    @cached_property
+    def all_groups(self):
+        own_groups = set()
+
+        for group in self.abakus_groups.all():
+            if group not in own_groups:
+                own_groups = own_groups.union(set(group.get_ancestors(True)))
+
+        return list(own_groups)
 
     def get_full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name).strip()

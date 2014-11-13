@@ -16,8 +16,59 @@ class AbakusGroupTestCase(TestCase):
         self.assertFalse(self.non_committee.is_committee)
 
 
+class AbakusGroupHierarchyTestCase(TestCase):
+    fixtures = ['initial_abakus_groups.yaml']
+
+    def setUp(self):
+        self.abakom = AbakusGroup.objects.get(name='Abakom')
+
+    def test_find_all_children(self):
+        committees = AbakusGroup.objects.filter(parent=self.abakom.pk)
+        children = self.abakom.children.all()
+        self.assertEqual(len(committees), len(children))
+
+    def test_abakom_is_root(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        self.assertTrue(abakus.is_root_node)
+
+    def test_get_ancestors(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        webkom = AbakusGroup.objects.get(name='Webkom')
+
+        ancestors = set(webkom.get_ancestors())
+
+        self.assertEqual(len(ancestors), 2)
+        self.assertTrue(abakus in ancestors)
+        self.assertTrue(self.abakom in ancestors)
+
+    def test_get_ancestors_include_self(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        webkom = AbakusGroup.objects.get(name='Webkom')
+
+        ancestors = set(webkom.get_ancestors(True))
+
+        self.assertEqual(len(ancestors), 3)
+        self.assertTrue(webkom in ancestors)
+        self.assertTrue(abakus in ancestors)
+        self.assertTrue(self.abakom in ancestors)
+
+    def test_get_descendants(self):
+        webkom = AbakusGroup.objects.get(name='Webkom')
+        first = AbakusGroup.objects.create(name='first', parent=webkom)
+        second = AbakusGroup.objects.create(name='second', parent=first)
+
+        descendants = webkom.get_descendants()
+        self.assertEqual(len(descendants), 2)
+        self.assertTrue(first in descendants)
+        self.assertTrue(second in descendants)
+
+    def test_get_descendants_include_self(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        self.assertEqual(set(AbakusGroup.objects.all()), set(abakus.get_descendants(True)))
+
+
 class UserTestCase(TestCase):
-    fixtures = ['test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -28,6 +79,19 @@ class UserTestCase(TestCase):
 
     def test_short_name(self):
         self.assertEqual(self.user.get_short_name(), self.user.first_name)
+
+    def test_all_groups(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        abakom = AbakusGroup.objects.get(name='Abakom')
+        webkom = AbakusGroup.objects.get(name='Webkom')
+
+        webkom.add_user(self.user)
+        abakus_groups = self.user.all_groups
+
+        self.assertEqual(len(abakus_groups), 3)
+        self.assertTrue(webkom in abakus_groups)
+        self.assertTrue(abakom in abakus_groups)
+        self.assertTrue(abakus in abakus_groups)
 
 
 class MembershipTestCase(TestCase):
