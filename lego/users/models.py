@@ -37,6 +37,13 @@ class AbakusGroup(PersistentModel):
             return self.parent.name == 'Abakom'
         return False
 
+    def is_root_node(self):
+        return bool(self.parent)
+
+    def get_children(self):
+        # TODO: Cache
+        return AbakusGroup.objects.filter(parent=self.pk)
+
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
         membership.save()
