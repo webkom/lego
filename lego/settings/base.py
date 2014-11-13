@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'lego.users',
 
     'lego.app.oauth',
+    'lego.app.flatpages',
 )
 
 AUTHENTICATION_BACKENDS = (
