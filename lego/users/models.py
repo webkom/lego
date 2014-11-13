@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager, Group
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from lego.users.managers import AbakusGroupManager
@@ -42,16 +43,27 @@ class AbakusGroup(PersistentModel):
     def is_root_node(self):
         return bool(self.parent)
 
-    def with_descendants(self):
-        abakus_groups = [self]
+    def get_ancestors(self, include_self=False):
+        abakus_groups = []
 
-        for child in self.children.all():
-            abakus_groups.extend(child.with_descendants())
+        if include_self:
+            abakus_groups.append(self)
+
+        if self.parent:
+            abakus_groups.extend(self.parent.get_ancestors(True))
 
         return abakus_groups
 
-    def get_descendants(self):
-        return self.with_descendants()[1:]
+    def get_descendants(self, include_self=False):
+        abakus_groups = []
+
+        if include_self:
+            abakus_groups.append(self)
+
+        for child in self.children.all():
+            abakus_groups.extend(child.get_descendants(True))
+
+        return abakus_groups
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
@@ -189,6 +201,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
         permissions = ('retrieve_user', 'Can retrieve user'), ('list_user', 'Can list users')
+
+    @cached_property
+    def all_groups(self):
+        own_groups = set()
+
+        for group in self.abakus_groups.all():
+            if group not in own_groups:
+                own_groups = own_groups.union(set(group.get_ancestors(True)))
+
+        return list(own_groups)
 
     def get_full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name).strip()
