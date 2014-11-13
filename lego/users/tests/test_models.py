@@ -28,7 +28,8 @@ class AbakusGroupHierarchyTestCase(TestCase):
         self.assertEqual(len(committees), len(children))
 
     def test_abakom_is_root(self):
-        self.assertTrue(self.abakom.is_root_node)
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        self.assertTrue(abakus.is_root_node)
 
     def test_get_ancestors(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
