@@ -7,7 +7,7 @@ from .models import Page
 
 
 class PageApiTestCase(APITestCase):
-    fixtures = ['fixtures/pages.yaml']
+    fixtures = ['pages.yaml']
 
     def setUp(self):
         super().setUp()
