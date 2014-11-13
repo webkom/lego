@@ -6,7 +6,7 @@ help:
 
 dev:
 	pip install -r requirements/dev.txt --upgrade
-	
+
 prod:
 	pip install -r requirements/prod.txt --upgrade
 
@@ -23,4 +23,4 @@ production:
 	venv/bin/python manage.py collectstatic --noinput
 	touch /etc/uwsgi/apps-enabled/lego.ini
 
-.PHONY: help dev prod venv production
+.PHONY: help dev prod production
