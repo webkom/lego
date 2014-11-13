@@ -41,7 +41,7 @@ class AbakusGroup(PersistentModel):
 
     @property
     def is_root_node(self):
-        return bool(self.parent)
+        return not self.parent
 
     def get_ancestors(self, include_self=False):
         abakus_groups = []
