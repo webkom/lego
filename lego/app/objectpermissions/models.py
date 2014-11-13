@@ -15,8 +15,8 @@ class ObjectPermissionsMixin(models.Model):
         abstract = True
 
     def can_view(self, user):
-        return len(set(user.groups).intersection(self.can_edit_groups))
+        return len(set(user.abakus_groups).intersection(self.can_edit_groups.all())) > 0
 
     def can_edit(self, user):
-        if user in self.can_edit_users or len(set(user.groups).intersection(self.can_edit_groups)):
-            return True
+        return (user in self.can_edit_users.all()
+                or len(set(user.abakus_groups.all()).intersection(self.can_edit_groups.all())))

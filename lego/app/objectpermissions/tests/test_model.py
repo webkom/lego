@@ -21,3 +21,11 @@ class ObjectPermissionsModelTestCase(TestCase):
 
         self.assertEqual(correct_fields, fields)
 
+    def test_can_edit_users(self):
+        can_edit_user = User.objects.get(pk=2)
+        cant_edit_user = User.objects.get(pk=3)
+
+        self.test_object.can_edit_users.add(can_edit_user)
+
+        self.assertTrue(self.test_object.can_edit(can_edit_user))
+        self.assertFalse(self.test_object.can_edit(cant_edit_user))
