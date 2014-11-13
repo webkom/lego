@@ -1,15 +1,18 @@
 # -*- coding: utf8 -*-
 from django.test import TestCase
+
 from lego.app.objectpermissions.models import ObjectPermissionsMixin
 from lego.app.objectpermissions.tests.model import TestModel
-from lego.users.models import User
+from lego.users.models import User, AbakusGroup
 
 
 class ObjectPermissionsModelTestCase(TestCase):
-    fixtures = ['test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
-        self.creator = User.objects.get(pk=1)
+        self.regular_users = User.objects.filter(is_superuser=False)
+        self.creator = self.regular_users[0]
+
         self.test_object = TestModel(name='test_object')
         self.test_object.save(current_user=self.creator)
 
@@ -22,10 +25,20 @@ class ObjectPermissionsModelTestCase(TestCase):
         self.assertEqual(correct_fields, fields)
 
     def test_can_edit_users(self):
-        can_edit_user = User.objects.get(pk=2)
-        cant_edit_user = User.objects.get(pk=3)
+        can_edit_user = self.regular_users[1]
+        cant_edit_user = self.regular_users[2]
 
         self.test_object.can_edit_users.add(can_edit_user)
 
         self.assertTrue(self.test_object.can_edit(can_edit_user))
         self.assertFalse(self.test_object.can_edit(cant_edit_user))
+
+    def test_can_edit_groups_hierarchy(self):
+        user = self.regular_users[1]
+        abakom = AbakusGroup.objects.get(name='Abakom')
+        webkom = AbakusGroup.objects.get(name='Webkom')
+        webkom.add_user(user)
+
+        self.test_object.can_edit_groups.add(abakom)
+
+        self.assertTrue(self.test_object.can_edit(user))
