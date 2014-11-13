@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 from django.db import models
+
 from lego.users.models import User, AbakusGroup
 
 
@@ -19,4 +20,4 @@ class ObjectPermissionsMixin(models.Model):
 
     def can_edit(self, user):
         return (user in self.can_edit_users.all()
-                or len(set(user.abakus_groups.all()).intersection(self.can_edit_groups.all())))
+                or len(set(user.all_groups).intersection(self.can_edit_groups.all())))
