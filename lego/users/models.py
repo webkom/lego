@@ -17,7 +17,8 @@ class AbakusGroup(PersistentModel):
 
     name = models.CharField(_('name'), max_length=80, unique=True)
     description = models.CharField(_('description'), blank=True, max_length=200)
-    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'))
+    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'),
+                               related_name='children')
 
     permission_groups = models.ManyToManyField(
         Group,
@@ -37,12 +38,20 @@ class AbakusGroup(PersistentModel):
             return self.parent.name == 'Abakom'
         return False
 
+    @property
     def is_root_node(self):
         return bool(self.parent)
 
-    def get_children(self):
-        # TODO: Cache
-        return AbakusGroup.objects.filter(parent=self.pk)
+    def with_descendants(self):
+        abakus_groups = [self]
+
+        for child in self.children.all():
+            abakus_groups.extend(child.with_descendants())
+
+        return abakus_groups
+
+    def get_descendants(self):
+        return self.with_descendants()[1:]
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
