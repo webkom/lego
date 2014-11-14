@@ -14,9 +14,5 @@ class Article(BasisModel):
     ingress = models.TextField(_('ingress'))
     text = models.TextField(_('article text'), blank=True)
 
-    users_can_edit = models.ManyToManyField(User, related_name='editable_articles')
-    groups_can_edit = models.ManyToManyField(AbakusGroup, related_name='editable_articles')
-    can_view = models.ManyToManyField(AbakusGroup, related_name='viewable_articles')
-
     def __str__(self):
         return self.title
