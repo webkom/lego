@@ -6,11 +6,10 @@ from rest_framework.test import APITestCase
 from .models import Page
 
 
-class PageApiTestCase(APITestCase):
+class PageAPITestCase(APITestCase):
     fixtures = ['pages.yaml']
 
     def setUp(self):
-        super().setUp()
         self.pages = Page.public_objects.all()
 
     def test_get_pages(self):
