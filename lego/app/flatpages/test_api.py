@@ -35,5 +35,5 @@ class PageApiTestCase(APITestCase):
         self.assertEqual(data['require_auth'], self.pages.get(pk=2).require_auth)
 
     def test_require_auth(self):
-        response = self.client.get('/api/pages/3/')
+        response = self.client.get('/api/v1/pages/3/')
         self.assertEqual(response.status_code, 404)
