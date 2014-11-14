@@ -1,0 +1,24 @@
+- model: flatpages.page
+  pk: 1
+  fields:
+    title: 'Webkom'
+    slug: 'om-oss/webkom/'
+    content: 'Awesome people'
+    toc: false
+    require_auth: false
+- model: flatpages.page
+  pk: 2
+  fields:
+    title: 'Bedkom'
+    slug: 'om-oss/bedkom/'
+    content: '...'
+    toc: False
+    require_auth: false
+- model: flatpages.page
+  pk: 3
+  fields:
+    title: 'Komiteinfo'
+    slug: 'komiteinfo/'
+    content: '...'
+    toc: False
+    require_auth: true
