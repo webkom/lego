@@ -4,4 +4,4 @@ from rest_framework import serializers
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
-        fields = ('title', 'author', 'ingress', 'text', 'can_edit')
+        fields = ('title', 'author', 'ingress', 'text')
