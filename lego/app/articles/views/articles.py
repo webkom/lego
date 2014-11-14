@@ -14,22 +14,15 @@ class ArticlesViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         articles = self.queryset
-
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, *args, **kwargs):
         article = get_object_or_404(self.queryset, pk=pk)
-        if len(request.user.groups & article.can_view) != 0:
-            raise PermissionDenied()
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
 
     def update(self, request, pk=None, *args, **kwargs):
         user = request.user
         article = get_object_or_404(self.queryset, pk=pk)
-
-        if len(request.user.groups & article.can_view) != 0\
-                or user in article.users_can_edit:
-            raise PermissionDenied()
         return super(ArticlesViewSet, self).update(request, *args, **kwargs)
