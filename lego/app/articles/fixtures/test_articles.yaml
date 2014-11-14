@@ -1,0 +1,16 @@
+- model: articles.Article
+  pk: 1
+  fields:
+    title: faget get rekt
+    author: 1
+    ingress: much good
+    text: >
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+    users_can_edit:
+      - 1
+      - 2
+
+
+
