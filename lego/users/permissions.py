@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
-from rest_framework.permissions import DjangoModelPermissions
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 
-class AbakusModelPermissions(DjangoModelPermissions):
+class AbakusModelPermissions(DjangoModelPermissionsOrAnonReadOnly):
     perms_map = {
         'GET': [],
         'OPTIONS': [],
