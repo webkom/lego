@@ -28,16 +28,15 @@ class Page(BasisModel):
         ordering = ('slug',)
 
     def __str__(self):
-        return "%s -- %s" % (self.url, self.title)
+        return "%s -- %s" % (self.slug, self.title)
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         if self.require_abakom and not self.require_auth:
             self.require_auth = True
-            self.save()
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return self.url
+        return self.slug
 
     def rendered_content(self):
         return markdown(self.content)
