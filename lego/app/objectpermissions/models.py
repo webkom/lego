@@ -1,11 +1,12 @@
 # -*- coding: utf8 -*-
+from basis.models import BasisModel
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from lego.users.models import User, AbakusGroup
 
 
-class ObjectPermissionsMixin(models.Model):
+class ObjectPermissionsModel(BasisModel):
     can_edit_users = models.ManyToManyField(User, related_name='can_edit_%(class)s')
     can_edit_groups = models.ManyToManyField(AbakusGroup,
                                              related_name='can_edit_%(class)s')
@@ -19,8 +20,10 @@ class ObjectPermissionsMixin(models.Model):
         abstract = True
 
     def can_view(self, user):
-        return len(set(user.all_groups).intersection(self.can_view_groups.all())) > 0
+        return (user == self.created_by
+                or len(set(user.all_groups).intersection(self.can_view_groups.all())) > 0)
 
     def can_edit(self, user):
-        return (user in self.can_edit_users.all()
+        return (user == self.created_by
+                or user in self.can_edit_users.all()
                 or len(set(user.all_groups).intersection(self.can_edit_groups.all())))

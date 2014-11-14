@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from django.test import TestCase
 
-from lego.app.objectpermissions.models import ObjectPermissionsMixin
+from lego.app.objectpermissions.models import ObjectPermissionsModel
 from lego.app.objectpermissions.tests.model import TestModel
 from lego.users.models import User, AbakusGroup
 
@@ -17,7 +17,7 @@ class ObjectPermissionsModelTestCase(TestCase):
         self.test_object.save(current_user=self.creator)
 
     def test_inheritance(self):
-        mixin_fields = set(ObjectPermissionsMixin._meta.get_all_field_names())
+        mixin_fields = set(ObjectPermissionsModel._meta.get_all_field_names())
         test_fields = set(TestModel._meta.get_all_field_names())
         correct_fields = mixin_fields.union(test_fields)
         fields = set(TestModel._meta.get_all_field_names())
