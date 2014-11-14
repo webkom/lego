@@ -1,10 +1,9 @@
 # -*- coding: utf8 -*-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from basis.models import BasisModel
 
-from lego.app.objectpermissions.models import ObjectPermissionsMixin
+from lego.app.objectpermissions.models import ObjectPermissionsModel
 
 
-class TestModel(BasisModel, ObjectPermissionsMixin):
+class TestModel(ObjectPermissionsModel):
     name = models.CharField(_('name'), max_length=30)
