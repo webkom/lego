@@ -11,7 +11,6 @@ class ArticleTestCase(TestCase):
         self.user1 = User.objects.get(id=1)
         self.user2 = User.objects.get(id=2)
         self.article = Article.objects.get(id=1)
-        #self.article = Article.objects.get(id=2)
 
     def testAuthor(self):
         self.assertEqual(self.article.author, self.user1)

@@ -18,6 +18,6 @@ class GetArticleAPITestCase(APITestCase):
         self.view = ArticlesViewSet.as_view({'get': 'retrieve'})
 
     def testCanView(self):
-        response = self.view(self.request, user=self.user1.pk)
+        response = self.view(self.request, pk=self.user1.pk)
         self.assertEqual(response.status_code, 200)
 
