@@ -29,6 +29,21 @@ class PermissionTestCase(APITestCase):
 
         self.factory = APIRequestFactory()
 
+    def test_create_successful(self):
+        """
+        Object permissions shouldn't stop users from creating objects, as that's handled by
+        model permissions.
+        """
+
+        request = self.factory.post('/permissiontest/', self.test_update_object)
+        view = TestViewSet.as_view({'post': 'create'})
+
+        response = view(request)
+        created = response.data
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(created['name'], self.test_update_object['name'])
+
     def test_retrieve_successful(self):
         request = self.factory.get('/permissiontest/')
         force_authenticate(request, self.allowed_user)
