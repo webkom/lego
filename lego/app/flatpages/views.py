@@ -1,7 +1,9 @@
 # -*- coding: utf8 -*-
+from lego.app.objectpermissions.filters import ObjectPermissionsFilter
+from lego.app.objectpermissions.permissions import ObjectPermissions
+from lego.users.permissions import AbakusModelPermissions
 from rest_framework import viewsets, serializers, permissions
 
-from lego.api.filters import RequireAuthFilterBackend
 from .models import Page
 
 
@@ -13,6 +15,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class PageViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = UserSerializer
-    filter_backends = RequireAuthFilterBackend,
+    filter_backends = ObjectPermissionsFilter,
 
-    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [
+        permissions.DjangoModelPermissionsOrAnonReadOnly,
+        AbakusModelPermissions,
+        ObjectPermissions
+    ]
