@@ -25,9 +25,9 @@ INSTALLED_APPS = (
 
     'lego.apps.LegoConfig',
     'lego.users',
+    'lego.permissions',
 
     'lego.app.oauth',
-    'lego.app.objectpermissions',
     'lego.app.flatpages',
 )
 

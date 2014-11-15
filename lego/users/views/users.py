@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from lego.users.models import User
 from lego.users.serializers import UserSerializer, PublicUserSerializer
-from lego.users.permissions import PostDeleteModelPermissions
+from lego.permissions.model_permissions import PostDeleteModelPermissions
 
 
 class UsersViewSet(viewsets.ModelViewSet):

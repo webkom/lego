@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
-from lego.app.objectpermissions.tests.model import TestModel
-from lego.app.objectpermissions.tests.view import TestViewSet
+from lego.permissions.tests.model import TestModel
+from lego.permissions.tests.view import TestViewSet
 from lego.users.models import User, AbakusGroup
 
 

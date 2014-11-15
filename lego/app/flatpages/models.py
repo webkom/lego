@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from markdown import markdown
 
-from lego.app.objectpermissions.models import ObjectPermissionsModel
+from lego.permissions.models import ObjectPermissionsModel
 
 
 class Page(ObjectPermissionsModel):
