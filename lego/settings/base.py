@@ -23,8 +23,8 @@ INSTALLED_APPS = (
     'oauth2_provider',
     'rest_framework',
 
-    'lego.apps.LegoConfig',
     'lego.users',
+    'lego.utils',
 
     'lego.app.oauth',
     'lego.app.flatpages',
