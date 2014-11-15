@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from django.test import TestCase
 
-from lego.app.objectpermissions.models import ObjectPermissionsModel
-from lego.app.objectpermissions.tests.model import TestModel
+from lego.permissions.models import ObjectPermissionsModel
+from lego.permissions.tests.model import TestModel
 from lego.users.models import User, AbakusGroup
 
 

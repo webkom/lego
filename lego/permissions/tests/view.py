@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 from rest_framework import viewsets
 
-from lego.app.objectpermissions.permissions import ObjectPermissions
-from lego.app.objectpermissions.tests.model import TestModel
-from lego.app.objectpermissions.tests.serializer import TestSerializer
-from lego.app.objectpermissions.filters import ObjectPermissionsFilter
+from lego.permissions.object_permissions import ObjectPermissions
+from lego.permissions.tests.model import TestModel
+from lego.permissions.tests.serializer import TestSerializer
+from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class TestViewSet(viewsets.ModelViewSet):
