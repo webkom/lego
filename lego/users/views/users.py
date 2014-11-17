@@ -7,13 +7,13 @@ from rest_framework.response import Response
 
 from lego.users.models import User
 from lego.users.serializers import UserSerializer, PublicUserSerializer
-from lego.users.permissions import AbakusModelPermissions
+from lego.permissions.model_permissions import PostDeleteModelPermissions
 
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated, AbakusModelPermissions)
+    permission_classes = (IsAuthenticated, PostDeleteModelPermissions)
 
     def list(self, request, *args, **kwargs):
         if (not request.user.is_superuser
