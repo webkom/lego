@@ -7,3 +7,11 @@
     text: >
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+- model: articles.Article
+  pk: 2
+  fields:
+    title: Ikkje løye det!
+    author: 2
+    ingress: Om du e Tore?
+    text: Tore Tang, en gammal mann. Hele byen kjenner han.
