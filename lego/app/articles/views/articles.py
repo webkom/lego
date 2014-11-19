@@ -23,6 +23,4 @@ class ArticlesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def update(self, request, pk=None, *args, **kwargs):
-        user = request.user
-        article = get_object_or_404(self.queryset, pk=pk)
         return super(ArticlesViewSet, self).update(request, *args, **kwargs)

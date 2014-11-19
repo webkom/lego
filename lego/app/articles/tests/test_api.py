@@ -14,10 +14,10 @@ class GetArticleAPITestCase(APITestCase):
         self.user2 = User.objects.get(id=2)
 
         self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/articles/1')
+        self.request = self.factory.get('/api/articles')
         self.view = ArticlesViewSet.as_view({'get': 'retrieve'})
 
     def testCanView(self):
-        response = self.view(self.request, pk=self.user1.pk)
+        response = self.view(self.request, pk=self.article.pk, user=self.user1)
         self.assertEqual(response.status_code, 200)
 
