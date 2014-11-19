@@ -4,10 +4,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-from lego.users.models import User, AbakusGroup
+from lego.users.models import User
+from lego.permissions.models import ObjectPermissionsModel
 
 
-class Article(BasisModel):
+class Article(ObjectPermissionsModel):
     title = models.CharField(_('title'), max_length=255)
     author = models.ForeignKey(User, editable=False, null=True, verbose_name='author')
 
