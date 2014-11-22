@@ -19,6 +19,9 @@ exclude_lines =
 
 omit =
     lego/*/migrations/*
+    lego/*/tests/*
+    lego/*/test_*.py
     lego/settings/*
+    lego/wsgi.py
 
 show_missing = True
