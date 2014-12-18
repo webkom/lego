@@ -52,3 +52,14 @@ class AbakusGroupSerializer(serializers.ModelSerializer):
             'parent',
             'permission_groups'
         )
+
+
+class PublicAbakusGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbakusGroup
+        fields = (
+            'id',
+            'name',
+            'description',
+            'parent'
+        )
