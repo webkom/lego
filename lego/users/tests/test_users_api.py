@@ -129,7 +129,7 @@ class CreateUsersAPITestCase(APITestCase):
 
         self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'post': 'create'})
-        self.request = self.factory.post('/api/users', test_user_data)
+        self.request = self.factory.post('/api/users/', test_user_data)
 
     def successful_create(self, user):
         force_authenticate(self.request, user=user)
