@@ -32,6 +32,10 @@ class AbakusGroup(PersistentModel):
         unique_together = 'name',
         verbose_name = _('abakus group')
         verbose_name_plural = _('abakus groups')
+        permissions = (
+            ('retrieve_abakusgroup', 'Can retrieve AbakusGroups'),
+            ('list_abakusgroup', 'Can list AbakusGroups')
+        )
 
     @property
     def is_committee(self):
