@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from rest_framework import serializers
 
-from lego.users.models import User
 from lego.users.permissions import can_retrieve_user
+from lego.users.models import User, AbakusGroup
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
@@ -40,3 +40,15 @@ class UserSerializer(DetailedUserSerializer):
         else:
             serializer = PublicUserSerializer(instance, context=self.context)
         return serializer.data
+
+
+class AbakusGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbakusGroup
+        fields = (
+            'id',
+            'name',
+            'description',
+            'parent',
+            'permission_groups'
+        )
