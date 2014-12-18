@@ -31,3 +31,11 @@
     first_name: user
     last_name: admin
     email: user@admin.com
+
+- model: users.User
+  pk: 5
+  fields:
+    username: abakusgroupadmin_test
+    first_name: abakusgroup
+    last_name: admin
+    email: abakusgroup@admin.com
