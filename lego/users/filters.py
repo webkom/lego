@@ -11,7 +11,7 @@ class AbakusGroupFilterBackend(BaseFilterBackend):
         if not user.is_authenticated():
             return PermissionDenied()
 
-        if user.has_perm('list_abakusgroup'):
+        if user.has_perm('users.list_abakusgroup'):
             return AbakusGroup.objects.all()
 
         return AbakusGroup.objects.filter(membership__user=user)
