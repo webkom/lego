@@ -15,7 +15,7 @@ class AbakusGroupViewSet(viewsets.ModelViewSet):
     queryset = AbakusGroup.objects.all()
     serializer_class = AbakusGroupSerializer
     permission_classes = (IsAuthenticated, PostDeleteModelPermissions)
-    filter_backend = AbakusGroupFilterBackend
+    filter_backends = (AbakusGroupFilterBackend, )
 
     def retrieve(self, request, pk=None, *args, **kwargs):
         queryset = AbakusGroup.objects.all()

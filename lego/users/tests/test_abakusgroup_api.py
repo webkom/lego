@@ -19,8 +19,8 @@ class ListAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-            .exclude(pk=self.with_permission.pk, is_superuser=True)
-            .first())
+                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .first())
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
@@ -64,8 +64,8 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-            .exclude(pk=self.with_permission.pk, is_superuser=True)
-            .first())
+                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .first())
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
