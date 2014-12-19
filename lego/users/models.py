@@ -25,7 +25,8 @@ class AbakusGroup(PersistentModel):
         Group,
         verbose_name=_('permission groups'),
         related_name='abakus_groups',
-        blank=True
+        blank=True,
+        null=True
     )
 
     class Meta:
