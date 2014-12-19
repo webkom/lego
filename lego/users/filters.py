@@ -8,10 +8,7 @@ class AbakusGroupFilterBackend(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         user = request.user
 
-        if not user.is_authenticated():
-            return PermissionDenied()
-
         if user.has_perm('users.list_abakusgroup'):
-            return AbakusGroup.objects.all()
+            return queryset
 
-        return AbakusGroup.objects.filter(membership__user=user)
+        return queryset.filter(membership__user=user)
