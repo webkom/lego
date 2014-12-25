@@ -10,11 +10,7 @@ from .v1 import router as v1
 
 @csrf_exempt
 def version_redirect(request, path):
-    new_path = '/api/{0}/{1}'.format(settings.API_VERSION, path)
-
-    # Append trailing slash if it's missing:
-    if new_path[-1] != '/':
-        new_path += '/'
+    new_path = '/api/{0}/{1}/'.format(settings.API_VERSION, path)
 
     match = resolve(new_path)
 
@@ -26,5 +22,5 @@ def version_redirect(request, path):
 urlpatterns = patterns(
     '',
     url(r'^v1/', include(v1.urls)),
-    url(r'^(.*)$', version_redirect),
+    url(r'^(.*)/$', version_redirect),
 )
