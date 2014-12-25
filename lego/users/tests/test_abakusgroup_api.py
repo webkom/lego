@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
-from lego.users.serializers import AbakusGroupSerializer, PublicAbakusGroupSerializer
+from lego.users.serializers import DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
 from lego.users.views.abakus_groups import AbakusGroupViewSet
 from lego.users.models import User, AbakusGroup
 
@@ -17,13 +17,7 @@ class ListAbakusGroupAPITestCase(APITestCase):
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
 
-        self.with_permission = User.objects.get(username='abakusgroupadmin_test')
-        self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
-                                   .first())
-
-        self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
-        self.groupadmin_test_group.add_user(self.with_permission)
+        self.user = User.objects.get(username='test1')
 
         self.factory = APIRequestFactory()
         self.request = self.factory.get('/api/groups/')
@@ -36,24 +30,16 @@ class ListAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(self.all_groups))
 
+        for group in response.data:
+            keys = set(group.keys())
+            self.assertEqual(keys, set(PublicAbakusGroupSerializer.Meta.fields))
+
     def test_without_auth(self):
         response = self.view(self.request)
         self.assertEqual(response.status_code, 401)
 
-    def test_with_permission(self):
-        self.successful_list(self.with_permission)
-
-    def test_without_permission(self):
-        test_group = AbakusGroup.objects.get(name='TestGroup')
-        test_group.add_user(self.without_permission)
-
-        force_authenticate(self.request, user=self.without_permission)
-        response = self.view(self.request)
-        groups = response.data
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(groups), 1)
-        self.assertEqual(groups[0]['id'], test_group.pk)
+    def test_with_auth(self):
+        self.successful_list(self.user)
 
 
 class RetrieveAbakusGroupAPITestCase(APITestCase):
@@ -84,7 +70,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         keys = set(user.keys())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(AbakusGroupSerializer.Meta.fields))
+        self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
     def test_without_auth(self):
         response = self.view(self.request)
@@ -100,7 +86,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         keys = set(group.keys())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(AbakusGroupSerializer.Meta.fields))
+        self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
     def test_without_permission(self):
         new_group = AbakusGroup.objects.create(name='new_group')
