@@ -12,12 +12,16 @@ def check_intersection(first, second):
 
 
 class ObjectPermissionsModel(BasisModel):
-    can_edit_users = models.ManyToManyField(User, related_name='can_edit_%(class)s')
+    can_edit_users = models.ManyToManyField(User, related_name='can_edit_%(class)s', blank=True,
+                                            null=True)
+
     can_edit_groups = models.ManyToManyField(AbakusGroup,
-                                             related_name='can_edit_%(class)s')
+                                             related_name='can_edit_%(class)s', blank=True,
+                                             null=True)
 
     can_view_groups = models.ManyToManyField(AbakusGroup,
-                                             related_name='can_view_%(class)s')
+                                             related_name='can_view_%(class)s', blank=True,
+                                             null=True)
 
     require_auth = models.BooleanField(_('require auth'), default=False)
 

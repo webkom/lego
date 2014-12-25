@@ -7,7 +7,7 @@ markdown
 unicode-slugify
 pyyaml
 
-djangorestframework
+djangorestframework>=3,<4
 django-basis
 django-extensions
 django-haystack
