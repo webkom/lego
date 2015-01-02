@@ -2,3 +2,8 @@ tasks:
   - tox
   - flake8 
   - coverage report --fail-under=75
+  - coverage xml
+
+coverage:
+  path: coverage.xml
+  parser: python
