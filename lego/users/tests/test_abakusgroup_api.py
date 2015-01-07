@@ -172,8 +172,8 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
         self.groupadmin_test_group.add_user(self.with_permission)
 
         self.factory = APIRequestFactory()
-        self.request = self.factory.put('/api/groups/{0}/'.format(self.test_group.pk)
-                                        , self.modified_group)
+        self.request = self.factory.put('/api/groups/{0}/'.format(self.test_group.pk),
+                                        self.modified_group)
         self.view = AbakusGroupViewSet.as_view({'put': 'update'})
 
     def successful_update(self, user):
@@ -202,3 +202,52 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
     def test_as_leader(self):
         self.successful_update(self.leader)
+
+
+class DeleteAbakusGroupAPITestCase(APITestCase):
+    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+
+    def setUp(self):
+        self.all_groups = AbakusGroup.objects.all()
+
+        self.with_permission = User.objects.get(username='abakusgroupadmin_test')
+        self.without_permission = (User.objects
+                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .first())
+
+        self.test_group = AbakusGroup.objects.get(name='TestGroup')
+        self.leader = User.objects.create(username='leader')
+        self.test_group.add_user(self.leader, role=Membership.LEADER)
+
+        self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
+        self.groupadmin_test_group.add_user(self.with_permission)
+
+        self.factory = APIRequestFactory()
+        self.request = self.factory.delete('/api/groups/{0}/'.format(self.test_group.pk))
+        self.view = AbakusGroupViewSet.as_view({'delete': 'destroy'})
+
+    def successful_delete(self, user):
+        force_authenticate(self.request, user=user)
+        response = self.view(self.request, pk=self.test_group.pk)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get, pk=self.test_group.pk)
+
+    def test_without_auth(self):
+        response = self.view(self.request, pk=self.test_group.pk)
+        self.assertEqual(response.status_code, 401)
+
+    def test_with_permission(self):
+        self.successful_delete(self.with_permission)
+
+    def test_without_permission(self):
+        force_authenticate(self.request, user=self.without_permission)
+        response = self.view(self.request, pk=self.test_group.pk)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_unsuccessful_delete_as_leader(self):
+        force_authenticate(self.request, user=self.leader)
+        response = self.view(self.request, pk=self.test_group.pk)
+
+        self.assertEqual(response.status_code, 403)
