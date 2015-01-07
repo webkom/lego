@@ -7,13 +7,25 @@
     text: >
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    require_auth: true
+    can_view_groups:
+      - 1
 
 - model: articles.Article
   pk: 2
   fields:
     title: Ikkje løye det!
-    author: 2
+    author: 1
     ingress: Om du e Tore?
-    text: Tore Tang, en gammal mann. Hele byen kjenner han.
-    require_auth: true
+    text: Tore Tang, en gammal mann. Hele webkom kjenner han.
+    c
+    an_view_groups:
+      - 10
+
+- model: articles.Article
+  pk: 3
+  fields:
+    title: Alle kan se!
+    author: 1
+    ingress: Håper jeg ..
+    text: huehehehuuehhuehuehuehuehue
+
