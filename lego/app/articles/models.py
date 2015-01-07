@@ -1,5 +1,4 @@
 # -*- coding: utf--8 -*-
-from basis.models import BasisModel
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
