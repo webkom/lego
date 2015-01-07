@@ -42,7 +42,8 @@ class UsersObjectPermissions(permissions.BasePermission):
 class AbakusGroupObjectPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in ('PUT', 'PATCH'):
-            is_owner = bool(Membership.objects.filter(abakus_group=obj, role=Membership.LEADER))
+            is_owner = bool(Membership.objects.filter(abakus_group=obj, user=request.user,
+                                                      role=Membership.LEADER))
             return is_owner or request.user.has_perm('users.change_abakusgroup')
 
         return True
