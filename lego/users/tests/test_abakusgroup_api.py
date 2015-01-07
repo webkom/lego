@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 
 from lego.users.serializers import DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
 from lego.users.views.abakus_groups import AbakusGroupViewSet
-from lego.users.models import User, AbakusGroup
+from lego.users.models import User, AbakusGroup, Membership
 
 test_group_data = {
     'name': 'testgroup',
@@ -145,3 +145,60 @@ class CreateAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
         self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get,
                           name=test_group_data['name'])
+
+
+class UpdateAbakusGroupAPITestCase(APITestCase):
+    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+
+    def setUp(self):
+        self.all_groups = AbakusGroup.objects.all()
+        parent_group = AbakusGroup.objects.create(name='parent_group')
+        self.modified_group = {
+            'name': 'modified_group',
+            'description': 'this is a modified group',
+            'parent': parent_group.pk
+        }
+
+        self.with_permission = User.objects.get(username='abakusgroupadmin_test')
+        self.without_permission = (User.objects
+                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .first())
+
+        self.test_group = AbakusGroup.objects.get(name='TestGroup')
+        self.leader = User.objects.create(username='leader')
+        self.test_group.add_user(self.leader, role=Membership.LEADER)
+
+        self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
+        self.groupadmin_test_group.add_user(self.with_permission)
+
+        self.factory = APIRequestFactory()
+        self.request = self.factory.put('/api/groups/{0}/'.format(self.test_group.pk)
+                                        , self.modified_group)
+        self.view = AbakusGroupViewSet.as_view({'put': 'update'})
+
+    def successful_update(self, user):
+        force_authenticate(self.request, user=user)
+        response = self.view(self.request, pk=self.test_group.pk)
+        group = AbakusGroup.objects.get(pk=self.test_group.pk)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(group.name, self.modified_group['name'])
+        self.assertEqual(group.description, self.modified_group['description'])
+        self.assertEqual(group.parent.pk, self.modified_group['parent'])
+
+    def test_without_auth(self):
+        response = self.view(self.request, pk=self.test_group.pk)
+        self.assertEqual(response.status_code, 401)
+
+    def test_with_permission(self):
+        self.successful_update(self.with_permission)
+
+    def test_without_permission(self):
+        force_authenticate(self.request, user=self.without_permission)
+        response = self.view(self.request, pk=self.test_group.pk)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_as_leader(self):
+        self.successful_update(self.leader)
