@@ -5,7 +5,8 @@ from lego.users.models import User
 from lego.app.articles.models import Article
 
 class ArticleTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_articles.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
+                'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.user1 = User.objects.get(id=1)
