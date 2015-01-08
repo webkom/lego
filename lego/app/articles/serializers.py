@@ -1,5 +1,6 @@
-from lego.app.articles.models import Article
 from rest_framework import serializers
+
+from lego.app.articles.models import Article
 
 
 class ArticleSerializer(serializers.ModelSerializer):
