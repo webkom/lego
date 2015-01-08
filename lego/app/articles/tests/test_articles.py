@@ -4,6 +4,7 @@ from django.test import TestCase
 from lego.users.models import User
 from lego.app.articles.models import Article
 
+
 class ArticleTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
                 'test_users.yaml', 'test_articles.yaml']
@@ -16,4 +17,3 @@ class ArticleTestCase(TestCase):
     def testAuthor(self):
         self.assertEqual(self.article.author, self.user1)
         self.assertNotEqual(self.article.author, self.user2)
-
