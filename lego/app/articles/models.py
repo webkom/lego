@@ -9,7 +9,7 @@ from lego.permissions.models import ObjectPermissionsModel
 
 class Article(ObjectPermissionsModel):
     title = models.CharField(_('title'), max_length=255)
-    author = models.ForeignKey(User, editable=False, null=True, verbose_name='author')
+    author = models.ForeignKey(User, _('author'), editable=False, null=True)
 
     ingress = models.TextField(_('ingress'))
     text = models.TextField(_('article text'), blank=True)
