@@ -1,7 +1,5 @@
 # -*- coding: utf--8 -*-
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
-
 
 from lego.users.models import User
 from lego.permissions.models import ObjectPermissionsModel
