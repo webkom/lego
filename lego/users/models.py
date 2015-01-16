@@ -16,14 +16,12 @@ from .validators import username_validator
 class AbakusGroup(PersistentModel):
     objects = AbakusGroupManager()
 
-    name = models.CharField(_('name'), max_length=80, unique=True)
-    description = models.CharField(_('description'), blank=True, max_length=200)
-    parent = models.ForeignKey('self', blank=True, null=True, verbose_name=_('parent'),
-                               related_name='children')
+    name = models.CharField(max_length=80, unique=True)
+    description = models.CharField(blank=True, max_length=200)
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
 
     permission_groups = models.ManyToManyField(
         Group,
-        verbose_name=_('permission groups'),
         related_name='abakus_groups',
         blank=True,
         null=True
@@ -31,11 +29,8 @@ class AbakusGroup(PersistentModel):
 
     class Meta:
         unique_together = 'name',
-        verbose_name = _('abakus group')
-        verbose_name_plural = _('abakus groups')
         permissions = (
             ('retrieve_abakusgroup', 'Can retrieve AbakusGroups'),
-            ('list_abakusgroup', 'Can list AbakusGroups')
         )
 
     @property
@@ -107,7 +102,6 @@ def _user_has_module_perms(user, app_label):
 
 class PermissionsMixin(models.Model):
     is_superuser = models.BooleanField(
-        _('superuser status'),
         default=False,
         help_text=_('Designates that this user has all permissions without '
                     'explicitly assigning them.')
@@ -116,7 +110,6 @@ class PermissionsMixin(models.Model):
         AbakusGroup,
         through='Membership',
         through_fields=('user', 'abakus_group'),
-        verbose_name=_('abakus groups'),
         blank=True, help_text=_('The groups this user belongs to. A user will '
                                 'get all permissions granted to each of their groups.'),
         related_name='users',
@@ -172,7 +165,6 @@ class PermissionsMixin(models.Model):
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
-        _('username'),
         max_length=30,
         unique=True,
         help_text=_('Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.'),
@@ -185,12 +177,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
-        _('staff status'),
         default=False,
         help_text=_('Designates whether the user can log into this admin site.')
     )
     is_active = models.BooleanField(
-        _('active'),
         default=True,
         help_text=_('Designates whether this user should be treated as '
                     'active. Unselect this instead of deleting accounts.')
@@ -203,8 +193,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email']
 
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
         permissions = ('retrieve_user', 'Can retrieve user'), ('list_user', 'Can list users')
 
     @cached_property
@@ -243,14 +231,14 @@ class Membership(BasisModel):
         (TREASURER, _('Treasurer'))
     )
 
-    user = models.ForeignKey(User, verbose_name=_('user'))
-    abakus_group = models.ForeignKey(AbakusGroup, verbose_name=_('abakus group'))
+    user = models.ForeignKey(User)
+    abakus_group = models.ForeignKey(AbakusGroup)
 
-    role = models.CharField(_('role'), max_length=2, choices=ROLES, default=MEMBER)
-    is_active = models.BooleanField(_('is active'), default=True)
+    role = models.CharField(max_length=2, choices=ROLES, default=MEMBER)
+    is_active = models.BooleanField(default=True)
 
-    start_date = models.DateField(_('start date'), auto_now_add=True, blank=True)
-    end_date = models.DateField(_('end date'), null=True, blank=True)
+    start_date = models.DateField(auto_now_add=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
     class Meta:
         unique_together = ('user', 'abakus_group')
