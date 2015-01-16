@@ -4,4 +4,3 @@ from lego.app.content.models import Content
 
 class Article(Content):
     pass
-
