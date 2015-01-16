@@ -45,8 +45,3 @@
         - retrieve_abakusgroup
         - users
         - abakusgroup
-      -
-        - list_abakusgroup
-        - users
-        - abakusgroup
-
