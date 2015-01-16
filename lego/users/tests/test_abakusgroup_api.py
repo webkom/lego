@@ -1,8 +1,7 @@
 # -*- coding: utf8 -*-
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APITestCase
 
 from lego.users.serializers import DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
-from lego.users.views.abakus_groups import AbakusGroupViewSet
 from lego.users.models import User, AbakusGroup, Membership
 
 test_group_data = {
@@ -16,16 +15,11 @@ class ListAbakusGroupAPITestCase(APITestCase):
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
-
         self.user = User.objects.get(username='test1')
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/groups/')
-        self.view = AbakusGroupViewSet.as_view({'get': 'list'})
-
     def successful_list(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=user)
+        response = self.client.get('/api/v1/groups/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(self.all_groups))
@@ -35,7 +29,7 @@ class ListAbakusGroupAPITestCase(APITestCase):
             self.assertEqual(keys, set(PublicAbakusGroupSerializer.Meta.fields))
 
     def test_without_auth(self):
-        response = self.view(self.request)
+        response = self.client.get('/api/v1/groups/')
         self.assertEqual(response.status_code, 401)
 
     def test_with_auth(self):
@@ -59,13 +53,9 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
         self.test_group.add_user(self.without_permission)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/groups/')
-        self.view = AbakusGroupViewSet.as_view({'get': 'retrieve'})
-
     def successful_retrieve(self, user, pk):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request, pk=pk)
+        self.client.force_authenticate(user=user)
+        response = self.client.get('/api/v1/groups/{0}/'.format(pk))
         user = response.data
         keys = set(user.keys())
 
@@ -73,15 +63,15 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
     def test_without_auth(self):
-        response = self.view(self.request)
+        response = self.client.get('/api/v1/groups/1/')
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
         self.successful_retrieve(self.with_permission, self.test_group.pk)
 
     def test_own_group(self):
-        force_authenticate(self.request, user=self.without_permission)
-        response = self.view(self.request, pk=self.test_group.pk)
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.get('/api/v1/groups/{0}/'.format(self.test_group.pk))
         group = response.data
         keys = set(group.keys())
 
@@ -91,8 +81,8 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
     def test_without_permission(self):
         new_group = AbakusGroup.objects.create(name='new_group')
 
-        force_authenticate(self.request, user=self.without_permission)
-        response = self.view(self.request, pk=new_group.pk)
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.get('/api/v1/groups/{0}/'.format(new_group.pk))
         group = response.data
         keys = set(group.keys())
 
@@ -117,13 +107,9 @@ class CreateAbakusGroupAPITestCase(APITestCase):
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
         self.test_group.add_user(self.without_permission)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.post('/api/groups/', test_group_data)
-        self.view = AbakusGroupViewSet.as_view({'post': 'create'})
-
     def successful_create(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=user)
+        response = self.client.post('/api/v1/groups/', test_group_data)
 
         self.assertEqual(response.status_code, 201)
         created_group = AbakusGroup.objects.get(name=test_group_data['name'])
@@ -132,15 +118,15 @@ class CreateAbakusGroupAPITestCase(APITestCase):
             self.assertEqual(getattr(created_group, key), value)
 
     def test_without_auth(self):
-        response = self.view(self.request)
+        response = self.client.post('/api/v1/groups/', test_group_data)
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
         self.successful_create(self.with_permission)
 
     def test_without_permission(self):
-        force_authenticate(self.request, user=self.without_permission)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.post('/api/v1/groups/', test_group_data)
 
         self.assertEqual(response.status_code, 403)
         self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get,
@@ -171,14 +157,10 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.put('/api/groups/{0}/'.format(self.test_group.pk),
-                                        self.modified_group)
-        self.view = AbakusGroupViewSet.as_view({'put': 'update'})
-
     def successful_update(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request, pk=self.test_group.pk)
+        self.client.force_authenticate(user=user)
+        response = self.client.put('/api/v1/groups/{0}/'.format(self.test_group.pk),
+                                   self.modified_group)
         group = AbakusGroup.objects.get(pk=self.test_group.pk)
 
         self.assertEqual(response.status_code, 200)
@@ -188,15 +170,17 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(group.parent.pk, self.modified_group['parent'])
 
     def test_without_auth(self):
-        response = self.view(self.request, pk=self.test_group.pk)
+        response = self.client.put('/api/v1/groups/{0}/'.format(self.test_group.pk),
+                                   self.modified_group)
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
         self.successful_update(self.with_permission)
 
     def test_without_permission(self):
-        force_authenticate(self.request, user=self.without_permission)
-        response = self.view(self.request, pk=self.test_group.pk)
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.put('/api/v1/groups/{0}/'.format(self.test_group.pk),
+                                   self.modified_group)
 
         self.assertEqual(response.status_code, 403)
 
@@ -222,32 +206,28 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.delete('/api/groups/{0}/'.format(self.test_group.pk))
-        self.view = AbakusGroupViewSet.as_view({'delete': 'destroy'})
-
     def successful_delete(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request, pk=self.test_group.pk)
+        self.client.force_authenticate(user=user)
+        response = self.client.delete('/api/v1/groups/{0}/'.format(self.test_group.pk))
 
         self.assertEqual(response.status_code, 204)
         self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get, pk=self.test_group.pk)
 
     def test_without_auth(self):
-        response = self.view(self.request, pk=self.test_group.pk)
+        response = self.client.delete('/api/v1/groups/{0}/'.format(self.test_group.pk))
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
         self.successful_delete(self.with_permission)
 
     def test_without_permission(self):
-        force_authenticate(self.request, user=self.without_permission)
-        response = self.view(self.request, pk=self.test_group.pk)
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.delete('/api/v1/groups/{0}/'.format(self.test_group.pk))
 
         self.assertEqual(response.status_code, 403)
 
     def test_unsuccessful_delete_as_leader(self):
-        force_authenticate(self.request, user=self.leader)
-        response = self.view(self.request, pk=self.test_group.pk)
+        self.client.force_authenticate(user=self.leader)
+        response = self.client.delete('/api/v1/groups/{0}/'.format(self.test_group.pk))
 
         self.assertEqual(response.status_code, 403)
