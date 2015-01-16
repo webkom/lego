@@ -28,6 +28,8 @@ INSTALLED_APPS = (
     'lego.permissions',
 
     'lego.app.oauth',
+    'lego.app.articles',
+    'lego.app.content',
     'lego.app.flatpages',
     'lego.app.comments',
     'lego.app.articles',
