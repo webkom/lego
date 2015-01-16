@@ -13,4 +13,4 @@ class Article(ObjectPermissionsModel):
     text = models.TextField(blank=True)
 
     def __str__(self):
-        return self.title + format("(by: {})", self.author)
+        return self.title + '(by: {})'.format(self.author)
