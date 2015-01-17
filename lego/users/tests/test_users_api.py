@@ -1,8 +1,9 @@
 # -*- coding: utf8 -*-
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from django.core.urlresolvers import reverse
+
+from rest_framework.test import APITestCase
 
 from lego.users.models import User, AbakusGroup
-from lego.users.views.users import UsersViewSet
 from lego.users.serializers import UserSerializer, PublicUserSerializer
 
 test_user_data = {
@@ -11,6 +12,9 @@ test_user_data = {
     'last_name': 'test_user',
     'email': 'new@testuser.com',
 }
+
+get_list_url = lambda: reverse('user-list')
+get_detail_url = lambda pk: reverse('user-detail', kwargs={'pk': pk})
 
 
 def get_test_user():
@@ -32,24 +36,20 @@ class ListUsersAPITestCase(APITestCase):
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
         self.useradmin_test_group.add_user(self.useradmin_user)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/users/')
-        self.view = UsersViewSet.as_view({'get': 'list'})
-
     def successful_list(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=user)
+        response = self.client.get(get_list_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(self.all_users))
 
     def test_without_auth(self):
-        response = self.view(self.request)
+        response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 401)
 
     def test_with_normal_user(self):
-        force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.get(get_list_url())
 
         self.assertEqual(response.status_code, 403)
 
@@ -73,13 +73,9 @@ class GetUsersAPITestCase(APITestCase):
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
         self.useradmin_test_group.add_user(self.useradmin_user)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/users/')
-        self.view = UsersViewSet.as_view({'get': 'retrieve'})
-
     def successful_retrieve(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request, pk=self.test_user.pk)
+        self.client.force_authenticate(user=user)
+        response = self.client.get(get_detail_url(self.test_user.pk))
         user = response.data
         keys = set(user.keys())
 
@@ -87,12 +83,12 @@ class GetUsersAPITestCase(APITestCase):
         self.assertEqual(keys, set(UserSerializer.Meta.fields))
 
     def test_without_auth(self):
-        response = self.view(self.request)
+        response = self.client.get(get_detail_url(1))
         self.assertEqual(response.status_code, 401)
 
     def test_with_normal_user(self):
-        force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request, pk=self.test_user.pk)
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.get(get_detail_url(self.test_user.pk))
         user = response.data
         keys = set(user.keys())
 
@@ -100,8 +96,8 @@ class GetUsersAPITestCase(APITestCase):
         self.assertEqual(keys, set(PublicUserSerializer.Meta.fields))
 
     def test_self_with_normal_user(self):
-        force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request, pk=self.normal_user.pk)
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.get(get_detail_url(self.normal_user.pk))
         user = response.data
         keys = set(user.keys())
 
@@ -127,13 +123,9 @@ class CreateUsersAPITestCase(APITestCase):
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
         self.useradmin_test_group.add_user(self.useradmin_user)
 
-        self.factory = APIRequestFactory()
-        self.view = UsersViewSet.as_view({'post': 'create'})
-        self.request = self.factory.post('/api/users/', test_user_data)
-
     def successful_create(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=user)
+        response = self.client.post(get_list_url(), test_user_data)
 
         self.assertEqual(response.status_code, 201)
         created_user = User.objects.get(username=test_user_data['username'])
@@ -142,8 +134,8 @@ class CreateUsersAPITestCase(APITestCase):
             self.assertEqual(getattr(created_user, key), value)
 
     def test_with_normal_user(self):
-        force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.post(get_list_url(), test_user_data)
 
         self.assertEqual(response.status_code, 403)
 
@@ -155,8 +147,8 @@ class CreateUsersAPITestCase(APITestCase):
 
     def test_username(self):
         get_test_user()
-        force_authenticate(self.request, user=self.super_user)
-        response = self.view(self.request)
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(get_list_url(), test_user_data)
 
         self.assertEqual(response.status_code, 400)
 
@@ -180,15 +172,11 @@ class UpdateUsersAPITestCase(APITestCase):
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
         self.useradmin_test_group.add_user(self.useradmin_user)
 
-        self.factory = APIRequestFactory()
-        self.view = UsersViewSet.as_view({'put': 'update'})
         self.test_user = get_test_user()
-        self.request = self.factory.put('/api/users/',
-                                        self.modified_user)
 
     def successful_update(self, updater, update_object):
-        force_authenticate(self.request, user=updater)
-        response = self.view(self.request, pk=update_object.pk)
+        self.client.force_authenticate(user=updater)
+        response = self.client.put(get_detail_url(update_object.pk), self.modified_user)
         user = User.objects.get(pk=update_object.pk)
 
         self.assertEqual(response.status_code, 200)
@@ -203,8 +191,8 @@ class UpdateUsersAPITestCase(APITestCase):
         self.successful_update(self.useradmin_user, self.test_user)
 
     def test_other_with_normal_user(self):
-        force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request, pk=self.test_user.pk)
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.put(get_detail_url(self.test_user.pk), self.modified_user)
         user = User.objects.get(pk=self.test_user.pk)
 
         self.assertEqual(response.status_code, 403)
@@ -233,21 +221,18 @@ class DeleteUsersAPITestCase(APITestCase):
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
         self.useradmin_test_group.add_user(self.useradmin_user)
 
-        self.factory = APIRequestFactory()
-        self.view = UsersViewSet.as_view({'delete': 'destroy'})
         self.test_user = get_test_user()
-        self.request = self.factory.delete('/api/users/{0}/'.format(self.test_user.pk))
 
     def successful_delete(self, user):
-        force_authenticate(self.request, user=user)
-        response = self.view(self.request, pk=self.test_user.pk)
+        self.client.force_authenticate(user=user)
+        response = self.client.delete(get_detail_url(self.test_user.pk))
 
         self.assertEqual(response.status_code, 204)
         self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
 
     def test_with_normal_user(self):
-        force_authenticate(self.request, user=self.normal_user)
-        response = self.view(self.request, pk=self.test_user.pk)
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.delete(get_detail_url(self.test_user.pk))
         users = User.objects.filter(pk=self.test_user.pk)
 
         self.assertEqual(response.status_code, 403)
