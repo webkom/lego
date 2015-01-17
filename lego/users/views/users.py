@@ -36,7 +36,7 @@ class UsersViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         if (not request.user.has_perm('users.change_user')
-                and request.user.pk != pk):
+                and str(request.user.pk) != str(pk)):
 
             raise PermissionDenied()
 
