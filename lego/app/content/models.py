@@ -1,18 +1,14 @@
 # -*- coding: utf--8 -*-
 from django.db import models
+from django.test import TestCase
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
 from rest_framework.test import APIRequestFactory
 
 
-class TestMixin(models.Model):
+class TestMixin:
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
                 'test_users.yaml', 'test_articles.yaml']
-
-    def do_test(self):
-        self.setUp()
-        self.testAuthor()
-        self.testCanView()
 
     def setUp(self):
         self.user1 = User.objects.get(id=1)
@@ -29,7 +25,7 @@ class TestMixin(models.Model):
 
     def testCanView(self):
         response = self.view(self.factory.get('/api/articles/1'),
-                             pk=self.article.pk, user=self.user1)
+                             pk=self.item.pk, user=self.user1)
         self.assertEqual(response.status_code, 404)
 
 
