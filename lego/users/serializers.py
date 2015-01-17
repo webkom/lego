@@ -1,8 +1,7 @@
 # -*- coding: utf8 -*-
 from rest_framework import serializers
 
-from lego.users.permissions import can_retrieve_user
-from lego.users.permissions import can_view_abakusgroup
+from lego.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
 from lego.users.models import User, AbakusGroup
 
 
@@ -71,7 +70,7 @@ class AbakusGroupSerializer(DetailedAbakusGroupSerializer):
         view = self.context['view']
         request = self.context['request']
 
-        if view.action == 'retrieve' and can_view_abakusgroup(instance, request.user):
+        if view.action == 'retrieve' and can_retrieve_abakusgroup(instance, request.user):
             serializer = DetailedAbakusGroupSerializer(instance, context=self.context)
         else:
             serializer = PublicAbakusGroupSerializer(instance, context=self.context)
