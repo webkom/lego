@@ -1,12 +1,11 @@
 # -*- coding: utf--8 -*-
 from django.db import models
+
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
-from rest_framework.test import APIRequestFactory
 
 
 class TestMixin:
-
     def testAuthor(self):
         self.user1 = User.objects.get(id=1)
         self.user2 = User.objects.get(id=2)
