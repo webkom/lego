@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from rest_framework import serializers
 
-from lego.users.models import User
-from lego.users.permissions import can_retrieve_user
+from lego.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
+from lego.users.models import User, AbakusGroup
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
@@ -39,4 +39,39 @@ class UserSerializer(DetailedUserSerializer):
             serializer = DetailedUserSerializer(instance, context=self.context)
         else:
             serializer = PublicUserSerializer(instance, context=self.context)
+        return serializer.data
+
+
+class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbakusGroup
+        fields = (
+            'id',
+            'name',
+            'description',
+            'parent',
+            'permission_groups'
+        )
+
+
+class PublicAbakusGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbakusGroup
+        fields = (
+            'id',
+            'name',
+            'description',
+            'parent'
+        )
+
+
+class AbakusGroupSerializer(DetailedAbakusGroupSerializer):
+    def to_representation(self, instance):
+        view = self.context['view']
+        request = self.context['request']
+
+        if view.action == 'retrieve' and can_retrieve_abakusgroup(instance, request.user):
+            serializer = DetailedAbakusGroupSerializer(instance, context=self.context)
+        else:
+            serializer = PublicAbakusGroupSerializer(instance, context=self.context)
         return serializer.data

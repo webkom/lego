@@ -3,3 +3,13 @@
     name: UserAdminTest
     permission_groups:
       - 1
+
+- model: users.AbakusGroup
+  fields:
+    name: AbakusGroupAdminTest
+    permission_groups:
+      - 2
+
+- model: users.AbakusGroup
+  fields:
+    name: TestGroup
