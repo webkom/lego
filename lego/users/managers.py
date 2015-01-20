@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
-from django.db import models
+from basis.managers import PersistentModelManager
 
 
-class AbakusGroupManager(models.Manager):
+class AbakusGroupManager(PersistentModelManager):
     def get_by_natural_key(self, name):
         return self.get(name=name)
