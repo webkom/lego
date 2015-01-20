@@ -12,4 +12,3 @@ class ArticleTest(TestCase, TestMixin):
 
     model = Article
     ViewSet = ArticlesViewSet
-
