@@ -1,33 +1,19 @@
 # -*- coding: utf--8 -*-
 from django.db import models
-from django.test import TestCase
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
 from rest_framework.test import APIRequestFactory
 
 
 class TestMixin:
-    fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
-                'test_users.yaml', 'test_articles.yaml']
 
-    def setUp(self):
+    def testAuthor(self):
         self.user1 = User.objects.get(id=1)
         self.user2 = User.objects.get(id=2)
         self.item = self.model.objects.get(id=1)
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/articles')
-        self.view = self.ViewSet.as_view({'get': 'retrieve'})
-
-    def testAuthor(self):
         self.assertEqual(self.item.author, self.user1)
         self.assertNotEqual(self.item.author, self.user2)
-
-    def testCanView(self):
-        response = self.view(self.factory.get('/api/articles/1'),
-                             pk=self.item.pk, user=self.user1)
-        self.assertEqual(response.status_code, 404)
-
 
 
 class Content(ObjectPermissionsModel):
