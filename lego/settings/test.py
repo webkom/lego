@@ -1,4 +1,6 @@
-# -*- coding: utf8 -*-
+DEBUG = False
+TESTING = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
