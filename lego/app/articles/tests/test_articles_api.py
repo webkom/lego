@@ -1,5 +1,4 @@
 # -*- coding: utf--8 -*-
-from lego.app.articles.models import Article
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
 from lego.users.models import User, AbakusGroup
@@ -47,4 +46,3 @@ class RetrieveArticlesTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get('/api/v1/articles/2/')
         self.assertEqual(response.status_code, 404)
-
