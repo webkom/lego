@@ -1,4 +1,5 @@
 # -*- coding: utf--8 -*-
+from lego.app.articles.models import Article
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
 from lego.users.models import User, AbakusGroup
@@ -44,6 +45,14 @@ class RetrieveArticlesTestCase(APITestCase):
         request = self.factory.get('/api/articles/1')
         force_authenticate(request, user=self.abakus_user)
         response = self.view(request)
+
+        gr = self.abakus_user.all_groups
+        cv = Article.objects.get(id=1).can_view_groups.all()
+        print(gr)
+        print(cv)
+        print(set(gr).intersection(cv))
+        print(len(set(gr).intersection(set(cv))))
+
         self.assertEqual(response.status_code, 200)
 
     def test_without_group_permission(self):

@@ -32,7 +32,6 @@ INSTALLED_APPS = (
     'lego.app.content',
     'lego.app.flatpages',
     'lego.app.comments',
-    'lego.app.articles',
 )
 
 AUTHENTICATION_BACKENDS = (
