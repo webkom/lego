@@ -38,31 +38,13 @@ class RetrieveArticlesTestCase(APITestCase):
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')
         self.abakus_group.add_user(self.abakus_user)
 
-        self.factory = APIRequestFactory()
-        self.view = UsersViewSet.as_view({'get': 'list'})
-
     def test_with_group_permission(self):
-        request = self.factory.get('/api/articles/1')
-        force_authenticate(request, user=self.abakus_user)
-        response = self.view(request)
-
-        gr = self.abakus_user.all_groups
-        cv = Article.objects.get(id=1).can_view_groups.all()
-        print(gr)
-        print(cv)
-        print(set(gr).intersection(cv))
-        print(len(set(gr).intersection(set(cv))))
-
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get('/api/v1/articles/1/')
         self.assertEqual(response.status_code, 200)
 
     def test_without_group_permission(self):
-        request = self.factory.get('/api/articles/2')
-        force_authenticate(request, user=self.abakus_user)
-        response = self.view(request)
-        self.assertEqual(response.status_code, 403)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get('/api/v1/articles/2/')
+        self.assertEqual(response.status_code, 404)
 
-    def test_with_superuser(self):
-        request = self.factory.get('/api/articles/2')
-        force_authenticate(request, user=self.super_user)
-        response = self.view(request)
-        self.assertEqual(response.status_code, 200)
