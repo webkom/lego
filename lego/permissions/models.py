@@ -8,7 +8,6 @@ from lego.users.models import AbakusGroup, User
 
 
 def check_intersection(first, second):
-    print(first, second, "hei")
     return len(set(first).intersection(set(second))) > 0
 
 
