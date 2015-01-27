@@ -10,4 +10,3 @@ class TestMixin:
 
         self.assertEqual(self.item.author, self.user1)
         self.assertNotEqual(self.item.author, self.user2)
-
