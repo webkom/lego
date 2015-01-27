@@ -4,23 +4,12 @@ from django.db import models
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
 
-
-class TestMixin:
-    def testAuthor(self):
-        self.user1 = User.objects.get(id=1)
-        self.user2 = User.objects.get(id=2)
-        self.item = self.model.objects.get(id=1)
-
-        self.assertEqual(self.item.author, self.user1)
-        self.assertNotEqual(self.item.author, self.user2)
-
-
 class Content(ObjectPermissionsModel):
     class Meta:
         abstract = True
 
     title = models.CharField(max_length=255)
-    author = models.ForeignKey(User, editable=False, null=True)
+    author = models.ForeignKey(User)
     ingress = models.TextField()
     text = models.TextField(blank=True)
 
