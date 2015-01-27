@@ -4,6 +4,7 @@ from django.db import models
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
 
+
 class Content(ObjectPermissionsModel):
     class Meta:
         abstract = True
