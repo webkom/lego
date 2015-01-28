@@ -2,7 +2,7 @@
 from lego.users.models import User
 
 
-class TestMixin:
+class ContentTestMixin:
     def test_author(self):
         self.user1 = User.objects.get(id=1)
         self.user2 = User.objects.get(id=2)
