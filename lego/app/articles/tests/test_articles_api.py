@@ -1,7 +1,7 @@
 # -*- coding: utf--8 -*-
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
-from lego.users.models import User, AbakusGroup
+from lego.users.models import AbakusGroup, User
 from lego.users.views.users import UsersViewSet
 
 
