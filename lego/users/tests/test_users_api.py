@@ -1,10 +1,9 @@
 # -*- coding: utf8 -*-
 from django.core.urlresolvers import reverse
-
 from rest_framework.test import APITestCase
 
-from lego.users.models import User, AbakusGroup
-from lego.users.serializers import UserSerializer, PublicUserSerializer
+from lego.users.models import AbakusGroup, User
+from lego.users.serializers import PublicUserSerializer, UserSerializer
 
 test_user_data = {
     'username': 'new_testuser',

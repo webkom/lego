@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Group, Permission
 
 
 class AbakusModelBackend(ModelBackend):

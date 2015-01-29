@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from django.test import TestCase
 
-from lego.users.models import User
 from lego.app.comments.models import Comment
+from lego.users.models import User
 
 
 class CommentTestCase(TestCase):

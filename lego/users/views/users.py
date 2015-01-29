@@ -2,10 +2,10 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from lego.users.models import User
-from lego.users.serializers import UserSerializer
-from lego.users.permissions import UsersObjectPermissions
 from lego.permissions.model_permissions import PostDeleteModelPermissions
+from lego.users.models import User
+from lego.users.permissions import UsersObjectPermissions
+from lego.users.serializers import UserSerializer
 
 
 class UsersViewSet(viewsets.ModelViewSet):
