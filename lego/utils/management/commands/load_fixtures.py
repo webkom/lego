@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 import os
 
-from django.contrib.auth.models import Group
 from django.conf import settings
-from django.core.management import BaseCommand
+from django.contrib.auth.models import Group
 from django.core import serializers
+from django.core.management import BaseCommand
 
 from lego.app.oauth.models import APIApplication
 from lego.users.models import AbakusGroup, User

@@ -3,8 +3,8 @@ from basis.models import BasisModel
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from lego.users.models import User, AbakusGroup
 from lego.permissions.managers import PublicObjectPermissionsManager
+from lego.users.models import AbakusGroup, User
 
 
 def check_intersection(first, second):
