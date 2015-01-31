@@ -1,10 +1,9 @@
 # -*- coding: utf8 -*-
 from django.core.urlresolvers import reverse
-
 from rest_framework.test import APITestCase
 
+from lego.users.models import AbakusGroup, Membership, User
 from lego.users.serializers import DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
-from lego.users.models import User, AbakusGroup, Membership
 
 test_group_data = {
     'name': 'testgroup',

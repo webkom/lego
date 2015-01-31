@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from rest_framework import serializers
 
+from lego.users.models import AbakusGroup, User
 from lego.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
-from lego.users.models import User, AbakusGroup
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):

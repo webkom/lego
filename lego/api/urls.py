@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from django.conf import settings
-from django.conf.urls import patterns, url, include
+from django.conf.urls import include, patterns, url
 from django.core.urlresolvers import resolve
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
 from .v1 import router as v1

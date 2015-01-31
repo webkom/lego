@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
-from rest_framework import viewsets, serializers
+from rest_framework import serializers, viewsets
 
 from lego.permissions.filters import ObjectPermissionsFilter
-from lego.permissions.object_permissions import ObjectPermissions
 from lego.permissions.model_permissions import PostModelPermissions
+from lego.permissions.object_permissions import ObjectPermissions
 
 from .models import Page
 
