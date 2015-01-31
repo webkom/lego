@@ -1,6 +1,7 @@
 tasks:
   - tox
-  - flake8 
+  - flake8
+  - isort -c -rc lego
   - coverage report --fail-under=75
   - coverage xml
 

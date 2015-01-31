@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from lego.permissions.models import ObjectPermissionsModel
 from lego.permissions.tests.model import TestModel
-from lego.users.models import User, AbakusGroup
+from lego.users.models import AbakusGroup, User
 
 
 class ObjectPermissionsModelTestCase(TestCase):

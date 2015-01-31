@@ -13,6 +13,9 @@ prod:
 venv:
 	virtualenv -p `which python3` venv
 
+isort:
+	isort -rc lego
+
 lego/settings/local.py:
 	touch lego/settings/local.py
 
