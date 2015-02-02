@@ -1,8 +1,8 @@
 from django.test import TestCase
 
+from lego.app.content.tests import ContentTestMixin
 from lego.app.events.models import Event
 from lego.app.events.views.events import EventViewSet
-from lego.app.content.tests import ContentTestMixin
 
 
 class EventTest(TestCase, ContentTestMixin):
