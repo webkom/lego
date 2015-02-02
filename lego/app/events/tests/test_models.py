@@ -1,14 +1,14 @@
-# -*- coding: utf8 -*-
 from django.test import TestCase
+
 from lego.app.events.models import Event
+from lego.app.events.views.events import EventViewSet
+from lego.app.content.tests import ContentTestMixin
 
 
-class CapacityTestCase(TestCase):
-    fixtures = ['test_event.yaml']
+class EventTest(TestCase, ContentTestMixin):
 
-    def test_capacity(self):
-        event = Event.objects.get(pk=1)
-        pool_one = event.add_pool("1-2 klasse", 10)
-        pool_two = event.add_pool("3-5 klasse", 20)
-        capacity = pool_one.size + pool_two.size
-        self.assertEqual(capacity, event.capacity_count)
+    fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
+                'test_users.yaml', 'test_events.yaml']
+
+    model = Event
+    ViewSet = EventViewSet
