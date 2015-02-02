@@ -1,7 +1,6 @@
-from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
+from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
-from lego.users.views.users import UsersViewSet
 
 
 class ListEventsTestCase(APITestCase):
@@ -10,18 +9,24 @@ class ListEventsTestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
+        self.abakus_user = User.objects.filter(is_superuser=False).first()
 
-        self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/events/')
-        self.view = UsersViewSet.as_view({'get': 'list'})
+        self.abakus_group = AbakusGroup.objects.get(name='Abakus')
+        self.webkom_group = AbakusGroup.objects.get(name='Webkom')
 
     def test_with_abakus_user(self):
-        user1 = self.all_users.get(id=3)
-
-        force_authenticate(self.request, user=user1)
-        response = self.view(self.request)
-
+        self.abakus_group.add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get('/api/v1/events/')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_with_webkom_user(self):
+        self.webkom_group.add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get('/api/v1/events/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
 
 
 class RetrieveEventsTestCase(APITestCase):
@@ -30,7 +35,6 @@ class RetrieveEventsTestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.super_user = User.objects.filter(is_superuser=True).first()
         self.abakus_user = User.objects.filter(is_superuser=False).first()
 
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')

@@ -7,21 +7,21 @@
     text: TestText1
     event_type: 0
     location: R1
-    start_date: "2011-09-01T13:20:30+03:00"
-    end_date: "2012-09-01T13:20:30+03:00"
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     can_view_groups:
       - 1
 
 - model: events.Event
   pk: 2
   fields:
-    title: BedPres2
+    title: Webkom2
     author: 2
     ingress: TestIngress2
     text: TestText2
-    event_type: 1
-    location: R2
-    start_date: "2011-09-01T13:20:30+03:00"
-    end_date: "2012-09-01T13:20:30+03:00"
+    event_type: 3
+    location: F254
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     can_view_groups:
       - 10
