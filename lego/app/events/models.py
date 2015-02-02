@@ -25,16 +25,14 @@ class Event(Content):
     event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES, verbose_name=_("Event ype"))
     location = models.CharField(max_length=100, verbose_name=_("Location"))
 
-    start_date = models.DateTimeField(verbose_name=_("Start date"))
-    end_date = models.DateTimeField(verbose_name=_("End date"))
+    start_time = models.DateTimeField(verbose_name=_("Start time"))
+    end_time = models.DateTimeField(verbose_name=_("End time"))
 
     class Meta:
-        ordering = ["start_date"]
-        verbose_name = _("event")
-        verbose_name_plural = _("events")
+        ordering = ["start_time"]
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def save(self, *args, **kwargs):
         super(self.save(*args, **kwargs))

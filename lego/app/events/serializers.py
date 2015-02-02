@@ -6,4 +6,4 @@ from lego.app.events.models import Event
 class EventSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
-        fields = ('title', 'event_type', 'author', 'text', 'location', 'start_date', 'end_date')
+        fields = ('title', 'event_type', 'author', 'text', 'location', 'start_time', 'end_time')
