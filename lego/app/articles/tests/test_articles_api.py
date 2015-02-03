@@ -13,15 +13,12 @@ class ListArticlesTestCase(APITestCase):
         self.all_users = User.objects.all()
 
         self.factory = APIRequestFactory()
-        self.request = self.factory.get('/api/articles/')
         self.view = UsersViewSet.as_view({'get': 'list'})
 
     def test_with_abakus_user(self):
-        user1 = self.all_users.get(id=3)
-
-        force_authenticate(self.request, user=user1)
-        response = self.view(self.request)
-
+        user1 = self.all_users.all().filter(is_superuser=False).first()
+        self.client.force_authenticate(user=user1)
+        response = self.client.get('/api/v1/articles/')
         self.assertEqual(response.status_code, 200)
 
 
