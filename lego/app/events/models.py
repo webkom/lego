@@ -21,11 +21,11 @@ class Event(Content):
         (EVENT, _('Event'))
     )
 
-    event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES, verbose_name=_('Event type'))
-    location = models.CharField(max_length=100, verbose_name=_('Location'))
+    event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES)
+    location = models.CharField(max_length=100)
 
-    start_time = models.DateTimeField(verbose_name=_('Start time'))
-    end_time = models.DateTimeField(verbose_name=_('End time'))
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
 
     class Meta:
         permissions = ('retrieve_event', 'Can retrieve event'), ('list_event', 'Can list event')
