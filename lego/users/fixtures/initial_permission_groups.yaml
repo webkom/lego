@@ -45,3 +45,25 @@
         - retrieve_abakusgroup
         - users
         - abakusgroup
+
+- model: auth.Group
+  pk: 3
+  fields:
+    name: EventAdmin
+    permissions:
+      -
+        - delete_event
+        - events
+        - event
+      -
+        - add_event
+        - events
+        - event
+      -
+        - change_event
+        - events
+        - event
+      -
+        - retrieve_event
+        - events
+        - event

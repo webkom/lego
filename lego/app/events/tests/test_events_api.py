@@ -1,6 +1,21 @@
+from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
+
+test_event_data = {
+    'title': 'Event',
+    'author': 1,
+    'ingress': 'TestIngress',
+    'text': 'TestText',
+    'event_type': 4,
+    'location': 'F252',
+    'start_time': '2011-09-01T13:20:30+03:00',
+    'end_time': '2012-09-01T13:20:30+03:00',
+}
+
+get_list_url = lambda: reverse('event-list')
+get_detail_url = lambda pk: reverse('event-detail', kwargs={'pk': pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -8,7 +23,6 @@ class ListEventsTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.all_users = User.objects.all()
         self.abakus_user = User.objects.filter(is_superuser=False).first()
 
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')
@@ -17,14 +31,14 @@ class ListEventsTestCase(APITestCase):
     def test_with_abakus_user(self):
         self.abakus_group.add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get('/api/v1/events/')
+        response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
 
     def test_with_webkom_user(self):
         self.webkom_group.add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get('/api/v1/events/')
+        response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
@@ -34,7 +48,6 @@ class RetrieveEventsTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.all_users = User.objects.all()
         self.abakus_user = User.objects.filter(is_superuser=False).first()
 
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')
@@ -42,10 +55,26 @@ class RetrieveEventsTestCase(APITestCase):
 
     def test_with_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get('/api/v1/events/1/')
+        response = self.client.get(get_detail_url(1))
         self.assertEqual(response.status_code, 200)
 
     def test_without_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get('/api/v1/events/2/')
+        response = self.client.get(get_detail_url(2))
         self.assertEqual(response.status_code, 404)
+
+
+class CreateEventsTestCase(APITestCase):
+    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.filter(is_superuser=False).first()
+
+        self.event_admin_test = AbakusGroup.objects.get(name='EventAdminTest')
+        self.event_admin_test.add_user(self.abakus_user)
+
+    def test_create(self):
+        self.client.force_authenticate(self.abakus_user)
+        response = self.client.post(get_list_url(), test_event_data)
+        self.assertEqual(response.status_code, 201)
