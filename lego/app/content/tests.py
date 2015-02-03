@@ -10,3 +10,9 @@ class ContentTestMixin:
 
         self.assertEqual(self.item.author, self.user1)
         self.assertNotEqual(self.item.author, self.user2)
+
+    def test_str(self):
+        item = self.model.objects.all().get(id=1)
+        author = User.objects.all().get(id=1)
+        self.assertEqual(item.__str__(), item.title +
+                         "(by: " + author.__str__() + ")")
