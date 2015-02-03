@@ -1,5 +1,5 @@
 from django.db import models
-from django.template.defaultfilters import slugify
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from lego.app.content.models import Content
@@ -21,20 +21,21 @@ class Event(Content):
         (EVENT, _('Event'))
     )
 
-    event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES, verbose_name=_("Event ype"))
-    location = models.CharField(max_length=100, verbose_name=_("Location"))
+    event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES, verbose_name=_('Event type'))
+    location = models.CharField(max_length=100, verbose_name=_('Location'))
 
-    start_time = models.DateTimeField(verbose_name=_("Start time"))
-    end_time = models.DateTimeField(verbose_name=_("End time"))
+    start_time = models.DateTimeField(verbose_name=_('Start time'))
+    end_time = models.DateTimeField(verbose_name=_('End time'))
 
     class Meta:
-        ordering = ["start_time"]
+        permissions = ('retrieve_event', 'Can retrieve event'), ('list_event', 'Can list event')
+        ordering = ['start_time']
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        super(self.save(*args, **kwargs))
+        super(Event, self).save(*args, **kwargs)
 
     def slug(self):
-        return slugify(self.name)
+        return slugify(self.title)

@@ -13,3 +13,9 @@
 - model: users.AbakusGroup
   fields:
     name: TestGroup
+
+- model: users.AbakusGroup
+  fields:
+    name: EventAdminTest
+    permission_groups:
+      - 3
