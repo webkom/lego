@@ -1,5 +1,5 @@
 # -*- coding: utf--8 -*-
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
 from lego.users.views.users import UsersViewSet
@@ -11,8 +11,6 @@ class ListArticlesTestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-
-        self.factory = APIRequestFactory()
         self.view = UsersViewSet.as_view({'get': 'list'})
 
     def test_with_abakus_user(self):
