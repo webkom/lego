@@ -1,9 +1,9 @@
 # -*- coding: utf--8 -*-
 from django.core.urlresolvers import reverse
+from lego.app.articles.models import Article
 from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
-from lego.users.views.users import UsersViewSet
 
 get_list_url = lambda: reverse('article-list')
 get_detail_url = lambda pk: reverse('article-detail', kwargs={'pk': pk})
@@ -15,13 +15,23 @@ class ListArticlesTestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.view = UsersViewSet.as_view({'get': 'list'})
 
-    def test_with_abakus_user(self):
-        user1 = self.all_users.all().filter(is_superuser=False).first()
-        self.client.force_authenticate(user=user1)
+    def test_unauthorized_user(self):
         response = self.client.get(get_list_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_authorized_without_permission(self):
+        user = self.all_users.all().filter(is_superuser=False).first()
+
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        abakus.add_user(user)
+
+        article = Article.objects.get(id=1)
+        article.can_view_groups.add(abakus)
+
+        self.client.force_authenticate(user=user)
+        response = self.client.get(get_list_url())
+        self.assertEqual(len(response.data), 2)
 
 
 class RetrieveArticlesTestCase(APITestCase):
