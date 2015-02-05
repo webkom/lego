@@ -7,6 +7,8 @@ markdown
 unicode-slugify
 pyyaml
 
+git+https://github.com/webkom/django-holonet.git
+
 djangorestframework>=3,<4
 django-basis
 django-extensions
