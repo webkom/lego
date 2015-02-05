@@ -23,6 +23,8 @@ INSTALLED_APPS = (
     'oauth2_provider',
     'rest_framework',
 
+    'holonet_django',
+
     'lego.users',
     'lego.utils',
     'lego.permissions',
