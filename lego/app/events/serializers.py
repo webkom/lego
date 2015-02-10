@@ -1,8 +1,7 @@
-from rest_framework import serializers
-
 from lego.app.events.models import Event
+from lego.utils.base_serializer import BasisSerializer
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventSerializer(BasisSerializer):
     class Meta:
         model = Event

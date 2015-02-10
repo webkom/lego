@@ -1,9 +1,7 @@
-from rest_framework import serializers
-
 from lego.app.articles.models import Article
+from lego.utils.base_serializer import BasisSerializer
 
 
-class ArticleSerializer(serializers.ModelSerializer):
+class ArticleSerializer(BasisSerializer):
     class Meta:
         model = Article
-        fields = ('title', 'author', 'ingress', 'text')
