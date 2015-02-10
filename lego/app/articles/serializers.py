@@ -1,9 +1,7 @@
-from lego.halla import BaseSerializer
-
 from lego.app.articles.models import Article
+from lego.utils.base_serializer import BasisSerializer
 
 
-class ArticleSerializer(BaseSerializer):
+class ArticleSerializer(BasisSerializer):
     class Meta:
         model = Article
-        fields = ('title', 'author', 'ingress', 'text')
