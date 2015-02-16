@@ -12,6 +12,7 @@ test_event_data = {
     'location': 'F252',
     'start_time': '2011-09-01T13:20:30+03:00',
     'end_time': '2012-09-01T13:20:30+03:00',
+    'merge_time': '2012-01-01T13:20:30+03:00',
 }
 
 get_list_url = lambda: reverse('event-list')
