@@ -1,0 +1,2 @@
+class EventFullException(Exception):
+    pass
