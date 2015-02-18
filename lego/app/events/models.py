@@ -31,7 +31,7 @@ class Event(Content):
 
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    merge_date = models.DateTimeField(null=True)
+    merge_time = models.DateTimeField(null=True)
 
     class Meta:
         permissions = ('retrieve_event', 'Can retrieve event'), ('list_event', 'Can list event')
