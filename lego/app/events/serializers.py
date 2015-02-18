@@ -1,4 +1,5 @@
 from basis.serializers import BasisSerializer
+from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.app.comments.serializers import CommentSerializer
@@ -16,11 +17,13 @@ class EventSerializer(BasisSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
     pools = PoolSerializer(many=True, required=False)
+    total_capacity_count = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'comments', 'comment_target', 'end_time',
-                  'event_type', 'location', 'author', 'start_time')
+        fields = ('id', 'title', 'author', 'description', 'text', 'event_type',
+                  'location', 'comments', 'comment_target', 'start_time',
+                  'end_time', 'merge_time', 'pools', 'total_capacity_count')
 
     def create(self, validated_data):
         pool_data = validated_data.pop('pools')
