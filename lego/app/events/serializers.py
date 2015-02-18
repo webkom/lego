@@ -9,6 +9,7 @@ class PoolSerializer(BasisSerializer):
 
     class Meta:
         model = Pool
+        exclude = ('event',)
 
 
 class EventSerializer(BasisSerializer):
@@ -22,8 +23,8 @@ class EventSerializer(BasisSerializer):
                   'event_type', 'location', 'author', 'start_time')
 
     def create(self, validated_data):
-        print(validated_data)
         pool_data = validated_data.pop('pools')
         event = Event.objects.create(**validated_data)
-        Pool.objects.create(event=event, **pool_data)
+        for pool in pool_data:
+            Pool.objects.create(event=event, **pool)
         return event
