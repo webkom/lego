@@ -7,7 +7,7 @@ class PoolSerializer(BasisSerializer):
 
     class Meta:
         model = Pool
-        exclude = ('event',)
+        fields = ('name', 'size', 'activation_date')
 
 
 class EventSerializer(BasisSerializer):
