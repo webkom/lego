@@ -13,6 +13,15 @@ test_event_data = {
     'start_time': '2011-09-01T13:20:30+03:00',
     'end_time': '2012-09-01T13:20:30+03:00',
     'merge_time': '2012-01-01T13:20:30+03:00',
+    'pools':
+        [
+            {
+                'name': 'TESTPOOL1',
+                'size': 10,
+                'activation_date': '2012-09-01T13:20:30+03:00'
+            }
+        ]
+
 }
 
 get_list_url = lambda: reverse('event-list')
@@ -78,4 +87,5 @@ class CreateEventsTestCase(APITestCase):
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
         response = self.client.post(get_list_url(), test_event_data)
+        print('SD', response.data)
         self.assertEqual(response.status_code, 201)
