@@ -13,6 +13,15 @@ _test_event_data = {
     'start_time': '2011-09-01T13:20:30+03:00',
     'end_time': '2012-09-01T13:20:30+03:00',
     'merge_time': '2012-01-01T13:20:30+03:00',
+    'pools':
+        [
+            {
+                'name': 'TESTPOOL1',
+                'size': 10,
+                'activation_date': '2012-09-01T13:20:30+03:00'
+            }
+        ]
+
 }
 
 
