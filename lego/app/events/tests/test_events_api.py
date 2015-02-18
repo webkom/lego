@@ -19,6 +19,11 @@ test_event_data = {
                 'name': 'TESTPOOL1',
                 'size': 10,
                 'activation_date': '2012-09-01T13:20:30+03:00'
+            },
+            {
+                'name': 'TESTPOOL2',
+                'size': 20,
+                'activation_date': '2012-09-02T13:20:30+03:00'
             }
         ]
 
