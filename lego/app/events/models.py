@@ -81,7 +81,7 @@ class Event(Content):
     @property
     def is_merged(self):
         if self.number_of_pools > 1:
-            return timezone.now() >= self.merge_date
+            return timezone.now() >= self.merge_time
 
     @property
     def is_full(self):
