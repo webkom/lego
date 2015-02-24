@@ -46,8 +46,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def slug(self):
         return slugify(self.title)
 
-    def add_pool(self, name, size, date):
-        return self.pools.create(name=name, size=size, activation_date=date)
+    def add_pool(self, name, size, activation_date):
+        return self.pools.create(name=name, size=size, activation_date=activation_date)
 
     def can_register(self, user=None, pool=None):
         """
