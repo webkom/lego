@@ -60,7 +60,7 @@ class RegistrationTestCase(TestCase):
 
     def setUp(self):
         event = Event.objects.get(pk=1)
-        event.merge_date = timezone.now() + timedelta(hours=24)
+        event.merge_time = timezone.now() + timedelta(hours=24)
         event.save()
 
     def test_can_register_single_pool(self):
