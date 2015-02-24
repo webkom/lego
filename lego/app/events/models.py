@@ -54,14 +54,11 @@ class Event(Content):
         Checks whether an user is able to register for an event.
         """
 
-        if user is None:
-            pass
-
         if pool is None:
             return False
 
         if not self.is_full:
-            if self.user_in_pool(pool) and self.is_activated(pool):
+            if self.user_in_pool(user, pool) and self.is_activated(pool):
                 if self.number_of_pools == 1:
                     return True
                 elif self.number_of_pools > 1:
@@ -123,7 +120,7 @@ class Event(Content):
     def number_of_pools(self):
         return self.pools.count()
 
-    def user_in_pool(self, pool):
+    def user_in_pool(self, user, pool):
         """
         Dummy user check as of now.
         """
