@@ -46,33 +46,28 @@ class Event(Content):
     def slug(self):
         return slugify(self.title)
 
-    def add_pool(self, name, size, date):
-        return self.pools.create(name=name, size=size, activation_date=date)
+    def add_pool(self, name, size, activation_date):
+        return self.pools.create(name=name, size=size, activation_date=activation_date)
 
     def can_register(self, user=None, pool=None):
         """
         Checks whether an user is able to register for an event.
         """
 
-        if user is None:
-            pass
-
         if pool is None:
             return False
 
-        if not self.is_full:
-            if self.user_in_pool(pool) and self.is_activated(pool):
-                if self.number_of_pools == 1:
-                    return True
-                elif self.number_of_pools > 1:
-                    if not self.is_merged:
-                        return pool.size > pool.number_of_registrations
-                    elif self.is_merged:
-                        return True
-        elif self.is_full:
+        if not self.is_activated(pool):
+            return False
+
+        if self.is_full or pool.size <= pool.number_of_registrations and not self.is_merged:
             raise EventFullException()
 
-        return False
+        if self.user_in_pool(user, pool):
+            if self.number_of_pools == 1 or self.is_merged:
+                return True
+            elif self.number_of_pools > 1:
+                return pool.size > pool.number_of_registrations
 
     def register(self, user=None, pool=None):
         if self.can_register(user, pool) and pool is not None:
@@ -84,7 +79,7 @@ class Event(Content):
     @property
     def is_merged(self):
         if self.number_of_pools > 1:
-            return timezone.now() >= self.merge_date
+            return timezone.now() >= self.merge_time
 
     @property
     def is_full(self):
@@ -123,7 +118,7 @@ class Event(Content):
     def number_of_pools(self):
         return self.pools.count()
 
-    def user_in_pool(self, pool):
+    def user_in_pool(self, user, pool):
         """
         Dummy user check as of now.
         """
