@@ -90,7 +90,7 @@ class RegistrationTestCase(TestCase):
 
     def test_can_register_post_merge(self):
         event = Event.objects.get(pk=1)
-        event.merge_date = timezone.now() - timedelta(hours=12)
+        event.merge_time = timezone.now() - timedelta(hours=12)
         pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
         pool_two = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
         event.register(user=None, pool=pool_one)
@@ -101,7 +101,7 @@ class RegistrationTestCase(TestCase):
 
     def test_unable_to_register_post_merge(self):
         event = Event.objects.get(pk=1)
-        event.merge_date = timezone.now() - timedelta(hours=12)
+        event.merge_time = timezone.now() - timedelta(hours=12)
         pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
         pool_two = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
         event.register(user=None, pool=pool_one)

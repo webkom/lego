@@ -57,19 +57,18 @@ class Event(Content):
         if pool is None:
             return False
 
-        if not self.is_full:
-            if self.user_in_pool(user, pool) and self.is_activated(pool):
-                if self.number_of_pools == 1:
-                    return True
-                elif self.number_of_pools > 1:
-                    if not self.is_merged:
-                        return pool.size > pool.number_of_registrations
-                    elif self.is_merged:
-                        return True
-        elif self.is_full:
+        if not self.is_activated(pool):
+            return False
+
+        if self.is_full or pool.size <= pool.number_of_registrations and not self.is_merged:
             raise EventFullException()
 
-        return False
+        if self.user_in_pool(user, pool):
+            if self.number_of_pools == 1 or self.is_merged:
+                return True
+            elif self.number_of_pools > 1:
+                return pool.size > pool.number_of_registrations
+
 
     def register(self, user=None, pool=None):
         if self.can_register(user, pool) and pool is not None:
