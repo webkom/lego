@@ -69,7 +69,6 @@ class Event(Content):
             elif self.number_of_pools > 1:
                 return pool.size > pool.number_of_registrations
 
-
     def register(self, user=None, pool=None):
         if self.can_register(user, pool) and pool is not None:
             return pool.register(user)
