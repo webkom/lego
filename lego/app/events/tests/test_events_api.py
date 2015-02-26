@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
 
-test_event_data = {
+_test_event_data = {
     'title': 'Event',
     'author': 1,
     'ingress': 'TestIngress',
@@ -14,8 +14,13 @@ test_event_data = {
     'end_time': '2012-09-01T13:20:30+03:00',
 }
 
-get_list_url = lambda: reverse('event-list')
-get_detail_url = lambda pk: reverse('event-detail', kwargs={'pk': pk})
+
+def _get_list_url():
+    return reverse('event-list')
+
+
+def _get_detail_url(pk):
+    return reverse('event-detail', kwargs={'pk': pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -31,14 +36,14 @@ class ListEventsTestCase(APITestCase):
     def test_with_abakus_user(self):
         self.abakus_group.add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(get_list_url())
+        response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
 
     def test_with_webkom_user(self):
         self.webkom_group.add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(get_list_url())
+        response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
@@ -55,12 +60,12 @@ class RetrieveEventsTestCase(APITestCase):
 
     def test_with_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(get_detail_url(1))
+        response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, 200)
 
     def test_without_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(get_detail_url(2))
+        response = self.client.get(_get_detail_url(2))
         self.assertEqual(response.status_code, 404)
 
 
@@ -76,5 +81,5 @@ class CreateEventsTestCase(APITestCase):
 
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
-        response = self.client.post(get_list_url(), test_event_data)
+        response = self.client.post(_get_list_url(), _test_event_data)
         self.assertEqual(response.status_code, 201)

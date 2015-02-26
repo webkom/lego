@@ -9,5 +9,6 @@ class ObjectPermissionsFilter(filters.BaseFilterBackend):
             return queryset.filter(require_auth=False, can_view_groups=None)
 
         groups = [abakus_group.pk for abakus_group in request.user.all_groups]
-        return queryset.filter(Q(can_view_groups=None) | Q(can_view_groups__in=groups)
-                               | Q(created_by=request.user))
+        return queryset.filter(
+            Q(can_view_groups=None) | Q(can_view_groups__in=groups) | Q(created_by=request.user)
+        )
