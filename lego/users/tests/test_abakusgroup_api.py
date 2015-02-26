@@ -5,14 +5,18 @@ from rest_framework.test import APITestCase
 from lego.users.models import AbakusGroup, Membership, User
 from lego.users.serializers import DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
 
-test_group_data = {
+_test_group_data = {
     'name': 'testgroup',
     'description': 'test group',
 }
 
 
-get_detail_url = lambda pk: reverse('abakusgroup-detail', kwargs={'pk': pk})
-get_list_url = lambda: reverse('abakusgroup-list')
+def _get_list_url():
+    return reverse('abakusgroup-list')
+
+
+def _get_detail_url(pk):
+    return reverse('abakusgroup-detail', kwargs={'pk': pk})
 
 
 class ListAbakusGroupAPITestCase(APITestCase):
@@ -24,7 +28,7 @@ class ListAbakusGroupAPITestCase(APITestCase):
 
     def successful_list(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.get(get_list_url())
+        response = self.client.get(_get_list_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), len(self.all_groups))
@@ -34,7 +38,7 @@ class ListAbakusGroupAPITestCase(APITestCase):
             self.assertEqual(keys, set(PublicAbakusGroupSerializer.Meta.fields))
 
     def test_without_auth(self):
-        response = self.client.get(get_list_url())
+        response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 401)
 
     def test_with_auth(self):
@@ -60,7 +64,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
 
     def successful_retrieve(self, user, pk):
         self.client.force_authenticate(user=user)
-        response = self.client.get(get_detail_url(pk))
+        response = self.client.get(_get_detail_url(pk))
         user = response.data
         keys = set(user.keys())
 
@@ -68,7 +72,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
     def test_without_auth(self):
-        response = self.client.get(get_detail_url(1))
+        response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
@@ -76,7 +80,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
 
     def test_own_group(self):
         self.client.force_authenticate(user=self.without_permission)
-        response = self.client.get(get_detail_url(self.test_group.pk))
+        response = self.client.get(_get_detail_url(self.test_group.pk))
         group = response.data
         keys = set(group.keys())
 
@@ -87,7 +91,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         new_group = AbakusGroup.objects.create(name='new_group')
 
         self.client.force_authenticate(user=self.without_permission)
-        response = self.client.get(get_detail_url(new_group.pk))
+        response = self.client.get(_get_detail_url(new_group.pk))
         group = response.data
         keys = set(group.keys())
 
@@ -114,16 +118,16 @@ class CreateAbakusGroupAPITestCase(APITestCase):
 
     def successful_create(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.post(get_list_url(), test_group_data)
+        response = self.client.post(_get_list_url(), _test_group_data)
 
         self.assertEqual(response.status_code, 201)
-        created_group = AbakusGroup.objects.get(name=test_group_data['name'])
+        created_group = AbakusGroup.objects.get(name=_test_group_data['name'])
 
-        for key, value in test_group_data.items():
+        for key, value in _test_group_data.items():
             self.assertEqual(getattr(created_group, key), value)
 
     def test_without_auth(self):
-        response = self.client.post(get_list_url(), test_group_data)
+        response = self.client.post(_get_list_url(), _test_group_data)
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
@@ -131,11 +135,11 @@ class CreateAbakusGroupAPITestCase(APITestCase):
 
     def test_without_permission(self):
         self.client.force_authenticate(user=self.without_permission)
-        response = self.client.post(get_list_url(), test_group_data)
+        response = self.client.post(_get_list_url(), _test_group_data)
 
         self.assertEqual(response.status_code, 403)
         self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get,
-                          name=test_group_data['name'])
+                          name=_test_group_data['name'])
 
 
 class UpdateAbakusGroupAPITestCase(APITestCase):
@@ -164,7 +168,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
     def successful_update(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.put(get_detail_url(self.test_group.pk),
+        response = self.client.put(_get_detail_url(self.test_group.pk),
                                    self.modified_group)
         group = AbakusGroup.objects.get(pk=self.test_group.pk)
 
@@ -175,7 +179,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(group.parent.pk, self.modified_group['parent'])
 
     def test_without_auth(self):
-        response = self.client.put(get_detail_url(self.test_group.pk),
+        response = self.client.put(_get_detail_url(self.test_group.pk),
                                    self.modified_group)
         self.assertEqual(response.status_code, 401)
 
@@ -184,7 +188,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
     def test_without_permission(self):
         self.client.force_authenticate(user=self.without_permission)
-        response = self.client.put(get_detail_url(self.test_group.pk),
+        response = self.client.put(_get_detail_url(self.test_group.pk),
                                    self.modified_group)
 
         self.assertEqual(response.status_code, 403)
@@ -213,13 +217,13 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
 
     def successful_delete(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.delete(get_detail_url(self.test_group.pk))
+        response = self.client.delete(_get_detail_url(self.test_group.pk))
 
         self.assertEqual(response.status_code, 204)
         self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get, pk=self.test_group.pk)
 
     def test_without_auth(self):
-        response = self.client.delete(get_detail_url(self.test_group.pk))
+        response = self.client.delete(_get_detail_url(self.test_group.pk))
         self.assertEqual(response.status_code, 401)
 
     def test_with_permission(self):
@@ -227,12 +231,12 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
 
     def test_without_permission(self):
         self.client.force_authenticate(user=self.without_permission)
-        response = self.client.delete(get_detail_url(self.test_group.pk))
+        response = self.client.delete(_get_detail_url(self.test_group.pk))
 
         self.assertEqual(response.status_code, 403)
 
     def test_unsuccessful_delete_as_leader(self):
         self.client.force_authenticate(user=self.leader)
-        response = self.client.delete(get_detail_url(self.test_group.pk))
+        response = self.client.delete(_get_detail_url(self.test_group.pk))
 
         self.assertEqual(response.status_code, 403)
