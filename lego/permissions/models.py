@@ -37,13 +37,13 @@ class ObjectPermissionsModel(BasisModel):
         if not user.is_authenticated():
             return not self.needs_auth()
 
-        return (user == self.created_by
-                or check_intersection(user.all_groups, self.can_view_groups.all()))
+        return (user == self.created_by or
+                check_intersection(user.all_groups, self.can_view_groups.all()))
 
     def can_edit(self, user):
         if not user.is_authenticated():
             return not self.needs_auth()
 
-        return (user == self.created_by
-                or user in self.can_edit_users.all()
-                or len(set(user.all_groups).intersection(self.can_edit_groups.all())))
+        return (user == self.created_by or
+                user in self.can_edit_users.all() or
+                len(set(user.all_groups).intersection(self.can_edit_groups.all())))
