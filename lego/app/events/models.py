@@ -149,7 +149,7 @@ class Pool(BasisModel):
 
 class Registration(BasisModel):
 
-    user = models.OneToOneField(User, null=True, related_name='registrations')
+    user = models.ForeignKey(User, null=True, related_name='registrations')
     pool = models.ForeignKey(Pool, related_name='registrations')
 
     class Meta:
