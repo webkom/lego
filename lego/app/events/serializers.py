@@ -13,21 +13,29 @@ class PoolSerializer(BasisSerializer):
         fields = ('name', 'size', 'activation_date')
 
 
-class EventSerializer(BasisSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
-    pools = PoolSerializer(many=True, required=False)
+class EventCreateAndUpdateSerializer(BasisSerializer):
+    pools = PoolSerializer(many=True)
     total_capacity_count = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'author', 'description', 'text', 'event_type',
-                  'location', 'comments', 'comment_target', 'start_time',
-                  'end_time', 'merge_time', 'pools', 'total_capacity_count')
+        fields = ('title', 'author', 'description', 'text', 'event_type', 'location',
+                  'start_time', 'end_time', 'merge_time', 'pools', 'total_capacity_count')
 
     def create(self, validated_data):
-        pool_data = validated_data.pop('pools')
+        pools_data = validated_data.pop('pools')
         event = Event.objects.create(**validated_data)
-        for pool in pool_data:
+        for pool in pools_data:
             Pool.objects.create(event=event, **pool)
         return event
+
+
+class EventReadSerializer(BasisSerializer):
+    comments = CommentSerializer(read_only=True, many=True)
+    comment_target = CharField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('title', 'author', 'description', 'text', 'event_type', 'location',
+                  'comments', 'comment_target', 'start_time', 'end_time', 'pools',
+                  'total_capacity_count', 'waiting_list')
