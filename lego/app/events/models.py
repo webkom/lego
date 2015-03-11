@@ -150,6 +150,7 @@ class Pool(BasisModel):
 class Registration(BasisModel):
 
     user = models.ForeignKey(User, null=True, related_name='registrations')
+    event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, related_name='registrations')
 
     class Meta:
