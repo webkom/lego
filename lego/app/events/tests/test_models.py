@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from lego.app.content.tests import ContentTestMixin
-from lego.app.events.exceptions import EventFullException
+from lego.users.models import User
 from lego.app.events.models import Event
 from lego.app.events.views.events import EventViewSet
 
