@@ -78,6 +78,7 @@ class RegistrationTestCase(TestCase):
             event.register(user=user, pool=pool)
 
         self.assertEqual(event.waiting_list.size, people_to_place_in_waiting_list)
+        self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
     @unittest.expectedFailure
     def test_unable_to_register_if_full(self):
