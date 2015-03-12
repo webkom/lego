@@ -13,12 +13,12 @@ class PoolSerializer(BasisSerializer):
 
 class EventCreateAndUpdateSerializer(BasisSerializer):
     pools = PoolSerializer(many=True)
-    total_capacity_count = serializers.ReadOnlyField()
+    size = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
         fields = ('title', 'author', 'ingress', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'merge_time', 'pools', 'total_capacity_count')
+                  'start_time', 'end_time', 'merge_time', 'pools', 'size')
 
     def create(self, validated_data):
         pools_data = validated_data.pop('pools')
@@ -32,5 +32,5 @@ class EventReadSerializer(BasisSerializer):
     class Meta:
         model = Event
         fields = ('title', 'author', 'ingress', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'pools', 'total_capacity_count',
+                  'start_time', 'end_time', 'pools', 'size',
                   'waiting_list')

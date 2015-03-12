@@ -80,10 +80,10 @@ class Event(Content):
 
     @property
     def is_full(self):
-        return self.total_capacity_count <= self.total_registrations_count
+        return self.size <= self.number_of_registrations
 
     @property
-    def total_capacity_count(self):
+    def size(self):
         """
         Calculates total capacity of participants with or without multiple pools.
         """
@@ -96,16 +96,11 @@ class Event(Content):
         return capacity
 
     @property
-    def total_registrations_count(self):
+    def number_of_registrations(self):
         """
         Calculates total registrations with or without multiple pools.
         """
-
-        registrations = 0
-        if self.number_of_pools > 0:
-            for pool in self.all_pools:
-                registrations += pool.number_of_registrations
-        return registrations
+        return len(self.registrations.all())
 
     @property
     def all_pools(self):
