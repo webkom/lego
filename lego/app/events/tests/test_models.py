@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from lego.app.content.tests import ContentTestMixin
-from lego.app.events.exceptions import EventFullException
+from lego.users.models import User
 from lego.app.events.models import Event
 from lego.app.events.views.events import EventViewSet
 
@@ -34,17 +34,17 @@ class EventMethodTest(TestCase):
 
 
 class PoolCapacityTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_no_pools_events.yaml']
+    fixtures = ['test_users.yaml', 'test_events.yaml']
 
     def test_capacity_with_single_pool(self):
-        event = Event.objects.get(pk=1)
+        event = Event.objects.get(title="NO_POOLS")
         sizes_to_add = [10]
         for size in sizes_to_add:
             event.add_pool("1-5 klasse", size, timezone.now() - timedelta(hours=24))
         self.assertEqual(sum(sizes_to_add), event.total_capacity_count)
 
     def test_capacity_with_multiple_pools(self):
-        event = Event.objects.get(pk=1)
+        event = Event.objects.get(title="NO_POOLS")
         sizes_to_add = [10, 20]
         for size in sizes_to_add:
             event.add_pool("pool", size, timezone.now() - timedelta(hours=24))
