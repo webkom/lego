@@ -34,26 +34,21 @@ class EventMethodTest(TestCase):
 
 
 class PoolCapacityTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_events.yaml']
+    fixtures = ['test_users.yaml', 'test_no_pools_events.yaml']
 
     def test_capacity_with_single_pool(self):
         event = Event.objects.get(pk=1)
-        pool = event.add_pool("1-5 klasse", 10, timezone.now() - timedelta(hours=24))
-        self.assertEqual(pool.size, event.total_capacity_count)
+        sizes_to_add = [10]
+        for size in sizes_to_add:
+            event.add_pool("1-5 klasse", size, timezone.now() - timedelta(hours=24))
+        self.assertEqual(sum(sizes_to_add), event.total_capacity_count)
 
     def test_capacity_with_multiple_pools(self):
         event = Event.objects.get(pk=1)
-        pool_one = event.add_pool("1-2 klasse", 10, timezone.now() - timedelta(hours=24))
-        pool_two = event.add_pool("3-5 klasse", 20, timezone.now() - timedelta(hours=24))
-        capacity = pool_one.size + pool_two.size
-        self.assertEqual(capacity, event.total_capacity_count)
-
-    def test_capacity_with_multiple_pools_pre_activation(self):
-        event = Event.objects.get(pk=1)
-        pool_one = event.add_pool("1-2 klasse", 10, timezone.now() - timedelta(hours=24))
-        event.add_pool("3-5 klasse", 20, timezone.now() + timedelta(hours=24))
-        capacity = pool_one.size
-        self.assertEqual(capacity, event.total_capacity_count)
+        sizes_to_add = [10, 20]
+        for size in sizes_to_add:
+            event.add_pool("pool", size, timezone.now() - timedelta(hours=24))
+        self.assertEqual(sum(sizes_to_add), event.total_capacity_count)
 
 
 class RegistrationTestCase(TestCase):
