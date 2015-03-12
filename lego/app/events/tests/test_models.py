@@ -80,6 +80,20 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_list.size, people_to_place_in_waiting_list)
         self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
+    def test_number_of_waiting_registrations(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        people_to_place_in_waiting_list = 3
+
+        for n in range(pool.size + 3):
+            username = first_name = last_name = email = str(n)
+            user = User(username=username, first_name=first_name, last_name=last_name, email=email)
+            user.save()
+            event.register(user=user, pool=pool)
+
+        self.assertEqual(event.number_of_waiting_registrations, people_to_place_in_waiting_list)
+
+
     @unittest.expectedFailure
     def test_unable_to_register_if_full(self):
         event = Event.objects.get(pk=1)
