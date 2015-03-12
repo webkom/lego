@@ -59,12 +59,25 @@ class RegistrationTestCase(TestCase):
         event.merge_time = timezone.now() + timedelta(hours=24)
         event.save()
 
-    @unittest.expectedFailure
     def test_can_register_single_pool(self):
-        event = Event.objects.get(pk=1)
-        pool = event.add_pool("1-5 klasse", 1, timezone.now() - timedelta(hours=24))
-        event.register(user=None, pool=pool)
-        self.assertEqual(pool.number_of_registrations, event.total_registrations_count)
+        user = User.objects.get(pk=1)
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        event.register(user=user, pool=pool)
+        self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
+
+    def test_waiting_list_if_full(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        people_to_place_in_waiting_list = 3
+
+        for n in range(pool.size + 3):
+            username = first_name = last_name = email = str(n)
+            user = User(username=username, first_name=first_name, last_name=last_name, email=email)
+            user.save()
+            event.register(user=user, pool=pool)
+
+        self.assertEqual(event.waiting_list.size, people_to_place_in_waiting_list)
 
     @unittest.expectedFailure
     def test_unable_to_register_if_full(self):
