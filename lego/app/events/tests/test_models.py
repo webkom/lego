@@ -41,14 +41,14 @@ class PoolCapacityTestCase(TestCase):
         sizes_to_add = [10]
         for size in sizes_to_add:
             event.add_pool("1-5 klasse", size, timezone.now() - timedelta(hours=24))
-        self.assertEqual(sum(sizes_to_add), event.total_capacity_count)
+        self.assertEqual(sum(sizes_to_add), event.size)
 
     def test_capacity_with_multiple_pools(self):
         event = Event.objects.get(title="NO_POOLS")
         sizes_to_add = [10, 20]
         for size in sizes_to_add:
             event.add_pool("pool", size, timezone.now() - timedelta(hours=24))
-        self.assertEqual(sum(sizes_to_add), event.total_capacity_count)
+        self.assertEqual(sum(sizes_to_add), event.size)
 
 
 class RegistrationTestCase(TestCase):
@@ -73,7 +73,7 @@ class RegistrationTestCase(TestCase):
         event.register(user=None, pool=pool)
         self.assertRaises(EventFullException, event.register, None, pool)
         registrations = pool.number_of_registrations
-        self.assertEqual(registrations, event.total_registrations_count)
+        self.assertEqual(registrations, event.number_of_registrations)
 
     @unittest.expectedFailure
     def test_can_register_pre_merge(self):
@@ -82,10 +82,10 @@ class RegistrationTestCase(TestCase):
         pool_two = event.add_pool("3-5 klasse", 1, timezone.now() - timedelta(hours=24))
         event.register(user=None, pool=pool_one)
         capacity = pool_one.number_of_registrations
-        self.assertEqual(pool_one.size, event.total_registrations_count)
+        self.assertEqual(pool_one.size, event.number_of_registrations)
         event.register(user=None, pool=pool_two)
         capacity += pool_two.number_of_registrations
-        self.assertEqual(capacity, event.total_registrations_count)
+        self.assertEqual(capacity, event.number_of_registrations)
 
     @unittest.expectedFailure
     def test_can_register_post_merge(self):
@@ -97,7 +97,7 @@ class RegistrationTestCase(TestCase):
         event.register(user=None, pool=pool_one)
         event.register(user=None, pool=pool_two)
         registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
-        self.assertEqual(registrations, event.total_registrations_count)
+        self.assertEqual(registrations, event.number_of_registrations)
 
     @unittest.expectedFailure
     def test_unable_to_register_post_merge(self):
