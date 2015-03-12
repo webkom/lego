@@ -1,2 +1,0 @@
-class EventFullException(Exception):
-    pass

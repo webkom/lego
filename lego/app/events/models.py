@@ -8,8 +8,6 @@ from lego.app.content.models import Content
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
 
-from .exceptions import EventFullException
-
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
 
