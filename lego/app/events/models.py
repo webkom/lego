@@ -109,6 +109,10 @@ class Event(Content):
         return self.registrations.count()
 
     @property
+    def number_of_waiting_registrations(self):
+        return self.waiting_list.number_of_registrations
+
+    @property
     def all_pools(self):
         return self.pools.all()
 
