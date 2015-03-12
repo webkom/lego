@@ -1,7 +1,7 @@
 - model: events.Event
   pk: 1
   fields:
-    title: BedPres1
+    title: POOLS
     author: 1
     description: TestIngress1
     text: TestText1
@@ -15,7 +15,7 @@
 - model: events.Event
   pk: 2
   fields:
-    title: Webkom2
+    title: NO_POOLS
     author: 2
     description: TestIngress2
     text: TestText2
@@ -41,21 +41,4 @@
     name: 2.klasse
     size: 3
     event: 1
-    activation_date: '2011-09-01T13:20:30+03:00'
-
-
-- model: events.Pool
-  pk: 3
-  fields:
-    name: 1.klasse
-    size: 2
-    event: 2
-    activation_date: '2011-09-01T13:20:30+03:00'
-
-- model: events.Pool
-  pk: 4
-  fields:
-    name: 2.klasse
-    size: 2
-    event: 2
     activation_date: '2011-09-01T13:20:30+03:00'
