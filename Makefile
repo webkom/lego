@@ -26,4 +26,7 @@ production:
 	venv/bin/python manage.py collectstatic --noinput
 	touch /etc/uwsgi/apps-enabled/lego.ini
 
-.PHONY: help dev prod production
+docs:
+	cd docs; make html && open _build/html/index.html
+
+.PHONY: help dev prod production docs
