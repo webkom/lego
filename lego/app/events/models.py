@@ -34,11 +34,13 @@ class Event(Content):
     class Meta:
         ordering = ['start_time']
 
+    def save(self, *args, **kwargs):
+        super(BasisModel, self).save(*args, **kwargs)
+        waiting_list = WaitingList(event=self)
+        waiting_list.save()
+
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        super(Event, self).save(*args, **kwargs)
 
     def slug(self):
         return slugify(self.title)
@@ -47,28 +49,32 @@ class Event(Content):
         return self.pools.create(name=name, size=size, activation_date=activation_date)
 
     def can_register(self, user=None, pool=None):
-        """
-        Checks whether an user is able to register for an event.
-        """
-
         if pool is None:
             return False
 
         if not self.is_activated(pool):
             return False
 
-        if self.is_full or pool.size <= pool.number_of_registrations and not self.is_merged:
-            raise EventFullException()
+        return self.user_in_pool(user, pool)
 
-        if self.user_in_pool(user, pool):
-            if self.number_of_pools == 1 or self.is_merged:
-                return True
-            elif self.number_of_pools > 1:
-                return pool.size > pool.number_of_registrations
+    def register(self, user, pool):
+        use_waiting_list = False
 
-    def register(self, user=None, pool=None):
-        if self.can_register(user, pool) and pool is not None:
-            return pool.register(user)
+        if not self.can_register(user, pool):
+            return
+
+        if self.is_full or (pool.size <= pool.number_of_registrations and not self.is_merged):
+            use_waiting_list = True
+
+        if use_waiting_list:
+            return self.registrations.create(event=self,
+                                             pool=pool,
+                                             user=user,
+                                             waiting_list=self.waiting_list)
+
+        return self.registrations.create(event=self,
+                                         pool=pool,
+                                         user=user)
 
     def is_activated(self, pool):
         return pool.activation_date <= timezone.now()
@@ -100,7 +106,7 @@ class Event(Content):
         """
         Calculates total registrations with or without multiple pools.
         """
-        return len(self.registrations.all())
+        return self.registrations.count()
 
     @property
     def all_pools(self):
