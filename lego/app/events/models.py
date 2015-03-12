@@ -7,8 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from lego.app.content.models import Content
 from lego.users.models import User
 
-from .exceptions import EventFullException
-
 
 class Event(Content):
 
