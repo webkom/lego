@@ -100,5 +100,3 @@ class CreateEventsTestCase(APITestCase):
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
-
-
