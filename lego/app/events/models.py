@@ -95,9 +95,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             elif pool_unregistered_from.waiting_registrations.count() > 0:
                 self.bump(from_pool=pool_unregistered_from)
 
-    def bump(self, pool=None):
+    def bump(self, from_pool=None):
         if self.waiting_list.number_of_registrations > 0:
-            top = self.waiting_list.pop(from_pool=pool)
+            top = self.waiting_list.pop(from_pool=from_pool)
             top.pool = top.waiting_pool
             top.waiting_pool = None
             top.save()
@@ -201,7 +201,7 @@ class Registration(BasisModel):
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
     waiting_list = models.ForeignKey(WaitingList, null=True, related_name='registrations')
-    waiting_pool = models.ForeignKey(Pool, null=True, related_name='waiting_registration')
+    waiting_pool = models.ForeignKey(Pool, null=True, related_name='waiting_registrations')
     registration_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
