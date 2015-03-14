@@ -75,13 +75,13 @@ class RegistrationTestCase(TestCase):
     def test_waiting_list_if_full(self):
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
-        people_to_place_in_waiting_list = 3
+        people_2_place_in_waiting_list = 3
 
         users = self.get_dummy_users(pool.capacity + 3)
         for user in users:
             event.register(user=user, pool=pool)
 
-        self.assertEqual(event.waiting_list.number_of_registrations, people_to_place_in_waiting_list)
+        self.assertEqual(event.waiting_list.number_of_registrations, people_2_place_in_waiting_list)
         self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
     def test_number_of_waiting_registrations(self):
