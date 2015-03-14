@@ -158,9 +158,6 @@ class Pool(BasisModel):
     def number_of_registrations(self):
         return self.registrations.count()
 
-    def register(self, user):
-        return self.registrations.create(pool=self, user=user)
-
     def is_full(self):
         return self.number_of_registrations < self.capacity
 
