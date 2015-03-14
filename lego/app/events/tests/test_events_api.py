@@ -71,7 +71,6 @@ class RetrieveEventsTestCase(APITestCase):
     def test_with_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(get_detail_url(1))
-        print(response.data)
         self.assertEqual(response.status_code, 200)
 
     def test_without_group_permission(self):
