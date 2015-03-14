@@ -61,7 +61,7 @@ class Event(Content):
         if not self.can_register(user, pool):
             return
 
-        if self.is_full or (pool.capacity <= pool.number_of_registrations and not self.is_merged):
+        if self.is_full or (pool.is_full() and not self.is_merged):
             use_waiting_list = True
 
         if use_waiting_list:
@@ -160,7 +160,7 @@ class Pool(BasisModel):
         return self.registrations.count()
 
     def is_full(self):
-        return self.number_of_registrations < self.capacity
+        return self.number_of_registrations >= self.capacity
 
     def __str__(self):
         return self.name
