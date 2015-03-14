@@ -59,8 +59,17 @@ class RegistrationTestCase(TestCase):
         event.merge_time = timezone.now() + timedelta(hours=24)
         event.save()
 
+    def get_dummy_users(self, n):
+        users = []
+        for i in range(n):
+            first_name = last_name = username = email = str(i)
+            user = User(username=username, first_name=first_name, last_name=last_name, email=email)
+            user.save()
+            users.append(user)
+        return users
+
     def test_can_register_single_pool(self):
-        user = User.objects.get(pk=1)
+        user = self.get_dummy_users(1)[0]
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
         event.register(user=user, pool=pool)
@@ -71,10 +80,8 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         people_to_place_in_waiting_list = 3
 
-        for n in range(pool.size + 3):
-            username = first_name = last_name = email = str(n)
-            user = User(username=username, first_name=first_name, last_name=last_name, email=email)
-            user.save()
+        users = self.get_dummy_users(pool.size + 3)
+        for user in users:
             event.register(user=user, pool=pool)
 
         self.assertEqual(event.waiting_list.size, people_to_place_in_waiting_list)
