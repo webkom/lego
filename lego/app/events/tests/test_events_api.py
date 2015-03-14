@@ -1,8 +1,8 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.users.models import AbakusGroup, User
 from lego.app.events.serializers import EventCreateAndUpdateSerializer
+from lego.users.models import AbakusGroup, User
 
 _test_event_data = {
     'title': 'Event',
