@@ -74,11 +74,7 @@ class Event(Content):
                                          user=user)
 
     def unregister(self, user):
-        try:
-            registration = self.registrations.get(user=user)
-        except Registration.DoesNotExist:
-            return
-
+        registration = self.registrations.get(user=user)
         pool = registration.pool
         registration.delete()
         self.notify_unregistration(pool_unregistered_from=pool)
