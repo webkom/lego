@@ -150,7 +150,7 @@ class RegistrationTestCase(TestCase):
         regs_before = event.number_of_registrations
         pool_before = pool.number_of_registrations
 
-        event.bump(pool=pool)
+        event.bump(from_pool=pool)
 
         self.assertEqual(event.number_of_registrations, regs_before+1)
         self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
