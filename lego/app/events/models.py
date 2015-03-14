@@ -88,7 +88,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         self.notify_unregistration(pool_unregistered_from=pool)
 
     def notify_unregistration(self, pool_unregistered_from):
-        if self.number_of_registrations < self.capacity:
+        if (self.number_of_registrations < self.capacity and
+                pool_unregistered_from is not None):
             if self.is_merged:
                 self.bump()
             else:
@@ -129,7 +130,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         Calculates total registrations with or without multiple pools.
         """
-        return self.registrations.filter(waiting_list=None).count()
+        return self.registrations.filter(waiting_list=None, waiting_pool=None).count()
 
     @property
     def number_of_waiting_registrations(self):
