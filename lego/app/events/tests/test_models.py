@@ -5,9 +5,9 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from lego.app.content.tests import ContentTestMixin
-from lego.users.models import User
 from lego.app.events.models import Event
 from lego.app.events.views.events import EventViewSet
+from lego.users.models import User
 
 
 class EventTest(TestCase, ContentTestMixin):
@@ -75,13 +75,13 @@ class RegistrationTestCase(TestCase):
     def test_waiting_list_if_full(self):
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
-        people_to_place_in_waiting_list = 3
+        people_2_place_in_waiting_list = 3
 
         users = self.get_dummy_users(pool.capacity + 3)
         for user in users:
             event.register(user=user, pool=pool)
 
-        self.assertEqual(event.waiting_list.number_of_registrations, people_to_place_in_waiting_list)
+        self.assertEqual(event.waiting_list.number_of_registrations, people_2_place_in_waiting_list)
         self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
     def test_number_of_waiting_registrations(self):
@@ -236,12 +236,13 @@ class RegistrationTestCase(TestCase):
 
 class AssertInvariant:
     def __init__(self, waiting_list):
-        self.elements = waiting_list.registrations.all()
+        self.registrations = waiting_list.registrations
 
     def assertInvariant(self):
-        if len(self.elements[1:]) > 1:
-            prev = self.elements[0]
-            for registration in self.elements[1:]:
+        elements = self.registrations.all()
+        if len(elements[1:]) > 1:
+            prev = elements[0]
+            for registration in elements[1:]:
                 if prev.registration_date > registration.registration_date:
                     raise self.InvariantViolation()
                 prev = registration
