@@ -65,14 +65,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             use_waiting_list = True
 
         if use_waiting_list:
+            return self.waiting_list.add(user=user, pool=pool)
+        else:
             return self.registrations.create(event=self,
-                                             waiting_pool=pool,
-                                             user=user,
-                                             waiting_list=self.waiting_list)
-
-        return self.registrations.create(event=self,
-                                         pool=pool,
-                                         user=user)
+                                            pool=pool,
+                                            user=user)
 
     def unregister(self, user):
         registration = self.registrations.get(user=user)
@@ -174,7 +171,10 @@ class WaitingList(BasisModel):
         return self.registrations.count()
 
     def add(self, user, pool):
-        return self.registrations.create(waiting_pool=pool, waiting_list=self, user=user)
+        return self.registrations.create(event=self.event,
+                                         waiting_pool=pool,
+                                         user=user,
+                                         waiting_list=self)
 
     def pop(self, from_pool=None):
         if from_pool:
