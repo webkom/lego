@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
+from lego.app.events.serializers import EventCreateAndUpdateSerializer
 
 _test_event_data = {
     'title': 'Event',
@@ -17,12 +18,12 @@ _test_event_data = {
         [
             {
                 'name': 'TESTPOOL1',
-                'size': 10,
+                'capacity': 10,
                 'activation_date': '2012-09-01T13:20:30+03:00'
             },
             {
                 'name': 'TESTPOOL2',
-                'size': 20,
+                'capacity': 20,
                 'activation_date': '2012-09-02T13:20:30+03:00'
             }
         ]
@@ -68,8 +69,7 @@ class RetrieveEventsTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.abakus_user = User.objects.all().first()
-
+        self.abakus_user = User.objects.filter(is_superuser=False).first()
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')
         self.abakus_group.add_user(self.abakus_user)
 
@@ -89,12 +89,16 @@ class CreateEventsTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.abakus_user = User.objects.all().first()
-
-        self.event_admin_test = AbakusGroup.objects.get(name='Webkom')
+        self.abakus_user = User.objects.filter(is_superuser=False).first()
+        self.event_admin_test = AbakusGroup.objects.get(name='EventAdminTest')
         self.event_admin_test.add_user(self.abakus_user)
 
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
         response = self.client.post(_get_list_url(), _test_event_data)
+        test = EventCreateAndUpdateSerializer(data=_test_event_data)
+        if not test.is_valid():
+            print(test.errors)
         self.assertEqual(response.status_code, 201)
+
+
