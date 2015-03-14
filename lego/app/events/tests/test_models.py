@@ -236,12 +236,13 @@ class RegistrationTestCase(TestCase):
 
 class AssertInvariant:
     def __init__(self, waiting_list):
-        self.elements = waiting_list.registrations.all()
+        self.registrations = waiting_list.registrations
 
     def assertInvariant(self):
-        if len(self.elements[1:]) > 1:
-            prev = self.elements[0]
-            for registration in self.elements[1:]:
+        elements = self.registrations.all()
+        if len(elements[1:]) > 1:
+            prev = elements[0]
+            for registration in elements[1:]:
                 if prev.registration_date > registration.registration_date:
                     raise self.InvariantViolation()
                 prev = registration
