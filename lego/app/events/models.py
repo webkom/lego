@@ -48,10 +48,7 @@ class Event(Content):
     def add_pool(self, name, capacity, activation_date):
         return self.pools.create(name=name, capacity=capacity, activation_date=activation_date)
 
-    def can_register(self, user=None, pool=None):
-        if pool is None:
-            return False
-
+    def can_register(self, user, pool):
         if not self.is_activated(pool):
             return False
 
