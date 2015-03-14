@@ -132,12 +132,9 @@ class Pool(BasisModel):
     """
 
     name = models.CharField(max_length=100)
-    size = models.PositiveSmallIntegerField(default=0)
+    capacity = models.PositiveSmallIntegerField(default=0)
     event = models.ForeignKey(Event, related_name='pools')
     activation_date = models.DateTimeField()
-
-    def __str__(self):
-        return self.name
 
     @property
     def number_of_registrations(self):
@@ -146,12 +143,31 @@ class Pool(BasisModel):
     def register(self, user):
         return self.registrations.create(pool=self, user=user)
 
+    def is_full(self):
+        return self.number_of_registrations < self.capacity
+
+    def __str__(self):
+        return self.name
+
+
+class WaitingList(BasisModel):
+    event = models.OneToOneField(Event, related_name="waiting_list")
+
+    @property
+    def number_of_registrations(self):
+        return self.registrations.count()
+
+    def add(self, user, pool):
+        return self.registrations.create(waiting_pool=pool, waiting_list=self, user=user)
+
 
 class Registration(BasisModel):
-
-    user = models.ForeignKey(User, null=True, related_name='registrations')
+    user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
-    pool = models.ForeignKey(Pool, related_name='registrations')
+    pool = models.ForeignKey(Pool, null=True, related_name='registrations')
+    waiting_list = models.ForeignKey(WaitingList, null=True, related_name='registrations')
+    waiting_pool = models.ForeignKey(Pool, null=True, related_name='waiting_registration')
+    registration_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'pool')
