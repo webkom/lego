@@ -37,26 +37,24 @@ class PoolCapacityTestCase(TestCase):
 
     def test_capacity_with_single_pool(self):
         event = Event.objects.get(title="NO_POOLS")
-        sizes_to_add = [10]
-        for size in sizes_to_add:
-            event.add_pool("1-5 klasse", size, timezone.now() - timedelta(hours=24))
-        self.assertEqual(sum(sizes_to_add), event.size)
+        capacities_to_add = [10]
+        for capacity in capacities_to_add:
+            event.add_pool("1-5 klasse", capacity, timezone.now() - timedelta(hours=24))
+        self.assertEqual(sum(capacities_to_add), event.capacity)
 
     def test_capacity_with_multiple_pools(self):
         event = Event.objects.get(title="NO_POOLS")
-        sizes_to_add = [10, 20]
-        for size in sizes_to_add:
-            event.add_pool("pool", size, timezone.now() - timedelta(hours=24))
-        self.assertEqual(sum(sizes_to_add), event.size)
+        capacities_to_add = [10, 20]
+        for capacity in capacities_to_add:
+            event.add_pool("pool", capacity, timezone.now() - timedelta(hours=24))
+        self.assertEqual(sum(capacities_to_add), event.capacity)
 
 
 class RegistrationTestCase(TestCase):
     fixtures = ['test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        for event in Event.objects.all():
-            event.merge_time = timezone.now() + timedelta(hours=24)
-            event.save()
+        Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
 
     def get_dummy_users(self, n):
         users = []
@@ -79,11 +77,11 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         people_to_place_in_waiting_list = 3
 
-        users = self.get_dummy_users(pool.size + 3)
+        users = self.get_dummy_users(pool.capacity + 3)
         for user in users:
             event.register(user=user, pool=pool)
 
-        self.assertEqual(event.waiting_list.size, people_to_place_in_waiting_list)
+        self.assertEqual(event.waiting_list.number_of_registrations, people_to_place_in_waiting_list)
         self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
     def test_number_of_waiting_registrations(self):
@@ -91,7 +89,7 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         people_to_place_in_waiting_list = 3
 
-        users = self.get_dummy_users(pool.size + 3)
+        users = self.get_dummy_users(pool.capacity + 3)
         for user in users:
             event.register(user=user, pool=pool)
 

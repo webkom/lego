@@ -46,8 +46,8 @@ class Event(Content):
     def slug(self):
         return slugify(self.title)
 
-    def add_pool(self, name, size, activation_date):
-        return self.pools.create(name=name, size=size, activation_date=activation_date)
+    def add_pool(self, name, capacity, activation_date):
+        return self.pools.create(name=name, capacity=capacity, activation_date=activation_date)
 
     def can_register(self, user=None, pool=None):
         if pool is None:
@@ -64,7 +64,7 @@ class Event(Content):
         if not self.can_register(user, pool):
             return
 
-        if self.is_full or (pool.size <= pool.number_of_registrations and not self.is_merged):
+        if self.is_full or (pool.capacity <= pool.number_of_registrations and not self.is_merged):
             use_waiting_list = True
 
         if use_waiting_list:
@@ -87,19 +87,17 @@ class Event(Content):
 
     @property
     def is_full(self):
-        return self.size <= self.number_of_registrations
+        return self.capacity <= self.number_of_registrations
 
     @property
-    def size(self):
+    def capacity(self):
         """
         Calculates total capacity of participants with or without multiple pools.
         """
-
         capacity = 0
-        if self.number_of_pools > 0:
-            for pool in self.all_pools:
-                if self.is_activated(pool):
-                    capacity += pool.size
+        for pool in self.all_pools:
+            if self.is_activated(pool):
+                capacity += pool.capacity
         return capacity
 
     @property
