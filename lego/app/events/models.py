@@ -77,6 +77,23 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                                          pool=pool,
                                          user=user)
 
+    def unregister(self, user):
+        try:
+            registration = self.registrations.get(user=user)
+        except Registration.DoesNotExist:
+            return
+
+        pool = registration.pool
+        registration.delete()
+        self.notify_unregistration(pool_unregistered_from=pool)
+
+    def notify_unregistration(self, pool_unregistered_from):
+        if self.number_of_registrations < self.capacity:
+            if self.is_merged:
+                self.bump()
+            else:
+                self.bump(pool_unregistered_from)
+
     def bump(self, pool=None):
         if self.waiting_list.number_of_registrations > 0:
             top = self.waiting_list.pop(from_pool=pool)
