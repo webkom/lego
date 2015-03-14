@@ -77,11 +77,12 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         people_2_place_in_waiting_list = 3
 
-        users = self.get_dummy_users(pool.capacity + 3)
+        users = self.get_dummy_users(pool.capacity + people_2_place_in_waiting_list)
         for user in users:
             event.register(user=user, pool=pool)
 
         self.assertEqual(event.waiting_list.number_of_registrations, people_2_place_in_waiting_list)
+        self.assertEqual(pool.number_of_registrations, pool.capacity)
         self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
     def test_number_of_waiting_registrations(self):
@@ -167,12 +168,24 @@ class RegistrationTestCase(TestCase):
 
         self.assertEqual(event.number_of_registrations, registrations_before-1)
 
-    def test_popping_from_waiting_list(self):
+    def test_popping_from_waiting_list_pre_merge(self):
         event = Event.objects.get(title="NO_POOLS")
         pool = event.add_pool("3-5 klasse", 0, timezone.now() - timedelta(hours=24))
         users = self.get_dummy_users(pool.capacity + 10)
         for user in users:
             event.register(user=user, pool=pool)
+        prev = event.waiting_list.pop()
+        while event.waiting_list.registrations.count() > 0:
+            top = event.waiting_list.pop()
+            self.assertLess(prev.registration_date, top.registration_date)
+
+    def test_popping_from_waiting_list_post_merge(self):
+        event = Event.objects.get(title="NO_POOLS")
+        pool = event.add_pool("3-5 klasse", 0, timezone.now() - timedelta(hours=24))
+        users = self.get_dummy_users(pool.capacity + 10)
+        for user in users:
+            event.register(user=user, pool=pool)
+
         prev = event.waiting_list.pop()
         while event.waiting_list.registrations.count() > 0:
             top = event.waiting_list.pop()
