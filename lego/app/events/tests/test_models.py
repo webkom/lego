@@ -13,7 +13,7 @@ from lego.users.models import User
 class EventTest(TestCase, ContentTestMixin):
 
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
-            'test_users.yaml', 'test_events.yaml']
+                'test_users.yaml', 'test_events.yaml']
 
     model = Event
     ViewSet = EventViewSet
