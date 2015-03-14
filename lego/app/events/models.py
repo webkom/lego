@@ -92,8 +92,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 pool_unregistered_from is not None):
             if self.is_merged:
                 self.bump()
-            else:
-                self.bump(pool_unregistered_from)
+            elif pool_unregistered_from.waiting_registrations.count() > 0:
+                self.bump(from_pool=pool_unregistered_from)
 
     def bump(self, pool=None):
         if self.waiting_list.number_of_registrations > 0:
