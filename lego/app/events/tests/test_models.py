@@ -160,7 +160,97 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         user = self.get_dummy_users(1)[0]
 
-        event.register(user=user, pool=pool)
-        registrations_before = event.number_of_registrations
-        event.unregister(user)
+        with AssertInvariant(event.waiting_list):
+            event.register(user=user, pool=pool)
+            registrations_before = event.number_of_registrations
+            event.unregister(user)
+
         self.assertEqual(event.number_of_registrations, registrations_before-1)
+
+    def test_unregistering_from_waiting_list(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        users = self.get_dummy_users(pool.capacity + 10)
+        for user in users:
+            event.register(user=user, pool=pool)
+
+        event_size_before = event.number_of_registrations
+        pool_size_before = pool.number_of_registrations
+        waiting_list_before = event.number_of_waiting_registrations
+
+        with AssertInvariant(event.waiting_list):
+            event.unregister(users[-1])
+
+        self.assertEqual(event.number_of_registrations, event_size_before)
+        self.assertEqual(pool.number_of_registrations, pool_size_before)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertLessEqual(event.number_of_registrations, event.capacity)
+
+    def test_unregistering_and_bumping(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        users = self.get_dummy_users(pool.capacity + 10)
+        for user in users:
+            event.register(user=user, pool=pool)
+
+        waiting_list_before = event.number_of_waiting_registrations
+        event_size_before = event.number_of_registrations
+        pool_size_before = pool.number_of_registrations
+
+        with AssertInvariant(event.waiting_list):
+            user_to_unregister = event.registrations.first().user
+            event.unregister(user_to_unregister)
+
+        self.assertEqual(pool.number_of_registrations, pool_size_before)
+        self.assertEqual(event.number_of_registrations, event_size_before)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertLessEqual(event.number_of_registrations, event.capacity)
+
+    def test_unregistering_and_bumping_post_merge(self):
+        event = Event.objects.get(title="NO_POOLS")
+        event.merge_time = timezone.now() - timedelta(hours=24)
+        pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
+        pool_two = event.add_pool("2-3 klasse", 1, timezone.now() - timedelta(hours=24))
+        users = self.get_dummy_users(3)
+        event.register(users.pop(), pool=pool_two)
+        for user in users:
+            event.register(user=user, pool=pool_one)
+
+        waiting_list_before = event.number_of_waiting_registrations
+        event_size_before = event.number_of_registrations
+        pool_one_size_before = pool_one.number_of_registrations
+        pool_two_size_before = pool_two.number_of_registrations
+
+        user_to_unregister = pool_two.registrations.first().user
+
+        with AssertInvariant(event.waiting_list):
+            event.unregister(user_to_unregister)
+
+        self.assertEqual(event.number_of_registrations, event_size_before)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertEqual(pool_one.number_of_registrations, pool_one_size_before + 1)
+        self.assertGreater(pool_one.number_of_registrations, pool_one.capacity)
+        self.assertEqual(pool_two.number_of_registrations, pool_two_size_before - 1)
+        self.assertLessEqual(event.number_of_registrations, event.capacity)
+
+
+class AssertInvariant:
+    def __init__(self, waiting_list):
+        self.elements = waiting_list.registrations.all()
+
+    def assertInvariant(self):
+        if len(self.elements[1:]) > 1:
+            prev = self.elements[0]
+            for registration in self.elements[1:]:
+                if prev.registration_date > registration.registration_date:
+                    raise self.InvariantViolation()
+                prev = registration
+
+    def __enter__(self):
+        self.assertInvariant()
+
+    def __exit__(self, type, value, traceback):
+        self.assertInvariant()
+
+    class InvariantViolation(Exception):
+        pass
