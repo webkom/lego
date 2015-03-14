@@ -55,9 +55,9 @@ class RegistrationTestCase(TestCase):
     fixtures = ['test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        event = Event.objects.get(pk=1)
-        event.merge_time = timezone.now() + timedelta(hours=24)
-        event.save()
+        for event in Event.objects.all():
+            event.merge_time = timezone.now() + timedelta(hours=24)
+            event.save()
 
     def get_dummy_users(self, n):
         users = []
@@ -113,25 +113,30 @@ class RegistrationTestCase(TestCase):
         n_registrants += pool_two.number_of_registrations
         self.assertEqual(n_registrants, event.number_of_registrations)
 
-    @unittest.expectedFailure
     def test_can_register_post_merge(self):
-        event = Event.objects.get(pk=1)
+        event = Event.objects.get(title="NO_POOLS")
         event.merge_time = timezone.now() - timedelta(hours=12)
         pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
         pool_two = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
-        event.register(user=None, pool=pool_one)
-        event.register(user=None, pool=pool_one)
-        event.register(user=None, pool=pool_two)
+        users = self.get_dummy_users(3)
+        pool_one_users = 2
+
+        for user in users[:pool_one_users]:
+            event.register(user=user, pool=pool_one)
+        for user in users[pool_one_users:]:
+            event.register(user=user, pool=pool_two)
+
         registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
         self.assertEqual(registrations, event.number_of_registrations)
 
-    @unittest.expectedFailure
-    def test_unable_to_register_post_merge(self):
-        event = Event.objects.get(pk=1)
+    def test_placed_in_waiting_list_post_merge(self):
+        event = Event.objects.get(title="NO_POOLS")
+        pool = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
         event.merge_time = timezone.now() - timedelta(hours=12)
-        pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
-        pool_two = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
-        event.register(user=None, pool=pool_one)
-        event.register(user=None, pool=pool_one)
-        event.register(user=None, pool=pool_one)
-        self.assertRaises(EventFullException, event.register, None, pool_two)
+        users = self.get_dummy_users(3)
+        expected_users_in_waiting_list = 1
+
+        for user in users:
+            event.register(user, pool=pool)
+
+        self.assertEqual(event.waiting_list.number_of_registrations, expected_users_in_waiting_list)
