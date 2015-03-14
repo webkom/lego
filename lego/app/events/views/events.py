@@ -1,10 +1,8 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from lego.app.events.models import Event
 from lego.app.events.permissions import EventPermissions
-from lego.app.events.serializers import *
+from lego.app.events.serializers import EventCreateAndUpdateSerializer, EventReadSerializer
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
