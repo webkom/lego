@@ -87,7 +87,9 @@ class Event(Content):
         self.notify_unregistration(pool_unregistered_from=pool)
 
     def notify_unregistration(self, pool_unregistered_from):
-        if self.number_of_registrations < self.capacity:
+        if (self.number_of_registrations < self.capacity and
+                pool_unregistered_from is not None):
+
             if self.is_merged:
                 self.bump()
             else:
