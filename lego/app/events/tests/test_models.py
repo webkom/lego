@@ -137,3 +137,18 @@ class RegistrationTestCase(TestCase):
             event.register(user, pool=pool)
 
         self.assertEqual(event.waiting_list.number_of_registrations, expected_users_in_waiting_list)
+
+    def test_bump(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        users = self.get_dummy_users(pool.capacity + 1)
+        for user in users:
+            event.register(user=user, pool=pool)
+
+        waiting_list_before = event.number_of_waiting_registrations
+        regs_before = event.number_of_registrations
+
+        event.bump(pool=pool)
+
+        self.assertEqual(event.number_of_registrations, regs_before+1)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)

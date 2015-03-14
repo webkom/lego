@@ -69,13 +69,20 @@ class Event(Content):
 
         if use_waiting_list:
             return self.registrations.create(event=self,
-                                             pool=pool,
+                                             waiting_pool=pool,
                                              user=user,
                                              waiting_list=self.waiting_list)
 
         return self.registrations.create(event=self,
                                          pool=pool,
                                          user=user)
+
+    def bump(self, pool=None):
+        if self.waiting_list.number_of_registrations > 0:
+            top = self.waiting_list.pop(from_pool=pool)
+            top.pool = top.waiting_pool
+            top.waiting_pool = None
+            top.save()
 
     def is_activated(self, pool):
         return pool.activation_date <= timezone.now()
@@ -160,6 +167,15 @@ class WaitingList(BasisModel):
 
     def add(self, user, pool):
         return self.registrations.create(waiting_pool=pool, waiting_list=self, user=user)
+
+    def pop(self, from_pool=None):
+        if from_pool:
+            top = self.registrations.filter(waiting_pool=from_pool).first()
+        else:
+            top = self.registrations.first()
+        top.waiting_list = None
+        top.save()
+        return top
 
 
 class Registration(BasisModel):
