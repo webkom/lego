@@ -147,8 +147,20 @@ class RegistrationTestCase(TestCase):
 
         waiting_list_before = event.number_of_waiting_registrations
         regs_before = event.number_of_registrations
+        pool_before = pool.number_of_registrations
 
         event.bump(pool=pool)
 
         self.assertEqual(event.number_of_registrations, regs_before+1)
         self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertEqual(pool.number_of_registrations, pool_before+1)
+
+    def test_unregistering_from_event(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        user = self.get_dummy_users(1)[0]
+
+        event.register(user=user, pool=pool)
+        registrations_before = event.number_of_registrations
+        event.unregister(user)
+        self.assertEqual(event.number_of_registrations, registrations_before-1)
