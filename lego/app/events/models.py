@@ -105,7 +105,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         Calculates total registrations with or without multiple pools.
         """
-        return self.registrations.count()
+        return self.registrations.filter(waiting_list=None).count()
 
     @property
     def number_of_waiting_registrations(self):
