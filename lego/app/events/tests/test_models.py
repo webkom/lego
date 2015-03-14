@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from lego.app.content.tests import ContentTestMixin
-from lego.app.events.models import Event
+from lego.app.events.models import Event, Registration
 from lego.app.events.views.events import EventViewSet
 from lego.users.models import User
 
@@ -13,7 +13,7 @@ from lego.users.models import User
 class EventTest(TestCase, ContentTestMixin):
 
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
-                'test_users.yaml', 'test_events.yaml']
+            'test_users.yaml', 'test_events.yaml']
 
     model = Event
     ViewSet = EventViewSet
@@ -71,6 +71,14 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         event.register(user=user, pool=pool)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
+
+    def test_can_not_register_pre_activation(self):
+        user = self.get_dummy_users(1)[0]
+        event = Event.objects.get(title="NO_POOLS")
+        pool_one = event.add_pool("1-2 klasse", 1, timezone.now() + timedelta(hours=24))
+        event.register(user=user, pool=pool_one)
+        self.assertEqual(event.number_of_registrations, 0)
+        self.assertEqual(event.number_of_waiting_registrations, 0)
 
     def test_waiting_list_if_full(self):
         event = Event.objects.get(title="POOLS")
@@ -167,6 +175,12 @@ class RegistrationTestCase(TestCase):
             event.unregister(user)
 
         self.assertEqual(event.number_of_registrations, registrations_before-1)
+
+    def test_unregistering_non_existing_user(self):
+        event = Event.objects.get(title="POOLS")
+        user = self.get_dummy_users(1)[0]
+        with self.assertRaises(Registration.DoesNotExist):
+            event.unregister(user)
 
     def test_popping_from_waiting_list_pre_merge(self):
         event = Event.objects.get(title="NO_POOLS")
