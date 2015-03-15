@@ -66,9 +66,7 @@ class Event(Content):
         if use_waiting_list:
             return self.waiting_list.add(user=user, pool=pool)
         else:
-            return self.registrations.create(event=self,
-                                            pool=pool,
-                                            user=user)
+            return self.registrations.create(event=self, pool=pool, user=user)
 
     def unregister(self, user):
         registration = self.registrations.get(user=user)
