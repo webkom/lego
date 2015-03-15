@@ -198,4 +198,4 @@ class Registration(BasisModel):
         unique_together = ('user', 'pool')
 
     def __str__(self):
-        return self.user, self.pool
+        return str({"user": self.user, "pool": self.pool})
