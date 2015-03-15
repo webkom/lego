@@ -10,6 +10,16 @@ from lego.app.events.views.events import EventViewSet
 from lego.users.models import User
 
 
+def get_dummy_users(n):
+    users = []
+    for i in range(n):
+        first_name = last_name = username = email = str(i)
+        user = User(username=username, first_name=first_name, last_name=last_name, email=email)
+        user.save()
+        users.append(user)
+    return users
+
+
 class EventTest(TestCase, ContentTestMixin):
 
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
@@ -30,6 +40,35 @@ class EventMethodTest(TestCase):
 
     def test_slug(self):
         self.assertEqual(slugify(self.event.title), self.event.slug())
+
+
+class PoolMethodTest(TestCase):
+    fixtures = ['test_users.yaml', 'test_events.yaml']
+
+    def setUp(self):
+        event = Event.objects.get(title="POOLS")
+        self.pool = event.pools.first()
+
+    def test_str(self):
+        self.assertEqual(str(self.pool), self.pool.name)
+
+
+class RegistrationMethodTest(TestCase):
+    fixtures = ['test_users.yaml', 'test_events.yaml']
+
+    def setUp(self):
+        event = Event.objects.get(title="POOLS")
+        pool = event.pools.first()
+        user = get_dummy_users(1)[0]
+        self.registration = event.register(user=user, pool=pool)
+
+    def test_str(self):
+        d = {
+            'user': self.registration.user,
+            'pool': self.registration.pool,
+            }
+
+        self.assertEqual(str(self.registration), str(d))
 
 
 class PoolCapacityTestCase(TestCase):
@@ -56,24 +95,15 @@ class RegistrationTestCase(TestCase):
     def setUp(self):
         Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
 
-    def get_dummy_users(self, n):
-        users = []
-        for i in range(n):
-            first_name = last_name = username = email = str(i)
-            user = User(username=username, first_name=first_name, last_name=last_name, email=email)
-            user.save()
-            users.append(user)
-        return users
-
     def test_can_register_single_pool(self):
-        user = self.get_dummy_users(1)[0]
+        user = get_dummy_users(1)[0]
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
         event.register(user=user, pool=pool)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
 
     def test_can_not_register_pre_activation(self):
-        user = self.get_dummy_users(1)[0]
+        user = get_dummy_users(1)[0]
         event = Event.objects.get(title="NO_POOLS")
         pool_one = event.add_pool("1-2 klasse", 1, timezone.now() + timedelta(hours=24))
         event.register(user=user, pool=pool_one)
@@ -85,7 +115,7 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         people_2_place_in_waiting_list = 3
 
-        users = self.get_dummy_users(pool.capacity + people_2_place_in_waiting_list)
+        users = get_dummy_users(pool.capacity + people_2_place_in_waiting_list)
         for user in users:
             event.register(user=user, pool=pool)
 
@@ -98,7 +128,7 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         people_to_place_in_waiting_list = 3
 
-        users = self.get_dummy_users(pool.capacity + 3)
+        users = get_dummy_users(pool.capacity + 3)
         for user in users:
             event.register(user=user, pool=pool)
 
@@ -108,7 +138,7 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title="POOLS")
         pool_one = event.pools.first()
         pool_two = event.pools.get(pk=2)
-        users = self.get_dummy_users(2)
+        users = get_dummy_users(2)
         user_one, user_two = users[0], users[1]
 
         event.register(user=user_one, pool=pool_one)
@@ -124,7 +154,7 @@ class RegistrationTestCase(TestCase):
         event.merge_time = timezone.now() - timedelta(hours=12)
         pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
         pool_two = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
-        users = self.get_dummy_users(3)
+        users = get_dummy_users(3)
         pool_one_users = 2
 
         for user in users[:pool_one_users]:
@@ -139,7 +169,7 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title="NO_POOLS")
         pool = event.add_pool("3-5 klasse", 2, timezone.now() - timedelta(hours=24))
         event.merge_time = timezone.now() - timedelta(hours=12)
-        users = self.get_dummy_users(3)
+        users = get_dummy_users(3)
         expected_users_in_waiting_list = 1
 
         for user in users:
@@ -150,7 +180,7 @@ class RegistrationTestCase(TestCase):
     def test_bump(self):
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
-        users = self.get_dummy_users(pool.capacity + 1)
+        users = get_dummy_users(pool.capacity + 1)
         for user in users:
             event.register(user=user, pool=pool)
 
@@ -167,7 +197,7 @@ class RegistrationTestCase(TestCase):
     def test_unregistering_from_event(self):
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
-        user = self.get_dummy_users(1)[0]
+        user = get_dummy_users(1)[0]
 
         with AssertInvariant(event.waiting_list):
             event.register(user=user, pool=pool)
@@ -178,25 +208,27 @@ class RegistrationTestCase(TestCase):
 
     def test_unregistering_non_existing_user(self):
         event = Event.objects.get(title="POOLS")
-        user = self.get_dummy_users(1)[0]
+        user = get_dummy_users(1)[0]
         with self.assertRaises(Registration.DoesNotExist):
             event.unregister(user)
 
     def test_popping_from_waiting_list_pre_merge(self):
         event = Event.objects.get(title="NO_POOLS")
         pool = event.add_pool("3-5 klasse", 0, timezone.now() - timedelta(hours=24))
-        users = self.get_dummy_users(pool.capacity + 10)
+        users = get_dummy_users(pool.capacity + 10)
         for user in users:
             event.register(user=user, pool=pool)
+
         prev = event.waiting_list.pop()
         while event.waiting_list.registrations.count() > 0:
             top = event.waiting_list.pop()
             self.assertLess(prev.registration_date, top.registration_date)
+            prev = top
 
     def test_popping_from_waiting_list_post_merge(self):
         event = Event.objects.get(title="NO_POOLS")
         pool = event.add_pool("3-5 klasse", 0, timezone.now() - timedelta(hours=24))
-        users = self.get_dummy_users(pool.capacity + 10)
+        users = get_dummy_users(pool.capacity + 10)
         for user in users:
             event.register(user=user, pool=pool)
 
@@ -204,11 +236,12 @@ class RegistrationTestCase(TestCase):
         while event.waiting_list.registrations.count() > 0:
             top = event.waiting_list.pop()
             self.assertLess(prev.registration_date, top.registration_date)
+            prev = top
 
     def test_unregistering_from_waiting_list(self):
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
-        users = self.get_dummy_users(pool.capacity + 10)
+        users = get_dummy_users(pool.capacity + 10)
         for user in users:
             event.register(user=user, pool=pool)
 
@@ -227,7 +260,7 @@ class RegistrationTestCase(TestCase):
     def test_unregistering_and_bumping(self):
         event = Event.objects.get(title="POOLS")
         pool = event.pools.first()
-        users = self.get_dummy_users(pool.capacity + 10)
+        users = get_dummy_users(pool.capacity + 10)
         for user in users:
             event.register(user=user, pool=pool)
 
@@ -249,7 +282,7 @@ class RegistrationTestCase(TestCase):
         event.merge_time = timezone.now() - timedelta(hours=24)
         pool_one = event.add_pool("1-2 klasse", 1, timezone.now() - timedelta(hours=24))
         pool_two = event.add_pool("2-3 klasse", 1, timezone.now() - timedelta(hours=24))
-        users = self.get_dummy_users(3)
+        users = get_dummy_users(3)
         event.register(users.pop(), pool=pool_two)
         for user in users:
             event.register(user=user, pool=pool_one)
