@@ -218,10 +218,12 @@ class RegistrationTestCase(TestCase):
         users = get_dummy_users(pool.capacity + 10)
         for user in users:
             event.register(user=user, pool=pool)
+
         prev = event.waiting_list.pop()
         while event.waiting_list.registrations.count() > 0:
             top = event.waiting_list.pop()
             self.assertLess(prev.registration_date, top.registration_date)
+            prev = top
 
     def test_popping_from_waiting_list_post_merge(self):
         event = Event.objects.get(title="NO_POOLS")
@@ -234,6 +236,7 @@ class RegistrationTestCase(TestCase):
         while event.waiting_list.registrations.count() > 0:
             top = event.waiting_list.pop()
             self.assertLess(prev.registration_date, top.registration_date)
+            prev = top
 
     def test_unregistering_from_waiting_list(self):
         event = Event.objects.get(title="POOLS")
