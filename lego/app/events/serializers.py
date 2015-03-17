@@ -19,7 +19,7 @@ class EventCreateAndUpdateSerializer(BasisSerializer):
 
     class Meta:
         model = Event
-        fields = ('title', 'author', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
                   'start_time', 'end_time', 'merge_time', 'pools', 'capacity')
 
     def create(self, validated_data):
