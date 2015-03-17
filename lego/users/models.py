@@ -1,14 +1,14 @@
 # -*- coding: utf8 -*-
 from basis.models import BasisModel, PersistentModel
 from django.contrib import auth
-from django.contrib.auth.models import AbstractBaseUser, Group, UserManager
+from django.contrib.auth.models import AbstractBaseUser, Group
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from lego.users.managers import AbakusGroupManager
+from lego.users.managers import AbakusGroupManager, UserManager, MembershipManager
 
 from .validators import username_validator
 
@@ -163,7 +163,7 @@ class PermissionsMixin(models.Model):
         return _user_has_module_perms(self, app_label)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -230,6 +230,8 @@ class Membership(BasisModel):
         (CO_LEADER, _('Co-Leader')),
         (TREASURER, _('Treasurer'))
     )
+
+    objects = MembershipManager()
 
     user = models.ForeignKey(User)
     abakus_group = models.ForeignKey(AbakusGroup)
