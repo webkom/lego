@@ -30,6 +30,12 @@ _test_event_data = {
 
 }
 
+_test_pool_data = {
+    'name': 'TESTPOOL3',
+    'capacity': 30,
+    'activation_date': '2012-09-02T13:20:30+03:00'
+}
+
 
 def _get_list_url():
     return reverse('event-list')
@@ -37,6 +43,10 @@ def _get_list_url():
 
 def _get_detail_url(pk):
     return reverse('event-detail', kwargs={'pk': pk})
+
+
+def _get_pools_detail_url(pk):
+    return reverse('event-pools', kwargs={'pk': pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -100,3 +110,13 @@ class CreateEventsTestCase(APITestCase):
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
+
+    def test_pool_creation(self):
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.post(_get_list_url(), _test_event_data)
+        self.assertEqual(response.status_code, 201)
+
+        pool_response = self.client.post(_get_pools_detail_url(response.data['id']),
+                                         _test_pool_data)
+        self.assertEqual(pool_response.status_code, 201)
+        self.assertEqual(_test_pool_data, pool_response.data)
