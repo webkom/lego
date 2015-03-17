@@ -7,11 +7,15 @@ from lego.permissions.managers import PublicObjectPermissionsManager
 from lego.users.models import AbakusGroup, User
 
 
-def check_intersection(first, second):
+def _check_intersection(first, second):
     return len(set(first).intersection(set(second))) > 0
 
 
 class ObjectPermissionsModel(BasisModel):
+    """
+    Abstract model that provides fields that can be used for object permissions.
+    """
+
     can_edit_users = models.ManyToManyField(User, related_name='can_edit_%(class)s', blank=True,
                                             null=True)
 
@@ -34,13 +38,26 @@ class ObjectPermissionsModel(BasisModel):
         return self.require_auth or len(self.can_view_groups.all()) > 0
 
     def can_view(self, user):
+        """
+        Checks if a user can view this object
+
+        :param user:
+        :rtype: bool
+        """
+
         if not user.is_authenticated():
             return not self.needs_auth()
 
         return (user == self.created_by or
-                check_intersection(user.all_groups, self.can_view_groups.all()))
+                _check_intersection(user.all_groups, self.can_view_groups.all()))
 
     def can_edit(self, user):
+        """
+        Checks if a user can edit this object
+
+        :rtype: bool
+        """
+
         if not user.is_authenticated():
             return not self.needs_auth()
 
