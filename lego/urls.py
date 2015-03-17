@@ -9,11 +9,10 @@ urlpatterns = patterns(
     '',
 
     url(r'^api/', include('lego.api.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
 
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^accounts/', include('rest_framework.urls', namespace='rest_framework')),
 )
 
 if not settings.DEBUG:
