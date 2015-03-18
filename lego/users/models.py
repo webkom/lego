@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from basis.models import BasisModel, PersistentModel
+from basis.models import BasisModel, PersistentModel, TimeStampModel
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser, Group
 from django.core.mail import send_mail
@@ -8,12 +8,12 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from lego.users.managers import AbakusGroupManager, UserManager, MembershipManager
+from lego.users.managers import AbakusGroupManager, MembershipManager, UserManager
 
 from .validators import username_validator
 
 
-class AbakusGroup(PersistentModel):
+class AbakusGroup(TimeStampModel, PersistentModel):
     objects = AbakusGroupManager()
 
     name = models.CharField(max_length=80, unique=True)
