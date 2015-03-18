@@ -7,7 +7,7 @@ from django.core import serializers
 from django.core.management import BaseCommand
 
 from lego.app.oauth.models import APIApplication
-from lego.users.models import AbakusGroup, User, Membership
+from lego.users.models import AbakusGroup, Membership, User
 
 
 def create_if_missing(obj, model):
