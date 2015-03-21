@@ -16,6 +16,10 @@ class AbakusGroupTestCase(TestCase):
         self.assertTrue(committee.is_committee)
         self.assertFalse(self.non_committee.is_committee)
 
+    def test_natural_key(self):
+        found_group = AbakusGroup.objects.get_by_natural_key(self.non_committee.name)
+        self.assertEqual(self.non_committee, found_group)
+
 
 class AbakusGroupHierarchyTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml']
@@ -94,6 +98,10 @@ class UserTestCase(TestCase):
         self.assertTrue(abakom in abakus_groups)
         self.assertTrue(abakus in abakus_groups)
 
+    def test_natural_key(self):
+        found_user = User.objects.get_by_natural_key(self.user.username)
+        self.assertEqual(self.user, found_user)
+
 
 class MembershipTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
@@ -117,3 +125,8 @@ class MembershipTestCase(TestCase):
                 self.test_membership.abakus_group
             )
         )
+
+    def test_natural_key(self):
+        found_membership = Membership.objects.get_by_natural_key(self.test_user.username,
+                                                                 self.test_committee.name)
+        self.assertEqual(self.test_membership, found_membership)
