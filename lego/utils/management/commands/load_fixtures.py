@@ -7,7 +7,7 @@ from django.core import serializers
 from django.core.management import BaseCommand
 
 from lego.app.oauth.models import APIApplication
-from lego.users.models import AbakusGroup, User
+from lego.users.models import AbakusGroup, Membership, User
 
 
 def create_if_missing(obj, model):
@@ -32,6 +32,7 @@ class Command(BaseCommand):
         self.load_from_fixture('users/fixtures/initial_permission_groups.yaml', Group)
         self.load_from_fixture('users/fixtures/initial_abakus_groups.yaml', AbakusGroup)
         self.load_from_fixture('users/fixtures/initial_users.yaml', User)
+        self.load_from_fixture('users/fixtures/initial_memberships.yaml', Membership)
         self.load_from_fixture('app/oauth/fixtures/initial_applications.yaml', APIApplication)
 
         if settings.DEVELOPMENT:

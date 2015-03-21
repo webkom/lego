@@ -1,5 +1,4 @@
 # -*- coding: utf8 -*-
-from basis.serializers import BasisSerializer
 from rest_framework import serializers
 
 from lego.users.models import AbakusGroup, User
@@ -43,7 +42,7 @@ class UserSerializer(DetailedUserSerializer):
         return serializer.data
 
 
-class DetailedAbakusGroupSerializer(BasisSerializer):
+class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AbakusGroup
         fields = (
@@ -55,7 +54,7 @@ class DetailedAbakusGroupSerializer(BasisSerializer):
         )
 
 
-class PublicAbakusGroupSerializer(BasisSerializer):
+class PublicAbakusGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AbakusGroup
         fields = (
