@@ -1,8 +1,9 @@
+import datetime
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-SECRET_KEY = 'This is supersecret'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
 
 SHELL_PLUS = 'ipython'
 
@@ -49,6 +50,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DATE': datetime.timedelta(days=7),
+}
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
 
