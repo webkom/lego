@@ -6,6 +6,7 @@ help:
 
 dev:
 	pip install -r requirements/dev.txt --upgrade
+	pip install -r requirements/docs.txt --upgrade
 
 prod:
 	pip install -r requirements/prod.txt --upgrade
