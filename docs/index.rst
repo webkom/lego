@@ -17,6 +17,7 @@ Contents:
 
     Permissions <permissions>
     Mail <mail>
+    Authentication <authentication>
 
 Indices and tables
 ==================
