@@ -16,3 +16,4 @@ django-secure
 django-autoslug
 django-filter
 django-oauth-toolkit
+django-cors-headers

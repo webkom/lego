@@ -23,6 +23,7 @@ INSTALLED_APPS = (
 
     'oauth2_provider',
     'rest_framework',
+    'corsheaders',
 
     'lego.users',
     'lego.utils',
@@ -43,6 +44,7 @@ AUTHENTICATION_BACKENDS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -76,3 +78,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '../uploads')
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
