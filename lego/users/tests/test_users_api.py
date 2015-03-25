@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
-from lego.users.serializers import PublicUserSerializer, UserSerializer
+from lego.users.serializers import DetailedUserSerializer, PublicUserSerializer, UserSerializer
 
 _test_user_data = {
     'username': 'new_testuser',
@@ -247,3 +247,22 @@ class DeleteUsersAPITestCase(APITestCase):
 
     def test_with_super_user(self):
         self.successful_delete(self.super_user)
+
+
+class RetrieveSelfTestCase(APITestCase):
+    fixtures = ['test_users.yaml']
+
+    def setUp(self):
+        self.user = User.objects.get(pk=1)
+
+    def test_self_authed(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse('user-me'))
+
+        self.assertEqual(response.status_code, 200)
+        for field in DetailedUserSerializer.Meta.fields:
+            self.assertEqual(getattr(self.user, field), response.data[field])
+
+    def test_self_unauthed(self):
+        response = self.client.get(reverse('user-me'))
+        self.assertEqual(response.status_code, 401)
