@@ -3,8 +3,12 @@ TESTING = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'lego'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'lego',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
