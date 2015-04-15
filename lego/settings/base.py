@@ -37,6 +37,10 @@ INSTALLED_APPS = (
     'lego.app.comments',
 )
 
+MIGRATION_MODULES = {
+    'oauth2_provider': 'lego.migrations.oauth2_provider'
+}
+
 AUTHENTICATION_BACKENDS = (
     'lego.backends.AbakusModelBackend',
     'oauth2_provider.backends.OAuth2Backend',
