@@ -26,7 +26,7 @@ class ListArticlesTestCase(APITestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_authorized_without_permission(self):
-        user = self.all_users.all().filter(is_superuser=False).first()
+        user = self.all_users.first()
 
         abakus = AbakusGroup.objects.get(name='Abakus')
         abakus.add_user(user)
@@ -44,7 +44,7 @@ class RetrieveArticlesTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.abakus_user = User.objects.filter(is_superuser=False).first()
+        self.abakus_user = User.objects.all().first()
 
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')
         self.abakus_group.add_user(self.abakus_user)

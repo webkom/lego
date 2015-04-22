@@ -29,16 +29,14 @@ def get_test_user():
 
 
 class ListUsersAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.super_user = self.all_users.filter(is_superuser=True).first()
-        self.normal_user = self.all_users.filter(is_superuser=False).first()
-
-        self.useradmin_user = self.all_users.get(username='useradmin_test')
+        self.with_permission = self.all_users.get(username='useradmin_test')
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.useradmin_user)
+        self.useradmin_test_group.add_user(self.with_permission)
+        self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
 
     def successful_list(self, user):
         self.client.force_authenticate(user=user)
@@ -52,16 +50,16 @@ class ListUsersAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.normal_user)
+        self.client.force_authenticate(user=self.without_permission)
         response = self.client.get(_get_list_url())
 
         self.assertEqual(response.status_code, 403)
 
     def test_with_useradmin(self):
-        self.successful_list(self.useradmin_user)
+        self.successful_list(self.with_permission)
 
     def test_with_super_user(self):
-        self.successful_list(self.super_user)
+        self.successful_list(self.with_permission)
 
 
 class RetrieveUsersAPITestCase(APITestCase):
@@ -69,13 +67,13 @@ class RetrieveUsersAPITestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.super_user = self.all_users.filter(is_superuser=True).first()
-        self.normal_user = self.all_users.filter(is_superuser=False).first()
-        self.test_user = get_test_user()
 
-        self.useradmin_user = self.all_users.get(username='useradmin_test')
+        self.with_perm = self.all_users.get(username='useradmin_test')
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.useradmin_user)
+        self.useradmin_test_group.add_user(self.with_perm)
+        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
+
+        self.test_user = get_test_user()
 
     def successful_retrieve(self, user):
         self.client.force_authenticate(user=user)
@@ -91,7 +89,7 @@ class RetrieveUsersAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.normal_user)
+        self.client.force_authenticate(user=self.without_perm)
         response = self.client.get(_get_detail_url(self.test_user.pk))
         user = response.data
         keys = set(user.keys())
@@ -100,8 +98,8 @@ class RetrieveUsersAPITestCase(APITestCase):
         self.assertEqual(keys, set(PublicUserSerializer.Meta.fields))
 
     def test_self_with_normal_user(self):
-        self.client.force_authenticate(user=self.normal_user)
-        response = self.client.get(_get_detail_url(self.normal_user.pk))
+        self.client.force_authenticate(user=self.without_perm)
+        response = self.client.get(_get_detail_url(self.without_perm.pk))
         user = response.data
         keys = set(user.keys())
 
@@ -109,10 +107,7 @@ class RetrieveUsersAPITestCase(APITestCase):
         self.assertEqual(keys, set(UserSerializer.Meta.fields))
 
     def test_with_useradmin(self):
-        self.successful_retrieve(self.useradmin_user)
-
-    def test_with_super_user(self):
-        self.successful_retrieve(self.super_user)
+        self.successful_retrieve(self.with_perm)
 
 
 class CreateUsersAPITestCase(APITestCase):
@@ -120,12 +115,11 @@ class CreateUsersAPITestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.super_user = self.all_users.filter(is_superuser=True).first()
-        self.normal_user = self.all_users.filter(is_superuser=False).first()
 
-        self.useradmin_user = self.all_users.get(username='useradmin_test')
+        self.with_perm = self.all_users.get(username='useradmin_test')
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.useradmin_user)
+        self.useradmin_test_group.add_user(self.with_perm)
+        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
 
     def successful_create(self, user):
         self.client.force_authenticate(user=user)
@@ -138,20 +132,20 @@ class CreateUsersAPITestCase(APITestCase):
             self.assertEqual(getattr(created_user, key), value)
 
     def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.normal_user)
+        self.client.force_authenticate(user=self.without_perm)
         response = self.client.post(_get_list_url(), _test_user_data)
 
         self.assertEqual(response.status_code, 403)
 
     def test_with_useradmin(self):
-        self.successful_create(self.useradmin_user)
+        self.successful_create(self.with_perm)
 
     def test_with_super_user(self):
-        self.successful_create(self.super_user)
+        self.successful_create(self.with_perm)
 
-    def test_username(self):
+    def test_taken_username(self):
         get_test_user()
-        self.client.force_authenticate(user=self.super_user)
+        self.client.force_authenticate(user=self.with_perm)
         response = self.client.post(_get_list_url(), _test_user_data)
 
         self.assertEqual(response.status_code, 400)
@@ -169,12 +163,11 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.super_user = self.all_users.filter(is_superuser=True).first()
-        self.normal_user = self.all_users.filter(is_superuser=False).first()
 
-        self.useradmin_user = self.all_users.get(username='useradmin_test')
+        self.with_perm = self.all_users.get(username='useradmin_test')
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.useradmin_user)
+        self.useradmin_test_group.add_user(self.with_perm)
+        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
 
         self.test_user = get_test_user()
 
@@ -189,13 +182,13 @@ class UpdateUsersAPITestCase(APITestCase):
             self.assertEqual(getattr(user, key), value)
 
     def test_self(self):
-        self.successful_update(self.normal_user, self.normal_user)
+        self.successful_update(self.without_perm, self.without_perm)
 
     def test_with_useradmin(self):
-        self.successful_update(self.useradmin_user, self.test_user)
+        self.successful_update(self.with_perm, self.test_user)
 
     def test_other_with_normal_user(self):
-        self.client.force_authenticate(user=self.normal_user)
+        self.client.force_authenticate(user=self.without_perm)
         response = self.client.put(_get_detail_url(self.test_user.pk), self.modified_user)
         user = User.objects.get(pk=self.test_user.pk)
 
@@ -203,7 +196,7 @@ class UpdateUsersAPITestCase(APITestCase):
         self.assertEqual(user, self.test_user)
 
     def test_update_with_super_user(self):
-        self.successful_update(self.super_user, self.test_user)
+        self.successful_update(self.with_perm, self.test_user)
 
 
 class DeleteUsersAPITestCase(APITestCase):
@@ -218,12 +211,11 @@ class DeleteUsersAPITestCase(APITestCase):
 
     def setUp(self):
         self.all_users = User.objects.all()
-        self.super_user = self.all_users.filter(is_superuser=True).first()
-        self.normal_user = self.all_users.filter(is_superuser=False).first()
 
-        self.useradmin_user = self.all_users.get(username='useradmin_test')
+        self.with_perm = self.all_users.get(username='useradmin_test')
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.useradmin_user)
+        self.useradmin_test_group.add_user(self.with_perm)
+        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
 
         self.test_user = get_test_user()
 
@@ -235,7 +227,7 @@ class DeleteUsersAPITestCase(APITestCase):
         self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
 
     def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.normal_user)
+        self.client.force_authenticate(user=self.without_perm)
         response = self.client.delete(_get_detail_url(self.test_user.pk))
         users = User.objects.filter(pk=self.test_user.pk)
 
@@ -243,10 +235,7 @@ class DeleteUsersAPITestCase(APITestCase):
         self.assertTrue(len(users))
 
     def test_with_useradmin(self):
-        self.successful_delete(self.useradmin_user)
-
-    def test_with_super_user(self):
-        self.successful_delete(self.super_user)
+        self.successful_delete(self.with_perm)
 
 
 class RetrieveSelfTestCase(APITestCase):

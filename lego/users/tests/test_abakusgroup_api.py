@@ -53,7 +53,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
@@ -107,7 +107,7 @@ class CreateAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
@@ -156,7 +156,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
@@ -205,7 +205,7 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
