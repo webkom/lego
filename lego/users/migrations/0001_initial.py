@@ -1,85 +1,80 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import basis.models
+from django.db import models, migrations
 import django.core.validators
 import django.utils.timezone
+import basis.models
 from django.conf import settings
-from django.db import migrations, models
+import django.contrib.postgres.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='User',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(verbose_name='last login', default=django.utils.timezone.now)),
-                ('is_superuser', models.BooleanField(verbose_name='superuser status', default=False, help_text='Designates that this user has all permissions without explicitly assigning them.')),
-                ('username', models.CharField(max_length=30, error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.', verbose_name='username', validators=[django.core.validators.RegexValidator('^[\\w.@+-]+$', 'Enter a valid username.  This value may contain only letters, numbers and @/./+/-/_ characters.', 'invalid')], unique=True)),
-                ('first_name', models.CharField(max_length=30, verbose_name='first name', blank=True)),
-                ('last_name', models.CharField(max_length=30, verbose_name='last name', blank=True)),
-                ('email', models.EmailField(max_length=75, verbose_name='email address', blank=True)),
-                ('is_staff', models.BooleanField(verbose_name='staff status', default=False, help_text='Designates whether the user can log into this admin site.')),
-                ('is_active', models.BooleanField(verbose_name='active', default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.')),
-                ('date_joined', models.DateTimeField(verbose_name='date joined', default=django.utils.timezone.now)),
+                ('last_login', models.DateTimeField(null=True, blank=True, verbose_name='last login')),
+                ('deleted', models.BooleanField(default=False, editable=False)),
+                ('username', models.CharField(unique=True, error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=30, validators=[django.core.validators.RegexValidator('^[\\w.@+-]+$', 'Enter a valid username.  This value may contain only letters, numbers and @/./+/-/_ characters.', 'invalid')])),
+                ('first_name', models.CharField(max_length=30, blank=True, verbose_name='first name')),
+                ('last_name', models.CharField(max_length=30, blank=True, verbose_name='last name')),
+                ('email', models.EmailField(max_length=254, blank=True, verbose_name='email address')),
+                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.')),
+                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.')),
+                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
             ],
             options={
-                'verbose_name': 'user',
-                'verbose_name_plural': 'users',
+                'abstract': False,
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='AbakusGroup',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('deleted', models.BooleanField(editable=False, default=False)),
-                ('name', models.CharField(max_length=80, verbose_name='name', unique=True)),
-                ('description', models.CharField(max_length=200, verbose_name='description', blank=True)),
-                ('parent', models.ForeignKey(blank=True, null=True, verbose_name='parent', to='users.AbakusGroup')),
-                ('permission_groups', models.ManyToManyField(verbose_name='permission groups', related_name='abakus_groups', blank=True, to='auth.Group')),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('created_at', models.DateTimeField(default=basis.models._now, editable=False)),
+                ('updated_at', models.DateTimeField(default=basis.models._now, editable=False)),
+                ('deleted', models.BooleanField(default=False, editable=False)),
+                ('name', models.CharField(unique=True, max_length=80)),
+                ('description', models.CharField(max_length=200, blank=True)),
+                ('permissions', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=30), null=True, size=None, verbose_name='permissions')),
+                ('parent', models.ForeignKey(related_name='children', to='users.AbakusGroup', null=True, blank=True)),
             ],
-            options={
-                'verbose_name': 'abakus group',
-                'verbose_name_plural': 'abakus groups',
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Membership',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
-                ('created_at', models.DateTimeField(editable=False, default=basis.models._now)),
-                ('updated_at', models.DateTimeField(editable=False, default=basis.models._now)),
-                ('deleted', models.BooleanField(editable=False, default=False)),
-                ('role', models.CharField(max_length=2, verbose_name='role', choices=[('M', 'Member'), ('L', 'Leader'), ('CL', 'Co-Leader'), ('T', 'Treasurer')], default='M')),
-                ('is_active', models.BooleanField(verbose_name='is active', default=True)),
-                ('start_date', models.DateField(verbose_name='start date', auto_now_add=True)),
-                ('end_date', models.DateField(verbose_name='end date', blank=True, null=True)),
-                ('abakus_group', models.ForeignKey(verbose_name='abakus group', to='users.AbakusGroup')),
-                ('created_by', models.ForeignKey(editable=False, related_name='membership_created', null=True, default=None, to=settings.AUTH_USER_MODEL)),
-                ('updated_by', models.ForeignKey(editable=False, related_name='membership_updated', null=True, default=None, to=settings.AUTH_USER_MODEL)),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('created_at', models.DateTimeField(default=basis.models._now, editable=False)),
+                ('updated_at', models.DateTimeField(default=basis.models._now, editable=False)),
+                ('deleted', models.BooleanField(default=False, editable=False)),
+                ('role', models.CharField(max_length=2, default='M', choices=[('M', 'Member'), ('L', 'Leader'), ('CL', 'Co-Leader'), ('T', 'Treasurer')])),
+                ('is_active', models.BooleanField(default=True)),
+                ('start_date', models.DateField(auto_now_add=True)),
+                ('end_date', models.DateField(null=True, blank=True)),
+                ('abakus_group', models.ForeignKey(to='users.AbakusGroup')),
+                ('created_by', models.ForeignKey(default=None, to=settings.AUTH_USER_MODEL, related_name='membership_created', null=True, editable=False)),
+                ('updated_by', models.ForeignKey(default=None, to=settings.AUTH_USER_MODEL, related_name='membership_updated', null=True, editable=False)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='user',
+            name='abakus_groups',
+            field=models.ManyToManyField(related_name='users', help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', to='users.AbakusGroup', blank=True, related_query_name='user', through='users.Membership'),
         ),
         migrations.AlterUniqueTogether(
             name='membership',
             unique_together=set([('user', 'abakus_group')]),
         ),
-        migrations.AddField(
-            model_name='user',
-            name='abakus_groups',
-            field=models.ManyToManyField(related_name='users', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='abakus groups', related_query_name='user', through='users.Membership', to='users.AbakusGroup'),
-            preserve_default=True,
+        migrations.AlterUniqueTogether(
+            name='abakusgroup',
+            unique_together=set([('name',)]),
         ),
     ]

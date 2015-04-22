@@ -1,9 +1,8 @@
 # -*- coding: utf8 -*-
 import json
+from lego.app.flatpages.models import Page
 
 from rest_framework.test import APITestCase
-
-from .models import Page
 
 
 class PageAPITestCase(APITestCase):

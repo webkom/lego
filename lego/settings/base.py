@@ -42,7 +42,7 @@ MIGRATION_MODULES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    'lego.backends.AbakusModelBackend',
+    'lego.backends.KeywordPermissionBackend',
     'oauth2_provider.backends.OAuth2Backend',
 )
 

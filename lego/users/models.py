@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 from basis.models import BasisModel, PersistentModel, TimeStampModel
 from django.contrib import auth
-from django.contrib.auth.models import AbstractBaseUser, Group
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -19,19 +20,10 @@ class AbakusGroup(TimeStampModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True)
     description = models.CharField(blank=True, max_length=200)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
-
-    permission_groups = models.ManyToManyField(
-        Group,
-        related_name='abakus_groups',
-        blank=True,
-        null=True
-    )
+    permissions = ArrayField(models.CharField(max_length=30), verbose_name='permissions', null=True)
 
     class Meta:
         unique_together = 'name',
-        permissions = (
-            ('retrieve_abakusgroup', 'Can retrieve AbakusGroups'),
-        )
 
     @property
     def is_committee(self):
@@ -76,36 +68,7 @@ class AbakusGroup(TimeStampModel, PersistentModel):
         return self.name.lower(),
 
 
-def _user_get_all_permissions(user, obj):
-    permissions = set()
-    for backend in auth.get_backends():
-        if hasattr(backend, 'get_all_permissions'):
-            permissions.update(backend.get_all_permissions(user, obj))
-    return permissions
-
-
-def _user_has_perm(user, perm, obj):
-    for backend in auth.get_backends():
-        if hasattr(backend, 'has_perm'):
-            if backend.has_perm(user, perm, obj):
-                return True
-    return False
-
-
-def _user_has_module_perms(user, app_label):
-    for backend in auth.get_backends():
-        if hasattr(backend, 'has_module_perms'):
-            if backend.has_module_perms(user, app_label):
-                return True
-    return False
-
-
 class PermissionsMixin(models.Model):
-    is_superuser = models.BooleanField(
-        default=False,
-        help_text=_('Designates that this user has all permissions without '
-                    'explicitly assigning them.')
-    )
     abakus_groups = models.ManyToManyField(
         AbakusGroup,
         through='Membership',
@@ -119,48 +82,26 @@ class PermissionsMixin(models.Model):
     class Meta:
         abstract = True
 
-    def get_group_permissions(self, obj=None):
-        """
-        Returns a list of permission strings that this user has through their
-        groups. This method queries all available auth backends. If an object
-        is passed in, only permissions matching this object are returned.
-        """
+    def get_permissions(self):
         permissions = set()
         for backend in auth.get_backends():
-            if hasattr(backend, 'get_group_permissions'):
-                permissions.update(backend.get_group_permissions(self, obj))
+            if hasattr(backend, 'get_all_permissions'):
+                permissions.update(backend.get_all_permissions(self))
+
         return permissions
 
-    def get_all_permissions(self, obj=None):
-        return _user_get_all_permissions(self, obj)
-
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, perm):
         """
         Returns True if the user has the specified permission. This method
         queries all available auth backends, but returns immediately if any
         backend returns True. Thus, a user who has permission from a single
-        auth backend is assumed to have permission in general. If an object is
-        provided, permissions for this specific object are checked.
+        auth backend is assumed to have permission in general.
         """
 
-        # Active superusers have all permissions.
-        if self.is_active and self.is_superuser:
-            return True
-
-        # Otherwise we need to check the backends.
-        return _user_has_perm(self, perm, obj)
-
-    def has_perms(self, perm_list, obj=None):
-        for perm in perm_list:
-            if not self.has_perm(perm, obj):
-                return False
-        return True
-
-    def has_module_perms(self, app_label):
-        if self.is_active and self.is_superuser:
-            return True
-
-        return _user_has_module_perms(self, app_label)
+        for backend in auth.get_backends():
+            if hasattr(backend, 'has_perm'):
+                if backend.has_perm(self, perm):
+                    return True
 
 
 class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
@@ -191,9 +132,6 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
-
-    class Meta:
-        permissions = ('retrieve_user', 'Can retrieve user'), ('list_user', 'Can list users')
 
     @cached_property
     def all_groups(self):

@@ -1,14 +1,22 @@
 - model: users.AbakusGroup
   fields:
     name: UserAdminTest
-    permission_groups:
-      - 1
+    permissions:
+      - /sudo/admin/users/list/
+      - /sudo/admin/users/retrieve/
+      - /sudo/admin/users/create/
+      - /sudo/admin/users/update/
+      - /sudo/admin/users/destroy/
 
 - model: users.AbakusGroup
   fields:
     name: AbakusGroupAdminTest
-    permission_groups:
-      - 2
+    permissions:
+      - /sudo/admin/groups/list/
+      - /sudo/admin/groups/retrieve/
+      - /sudo/admin/groups/create/
+      - /sudo/admin/groups/update/
+      - /sudo/admin/groups/destroy/
 
 - model: users.AbakusGroup
   fields:
@@ -17,5 +25,9 @@
 - model: users.AbakusGroup
   fields:
     name: EventAdminTest
-    permission_groups:
-      - 3
+    permissions:
+      - /sudo/admin/events/list/
+      - /sudo/admin/events/retrieve/
+      - /sudo/admin/events/create/
+      - /sudo/admin/events/update/
+      - /sudo/admin/events/destroy/
