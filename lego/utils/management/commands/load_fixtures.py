@@ -2,7 +2,6 @@
 import os
 
 from django.conf import settings
-from django.contrib.auth.models import Group
 from django.core import serializers
 from django.core.management import BaseCommand
 
@@ -29,7 +28,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('Loading regular fixtures:')
-        self.load_from_fixture('users/fixtures/initial_permission_groups.yaml', Group)
         self.load_from_fixture('users/fixtures/initial_abakus_groups.yaml', AbakusGroup)
         self.load_from_fixture('users/fixtures/initial_users.yaml', User)
         self.load_from_fixture('users/fixtures/initial_memberships.yaml', Membership)

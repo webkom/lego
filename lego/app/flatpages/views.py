@@ -1,9 +1,8 @@
 # -*- coding: utf8 -*-
-from lego.app.flatpages.permissions import FlatpagePermissions
 from rest_framework import serializers, viewsets
 
+from lego.app.flatpages.permissions import FlatpagePermissions
 from lego.permissions.filters import ObjectPermissionsFilter
-from lego.permissions.object_permissions import ObjectPermissions
 
 from .models import Page
 

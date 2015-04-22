@@ -63,7 +63,7 @@ class ListUsersAPITestCase(APITestCase):
 
 
 class RetrieveUsersAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_users = User.objects.all()
@@ -111,7 +111,7 @@ class RetrieveUsersAPITestCase(APITestCase):
 
 
 class CreateUsersAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_users = User.objects.all()
@@ -152,7 +152,7 @@ class CreateUsersAPITestCase(APITestCase):
 
 
 class UpdateUsersAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     modified_user = {
         'username': 'modified_user',
@@ -200,7 +200,7 @@ class UpdateUsersAPITestCase(APITestCase):
 
 
 class DeleteUsersAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_user_data = {
         'username': 'new_testuser',

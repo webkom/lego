@@ -5,7 +5,7 @@ from lego.permissions.object_permissions import ObjectPermissions
 
 class FlatpagePermissions(KeywordPermissions, ObjectPermissions):
     perms_map = {
-        'list': '/sudo/admin/flatpages/list/',
+        'list': None,
         'retrieve': '/sudo/admin/flatpages/retrieve/',
         'create': '/sudo/admin/flatpages/create/',
         'update': '/sudo/admin/flatpages/update/',
