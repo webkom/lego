@@ -2,7 +2,7 @@
 from django.test import TestCase
 
 from lego.permissions.models import ObjectPermissionsModel
-from lego.permissions.tests.model import TestModel
+from lego.permissions.tests.models import TestModel
 from lego.users.models import AbakusGroup, User
 
 
@@ -10,7 +10,7 @@ class ObjectPermissionsModelTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
-        self.regular_users = User.objects.filter(is_superuser=False)
+        self.regular_users = User.objects.all()
         self.creator = self.regular_users[0]
 
         self.test_object = TestModel(name='test_object')

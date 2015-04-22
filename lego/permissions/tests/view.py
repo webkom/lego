@@ -3,7 +3,7 @@ from rest_framework import viewsets
 
 from lego.permissions.filters import ObjectPermissionsFilter
 from lego.permissions.object_permissions import ObjectPermissions
-from lego.permissions.tests.model import TestModel
+from lego.permissions.tests.models import TestModel
 from lego.permissions.tests.serializer import TestSerializer
 
 

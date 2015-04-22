@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
 from lego.permissions.keyword_permissions import KeywordPermissions
-from rest_framework import permissions
-
 from lego.users.models import Membership
 
 
@@ -20,9 +18,6 @@ class UsersPermissions(KeywordPermissions):
         'list': '/sudo/admin/users/list/',
         'retrieve': None,
         'create': '/sudo/admin/users/create/',
-    }
-
-    object_perms_map = {
         'update': '/sudo/admin/users/update/',
         'partial_update': '/sudo/admin/users/update/',
         'destroy': '/sudo/admin/users/destroy/',
@@ -42,9 +37,6 @@ class AbakusGroupPermissions(KeywordPermissions):
         'list': None,
         'retrieve': None,
         'create': '/sudo/admin/groups/create/',
-    }
-
-    object_perms_map = {
         'update': '/sudo/admin/groups/update/',
         'partial_update': '/sudo/admin/groups/update/',
         'destroy': '/sudo/admin/groups/destroy/',

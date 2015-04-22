@@ -1,3 +1,5 @@
+from .base import INSTALLED_APPS
+
 DEBUG = False
 TESTING = True
 
@@ -11,6 +13,8 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+INSTALLED_APPS += ('lego.permissions.tests',)
 
 CACHES = {
     'default': {

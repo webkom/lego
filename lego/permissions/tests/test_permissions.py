@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
-from lego.permissions.tests.model import TestModel
+from lego.permissions.tests.models import TestModel
 from lego.permissions.tests.view import TestViewSet
 from lego.users.models import AbakusGroup, User
 
@@ -14,7 +14,7 @@ class PermissionTestCase(APITestCase):
     }
 
     def setUp(self):
-        self.regular_users = User.objects.filter(is_superuser=False)
+        self.regular_users = User.objects.all()
         self.creator = self.regular_users[0]
 
         self.allowed_user = self.regular_users[1]
