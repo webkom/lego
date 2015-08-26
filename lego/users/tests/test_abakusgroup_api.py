@@ -126,6 +126,22 @@ class CreateAbakusGroupAPITestCase(APITestCase):
         for key, value in _test_group_data.items():
             self.assertEqual(getattr(created_group, key), value)
 
+    def test_create_validate_permissions(self):
+        self.client.force_authenticate(user=self.with_permission)
+        group = {
+            'name': 'permissiontestgroup',
+            'permissions': ['/valid/', '/invalid123']
+        }
+
+        expected_data = {'permissions': [
+            'Keyword permissions can only contain forward slashes and letters and must begin '
+            'and end with a forward slash'
+        ]}
+
+        response = self.client.post(_get_list_url(), group)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(expected_data, response.data)
+
     def test_without_auth(self):
         response = self.client.post(_get_list_url(), _test_group_data)
         self.assertEqual(response.status_code, 401)
