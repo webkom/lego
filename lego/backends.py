@@ -1,20 +1,10 @@
 # -*- coding: utf8 -*-
 from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
 
 
 class KeywordPermissionBackend:
-    def authenticate(self, username=None, password=None, **kwargs):
-        user_model = get_user_model()
-        if username is None:
-            username = kwargs.get(user_model.USERNAME_FIELD)
-        try:
-            user = user_model._default_manager.get_by_natural_key(username)
-            if user.check_password(password):
-                return user
-        except user_model.DoesNotExist:
-            # Run the default password hasher once to reduce the timing
-            # difference between an existing and a non-existing user (#20760).
-            user_model().set_password(password)
+    authenticate = ModelBackend.authenticate
 
     def get_group_permissions(self, user_obj, obj=None):
         if user_obj.is_anonymous() or obj is not None:
