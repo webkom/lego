@@ -6,6 +6,9 @@ tasks:
   - coverage report --fail-under=75
   - coverage xml
 
+services:
+  - postgresql
+
 coverage:
   path: coverage.xml
   parser: python
