@@ -1,24 +1,13 @@
 help:
-	@echo 'dev        - install dev requirements'
-	@echo 'prod       - install prod requirements'
-	@echo 'venv       - create virtualenv venv-folder'
-	@echo 'production - deploy production (used by chewie)'
-
-dev:
-	pip install -r requirements/dev.txt --upgrade
-	pip install -r requirements/docs.txt --upgrade
-
-prod:
-	pip install -r requirements/prod.txt --upgrade
+	@echo 'venv       			  - create virtualenv venv-folder'
+	@echo 'lego/settings/local.py - create development local.py'
+	@echo 'production             - deploy production (used by chewie)'
 
 venv:
 	virtualenv -p `which python3` venv
 
-isort:
-	isort -rc lego
-
 lego/settings/local.py:
-	touch lego/settings/local.py
+	cp lego/settings/local_development.py lego/settings/local.py
 
 production:
 	git fetch && git reset --hard origin/master
@@ -30,4 +19,4 @@ production:
 docs:
 	cd docs; make html && open _build/html/index.html
 
-.PHONY: help dev prod production docs
+.PHONY: help production docs
