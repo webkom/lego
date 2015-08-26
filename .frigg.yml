@@ -1,8 +1,8 @@
 tasks:
-  - tox -e py34
+  - tox -e tests
   - tox -e docs
-  - flake8
-  - isort -c -rc lego
+  - tox -e flake8
+  - tox -e isort
   - coverage report --fail-under=75
   - coverage xml
 
