@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
+from lego.permissions.validators import KeywordPermissionValidator
 from lego.users.managers import AbakusGroupManager, MembershipManager, UserManager
 
 from .validators import username_validator
@@ -20,7 +21,11 @@ class AbakusGroup(TimeStampModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True)
     description = models.CharField(blank=True, max_length=200)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
-    permissions = ArrayField(models.CharField(max_length=30), verbose_name='permissions', null=True)
+    permissions = ArrayField(
+        models.CharField(validators=[KeywordPermissionValidator()],
+                         max_length=30),
+        verbose_name='permissions', null=True
+    )
 
     class Meta:
         unique_together = 'name',
