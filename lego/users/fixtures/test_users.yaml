@@ -17,23 +17,13 @@
 - model: users.User
   pk: 3
   fields:
-    username: test_super
-    first_name: super
-    last_name: user
-    email: super@user.com
-    is_staff: True
-    is_superuser: True
-
-- model: users.User
-  pk: 4
-  fields:
     username: useradmin_test
     first_name: user
     last_name: admin
     email: user@admin.com
 
 - model: users.User
-  pk: 5
+  pk: 4
   fields:
     username: abakusgroupadmin_test
     first_name: abakusgroup

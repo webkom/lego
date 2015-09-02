@@ -20,7 +20,7 @@ def _get_detail_url(pk):
 
 
 class ListAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
@@ -46,14 +46,14 @@ class ListAbakusGroupAPITestCase(APITestCase):
 
 
 class RetrieveAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
@@ -100,14 +100,14 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
 
 
 class CreateAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
@@ -126,6 +126,22 @@ class CreateAbakusGroupAPITestCase(APITestCase):
         for key, value in _test_group_data.items():
             self.assertEqual(getattr(created_group, key), value)
 
+    def test_create_validate_permissions(self):
+        self.client.force_authenticate(user=self.with_permission)
+        group = {
+            'name': 'permissiontestgroup',
+            'permissions': ['/valid/', '/invalid123']
+        }
+
+        expected_data = {'permissions': [
+            'Keyword permissions can only contain forward slashes and letters and must begin '
+            'and end with a forward slash'
+        ]}
+
+        response = self.client.post(_get_list_url(), group)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(expected_data, response.data)
+
     def test_without_auth(self):
         response = self.client.post(_get_list_url(), _test_group_data)
         self.assertEqual(response.status_code, 401)
@@ -143,7 +159,7 @@ class CreateAbakusGroupAPITestCase(APITestCase):
 
 
 class UpdateAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
@@ -156,7 +172,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
@@ -198,14 +214,14 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
 
 class DeleteAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['initial_permission_groups.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
 
         self.with_permission = User.objects.get(username='abakusgroupadmin_test')
         self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk, is_superuser=True)
+                                   .exclude(pk=self.with_permission.pk)
                                    .first())
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
