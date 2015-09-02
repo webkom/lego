@@ -4,19 +4,21 @@
 
 ```bash
 $ make
-  dev        - install dev requirements
-  prod       - install prod requirements
-  venv       - create virtualenv venv-folder
-  production - deploy production (used by chewie)
+  development - install dev requirements, setup local.py and run migrations
+  venv        - create virtualenv venv-folder
+  production  - deploy production (used by chewie)
 ```
 
 ## Development
+
 ### Mac
+
+Requires [Homebrew](http://brew.sh/).
+
 ```bash
 brew update
 brew install python3 postgresql
-make lego/settings/local.py
-make venv # Or create a venv your preferred way
+make venv # Or create a virtualenv your preferred way
+make development
 source venv/bin/activate
-make dev
 ```
