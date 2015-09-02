@@ -21,6 +21,9 @@ The permission strings can only contain letters and forward slashes, and need to
 with a forward slash.
 
 Permissions are stored per group, connected to the model `:class:lego.users.models.AbakusGroup`.
+The current permission strings are:
+``/sudo/`` - for Webkom
+``/sudo/admin/`` for Hovedstyret
 
 Object Permissions
 ------------------
