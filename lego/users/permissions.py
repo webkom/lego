@@ -1,62 +1,54 @@
 # -*- coding: utf8 -*-
-from rest_framework import permissions
-
+from lego.permissions.keyword_permissions import KeywordPermissions
 from lego.users.models import Membership
 
 
 def can_retrieve_user(user, retriever):
-    return user == retriever or retriever.has_perm('users.retrieve_user')
+    required_permission = '/sudo/admin/users/retrieve/'
+    return user == retriever or retriever.has_perm(required_permission)
 
 
 def can_retrieve_abakusgroup(group, retriever):
-    return retriever.has_perm('users.retrieve_abakusgroup') or group in retriever.all_groups
+    required_permission = '/sudo/admin/groups/retrieve/'
+    return group in retriever.all_groups or retriever.has_perm(required_permission)
 
 
-class UsersObjectPermissions(permissions.BasePermission):
+class UsersPermissions(KeywordPermissions):
     perms_map = {
-        'PUT': 'users.change_user',
-        'PATCH': 'users.change_user'
+        'list': '/sudo/admin/users/list/',
+        'retrieve': None,
+        'create': '/sudo/admin/users/create/',
+        'update': '/sudo/admin/users/update/',
+        'partial_update': '/sudo/admin/users/update/',
+        'destroy': '/sudo/admin/users/destroy/',
     }
 
-    def check_model_perms(self, user, method):
-        try:
-            return user.has_perm(self.perms_map[method])
-        except KeyError:
-            return True
+    allowed_individual = ['retrieve', 'update', 'partial_update']
 
     def has_object_permission(self, request, view, obj):
-        user = request.user
-
-        if user == obj:
+        if view.action in self.allowed_individual and obj == request.user:
             return True
 
-        return self.check_model_perms(request.user, request.method)
-
-    def has_permission(self, request, view):
-        if view.action == 'list':
-            return request.user.has_perm('users.list_user')
-
-        return True
+        return super().has_object_permission(request, view, obj)
 
 
-class AbakusGroupObjectPermission(permissions.BasePermission):
+class AbakusGroupPermissions(KeywordPermissions):
     perms_map = {
-        'PUT': 'users.change_abakusgroup',
-        'PATCH': 'users.change_abakusgroup'
+        'list': None,
+        'retrieve': None,
+        'create': '/sudo/admin/groups/create/',
+        'update': '/sudo/admin/groups/update/',
+        'partial_update': '/sudo/admin/groups/update/',
+        'destroy': '/sudo/admin/groups/destroy/',
     }
 
-    def check_model_perms(self, user, method):
-        try:
-            return user.has_perm(self.perms_map[method])
-        except KeyError:
-            return True
+    allowed_leader = ['update', 'partial_update']
 
     def has_object_permission(self, request, view, obj):
-        if request.method in ('PUT', 'PATCH'):
+        if view.action in self.allowed_leader:
             user = request.user
             is_owner = bool(Membership.objects.filter(abakus_group=obj, user=user,
                                                       role=Membership.LEADER))
+            return is_owner or super().has_object_permission(request, view, obj)
 
-            return is_owner or self.check_model_perms(user, request.method)
-
-        return True
+        return super().has_object_permission(request, view, obj)

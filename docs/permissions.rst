@@ -4,18 +4,26 @@ Permissions
 Model Permissions
 -----------------
 
-Model permissions are only assigned to Django's Group model, and thus these work as permission
-categories. This means we will have groups similar to these:
+Lego's permission strings form a hierarchy, where each step is described with a forward slash.
+A user with the permission ``/sudo/admin/events/`` will also implicitly have access to
+everything that requires the permission ``/sudo/admin/events/create/``, while he or she won't
+have access to anything that requires i.e. ``/sudo/admin/users/``.
 
-- EventAdmin, which could contain the permissions "add_event", "delete_event" and "change_event".
-- EventCreator, which would only contain "add_event".
+Example:
+Needed permission: ``/sudo/admin/events/create/``
+Example user permissions:
+ - Permission                    - Passed?
+ - ``/sudo/admin/users/create/`` - Yes
+ - ``/sudo/admin/users/update/`` - No
+ - ``/sudo/admin/``              - Yes
 
-Our group model, AbakusGroup, will have a connection to the permission
-groups its members have access to. Permission groups will never be connected directly to a user,
-to make it simpler to maintain.
+The permission strings can only contain letters and forward slashes, and need to start and end
+with a forward slash.
 
-The permission group abstraction is done to simplify how permissions are maintained, and to
-avoid having to deal with Django permissions directly from the frontend/admin panel.
+Permissions are stored per group, connected to the model `:class:lego.users.models.AbakusGroup`.
+The current permission strings are:
+``/sudo/`` - for Webkom
+``/sudo/admin/`` for Hovedstyret
 
 Object Permissions
 ------------------

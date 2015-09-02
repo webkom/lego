@@ -3,7 +3,7 @@ import json
 
 from rest_framework.test import APITestCase
 
-from .models import Page
+from lego.app.flatpages.models import Page
 
 
 class PageAPITestCase(APITestCase):

@@ -50,7 +50,7 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'parent',
-            'permission_groups'
+            'permissions'
         )
 
 

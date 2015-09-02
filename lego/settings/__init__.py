@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from lego.settings.base import *
 from lego.settings.lego import *
 from lego.settings.rest_framework import *

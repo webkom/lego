@@ -1,12 +1,17 @@
+from .base import INSTALLED_APPS
+
 DEBUG = False
 TESTING = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': '127.0.0.1',
         'NAME': 'lego'
     }
 }
+
+INSTALLED_APPS += ('lego.permissions.tests',)
 
 CACHES = {
     'default': {

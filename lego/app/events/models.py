@@ -28,7 +28,6 @@ class Event(Content):
     end_time = models.DateTimeField()
 
     class Meta:
-        permissions = ('retrieve_event', 'Can retrieve event'), ('list_event', 'Can list event')
         ordering = ['start_time']
 
     def __str__(self):

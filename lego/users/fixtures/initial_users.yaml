@@ -6,5 +6,3 @@
     last_name: webkom
     email: webkom@abakus.no
     password: pbkdf2_sha256$12000$H0aWD4yl0CVd$b0S/vVYcRRGqXygh1390tc9eyKBMyIgcp3SAbkxIBb0= # webkom
-    is_staff: True
-    is_superuser: True

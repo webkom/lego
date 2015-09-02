@@ -2,7 +2,7 @@
   pk: 1
   fields:
     name: Abakus
-    
+
 - model: users.AbakusGroup
   pk: 2
   fields:
@@ -14,6 +14,8 @@
   fields:
     name: Arrkom
     parent: 2
+    permissions:
+      - /sudo/admin/events/create/
 
 - model: users.AbakusGroup
   pk: 4
@@ -56,4 +58,13 @@
   fields:
     name: Webkom
     parent: 2
+    permissions:
+      - /sudo/
 
+- model: users.AbakusGroup
+  pk: 11
+  fields:
+    name: Hovedstyret
+    parent: 2
+    permissions:
+      - /sudo/admin/
