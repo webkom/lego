@@ -8,7 +8,7 @@
     start_date: 1994-01-01
 
 - model: users.Membership
-  pk: 1
+  pk: 2
   fields:
     user:
       - webkom
@@ -17,7 +17,7 @@
     start_date: 1994-01-01
 
 - model: users.Membership
-  pk: 1
+  pk: 3
   fields:
     user:
       - webkom
