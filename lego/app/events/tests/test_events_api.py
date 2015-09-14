@@ -79,7 +79,7 @@ class RetrieveEventsTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.abakus_user = User.objects.filter(is_superuser=False).first()
+        self.abakus_user = User.objects.all().first()
         self.abakus_group = AbakusGroup.objects.get(name='Abakus')
         self.abakus_group.add_user(self.abakus_user)
 
@@ -95,11 +95,10 @@ class RetrieveEventsTestCase(APITestCase):
 
 
 class CreateEventsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml']
 
     def setUp(self):
-        self.abakus_user = User.objects.filter(is_superuser=False).first()
+        self.abakus_user = User.objects.all().first()
         self.event_admin_test = AbakusGroup.objects.get(name='EventAdminTest')
         self.event_admin_test.add_user(self.abakus_user)
 
