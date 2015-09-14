@@ -12,10 +12,10 @@ have access to anything that requires i.e. ``/sudo/admin/users/``.
 Example:
 Needed permission: ``/sudo/admin/events/create/``
 Example user permissions:
- - Permission                    - Passed?
- - ``/sudo/admin/users/create/`` - Yes
- - ``/sudo/admin/users/update/`` - No
- - ``/sudo/admin/``              - Yes
+- Permission                    - Passed?
+- ``/sudo/admin/users/create/`` - Yes
+- ``/sudo/admin/users/update/`` - No
+- ``/sudo/admin/``              - Yes
 
 The permission strings can only contain letters and forward slashes, and need to start and end
 with a forward slash.
