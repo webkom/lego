@@ -25,6 +25,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'corsheaders',
 
+    'holonet_django',
+
     'lego.users',
     'lego.utils',
     'lego.permissions',
