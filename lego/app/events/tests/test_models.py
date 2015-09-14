@@ -43,7 +43,7 @@ class EventMethodTest(TestCase):
 
 
 class PoolMethodTest(TestCase):
-    fixtures = ['test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
         event = Event.objects.get(title="POOLS")
@@ -54,7 +54,7 @@ class PoolMethodTest(TestCase):
 
 
 class RegistrationMethodTest(TestCase):
-    fixtures = ['test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
         event = Event.objects.get(title="POOLS")
@@ -72,7 +72,7 @@ class RegistrationMethodTest(TestCase):
 
 
 class PoolCapacityTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def test_capacity_with_single_pool(self):
         event = Event.objects.get(title="NO_POOLS")
@@ -90,7 +90,7 @@ class PoolCapacityTestCase(TestCase):
 
 
 class RegistrationTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
         Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
