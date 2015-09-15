@@ -23,7 +23,6 @@ def get_dummy_users(n):
 
 
 class EventTest(TestCase, ContentTestMixin):
-
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
                 'test_users.yaml', 'test_events.yaml']
 
@@ -48,7 +47,7 @@ class PoolMethodTest(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         self.pool = event.pools.first()
 
     def test_str(self):
@@ -59,7 +58,7 @@ class RegistrationMethodTest(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
@@ -69,7 +68,7 @@ class RegistrationMethodTest(TestCase):
         d = {
             'user': self.registration.user,
             'pool': self.registration.pool,
-            }
+        }
 
         self.assertEqual(str(self.registration), str(d))
 
@@ -78,24 +77,24 @@ class PoolCapacityTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def test_capacity_with_single_pool(self):
-        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+        event = Event.objects.get(title='NO_POOLS_ABAKUS')
         capacities_to_add = [10]
         permission_groups = [AbakusGroup.objects.get(name='Abakus')]
 
         for capacity in capacities_to_add:
-            event.add_pool("Abakus", capacity,
+            event.add_pool('Abakus', capacity,
                            timezone.now() - timedelta(hours=24),
                            permission_groups)
 
         self.assertEqual(sum(capacities_to_add), event.capacity)
 
     def test_capacity_with_multiple_pools(self):
-        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+        event = Event.objects.get(title='NO_POOLS_ABAKUS')
         capacities_to_add = [10, 20]
         permission_groups = [AbakusGroup.objects.get(name='Abakus')]
 
         for capacity in capacities_to_add:
-            event.add_pool("Abakus", capacity,
+            event.add_pool('Abakus', capacity,
                            timezone.now() - timedelta(hours=24),
                            permission_groups)
 
@@ -110,7 +109,7 @@ class RegistrationTestCase(TestCase):
 
     def test_can_register_single_pool(self):
         user = get_dummy_users(1)[0]
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         event.register(user=user, pool=pool)
@@ -118,10 +117,10 @@ class RegistrationTestCase(TestCase):
 
     def test_can_not_register_pre_activation(self):
         user = get_dummy_users(1)[0]
-        event = Event.objects.get(title="NO_POOLS_WEBKOM")
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         permission_groups[0].add_user(user)
-        pool_one = event.add_pool("Webkom", 1,
+        pool_one = event.add_pool('Webkom', 1,
                                   timezone.now() + timedelta(hours=24),
                                   permission_groups)
         event.register(user=user, pool=pool_one)
@@ -129,7 +128,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_waiting_registrations, 0)
 
     def test_waiting_list_if_full(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         people_2_place_in_waiting_list = 3
         users = get_dummy_users(pool.capacity + people_2_place_in_waiting_list)
@@ -143,7 +142,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
 
     def test_number_of_waiting_registrations(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         people_to_place_in_waiting_list = 3
         users = get_dummy_users(pool.capacity + 3)
@@ -155,7 +154,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_waiting_registrations, people_to_place_in_waiting_list)
 
     def test_can_register_pre_merge(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool_one = event.pools.first()
         pool_two = event.pools.get(pk=2)
         users = get_dummy_users(2)
@@ -172,14 +171,14 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(n_registrants, event.number_of_registrations)
 
     def test_can_register_post_merge(self):
-        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+        event = Event.objects.get(title='NO_POOLS_ABAKUS')
         event.merge_time = timezone.now() - timedelta(hours=12)
         permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
         permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
-        pool_one = event.add_pool("Abakus", 1,
+        pool_one = event.add_pool('Abakus', 1,
                                   timezone.now() - timedelta(hours=24),
                                   permission_groups_one)
-        pool_two = event.add_pool("Webkom", 2,
+        pool_two = event.add_pool('Webkom', 2,
                                   timezone.now() - timedelta(hours=24),
                                   permission_groups_two)
         users = get_dummy_users(3)
@@ -196,10 +195,29 @@ class RegistrationTestCase(TestCase):
         registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
         self.assertEqual(registrations, event.number_of_registrations)
 
+    def test_can_only_register_with_correct_permission_group(self):
+        event = Event.objects.get(title='NO_POOLS_ABAKUS')
+        event.merge_time = timezone.now() - timedelta(hours=12)
+        permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
+        permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
+        pool_one = event.add_pool('Abakus', 1,
+                                  timezone.now() - timedelta(hours=24),
+                                  permission_groups_one)
+        pool_two = event.add_pool('Webkom', 1,
+                                  timezone.now() - timedelta(hours=24),
+                                  permission_groups_two)
+        user = get_dummy_users(1)[0]
+        permission_groups_one[0].add_user(user)
+        event.register(user=user, pool=pool_one)
+        event.register(user=user, pool=pool_two)
+
+        self.assertEqual(pool_one.number_of_registrations, 1)
+        self.assertEqual(pool_two.number_of_registrations, 0)
+
     def test_placed_in_waiting_list_post_merge(self):
-        event = Event.objects.get(title="NO_POOLS_WEBKOM")
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
-        pool = event.add_pool("Webkom", 2, timezone.now() - timedelta(hours=24), permission_groups)
+        pool = event.add_pool('Webkom', 2, timezone.now() - timedelta(hours=24), permission_groups)
         event.merge_time = timezone.now() - timedelta(hours=12)
         users = get_dummy_users(3)
         expected_users_in_waiting_list = 1
@@ -211,7 +229,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_list.number_of_registrations, expected_users_in_waiting_list)
 
     def test_bump(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         users = get_dummy_users(pool.capacity + 1)
 
@@ -225,12 +243,12 @@ class RegistrationTestCase(TestCase):
 
         event.bump(from_pool=pool)
 
-        self.assertEqual(event.number_of_registrations, regs_before+1)
-        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
-        self.assertEqual(pool.number_of_registrations, pool_before+1)
+        self.assertEqual(event.number_of_registrations, regs_before + 1)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before - 1)
+        self.assertEqual(pool.number_of_registrations, pool_before + 1)
 
     def test_unregistering_from_event(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
@@ -240,18 +258,18 @@ class RegistrationTestCase(TestCase):
             registrations_before = event.number_of_registrations
             event.unregister(user)
 
-        self.assertEqual(event.number_of_registrations, registrations_before-1)
+        self.assertEqual(event.number_of_registrations, registrations_before - 1)
 
     def test_unregistering_non_existing_user(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         user = get_dummy_users(1)[0]
         with self.assertRaises(Registration.DoesNotExist):
             event.unregister(user)
 
     def test_popping_from_waiting_list_pre_merge(self):
-        event = Event.objects.get(title="NO_POOLS_WEBKOM")
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
-        pool = event.add_pool("Webkom", 0, timezone.now() - timedelta(hours=24), permission_groups)
+        pool = event.add_pool('Webkom', 0, timezone.now() - timedelta(hours=24), permission_groups)
         users = get_dummy_users(pool.capacity + 10)
 
         for user in users:
@@ -265,9 +283,9 @@ class RegistrationTestCase(TestCase):
             prev = top
 
     def test_popping_from_waiting_list_post_merge(self):
-        event = Event.objects.get(title="NO_POOLS_WEBKOM")
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
-        pool = event.add_pool("Webkom", 0, timezone.now() - timedelta(hours=24), permission_groups)
+        pool = event.add_pool('Webkom', 0, timezone.now() - timedelta(hours=24), permission_groups)
         users = get_dummy_users(pool.capacity + 10)
 
         for user in users:
@@ -281,7 +299,7 @@ class RegistrationTestCase(TestCase):
             prev = top
 
     def test_unregistering_from_waiting_list(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         users = get_dummy_users(pool.capacity + 10)
 
@@ -298,11 +316,11 @@ class RegistrationTestCase(TestCase):
 
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(pool.number_of_registrations, pool_size_before)
-        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.capacity)
 
     def test_unregistering_and_bumping(self):
-        event = Event.objects.get(title="POOLS")
+        event = Event.objects.get(title='POOLS')
         pool = event.pools.first()
         users = get_dummy_users(pool.capacity + 10)
 
@@ -320,18 +338,18 @@ class RegistrationTestCase(TestCase):
 
         self.assertEqual(pool.number_of_registrations, pool_size_before)
         self.assertEqual(event.number_of_registrations, event_size_before)
-        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.capacity)
 
     def test_unregistering_and_bumping_post_merge(self):
-        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+        event = Event.objects.get(title='NO_POOLS_ABAKUS')
         event.merge_time = timezone.now() - timedelta(hours=24)
         permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
         permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
-        pool_one = event.add_pool("Abakus", 1,
+        pool_one = event.add_pool('Abakus', 1,
                                   timezone.now() - timedelta(hours=24),
                                   permission_groups_one)
-        pool_two = event.add_pool("Webkom", 1,
+        pool_two = event.add_pool('Webkom', 1,
                                   timezone.now() - timedelta(hours=24),
                                   permission_groups_two)
         users = get_dummy_users(3)
@@ -354,7 +372,7 @@ class RegistrationTestCase(TestCase):
             event.unregister(user_to_unregister)
 
         self.assertEqual(event.number_of_registrations, event_size_before)
-        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before-1)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before - 1)
         self.assertEqual(pool_one.number_of_registrations, pool_one_size_before + 1)
         self.assertGreater(pool_one.number_of_registrations, pool_one.capacity)
         self.assertEqual(pool_two.number_of_registrations, pool_two_size_before - 1)
