@@ -25,7 +25,7 @@ class EventViewSet(viewsets.ModelViewSet):
         serializer = PoolSerializer(data=request.data)
         if serializer.is_valid():
             event.add_pool(serializer.data['name'], serializer.data['capacity'],
-                           serializer.data['activation_date'])
+                           serializer.data['activation_date'], serializer.data['permission_groups'])
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
