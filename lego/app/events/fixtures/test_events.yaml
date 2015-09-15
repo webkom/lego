@@ -15,10 +15,24 @@
 - model: events.Event
   pk: 2
   fields:
-    title: NO_POOLS
+    title: NO_POOLS_ABAKUS
     author: 2
     ingress: TestIngress2
     text: TestText2
+    event_type: 3
+    location: F254
+    start_time: '2011-09-01T13:20:30+03:00'
+    end_time: '2012-09-01T13:20:30+03:00'
+    can_view_groups:
+      - 1
+
+- model: events.Event
+  pk: 3
+  fields:
+    title: NO_POOLS_WEBKOM
+    author: 3
+    ingress: TestIngress3
+    text: TestText3
     event_type: 3
     location: F254
     start_time: '2011-09-01T13:20:30+03:00'
@@ -36,18 +50,27 @@
   fields:
     event: 2
 
+- model: events.WaitingList
+  pk: 3
+  fields:
+    event: 3
+
 - model: events.Pool
   pk: 1
   fields:
-    name: 1.klasse
+    name: Abakusmember
     capacity: 2
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 1
 
 - model: events.Pool
   pk: 2
   fields:
-    name: 2.klasse
+    name: Webkom
     capacity: 3
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 10
