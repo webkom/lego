@@ -36,8 +36,7 @@ class Event(Content):
 
     def save(self, *args, **kwargs):
         super(BasisModel, self).save(*args, **kwargs)
-        waiting_list = WaitingList(event=self)
-        waiting_list.save()
+        WaitingList.objects.get_or_create(event=self)
 
     def __str__(self):
         return self.title
