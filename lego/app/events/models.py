@@ -56,7 +56,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if not self.is_activated(pool):
             return False
 
-        if not self.user_in_pool(user, pool):
+        if self.is_registered(user):
             return False
 
         for group in pool.permission_groups.all():
@@ -112,6 +112,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def is_full(self):
         return self.capacity <= self.number_of_registrations
 
+    def is_registered(self, user):
+        return self.registrations.filter(user=user).exists()
+
     @property
     def capacity(self):
         """
@@ -141,13 +144,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def number_of_pools(self):
         return self.pools.count()
-
-    def user_in_pool(self, user, pool):
-        """
-        Dummy user check as of now.
-        """
-
-        return True
 
 
 class Pool(BasisModel):
