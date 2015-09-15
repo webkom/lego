@@ -8,7 +8,7 @@ class PoolSerializer(BasisSerializer):
 
     class Meta:
         model = Pool
-        fields = ('name', 'capacity', 'activation_date')
+        fields = ('name', 'capacity', 'activation_date', 'permission_groups')
 
 
 class EventCreateAndUpdateSerializer(BasisSerializer):
@@ -24,7 +24,7 @@ class EventCreateAndUpdateSerializer(BasisSerializer):
         pools_data = validated_data.pop('pools')
         event = Event.objects.create(**validated_data)
         for pool in pools_data:
-            Pool.objects.create(event=event, **pool)
+            event.add_pool(**pool)
         return event
 
 

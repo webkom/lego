@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from lego.app.content.models import Content
-from lego.users.models import User
+from lego.users.models import AbakusGroup, User
 
 
 class Event(Content):
@@ -45,20 +45,30 @@ class Event(Content):
     def slug(self):
         return slugify(self.title)
 
-    def add_pool(self, name, capacity, activation_date):
-        return self.pools.create(name=name, capacity=capacity, activation_date=activation_date)
+    def add_pool(self, name, capacity, activation_date, permission_groups):
+        pool = self.pools.create(name=name, capacity=capacity, activation_date=activation_date)
+        for group in permission_groups:
+            pool.permission_groups.add(group)
+        return pool
 
     def can_register(self, user, pool):
         if not self.is_activated(pool):
             return False
 
-        return self.user_in_pool(user, pool)
+        if not self.user_in_pool(user, pool):
+            return False
+
+        for group in pool.permission_groups.all():
+            if group in user.all_groups:
+                return True
+
+        return False
 
     def register(self, user, pool):
         use_waiting_list = False
 
         if not self.can_register(user, pool):
-            return
+            return False
 
         if self.is_full or (pool.is_full() and not self.is_merged):
             use_waiting_list = True
@@ -148,6 +158,7 @@ class Pool(BasisModel):
     capacity = models.PositiveSmallIntegerField(default=0)
     event = models.ForeignKey(Event, related_name='pools')
     activation_date = models.DateTimeField()
+    permission_groups = models.ManyToManyField(AbakusGroup)
 
     @property
     def number_of_registrations(self):
