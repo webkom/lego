@@ -9,7 +9,6 @@ DATABASES = {
         'NAME': 'lego',
         'USER': '',
         'PASSWORD': '',
-        'HOST': 'localhost',
         'PORT': '',
     }
 }
