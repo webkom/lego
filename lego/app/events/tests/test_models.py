@@ -196,6 +196,25 @@ class RegistrationTestCase(TestCase):
         registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
         self.assertEqual(registrations, event.number_of_registrations)
 
+    def test_can_only_register_with_correct_permission_group(self):
+        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+        event.merge_time = timezone.now() - timedelta(hours=12)
+        permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
+        permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
+        pool_one = event.add_pool("Abakus", 1,
+                                  timezone.now() - timedelta(hours=24),
+                                  permission_groups_one)
+        pool_two = event.add_pool("Webkom", 1,
+                                  timezone.now() - timedelta(hours=24),
+                                  permission_groups_two)
+        user = get_dummy_users(1)[0]
+        permission_groups_one[0].add_user(user)
+        event.register(user=user, pool=pool_one)
+        event.register(user=user, pool=pool_two)
+
+        self.assertEqual(pool_one.number_of_registrations, 1)
+        self.assertEqual(pool_two.number_of_registrations, 0)
+
     def test_placed_in_waiting_list_post_merge(self):
         event = Event.objects.get(title="NO_POOLS_WEBKOM")
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
