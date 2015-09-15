@@ -13,6 +13,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name',
+            'full_name',
             'email',
             'is_staff',
             'is_active',
@@ -26,7 +27,8 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'id',
             'username',
             'first_name',
-            'last_name'
+            'last_name',
+            'full_name'
         )
 
 
