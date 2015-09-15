@@ -115,6 +115,18 @@ class RegistrationTestCase(TestCase):
         event.register(user=user, pool=pool)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
 
+    def test_no_duplicate_registrations(self):
+        user = get_dummy_users(1)[0]
+        event = Event.objects.get(title='POOLS')
+        pool = event.pools.first()
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        event.register(user=user, pool=pool)
+        event.register(user=user, pool=pool)
+
+        self.assertEqual(pool.number_of_registrations, 1)
+        self.assertEqual(pool.number_of_registrations, 1)
+
     def test_can_not_register_pre_activation(self):
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
