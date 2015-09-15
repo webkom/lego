@@ -19,12 +19,14 @@ _test_event_data = {
             {
                 'name': 'TESTPOOL1',
                 'capacity': 10,
-                'activation_date': '2012-09-01T13:20:30+03:00'
+                'activation_date': '2012-09-01T13:20:30+03:00',
+                'permission_groups': [1]
             },
             {
                 'name': 'TESTPOOL2',
                 'capacity': 20,
-                'activation_date': '2012-09-02T13:20:30+03:00'
+                'activation_date': '2012-09-02T13:20:30+03:00',
+                'permission_groups': [10]
             }
         ]
 
@@ -33,7 +35,8 @@ _test_event_data = {
 _test_pool_data = {
     'name': 'TESTPOOL3',
     'capacity': 30,
-    'activation_date': '2012-09-02T13:20:30+03:00'
+    'activation_date': '2012-09-02T13:20:30+03:00',
+    'permission_groups': [1]
 }
 
 
@@ -56,22 +59,19 @@ class ListEventsTestCase(APITestCase):
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-        self.abakus_group = AbakusGroup.objects.get(name='Abakus')
-        self.webkom_group = AbakusGroup.objects.get(name='Webkom')
-
     def test_with_abakus_user(self):
-        self.abakus_group.add_user(self.abakus_user)
-        self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
-
-    def test_with_webkom_user(self):
-        self.webkom_group.add_user(self.abakus_user)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
+
+    def test_with_webkom_user(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_list_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 3)
 
 
 class RetrieveEventsTestCase(APITestCase):
@@ -80,10 +80,9 @@ class RetrieveEventsTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
-        self.abakus_group = AbakusGroup.objects.get(name='Abakus')
-        self.abakus_group.add_user(self.abakus_user)
 
     def test_with_group_permission(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, 200)
@@ -95,12 +94,11 @@ class RetrieveEventsTestCase(APITestCase):
 
 
 class CreateEventsTestCase(APITestCase):
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml']
+    fixtures = ['test_users.yaml', 'initial_abakus_groups.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
-        self.event_admin_test = AbakusGroup.objects.get(name='EventAdminTest')
-        self.event_admin_test.add_user(self.abakus_user)
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
 
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
