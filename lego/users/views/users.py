@@ -11,6 +11,7 @@ from lego.users.serializers import DetailedUserSerializer, UserSerializer
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
+    lookup_field = 'username'
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, UsersPermissions)
 
