@@ -17,8 +17,8 @@ def _get_list_url():
     return reverse('user-list')
 
 
-def _get_detail_url(pk):
-    return reverse('user-detail', kwargs={'pk': pk})
+def _get_detail_url(username):
+    return reverse('user-detail', kwargs={'username': username})
 
 
 def get_test_user():
@@ -77,7 +77,7 @@ class RetrieveUsersAPITestCase(APITestCase):
 
     def successful_retrieve(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.get(_get_detail_url(self.test_user.pk))
+        response = self.client.get(_get_detail_url(self.test_user.username))
         user = response.data
         keys = set(user.keys())
 
@@ -85,12 +85,12 @@ class RetrieveUsersAPITestCase(APITestCase):
         self.assertEqual(keys, set(UserSerializer.Meta.fields))
 
     def test_without_auth(self):
-        response = self.client.get(_get_detail_url(1))
+        response = self.client.get(_get_detail_url(self.all_users.first().username))
         self.assertEqual(response.status_code, 401)
 
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
-        response = self.client.get(_get_detail_url(self.test_user.pk))
+        response = self.client.get(_get_detail_url(self.test_user.username))
         user = response.data
         keys = set(user.keys())
 
@@ -99,7 +99,7 @@ class RetrieveUsersAPITestCase(APITestCase):
 
     def test_self_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
-        response = self.client.get(_get_detail_url(self.without_perm.pk))
+        response = self.client.get(_get_detail_url(self.without_perm.username))
         user = response.data
         keys = set(user.keys())
 
@@ -173,7 +173,7 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def successful_update(self, updater, update_object):
         self.client.force_authenticate(user=updater)
-        response = self.client.put(_get_detail_url(update_object.pk), self.modified_user)
+        response = self.client.put(_get_detail_url(update_object.username), self.modified_user)
         user = User.objects.get(pk=update_object.pk)
 
         self.assertEqual(response.status_code, 200)
@@ -189,7 +189,7 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def test_other_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
-        response = self.client.put(_get_detail_url(self.test_user.pk), self.modified_user)
+        response = self.client.put(_get_detail_url(self.test_user.username), self.modified_user)
         user = User.objects.get(pk=self.test_user.pk)
 
         self.assertEqual(response.status_code, 403)
@@ -221,14 +221,14 @@ class DeleteUsersAPITestCase(APITestCase):
 
     def successful_delete(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.delete(_get_detail_url(self.test_user.pk))
+        response = self.client.delete(_get_detail_url(self.test_user.username))
 
         self.assertEqual(response.status_code, 204)
         self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
 
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
-        response = self.client.delete(_get_detail_url(self.test_user.pk))
+        response = self.client.delete(_get_detail_url(self.test_user.username))
         users = User.objects.filter(pk=self.test_user.pk)
 
         self.assertEqual(response.status_code, 403)
