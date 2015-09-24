@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
-from lego.users.serializers import DetailedUserSerializer, PublicUserSerializer, UserSerializer
+from lego.users.serializers import DetailedUserSerializer, PublicUserSerializer
 
 _test_user_data = {
     'username': 'new_testuser',
@@ -82,7 +82,7 @@ class RetrieveUsersAPITestCase(APITestCase):
         keys = set(user.keys())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(UserSerializer.Meta.fields))
+        self.assertEqual(keys, set(DetailedUserSerializer.Meta.fields))
 
     def test_without_auth(self):
         response = self.client.get(_get_detail_url(self.all_users.first().username))
@@ -104,7 +104,7 @@ class RetrieveUsersAPITestCase(APITestCase):
         keys = set(user.keys())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(UserSerializer.Meta.fields))
+        self.assertEqual(keys, set(DetailedUserSerializer.Meta.fields))
 
     def test_with_useradmin(self):
         self.successful_retrieve(self.with_perm)
@@ -177,6 +177,7 @@ class UpdateUsersAPITestCase(APITestCase):
         user = User.objects.get(pk=update_object.pk)
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(set(response.data.keys()), set(DetailedUserSerializer.Meta.fields))
 
         for key, value in self.modified_user.items():
             self.assertEqual(getattr(user, key), value)
