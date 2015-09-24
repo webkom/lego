@@ -37,10 +37,13 @@ class UserSerializer(DetailedUserSerializer):
         view = self.context['view']
         request = self.context['request']
 
-        if view.action == 'retrieve' and can_retrieve_user(instance, request.user):
-            serializer = DetailedUserSerializer(instance, context=self.context)
-        else:
+        # List and public retrievals use PublicUserSerializer, the rest uses the detailed one:
+        if (view.action == 'list' or
+                view.action == 'retrieve' and not can_retrieve_user(instance, request.user)):
             serializer = PublicUserSerializer(instance, context=self.context)
+        else:
+            serializer = DetailedUserSerializer(instance, context=self.context)
+
         return serializer.data
 
 
