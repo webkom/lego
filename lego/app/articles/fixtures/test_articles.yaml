@@ -7,6 +7,7 @@
     text: >
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    slug: 1-FAILSLUG
     can_view_groups:
       - 1
 
@@ -17,6 +18,7 @@
     author: 1
     ingress: Om du e Tore?
     text: Tore Tang, en gammal mann. Hele webkom kjenner han.
+    slug: 2-FAILSLUG
     can_view_groups:
       - 10
 
@@ -27,4 +29,5 @@
     author: 1
     ingress: Håper jeg ..
     text: huehehehuuehhuehuehuehuehue
+    slug: 3-FAILSLUG
 
