@@ -1,7 +1,6 @@
 from basis.models import BasisModel
 from django.db import models
 from django.utils import timezone
-from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from lego.app.content.models import Content
@@ -35,14 +34,11 @@ class Event(Content):
         ordering = ['start_time']
 
     def save(self, *args, **kwargs):
-        super(BasisModel, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         WaitingList.objects.get_or_create(event=self)
 
     def __str__(self):
         return self.title
-
-    def slug(self):
-        return slugify(self.title)
 
     def add_pool(self, name, capacity, activation_date, permission_groups):
         pool = self.pools.create(name=name, capacity=capacity, activation_date=activation_date)
