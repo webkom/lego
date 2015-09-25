@@ -5,6 +5,7 @@
     author: 1
     description: TestIngress1
     text: TestText1
+    slug: 1-FAILSLUG
     event_type: 0
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
@@ -19,6 +20,7 @@
     author: 2
     description: TestIngress2
     text: TestText2
+    slug: 2-FAILSLUG
     event_type: 3
     location: F254
     start_time: '2011-09-01T13:20:30+03:00'
@@ -33,6 +35,7 @@
     author: 3
     ingress: TestIngress3
     text: TestText3
+    slug: 3-FAILSLUG
     event_type: 3
     location: F254
     start_time: '2011-09-01T13:20:30+03:00'
