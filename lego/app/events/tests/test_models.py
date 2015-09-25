@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
-from django.utils.text import slugify
 
 from lego.app.content.tests import ContentTestMixin
 from lego.app.events.models import Event, Registration
@@ -38,9 +37,6 @@ class EventMethodTest(TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.event), self.event.title)
-
-    def test_slug(self):
-        self.assertEqual(slugify(self.event.title), self.event.slug())
 
 
 class PoolMethodTest(TestCase):
