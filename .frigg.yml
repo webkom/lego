@@ -3,8 +3,7 @@ tasks:
   - tox -e docs
   - tox -e flake8
   - tox -e isort
-  - coverage report --fail-under=75
-  - coverage xml
+  - tox -e coverage
 
 services:
   - postgresql
