@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from basis.models import PersistentModel
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType

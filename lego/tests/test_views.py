@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from django.core.urlresolvers import reverse
 
 from lego.utils.test_cases import ViewTestCase

@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from lego.permissions.tests.models import TestModel
