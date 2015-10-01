@@ -1,5 +1,5 @@
 django>=1.8,<1.9
-ipython=4.0.0
+ipython==4.0.0
 
 psycopg2==2.6.1
 sorl-thumbnail==11.12.1b
