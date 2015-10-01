@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from lego.permissions.keyword_permissions import KeywordPermissions
 from lego.permissions.object_permissions import ObjectPermissions
 

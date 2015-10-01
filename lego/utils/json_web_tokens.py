@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from lego.users.serializers import DetailedUserSerializer
 
 

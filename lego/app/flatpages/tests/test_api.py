@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 import json
 
 from rest_framework.test import APITestCase

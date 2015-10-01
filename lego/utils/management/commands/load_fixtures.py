@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 import os
 
 from django.conf import settings

@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from django.test import TestCase
 
 from lego.permissions.models import ObjectPermissionsModel
