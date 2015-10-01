@@ -1,6 +1,6 @@
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse',
@@ -9,11 +9,24 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugTrue',
         },
     },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['sentry', 'console', 'mail_admins', 'syslog'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(name)s %(message)s'
+        },
+    },
     'handlers': {
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
         'console': {
             'level': 'INFO',
-            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -23,28 +36,20 @@ LOGGING = {
         'syslog': {
             'level': 'INFO',
             'filters': ['require_debug_false'],
-            'class': 'lego.utils.logger.SyslogHandler'
-        }
+            'class': 'logging.handlers.SysLogHandler',
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
-        'django': {
+        'raven': {
+            'level': 'WARNING',
             'handlers': ['console'],
-        },
-        'django.request': {
-            'handlers': ['mail_admins', 'syslog'],
-            'level': 'ERROR',
             'propagate': False,
         },
-        'django.security': {
-            'handlers': ['mail_admins', 'syslog'],
-            'level': 'ERROR',
+        'sentry.errors': {
+            'level': 'WARNING',
+            'handlers': ['console'],
             'propagate': False,
         },
-        'py.warnings': {
-            'handlers': ['console'],
-        },
-        '': {
-            'handlers': ['syslog']
-        }
-    }
+    },
 }
