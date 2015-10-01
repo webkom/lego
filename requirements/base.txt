@@ -6,6 +6,7 @@ sorl-thumbnail==11.12.1b
 markdown
 unicode-slugify
 pyyaml
+raven
 
 djangorestframework>=3,<4
 djangorestframework-jwt

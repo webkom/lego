@@ -1,5 +1,7 @@
 import os
 
+import raven
+
 DEBUG = False
 ALLOWED_HOSTS = ['.abakus.no']
 
@@ -51,3 +53,10 @@ TEMPLATE_LOADERS = (
         'django.template.loaders.app_directories.Loader',
     )),
 )
+
+
+SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
+RAVEN_CONFIG = {
+    'dsn': os.environ['RAVEN_DSN'],
+    'release': raven.fetch_git_sha(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+}
