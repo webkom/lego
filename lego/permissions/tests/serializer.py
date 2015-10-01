@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from rest_framework import serializers
 
 from lego.permissions.tests.models import TestModel

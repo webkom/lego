@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from basis.managers import PersistentModelManager
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from rest_framework import serializers, viewsets
 
 from lego.app.flatpages.permissions import FlatpagePermissions

@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from basis.models import BasisModel, PersistentModel, TimeStampModel
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser
