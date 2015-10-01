@@ -2,6 +2,8 @@
 [![Build status](https://ci.frigg.io/badges/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/)
 [![Coverage status](https://ci.frigg.io/badges/coverage/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/)
 
+[Waffle](https://waffle.io/webkom/lego)
+
 ```bash
 $ make
   development - install dev requirements, setup local.py and run migrations
