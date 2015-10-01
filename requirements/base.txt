@@ -7,6 +7,7 @@ markdown
 unicode-slugify
 pyyaml
 raven
+redis
 
 djangorestframework>=3,<4
 djangorestframework-jwt
@@ -18,3 +19,4 @@ django-autoslug
 django-filter
 django-oauth-toolkit
 django-cors-headers
+django-celery

@@ -2,6 +2,8 @@ from lego.settings.base import *
 from lego.settings.lego import *
 from lego.settings.rest_framework import *
 
+from .celery import app as celery_app
+
 if TESTING:
     from lego.settings.test import *
 else:
