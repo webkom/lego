@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from django.test import TestCase
 
 from lego.app.comments.models import Comment

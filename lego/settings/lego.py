@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 import sys
 
 API_VERSION = 'v1'

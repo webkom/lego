@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 from rest_framework import viewsets
 
 from lego.permissions.filters import ObjectPermissionsFilter
