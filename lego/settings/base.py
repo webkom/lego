@@ -21,6 +21,7 @@ INSTALLED_APPS = (
 
     'django_extensions',
 
+    'raven.contrib.django.raven_compat',
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
@@ -47,6 +48,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
