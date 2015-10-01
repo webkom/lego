@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
+    'djcelery',
 
     'lego.users',
     'lego.utils',
@@ -87,3 +88,5 @@ TEMPLATE_DIRS = (
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+BROKER_URL = 'redis://127.0.0.1'
