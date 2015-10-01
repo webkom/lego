@@ -3,6 +3,8 @@ from .base import INSTALLED_APPS
 DEBUG = False
 TESTING = True
 
+TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
