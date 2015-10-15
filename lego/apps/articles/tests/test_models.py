@@ -8,7 +8,7 @@ from lego.apps.users.models import User
 
 class ArticleTest(TestCase, ContentTestMixin):
     fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
-                'test_users.yaml', 'test_articles.yaml']
+                'test_users.yaml', 'test_quotes.yaml']
 
     model = Article
     ViewSet = ArticlesViewSet

@@ -1,0 +1,59 @@
+# -*- coding: utf--8 -*-
+from basis.models import BasisModel
+from django.db import models
+
+from lego.permissions.models import ObjectPermissionsModel
+from lego.users.models import User
+
+
+class Quote(ObjectPermissionsModel):
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(User)
+    quote = models.TextField()
+    source = models.CharField(max_length=255)
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def likes(self):
+        return QuoteLike.objects.filter(quote=self).count()
+
+    def can_like(self, user):
+        quote_like = QuoteLike.objects.all().filter(user=user, quote=self)
+        return self.is_approved() and quote_like.count() == 0
+
+    def can_unlike(self, user):
+        quote_like = QuoteLike.objects.all().filter(user=user, quote=self)
+        return self.is_approved() and quote_like.count() == 1
+
+    def is_approved(self):
+        return self.approved
+
+    def like(self, user):
+        if self.can_like(user=user):
+            QuoteLike.objects.create(user=user, quote=self)
+            return True
+        return False
+
+    def unlike(self, user):
+        if self.can_unlike(user=user):
+            QuoteLike.objects.filter(user=user, quote=self).delete()
+            return True
+        return False
+
+
+class QuoteLike(BasisModel):
+    user = models.ForeignKey(User)
+    quote = models.ForeignKey(Quote)
+    like_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'quote')
+
+    def has_liked(self, user, quote):
+        return self.objects.all().filter(user=user, quote=quote).count() > 0
+
+    def number_of_likes(self, quote):
+        return self.objects.all().filter(quote=quote).count()
