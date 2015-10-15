@@ -20,6 +20,9 @@ class Quote(ObjectPermissionsModel):
     def likes(self):
         return QuoteLike.objects.filter(quote=self).count()
 
+    def has_liked(self, user):
+        return QuoteLike.objects.all().filter(user=user, quote=self).count() == 1
+
     def can_like(self, user):
         quote_like = QuoteLike.objects.all().filter(user=user, quote=self)
         return self.is_approved() and quote_like.count() == 0

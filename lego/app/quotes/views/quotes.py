@@ -56,7 +56,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
             raise PermissionDenied()
         instance = self.get_object()
         result = instance.unlike(user=request.user)
-        print(result)
+        # TODO: do something with result?
         serializer = QuoteReadSerializer(instance)
         return Response(
             serializer.data,
