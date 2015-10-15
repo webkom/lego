@@ -15,7 +15,7 @@ def _get_detail_url(pk):
 
 
 class ListArticlesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+    fixtures = ['initial_abakus_groups.yaml', 'test_articles.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -46,7 +46,7 @@ class ListArticlesTestCase(APITestCase):
 
 
 class RetrieveArticlesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+    fixtures = ['initial_abakus_groups.yaml', 'test_articles.yaml',
                 'test_users.yaml']
 
     def setUp(self):
