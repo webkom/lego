@@ -53,6 +53,10 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['console'],
         },
+        'django.request': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
         'raven': {
             'level': 'WARNING',
             'handlers': ['console'],
