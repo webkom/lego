@@ -41,7 +41,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             instance = self.get_object()
             instance.like(user=request.user)
-            serializer = QuoteReadSerializer(instance)
+            serializer = QuoteReadSerializer(instance, context={'request': request})
             return Response(
                 serializer.data,
                 status=status.HTTP_200_OK
@@ -57,7 +57,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         result = instance.unlike(user=request.user)
         # TODO: do something with result?
-        serializer = QuoteReadSerializer(instance)
+        serializer = QuoteReadSerializer(instance, context={'request': request})
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
