@@ -41,12 +41,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
-    def add_pool(self, name, capacity, activation_date, permission_groups):
-        pool = self.pools.create(name=name, capacity=capacity, activation_date=activation_date)
-        for group in permission_groups:
-            pool.permission_groups.add(group)
-        return pool
-
     def can_register(self, user, pool):
         if not self.is_activated(pool):
             return False
