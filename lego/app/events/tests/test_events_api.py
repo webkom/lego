@@ -14,30 +14,28 @@ _test_event_data = {
     'start_time': '2011-09-01T13:20:30+03:00',
     'end_time': '2012-09-01T13:20:30+03:00',
     'merge_time': '2012-01-01T13:20:30+03:00',
-    'pools':
-        [
-            {
-                'name': 'TESTPOOL1',
-                'capacity': 10,
-                'activation_date': '2012-09-01T13:20:30+03:00',
-                'permission_groups': [1]
-            },
-            {
-                'name': 'TESTPOOL2',
-                'capacity': 20,
-                'activation_date': '2012-09-02T13:20:30+03:00',
-                'permission_groups': [10]
-            }
-        ]
-
 }
 
-_test_pool_data = {
-    'name': 'TESTPOOL3',
-    'capacity': 30,
-    'activation_date': '2012-09-02T13:20:30+03:00',
-    'permission_groups': [1]
-}
+_test_pools_data = [
+    {
+        'name': 'TESTPOOL1',
+        'capacity': 10,
+        'activation_date': '2012-09-01T13:20:30+03:00',
+        'permission_groups': [1]
+    },
+    {
+        'name': 'TESTPOOL2',
+        'capacity': 20,
+        'activation_date': '2012-09-02T13:20:30+03:00',
+        'permission_groups': [10]
+    },
+    {
+        'name': 'TESTPOOL3',
+        'capacity': 30,
+        'activation_date': '2012-09-02T13:20:30+03:00',
+        'permission_groups': [1]
+    }
+]
 
 
 def _get_list_url():
@@ -48,8 +46,12 @@ def _get_detail_url(pk):
     return reverse('event-detail', kwargs={'pk': pk})
 
 
-def _get_pools_detail_url(pk):
-    return reverse('event-pools', kwargs={'pk': pk})
+def _get_pools_list_url(event_pk):
+    return reverse('pool-list', kwargs={'event_pk': event_pk})
+
+
+def _get_pools_detail_url(event_pk, pool_pk):
+    return reverse('pool-detail', kwargs={'event_pk': event_pk, 'pk': pool_pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -84,7 +86,7 @@ class RetrieveEventsTestCase(APITestCase):
     def test_with_group_permission(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_detail_url(1))
+        response = self.client.get(_get_detail_url(2))
         self.assertEqual(response.status_code, 200)
 
     def test_without_group_permission(self):
@@ -113,7 +115,23 @@ class CreateEventsTestCase(APITestCase):
         response = self.client.post(_get_list_url(), _test_event_data)
         self.assertEqual(response.status_code, 201)
 
-        pool_response = self.client.post(_get_pools_detail_url(response.data['id']),
-                                         _test_pool_data)
+        _test_pools_data[0]['event'] = response.data['id']
+        pool_response = self.client.post(_get_pools_list_url(response.data['id']),
+                                         _test_pools_data[0])
+        self.assertIsNotNone(pool_response.data.pop('id'))
         self.assertEqual(pool_response.status_code, 201)
-        self.assertEqual(_test_pool_data, pool_response.data)
+        self.assertEqual(_test_pools_data[0], pool_response.data)
+
+
+class RetrievePoolsTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_group_permission(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_pools_detail_url(1, 1))
+        self.assertEqual(response.status_code, 200)
