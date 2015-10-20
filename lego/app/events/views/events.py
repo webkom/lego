@@ -1,8 +1,6 @@
-from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route
-from rest_framework.response import Response
+from rest_framework import viewsets
 
-from lego.app.events.models import Event
+from lego.app.events.models import Event, Pool
 from lego.app.events.permissions import EventPermissions
 from lego.app.events.serializers import (EventCreateAndUpdateSerializer, EventReadSerializer,
                                          PoolSerializer)
@@ -19,13 +17,16 @@ class EventViewSet(viewsets.ModelViewSet):
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (EventPermissions,)
 
-    @detail_route(methods=['POST'], url_path='pools')
-    def add_pool(self, request, pk=None):
-        event = self.get_object()
-        serializer = PoolSerializer(data=request.data)
-        if serializer.is_valid():
-            event.add_pool(serializer.data['name'], serializer.data['capacity'],
-                           serializer.data['activation_date'], serializer.data['permission_groups'])
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PoolViewSet(viewsets.ModelViewSet):
+
+    serializer_class = PoolSerializer
+    queryset = Pool.objects.all()
+    # filter_backends = (ObjectPermissionsFilter,)
+    permission_classes = (EventPermissions,)
+
+    def get_queryset(self):
+        event_id = self.kwargs.get('event_pk', None)
+        if event_id:
+            return Pool.objects.filter(event=event_id)
+        return super(PoolViewSet, self).get_queryset()

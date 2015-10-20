@@ -5,6 +5,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 
+from .v1 import events_router as v1_events
 from .v1 import router as v1
 
 
@@ -23,5 +24,6 @@ urlpatterns = [
     url(r'^v1/', include(v1.urls, namespace='v1')),
 
     url(r'^$', RedirectView.as_view(url='/api/{0}/'.format(settings.API_VERSION)), name='default'),
+    url(r'^v1/', include(v1_events.urls)),
     url(r'^(.*)/$', version_redirect),
 ]
