@@ -7,32 +7,23 @@ from lego.app.events.models import Event, Pool
 
 
 class PoolSerializer(BasisSerializer):
-
     class Meta:
         model = Pool
-        fields = ('name', 'capacity', 'activation_date', 'permission_groups')
+        fields = ('id', 'name', 'capacity', 'event', 'activation_date', 'permission_groups')
 
 
 class EventCreateAndUpdateSerializer(BasisSerializer):
-    pools = PoolSerializer(many=True)
-    capacity = serializers.ReadOnlyField()
-
     class Meta:
         model = Event
         fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'merge_time', 'pools', 'capacity')
-
-    def create(self, validated_data):
-        pools_data = validated_data.pop('pools')
-        event = Event.objects.create(**validated_data)
-        for pool in pools_data:
-            event.add_pool(**pool)
-        return event
+                  'start_time', 'end_time', 'merge_time')
 
 
 class EventReadSerializer(BasisSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
+    pools = PoolSerializer(many=True)
+    capacity = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
