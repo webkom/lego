@@ -4,6 +4,7 @@ from django.core.urlresolvers import resolve
 from django.http import Http404, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
+from .v1 import events_router as v1_events
 from .v1 import router as v1
 
 
@@ -20,5 +21,6 @@ def version_redirect(request, path):
 
 urlpatterns = [
     url(r'^v1/', include(v1.urls)),
+    url(r'^v1/', include(v1_events.urls)),
     url(r'^(.*)/$', version_redirect),
 ]
