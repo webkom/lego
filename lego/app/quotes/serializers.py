@@ -1,6 +1,7 @@
 from basis.serializers import BasisSerializer
 
 from lego.app.quotes.models import Quote, QuoteLike
+from lego.app.quotes.permissions import QuotePermissions
 from lego.users.models import User
 from rest_framework import serializers
 
@@ -12,13 +13,27 @@ class QuoteSerializer(BasisSerializer):
 
 class QuoteReadSerializer(BasisSerializer):
     has_liked = serializers.SerializerMethodField('user_has_liked')
+    permissions = serializers.SerializerMethodField('user_permissions')
 
     class Meta:
         model = Quote
-        fields = ('id', 'title', 'author', 'quote', 'source', 'approved', 'likes', 'has_liked')
+        fields = ('id', 'title', 'author', 'quote', 'source', 'approved', 'likes', 'has_liked', 'permissions')
 
     def user_has_liked(self, obj):
         return obj.has_liked(user=self.context['request'].user)
+
+    def user_permissions(self, obj):
+        user=self.context['request'].user
+        permissions = []
+        if user.has_perm(QuotePermissions.perms_map['like']):
+            permissions.append('like')
+        if user.has_perm(QuotePermissions.perms_map['unlike']):
+            permissions.append('unlike')
+        if user.has_perm(QuotePermissions.perms_map['approve']):
+            permissions.append('approve')
+        if user.has_perm(QuotePermissions.perms_map['unapprove']):
+            permissions.append('unapprove')
+        return permissions
 
     def create(self, validated_data):
         return Quote.objects.create(**validated_data)
