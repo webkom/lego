@@ -7,10 +7,8 @@ class QuotePermissions(KeywordPermissions, ObjectPermissions):
     perms_map = {
         'list': None,
         'list-approved': '/sudo/admin/quotes/list-approved/',
-        'unlike': '/sudo/admin/quotes/unlike/',
         'like': '/sudo/admin/quotes/like/',
         'approve': '/sudo/admin/quotes/approve/',
-        'unapprove': '/sudo/admin/quotes/unapprove/',
         'retrieve': '/sudo/admin/quotes/retrieve/',
         'create': '/sudo/admin/quotes/create/',
         'update': '/sudo/admin/quotes/update/',

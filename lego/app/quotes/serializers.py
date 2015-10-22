@@ -23,16 +23,10 @@ class QuoteReadSerializer(BasisSerializer):
         return obj.has_liked(user=self.context['request'].user)
 
     def user_permissions(self, obj):
-        user=self.context['request'].user
+        user = self.context['request'].user
         permissions = []
-        if user.has_perm(QuotePermissions.perms_map['like']):
-            permissions.append('like')
-        if user.has_perm(QuotePermissions.perms_map['unlike']):
-            permissions.append('unlike')
         if user.has_perm(QuotePermissions.perms_map['approve']):
-            permissions.append('approve')
-        if user.has_perm(QuotePermissions.perms_map['unapprove']):
-            permissions.append('unapprove')
+            permissions.append('can_approve')
         return permissions
 
     def create(self, validated_data):
