@@ -40,6 +40,8 @@ class QuoteViewSet(viewsets.ModelViewSet):
         serializer = QuoteLikeSerializer(data=data)
         if serializer.is_valid():
             instance = self.get_object()
+            if not instance.is_approved():
+                raise PermissionDenied()
             instance.like(user=request.user)
             serializer = QuoteReadSerializer(instance, context={'request': request})
             return Response(
@@ -55,6 +57,8 @@ class QuoteViewSet(viewsets.ModelViewSet):
         if not self.request.user.has_perm(QuotePermissions.perms_map['unlike']):
             raise PermissionDenied()
         instance = self.get_object()
+        if not instance.is_approved():
+            raise PermissionDenied()
         result = instance.unlike(user=request.user)
         # TODO: do something with result?
         serializer = QuoteReadSerializer(instance, context={'request': request})
