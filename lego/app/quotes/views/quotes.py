@@ -62,3 +62,29 @@ class QuoteViewSet(viewsets.ModelViewSet):
             serializer.data,
             status=status.HTTP_200_OK
         )
+
+    @detail_route(methods=['PUT'], url_path='approve')
+    def approve(self, request, pk=None):
+        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+            raise PermissionDenied()
+        instance = self.get_object()
+        result = instance.approve()
+        # TODO: do something with result?
+        serializer = QuoteReadSerializer(instance, context={'request': request})
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+    @detail_route(methods=['PUT'], url_path='unapprove')
+    def unapprove(self, request, pk=None):
+        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+            raise PermissionDenied()
+        instance = self.get_object()
+        result = instance.unapprove()
+        # TODO: do something with result?
+        serializer = QuoteReadSerializer(instance, context={'request': request})
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )

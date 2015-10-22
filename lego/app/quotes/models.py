@@ -31,6 +31,14 @@ class Quote(ObjectPermissionsModel):
         quote_like = QuoteLike.objects.all().filter(user=user, quote=self)
         return self.is_approved() and quote_like.count() == 1
 
+    def approve(self):
+        self.approved = True
+        self.save()
+
+    def unapprove(self):
+        self.approved = False
+        self.save()
+
     def is_approved(self):
         return self.approved
 
