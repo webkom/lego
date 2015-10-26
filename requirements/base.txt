@@ -14,7 +14,7 @@ django-basis==0.4.0
 django-extensions==1.5.7
 django-haystack==2.4.0
 django-secure==1.0.1
-django-autoslug==1.8.0
+django-autoslug==1.9.3
 django-filter==0.11.0
 django-oauth-toolkit==0.9.0
 django-cors-headers==1.1.0
