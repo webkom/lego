@@ -68,3 +68,17 @@ class QuoteLike(BasisModel):
 
     def number_of_likes(self, quote):
         return self.objects.all().filter(quote=quote).count()
+
+class SortType(BasisModel):
+    sort_type = models.CharField(max_length=255)
+
+    def sort_type(self):
+        return self.sort_type
+
+    def sort_by_likes(self):
+        self.sort_type = 'likes'
+        self.save()
+
+    def sort_by_date(self):
+        self.sort_type = 'date'
+        self.save()

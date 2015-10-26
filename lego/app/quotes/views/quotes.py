@@ -96,7 +96,26 @@ class QuoteViewSet(viewsets.ModelViewSet):
             serializer.data,
             status=status.HTTP_200_OK
         )
-
+    @detail_route(methods=['POST'], url_path='sort_by_likes')
+    def sort_by_likes(self, request, pk=None):
+        instance = self.get_object()
+        result = instance.sort_by_likes()
+        # TODO: do something with result?
+        serializer = QuoteReadSerializer(instance, context={'request': request})
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+    @detail_route(methods=['POST'], url_path='sort_by_date')
+    def sort_by_date(self, request, pk=None):
+        instance = self.get_object()
+        result = instance.sort_by_date()
+        # TODO: do something with result?
+        serializer = QuoteReadSerializer(instance, context={'request': request})
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
     @detail_route(methods=['PUT'], url_path='unapprove')
     def unapprove(self, request, pk=None):
         if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
