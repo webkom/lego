@@ -1,3 +1,5 @@
+from lego.settings import TESTING
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -8,9 +10,13 @@ LOGGING = {
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
         },
+        'skip_if_testing': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda *args, **kwargs: not TESTING,
+        },
     },
     'root': {
-        'level': 'INFO',
+        'level': 'DEBUG',
         'handlers': ['sentry', 'console', 'mail_admins', 'syslog'],
     },
     'formatters': {
@@ -21,10 +27,12 @@ LOGGING = {
     'handlers': {
         'sentry': {
             'level': 'WARNING',
+            'filters': ['skip_if_testing'],
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
         },
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
+            'filters': ['skip_if_testing'],
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
@@ -41,6 +49,14 @@ LOGGING = {
         },
     },
     'loggers': {
+        'django': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'django.request': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
         'raven': {
             'level': 'WARNING',
             'handlers': ['console'],
