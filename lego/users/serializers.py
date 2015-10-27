@@ -74,8 +74,9 @@ class AbakusGroupSerializer(DetailedAbakusGroupSerializer):
         view = self.context['view']
         request = self.context['request']
 
-        if view.action == 'retrieve' and can_retrieve_abakusgroup(instance, request.user):
-            serializer = DetailedAbakusGroupSerializer(instance, context=self.context)
-        else:
+        if (view.action == 'list' or
+                view.action == 'retrieve' and not can_retrieve_abakusgroup(instance, request.user)):
             serializer = PublicAbakusGroupSerializer(instance, context=self.context)
+        else:
+            serializer = DetailedAbakusGroupSerializer(instance, context=self.context)
         return serializer.data
