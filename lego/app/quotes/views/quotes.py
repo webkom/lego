@@ -31,7 +31,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
     def unapproved(self, request):
         if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
             raise PermissionDenied()
-        quotes = Quote.objects.all()
+        quotes = Quote.objects.filter(approved=False)
         serialized_quotes = []
         for instance in quotes:
             serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
