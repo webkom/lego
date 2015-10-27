@@ -135,3 +135,8 @@ class RetrievePoolsTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_pools_detail_url(1, 1))
         self.assertEqual(response.status_code, 200)
+
+    def test_without_group_permission(self):
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_pools_detail_url(1, 1))
+        self.assertEqual(response.status_code, 403)
