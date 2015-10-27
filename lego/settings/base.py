@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'corsheaders',
     'djcelery',
+    'mptt',
 
     'lego.users',
     'lego.utils',

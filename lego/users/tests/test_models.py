@@ -28,12 +28,12 @@ class AbakusGroupHierarchyTestCase(TestCase):
 
     def test_find_all_children(self):
         committees = AbakusGroup.objects.filter(parent=self.abakom.pk)
-        children = self.abakom.children.all()
+        children = self.abakom.get_children()
         self.assertEqual(len(committees), len(children))
 
     def test_abakom_is_root(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
-        self.assertTrue(abakus.is_root_node)
+        self.assertTrue(abakus.is_root_node())
 
     def test_get_ancestors(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
@@ -49,7 +49,7 @@ class AbakusGroupHierarchyTestCase(TestCase):
         abakus = AbakusGroup.objects.get(name='Abakus')
         webkom = AbakusGroup.objects.get(name='Webkom')
 
-        ancestors = set(webkom.get_ancestors(True))
+        ancestors = set(webkom.get_ancestors(include_self=True))
 
         self.assertEqual(len(ancestors), 3)
         self.assertTrue(webkom in ancestors)
@@ -68,7 +68,8 @@ class AbakusGroupHierarchyTestCase(TestCase):
 
     def test_get_descendants_include_self(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
-        self.assertEqual(set(AbakusGroup.objects.all()), set(abakus.get_descendants(True)))
+        self.assertEqual(set(AbakusGroup.objects.all()),
+                         set(abakus.get_descendants(include_self=True)))
 
 
 class UserTestCase(TestCase):
