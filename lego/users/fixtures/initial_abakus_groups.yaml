@@ -1,4 +1,4 @@
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 1
   fields:
     deleted: false
@@ -10,7 +10,7 @@
     rght: 22
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 2
   fields:
     deleted: false
@@ -22,7 +22,7 @@
     rght: 21
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 3
   fields:
     deleted: false
@@ -34,7 +34,7 @@
     rght: 4
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 4
   fields:
     deleted: false
@@ -46,7 +46,7 @@
     rght: 6
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 5
   fields:
     deleted: false
@@ -58,7 +58,7 @@
     rght: 8
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 6
   fields:
     deleted: false
@@ -70,7 +70,7 @@
     rght: 10
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 7
   fields:
     deleted: false
@@ -82,7 +82,7 @@
     rght: 12
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 8
   fields:
     deleted: false
@@ -94,7 +94,7 @@
     rght: 14
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 9
   fields:
     deleted: false
@@ -106,7 +106,7 @@
     rght: 16
     tree_id: 1
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 10
   fields:
     deleted: false
@@ -120,7 +120,7 @@
     permissions:
       - /sudo/
 
-- model: users.abakusgroup
+- model: users.AbakusGroup
   pk: 11
   fields:
     deleted: false
