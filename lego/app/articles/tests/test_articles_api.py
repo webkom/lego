@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.app.articles.models import Article
+from lego.app.articles.serializers import DetailedArticleSerializer, PublicArticleSerializer
 from lego.users.models import AbakusGroup, User
 
 
@@ -24,6 +25,11 @@ class ListArticlesTestCase(APITestCase):
     def test_unauthorized_user(self):
         response = self.client.get(_get_list_url())
         self.assertEqual(len(response.data), 1)
+
+    def test_fields(self):
+        response = self.client.get(_get_list_url())
+        article = response.data[0]
+        self.assertEqual(set(PublicArticleSerializer.Meta.fields), set(article.keys()))
 
     def test_authorized_without_permission(self):
         user = self.all_users.first()
@@ -52,6 +58,11 @@ class RetrieveArticlesTestCase(APITestCase):
     def test_unauthorized(self):
         response = self.client.get(_get_detail_url(3))
         self.assertEqual(response.status_code, 200)
+
+    def test_fields(self):
+        response = self.client.get(_get_detail_url(3))
+        article = response.data
+        self.assertEqual(set(DetailedArticleSerializer.Meta.fields), set(article.keys()))
 
     def test_with_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
