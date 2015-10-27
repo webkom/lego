@@ -59,7 +59,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
             serializer = QuoteReadSerializer(instance, remove_fields=remove_fields, context={'request': request})
             return Response(
                 serializer.data,
-                status=status.HTTP_200_OK
+                status=status.HTTP_201_CREATED
             )
         else:
             #TODO: Not found 404?
@@ -81,7 +81,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         serializer = QuoteReadSerializer(instance, remove_fields=remove_fields, context={'request': request})
         return Response(
             serializer.data,
-            status=status.HTTP_200_OK
+            status=status.HTTP_201_CREATED
         )
 
     @detail_route(methods=['PUT'], url_path='approve')
