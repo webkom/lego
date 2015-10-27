@@ -13,6 +13,3 @@ else:
         from lego.settings.local import *
     except ImportError as e:
         raise ImportError("Couldn't load local settings lego.settings.local")
-
-    if 'debug_toolbar' in INSTALLED_APPS:
-        from lego.settings.debug_toolbar import *
