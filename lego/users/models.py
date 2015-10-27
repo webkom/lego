@@ -1,4 +1,4 @@
-from basis.models import BasisModel, PersistentModel, TimeStampModel
+from basis.models import BasisModel, PersistentModel
 from django.contrib import auth
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
@@ -7,6 +7,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
 from lego.permissions.validators import KeywordPermissionValidator
 from lego.users.managers import AbakusGroupManager, MembershipManager, UserManager
@@ -14,12 +16,12 @@ from lego.users.managers import AbakusGroupManager, MembershipManager, UserManag
 from .validators import username_validator
 
 
-class AbakusGroup(TimeStampModel, PersistentModel):
+class AbakusGroup(MPTTModel, PersistentModel):
     objects = AbakusGroupManager()
 
     name = models.CharField(max_length=80, unique=True)
     description = models.CharField(blank=True, max_length=200)
-    parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
+    parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()],
                          max_length=30),
@@ -34,32 +36,6 @@ class AbakusGroup(TimeStampModel, PersistentModel):
         if self.parent:
             return self.parent.name == 'Abakom'
         return False
-
-    @property
-    def is_root_node(self):
-        return not self.parent
-
-    def get_ancestors(self, include_self=False):
-        abakus_groups = []
-
-        if include_self:
-            abakus_groups.append(self)
-
-        if self.parent:
-            abakus_groups.extend(self.parent.get_ancestors(True))
-
-        return abakus_groups
-
-    def get_descendants(self, include_self=False):
-        abakus_groups = []
-
-        if include_self:
-            abakus_groups.append(self)
-
-        for child in self.children.all():
-            abakus_groups.extend(child.get_descendants(True))
-
-        return abakus_groups
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
@@ -142,8 +118,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
         own_groups = set()
 
         for group in self.abakus_groups.all():
-            if group not in own_groups:
-                own_groups = own_groups.union(set(group.get_ancestors(True)))
+            own_groups = own_groups.union(set(group.get_ancestors(include_self=True)))
 
         return list(own_groups)
 
