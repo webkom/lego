@@ -15,6 +15,15 @@ from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+            remove_fields = ['author']
+        else:
+            remove_fields = []
+        return serializer_class(remove_fields=remove_fields, *args, **kwargs)
+
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
             return QuoteCreateAndUpdateSerializer
@@ -87,7 +96,8 @@ class QuoteViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         result = instance.unapprove()
         # TODO: do something with result?
-        serializer = QuoteReadSerializer(instance, context={'request': request})
+
+        serializer = QuoteReadSerializer(instance, fields=['test'], context={'request': request})
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
