@@ -96,7 +96,9 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
-        )    @detail_route(methods=['PUT'], url_path='unapprove')
+        )
+
+    @detail_route(methods=['PUT'], url_path='unapprove')
     def unapprove(self, request, pk=None):
         if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
             raise PermissionDenied()
