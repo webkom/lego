@@ -50,17 +50,10 @@ class QuoteReadSerializer(DynamicFieldsModelSerializer):
 
 class QuoteCreateAndUpdateSerializer(DynamicFieldsModelSerializer):
     permissions = serializers.SerializerMethodField('user_permissions')
-    author = serializers.SerializerMethodField('user_author')
 
     class Meta:
         model = Quote
         fields = ('id', 'title', 'author', 'quote', 'source', 'approved', 'likes', 'permissions')
-
-    def user_author(self, obj):
-        return {
-            'id': obj.author.pk,
-            'username': obj.author.username
-        }
 
     def user_permissions(self, obj):
         user = self.context['request'].user
