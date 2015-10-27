@@ -1,2 +1,4 @@
 -r base.txt
 -r docs.txt
+
+django-debug-toolbar
