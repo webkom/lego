@@ -118,7 +118,9 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
         own_groups = set()
 
         for group in self.abakus_groups.all():
-            own_groups = own_groups.union(set(group.get_ancestors(include_self=True)))
+            if group not in own_groups:
+                own_groups.add(group)
+                own_groups = own_groups.union(set(group.get_ancestors()))
 
         return list(own_groups)
 
