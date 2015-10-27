@@ -23,10 +23,17 @@ class QuoteSerializer(DynamicFieldsModelSerializer):
 class QuoteReadSerializer(DynamicFieldsModelSerializer):
     has_liked = serializers.SerializerMethodField('user_has_liked')
     permissions = serializers.SerializerMethodField('user_permissions')
+    author = serializers.SerializerMethodField('user_author')
 
     class Meta:
         model = Quote
         fields = ('id', 'title', 'author', 'quote', 'source', 'approved', 'likes', 'has_liked', 'permissions')
+
+    def user_author(self, obj):
+        return {
+            'id': obj.author.pk,
+            'username': obj.author.username
+        }
 
     def user_has_liked(self, obj):
         return obj.has_liked(user=self.context['request'].user)
@@ -42,9 +49,25 @@ class QuoteReadSerializer(DynamicFieldsModelSerializer):
         return Quote.objects.create(**validated_data)
 
 class QuoteCreateAndUpdateSerializer(DynamicFieldsModelSerializer):
+    permissions = serializers.SerializerMethodField('user_permissions')
+    author = serializers.SerializerMethodField('user_author')
+
     class Meta:
         model = Quote
-        fields = ('id', 'title', 'author', 'quote', 'source', 'approved', 'likes')
+        fields = ('id', 'title', 'author', 'quote', 'source', 'approved', 'likes', 'permissions')
+
+    def user_author(self, obj):
+        return {
+            'id': obj.author.pk,
+            'username': obj.author.username
+        }
+
+    def user_permissions(self, obj):
+        user = self.context['request'].user
+        permissions = []
+        if user.has_perm(QuotePermissions.perms_map['approve']):
+            permissions.append('can_approve')
+        return permissions
 
     def create(self, validated_data):
         return Quote.objects.create(**validated_data)
