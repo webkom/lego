@@ -2,42 +2,44 @@ from django.contrib.auth.models import AnonymousUser
 from django.core import serializers
 from lego.users.models import User
 from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import NotFound, ValidationError, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from lego.app.quotes.models import Quote
 from lego.app.quotes.permissions import QuotePermissions
-from lego.app.quotes.serializers import (QuoteCreateAndUpdateSerializer, QuoteReadSerializer, QuoteSerializer,
-                                         QuoteLikeSerializer)
+from lego.app.quotes.serializers import (QuoteCreateAndUpdateSerializer,
+                                         QuoteLikeSerializer, QuoteApprovedReadSerializer)
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs['context'] = self.get_serializer_context()
-        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
-            remove_fields = ['author']
-        else:
-            remove_fields = []
-        return serializer_class(remove_fields=remove_fields, *args, **kwargs)
-
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
             return QuoteCreateAndUpdateSerializer
-        return QuoteReadSerializer
+        return QuoteApprovedReadSerializer
 
     queryset = Quote.objects.all()
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (IsAuthenticated, QuotePermissions)
 
     def get_queryset(self):
+         return Quote.objects.filter(approved=True)
 
-        if self.request.user.has_perm(QuotePermissions.perms_map['list-approved']):
-            return Quote.objects.all()
-        return Quote.objects.filter(approved=True)
+    @list_route()
+    def unapproved(self, request):
+        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+            raise PermissionDenied()
+        quotes = Quote.objects.all()
+        serialized_quotes = []
+        for instance in quotes:
+            serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
+            serialized_quotes.append(serializer.data)
+        return Response(
+            serialized_quotes,
+            status=status.HTTP_200_OK
+        )
 
     @detail_route(methods=['POST'], url_path='like')
     def like(self, request, pk=None):
@@ -53,11 +55,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
             if not instance.is_approved():
                 raise PermissionDenied()
             instance.like(user=request.user)
-            if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
-                remove_fields = ['author']
-            else:
-                remove_fields = []
-            serializer = QuoteReadSerializer(instance, remove_fields=remove_fields, context={'request': request})
+            serializer = QuoteApprovedReadSerializer(instance, context={'request': request}) #TODO: different serializer?
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
@@ -75,11 +73,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
             raise PermissionDenied()
         result = instance.unlike(user=request.user)
         # TODO: do something with result?
-        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
-            remove_fields = ['author']
-        else:
-            remove_fields = []
-        serializer = QuoteReadSerializer(instance, remove_fields=remove_fields, context={'request': request})
+        serializer = QuoteApprovedReadSerializer(instance, context={'request': request}) #TODO: different serializer?
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED
@@ -92,7 +86,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         result = instance.approve()
         # TODO: do something with result?
-        serializer = QuoteReadSerializer(instance, context={'request': request})
+        serializer = QuoteApprovedReadSerializer(instance, context={'request': request}) #TODO: different serializer?
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
@@ -106,7 +100,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         result = instance.unapprove()
         # TODO: do something with result?
 
-        serializer = QuoteReadSerializer(instance, context={'request': request})
+        serializer = QuoteApprovedReadSerializer(instance, context={'request': request}) #TODO: different serializer?
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
