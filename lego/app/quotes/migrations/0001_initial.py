@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 import basis.models
 from django.conf import settings
 
@@ -17,25 +17,57 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Quote',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=basis.models._now, editable=False)),
-                ('updated_at', models.DateTimeField(default=basis.models._now, editable=False)),
-                ('deleted', models.BooleanField(default=False, editable=False)),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('created_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('updated_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('deleted', models.BooleanField(editable=False, default=False)),
                 ('require_auth', models.BooleanField(default=False, verbose_name='require auth')),
                 ('title', models.CharField(max_length=255)),
                 ('quote', models.TextField()),
                 ('source', models.CharField(max_length=255)),
                 ('approved', models.BooleanField(default=False)),
-                ('likes', models.PositiveIntegerField()),
+                ('publish_date', models.DateTimeField(auto_now_add=True)),
                 ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('can_edit_groups', models.ManyToManyField(to='users.AbakusGroup', blank=True, related_name='can_edit_quote', null=True)),
-                ('can_edit_users', models.ManyToManyField(to=settings.AUTH_USER_MODEL, blank=True, related_name='can_edit_quote', null=True)),
-                ('can_view_groups', models.ManyToManyField(to='users.AbakusGroup', blank=True, related_name='can_view_quote', null=True)),
-                ('created_by', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='quote_created', editable=False, default=None, null=True)),
-                ('updated_by', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='quote_updated', editable=False, default=None, null=True)),
+                ('can_edit_groups', models.ManyToManyField(related_name='can_edit_quote', null=True, to='users.AbakusGroup', blank=True)),
+                ('can_edit_users', models.ManyToManyField(related_name='can_edit_quote', null=True, to=settings.AUTH_USER_MODEL, blank=True)),
+                ('can_view_groups', models.ManyToManyField(related_name='can_view_quote', null=True, to='users.AbakusGroup', blank=True)),
+                ('created_by', models.ForeignKey(related_name='quote_created', to=settings.AUTH_USER_MODEL, default=None, null=True, editable=False)),
+                ('updated_by', models.ForeignKey(related_name='quote_updated', to=settings.AUTH_USER_MODEL, default=None, null=True, editable=False)),
             ],
             options={
                 'abstract': False,
             },
+        ),
+        migrations.CreateModel(
+            name='QuoteLike',
+            fields=[
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('created_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('updated_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('deleted', models.BooleanField(editable=False, default=False)),
+                ('like_date', models.DateTimeField(auto_now_add=True)),
+                ('created_by', models.ForeignKey(related_name='quotelike_created', to=settings.AUTH_USER_MODEL, default=None, null=True, editable=False)),
+                ('quote', models.ForeignKey(to='quotes.Quote')),
+                ('updated_by', models.ForeignKey(related_name='quotelike_updated', to=settings.AUTH_USER_MODEL, default=None, null=True, editable=False)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='SortType',
+            fields=[
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('created_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('updated_at', models.DateTimeField(editable=False, default=basis.models._now)),
+                ('deleted', models.BooleanField(editable=False, default=False)),
+                ('created_by', models.ForeignKey(related_name='sorttype_created', to=settings.AUTH_USER_MODEL, default=None, null=True, editable=False)),
+                ('updated_by', models.ForeignKey(related_name='sorttype_updated', to=settings.AUTH_USER_MODEL, default=None, null=True, editable=False)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.AlterUniqueTogether(
+            name='quotelike',
+            unique_together=set([('user', 'quote')]),
         ),
     ]
