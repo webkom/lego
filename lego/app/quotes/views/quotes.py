@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from lego.app.quotes.models import Quote
 from lego.app.quotes.permissions import QuotePermissions
 from lego.app.quotes.serializers import (QuoteCreateAndUpdateSerializer,
-                                         QuoteLikeSerializer, QuoteApprovedReadSerializer)
+                                         QuoteLikeSerializer, QuoteApprovedReadSerializer,
+                                         QuoteUnapprovedReadSerializer)
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
@@ -34,7 +35,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         quotes = Quote.objects.filter(approved=False)
         serialized_quotes = []
         for instance in quotes:
-            serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
+            serializer = QuoteUnapprovedReadSerializer(instance, context={'request': request})
             serialized_quotes.append(serializer.data)
         return Response(
             serialized_quotes,
