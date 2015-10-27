@@ -52,7 +52,11 @@ class QuoteViewSet(viewsets.ModelViewSet):
             if not instance.is_approved():
                 raise PermissionDenied()
             instance.like(user=request.user)
-            serializer = QuoteReadSerializer(instance, context={'request': request})
+            if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+                remove_fields = ['author']
+            else:
+                remove_fields = []
+            serializer = QuoteReadSerializer(instance, remove_fields=remove_fields, context={'request': request})
             return Response(
                 serializer.data,
                 status=status.HTTP_200_OK
@@ -70,7 +74,11 @@ class QuoteViewSet(viewsets.ModelViewSet):
             raise PermissionDenied()
         result = instance.unlike(user=request.user)
         # TODO: do something with result?
-        serializer = QuoteReadSerializer(instance, context={'request': request})
+        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+            remove_fields = ['author']
+        else:
+            remove_fields = []
+        serializer = QuoteReadSerializer(instance, remove_fields=remove_fields, context={'request': request})
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
@@ -97,7 +105,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         result = instance.unapprove()
         # TODO: do something with result?
 
-        serializer = QuoteReadSerializer(instance, fields=['test'], context={'request': request})
+        serializer = QuoteReadSerializer(instance, context={'request': request})
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
