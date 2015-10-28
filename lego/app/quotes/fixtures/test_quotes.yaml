@@ -6,7 +6,6 @@
     quote: Du må bruke munnen der du brukte fingrene i sted!
     source: Tibor "Kikiriki" Vukoivic
     approved: 0
-    likes: 0
 
 - model: quotes.Quote
   pk: 2
@@ -16,16 +15,15 @@
     quote: I like the big dick from the man
     source: Webkommedlem
     approved: 1
-    likes: 3
 
-- model: quotes.LikeList
+- model: quotes.QuoteLike
   pk: 1
   fields:
     quote: 2
     user: 1
     like_date: '2011-09-01T13:20:30+03:00'
 
-- model: quotes.LikeList
+- model: quotes.QuoteLike
   pk: 2
   fields:
     quote: 2

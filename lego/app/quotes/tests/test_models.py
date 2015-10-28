@@ -1,8 +1,8 @@
 from django.test import TestCase
 
 from lego.app.content.tests import ContentTestMixin
-from lego.app.events.views.events import EventViewSet
 from lego.app.quotes.models import Quote
+from lego.app.quotes.views.quotes import QuoteViewSet
 from lego.users.models import User
 
 
@@ -23,7 +23,7 @@ class QuoteTest(TestCase, ContentTestMixin):
                 'test_users.yaml', 'test_quotes.yaml']
 
     model = Quote
-    ViewSet = EventViewSet
+    ViewSet = QuoteViewSet
 
 
 class QuoteMethodTest(TestCase):
@@ -34,3 +34,18 @@ class QuoteMethodTest(TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.quote), self.quote.title)
+
+    def test_like_quote(self):
+        user = User.objects.get(username='useradmin_test')
+        print(user.get_permissions())
+        quote = Quote.objects.get(pk=1)
+        before = quote.likes
+        quote.like(user=user)
+        self.assertEqual(quote.likes, before + 1)
+
+    def test_unlike_quote(self):
+        user = User.objects.get(username='useradmin_test')
+        quote = Quote.objects.get(pk=1)
+        before = quote.likes
+        quote.unlike(user=user)
+        self.assertEqual(quote.likes, before - 1)
