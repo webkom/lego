@@ -1,7 +1,7 @@
 from basis.serializers import BasisSerializer
 from rest_framework import serializers
 
-from lego.app.events.models import Event, Pool
+from lego.app.events.models import Event, Pool, Registration
 
 
 class PoolSerializer(BasisSerializer):
@@ -23,6 +23,12 @@ class EventReadSerializer(BasisSerializer):
 
     class Meta:
         model = Event
-        fields = ('title', 'author', 'ingress', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'author', 'ingress', 'text', 'event_type', 'location',
                   'start_time', 'end_time', 'pools', 'capacity',
                   'waiting_list')
+
+
+class RegistrationCreateAndUpdateSerializer(BasisSerializer):
+    class Meta:
+        model = Registration
+        fields = ('id', 'user', 'event', 'pool')
