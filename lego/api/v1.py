@@ -2,7 +2,7 @@ from rest_framework_nested import routers
 
 from lego.app.articles.views.articles import ArticlesViewSet
 from lego.app.comments.views.comments import CommentViewSet
-from lego.app.events.views.events import EventViewSet, PoolViewSet
+from lego.app.events.views.events import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.app.flatpages.views import PageViewSet
 from lego.users.views.abakus_groups import AbakusGroupViewSet
 from lego.users.views.users import UsersViewSet
@@ -17,3 +17,5 @@ router.register(r'comments', CommentViewSet)
 
 events_router = routers.NestedSimpleRouter(router, r'events', lookup='event')
 events_router.register(r'pools', PoolViewSet)
+pools_router = routers.NestedSimpleRouter(events_router, r'pools', lookup='pool')
+pools_router.register(r'registrations', RegistrationViewSet)

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.app.comments.serializers import CommentSerializer
-from lego.app.events.models import Event, Pool
+from lego.app.events.models import Event, Pool, Registration
 
 
 class PoolSerializer(BasisSerializer):
@@ -27,6 +27,12 @@ class EventReadSerializer(BasisSerializer):
 
     class Meta:
         model = Event
-        fields = ('title', 'author', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools',
                   'capacity', 'waiting_list')
+
+
+class RegistrationCreateAndUpdateSerializer(BasisSerializer):
+    class Meta:
+        model = Registration
+        fields = ('id', 'user', 'event', 'pool')
