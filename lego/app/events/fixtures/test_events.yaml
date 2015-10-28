@@ -77,3 +77,19 @@
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
       - 10
+
+- model: events.Registration
+  pk: 1
+  fields:
+    user: 1
+    event: 1
+    pool: 1
+    registration_date: '2011-09-01T13:20:30+03:00'
+
+- model: events.Registration
+  pk: 2
+  fields:
+    user: 2
+    event: 1
+    pool: 1
+    registration_date: '2011-09-01T13:20:30+03:00'

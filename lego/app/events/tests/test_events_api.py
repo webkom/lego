@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.app.events.serializers import EventCreateAndUpdateSerializer
+from lego.app.events.serializers import EventCreateAndUpdateSerializer, RegistrationCreateAndUpdateSerializer
 from lego.users.models import AbakusGroup, User
 
 _test_event_data = {
@@ -37,6 +37,12 @@ _test_pools_data = [
     }
 ]
 
+_test_registration_data = {
+    'user': 1,
+    'event': 1,
+    'pool': 1
+}
+
 
 def _get_list_url():
     return reverse('event-list')
@@ -52,6 +58,14 @@ def _get_pools_list_url(event_pk):
 
 def _get_pools_detail_url(event_pk, pool_pk):
     return reverse('pool-detail', kwargs={'event_pk': event_pk, 'pk': pool_pk})
+
+
+def _get_registration_list_url(event_pk, pool_pk):
+    return reverse('registration-list', kwargs={'event_pk': event_pk, 'pool_pk': pool_pk})
+
+
+def _get_registration_detail_url(event_pk, pool_pk, registration_pk):
+    return reverse('registration-detail', kwargs={'event_pk': event_pk, 'pool_pk': pool_pk, 'pk': registration_pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -140,3 +154,72 @@ class RetrievePoolsTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_pools_detail_url(1, 1))
         self.assertEqual(response.status_code, 403)
+
+
+class CreateRegistrationsTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+
+
+    def test_create(self):
+        self.client.force_authenticate(self.abakus_user)
+        response = self.client.post(_get_list_url(), _test_event_data)
+        print(response.data)
+
+        _test_pools_data[0]['event'] = response.data['id']
+        print(_test_pools_data[0])
+        pool_response = self.client.post(_get_pools_list_url(response.data['id']),
+                                         _test_pools_data[0])
+
+        _test_registration_data['pool'] = pool_response.data['id']
+        _test_registration_data['event'] = response.data['id']
+        print(_test_registration_data)
+        print(_get_registration_list_url(1, 1))
+        registration_response = self.client.post(_get_registration_list_url(response.data['id'], pool_response.data['id']), _test_registration_data)
+        print(registration_response.data)
+
+        self.assertEqual(registration_response.status_code, 201)
+
+class RetrieveRegistrationsTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_group_permission(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_registration_detail_url(1, 1, 1))
+        self.assertEqual(response.status_code, 200)
+
+    def test_without_group_permission(self):
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_registration_detail_url(1, 1, 1))
+        self.assertEqual(response.status_code, 403)
+
+
+class ListRegistrationsTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_registration_list_url(1, 1))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+
+    def test_with_webkom_user(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_registration_list_url(1, 1))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
