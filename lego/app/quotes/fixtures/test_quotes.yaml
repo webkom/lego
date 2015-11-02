@@ -5,27 +5,29 @@
     author: 1
     quote: Du må bruke munnen der du brukte fingrene i sted!
     source: Tibor "Kikiriki" Vukoivic
-    approved: 0
+    approved: 1
 
 - model: quotes.Quote
   pk: 2
+  fields:
+    title: Test tittel
+    author: 1
+    quote: Just do it!
+    source: Topkek
+    approved: 1
+
+- model: quotes.Quote
+  pk: 3
   fields:
     title: Webkommer forsøker å avvise en invitasjon til en strippeklubb
     author: 2
     quote: I like the big dick from the man
     source: Webkommedlem
-    approved: 1
+    approved: 0
 
 - model: quotes.QuoteLike
   pk: 1
   fields:
     quote: 2
-    user: 1
-    like_date: '2011-09-01T13:20:30+03:00'
-
-- model: quotes.QuoteLike
-  pk: 2
-  fields:
-    quote: 2
-    user: 2
+    user: 3
     like_date: '2011-09-01T13:20:30+03:00'

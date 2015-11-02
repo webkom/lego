@@ -99,8 +99,8 @@ class QuoteViewSet(viewsets.ModelViewSet):
             raise PermissionDenied()
         instance = self.get_object()
         result = instance.unapprove()
-        # TODO: do something with result?
         # TODO: different serializer?
+        # TODO: do something with result?
         serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
         return Response(
             serializer.data,

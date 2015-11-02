@@ -61,9 +61,3 @@ class QuoteLike(BasisModel):
 
     class Meta:
         unique_together = ('user', 'quote')
-
-    def has_liked(self, user, quote):
-        return self.objects.all().filter(user=user, quote=quote).count() > 0
-
-    def number_of_likes(self, quote):
-        return self.objects.all().filter(quote=quote).count()
