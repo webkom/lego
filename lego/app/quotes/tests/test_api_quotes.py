@@ -137,7 +137,7 @@ class UnlikeQuoteTestCase(APITestCase):
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.post(_get_unlike_url(1))
+        response = self.client.post(_get_unlike_url(2))
         # TODO: use correct serializer
         test = QuoteLikeSerializer(data=_test_like_data)
         if not test.is_valid():
