@@ -41,8 +41,6 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'], url_path='like')
     def like(self, request, pk=None):
-        if not self.request.user.has_perm(QuotePermissions.perms_map['like']):
-            raise PermissionDenied()
         data = {
             'quote': pk,
             'user': request.user.id
@@ -65,8 +63,6 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'], url_path='unlike')
     def unlike(self, request, pk=None):
-        if not self.request.user.has_perm(QuotePermissions.perms_map['like']):
-            raise PermissionDenied()
         instance = self.get_object()
         if not instance.is_approved():
             raise PermissionDenied()

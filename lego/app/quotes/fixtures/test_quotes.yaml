@@ -31,3 +31,11 @@
     quote: 2
     user: 3
     like_date: '2011-09-01T13:20:30+03:00'
+
+
+- model: quotes.QuoteLike
+  pk: 2
+  fields:
+    quote: 1
+    user: 1
+    like_date: '2011-09-01T13:20:30+03:00'
