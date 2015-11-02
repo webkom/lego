@@ -3,7 +3,7 @@
   fields:
     title: T-Boy om jenter
     author: 1
-    quote: Du må bruke munnen der du brukte fingrene i sted!
+    text: Du må bruke munnen der du brukte fingrene i sted!
     source: Tibor "Kikiriki" Vukoivic
     approved: 1
 
@@ -12,7 +12,7 @@
   fields:
     title: Test tittel
     author: 1
-    quote: Just do it!
+    text: Just do it!
     source: Topkek
     approved: 1
 
@@ -21,7 +21,7 @@
   fields:
     title: Webkommer forsøker å avvise en invitasjon til en strippeklubb
     author: 2
-    quote: I like the big dick from the man
+    text: I like the big dick from the man
     source: Webkommedlem
     approved: 0
 

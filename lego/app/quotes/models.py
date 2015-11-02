@@ -8,7 +8,7 @@ from lego.users.models import User
 class Quote(ObjectPermissionsModel):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User)
-    quote = models.TextField()
+    text = models.TextField()
     source = models.CharField(max_length=255)
     approved = models.BooleanField(default=False)
 

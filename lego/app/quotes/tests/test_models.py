@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from lego.app.content.tests import ContentTestMixin
-from lego.app.quotes.models import Quote, QuoteLike
+from lego.app.quotes.models import Quote
 from lego.app.quotes.views.quotes import QuoteViewSet
 from lego.users.models import AbakusGroup, User
 

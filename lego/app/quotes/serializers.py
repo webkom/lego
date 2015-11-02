@@ -34,7 +34,7 @@ class QuoteUnapprovedReadSerializer(QuoteSerializer):
             'id',
             'title',
             'author',
-            'quote',
+            'text',
             'source',
             'approved',
             'likes',
@@ -55,7 +55,7 @@ class QuoteApprovedReadSerializer(QuoteSerializer):
         fields = (
             'id',
             'title',
-            'quote',
+            'text',
             'source',
             'likes',
             'has_liked',
@@ -71,7 +71,7 @@ class QuoteCreateAndUpdateSerializer(QuoteSerializer):
             'id',
             'title',
             'author',
-            'quote',
+            'text',
             'source',
             'approved',
             'likes'
