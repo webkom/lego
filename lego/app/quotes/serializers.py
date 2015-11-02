@@ -1,9 +1,9 @@
 from basis.serializers import BasisSerializer
+from rest_framework import serializers
 
 from lego.app.quotes.models import Quote, QuoteLike
 from lego.app.quotes.permissions import QuotePermissions
-from lego.users.models import User
-from rest_framework import serializers
+
 
 class QuoteSerializer(BasisSerializer):
     def user_permissions(self, obj):
@@ -21,6 +21,7 @@ class QuoteSerializer(BasisSerializer):
 
     def user_has_liked(self, obj):
         return obj.has_liked(user=self.context['request'].user)
+
 
 class QuoteUnapprovedReadSerializer(QuoteSerializer):
     has_liked = serializers.SerializerMethodField('user_has_liked')
@@ -44,6 +45,7 @@ class QuoteUnapprovedReadSerializer(QuoteSerializer):
     def create(self, validated_data):
         return Quote.objects.create(**validated_data)
 
+
 class QuoteApprovedReadSerializer(QuoteSerializer):
     has_liked = serializers.SerializerMethodField('user_has_liked')
     permissions = serializers.SerializerMethodField('user_permissions')
@@ -59,6 +61,7 @@ class QuoteApprovedReadSerializer(QuoteSerializer):
             'has_liked',
             'permissions'
         )
+
 
 class QuoteCreateAndUpdateSerializer(QuoteSerializer):
 
