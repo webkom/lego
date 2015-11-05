@@ -134,7 +134,6 @@ class CreateEventsTestCase(APITestCase):
         response = self.client.post(_get_list_url(), _test_event_data)
         self.assertEqual(response.status_code, 201)
 
-
         _test_pools_data[0]['event'] = response.data['id']
         pool_response = self.client.post(_get_pools_list_url(response.data['id']),
                                          _test_pools_data[0])
