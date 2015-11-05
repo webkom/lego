@@ -1,70 +1,135 @@
 - model: users.AbakusGroup
   pk: 1
   fields:
+    deleted: false
+    description: ''
+    level: 0
+    lft: 1
     name: Abakus
+    parent: null
+    rght: 22
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 2
   fields:
+    deleted: false
+    description: ''
+    level: 1
+    lft: 2
     name: Abakom
     parent: 1
-    
+    rght: 21
+    tree_id: 1
+
 - model: users.AbakusGroup
   pk: 3
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 3
     name: Arrkom
     parent: 2
-    permissions:
-      - /sudo/admin/events/create/
+    rght: 4
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 4
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 5
     name: backup
     parent: 2
+    rght: 6
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 5
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 7
     name: Bedkom
     parent: 2
+    rght: 8
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 6
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 9
     name: Fagkom
     parent: 2
+    rght: 10
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 7
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 11
     name: LaBamba
     parent: 2
+    rght: 12
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 8
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 13
     name: PR
     parent: 2
+    rght: 14
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 9
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 15
     name: readme
     parent: 2
+    rght: 16
+    tree_id: 1
 
 - model: users.AbakusGroup
   pk: 10
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 17
     name: Webkom
     parent: 2
+    rght: 18
+    tree_id: 1
     permissions:
       - /sudo/
 
 - model: users.AbakusGroup
   pk: 11
   fields:
+    deleted: false
+    description: ''
+    level: 2
+    lft: 19
     name: Hovedstyret
     parent: 2
+    rght: 20
+    tree_id: 1
     permissions:
       - /sudo/admin/

@@ -1,6 +1,10 @@
 - model: users.AbakusGroup
   fields:
     name: UserAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 100
     permissions:
       - /sudo/admin/users/list/
       - /sudo/admin/users/retrieve/
@@ -11,6 +15,10 @@
 - model: users.AbakusGroup
   fields:
     name: AbakusGroupAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 101
     permissions:
       - /sudo/admin/groups/list/
       - /sudo/admin/groups/retrieve/
@@ -21,10 +29,18 @@
 - model: users.AbakusGroup
   fields:
     name: TestGroup
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 102
 
 - model: users.AbakusGroup
   fields:
     name: EventAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 103
     permissions:
       - /sudo/admin/events/list/
       - /sudo/admin/events/retrieve/
