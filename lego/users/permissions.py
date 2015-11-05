@@ -34,6 +34,7 @@ class UsersPermissions(KeywordPermissions):
 class AbakusGroupPermissions(KeywordPermissions):
     perms_map = {
         'list': None,
+        'hierarchy': None,
         'retrieve': None,
         'create': '/sudo/admin/groups/create/',
         'update': '/sudo/admin/groups/update/',
