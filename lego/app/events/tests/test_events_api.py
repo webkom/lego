@@ -172,25 +172,21 @@ class CreateRegistrationsTestCase(APITestCase):
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
         response = self.client.post(_get_list_url(), _test_event_data)
-        print(response.data)
 
         _test_pools_data[0]['event'] = response.data['id']
-        print(_test_pools_data[0])
         pool_response = self.client.post(_get_pools_list_url(response.data['id']),
                                          _test_pools_data[0])
 
         _test_registration_data['pool'] = pool_response.data['id']
         _test_registration_data['event'] = response.data['id']
-        print(_test_registration_data)
-        print(_get_registration_list_url(1, 1))
+        test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
+        if not test.is_valid():
+            print(test.errors)
+
         registration_response = self.client.post(_get_registration_list_url(
                                                  response.data['id'],
                                                  pool_response.data['id']),
                                                  _test_registration_data)
-        print(registration_response.data)
-        test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
-        if not test.is_valid():
-            print(test.errors)
         self.assertEqual(registration_response.status_code, 201)
 
 
