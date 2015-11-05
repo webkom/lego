@@ -32,6 +32,7 @@ class QuoteUnapprovedReadSerializer(QuoteSerializer):
         model = Quote
         fields = (
             'id',
+            'created_at',
             'title',
             'author',
             'text',
@@ -54,6 +55,7 @@ class QuoteApprovedReadSerializer(QuoteSerializer):
         model = Quote
         fields = (
             'id',
+            'created_at',
             'title',
             'text',
             'source',
@@ -70,6 +72,7 @@ class QuoteCreateAndUpdateSerializer(QuoteSerializer):
         model = Quote
         fields = (
             'id',
+            'created_at',
             'title',
             'author',
             'text',
