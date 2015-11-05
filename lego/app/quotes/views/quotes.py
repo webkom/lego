@@ -30,7 +30,11 @@ class QuoteViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, QuotePermissions)
 
     def get_queryset(self):
-        return Quote.objects.filter(approved=True)
+        approved = self.request.query_params.get('approved') or True
+        if not approved:
+            approved = not self.request.user.has_perm(QuotePermissions.perms_map['approve'])
+
+        return Quote.objects.filter(approved=approved)
 
     @list_route()
     def unapproved(self, request):
