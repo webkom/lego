@@ -255,23 +255,3 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
         response = self.client.delete(_get_detail_url(self.test_group.pk))
 
         self.assertEqual(response.status_code, 403)
-
-
-class HierarchyAbakusGroupTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
-
-    def test_hierarchy_authenticated(self):
-        self.client.force_authenticate(user=User.objects.get(pk=1))
-        response = self.client.get(reverse('abakusgroup-hierarchy'))
-        self.assertEqual(200, response.status_code)
-        root_nodes = response.data
-        root = root_nodes[0]
-        abakom = root['children'][0]
-        self.assertEqual(1, len(root_nodes))
-        self.assertEqual(1, len(root['children']))
-        self.assertEqual(AbakusGroup.objects.all().count() - 2,  # minus Abakus and Abakom
-                         len(abakom['children']))
-
-    def test_hierarchy_unauthenticated(self):
-        response = self.client.get(reverse('abakusgroup-hierarchy'))
-        self.assertEqual(401, response.status_code)
