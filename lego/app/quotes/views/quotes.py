@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -13,6 +14,12 @@ from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):
+    def get_object(self, pk):
+        try:
+            return Quote.objects.get(pk=pk)
+        except Quote.DoesNotExist:
+            raise Http404
+
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
             return QuoteCreateAndUpdateSerializer
@@ -47,7 +54,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         }
         serializer = QuoteLikeSerializer(data=data)
         if serializer.is_valid():
-            instance = self.get_object()
+            instance = self.get_object(pk)
             if not instance.is_approved():
                 raise PermissionDenied()
             instance.like(user=request.user)
@@ -63,7 +70,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'], url_path='unlike')
     def unlike(self, request, pk=None):
-        instance = self.get_object()
+        instance = self.get_object(pk)
         if not instance.is_approved():
             raise PermissionDenied()
         result = instance.unlike(user=request.user)
@@ -79,7 +86,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
     def approve(self, request, pk=None):
         if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
             raise PermissionDenied()
-        instance = self.get_object()
+        instance = self.get_object(pk)
         result = instance.approve()
         # TODO: do something with result?
         # TODO: different serializer?
@@ -93,7 +100,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
     def unapprove(self, request, pk=None):
         if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
             raise PermissionDenied()
-        instance = self.get_object()
+        instance = self.get_object(pk)
         result = instance.unapprove()
         # TODO: different serializer?
         # TODO: do something with result?

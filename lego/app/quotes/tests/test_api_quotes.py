@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from lego.app.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteLikeSerializer
+from lego.app.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteLikeSerializer, QuoteApprovedReadSerializer
 from rest_framework.test import APITestCase
 
 from lego.users.models import AbakusGroup, User
@@ -15,8 +15,11 @@ _test_quote_data = {
 }
 
 _test_like_data = {
-    'quote': 1,
-    'user': 1
+    'title': 'QuoteTest',
+    'author': 1,
+    'text': 'TestText',
+    'source': 'TestSource',
+    'likes': 1
 }
 
 
@@ -121,7 +124,7 @@ class LikeQuoteTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_like_url(1))
         # TODO: use correct serializer
-        test = QuoteLikeSerializer(data=_test_like_data)
+        test = QuoteApprovedReadSerializer(data=_test_like_data)
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
@@ -139,7 +142,7 @@ class UnlikeQuoteTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_unlike_url(2))
         # TODO: use correct serializer
-        test = QuoteLikeSerializer(data=_test_like_data)
+        test = QuoteApprovedReadSerializer(data=_test_like_data)
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
