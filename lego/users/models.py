@@ -25,7 +25,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()],
                          max_length=30),
-        verbose_name='permissions', null=True
+        verbose_name='permissions', default=list
     )
 
     class Meta:
