@@ -1,7 +1,7 @@
 - model: events.Event
   pk: 1
   fields:
-    title: POOLS
+    title: POOLS_WITH_REGISTRATIONS
     author: 1
     ingress: TestIngress1
     text: TestText1
@@ -43,6 +43,21 @@
     can_view_groups:
       - 10
 
+- model: events.Event
+  pk: 4
+  fields:
+    title: POOLS_NO_REGISTRATIONS
+    author: 4
+    ingress: TestIngress4
+    text: TestText4
+    slug: 4-FAILSLUG
+    event_type: 4
+    location: R1
+    start_time: '2011-09-01T13:20:30+03:00'
+    end_time: '2012-09-01T13:20:30+03:00'
+    can_view_groups:
+      - 1
+
 - model: events.WaitingList
   pk: 1
   fields:
@@ -57,6 +72,11 @@
   pk: 3
   fields:
     event: 3
+
+- model: events.WaitingList
+  pk: 4
+  fields:
+    event: 4
 
 - model: events.Pool
   pk: 1
@@ -74,6 +94,26 @@
     name: Webkom
     capacity: 3
     event: 1
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 10
+
+- model: events.Pool
+  pk: 3
+  fields:
+    name: Abakusmember
+    capacity: 2
+    event: 4
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 1
+
+- model: events.Pool
+  pk: 4
+  fields:
+    name: Webkom
+    capacity: 3
+    event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
       - 10

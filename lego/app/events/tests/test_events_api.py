@@ -85,14 +85,14 @@ class ListEventsTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data), 3)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data), 4)
 
 
 class RetrieveEventsTestCase(APITestCase):
