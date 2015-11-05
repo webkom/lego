@@ -57,6 +57,7 @@ class QuoteApprovedReadSerializer(QuoteSerializer):
             'title',
             'text',
             'source',
+            'approved',
             'likes',
             'has_liked',
             'permissions'
