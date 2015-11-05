@@ -14,7 +14,7 @@ from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):
-    def get_object(self, pk):
+    def get_object(self, pk=None):
         try:
             return Quote.objects.get(pk=pk)
         except Quote.DoesNotExist:
@@ -43,6 +43,14 @@ class QuoteViewSet(viewsets.ModelViewSet):
             serialized_quotes.append(serializer.data)
         return Response(
             serialized_quotes,
+            status=status.HTTP_200_OK
+        )
+
+    def retrieve(self, request, pk=None):
+        instance = self.get_object(pk)
+        serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
+        return Response(
+            serializer.data,
             status=status.HTTP_200_OK
         )
 
