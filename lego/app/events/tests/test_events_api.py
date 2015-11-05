@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.app.events.serializers import EventCreateAndUpdateSerializer, RegistrationCreateAndUpdateSerializer
+from lego.app.events.serializers import EventCreateAndUpdateSerializer, \
+    RegistrationCreateAndUpdateSerializer
 from lego.users.models import AbakusGroup, User
 
 _test_event_data = {
@@ -57,15 +58,19 @@ def _get_pools_list_url(event_pk):
 
 
 def _get_pools_detail_url(event_pk, pool_pk):
-    return reverse('pool-detail', kwargs={'event_pk': event_pk, 'pk': pool_pk})
+    return reverse('pool-detail', kwargs={'event_pk': event_pk,
+                                          'pk': pool_pk})
 
 
 def _get_registration_list_url(event_pk, pool_pk):
-    return reverse('registration-list', kwargs={'event_pk': event_pk, 'pool_pk': pool_pk})
+    return reverse('registration-list', kwargs={'event_pk': event_pk,
+                                                'pool_pk': pool_pk})
 
 
 def _get_registration_detail_url(event_pk, pool_pk, registration_pk):
-    return reverse('registration-detail', kwargs={'event_pk': event_pk, 'pool_pk': pool_pk, 'pk': registration_pk})
+    return reverse('registration-detail', kwargs={'event_pk': event_pk,
+                                                  'pool_pk': pool_pk,
+                                                  'pk': registration_pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -164,7 +169,6 @@ class CreateRegistrationsTestCase(APITestCase):
         self.abakus_user = User.objects.all().first()
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
 
-
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
         response = self.client.post(_get_list_url(), _test_event_data)
@@ -179,10 +183,16 @@ class CreateRegistrationsTestCase(APITestCase):
         _test_registration_data['event'] = response.data['id']
         print(_test_registration_data)
         print(_get_registration_list_url(1, 1))
-        registration_response = self.client.post(_get_registration_list_url(response.data['id'], pool_response.data['id']), _test_registration_data)
+        registration_response = self.client.post(_get_registration_list_url(
+                                                 response.data['id'],
+                                                 pool_response.data['id']),
+                                                 _test_registration_data)
         print(registration_response.data)
-
+        test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
+        if not test.is_valid():
+            print(test.errors)
         self.assertEqual(registration_response.status_code, 201)
+
 
 class RetrieveRegistrationsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
