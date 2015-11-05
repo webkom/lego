@@ -10,3 +10,9 @@ class AbakusGroupViewSet(viewsets.ModelViewSet):
     queryset = AbakusGroup.objects.all()
     serializer_class = AbakusGroupSerializer
     permission_classes = (IsAuthenticated, AbakusGroupPermissions)
+
+    def get_queryset(self):
+        if self.action == 'retrieve':
+            return self.queryset.prefetch_related('users')
+
+        return self.queryset

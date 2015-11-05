@@ -47,6 +47,8 @@ class UserSerializer(DetailedUserSerializer):
 
 
 class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
+    users = PublicUserSerializer(many=True, read_only=True)
+
     class Meta:
         model = AbakusGroup
         fields = (
@@ -54,7 +56,8 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'parent',
-            'permissions'
+            'permissions',
+            'users'
         )
 
 
