@@ -210,15 +210,14 @@ class ListRegistrationsTestCase(APITestCase):
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-    def test_with_abakus_user(self):
+    def test_with_group_permission(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_registration_list_url(1, 1))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
-    def test_with_webkom_user(self):
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+    def test_without_group_permission(self):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_registration_list_url(1, 1))
         self.assertEqual(response.status_code, 200)
