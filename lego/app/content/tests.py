@@ -1,5 +1,5 @@
 # -*- coding: utf--8 -*-
-import mock
+from unittest import mock
 from django.utils.text import slugify
 
 from lego.users.models import User
