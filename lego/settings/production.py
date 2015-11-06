@@ -1,51 +1,53 @@
+import json
 import os
 
 import raven
 
+from lego.settings import BASE_DIR
+
 DEBUG = False
 ALLOWED_HOSTS = ['.abakus.no']
 
+with open(os.path.join(BASE_DIR, '../.configuration.json')) as production_settings:
+    production_values = json.loads(production_settings.read())
+
 ADMINS = (
-    ('Django Errors', 'djangoerrors@abakus.no'),
+    ('Webkom', 'djangoerrors@abakus.no'),
 )
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': '127.0.0.1:11211',
-        'KEY_PREFIX': 'legoprod',
-        'TIMEOUT': 604800,
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000
-        }
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': production_values.get('MEMCACHED_SERVER', '127.0.0.1:11211'),
+        'KEY_PREFIX': '/lego-production',
     }
 }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'lego',
-        'USER': 'lego',
-        'PASSWORD': os.environ['DB_PASSWORD'],
-        'HOST': '129.241.208.149',
-        'PORT': '',
+        'NAME': production_values.get('DATABASE_NAME', 'lego'),
+        'USER': production_values.get('DATABASE_USER', 'lego'),
+        'PASSWORD': production_values.get('DATABASE_PASSWORD'),
+        'HOST': production_values.get('DATABASE_HOST', '127.0.0.1'),
+        'PORT': production_values.get('DATABASE_PORT', 5432),
         'CONN_MAX_AGE': 300,
         'OPTIONS': {
             'autocommit': True,
         },
-
     }
 }
 
-EMAIL_HOST = 'smtp.stud.ntnu.no'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Lego is under development. "Production" is only a test environment and we don't want it to send
+#  mail by accident.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOG_PRINT_LEVEL = 1
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = production_values['SECRET_KEY']
 
 TEMPLATE_LOADERS = (
     ('django.template.loaders.cached.Loader', (
@@ -57,6 +59,8 @@ TEMPLATE_LOADERS = (
 
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 RAVEN_CONFIG = {
-    'dsn': os.environ['RAVEN_DSN'],
+    'dsn': production_values.get('SENTRY_DSN'),
     'release': raven.fetch_git_sha(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
 }
+
+BROKER_URL = production_values['CELERY_BROKER']
