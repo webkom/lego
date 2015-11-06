@@ -78,7 +78,18 @@ class Event(Content):
                     for group in _pool.permission_groups.all():
                         _potential += group.users.count()
                     potential_capacities.append(_potential)
-                chosen_pool = possible_pools[potential_capacities.index(min(potential_capacities))]
+                lowest = min(potential_capacities)
+                equal_pools = []
+                for index in range(len(potential_capacities)):
+                    if potential_capacities[index] == lowest:
+                        equal_pools.append(index)
+                if len(equal_pools) == 1:
+                    chosen_pool = possible_pools[equal_pools[0]]
+                else:
+                    capacities = []
+                    for _pool in possible_pools:
+                        capacities.append(_pool.capacity)
+                    chosen_pool = possible_pools[capacities.index(min(capacities))]
                 return self.registrations.create(event=self, pool=chosen_pool, user=user)
 
         if not self.can_register(user, pool):
