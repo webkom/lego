@@ -75,11 +75,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             else:
                 potential_capacities = []
                 for _pool in possible_pools:
-                    pot = 0
-                    for group in _pool.permission_groups.objects.all():
-                        pot += group.users.count()
-                    potential_capacities.append(pot)
-                chosen_pool = possible_pools.index(min(potential_capacities))
+                    _potential = 0
+                    for group in _pool.permission_groups.all():
+                        _potential += group.users.count()
+                    potential_capacities.append(_potential)
+                chosen_pool = possible_pools[potential_capacities.index(min(potential_capacities))]
                 return self.registrations.create(event=self, pool=chosen_pool, user=user)
 
         if not self.can_register(user, pool):
@@ -107,15 +107,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             elif pool_unregistered_from.waiting_registrations.count() > 0:
                 self.bump(from_pool=pool_unregistered_from)
 
-    def bump(self, from_pool):
+    def bump(self, from_pool=None):
         if self.waiting_list.number_of_registrations > 0:
-            top_list = self.waiting_list.all()
-            for registration in top_list:
-                if from_pool not in registration.waiting_pool.all():
-                    top_list.remove(registration)
-            top = top_list[0]
-            top.pool = from_pool
-            top.waiting_pool = None
+            top = self.waiting_list.pop(from_pool=from_pool)
+            if from_pool:
+                pool = top.waiting_pool.filter(id=from_pool.id)
+                top.pool = pool[0]
+            else:
+                top.pool = top.waiting_pool.first()
+            top.waiting_pool.clear()
             top.save()
 
     def is_activated(self, pool):
