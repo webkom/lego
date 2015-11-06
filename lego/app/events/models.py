@@ -59,10 +59,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if not pool:
             possible_pools = []
             for _pool in self.all_pools:
-                if self.can_register(user, _pool):  # ADD ALL POOLS THE USER COULD POSSIBLY BE IN
+                if self.can_register(user, _pool):
                     possible_pools.append(_pool)
 
-            if len(possible_pools) == 0:  # IF NO POOLS, THEN NO REGISTRATION
+            if len(possible_pools) == 0:
                 return False
 
             full_pools = []
@@ -195,8 +195,8 @@ class WaitingList(BasisModel):
 
     def add(self, user, pool):
         reg = self.registrations.create(event=self.event,
-                                         user=user,
-                                         waiting_list=self)
+                                        user=user,
+                                        waiting_list=self)
         for _pool in pool:
             reg.waiting_pool.add(_pool)
         return reg
