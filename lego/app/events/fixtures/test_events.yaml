@@ -98,7 +98,7 @@
   pk: 3
   fields:
     name: Abakusmember
-    capacity: 2
+    capacity: 3
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
@@ -108,7 +108,7 @@
   pk: 4
   fields:
     name: Webkom
-    capacity: 3
+    capacity: 2
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
