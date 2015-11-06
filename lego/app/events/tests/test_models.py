@@ -110,6 +110,7 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.first()
         AbakusGroup.objects.get(name='Abakus').add_user(user)
+
         event.register(user=user, pool=pool)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
 
@@ -119,9 +120,28 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.get(name='Abakusmember')
         pool_2 = event.pools.get(name='Webkom')
         AbakusGroup.objects.get(name='Abakus').add_user(user)
+
         event.register(user=user)
         self.assertEqual(pool.number_of_registrations, 1)
         self.assertEqual(pool_2.number_of_registrations, 0)
+
+    def test_registration_picks_correct_pool(self):
+        users = get_dummy_users(15)
+        abakus_users = users[:10]
+        webkom_users = users[10:]
+
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool = event.pools.get(name='Abakusmember')
+        pool_2 = event.pools.get(name='Webkom')
+
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in webkom_users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        event.register(user=webkom_users[0])
+        self.assertEqual(pool.number_of_registrations, 0)
+        self.assertEqual(pool_2.number_of_registrations, 1)
 
     def test_no_duplicate_registrations(self):
         user = get_dummy_users(1)[0]
@@ -130,8 +150,8 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         self.assertEqual(pool.number_of_registrations, 0)
 
-        event.register(user=user, pool=pool)
-        event.register(user=user, pool=pool)
+        event.register(user=user)
+        event.register(user=user)
 
         self.assertEqual(pool.number_of_registrations, 1)
 
@@ -140,10 +160,10 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         permission_groups[0].add_user(user)
-        pool_one = Pool.objects.create(
+        Pool.objects.create(
             name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() + timedelta(hours=24)))
-        event.register(user=user, pool=pool_one)
+        event.register(user=user)
         self.assertEqual(event.number_of_registrations, 0)
         self.assertEqual(event.number_of_waiting_registrations, 0)
 
@@ -155,7 +175,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            event.register(user=user, pool=pool)
+            event.register(user=user)
 
         self.assertEqual(event.waiting_list.number_of_registrations, people_2_place_in_waiting_list)
         self.assertEqual(pool.number_of_registrations, pool.capacity)
@@ -163,13 +183,13 @@ class RegistrationTestCase(TestCase):
 
     def test_number_of_waiting_registrations(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        pool = event.pools.get(name='Webkom')
+        pool = event.pools.get(name='Abakusmember')
         people_to_place_in_waiting_list = 3
         users = get_dummy_users(pool.capacity + 3)
 
         for user in users:
-            AbakusGroup.objects.get(name='Webkom').add_user(user)
-            event.register(user=user, pool=pool)
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            event.register(user=user)
 
         self.assertEqual(event.number_of_waiting_registrations, people_to_place_in_waiting_list)
 
@@ -180,13 +200,13 @@ class RegistrationTestCase(TestCase):
         users = get_dummy_users(2)
         user_one, user_two = users[0], users[1]
         AbakusGroup.objects.get(name='Abakus').add_user(user_one)
-        AbakusGroup.objects.get(name='Abakus').add_user(user_two)
+        AbakusGroup.objects.get(name='Webkom').add_user(user_two)
 
-        event.register(user=user_one, pool=pool_one)
+        event.register(user=user_one)
         n_registrants = pool_one.number_of_registrations
         self.assertEqual(pool_one.number_of_registrations, event.number_of_registrations)
 
-        event.register(user=user_two, pool=pool_two)
+        event.register(user=user_two)
         n_registrants += pool_two.number_of_registrations
         self.assertEqual(n_registrants, event.number_of_registrations)
 
@@ -207,11 +227,11 @@ class RegistrationTestCase(TestCase):
 
         for user in users[:pool_one_users]:
             permission_groups_one[0].add_user(user)
-            event.register(user=user, pool=pool_one)
+            event.register(user=user)
 
         for user in users[pool_one_users:]:
             permission_groups_two[0].add_user(user)
-            event.register(user=user, pool=pool_two)
+            event.register(user=user)
 
         registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
         self.assertEqual(registrations, event.number_of_registrations)
@@ -234,7 +254,7 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         permission_groups_one[0].add_user(user)
-        event.register(user=user, pool=pool_one)
+        event.register(user=user)
         event.register(user=user, pool=pool_two)
 
         self.assertEqual(pool_one.number_of_registrations, 1)
@@ -253,7 +273,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups[0].add_user(user)
-            event.register(user, pool=pool)
+            event.register(user=user)
 
         self.assertEqual(event.waiting_list.number_of_registrations, expected_users_in_waiting_list)
 
@@ -264,7 +284,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            event.register(user=user, pool=pool)
+            event.register(user=user)
 
         waiting_list_before = event.number_of_waiting_registrations
         regs_before = event.number_of_registrations
@@ -274,21 +294,25 @@ class RegistrationTestCase(TestCase):
 
         self.assertEqual(event.number_of_registrations, regs_before + 1)
         self.assertEqual(event.number_of_waiting_registrations, waiting_list_before - 1)
-        self.assertEqual(event.waiting_list.registrations.first().user, users[3])
+        self.assertEqual(event.waiting_list.registrations.first().user, users[4])
         self.assertEqual(pool.number_of_registrations, pool_before + 1)
 
     def test_unregistering_from_event(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.get(name='Webkom')
-        user = get_dummy_users(1)[0]
-        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        users = get_dummy_users(5)
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        AbakusGroup.objects.get(name='Webkom').add_user(users[0])
 
         with AssertInvariant(event.waiting_list):
-            event.register(user=user, pool=pool)
+            event.register(user=users[0])
             registrations_before = event.number_of_registrations
-            event.unregister(user)
+            pool_registrations_before = pool.number_of_registrations
+            event.unregister(users[0])
 
         self.assertEqual(event.number_of_registrations, registrations_before - 1)
+        self.assertEqual(pool.number_of_registrations, pool_registrations_before - 1)
 
     def test_unregistering_non_existing_user(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -307,7 +331,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups[0].add_user(user)
-            event.register(user=user, pool=pool)
+            event.register(user=user)
 
         prev = event.waiting_list.pop()
         while event.waiting_list.registrations.count() > 0:
@@ -326,7 +350,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups[0].add_user(user)
-            event.register(user=user, pool=pool)
+            event.register(user=user)
 
         prev = event.waiting_list.pop()
         while event.waiting_list.registrations.count() > 0:
@@ -341,7 +365,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            event.register(user=user, pool=pool)
+            event.register(user=user)
 
         event_size_before = event.number_of_registrations
         pool_size_before = pool.number_of_registrations
@@ -362,7 +386,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            event.register(user=user, pool=pool)
+            event.register(user=user)
 
         waiting_list_before = event.number_of_waiting_registrations
         event_size_before = event.number_of_registrations
@@ -394,13 +418,15 @@ class RegistrationTestCase(TestCase):
         pool_two.permission_groups = permission_groups_two
 
         users = get_dummy_users(3)
-        user_three = users.pop()
-        AbakusGroup.objects.get(name='Webkom').add_user(user_three)
-        event.register(user_three, pool=pool_two)
-
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            event.register(user=user, pool=pool_one)
+        user_three = users.pop()
+        AbakusGroup.objects.get(name='Webkom').add_user(user_three)
+
+        event.register(user=user_three)
+
+        for user in users:
+            event.register(user=user)
 
         waiting_list_before = event.number_of_waiting_registrations
         event_size_before = event.number_of_registrations
