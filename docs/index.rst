@@ -15,6 +15,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+    Settings <settings>
     Permissions <permissions>
     Mail <mail>
     Authentication <authentication>
