@@ -54,8 +54,33 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return False
 
-    def register(self, user, pool):
+    def register(self, user, pool=None):
         use_waiting_list = False
+        if not pool:
+            possible_pools = []
+            for _pool in self.all_pools:
+                if self.can_register(user, _pool):  # ADD ALL POOLS THE USER COULD POSSIBLY BE IN
+                    possible_pools.append(_pool)
+
+            if len(possible_pools) == 0:  # IF NO POOLS, THEN NO REGISTRATION
+                return False
+
+            full_pools = []
+            for _pool in possible_pools:
+                if _pool.is_full():
+                    full_pools.append(possible_pools.pop(possible_pools.index(_pool)))
+
+            if len(possible_pools) == 0:
+                return self.waiting_list.add(user=user, pool=full_pools)
+            else:
+                potential_capacities = []
+                for _pool in possible_pools:
+                    pot = 0
+                    for group in _pool.permission_groups.objects.all():
+                        pot += group.users.count()
+                    potential_capacities.append(pot)
+                chosen_pool = possible_pools.index(min(potential_capacities))
+                return self.registrations.create(event=self, pool=chosen_pool, user=user)
 
         if not self.can_register(user, pool):
             return False
@@ -64,7 +89,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             use_waiting_list = True
 
         if use_waiting_list:
-            return self.waiting_list.add(user=user, pool=pool)
+            return self.waiting_list.add(user=user, pool=[pool])
         else:
             return self.registrations.create(event=self, pool=pool, user=user)
 
@@ -82,10 +107,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             elif pool_unregistered_from.waiting_registrations.count() > 0:
                 self.bump(from_pool=pool_unregistered_from)
 
-    def bump(self, from_pool=None):
+    def bump(self, from_pool):
         if self.waiting_list.number_of_registrations > 0:
-            top = self.waiting_list.pop(from_pool=from_pool)
-            top.pool = top.waiting_pool
+            top_list = self.waiting_list.all()
+            for registration in top_list:
+                if from_pool not in registration.waiting_pool.all():
+                    top_list.remove(registration)
+            top = top_list[0]
+            top.pool = from_pool
             top.waiting_pool = None
             top.save()
 
@@ -165,10 +194,12 @@ class WaitingList(BasisModel):
         return self.registrations.count()
 
     def add(self, user, pool):
-        return self.registrations.create(event=self.event,
-                                         waiting_pool=pool,
+        reg = self.registrations.create(event=self.event,
                                          user=user,
                                          waiting_list=self)
+        for _pool in pool:
+            reg.waiting_pool.add(_pool)
+        return reg
 
     def pop(self, from_pool=None):
         if from_pool:
@@ -185,7 +216,7 @@ class Registration(BasisModel):
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
     waiting_list = models.ForeignKey(WaitingList, null=True, related_name='registrations')
-    waiting_pool = models.ForeignKey(Pool, null=True, related_name='waiting_registrations')
+    waiting_pool = models.ManyToManyField(Pool, null=True, related_name='waiting_registrations')
     registration_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
