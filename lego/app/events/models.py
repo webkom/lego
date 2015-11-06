@@ -194,8 +194,8 @@ class WaitingList(BasisModel):
 
     def add(self, user, pool):
         reg = self.registrations.create(event=self.event,
-                                         user=user,
-                                         waiting_list=self)
+                                        user=user,
+                                        waiting_list=self)
         for _pool in pool:
             reg.waiting_pool.add(_pool)
         return reg
