@@ -113,6 +113,16 @@ class RegistrationTestCase(TestCase):
         event.register(user=user, pool=pool)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
 
+    def test_can_register_with_automatic_pool_selection(self):
+        user = get_dummy_users(1)[0]
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool = event.pools.get(name='Abakusmember')
+        pool_2 = event.pools.get(name='Webkom')
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        event.register(user=user)
+        self.assertEqual(pool.number_of_registrations, 1)
+        self.assertEqual(pool_2.number_of_registrations, 0)
+
     def test_no_duplicate_registrations(self):
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -250,7 +260,7 @@ class RegistrationTestCase(TestCase):
     def test_bump(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.first()
-        users = get_dummy_users(pool.capacity + 1)
+        users = get_dummy_users(pool.capacity + 2)
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
@@ -264,6 +274,7 @@ class RegistrationTestCase(TestCase):
 
         self.assertEqual(event.number_of_registrations, regs_before + 1)
         self.assertEqual(event.number_of_waiting_registrations, waiting_list_before - 1)
+        self.assertEqual(event.waiting_list.registrations.first().user, users[3])
         self.assertEqual(pool.number_of_registrations, pool_before + 1)
 
     def test_unregistering_from_event(self):
