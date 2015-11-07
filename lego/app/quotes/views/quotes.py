@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from lego.app.quotes.models import Quote
+from lego.app.quotes.models import Quote, QuoteLike
 from lego.app.quotes.permissions import QuotePermissions
 from lego.app.quotes.serializers import QuoteLikeSerializer, QuoteSerializer
 from lego.permissions.filters import ObjectPermissionsFilter
@@ -26,6 +26,9 @@ class QuoteViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, QuotePermissions)
 
     def get_queryset(self):
+        if self.request.query_params.get('approved') == 'false' \
+                and not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
+            raise PermissionDenied()
         approved = not (self.request.query_params.get('approved') == 'false' and
                         self.request.user.has_perm(QuotePermissions.perms_map['approve']))
         return Quote.objects.filter(approved=approved)
@@ -65,14 +68,14 @@ class QuoteViewSet(viewsets.ModelViewSet):
     def _likeQuote(self, request, pk, like=True):
         instance = self.get_object(pk)
         if like:
-            quote_like = bool(QuoteSerializer.objects.filter(user=request.user, quote=instance))
+            quote_like = bool(QuoteLike.objects.filter(user=request.user, quote=instance))
             if instance.approved and not quote_like:
                 instance.like(user=request.user)
             else:
                 # TODO: Raise a 409 instead?
                 raise PermissionDenied
         else:
-            quote_like = bool(QuoteSerializer.objects.filter(user=request.user, quote=instance))
+            quote_like = bool(QuoteLike.objects.filter(user=request.user, quote=instance))
             if instance.approved and quote_like:
                 instance.unlike(user=request.user)
             else:

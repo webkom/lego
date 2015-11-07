@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.app.quotes.serializers import QuoteApprovedReadSerializer, QuoteCreateAndUpdateSerializer
+from lego.app.quotes.serializers import QuoteSerializer
 from lego.users.models import AbakusGroup, User
 
 _test_quote_data = {
@@ -28,7 +28,7 @@ def _get_list_url():
 
 
 def _get_list_unapproved_url():
-    return reverse('quote-unapproved')
+    return _get_list_url() + '?approved=false'
 
 
 def _get_detail_url(pk):
@@ -122,7 +122,7 @@ class LikeQuoteTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_like_url(1))
         # TODO: use correct serializer
-        test = QuoteApprovedReadSerializer(data=_test_like_data)
+        test = QuoteSerializer(data=_test_like_data)
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
@@ -140,7 +140,7 @@ class UnlikeQuoteTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_unlike_url(2))
         # TODO: use correct serializer
-        test = QuoteApprovedReadSerializer(data=_test_like_data)
+        test = QuoteSerializer(data=_test_like_data)
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)

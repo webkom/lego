@@ -83,6 +83,10 @@
   pk: 7
   fields:
     name: QuoteAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 104
     permissions:
       - /sudo/admin/quotes/like/
       - /sudo/admin/quotes/approve/
