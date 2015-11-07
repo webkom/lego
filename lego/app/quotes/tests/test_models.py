@@ -53,24 +53,6 @@ class QuoteMethodTest(TestCase):
         quote.unapprove()
         self.assertEqual(quote.approved, False)
 
-    def test_can_like(self):
-        quote = Quote.objects.get(pk=1)
-        self.assertEqual(quote.can_like(user=self.admin_user), True)
-
-    def test_can_unlike(self):
-        quote = Quote.objects.get(pk=2)
-        self.assertEqual(quote.can_unlike(user=self.admin_user), True)
-
-    def test_cannot_like_quote(self):
-        quote = Quote.objects.get(pk=3)
-        result = quote.like(user=self.user)
-        self.assertEqual(result, False)
-
-    def test_cannot_unlike_quote(self):
-        quote = Quote.objects.get(pk=3)
-        result = quote.unlike(user=self.user)
-        self.assertEqual(result, False)
-
     def test_like_quote(self):
         quote = Quote.objects.get(pk=1)
         before = quote.likes
