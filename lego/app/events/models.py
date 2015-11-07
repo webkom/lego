@@ -56,6 +56,7 @@ class Event(Content):
     def register(self, user, pool=None):
         use_waiting_list = False
         if not pool:
+            # Create a list of all pools the user can join
             possible_pools = [_pool
                               for _pool in self.all_pools
                               if self.can_register(user, _pool)]
@@ -64,35 +65,51 @@ class Event(Content):
                 return False
 
             if not self.is_merged:
+                # Removes pools that are full, and adds them to a list to be used in
+                # the waiting list, so that we can remember what pools are available
+                # in case of a bump
                 full_pools = [_pool for _pool in possible_pools if _pool.is_full()]
                 for _pool in full_pools:
                     possible_pools.remove(_pool)
 
+                # Adds user to waiting list if no possible pools are left
                 if len(possible_pools) == 0:
                     return self.waiting_list.add(user=user, pool=full_pools)
 
+            # If the event is merged we don't need to check each pool if it is full,
+            # we can just check the event it self
             elif self.is_merged and self.is_full:
                 return self.waiting_list.add(user=user, pool=possible_pools)
+            # Notice that if the event is merged but not full the user can now join
+            # any permitted pool, even one that is full
 
+            # Calculate the amount of members that could potentially
+            # try and join each pool
             potential_capacities = [sum(group.users.count()
                                     for group in _pool.permission_groups.all())
                                     for _pool in possible_pools]
+
+            # Find the lowest of these amounts
             lowest = min(potential_capacities)
             equal_pools = [index
                            for index in range(len(potential_capacities))
                            if potential_capacities[index] == lowest]
+
+            # If only one pool has that amount, select it. If several
+            # pools have this amount we choose the one with the lowest capacity.
+            # Maybe this should check for the one with highest capacity instead?
+            # I don't fucking know. If so, we need to change some of the tests.
             if len(equal_pools) == 1:
                 chosen_pool = possible_pools[equal_pools[0]]
             else:
                 capacities = [_pool.capacity
                               for _pool in possible_pools]
                 chosen_pool = possible_pools[capacities.index(min(capacities))]
-                """
-                Maybe this should check for the one with highest capacity instead?
-                I don't fucking know. If so, we need to change some of the tests.
-                """
+
             return self.registrations.create(event=self, pool=chosen_pool, user=user)
 
+        # Everything below is the same as before, it is only used
+        # when a pool is selected before calling register().
         if not self.can_register(user, pool):
             return False
 
