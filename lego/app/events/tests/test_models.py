@@ -111,7 +111,7 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        event.register(user=user, pool=pool)
+        event.register(user=user)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
 
     def test_can_register_with_automatic_pool_selection(self):
@@ -140,19 +140,28 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         event.register(user=webkom_users[0])
+
         self.assertEqual(pool.number_of_registrations, 0)
         self.assertEqual(pool_2.number_of_registrations, 1)
 
+        event.register(user=webkom_users[1])
+        event.register(user=abakus_users[0])
+        self.assertEqual(pool.number_of_registrations, 1)
+        self.assertEqual(pool_2.number_of_registrations, 2)
+
     def test_no_duplicate_registrations(self):
-        user = get_dummy_users(1)[0]
+        users = get_dummy_users(2)
+        user_1, user_2 = users[0], users[1]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        pool = event.pools.get(id=3)
-        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        pool = event.pools.get(id=4)
+        AbakusGroup.objects.get(name='Webkom').add_user(user_1)
+        AbakusGroup.objects.get(name='Abakus').add_user(user_2)
         self.assertEqual(pool.number_of_registrations, 0)
 
-        event.register(user=user)
-        event.register(user=user)
+        event.register(user=user_1)
+        event.register(user=user_1)
 
+        self.assertEqual(event.number_of_registrations, 1)
         self.assertEqual(pool.number_of_registrations, 1)
 
     def test_can_not_register_pre_activation(self):
@@ -218,9 +227,12 @@ class RegistrationTestCase(TestCase):
         pool_one = Pool.objects.create(
             name='Abakus', capacity=1, event=event,
             activation_date=(timezone.now() - timedelta(hours=24)))
+        pool_one.permission_groups.add(permission_groups_one[0])
         pool_two = Pool.objects.create(
             name='Webkom', capacity=2, event=event,
             activation_date=(timezone.now() - timedelta(hours=24)))
+        pool_two.permission_groups.add(permission_groups_two[0])
+
 
         users = get_dummy_users(3)
         pool_one_users = 2
@@ -234,6 +246,8 @@ class RegistrationTestCase(TestCase):
             event.register(user=user)
 
         registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
+        self.assertEqual(pool_one.number_of_registrations, 2)
+        self.assertEqual(pool_two.number_of_registrations, 1)
         self.assertEqual(registrations, event.number_of_registrations)
 
     def test_can_only_register_with_correct_permission_group(self):
@@ -268,7 +282,7 @@ class RegistrationTestCase(TestCase):
             activation_date=(timezone.now() - timedelta(hours=24)))
         pool.permission_groups = permission_groups
         event.merge_time = timezone.now() - timedelta(hours=12)
-        users = get_dummy_users(3)
+        users = get_dummy_users(pool.capacity + 1)
         expected_users_in_waiting_list = 1
 
         for user in users:
@@ -418,9 +432,9 @@ class RegistrationTestCase(TestCase):
         pool_two.permission_groups = permission_groups_two
 
         users = get_dummy_users(3)
+        user_three = users.pop()
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-        user_three = users.pop()
         AbakusGroup.objects.get(name='Webkom').add_user(user_three)
 
         event.register(user=user_three)
