@@ -233,7 +233,6 @@ class RegistrationTestCase(TestCase):
             activation_date=(timezone.now() - timedelta(hours=24)))
         pool_two.permission_groups.add(permission_groups_two[0])
 
-
         users = get_dummy_users(3)
         pool_one_users = 2
 
