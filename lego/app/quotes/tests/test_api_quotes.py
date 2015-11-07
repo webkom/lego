@@ -104,7 +104,7 @@ class CreateQuoteTestCase(APITestCase):
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
         response = self.client.post(_get_list_url(), _test_quote_data)
-        test = QuoteCreateAndUpdateSerializer(data=_test_quote_data)
+        test = QuoteSerializer(data=_test_quote_data)
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
