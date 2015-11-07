@@ -1,4 +1,5 @@
 from basis.serializers import BasisSerializer
+from lego.users.serializers import PublicUserSerializer
 from rest_framework import serializers
 
 from lego.app.quotes.models import Quote, QuoteLike
@@ -6,6 +7,10 @@ from lego.app.quotes.permissions import QuotePermissions
 
 
 class QuoteSerializer(BasisSerializer):
+    has_liked = serializers.SerializerMethodField('user_has_liked')
+    author = serializers.SerializerMethodField('user_author')
+    permissions = serializers.SerializerMethodField('user_permissions')
+
     def user_permissions(self, obj):
         user = self.context['request'].user
         permissions = []
@@ -13,20 +18,15 @@ class QuoteSerializer(BasisSerializer):
             permissions.append('can_approve')
         return permissions
 
-    def user_author(self, obj):
-        return {
-            'id': obj.author.pk,
-            'username': obj.author.username
-        }
-
     def user_has_liked(self, obj):
         return obj.has_liked(user=self.context['request'].user)
 
-
-class QuoteUnapprovedReadSerializer(QuoteSerializer):
-    has_liked = serializers.SerializerMethodField('user_has_liked')
-    author = serializers.SerializerMethodField('user_author')
-    permissions = serializers.SerializerMethodField('user_permissions')
+    def user_author(self, obj):
+        user = self.context['request'].user
+        if user.has_perm(QuotePermissions.perms_map['approve']):
+            return PublicUserSerializer(obj.author).data
+        else:
+            return None
 
     class Meta:
         model = Quote
@@ -43,46 +43,8 @@ class QuoteUnapprovedReadSerializer(QuoteSerializer):
             'permissions'
         )
 
-    def create(self, validated_data):
-        return Quote.objects.create(**validated_data)
-
-
-class QuoteApprovedReadSerializer(QuoteSerializer):
-    has_liked = serializers.SerializerMethodField('user_has_liked')
-    permissions = serializers.SerializerMethodField('user_permissions')
-
-    class Meta:
-        model = Quote
-        fields = (
-            'id',
-            'created_at',
-            'title',
-            'text',
-            'source',
-            'approved',
-            'likes',
-            'has_liked',
-            'permissions'
-        )
-
-
-class QuoteCreateAndUpdateSerializer(QuoteSerializer):
-
-    class Meta:
-        model = Quote
-        fields = (
-            'id',
-            'created_at',
-            'title',
-            'author',
-            'text',
-            'source',
-            'approved',
-            'likes'
-        )
-
-    def create(self, validated_data):
-        return Quote.objects.create(**validated_data)
+    #def create(self, validated_data):
+        #return Quote.objects.create(**validated_data)
 
 
 class QuoteLikeSerializer(BasisSerializer):

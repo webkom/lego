@@ -20,15 +20,7 @@ class Quote(ObjectPermissionsModel):
         return QuoteLike.objects.filter(quote=self).count()
 
     def has_liked(self, user):
-        return QuoteLike.objects.all().filter(user=user, quote=self).count() == 1
-
-    def can_like(self, user):
-        quote_like = QuoteLike.objects.all().filter(user=user, quote=self)
-        return self.is_approved() and quote_like.count() == 0
-
-    def can_unlike(self, user):
-        quote_like = QuoteLike.objects.all().filter(user=user, quote=self)
-        return self.is_approved() and quote_like.count() == 1
+        return bool(QuoteLike.objects.filter(user=user, quote=self))
 
     def approve(self):
         self.approved = True
@@ -38,20 +30,11 @@ class Quote(ObjectPermissionsModel):
         self.approved = False
         self.save()
 
-    def is_approved(self):
-        return self.approved
-
     def like(self, user):
-        if self.can_like(user=user):
-            QuoteLike.objects.create(user=user, quote=self)
-            return True
-        return False
+        return QuoteLike.objects.create(user=user, quote=self)
 
     def unlike(self, user):
-        if self.can_unlike(user=user):
-            QuoteLike.objects.filter(user=user, quote=self).delete()
-            return True
-        return False
+        QuoteLike.objects.filter(user=user, quote=self).delete()
 
 
 class QuoteLike(BasisModel):

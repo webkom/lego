@@ -7,9 +7,7 @@ from rest_framework.response import Response
 
 from lego.app.quotes.models import Quote
 from lego.app.quotes.permissions import QuotePermissions
-from lego.app.quotes.serializers import (QuoteApprovedReadSerializer,
-                                         QuoteCreateAndUpdateSerializer, QuoteLikeSerializer,
-                                         QuoteUnapprovedReadSerializer)
+from lego.app.quotes.serializers import (QuoteSerializer, QuoteLikeSerializer)
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
@@ -21,28 +19,22 @@ class QuoteViewSet(viewsets.ModelViewSet):
             raise Http404
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
-            return QuoteCreateAndUpdateSerializer
-        return QuoteApprovedReadSerializer
+        return QuoteSerializer
 
     queryset = Quote.objects.all()
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (IsAuthenticated, QuotePermissions)
 
     def get_queryset(self):
-        approved = self.request.query_params.get('approved')
-        if approved is not None and approved != '' and approved == 'false':
-            approved = not self.request.user.has_perm(QuotePermissions.perms_map['approve'])
-        else:
-            approved = True
+        approved = not (self.request.query_params.get('approved') == 'false' and
+                        self.request.user.has_perm(QuotePermissions.perms_map['approve']))
         return Quote.objects.filter(approved=approved)
 
     def retrieve(self, request, pk=None):
         instance = self.get_object(pk)
-        serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
+        serializer = QuoteSerializer(instance, context={'request': request})
         return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
+            serializer.data
         )
 
     @detail_route(methods=['POST'], url_path='like')
@@ -72,31 +64,33 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     def _likeQuote(self, request, pk, like=True):
         instance = self.get_object(pk)
-        if not instance.is_approved():
-            raise PermissionDenied()
         if like:
-            result = instance.like(user=request.user)
+            quote_like = bool(QuoteSerializer.objects.filter(user=request.user, quote=instance))
+            if instance.approved and not quote_like:
+                instance.like(user=request.user)
+            else:
+                # TODO: Raise a 409 instead?
+                raise PermissionDenied
         else:
-            result = instance.unlike(user=request.user)
-        # TODO: do something with result?
-        # TODO: different serializer?
-        serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
+            quote_like = bool(QuoteSerializer.objects.filter(user=request.user, quote=instance))
+            if instance.approved and quote_like:
+                instance.unlike(user=request.user)
+            else:
+                # TODO: Raise a 409 instead?
+                raise PermissionDenied
+        serializer = QuoteSerializer(instance, context={'request': request})
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED
         )
 
     def _approveQuote(self, request, pk, approve=True):
-        if not self.request.user.has_perm(QuotePermissions.perms_map['approve']):
-            raise PermissionDenied()
         instance = self.get_object(pk)
         if approve:
-            result = instance.approve()
+            instance.approve()
         else:
-            result = instance.unapprove()
-        # TODO: do something with result as it returns True/False if it succeeds/fails.
-        serializer = QuoteApprovedReadSerializer(instance, context={'request': request})
+            instance.unapprove()
+        serializer = QuoteSerializer(instance, context={'request': request})
         return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
+            serializer.data
         )
