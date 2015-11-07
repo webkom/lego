@@ -42,3 +42,9 @@ STATSD_CLIENT = 'django_statsd.clients.null'
 STATSD_PATCHES = []
 STATSD_MODEL_SIGNALS = False
 STATSD_CELERY_SIGNALS = False
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
