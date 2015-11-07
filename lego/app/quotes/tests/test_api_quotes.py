@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
-from lego.app.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteLikeSerializer, QuoteApprovedReadSerializer
 from rest_framework.test import APITestCase
 
+from lego.app.quotes.serializers import QuoteApprovedReadSerializer, QuoteCreateAndUpdateSerializer
 from lego.users.models import AbakusGroup, User
 
 _test_quote_data = {
@@ -51,10 +51,8 @@ def _get_unapprove_url(pk):
     return reverse('quote-unapprove', kwargs={'pk': pk})
 
 
-
 class ListApprovedQuotesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
-                'test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()

@@ -1,9 +1,9 @@
 from basis.serializers import BasisSerializer
-from lego.users.serializers import PublicUserSerializer
 from rest_framework import serializers
 
 from lego.app.quotes.models import Quote, QuoteLike
 from lego.app.quotes.permissions import QuotePermissions
+from lego.users.serializers import PublicUserSerializer
 
 
 class QuoteSerializer(BasisSerializer):
@@ -43,8 +43,8 @@ class QuoteSerializer(BasisSerializer):
             'permissions'
         )
 
-    #def create(self, validated_data):
-        #return Quote.objects.create(**validated_data)
+    def create(self, validated_data):
+        return Quote.objects.create(**validated_data)
 
 
 class QuoteLikeSerializer(BasisSerializer):

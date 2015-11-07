@@ -1,13 +1,13 @@
 from django.http import Http404
 from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import detail_route
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from lego.app.quotes.models import Quote
 from lego.app.quotes.permissions import QuotePermissions
-from lego.app.quotes.serializers import (QuoteSerializer, QuoteLikeSerializer)
+from lego.app.quotes.serializers import QuoteLikeSerializer, QuoteSerializer
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
