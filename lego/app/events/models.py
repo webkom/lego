@@ -56,41 +56,42 @@ class Event(Content):
     def register(self, user, pool=None):
         use_waiting_list = False
         if not pool:
-            possible_pools = []
-            for _pool in self.all_pools:
-                if self.can_register(user, _pool):
-                    possible_pools.append(_pool)
+            possible_pools = [_pool
+                              for _pool in self.all_pools
+                              if self.can_register(user, _pool)]
 
             if len(possible_pools) == 0:
                 return False
 
-            full_pools = []
-            for _pool in possible_pools:
-                if _pool.is_full():
-                    full_pools.append(possible_pools.pop(possible_pools.index(_pool)))
+            if not self.is_merged:
+                full_pools = [_pool for _pool in possible_pools if _pool.is_full()]
+                for _pool in full_pools:
+                    possible_pools.remove(_pool)
 
-            if len(possible_pools) == 0:
-                return self.waiting_list.add(user=user, pool=full_pools)
+                if len(possible_pools) == 0:
+                    return self.waiting_list.add(user=user, pool=full_pools)
+
+            elif self.is_merged and self.is_full:
+                return self.waiting_list.add(user=user, pool=possible_pools)
+
+            potential_capacities = [sum(group.users.count()
+                                    for group in _pool.permission_groups.all())
+                                    for _pool in possible_pools]
+            lowest = min(potential_capacities)
+            equal_pools = [index
+                           for index in range(len(potential_capacities))
+                           if potential_capacities[index] == lowest]
+            if len(equal_pools) == 1:
+                chosen_pool = possible_pools[equal_pools[0]]
             else:
-                potential_capacities = []
-                for _pool in possible_pools:
-                    _potential = 0
-                    for group in _pool.permission_groups.all():
-                        _potential += group.users.count()
-                    potential_capacities.append(_potential)
-                lowest = min(potential_capacities)
-                equal_pools = []
-                for index in range(len(potential_capacities)):
-                    if potential_capacities[index] == lowest:
-                        equal_pools.append(index)
-                if len(equal_pools) == 1:
-                    chosen_pool = possible_pools[equal_pools[0]]
-                else:
-                    capacities = []
-                    for _pool in possible_pools:
-                        capacities.append(_pool.capacity)
-                    chosen_pool = possible_pools[capacities.index(min(capacities))]
-                return self.registrations.create(event=self, pool=chosen_pool, user=user)
+                capacities = [_pool.capacity
+                              for _pool in possible_pools]
+                chosen_pool = possible_pools[capacities.index(min(capacities))]
+                """
+                Maybe this should check for the one with highest capacity instead?
+                I don't fucking know. If so, we need to change some of the tests.
+                """
+            return self.registrations.create(event=self, pool=chosen_pool, user=user)
 
         if not self.can_register(user, pool):
             return False
