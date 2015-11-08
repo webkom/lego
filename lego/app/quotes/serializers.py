@@ -44,7 +44,7 @@ class QuoteSerializer(BasisSerializer):
         )
 
     def create(self, validated_data):
-        validated_data['author'] = validated_data['current_user']
+        validated_data['author'] = self.context['request'].user
         return Quote.objects.create(**validated_data)
 
 
