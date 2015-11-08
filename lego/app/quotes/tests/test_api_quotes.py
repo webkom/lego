@@ -1,7 +1,6 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.app.quotes.serializers import QuoteSerializer
 from lego.users.models import AbakusGroup, User
 
 _test_quote_data = {
@@ -12,14 +11,6 @@ _test_quote_data = {
     'start_time': '2011-09-01T13:20:30+03:00',
     'end_time': '2012-09-01T13:20:30+03:00',
     'merge_time': '2012-01-01T13:20:30+03:00',
-}
-
-_test_like_data = {
-    'title': 'QuoteTest',
-    'author': 1,
-    'text': 'TestText',
-    'source': 'TestSource',
-    'likes': 1
 }
 
 
@@ -104,9 +95,6 @@ class CreateQuoteTestCase(APITestCase):
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
         response = self.client.post(_get_list_url(), _test_quote_data)
-        test = QuoteSerializer(data=_test_quote_data)
-        if not test.is_valid():
-            print(test.errors)
         self.assertEqual(response.status_code, 201)
 
 
@@ -121,10 +109,6 @@ class LikeQuoteTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_like_url(1))
-        # TODO: use correct serializer
-        test = QuoteSerializer(data=_test_like_data)
-        if not test.is_valid():
-            print(test.errors)
         self.assertEqual(response.status_code, 201)
 
 
@@ -139,8 +123,4 @@ class UnlikeQuoteTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_unlike_url(2))
-        # TODO: use correct serializer
-        test = QuoteSerializer(data=_test_like_data)
-        if not test.is_valid():
-            print(test.errors)
         self.assertEqual(response.status_code, 201)
