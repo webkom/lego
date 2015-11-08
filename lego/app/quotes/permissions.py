@@ -8,6 +8,7 @@ class QuotePermissions(KeywordPermissions, ObjectPermissions):
         'list-approved': '/sudo/admin/quotes/list-approved/',
         'like': None,
         'approve': '/sudo/admin/quotes/approve/',
+        'unapprove': '/sudo/admin/quotes/unapprove/',
         'retrieve': '/sudo/admin/quotes/retrieve/',
         'create': '/sudo/admin/quotes/create/',
         'update': '/sudo/admin/quotes/update/',

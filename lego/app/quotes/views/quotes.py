@@ -1,13 +1,13 @@
 from django.http import Http404
 from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from lego.app.quotes.models import Quote, QuoteLike
 from lego.app.quotes.permissions import QuotePermissions
-from lego.app.quotes.serializers import QuoteLikeSerializer, QuoteSerializer
+from lego.app.quotes.serializers import QuoteSerializer
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
@@ -39,16 +39,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'], url_path='like')
     def like(self, request, pk=None):
-        data = {
-            'quote': pk,
-            'user': request.user.id
-        }
-        serializer = QuoteLikeSerializer(data=data)
-        if serializer.is_valid():
-            return self._like_quote(request=request, pk=pk)
-        else:
-            # TODO: Not found 404?
-            raise ValidationError(serializer.errors)
+        return self._like_quote(request=request, pk=pk)
 
     @detail_route(methods=['POST'], url_path='unlike')
     def unlike(self, request, pk=None):

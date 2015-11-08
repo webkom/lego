@@ -85,6 +85,35 @@ class ListUnapprovedQuotesTestCase(APITestCase):
         self.assertEqual(len(response.data), 1)
 
 
+class RetrieveNonExistingQuoteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_detail_url(10))
+        self.assertEqual(response.status_code, 404)
+
+
+class RetrieveExistingQuoteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 10)
+
+
 class CreateQuoteTestCase(APITestCase):
     fixtures = ['test_users.yaml', 'initial_abakus_groups.yaml']
 
@@ -98,7 +127,7 @@ class CreateQuoteTestCase(APITestCase):
         self.assertEqual(response.status_code, 201)
 
 
-class LikeQuoteTestCase(APITestCase):
+class LikeApprovedQuoteTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
                 'test_users.yaml']
 
@@ -112,7 +141,7 @@ class LikeQuoteTestCase(APITestCase):
         self.assertEqual(response.status_code, 201)
 
 
-class UnlikeQuoteTestCase(APITestCase):
+class UnlikeApprovedQuoteTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
                 'test_users.yaml']
 
@@ -124,3 +153,87 @@ class UnlikeQuoteTestCase(APITestCase):
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_unlike_url(2))
         self.assertEqual(response.status_code, 201)
+
+
+class LikeUnapprovedQuoteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.post(_get_like_url(3))
+        self.assertEqual(response.status_code, 403)
+
+    def test_with_webkom_user(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.post(_get_like_url(3))
+        # TODO: Let admins like unapproved quotes
+        self.assertEqual(response.status_code, 403)
+
+
+class UnlikeUnapprovedQuoteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.post(_get_unlike_url(3))
+        self.assertEqual(response.status_code, 403)
+
+    def test_with_webkom_user(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.post(_get_unlike_url(3))
+        # TODO: Let admins unlike unapproved quotes
+        self.assertEqual(response.status_code, 403)
+
+
+class ApproveQuoteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.put(_get_approve_url(3))
+        self.assertEqual(response.status_code, 403)
+
+    def test_with_webkom_user(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.put(_get_approve_url(3))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 10)
+
+
+class UnapproveQuoteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_quotes.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.put(_get_unapprove_url(1))
+        self.assertEqual(response.status_code, 403)
+
+    def test_with_webkom_user(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(user=self.abakus_user)
+        response = self.client.put(_get_unapprove_url(1))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 10)
