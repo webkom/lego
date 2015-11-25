@@ -1,5 +1,5 @@
 django==1.8.7
-ipython==4.0.0
+ipython==4.0.1
 
 psycopg2==2.6.1
 markdown==2.6.5
