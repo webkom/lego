@@ -11,7 +11,7 @@ redis==2.10.5
 djangorestframework==3.3.1
 djangorestframework-jwt==1.7.2
 django-basis==0.4.0
-django-extensions==1.5.9
+django-extensions==1.6.1
 django-haystack==2.4.1
 django-secure==1.0.1
 django-autoslug==1.9.3
