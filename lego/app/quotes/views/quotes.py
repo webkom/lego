@@ -12,12 +12,6 @@ from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):
-    def get_object(self, pk=None):
-        try:
-            return Quote.objects.get(pk=pk)
-        except Quote.DoesNotExist:
-            raise Http404
-
     def get_serializer_class(self):
         return QuoteSerializer
 
@@ -31,7 +25,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return Quote.objects.filter(approved=approved)
 
     def retrieve(self, request, pk=None):
-        instance = self.get_object(pk)
+        instance = self.get_object()
         serializer = QuoteSerializer(instance, context={'request': request})
         return Response(
             serializer.data
@@ -54,7 +48,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return self._approve_quote(request=request, pk=pk, approve=False)
 
     def _like_quote(self, request, pk, like=True):
-        instance = self.get_object(pk)
+        instance = self.get_object()
         quote_like = bool(QuoteLike.objects.filter(user=request.user, quote=instance))
         if like:
             if instance.approved and not quote_like:
@@ -75,7 +69,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         )
 
     def _approve_quote(self, request, pk, approve=True):
-        instance = self.get_object(pk)
+        instance = self.get_object()
         if approve:
             instance.approve()
         else:
