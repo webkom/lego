@@ -55,10 +55,9 @@ class RegistrationMethodTest(TestCase):
 
     def setUp(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        pool = event.pools.first()
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        self.registration = event.register(user=user, pool=pool)
+        self.registration = event.register(user=user)
 
     def test_str(self):
         d = {
@@ -159,10 +158,13 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.number_of_registrations, 0)
 
         event.register(user=user_1)
+        pool_two = Pool.objects.create(name='test', capacity=1, event=event,
+                                       activation_date=(timezone.now() - timedelta(hours=24)))
         event.register(user=user_1)
 
         self.assertEqual(event.number_of_registrations, 1)
         self.assertEqual(pool.number_of_registrations, 1)
+        self.assertEqual(pool_two.number_of_registrations, 0)
 
     def test_can_not_register_pre_activation(self):
         user = get_dummy_users(1)[0]
@@ -254,24 +256,18 @@ class RegistrationTestCase(TestCase):
         event.merge_time = timezone.now() - timedelta(hours=12)
         permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
         permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
-        pool_one = Pool.objects.create(
-            name='Abakus', capacity=1, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
-        pool_one.permission_groups = permission_groups_one
-        pool_two = Pool.objects.create(
+        pool = Pool.objects.create(
             name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() - timedelta(hours=24)))
-        pool_two.permission_groups = permission_groups_two
+        pool.permission_groups = permission_groups_two
 
         # Permission groups
 
         user = get_dummy_users(1)[0]
         permission_groups_one[0].add_user(user)
         event.register(user=user)
-        event.register(user=user, pool=pool_two)
 
-        self.assertEqual(pool_one.number_of_registrations, 1)
-        self.assertEqual(pool_two.number_of_registrations, 0)
+        self.assertEqual(pool.number_of_registrations, 0)
 
     def test_placed_in_waiting_list_post_merge(self):
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
