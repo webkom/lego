@@ -50,7 +50,6 @@
     author: 4
     ingress: TestIngress4
     text: TestText4
-    slug: 4-FAILSLUG
     event_type: 4
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
