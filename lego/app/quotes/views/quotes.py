@@ -48,7 +48,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return self._approve_quote(request=request, pk=pk, approve=False)
 
     def _like_quote(self, request, pk, like=True):
-        instance = self.get_object()
+        instance = self._get_object(pk)
         quote_like = bool(QuoteLike.objects.filter(user=request.user, quote=instance))
         if like:
             if instance.approved and not quote_like:
@@ -69,7 +69,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         )
 
     def _approve_quote(self, request, pk, approve=True):
-        instance = self.get_object()
+        instance = self._get_object(pk)
         if approve:
             instance.approve()
         else:
@@ -78,3 +78,10 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return Response(
             serializer.data
         )
+
+    def _get_object(self, pk=None):
+        try:
+            return Quote.objects.get(pk=pk)
+        except Quote.DoesNotExist:
+            raise Http404
+
