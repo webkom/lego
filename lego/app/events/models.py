@@ -60,7 +60,7 @@ class Event(Content):
             possible_pools = [_pool
                               for _pool in self.all_pools
                               if self.can_register(user, _pool)]
-            if len(possible_pools) == 1:
+            if len(possible_pools) == 1 and self.number_of_pools == 1:
                 if possible_pools[0].is_full:
                     return self.waiting_list.add(user=user, pool=possible_pools)
                 else:
@@ -118,7 +118,7 @@ class Event(Content):
         if not self.can_register(user, pool):
             return False
 
-        if self.is_full or (pool.is_full() and not self.is_merged):
+        if self.is_full or (pool.is_full and not self.is_merged):
             use_waiting_list = True
 
         if use_waiting_list:
