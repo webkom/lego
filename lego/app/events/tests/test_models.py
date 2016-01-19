@@ -159,11 +159,12 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.number_of_registrations, 0)
 
         event.register(user=user_1)
-        Pool.objects.create(name='test', capacity=1, event=event, activation_date=(timezone.now() - timedelta(hours=24)))
+        pool_two = Pool.objects.create(name='test', capacity=1, event=event, activation_date=(timezone.now() - timedelta(hours=24)))
         event.register(user=user_1)
 
         self.assertEqual(event.number_of_registrations, 1)
         self.assertEqual(pool.number_of_registrations, 1)
+        self.assertEqual(pool_two.number_of_registrations, 0)
 
     def test_can_not_register_pre_activation(self):
         user = get_dummy_users(1)[0]
