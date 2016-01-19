@@ -60,6 +60,11 @@ class Event(Content):
             possible_pools = [_pool
                               for _pool in self.all_pools
                               if self.can_register(user, _pool)]
+            if len(possible_pools) == 1:
+                if possible_pools[0].is_full:
+                    return self.waiting_list.add(user=user, pool=possible_pools)
+                else:
+                    return self.registrations.create(event=self, pool=possible_pools[0], user=user)
 
             if len(possible_pools) == 0:
                 return False
@@ -68,7 +73,7 @@ class Event(Content):
                 # Removes pools that are full, and adds them to a list to be used in
                 # the waiting list, so that we can remember what pools are available
                 # in case of a bump
-                full_pools = [_pool for _pool in possible_pools if _pool.is_full()]
+                full_pools = [_pool for _pool in possible_pools if _pool.is_full]
                 for _pool in full_pools:
                     possible_pools.remove(_pool)
 
@@ -78,7 +83,7 @@ class Event(Content):
 
             # If the event is merged we don't need to check each pool if it is full,
             # we can just check the event it self
-            elif self.is_merged and self.is_full:
+            elif self.is_full:
                 return self.waiting_list.add(user=user, pool=possible_pools)
             # Notice that if the event is merged but not full the user can now join
             # any permitted pool, even one that is full
@@ -207,6 +212,7 @@ class Pool(BasisModel):
     def number_of_registrations(self):
         return self.registrations.count()
 
+    @property
     def is_full(self):
         return self.number_of_registrations >= self.capacity
 
