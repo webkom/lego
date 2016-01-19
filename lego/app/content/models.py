@@ -14,7 +14,7 @@ class Content(ObjectPermissionsModel):
     author = models.ForeignKey(User)
     ingress = models.TextField()
     text = models.TextField(blank=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify('%s-%s' % (self.id, self.title))
