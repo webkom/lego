@@ -54,6 +54,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return False
 
+    def admin_register(self, user, pool):
+        return self.registrations.create(event=self, user=user, pool=pool)
+
     def register(self, user):
         # Create a list of all pools the user can join
         possible_pools = [_pool
@@ -110,7 +113,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                           for _pool in possible_pools]
             chosen_pool = possible_pools[capacities.index(min(capacities))]
 
-        return self.registrations.create(event=self, pool=chosen_pool, user=user)
+        return self.registrations.create(event=self, user=user, pool=chosen_pool)
 
     def unregister(self, user):
         registration = self.registrations.get(user=user)
