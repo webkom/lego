@@ -55,7 +55,6 @@ class RegistrationMethodTest(TestCase):
 
     def setUp(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        pool = event.pools.first()
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         self.registration = event.register(user=user)
@@ -159,7 +158,8 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.number_of_registrations, 0)
 
         event.register(user=user_1)
-        pool_two = Pool.objects.create(name='test', capacity=1, event=event, activation_date=(timezone.now() - timedelta(hours=24)))
+        pool_two = Pool.objects.create(name='test', capacity=1, event=event,
+                                       activation_date=(timezone.now() - timedelta(hours=24)))
         event.register(user=user_1)
 
         self.assertEqual(event.number_of_registrations, 1)
