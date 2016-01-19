@@ -84,4 +84,3 @@ class QuoteViewSet(viewsets.ModelViewSet):
             return Quote.objects.get(pk=pk)
         except Quote.DoesNotExist:
             raise Http404
-
