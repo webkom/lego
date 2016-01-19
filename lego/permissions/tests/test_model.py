@@ -16,10 +16,10 @@ class ObjectPermissionsModelTestCase(TestCase):
         self.test_object.save(current_user=self.creator)
 
     def test_inheritance(self):
-        mixin_fields = set(ObjectPermissionsModel._meta.get_all_field_names())
-        test_fields = set(TestModel._meta.get_all_field_names())
+        mixin_fields = set(ObjectPermissionsModel._meta.get_fields())
+        test_fields = set(TestModel._meta.get_fields())
         correct_fields = mixin_fields.union(test_fields)
-        fields = set(TestModel._meta.get_all_field_names())
+        fields = set(TestModel._meta.get_fields())
 
         self.assertEqual(correct_fields, fields)
 
