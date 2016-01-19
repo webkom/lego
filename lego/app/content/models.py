@@ -16,7 +16,7 @@ class Content(models.Model):
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify('%s-%s' % (self.id, self.title))
