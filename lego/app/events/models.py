@@ -144,7 +144,9 @@ class Event(Content):
 
     @property
     def is_merged(self):
-        if self.number_of_pools > 1:
+        if self.merge_time == None:
+            return True
+        if self.number_of_pools > 1: ''
             return timezone.now() >= self.merge_time
 
     @property
