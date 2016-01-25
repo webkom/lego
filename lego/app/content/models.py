@@ -17,8 +17,10 @@ class Content(ObjectPermissionsModel):
     slug = models.SlugField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify('{}-{}'.format(self.id, self.title))
         super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify('{}-{}'.format(self.id, self.title))
+            self.save()
 
     def __str__(self):
         return self.title + '(by: {})'.format(self.author)

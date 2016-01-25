@@ -17,12 +17,11 @@ class ContentTestMixin:
 
     @mock.patch('django.db.models.Model.save')
     def test_slug(self, mock_save):
-        self.item = self.model(id=1, title='CORRECTSLUG', slug='1-FAILSLUG')
+        self.item = self.model(id=1, title='CORRECTSLUG')
 
-        self.assertNotEqual(slugify('1-CORRECTSLUG'), self.item.slug)
+        self.assertIsNone(self.item.slug)
         self.item.save()
-        self.assertNotEqual('1-failslug', self.item.slug)
-        self.assertNotEqual(slugify('1-FAILSLUG'), self.item.slug)
+        self.assertNotEqual('1-CORRECTSLUG', self.item.slug)
         self.assertEqual('1-correctslug', self.item.slug)
         self.assertEqual(slugify('1-CORRECTSLUG'), self.item.slug)
-        mock_save.assert_called_once_with()
+        mock_save.assert_called_with()
