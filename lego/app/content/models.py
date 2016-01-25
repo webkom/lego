@@ -19,7 +19,7 @@ class Content(models.Model):
     slug = models.SlugField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify('%s-%s' % (self.id, self.title))
+        self.slug = slugify('{}-{}'.format(self.id, self.title))
         super().save(*args, **kwargs)
 
     def __str__(self):
