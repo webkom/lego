@@ -16,6 +16,7 @@ router.register(r'events', EventViewSet)
 router.register(r'comments', CommentViewSet)
 
 events_router = routers.NestedSimpleRouter(router, r'events', lookup='event')
+events_router.register(r'register', RegistrationViewSet, base_name='register')
 events_router.register(r'pools', PoolViewSet)
 pools_router = routers.NestedSimpleRouter(events_router, r'pools', lookup='pool')
 pools_router.register(r'registrations', RegistrationViewSet)
