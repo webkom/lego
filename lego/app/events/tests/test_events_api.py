@@ -40,8 +40,6 @@ _test_pools_data = [
 
 _test_registration_data = {
     'user': 1,
-    'event': 1,
-    'pool': 1
 }
 
 
@@ -60,6 +58,10 @@ def _get_pools_list_url(event_pk):
 def _get_pools_detail_url(event_pk, pool_pk):
     return reverse('pool-detail', kwargs={'event_pk': event_pk,
                                           'pk': pool_pk})
+
+
+def _get_register_list_url(event_pk):
+    return reverse('register-list', kwargs={'event_pk': event_pk})
 
 
 def _get_registration_list_url(event_pk, pool_pk):
@@ -171,21 +173,34 @@ class CreateRegistrationsTestCase(APITestCase):
 
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
-        response = self.client.post(_get_list_url(), _test_event_data)
+        event_response = self.client.post(_get_list_url(), _test_event_data)
+        event_id = event_response.data['id']
 
-        _test_pools_data[0]['event'] = response.data['id']
-        pool_response = self.client.post(_get_pools_list_url(response.data['id']),
-                                         _test_pools_data[0])
+        _test_pools_data[0]['event'] = event_id
+        self.client.post(_get_pools_list_url(event_response.data['id']), _test_pools_data[0])
 
-        _test_registration_data['pool'] = pool_response.data['id']
-        _test_registration_data['event'] = response.data['id']
         test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
         if not test.is_valid():
             print(test.errors)
 
-        registration_response = self.client.post(_get_registration_list_url(
-                                                 response.data['id'],
-                                                 pool_response.data['id']),
+        registration_response = self.client.post(_get_register_list_url(event_id), {})
+        self.assertEqual(registration_response.status_code, 201)
+
+    def test_admin_create(self):
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.post(_get_list_url(), _test_event_data)
+        event_id = event_response.data['id']
+
+        _test_pools_data[0]['event'] = event_id
+        pool_response = self.client.post(_get_pools_list_url(event_id),
+                                         _test_pools_data[0])
+        pool_id = pool_response.data['id']
+
+        test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
+        if not test.is_valid():
+            print(test.errors)
+
+        registration_response = self.client.post(_get_registration_list_url(event_id, pool_id),
                                                  _test_registration_data)
         self.assertEqual(registration_response.status_code, 201)
 
