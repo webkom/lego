@@ -244,7 +244,7 @@ class Registration(BasisModel):
     registration_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'pool')
+        unique_together = ('user', 'event')
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
