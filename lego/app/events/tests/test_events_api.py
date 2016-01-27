@@ -5,17 +5,30 @@ from lego.app.events.serializers import (EventCreateAndUpdateSerializer,
                                          RegistrationCreateAndUpdateSerializer)
 from lego.users.models import AbakusGroup, User
 
-_test_event_data = {
-    'title': 'Event',
-    'author': 1,
-    'description': 'TestIngress',
-    'text': 'TestText',
-    'event_type': 4,
-    'location': 'F252',
-    'start_time': '2011-09-01T13:20:30+03:00',
-    'end_time': '2012-09-01T13:20:30+03:00',
-    'merge_time': '2012-01-01T13:20:30+03:00',
-}
+_test_event_data = [
+    {
+        'title': 'Event1',
+        'author': 1,
+        'description': 'Ingress1',
+        'text': 'Ingress1',
+        'event_type': 4,
+        'location': 'F252',
+        'start_time': '2011-09-01T13:20:30+03:00',
+        'end_time': '2012-09-01T13:20:30+03:00',
+        'merge_time': '2012-01-01T13:20:30+03:00'
+    },
+    {
+        'title': 'Event2',
+        'author': 1,
+        'description': 'Ingress2',
+        'text': 'Ingress2',
+        'event_type': 4,
+        'location': 'F252',
+        'start_time': '2015-09-01T13:20:30+03:00',
+        'end_time': '2015-09-01T13:20:30+03:00',
+        'merge_time': '2016-01-01T13:20:30+03:00'
+    }
+]
 
 _test_pools_data = [
     {
@@ -123,17 +136,29 @@ class CreateEventsTestCase(APITestCase):
         self.abakus_user = User.objects.all().first()
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
 
-    def test_create(self):
+    def test_event_creation(self):
         self.client.force_authenticate(self.abakus_user)
-        response = self.client.post(_get_list_url(), _test_event_data)
-        test = EventCreateAndUpdateSerializer(data=_test_event_data)
+        response = self.client.post(_get_list_url(), _test_event_data[0])
+        self.assertIsNotNone(response.data.pop('id'))
+        test = EventCreateAndUpdateSerializer(data=_test_event_data[0])
         if not test.is_valid():
             print(test.errors)
         self.assertEqual(response.status_code, 201)
 
+    def test_event_update(self):
+        self.client.force_authenticate(user=self.abakus_user)
+        event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        event_id = event_response.data['id']
+
+        event_update_response = self.client.put(_get_detail_url(event_id), _test_event_data[1])
+        self.assertEqual(event_id, event_update_response.data.pop('id'))
+        self.assertEqual(event_update_response.status_code, 200)
+        self.assertNotEqual(_test_event_data[0], event_update_response.data)
+        self.assertEqual(_test_event_data[1], event_update_response.data)
+
     def test_pool_creation(self):
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.post(_get_list_url(), _test_event_data)
+        response = self.client.post(_get_list_url(), _test_event_data[0])
         self.assertEqual(response.status_code, 201)
 
         pool_response = self.client.post(_get_pools_list_url(response.data['id']),
@@ -141,6 +166,21 @@ class CreateEventsTestCase(APITestCase):
         self.assertIsNotNone(pool_response.data.pop('id'))
         self.assertEqual(pool_response.status_code, 201)
         self.assertEqual(_test_pools_data[0], pool_response.data)
+
+    def test_pool_update(self):
+        self.client.force_authenticate(user=self.abakus_user)
+        event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        event_id = event_response.data['id']
+
+        pool_response = self.client.post(_get_pools_list_url(event_id),
+                                         _test_pools_data[0])
+        pool_id = pool_response.data.pop('id')
+
+        pool_update_response = self.client.put(_get_pools_detail_url(event_id, pool_id),
+                                               _test_pools_data[1])
+        self.assertIsNotNone(pool_update_response.data.pop('id'))
+        self.assertEqual(pool_update_response.status_code, 200)
+        self.assertEqual(_test_pools_data[1], pool_update_response.data)
 
 
 class RetrievePoolsTestCase(APITestCase):
@@ -172,7 +212,7 @@ class CreateRegistrationsTestCase(APITestCase):
 
     def test_create(self):
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.post(_get_list_url(), _test_event_data)
+        event_response = self.client.post(_get_list_url(), _test_event_data[0])
         event_id = event_response.data['id']
 
         self.client.post(_get_pools_list_url(event_response.data['id']), _test_pools_data[0])
@@ -186,7 +226,7 @@ class CreateRegistrationsTestCase(APITestCase):
 
     def test_admin_create(self):
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.post(_get_list_url(), _test_event_data)
+        event_response = self.client.post(_get_list_url(), _test_event_data[0])
         event_id = event_response.data['id']
 
         pool_response = self.client.post(_get_pools_list_url(event_id),
