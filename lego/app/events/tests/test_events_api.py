@@ -136,7 +136,6 @@ class CreateEventsTestCase(APITestCase):
         response = self.client.post(_get_list_url(), _test_event_data)
         self.assertEqual(response.status_code, 201)
 
-        _test_pools_data[0]['event'] = response.data['id']
         pool_response = self.client.post(_get_pools_list_url(response.data['id']),
                                          _test_pools_data[0])
         self.assertIsNotNone(pool_response.data.pop('id'))
@@ -176,7 +175,6 @@ class CreateRegistrationsTestCase(APITestCase):
         event_response = self.client.post(_get_list_url(), _test_event_data)
         event_id = event_response.data['id']
 
-        _test_pools_data[0]['event'] = event_id
         self.client.post(_get_pools_list_url(event_response.data['id']), _test_pools_data[0])
 
         test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
@@ -191,7 +189,6 @@ class CreateRegistrationsTestCase(APITestCase):
         event_response = self.client.post(_get_list_url(), _test_event_data)
         event_id = event_response.data['id']
 
-        _test_pools_data[0]['event'] = event_id
         pool_response = self.client.post(_get_pools_list_url(event_id),
                                          _test_pools_data[0])
         pool_id = pool_response.data['id']

@@ -7,7 +7,18 @@ from lego.app.events.models import Event, Pool, Registration
 class PoolSerializer(BasisSerializer):
     class Meta:
         model = Pool
-        fields = ('id', 'name', 'capacity', 'event', 'activation_date', 'permission_groups')
+        fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups')
+
+    def create(self, validated_data):
+        event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
+        permission_groups = validated_data.pop('permission_groups')
+        pool = Pool.objects.create(event=event, **validated_data)
+
+        if permission_groups:
+            for group in permission_groups:
+                pool.permission_groups.add(group)
+
+        return pool
 
 
 class EventCreateAndUpdateSerializer(BasisSerializer):
