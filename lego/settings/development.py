@@ -1,8 +1,11 @@
-from .base import INSTALLED_APPS
+from .base import INSTALLED_APPS, MIDDLEWARE_CLASSES
+from .rest_framework import REST_FRAMEWORK
 
 DEBUG = True
 TEMPLATE_DEBUG = True
 DEVELOPMENT = True
+
+SECRET_KEY = 'secret'
 
 DATABASES = {
     'default': {
@@ -26,7 +29,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 INSTALLED_APPS += (
     'debug_toolbar',
 )
-
+MIDDLEWARE_CLASSES = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+] + MIDDLEWARE_CLASSES
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',
@@ -42,4 +47,6 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
 
-BROKER_URL = 'redis://localhost:6379/0'
+REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += ['rest_framework.renderers.BrowsableAPIRenderer']
+
+BROKER_URL = 'redis://127.0.0.1'

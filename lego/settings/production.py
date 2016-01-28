@@ -1,66 +1,50 @@
-import json
 import os
 
+import environ
 import raven
 
-from lego.settings import BASE_DIR
+from lego.settings import BASE_DIR, INSTALLED_APPS, MIDDLEWARE_CLASSES
 
-DEBUG = False
-ALLOWED_HOSTS = ['.abakus.no']
+from .secure import *  # noqa
 
-with open(os.path.join(BASE_DIR, '../.configuration.json')) as production_settings:
-    production_values = json.loads(production_settings.read())
-
-ADMINS = (
-    ('Webkom', 'djangoerrors@abakus.no'),
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, ['api.abakus.no']),
 )
+environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': production_values.get('MEMCACHED_SERVER', '127.0.0.1:11211'),
-        'KEY_PREFIX': '/lego-production',
-    }
-}
 
+DEBUG = env('DEBUG')
+SECRET_KEY = env('SECRET_KEY')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+
+# Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': production_values.get('DATABASE_NAME', 'lego'),
-        'USER': production_values.get('DATABASE_USER', 'lego'),
-        'PASSWORD': production_values.get('DATABASE_PASSWORD'),
-        'HOST': production_values.get('DATABASE_HOST', '127.0.0.1'),
-        'PORT': production_values.get('DATABASE_PORT', 5432),
-        'CONN_MAX_AGE': 300,
-        'OPTIONS': {
-            'autocommit': True,
-        },
-    }
+    'default': env.db()
 }
 
-# Lego is under development. "Production" is only a test environment and we don't want it to send
-#  mail by accident.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Cache
+CACHES = {
+    'default': env.cache()
+}
 
-LOG_PRINT_LEVEL = 1
+# Email / We may enable the celery email backend.
+EMAIL_CONFIG = env.email()
+vars().update(EMAIL_CONFIG)
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECRET_KEY = production_values['SECRET_KEY']
-
-TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
-)
-
-
+# Sentry
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
+SENTRY_DSN = env('SENTRY')
 RAVEN_CONFIG = {
-    'dsn': production_values.get('SENTRY_DSN'),
-    'release': raven.fetch_git_sha(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+    'dsn': SENTRY_DSN,
+    'release': raven.fetch_git_sha(os.path.dirname(BASE_DIR)),
 }
+INSTALLED_APPS += [
+    'raven.contrib.django.raven_compat',
+]
+MIDDLEWARE_CLASSES = [
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
+] + MIDDLEWARE_CLASSES
 
-BROKER_URL = production_values['CELERY_BROKER']
+# Celery
+BROKER_URL = env('CELERY_BROKER_URL')
