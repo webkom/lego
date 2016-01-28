@@ -117,7 +117,11 @@ class Event(Content):
     def unregister(self, user):
         registration = self.registrations.get(user=user)
         pool = registration.pool
-        registration.delete()
+        registration.pool = None
+        registration.waiting_list = None
+        registration.waiting_pool.clear()
+        registration.unregistration_date = timezone.now()
+        registration.save()
         self.notify_unregistration(pool_unregistered_from=pool)
 
     def notify_unregistration(self, pool_unregistered_from):
@@ -137,6 +141,7 @@ class Event(Content):
             else:
                 top.pool = top.waiting_pool.first()
             top.waiting_pool.clear()
+            top.unregistration_date = None
             top.save()
 
     def is_activated(self, pool):
@@ -172,7 +177,7 @@ class Event(Content):
         """
         Calculates total registrations with or without multiple pools.
         """
-        return self.registrations.filter(waiting_list=None, waiting_pool=None).count()
+        return self.registrations.filter(waiting_list=None, waiting_pool=None, unregistration_date=None).count()
 
     @property
     def number_of_waiting_registrations(self):
@@ -227,7 +232,7 @@ class WaitingList(BasisModel):
 
     def pop(self, from_pool=None):
         if from_pool:
-            top = self.registrations.filter(waiting_pool=from_pool).first()
+            top = self.registrations.filter(waiting_pool__id=from_pool.id).first()
         else:
             top = self.registrations.first()
         top.waiting_list = None
@@ -242,6 +247,7 @@ class Registration(BasisModel):
     waiting_list = models.ForeignKey(WaitingList, null=True, related_name='registrations')
     waiting_pool = models.ManyToManyField(Pool, null=True, related_name='waiting_registrations')
     registration_date = models.DateTimeField(auto_now_add=True)
+    unregistration_date = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user', 'event')
