@@ -1,9 +1,12 @@
 from .base import INSTALLED_APPS
 
 DEBUG = False
-TESTING = True
+
+SECRET_KEY = 'secret'
 
 TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DATABASES = {
     'default': {

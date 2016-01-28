@@ -1,0 +1,17 @@
+{% extends "rest_framework/base.html" %}
+{% load staticfiles %}
+
+{% block title %}{{ SITE.name }} &bullet; API{% endblock %}
+
+{% block branding %}
+  <a class='navbar-brand' rel="nofollow" href='{% url "api:default" %}'>
+    {{ SITE.name }}
+  </a>
+{% endblock %}
+
+{% block bootstrap_theme %}
+    <link rel="shortcut icon" href="{% static "assets/img/favicon.png" %}" type="image/png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css">
+{% endblock %}
+
+{% block bootstrap_navbar_variant %}navbar-inverse{% endblock %}

@@ -1,15 +1,12 @@
 import datetime
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+import environ
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'secret')
+root = environ.Path(__file__) - 2
+BASE_DIR = root()
 
 SHELL_PLUS = 'ipython'
-
-ALLOWED_HOSTS = []
-
-AUTH_USER_MODEL = 'users.User'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -19,13 +16,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_extensions',
-
-    'raven.contrib.django.raven_compat',
+    'djangosecure',
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
     'djcelery',
     'mptt',
+    'cachalot',
 
     'lego.users',
     'lego.utils',
@@ -43,13 +40,30 @@ MIGRATION_MODULES = {
     'oauth2_provider': 'lego.migrations.oauth2_provider'
 }
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
     'lego.permissions.backends.KeywordPermissionBackend',
     'oauth2_provider.backends.OAuth2Backend',
 )
+LOGIN_URL = '/authorization/login/'
+LOGOUT_URL = '/authorization/logout/'
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
-MIDDLEWARE_CLASSES = (
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,7 +72,7 @@ MIDDLEWARE_CLASSES = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 TEMPLATES = [
     {
@@ -76,6 +90,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'lego.utils.context_processors.site',
             ],
         },
     },
@@ -99,15 +114,18 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+STATIC_ROOT = os.path.join(BASE_DIR, 'files', 'static')
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '../static')
-MEDIA_URL = '/uploads/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '../uploads')
-
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+STATICFILES_DIRS = (
+    ('assets', os.path.join(BASE_DIR, 'assets')),
 )
 
-CORS_ORIGIN_ALLOW_ALL = True
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
+MEDIA_URL = '/media/'
 
-BROKER_URL = 'redis://127.0.0.1'
+CORS_ORIGIN_ALLOW_ALL = True

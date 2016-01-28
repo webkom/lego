@@ -8,11 +8,11 @@ from lego.users.models import AbakusGroup, User
 
 
 def _get_list_url():
-    return reverse('article-list')
+    return reverse('api:v1:article-list')
 
 
 def _get_detail_url(pk):
-    return reverse('article-detail', kwargs={'pk': pk})
+    return reverse('api:v1:article-detail', kwargs={'pk': pk})
 
 
 class ListArticlesTestCase(APITestCase):
