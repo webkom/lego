@@ -454,6 +454,48 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool_two.number_of_registrations, pool_two_size_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.capacity)
 
+    def test_bumping_when_bumped_has_several_pools_available(self):
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        users = get_dummy_users(4)
+        user_0 = users[0]
+        pre_reg = event.registrations.first().user
+        pool = event.pools.get(name='Webkom')
+
+        pool_registrations_before = pool.number_of_registrations
+        waiting_list_before = event.number_of_waiting_registrations
+        number_of_registered_before = event.number_of_registrations
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            event.register(user=user)
+
+        self.assertEqual(pool.number_of_registrations, pool_registrations_before + 3)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before + 1)
+        self.assertEqual(event.number_of_registrations, number_of_registered_before + 3)
+
+        event.unregister(user=pre_reg)
+
+        self.assertEqual(pool.number_of_registrations, pool_registrations_before + 3)
+        self.assertEqual(event.number_of_waiting_registrations, waiting_list_before)
+        self.assertEqual(event.number_of_registrations, number_of_registered_before + 3)
+
+        event.unregister(user=user_0)
+
+        self.assertEqual(event.number_of_registrations, number_of_registered_before + 2)
+
+    def test_unregistration_date_is_set_at_unregistration(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        event.register(user=user)
+        registration = event.registrations.first()
+
+        self.assertIsNone(registration.unregistration_date)
+        event.unregister(user=registration.user)
+        registration = event.registrations.first()
+        self.assertIsNotNone(registration.unregistration_date)
+
 
 class AssertInvariant:
     def __init__(self, waiting_list):
