@@ -25,7 +25,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return Quote.objects.filter(approved=approved)
 
     def retrieve(self, request, pk=None):
-        instance = self.get_object()
+        instance = self._get_object(pk)
         serializer = QuoteSerializer(instance, context={'request': request})
         return Response(
             serializer.data
