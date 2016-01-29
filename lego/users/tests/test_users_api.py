@@ -246,12 +246,12 @@ class RetrieveSelfTestCase(APITestCase):
 
     def test_self_authed(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(reverse('api:v1:user-me-list'))
+        response = self.client.get(reverse('api:v1:user-me'))
 
         self.assertEqual(response.status_code, 200)
         for field in DetailedUserSerializer.Meta.fields:
             self.assertEqual(getattr(self.user, field), response.data[field])
 
     def test_self_unauthed(self):
-        response = self.client.get(reverse('api:v1:user-me-list'))
+        response = self.client.get(reverse('api:v1:user-me'))
         self.assertEqual(response.status_code, 401)
