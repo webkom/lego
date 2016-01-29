@@ -10,7 +10,7 @@ class PoolSerializer(BasisSerializer):
         fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups')
 
     def create(self, validated_data):
-        event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
+        event = Event.objects.get(pk=self.context['view'].kwargs['parent_lookup_event'])
         permission_groups = validated_data.pop('permission_groups')
         pool = Pool.objects.create(event=event, **validated_data)
 
@@ -46,7 +46,7 @@ class RegistrationCreateAndUpdateSerializer(BasisSerializer):
 
     def create(self, validated_data):
         user = validated_data['current_user']
-        event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
+        event = Event.objects.get(pk=self.context['view'].kwargs['parent_lookup_event'])
         return event.register(user)
 
 
@@ -57,6 +57,6 @@ class SpecificRegistrationCreateAndUpdateSerializer(BasisSerializer):
 
     def create(self, validated_data):
         user = validated_data['user']
-        event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
-        pool = Pool.objects.get(pk=self.context['view'].kwargs['pool_pk'])
+        event = Event.objects.get(pk=self.context['view'].kwargs['parent_lookup_event'])
+        pool = Pool.objects.get(pk=self.context['view'].kwargs['parent_lookup_pool'])
         return event.admin_register(user, pool)
