@@ -1,19 +1,15 @@
-from rest_framework import serializers, viewsets
+from rest_framework import viewsets
 
-from lego.app.flatpages.permissions import FlatpagePermissions
 from lego.permissions.filters import ObjectPermissionsFilter
 
 from .models import Page
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Page
+from .permissions import FlatpagePermissions
+from .serializers import PageSerializer
 
 
 class PageViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = PageSerializer
     filter_backends = (ObjectPermissionsFilter,)
 
     permission_classes = (FlatpagePermissions,)

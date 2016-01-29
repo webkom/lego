@@ -16,11 +16,11 @@ _test_event_data = {
 
 
 def _get_list_url():
-    return reverse('event-list')
+    return reverse('api:v1:event-list')
 
 
 def _get_detail_url(pk):
-    return reverse('event-detail', kwargs={'pk': pk})
+    return reverse('api:v1:event-detail', kwargs={'pk': pk})
 
 
 class ListEventsTestCase(APITestCase):
