@@ -177,7 +177,8 @@ class Event(Content):
         """
         Calculates total registrations with or without multiple pools.
         """
-        return self.registrations.filter(waiting_list=None, waiting_pool=None, unregistration_date=None).count()
+        return self.registrations.filter(waiting_list=None, waiting_pool=None,
+                                         unregistration_date=None).count()
 
     @property
     def number_of_waiting_registrations(self):

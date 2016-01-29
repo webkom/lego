@@ -65,27 +65,27 @@ def _get_detail_url(pk):
 
 
 def _get_pools_list_url(event_pk):
-    return reverse('pool-list', kwargs={'event_pk': event_pk})
+    return reverse('api:v1:event-pool-list', kwargs={'parent_lookup_event': event_pk})
 
 
 def _get_pools_detail_url(event_pk, pool_pk):
-    return reverse('pool-detail', kwargs={'event_pk': event_pk,
-                                          'pk': pool_pk})
+    return reverse('api:v1:event-pool-detail', kwargs={'parent_lookup_event': event_pk,
+                                                       'pk': pool_pk})
 
 
 def _get_register_list_url(event_pk):
-    return reverse('register-list', kwargs={'event_pk': event_pk})
+    return reverse('api:v1:event-register-list', kwargs={'parent_lookup_event': event_pk})
 
 
 def _get_registration_list_url(event_pk, pool_pk):
-    return reverse('registration-list', kwargs={'event_pk': event_pk,
-                                                'pool_pk': pool_pk})
+    return reverse('api:v1:event-pool-register-list', kwargs={'parent_lookup_event': event_pk,
+                                                              'parent_lookup_pool': pool_pk})
 
 
 def _get_registration_detail_url(event_pk, pool_pk, registration_pk):
-    return reverse('registration-detail', kwargs={'event_pk': event_pk,
-                                                  'pool_pk': pool_pk,
-                                                  'pk': registration_pk})
+    return reverse('api:v1:event-pool-register-detail', kwargs={'parent_lookup_event': event_pk,
+                                                                'parent_lookup_pool': pool_pk,
+                                                                'pk': registration_pk})
 
 
 class ListEventsTestCase(APITestCase):
