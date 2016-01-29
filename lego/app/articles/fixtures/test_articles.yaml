@@ -1,4 +1,5 @@
 - model: articles.Article
+  pk: 1
   fields:
     title: faget get rekt
     author: 1
@@ -11,6 +12,7 @@
       - 5
 
 - model: articles.Article
+  pk: 2
   fields:
     title: Ikkje løye det!
     author: 1
@@ -20,6 +22,7 @@
       - 5
 
 - model: articles.Article
+  pk: 3
   fields:
     title: Alle kan se!
     author: 1
