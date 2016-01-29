@@ -2,10 +2,11 @@ from django.conf import settings
 from django.http import Http404
 
 
-class NestedViewSetMixin(object):
+class NestedViewSetMixin:
+
     def get_queryset(self):
         return self.filter_queryset_by_parents_lookups(
-            super(NestedViewSetMixin, self).get_queryset()
+            super().get_queryset()
         )
 
     def filter_queryset_by_parents_lookups(self, queryset):

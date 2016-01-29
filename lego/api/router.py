@@ -2,7 +2,7 @@ from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
 
-class NestedRegistryItem(object):
+class NestedRegistryItem:
     def __init__(self, router, parent_prefix, parent_item=None, parent_viewset=None):
         self.router = router
         self.parent_prefix = parent_prefix
@@ -51,9 +51,9 @@ class NestedRegistryItem(object):
         return prefix.strip('/')
 
 
-class NestedRouterMixin(object):
+class NestedRouterMixin:
     def _register(self, *args, **kwargs):
-        return super(NestedRouterMixin, self).register(*args, **kwargs)
+        return super().register(*args, **kwargs)
 
     def register(self, *args, **kwargs):
         self._register(*args, **kwargs)
