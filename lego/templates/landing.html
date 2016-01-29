@@ -1,10 +1,12 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="https://abakus.no/static/gfx/favicon.png" type="image/png">
-    <title>Lego</title>
+    <link rel="shortcut icon" href="{% static "assets/img/favicon.png" %}" type="image/png">
+    <title>{{ SITE.name }}</title>
     <style>
         html, body {
             height: 100%;
@@ -15,7 +17,7 @@
         .bg {
             height: 100%;
             width: 100%;
-            background: url(https://33.media.tumblr.com/9153753764d3ae392ce557c9346fc20a/tumblr_mw04eilbXX1rm0s68o1_1280.jpg) no-repeat;
+            background: url({% static "assets/img/landing.png" %}) no-repeat;
             background-position: center;
             background-size: 50%
         }
@@ -50,10 +52,10 @@
     </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="about">
-    LEGO Er Ganske Oppdelt
-    <div class="logo"></div>
-</div>
+    <div class="bg"></div>
+    <div class="about">
+        {{ SITE.slogan }}
+        <div class="logo"></div>
+    </div>
 </body>
 </html>

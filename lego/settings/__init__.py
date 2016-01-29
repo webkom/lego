@@ -1,19 +1,18 @@
 import sys
 
-from lego.settings.base import *
-from lego.settings.lego import *
-from lego.settings.rest_framework import *
+TESTING = 'test' in sys.argv[:2]  # Check if manage.py test has been run
 
-from .celery import app as celery_app
-
-TESTING = 'test' in sys.argv  # Check if manage.py test has been run
+from .base import *  # noqa
+from .lego import *  # noqa
+from .rest_framework import *  # noqa
+from .logging import *  # noqa
 
 if TESTING:
-    from lego.settings.test import *
+    from .test import *  # noqa
 else:
-    from lego.settings.logging import LOGGING
-
     try:
-        from lego.settings.local import *
+        from .local import *  # noqa
     except ImportError as e:
         raise ImportError("Couldn't load local settings lego.settings.local")
+
+from .celery import app as celery_app  # noqa

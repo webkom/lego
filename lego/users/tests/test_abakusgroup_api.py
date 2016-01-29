@@ -11,11 +11,11 @@ _test_group_data = {
 
 
 def _get_list_url():
-    return reverse('abakusgroup-list')
+    return reverse('api:v1:abakusgroup-list')
 
 
 def _get_detail_url(pk):
-    return reverse('abakusgroup-detail', kwargs={'pk': pk})
+    return reverse('api:v1:abakusgroup-detail', kwargs={'pk': pk})
 
 
 class ListAbakusGroupAPITestCase(APITestCase):

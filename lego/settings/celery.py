@@ -28,7 +28,10 @@ app = celery.Celery('lego')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
+schedule = {}
+
 app.conf.update(
+    CELERYBEAT_SCHEDULE=schedule,
     CELERYBEAT_SCHEDULER='djcelery.schedulers.DatabaseScheduler',
     CELERY_RESULT_BACKEND=None,
     CELERY_TRACK_STARTED=True,
@@ -39,5 +42,7 @@ app.conf.update(
     CELERY_DISABLE_RATE_LIMITS=True,
     CELERY_IGNORE_RESULT=True,
     CELERY_ACKS_LATE=False,
-    CELERY_PREFETCH_MULTIPLIER=2
+    CELERY_PREFETCH_MULTIPLIER=2,
+    CELERYD_HIJACK_ROOT_LOGGER=False,
+    CELERY_REDIRECT_STDOUTS=False,
 )

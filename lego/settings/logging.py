@@ -1,4 +1,9 @@
-from lego.settings import TESTING
+import socket
+
+from . import TESTING
+
+hostname = socket.gethostname()
+
 
 LOGGING = {
     'version': 1,
@@ -17,12 +22,16 @@ LOGGING = {
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['sentry', 'console', 'mail_admins', 'syslog'],
+        'handlers': ['sentry', 'console', 'syslog'],
     },
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(name)s %(message)s'
+            'format': '%(levelname)s %(asctime)s [%(name)s] %(message)s'
         },
+        'syslog': {
+            'format': '{hostname} lego[%(process)d]: [%(name)s] %(message)s'.format(
+                hostname=hostname)
+        }
     },
     'handlers': {
         'sentry': {
@@ -34,39 +43,39 @@ LOGGING = {
             'level': 'DEBUG',
             'filters': ['skip_if_testing'],
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'formatter': 'verbose',
         },
         'syslog': {
-            'level': 'INFO',
-            'filters': ['require_debug_false'],
+            'level': 'DEBUG',
             'class': 'logging.handlers.SysLogHandler',
-            'formatter': 'verbose'
-        },
+            'facility': 'local7',
+            'formatter': 'syslog',
+        }
     },
     'loggers': {
-        'django': {
+        'celery': {
             'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False
-        },
-        'django.request': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
+            'propagate': True,
         },
         'raven': {
-            'level': 'WARNING',
+            'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False,
         },
         'sentry.errors': {
-            'level': 'WARNING',
+            'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False,
         },
+        'django': {
+            'level': 'DEBUG',
+            'propagate': True,
+            'filters': ['require_debug_true'],
+        },
+        'django.requests': {
+            'level': 'DEBUG',
+            'propagate': True,
+            'filters': ['require_debug_true'],
+        }
     },
 }
