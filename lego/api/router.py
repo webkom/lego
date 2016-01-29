@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
 
@@ -39,7 +40,7 @@ class NestedRegistryItem(object):
                 .format(
                     parent_prefix=current_item.parent_prefix,
                     parent_pk_kwarg_name='{0}{1}'.format(
-                        'parent_lookup_',
+                        settings.PARENT_LOOKUP_PREFIX,
                         parents_query_lookups[i]
                     ),
                     parent_lookup_value_regex=parent_lookup_value_regex,

@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from lego.api.mixins import NestedViewSetMixin
 from lego.app.events.models import Event, Pool, Registration
 from lego.app.events.permissions import EventPermissions, NestedEventPermissions
 from lego.app.events.serializers import (EventCreateAndUpdateSerializer, EventReadSerializer,
@@ -8,7 +9,7 @@ from lego.app.events.serializers import (EventCreateAndUpdateSerializer, EventRe
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
-class EventViewSet(viewsets.ModelViewSet):
+class EventViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Event.objects.all().prefetch_related('pools__permission_groups')
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (EventPermissions,)
@@ -19,13 +20,13 @@ class EventViewSet(viewsets.ModelViewSet):
         return EventReadSerializer
 
 
-class PoolViewSet(viewsets.ModelViewSet):
+class PoolViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     serializer_class = PoolSerializer
     queryset = Pool.objects.all().prefetch_related('permission_groups', 'registrations')
     permission_classes = (NestedEventPermissions,)
 
 
-class RegistrationViewSet(viewsets.ModelViewSet):
+class RegistrationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Registration.objects.all()
     permission_classes = (NestedEventPermissions,)
 
