@@ -65,27 +65,27 @@ def _get_detail_url(pk):
 
 
 def _get_pools_list_url(event_pk):
-    return reverse('pool-list', kwargs={'event_pk': event_pk})
+    return reverse('api:v1:pool-list', kwargs={'event_pk': event_pk})
 
 
 def _get_pools_detail_url(event_pk, pool_pk):
-    return reverse('pool-detail', kwargs={'event_pk': event_pk,
-                                          'pk': pool_pk})
+    return reverse('api:v1:pool-detail', kwargs={'event_pk': event_pk,
+                                                 'pk': pool_pk})
 
 
 def _get_register_list_url(event_pk):
-    return reverse('register-list', kwargs={'event_pk': event_pk})
+    return reverse('api:v1:register-list', kwargs={'event_pk': event_pk})
 
 
 def _get_registration_list_url(event_pk, pool_pk):
-    return reverse('registration-list', kwargs={'event_pk': event_pk,
-                                                'pool_pk': pool_pk})
+    return reverse('api:v1:registration-list', kwargs={'event_pk': event_pk,
+                                                       'pool_pk': pool_pk})
 
 
 def _get_registration_detail_url(event_pk, pool_pk, registration_pk):
-    return reverse('registration-detail', kwargs={'event_pk': event_pk,
-                                                  'pool_pk': pool_pk,
-                                                  'pk': registration_pk})
+    return reverse('api:v1:registration-detail', kwargs={'event_pk': event_pk,
+                                                         'pool_pk': pool_pk,
+                                                         'pk': registration_pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -178,9 +178,10 @@ class CreateEventsTestCase(APITestCase):
 
         pool_update_response = self.client.put(_get_pools_detail_url(event_id, pool_id),
                                                _test_pools_data[1])
-        self.assertIsNotNone(pool_update_response.data.pop('id'))
         self.assertEqual(pool_update_response.status_code, 200)
-        self.assertEqual(_test_pools_data[1], pool_update_response.data)
+        pool_update_get_response = self.client.get(_get_pools_detail_url(event_id, pool_id))
+        self.assertIsNotNone(pool_update_get_response.data.pop('id'))
+        self.assertEqual(_test_pools_data[1], pool_update_get_response.data)
 
 
 class RetrievePoolsTestCase(APITestCase):
