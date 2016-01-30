@@ -30,7 +30,8 @@ class PoolViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
         if event_id:
-            return Pool.objects.filter(event=event_id).prefetch_related('permission_groups', 'registrations')
+            return Pool.objects.filter(event=event_id).prefetch_related('permission_groups',
+                                                                        'registrations')
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):
