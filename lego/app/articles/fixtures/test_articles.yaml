@@ -18,7 +18,7 @@
     ingress: Om du e Tore?
     text: Tore Tang, en gammal mann. Hele webkom kjenner han.
     can_view_groups:
-      - 10
+      - 5
 
 - model: articles.Article
   pk: 3

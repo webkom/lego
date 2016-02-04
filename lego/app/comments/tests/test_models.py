@@ -12,16 +12,21 @@ class CommentTestCase(TestCase):
 
         self.author = User.objects.create(username='comment_author')
 
-        self.test_comment = Comment.objects.create(content='test', author=self.author,
+        self.test_comment = Comment.objects.create(text='test', author=self.author,
                                                    content_object=self.target)
 
     def test_creation(self):
-        created_comment = Comment.objects.get(content='test')
+        created_comment = Comment.objects.get(text='test')
 
         self.assertEqual(created_comment.content_object, self.target)
         self.assertEqual(created_comment.author, self.author)
 
     def test_str(self):
         output = str(self.test_comment)
-        formatted = '{0} - {1}'.format(self.test_comment.author, self.test_comment.content[:30])
+        formatted = '{0} - {1}'.format(self.test_comment.author, self.test_comment.text[:30])
+        self.assertEqual(output, formatted)
+
+    def test_source(self):
+        output = self.test_comment.source()
+        formatted = '{0}-{1}'.format(self.test_comment.content_type, self.test_comment.object_id)
         self.assertEqual(output, formatted)
