@@ -2,8 +2,10 @@ from rest_framework import viewsets
 
 from lego.app.events.models import Event, Pool, Registration
 from lego.app.events.permissions import EventPermissions, NestedEventPermissions
-from lego.app.events.serializers import (EventCreateAndUpdateSerializer, EventReadSerializer,
-                                         PoolSerializer, RegistrationCreateAndUpdateSerializer,
+from lego.app.events.serializers import (EventCreateAndUpdateSerializer,
+                                         EventReadDetailedSerializer, EventReadSerializer,
+                                         PoolCreateAndUpdateSerializer, PoolReadSerializer,
+                                         RegistrationCreateAndUpdateSerializer,
                                          SpecificRegistrationCreateAndUpdateSerializer)
 from lego.permissions.filters import ObjectPermissionsFilter
 
@@ -16,6 +18,11 @@ class EventViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
             return EventCreateAndUpdateSerializer
+
+        event_id = self.kwargs.get('pk', None)
+        if event_id:
+            return EventReadDetailedSerializer
+
         return EventReadSerializer
 
     def get_queryset(self):
@@ -23,9 +30,13 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
 class PoolViewSet(viewsets.ModelViewSet):
-    serializer_class = PoolSerializer
     queryset = Pool.objects.all()
     permission_classes = (NestedEventPermissions,)
+
+    def get_serializer_class(self):
+        if self.action == 'create' or self.action == 'update':
+            return PoolCreateAndUpdateSerializer
+        return PoolReadSerializer
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
