@@ -5,7 +5,6 @@
 [Waffle](https://waffle.io/webkom/lego)
 
 Noob guide for setting up LEGO: 
-
 https://github.com/webkom/lego/wiki/Noob-Guide
 
 ```bash
