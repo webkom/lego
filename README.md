@@ -5,7 +5,7 @@
 [Waffle](https://waffle.io/webkom/lego)
 
 Noob guide for setting up LEGO: 
-https://docs.google.com/document/d/1ukHSgrDupTOF7xaSqOMp08bJ89bKJVOh_Phrt2xK7yM/edit?usp=sharing
+https://github.com/webkom/lego/wiki/Noob-Guide
 
 ```bash
 $ make
