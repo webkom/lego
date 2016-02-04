@@ -1,0 +1,15 @@
+- model: comments.Comment
+  fields:
+    content_type: 21 # article
+    object_id: 1
+    created_by: 3
+    text:
+      Enda flere komitéer??!?
+
+- model: comments.Comment
+  fields:
+    content_type: 21 # article
+    object_id: 2
+    created_by: 2
+    text:
+      Hello World!
