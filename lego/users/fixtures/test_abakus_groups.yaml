@@ -47,3 +47,18 @@
       - /sudo/admin/events/create/
       - /sudo/admin/events/update/
       - /sudo/admin/events/destroy/
+
+- model: users.AbakusGroup
+  fields:
+    name: CommentTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 104
+    permissions:
+      - /sudo/admin/comments/list/
+      - /sudo/admin/comments/retrieve/
+      - /sudo/admin/comments/create/
+      - /sudo/admin/comments/update/
+      - /sudo/admin/comments/destroy/
+
