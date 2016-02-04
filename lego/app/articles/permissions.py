@@ -4,7 +4,7 @@ from lego.permissions.object_permissions import ObjectPermissions
 
 class ArticlePermissions(KeywordPermissions, ObjectPermissions):
     perms_map = {
-        'list': None,
+        'list': '/sudo/admin/articles/list/',
         'retrieve': '/sudo/admin/articles/retrieve/',
         'create': '/sudo/admin/articles/create/',
         'update': '/sudo/admin/articles/update/',

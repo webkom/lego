@@ -46,13 +46,13 @@ class ListArticlesTestCase(APITestCase):
 
 
 class RetrieveArticlesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_articles.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_articles.yaml',
                 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-        self.abakus_group = AbakusGroup.objects.get(name='Abakus')
+        self.abakus_group = AbakusGroup.objects.get(pk=1)
         self.abakus_group.add_user(self.abakus_user)
 
     def test_unauthorized(self):
