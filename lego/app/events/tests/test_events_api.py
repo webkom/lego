@@ -13,9 +13,9 @@ _test_event_data = [
         'text': 'Ingress1',
         'event_type': 4,
         'location': 'F252',
-        'start_time': '2011-09-01T13:20:30+03:00',
-        'end_time': '2012-09-01T13:20:30+03:00',
-        'merge_time': '2012-01-01T13:20:30+03:00'
+        'start_time': '2011-09-01T13:20:30Z',
+        'end_time': '2012-09-01T13:20:30Z',
+        'merge_time': '2012-01-01T13:20:30Z'
     },
     {
         'title': 'Event2',
@@ -24,9 +24,9 @@ _test_event_data = [
         'text': 'Ingress2',
         'event_type': 4,
         'location': 'F252',
-        'start_time': '2015-09-01T13:20:30+03:00',
-        'end_time': '2015-09-01T13:20:30+03:00',
-        'merge_time': '2016-01-01T13:20:30+03:00'
+        'start_time': '2015-09-01T13:20:30Z',
+        'end_time': '2015-09-01T13:20:30Z',
+        'merge_time': '2016-01-01T13:20:30Z'
     }
 ]
 
@@ -34,19 +34,19 @@ _test_pools_data = [
     {
         'name': 'TESTPOOL1',
         'capacity': 10,
-        'activation_date': '2012-09-01T13:20:30+03:00',
+        'activation_date': '2012-09-01T10:20:30Z',
         'permission_groups': [1]
     },
     {
         'name': 'TESTPOOL2',
         'capacity': 20,
-        'activation_date': '2012-09-02T13:20:30+03:00',
+        'activation_date': '2012-09-02T11:20:30Z',
         'permission_groups': [10]
     },
     {
         'name': 'TESTPOOL3',
         'capacity': 30,
-        'activation_date': '2012-09-02T13:20:30+03:00',
+        'activation_date': '2012-09-02T12:20:30Z',
         'permission_groups': [1]
     }
 ]
@@ -181,6 +181,7 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(pool_update_response.status_code, 200)
         pool_update_get_response = self.client.get(_get_pools_detail_url(event_id, pool_id))
         self.assertIsNotNone(pool_update_get_response.data.pop('id'))
+        pool_update_get_response.data.pop('registrations')  # Does not get updated
         self.assertEqual(_test_pools_data[1], pool_update_get_response.data)
 
 
@@ -230,15 +231,13 @@ class CreateRegistrationsTestCase(APITestCase):
         event_response = self.client.post(_get_list_url(), _test_event_data[0])
         event_id = event_response.data['id']
 
-        pool_response = self.client.post(_get_pools_list_url(event_id),
-                                         _test_pools_data[0])
-        pool_id = pool_response.data['id']
+        self.client.post(_get_pools_list_url(event_id), _test_pools_data[0])
 
         test = RegistrationCreateAndUpdateSerializer(data=_test_registration_data)
         if not test.is_valid():
             print(test.errors)
 
-        registration_response = self.client.post(_get_registration_list_url(event_id, pool_id),
+        registration_response = self.client.post(_get_register_list_url(event_id),
                                                  _test_registration_data)
         self.assertEqual(registration_response.status_code, 201)
 

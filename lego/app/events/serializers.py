@@ -24,11 +24,7 @@ class PoolReadSerializer(BasisSerializer):
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
         permission_groups = validated_data.pop('permission_groups')
         pool = Pool.objects.create(event=event, **validated_data)
-
-        if permission_groups:
-            for group in permission_groups:
-                pool.permission_groups.add(group)
-
+        pool.permission_groups.set(permission_groups)
         return pool
 
 
@@ -66,10 +62,7 @@ class PoolCreateAndUpdateSerializer(BasisSerializer):
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
         permission_groups = validated_data.pop('permission_groups')
         pool = Pool.objects.create(event=event, **validated_data)
-
-        if permission_groups:
-            for group in permission_groups:
-                pool.permission_groups.add(group)
+        pool.permission_groups.set(permission_groups)
 
         return pool
 
