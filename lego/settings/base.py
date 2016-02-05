@@ -22,7 +22,6 @@ INSTALLED_APPS = (
     'corsheaders',
     'djcelery',
     'mptt',
-    'cachalot',
 
     'lego.users',
     'lego.utils',
