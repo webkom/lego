@@ -40,6 +40,7 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(os.path.dirname(BASE_DIR)),
 }
 INSTALLED_APPS += [
+    'cachalot',
     'raven.contrib.django.raven_compat',
 ]
 MIDDLEWARE_CLASSES = [

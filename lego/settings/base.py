@@ -8,7 +8,7 @@ BASE_DIR = root()
 
 SHELL_PLUS = 'ipython'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -22,7 +22,6 @@ INSTALLED_APPS = (
     'corsheaders',
     'djcelery',
     'mptt',
-    'cachalot',
 
     'lego.users',
     'lego.utils',
@@ -34,7 +33,7 @@ INSTALLED_APPS = (
     'lego.app.events',
     'lego.app.flatpages',
     'lego.app.comments',
-)
+]
 
 MIGRATION_MODULES = {
     'oauth2_provider': 'lego.migrations.oauth2_provider'
