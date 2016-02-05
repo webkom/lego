@@ -11,7 +11,7 @@ from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all()
+    queryset = Event.objects.prefetch_related('pools__permission_groups', 'pools__registrations')
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (EventPermissions,)
 
@@ -24,9 +24,6 @@ class EventViewSet(viewsets.ModelViewSet):
             return EventReadDetailedSerializer
 
         return EventReadSerializer
-
-    def get_queryset(self):
-        return Event.objects.all().prefetch_related('pools__permission_groups')
 
 
 class PoolViewSet(viewsets.ModelViewSet):
