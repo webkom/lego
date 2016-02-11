@@ -11,7 +11,10 @@ from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.prefetch_related('pools__permission_groups', 'pools__registrations')
+    queryset = Event.objects.prefetch_related('pools__permission_groups',
+                                              'pools__registrations',
+                                              'pools__registrations__user',
+                                              'can_view_groups').select_related('waiting_list')
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (EventPermissions,)
 
