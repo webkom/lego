@@ -4,9 +4,11 @@ from rest_framework.fields import CharField
 
 from lego.app.comments.serializers import CommentSerializer
 from lego.app.events.models import Event, Pool, Registration
+from lego.users.serializers import PublicUserSerializer
 
 
 class RegistrationReadSerializer(BasisSerializer):
+    user = PublicUserSerializer()
 
     class Meta:
         model = Registration
