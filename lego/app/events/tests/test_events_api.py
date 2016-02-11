@@ -242,41 +242,29 @@ class CreateRegistrationsTestCase(APITestCase):
         self.assertEqual(registration_response.status_code, 201)
 
 
-class RetrieveRegistrationsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
-                'test_users.yaml']
-
-    def setUp(self):
-        self.abakus_user = User.objects.all().first()
-
-    def test_with_group_permission(self):
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
-        self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_registration_detail_url(1, 1, 1))
-        self.assertEqual(response.status_code, 200)
-
-    def test_without_group_permission(self):
-        self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_registration_detail_url(1, 1, 1))
-        self.assertEqual(response.status_code, 403)
-
-
 class ListRegistrationsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
-        self.abakus_user = User.objects.all().first()
+        self.abakus_user = User.objects.get(pk=1)
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        self.event_id = event_response.data['id']
+
+        self.client.post(_get_pools_list_url(self.event_id), _test_pools_data[0])
+        self.client.post(_get_register_list_url(self.event_id), {})
 
     def test_with_group_permission(self):
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_registration_list_url(1, 1))
+        response = self.client.get(_get_detail_url(self.event_id))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        for pool in response.data['pools']:
+            self.assertTrue(pool['registrations'])
 
     def test_without_group_permission(self):
+        self.abakus_user = User.objects.get(pk=2)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_registration_list_url(1, 1))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        response = self.client.get(_get_detail_url(self.event_id))
+        self.assertEqual(response.status_code, 403)
