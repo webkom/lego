@@ -49,7 +49,7 @@ class ListCommentsAPITestCase(APITestCase):
 
         for comment in response.data:
             keys = set(comment.keys())
-            self.assertEqual(keys, set(CommentSerializer.Meta.fields))
+            self.assertEqual(keys, set(['id', 'text', 'author', 'createdAt', 'updatedAt']))
 
 
 class RetrieveCommentsAPITestCase(APITestCase):
@@ -79,12 +79,10 @@ class RetrieveCommentsAPITestCase(APITestCase):
         response = self.client.get(_get_detail_url(self.test_comment.pk))
         comment = response.data
         keys = set(comment.keys())
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(CommentSerializer.Meta.fields))
+        self.assertEqual(keys, set(['id', 'text', 'author', 'created_at', 'updated_at']))
 
-
-class CreateUsersAPITestCase(APITestCase):
+class CreateCommentsAPITestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml']
 
     def setUp(self):
@@ -105,7 +103,7 @@ class CreateUsersAPITestCase(APITestCase):
     def test_without_auth(self):
         postData = {
             'text': 'Hey',
-            'source': '{0}-{1}'.format(
+            'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             ),
@@ -119,7 +117,7 @@ class CreateUsersAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.without_permission)
         postData = {
             'text': 'Hey',
-            'source': '{0}-{1}'.format(
+            'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             ),
@@ -133,7 +131,7 @@ class CreateUsersAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         postData = {
             'text': 'Hey',
-            'source': '{0}-{1}'.format(
+            'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             ),
@@ -146,7 +144,6 @@ class CreateUsersAPITestCase(APITestCase):
         comment = Comment.objects.get(pk=response.data['id'])
 
         self.assertEqual(comment.text, postData['text'])
-        self.assertEqual(comment.source, postData['source'])
         self.assertEqual(comment.created_by.pk, postData['author'])
         self.assertEqual(response.status_code, 201)
 
@@ -159,7 +156,7 @@ class CreateUsersAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), postData)
 
-        self.assertIn('source', response.data.keys())
+        self.assertIn('comment_target', response.data.keys())
         self.assertIn('text', response.data.keys())
         self.assertEqual(response.status_code, 400)
 
@@ -167,7 +164,7 @@ class CreateUsersAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         postData = {
             'text': 'Hey',
-            'source': '{0}-{1}'.format(
+            'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label+'xyz',
                 Article.objects.first().pk
             ),
@@ -175,7 +172,7 @@ class CreateUsersAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), postData)
 
-        self.assertIn('source', response.data.keys())
+        self.assertIn('comment_target', response.data.keys())
         self.assertEqual(response.status_code, 400)
 
     def test_with_invalid_objectid(self):
@@ -190,20 +187,17 @@ class CreateUsersAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), postData)
 
-        self.assertIn('source', response.data.keys())
+        self.assertIn('comment_target', response.data.keys())
         self.assertEqual(response.status_code, 400)
 
 
 
 '''
-class UpdateUsersAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+class UpdateCommentsAPITestCase(APITestCase):
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml']
 
-    modified_user = {
-        'username': 'modified_user',
-        'first_name': 'modified',
-        'last_name': 'user',
-        'email': 'modified@testuser.com',
+    modified_comment = {
+        'text': 'whats up'
     }
 
     def setUp(self):
@@ -213,8 +207,6 @@ class UpdateUsersAPITestCase(APITestCase):
         self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
         self.useradmin_test_group.add_user(self.with_perm)
         self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
-
-        self.test_user = get_test_user()
 
     def successful_update(self, updater, update_object):
         self.client.force_authenticate(user=updater)
