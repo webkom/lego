@@ -18,3 +18,7 @@ class Content(models.Model):
 
     def __str__(self):
         return self.title + '(by: {})'.format(self.author)
+
+    @property
+    def comment_target(self):
+        return '{0}-{1}'.format(self._meta.app_label, self.pk)
