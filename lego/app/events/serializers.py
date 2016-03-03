@@ -85,15 +85,3 @@ class RegistrationCreateAndUpdateSerializer(BasisSerializer):
         user = validated_data['current_user']
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
         return event.register(user)
-
-
-class SpecificRegistrationCreateAndUpdateSerializer(BasisSerializer):
-    class Meta:
-        model = Registration
-        fields = ('id', 'user')
-
-    def create(self, validated_data):
-        user = validated_data['user']
-        event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
-        pool = Pool.objects.get(pk=self.context['view'].kwargs['pool_pk'])
-        return event.admin_register(user, pool)
