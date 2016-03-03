@@ -66,7 +66,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         # can skip a lot of the logic used to pick the correct pool.
         if len(possible_pools) == 1 and self.number_of_pools == 1:
             if possible_pools[0].is_full:
-                return self.waiting_list.add(user=user, pool=possible_pools)
+                return self.waiting_list.add(user=user, pools=possible_pools)
             else:
                 return self.registrations.create(event=self, pool=possible_pools[0], user=user)
 
@@ -86,14 +86,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
             # Adds user to waiting list if no possible pools are left
             if not possible_pools:
-                return self.waiting_list.add(user=user, pool=full_pools)
+                return self.waiting_list.add(user=user, pools=full_pools)
 
         # If the event is merged, but full. we don't need to check each pool if it is full,
         # we can just check the event it self. The user is added to the waiting list for all
         # pools, since the event is merged.
 
         elif self.is_full:
-            return self.waiting_list.add(user=user, pool=possible_pools)
+            return self.waiting_list.add(user=user, pools=possible_pools)
         # Notice that if the event is merged but not full the user can now join
         # any permitted pool, even one that is full. Full pools are no longer a concept after
         # merging.
@@ -228,11 +228,11 @@ class WaitingList(BasisModel):
     def number_of_registrations(self):
         return self.registrations.count()
 
-    def add(self, user, pool):
+    def add(self, user, pools):
         reg = self.registrations.create(event=self.event,
                                         user=user,
                                         waiting_list=self)
-        for _pool in pool:
+        for _pool in pools:
             reg.waiting_pool.add(_pool)
         return reg
 
