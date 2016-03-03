@@ -58,39 +58,64 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.registrations.create(event=self, user=user, pool=pool)
 
     def register(self, user):
+        # Create a list of all pools the user can join, based solely on permissions
         possible_pools = [_pool
                           for _pool in self.all_pools
                           if self.can_register(user, _pool)]
+        # If there is only one possible pool, and the event only has one pool, we
+        # can skip a lot of the logic used to pick the correct pool.
         if len(possible_pools) == 1 and self.number_of_pools == 1:
             if possible_pools[0].is_full:
                 return self.waiting_list.add(user=user, pool=possible_pools)
             else:
                 return self.registrations.create(event=self, pool=possible_pools[0], user=user)
 
-        if len(possible_pools) == 0:
+        # TODO Raise exception if no possible/legal pools
+        if not possible_pools:
             return False
 
+        # If the event isn't merged we need to calculate which pools have room for the user.
         if not self.is_merged:
 
+            # Removes pools that are full, and adds them to a list to be used in
+            # the waiting list, so that we can remember what pools are available
+            # for the user, in case of a bump
             full_pools = [_pool for _pool in possible_pools if _pool.is_full]
             for _pool in full_pools:
                 possible_pools.remove(_pool)
 
-            if len(possible_pools) == 0:
+            # Adds user to waiting list if no possible pools are left
+            if not possible_pools:
                 return self.waiting_list.add(user=user, pool=full_pools)
+
+        # If the event is merged, but full. we don't need to check each pool if it is full,
+        # we can just check the event it self. The user is added to the waiting list for all
+        # pools, since the event is merged.
 
         elif self.is_full:
             return self.waiting_list.add(user=user, pool=possible_pools)
+        # Notice that if the event is merged but not full the user can now join
+        # any permitted pool, even one that is full. Full pools are no longer a concept after
+        # merging.
 
+        # We want the user to join the most 'exclusive' pool, i.e. the one with
+        # the lowest amount of potential members.
+        # Calculate the amount of members that could potentially
+        # try and join each pool
         potential_capacities = [sum(group.users.count()
                                 for group in _pool.permission_groups.all())
                                 for _pool in possible_pools]
 
+        # Find the lowest of these amounts
         lowest = min(potential_capacities)
         equal_pools = [index
                        for index in range(len(potential_capacities))
                        if potential_capacities[index] == lowest]
 
+        # If only one pool has that amount, select it. If several
+        # pools have this amount we choose the one with the lowest capacity.
+        # Maybe this should check for the one with highest capacity instead?
+        # I don't fucking know. If so, we need to change some of the tests.
         if len(equal_pools) == 1:
             chosen_pool = possible_pools[equal_pools[0]]
         else:
