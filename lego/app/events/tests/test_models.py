@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from lego.app.content.tests import ContentTestMixin
 from lego.app.events.models import Event, Pool, Registration
-from lego.app.events.views.events import EventViewSet
+from lego.app.events.views import EventViewSet
 from lego.users.models import AbakusGroup, User
 
 
