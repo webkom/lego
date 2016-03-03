@@ -1,8 +1,8 @@
 # -*- coding: utf--8 -*-
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from lego.app.comments.models import Comment
 
+from lego.app.comments.models import Comment
 from lego.users.models import User
 
 

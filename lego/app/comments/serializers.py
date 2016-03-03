@@ -1,10 +1,10 @@
 from basis.serializers import BasisSerializer
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import CharField, DateTimeField
 
 from lego.app.comments.models import Comment
 from lego.users.serializers import PublicUserSerializer
-from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField
 
 
 class CommentSerializer(BasisSerializer):
@@ -15,15 +15,7 @@ class CommentSerializer(BasisSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'author', 'comment_target', 'created_at', 'updated_at')
-
-    def validate(self, data):
-        instance = self.instance
-
-        if instance is not None:
-            if data.get('comment_target') is not None and data.get('comment_target') != instance.get('comment_target'):
-                raise ValidationError('Cannot update comment_target')
-        return data;
+        fields = ('id', 'text', 'author', 'comment_target', 'created_at', 'updated_at', 'parent')
 
     def update(self, instance, validated_data):
         instance.text = validated_data.get('text', instance.text)
@@ -40,7 +32,7 @@ class CommentSerializer(BasisSerializer):
         validated_data.pop('comment_target')
 
         try:
-            validated_data['content_type'] = ContentType.objects.get(app_label= content_type)
+            validated_data['content_type'] = ContentType.objects.get(app_label=content_type)
         except ContentType.DoesNotExist:
             raise ValidationError({
                 'comment_target': 'content_type does not exist'
@@ -52,6 +44,16 @@ class CommentSerializer(BasisSerializer):
                 'comment_target': 'object_id {0} does not exist in database'.format(object_id)
             })
 
-        validated_data['object_id'] = object_id
-        return Comment.objects.create(**validated_data)
+        validated_data['object_id'] = int(object_id)
 
+        if 'parent' in validated_data:
+            parent = validated_data['parent']
+            print(parent.object_id, validated_data['object_id'])
+            print(parent.content_type, validated_data['content_type'])
+            if (parent.object_id != validated_data['object_id'] or
+                    str(parent.content_type) != str(validated_data['content_type'])):
+                raise ValidationError({
+                    'parent': 'parent does not point to the same comment_target'
+                })
+
+        return Comment.objects.create(**validated_data)
