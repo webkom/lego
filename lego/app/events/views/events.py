@@ -5,8 +5,7 @@ from lego.app.events.permissions import EventPermissions, NestedEventPermissions
 from lego.app.events.serializers import (EventCreateAndUpdateSerializer,
                                          EventReadDetailedSerializer, EventReadSerializer,
                                          PoolCreateAndUpdateSerializer, PoolReadSerializer,
-                                         RegistrationCreateAndUpdateSerializer,
-                                         SpecificRegistrationCreateAndUpdateSerializer)
+                                         RegistrationCreateAndUpdateSerializer)
 from lego.permissions.filters import ObjectPermissionsFilter
 
 
@@ -48,13 +47,7 @@ class PoolViewSet(viewsets.ModelViewSet):
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
     permission_classes = (NestedEventPermissions,)
-
-    def get_serializer_class(self):
-        pool_id = self.kwargs.get('pool_pk', None)
-        if pool_id:
-            return SpecificRegistrationCreateAndUpdateSerializer
-        else:
-            return RegistrationCreateAndUpdateSerializer
+    serializer_class = RegistrationCreateAndUpdateSerializer
 
     def get_queryset(self):
         pool_id = self.kwargs.get('pool_pk', None)
