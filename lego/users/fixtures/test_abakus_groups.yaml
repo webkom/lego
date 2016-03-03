@@ -1,4 +1,5 @@
 - model: users.AbakusGroup
+  pk: 1
   fields:
     name: UserAdminTest
     level: 0
@@ -13,6 +14,7 @@
       - /sudo/admin/users/destroy/
 
 - model: users.AbakusGroup
+  pk: 2
   fields:
     name: AbakusGroupAdminTest
     level: 0
@@ -27,6 +29,7 @@
       - /sudo/admin/groups/destroy/
 
 - model: users.AbakusGroup
+  pk: 3
   fields:
     name: TestGroup
     level: 0
@@ -35,6 +38,7 @@
     tree_id: 102
 
 - model: users.AbakusGroup
+  pk: 4
   fields:
     name: EventAdminTest
     level: 0
@@ -49,6 +53,7 @@
       - /sudo/admin/events/destroy/
 
 - model: users.AbakusGroup
+  pk: 5
   fields:
     name: CommentTest
     level: 0

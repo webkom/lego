@@ -14,5 +14,5 @@ class CommentPermissions(KeywordPermissions, ObjectPermissions):
 
     def has_object_permission(self, request, view, obj):
         # TODO: Check permissions of source
-        return (KeywordPermissions.has_object_permission(self, request, view, obj) or
+        return (KeywordPermissions.has_object_permission(self, request, view, obj.content_object) or
                 ObjectPermissions.has_object_permission(self, request, view, obj))

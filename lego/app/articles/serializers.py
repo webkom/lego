@@ -1,9 +1,9 @@
 from basis.serializers import BasisSerializer
+from rest_framework.fields import CharField
 
 from lego.app.articles.models import Article
 from lego.app.comments.serializers import CommentSerializer
 from lego.users.serializers import PublicUserSerializer
-from rest_framework.fields import CharField
 
 
 class DetailedArticleSerializer(BasisSerializer):

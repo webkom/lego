@@ -1,4 +1,3 @@
-from lego.app.comments.models import Comment
 import os
 
 from django.conf import settings
@@ -6,6 +5,7 @@ from django.core import serializers
 from django.core.management import BaseCommand
 
 from lego.app.articles.models import Article
+from lego.app.comments.models import Comment
 from lego.app.events.models import Event
 from lego.app.oauth.models import APIApplication
 from lego.users.models import AbakusGroup, Membership, User

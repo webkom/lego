@@ -28,6 +28,7 @@ class ListArticlesTestCase(APITestCase):
 
     def test_fields(self):
         response = self.client.get(_get_list_url())
+        self.assertEqual(response.status_code, 200)
         article = response.data[0]
         self.assertEqual(set(PublicArticleSerializer.Meta.fields), set(article.keys()))
 
@@ -46,7 +47,7 @@ class ListArticlesTestCase(APITestCase):
 
 
 class RetrieveArticlesTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_articles.yaml',
+    fixtures = ['initial_abakus_groups.yaml', 'test_articles.yaml',
                 'test_users.yaml']
 
     def setUp(self):
