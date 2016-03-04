@@ -133,15 +133,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration.waiting_pool.clear()
         registration.unregistration_date = timezone.now()
         registration.save()
-        self.notify_unregistration(pool_unregistered_from=pool)
+        if pool:
+            self.notify_unregistration(pool)
 
-    def notify_unregistration(self, pool_unregistered_from):
-        if (self.number_of_registrations < self.capacity and
-                pool_unregistered_from is not None):
+    def notify_unregistration(self, pool):
+        if self.number_of_registrations < self.capacity:
             if self.is_merged:
                 self.bump()
-            elif pool_unregistered_from.waiting_registrations.count() > 0:
-                self.bump(from_pool=pool_unregistered_from)
+            elif pool.waiting_registrations.count() > 0:
+                self.bump(from_pool=pool)
 
     def bump(self, from_pool=None):
         if self.waiting_list.number_of_registrations > 0:
