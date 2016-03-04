@@ -17,8 +17,6 @@ from .validators import username_validator
 
 
 class AbakusGroup(MPTTModel, PersistentModel):
-    objects = AbakusGroupManager()
-
     name = models.CharField(max_length=80, unique=True)
     description = models.CharField(blank=True, max_length=200)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
@@ -27,6 +25,8 @@ class AbakusGroup(MPTTModel, PersistentModel):
                          max_length=30),
         verbose_name='permissions', default=list
     )
+
+    objects = AbakusGroupManager()
 
     class Meta:
         unique_together = 'name',

@@ -1,11 +1,13 @@
+from basis.models import BasisModel
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from lego.app.content.models import Content
+from lego.permissions.models import ObjectPermissionsModel
 
 
-class Event(Content):
+class Event(Content, BasisModel, ObjectPermissionsModel):
 
     COMPANY_PRESENTATION = 0
     COURSE = 1
