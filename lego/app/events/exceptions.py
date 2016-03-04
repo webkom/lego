@@ -1,0 +1,2 @@
+class NoAvailablePools(Exception):
+    pass
