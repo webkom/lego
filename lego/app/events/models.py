@@ -7,6 +7,8 @@ from lego.app.content.models import Content
 from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import AbakusGroup, User
 
+from .exceptions import NoAvailablePools
+
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
 
@@ -70,9 +72,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             else:
                 return self.registrations.create(event=self, pool=possible_pools[0], user=user)
 
-        # TODO Raise exception if no possible/legal pools
         if not possible_pools:
-            return False
+            raise NoAvailablePools()
 
         # If the event isn't merged we need to calculate which pools have room for the user.
         if not self.is_merged:
