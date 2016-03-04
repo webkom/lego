@@ -10,7 +10,7 @@ def _check_intersection(first, second):
     return len(set(first).intersection(set(second))) > 0
 
 
-class ObjectPermissionsModel(BasisModel):
+class ObjectPermissionsModel(models.Model):
     """
     Abstract model that provides fields that can be used for object permissions.
     """

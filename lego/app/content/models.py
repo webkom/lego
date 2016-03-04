@@ -5,7 +5,7 @@ from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import User
 
 
-class Content(ObjectPermissionsModel):
+class Content(models.Model):
     class Meta:
         abstract = True
 
