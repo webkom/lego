@@ -1,4 +1,4 @@
-django==1.9.3
+django==1.9.4
 
 psycopg2==2.6.1
 markdown==2.6.5
