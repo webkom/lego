@@ -1,4 +1,3 @@
-from basis.models import BasisModel
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -10,7 +9,7 @@ def _check_intersection(first, second):
     return len(set(first).intersection(set(second))) > 0
 
 
-class ObjectPermissionsModel(BasisModel):
+class ObjectPermissionsModel(models.Model):
     """
     Abstract model that provides fields that can be used for object permissions.
     """

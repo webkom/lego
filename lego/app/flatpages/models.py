@@ -1,3 +1,4 @@
+from basis.models import BasisModel
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from markdown import markdown
@@ -5,7 +6,7 @@ from markdown import markdown
 from lego.permissions.models import ObjectPermissionsModel
 
 
-class Page(ObjectPermissionsModel):
+class Page(BasisModel, ObjectPermissionsModel):
     title = models.CharField(_('title'), max_length=200)
     slug = models.CharField(_('slug'), unique=True, db_index=True, max_length=100)
 
