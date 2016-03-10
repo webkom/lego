@@ -1,5 +1,6 @@
 from basis.models import BasisModel
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -175,11 +176,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def capacity(self):
-        capacity = 0
-        for pool in self.all_pools:
-            if self.is_activated(pool):
-                capacity += pool.capacity
-        return capacity
+        aggregate = self.all_pools.filter(activation_date__lte=timezone.now())\
+            .aggregate(Sum('capacity'))
+        return aggregate['capacity__sum']
 
     @property
     def number_of_registrations(self):
