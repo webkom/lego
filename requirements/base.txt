@@ -8,7 +8,7 @@ pyyaml==3.11
 raven==5.11.1
 redis==2.10.5
 
-djangorestframework==3.3.2
+djangorestframework==3.3.3
 djangorestframework-jwt==1.7.2
 djangorestframework-camel-case==0.2.0
 
