@@ -37,7 +37,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
             return self.parent.name == 'Abakom'
         return False
 
-    @property
+    @cached_property
     def number_of_users(self):
         return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True))\
             .distinct().count()
