@@ -11,6 +11,12 @@ class ArticlesViewSet(viewsets.ModelViewSet):
     filter_backends = (ObjectPermissionsFilter,)
     permission_classes = (ArticlePermissions,)
 
+    def get_queryset(self):
+        if self.action == 'list':
+            return self.queryset
+
+        return self.queryset.prefetch_related('comments')
+
     def get_serializer_class(self):
         if self.action == 'list':
             return PublicArticleSerializer

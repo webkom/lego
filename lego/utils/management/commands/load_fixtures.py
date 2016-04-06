@@ -5,6 +5,7 @@ from django.core import serializers
 from django.core.management import BaseCommand
 
 from lego.app.articles.models import Article
+from lego.app.comments.models import Comment
 from lego.app.events.models import Event
 from lego.app.oauth.models import APIApplication
 from lego.users.models import AbakusGroup, Membership, User
@@ -39,6 +40,7 @@ class Command(BaseCommand):
             self.load_from_fixture('users/fixtures/development_users.yaml', User)
             self.load_from_fixture('app/events/fixtures/development_events.yaml', Event)
             self.load_from_fixture('app/articles/fixtures/development_articles.yaml', Article)
+            self.load_from_fixture('app/comments/fixtures/development_comments.yaml', Comment)
             self.load_from_fixture('app/oauth/fixtures/development_applications.yaml',
                                    APIApplication)
 

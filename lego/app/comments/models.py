@@ -1,19 +1,16 @@
-from basis.models import PersistentModel
+from basis.models import BasisModel
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from lego.permissions.models import ObjectPermissionsModel
 
-from lego.users.models import User
 
-
-class Comment(PersistentModel):
-    content = models.TextField()
-
-    author = models.ForeignKey(User, related_name='comments')
-
+class Comment(BasisModel, ObjectPermissionsModel):
+    text = models.TextField()
     content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
+    object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
+    parent = models.ForeignKey('self', null=True)
 
     def __str__(self):
-        return '{0} - {1}'.format(self.author, self.content[:30])
+        return '{0} - {1}'.format(self.created_by, self.text[:30])

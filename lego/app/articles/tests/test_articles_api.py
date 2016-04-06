@@ -28,6 +28,7 @@ class ListArticlesTestCase(APITestCase):
 
     def test_fields(self):
         response = self.client.get(_get_list_url())
+        self.assertEqual(response.status_code, 200)
         article = response.data[0]
         self.assertEqual(set(PublicArticleSerializer.Meta.fields), set(article.keys()))
 
@@ -52,7 +53,7 @@ class RetrieveArticlesTestCase(APITestCase):
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-        self.abakus_group = AbakusGroup.objects.get(name='Abakus')
+        self.abakus_group = AbakusGroup.objects.get(pk=1)
         self.abakus_group.add_user(self.abakus_user)
 
     def test_unauthorized(self):
