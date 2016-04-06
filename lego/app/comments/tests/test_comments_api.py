@@ -15,60 +15,6 @@ def _get_detail_url(pk):
     return reverse('api:v1:comment-detail', kwargs={'pk': pk})
 
 
-class ListCommentsAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_comments.yaml']
-
-    def setUp(self):
-        self.all_comments = Comment.objects.all()
-        self.all_users = User.objects.all()
-        self.with_permission = self.all_users.get(username='useradmin_test')
-        self.comments_test_group = AbakusGroup.objects.get(name='CommentTest')
-        self.comments_test_group.add_user(self.with_permission)
-        self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
-
-    def test_without_auth(self):
-        response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 401)
-
-    def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.without_permission)
-        response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 403)
-
-    def test_with_authed_user(self):
-        self.client.force_authenticate(user=self.with_permission)
-        response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 200)
-
-        for comment in response.data:
-            keys = set(comment.keys())
-            self.assertEqual(
-                keys,
-                set(['id', 'text', 'author', 'createdAt', 'updatedAt', 'parent'])
-            )
-
-
-class RetrieveCommentsAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_comments.yaml']
-
-    def setUp(self):
-        self.all_comments = Comment.objects.all()
-        self.all_users = User.objects.all()
-        self.with_permission = self.all_users.get(username='useradmin_test')
-        self.comments_test_group = AbakusGroup.objects.get(name='CommentTest')
-        self.comments_test_group.add_user(self.with_permission)
-        self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
-        self.test_comment = self.all_comments.first()
-
-    def test_with_authed_user(self):
-        self.client.force_authenticate(user=self.with_permission)
-        response = self.client.get(_get_detail_url(self.test_comment.pk))
-        comment = response.data
-        keys = set(comment.keys())
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(['id', 'text', 'author', 'created_at', 'updated_at', 'parent']))
-
-
 class CreateCommentsAPITestCase(APITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
@@ -83,56 +29,56 @@ class CreateCommentsAPITestCase(APITestCase):
         self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
 
     def test_without_auth(self):
-        postData = {
+        post_data = {
             'text': 'Hey',
             'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             )
         }
-        response = self.client.post(_get_list_url(), postData)
+        response = self.client.post(_get_list_url(), post_data)
 
         self.assertEqual(response.status_code, 403)
 
     def test_without_view_permissions(self):
         self.client.force_authenticate(user=self.without_permission)
-        postData = {
+        post_data = {
             'text': 'Hey',
             'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             )
         }
-        response = self.client.post(_get_list_url(), postData)
+        response = self.client.post(_get_list_url(), post_data)
 
         self.assertEqual(response.status_code, 403)
 
     def test_with_view_permissions(self):
         self.client.force_authenticate(user=self.with_permission)
 
-        postData = {
+        post_data = {
             'text': 'Hey',
             'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             )
         }
-        response = self.client.post(_get_list_url(), postData)
+        response = self.client.post(_get_list_url(), post_data)
 
         self.assertEqual(response.status_code, 201)
 
         comment = Comment.objects.get(pk=response.data['id'])
 
-        self.assertEqual(comment.text, postData['text'])
+        self.assertEqual(comment.text, post_data['text'])
         self.assertEqual(comment.created_by.pk, self.with_permission.pk)
 
     def test_with_empty_text_and_source(self):
         self.client.force_authenticate(user=self.with_permission)
-        postData = {
+        post_data = {
             'text': '',
             'comment_target': ''
         }
-        response = self.client.post(_get_list_url(), postData)
+        response = self.client.post(_get_list_url(), post_data)
 
         self.assertIn('comment_target', response.data.keys())
         self.assertIn('text', response.data.keys())
@@ -140,28 +86,28 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_invalid_contenttype(self):
         self.client.force_authenticate(user=self.with_permission)
-        postData = {
+        post_data = {
             'text': 'Hey',
             'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label+'xyz',
                 Article.objects.first().pk
             )
         }
-        response = self.client.post(_get_list_url(), postData)
+        response = self.client.post(_get_list_url(), post_data)
 
         self.assertIn('comment_target', response.data.keys())
         self.assertEqual(response.status_code, 400)
 
     def test_with_invalid_objectid(self):
         self.client.force_authenticate(user=self.with_permission)
-        postData = {
+        post_data = {
             'text': 'Hey',
             'comment_target': '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.last().pk+1000
             ),
         }
-        response = self.client.post(_get_list_url(), postData)
+        response = self.client.post(_get_list_url(), post_data)
 
         self.assertIn('comment_target', response.data.keys())
         self.assertEqual(response.status_code, 400)
