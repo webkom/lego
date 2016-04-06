@@ -98,6 +98,26 @@ class UserTestCase(TestCase):
         self.assertTrue(abakom in abakus_groups)
         self.assertTrue(abakus in abakus_groups)
 
+    def test_number_of_users(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        abakom = AbakusGroup.objects.get(name='Abakom')
+        webkom = AbakusGroup.objects.get(name='Webkom')
+        self.assertEqual(abakus.number_of_users, 0)
+
+        abakus.add_user(self.user)
+        abakom.add_user(User.objects.get(pk=2))
+        webkom.add_user(User.objects.get(pk=3))
+
+        self.assertEqual(abakus.number_of_users, 3)
+        self.assertEqual(abakom.number_of_users, 2)
+        self.assertEqual(webkom.number_of_users, 1)
+
+        webkom.remove_user(User.objects.get(pk=3))
+
+        self.assertEqual(abakus.number_of_users, 2)
+        self.assertEqual(abakom.number_of_users, 1)
+        self.assertEqual(webkom.number_of_users, 0)
+
     def test_natural_key(self):
         found_user = User.objects.get_by_natural_key(self.user.username)
         self.assertEqual(self.user, found_user)
