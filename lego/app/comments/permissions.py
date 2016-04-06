@@ -6,13 +6,13 @@ class CommentPermissions(KeywordPermissions, ObjectPermissions):
     perms_map = {
         'list': '/sudo/admin/comments/retrieve/',
         'retrieve': '/sudo/admin/comments/retrieve/',
-        'create': '/sudo/admin/comments/create/',
+        # create permission is enforced in serializer
+        'create': None,
         'update': '/sudo/admin/comments/update/',
         'partial_update': '/sudo/admin/comments/update/',
         'destroy': '/sudo/admin/comments/destroy/',
     }
 
     def has_object_permission(self, request, view, obj):
-        # TODO: Check permissions of source
         return (KeywordPermissions.has_object_permission(self, request, view, obj.content_object) or
                 ObjectPermissions.has_object_permission(self, request, view, obj))

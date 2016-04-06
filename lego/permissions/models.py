@@ -46,8 +46,12 @@ class ObjectPermissionsModel(models.Model):
         if not user.is_authenticated():
             return not self.needs_auth()
 
+        can_view_groups = self.can_view_groups.all()
+
+        if not can_view_groups:
+            return True
         return (user == self.created_by or
-                _check_intersection(user.all_groups, self.can_view_groups.all()))
+                _check_intersection(user.all_groups, can_view_groups))
 
     def can_edit(self, user):
         """

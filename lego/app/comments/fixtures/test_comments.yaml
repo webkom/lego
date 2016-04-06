@@ -1,4 +1,5 @@
 - model: comments.Comment
+  pk: 1
   fields:
     content_type: 21 # article
     object_id: 1
@@ -7,6 +8,7 @@
       Enda flere komitéer??!?
 
 - model: comments.Comment
+  pk: 2
   fields:
     content_type: 21 # article
     object_id: 2
