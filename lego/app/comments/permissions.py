@@ -4,8 +4,6 @@ from lego.permissions.object_permissions import ObjectPermissions
 
 class CommentPermissions(KeywordPermissions, ObjectPermissions):
     perms_map = {
-        'list': '/sudo/admin/comments/retrieve/',
-        'retrieve': '/sudo/admin/comments/retrieve/',
         # create permission is enforced in serializer
         'create': None,
         'update': '/sudo/admin/comments/update/',
