@@ -30,7 +30,7 @@
   fields:
     quote: 2
     user: 3
-    like_date: '2011-09-01T13:20:30+03:00'
+    created_at: '2011-09-01T13:20:30+03:00'
 
 
 - model: quotes.QuoteLike
@@ -38,4 +38,4 @@
   fields:
     quote: 2
     user: 1
-    like_date: '2011-09-01T13:20:30+03:00'
+    created_at: '2011-09-01T13:20:30+03:00'

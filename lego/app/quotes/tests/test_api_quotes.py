@@ -15,7 +15,11 @@ _test_quote_data = {
 
 
 def _get_list_url():
-    return reverse('quote-list')
+    return reverse('api:v1:quote-list')
+
+
+def _get_list_approved_url():
+    return _get_list_url() + '?approved=true'
 
 
 def _get_list_unapproved_url():
@@ -23,23 +27,23 @@ def _get_list_unapproved_url():
 
 
 def _get_detail_url(pk):
-    return reverse('quote-detail', kwargs={'pk': pk})
+    return reverse('api:v1:quote-detail', kwargs={'pk': pk})
 
 
 def _get_like_url(pk):
-    return reverse('quote-like', kwargs={'pk': pk})
+    return reverse('api:v1:quote-like', kwargs={'pk': pk})
 
 
 def _get_unlike_url(pk):
-    return reverse('quote-unlike', kwargs={'pk': pk})
+    return reverse('api:v1:quote-unlike', kwargs={'pk': pk})
 
 
 def _get_approve_url(pk):
-    return reverse('quote-approve', kwargs={'pk': pk})
+    return reverse('api:v1:quote-approve', kwargs={'pk': pk})
 
 
 def _get_unapprove_url(pk):
-    return reverse('quote-unapprove', kwargs={'pk': pk})
+    return reverse('api:v1:quote-unapprove', kwargs={'pk': pk})
 
 
 class ListApprovedQuotesTestCase(APITestCase):
@@ -51,14 +55,14 @@ class ListApprovedQuotesTestCase(APITestCase):
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_list_url())
+        response = self.client.get(_get_list_approved_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
-        response = self.client.get(_get_list_url())
+        response = self.client.get(_get_list_approved_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
@@ -74,8 +78,8 @@ class ListUnapprovedQuotesTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.get(_get_list_unapproved_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(len(response.data), 1)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
@@ -166,7 +170,8 @@ class LikeUnapprovedQuoteTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_like_url(3))
-        self.assertEqual(response.status_code, 403)
+        # .get_object() raises a NotFound (404), raise Forbidden (403) instead?
+        self.assertEqual(response.status_code, 404)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
@@ -187,7 +192,8 @@ class UnlikeUnapprovedQuoteTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.post(_get_unlike_url(3))
-        self.assertEqual(response.status_code, 403)
+        # .get_object() raises a NotFound (404), raise Forbidden (403) instead?
+        self.assertEqual(response.status_code, 404)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)

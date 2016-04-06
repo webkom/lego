@@ -1,4 +1,3 @@
-from django.http import Http404
 from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import PermissionDenied
@@ -6,49 +5,41 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from lego.app.quotes.models import Quote, QuoteLike
-from lego.app.quotes.permissions import QuotePermissions
+from lego.app.quotes.permissions import QuotePermissions, QuotePermissionsFilter
 from lego.app.quotes.serializers import QuoteSerializer
-from lego.permissions.filters import ObjectPermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):
-    def get_serializer_class(self):
-        return QuoteSerializer
-
     queryset = Quote.objects.all()
-    filter_backends = (ObjectPermissionsFilter,)
+    filter_backends = (QuotePermissionsFilter, )
     permission_classes = (IsAuthenticated, QuotePermissions)
+    serializer_class = QuoteSerializer
 
-    def get_queryset(self):
-        approved = not (self.request.query_params.get('approved') == 'false' and
-                        self.request.user.has_perm(QuotePermissions.perms_map['approve']))
-        return Quote.objects.filter(approved=approved)
-
-    def retrieve(self, request, pk=None):
-        instance = self._get_object(pk)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
         serializer = QuoteSerializer(instance, context={'request': request})
         return Response(
             serializer.data
         )
 
-    @detail_route(methods=['POST'], url_path='like')
+    @detail_route(methods=['POST'])
     def like(self, request, pk=None):
-        return self._like_quote(request=request, pk=pk)
+        return self._like_quote(request=request)
 
-    @detail_route(methods=['POST'], url_path='unlike')
+    @detail_route(methods=['POST'])
     def unlike(self, request, pk=None):
-        return self._like_quote(request=request, pk=pk, like=False)
+        return self._like_quote(request=request, like=False)
 
-    @detail_route(methods=['PUT'], url_path='approve')
+    @detail_route(methods=['PUT'])
     def approve(self, request, pk=None):
-        return self._approve_quote(request=request, pk=pk)
+        return self._approve_quote(request=request)
 
-    @detail_route(methods=['PUT'], url_path='unapprove')
+    @detail_route(methods=['PUT'])
     def unapprove(self, request, pk=None):
-        return self._approve_quote(request=request, pk=pk, approve=False)
+        return self._approve_quote(request=request, approve=False)
 
-    def _like_quote(self, request, pk, like=True):
-        instance = self._get_object(pk)
+    def _like_quote(self, request, like=True):
+        instance = self.get_object()
         quote_like = bool(QuoteLike.objects.filter(user=request.user, quote=instance))
         if like:
             if instance.approved and not quote_like:
@@ -68,8 +59,8 @@ class QuoteViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
-    def _approve_quote(self, request, pk, approve=True):
-        instance = self._get_object(pk)
+    def _approve_quote(self, request, approve=True):
+        instance = self.get_object()
         if approve:
             instance.approve()
         else:
@@ -78,9 +69,3 @@ class QuoteViewSet(viewsets.ModelViewSet):
         return Response(
             serializer.data
         )
-
-    def _get_object(self, pk=None):
-        try:
-            return Quote.objects.get(pk=pk)
-        except Quote.DoesNotExist:
-            raise Http404
