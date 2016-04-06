@@ -37,9 +37,18 @@ class AbakusGroup(MPTTModel, PersistentModel):
             return self.parent.name == 'Abakom'
         return False
 
+    @property
+    def number_of_users(self):
+        return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True))\
+            .distinct().count()
+
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
         membership.save()
+
+    def remove_user(self, user):
+        membership = Membership.objects.get(user=user, abakus_group=self)
+        membership.delete()
 
     def __str__(self):
         return self.name
