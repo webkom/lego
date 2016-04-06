@@ -1,5 +1,6 @@
 from basis.serializers import BasisSerializer
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, DateTimeField
 
@@ -24,12 +25,11 @@ class CommentSerializer(BasisSerializer):
 
     def create(self, validated_data):
         try:
-            content_type, object_id = validated_data['comment_target'].split('-')
+            content_type, object_id = validated_data.pop('comment_target').split('-')
         except ValueError:
             raise ValidationError({
                 'comment_target': 'Source should be in the form "[ContentType]-[ObjectId]"'
             })
-        validated_data.pop('comment_target')
 
         try:
             validated_data['content_type'] = ContentType.objects.get(app_label=content_type)
@@ -38,20 +38,23 @@ class CommentSerializer(BasisSerializer):
                 'comment_target': 'content_type does not exist'
             })
 
-        model = validated_data['content_type'].model_class()
-        if not model.objects.filter(pk=object_id).exists():
+        model_class = validated_data['content_type'].model_class()
+        try:
+            parent_instance = model_class.objects.get(pk=object_id)
+        except model_class.DoesNotExist:
             raise ValidationError({
                 'comment_target': 'object_id {0} does not exist in database'.format(object_id)
             })
+
+        if not parent_instance.can_view(self.context['request'].user):
+            raise PermissionDenied('You do not have permission to view the comment_target')
 
         validated_data['object_id'] = int(object_id)
 
         if 'parent' in validated_data:
             parent = validated_data['parent']
-            print(parent.object_id, validated_data['object_id'])
-            print(parent.content_type, validated_data['content_type'])
             if (parent.object_id != validated_data['object_id'] or
-                    str(parent.content_type) != str(validated_data['content_type'])):
+                    parent.content_type.id != validated_data['content_type'].id):
                 raise ValidationError({
                     'parent': 'parent does not point to the same comment_target'
                 })

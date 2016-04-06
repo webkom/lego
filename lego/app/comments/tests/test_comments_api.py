@@ -60,18 +60,6 @@ class RetrieveCommentsAPITestCase(APITestCase):
         self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
         self.test_comment = self.all_comments.first()
 
-    def test_without_auth(self):
-        pass
-        # response = self.client.get(_get_detail_url(self.all_comments.first().pk))
-        # self.assertEqual(response.status_code, 401)
-
-    def test_with_normal_user(self):
-        pass
-        # self.client.force_authenticate(user=self.without_permission)
-        # response = self.client.get(_get_detail_url(self.test_comment.pk))
-
-        # self.assertEqual(response.status_code, 403)
-
     def test_with_authed_user(self):
         self.client.force_authenticate(user=self.with_permission)
         response = self.client.get(_get_detail_url(self.test_comment.pk))
@@ -94,11 +82,6 @@ class CreateCommentsAPITestCase(APITestCase):
         self.comments_test_group.add_user(self.with_permission)
         self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
 
-        '''
-        self._test_comment_data = _test_comment_data.copy()
-        self._test_comment_data['content_type'] = self._test_comment_data['content_type'].pk
-        '''
-
     def test_without_auth(self):
         postData = {
             'text': 'Hey',
@@ -109,9 +92,9 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), postData)
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
 
-    def test_with_normal_user(self):
+    def test_without_view_permissions(self):
         self.client.force_authenticate(user=self.without_permission)
         postData = {
             'text': 'Hey',
@@ -124,8 +107,9 @@ class CreateCommentsAPITestCase(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_with_authed_user(self):
+    def test_with_view_permissions(self):
         self.client.force_authenticate(user=self.with_permission)
+
         postData = {
             'text': 'Hey',
             'comment_target': '{0}-{1}'.format(
@@ -141,7 +125,6 @@ class CreateCommentsAPITestCase(APITestCase):
 
         self.assertEqual(comment.text, postData['text'])
         self.assertEqual(comment.created_by.pk, self.with_permission.pk)
-        self.assertEqual(response.status_code, 201)
 
     def test_with_empty_text_and_source(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -205,113 +188,142 @@ class CreateCommentsAPITestCase(APITestCase):
         self.assertEqual(response2.status_code, 201)
 
     def test_with_invalid_parent(self):
-        pass
+        self.client.force_authenticate(user=self.with_permission)
+        comment_target = '{0}-{1}'.format(
+            ContentType.objects.get_for_model(Article).app_label,
+            Article.objects.last().pk
+        )
+        comment_target_2 = '{0}-{1}'.format(
+            ContentType.objects.get_for_model(Article).app_label,
+            Article.objects.first().pk
+        )
+
+        response = self.client.post(_get_list_url(), {
+            'comment_target': comment_target,
+            'text': 'first comment'
+        })
+        self.assertEqual(response.status_code, 201)
+        pk = response.data['id']
+
+        response2 = self.client.post(_get_list_url(), {
+            'comment_target': comment_target_2,
+            'text': 'second comment',
+            'parent': pk
+        })
+        self.assertEqual(response2.status_code, 400)
+        self.assertIn('parent', response2.data)
 
     def test_with_nonexistent_parent(self):
-        pass
+        self.client.force_authenticate(user=self.with_permission)
+        comment_target = '{0}-{1}'.format(
+            ContentType.objects.get_for_model(Article).app_label,
+            Article.objects.last().pk
+        )
+
+        response = self.client.post(_get_list_url(), {
+            'comment_target': comment_target,
+            'text': 'first comment'
+        })
+        self.assertEqual(response.status_code, 201)
+        pk = response.data['id']
+
+        response2 = self.client.post(_get_list_url(), {
+            'comment_target': comment_target,
+            'text': 'second comment',
+            'parent': pk+1000
+        })
+        self.assertEqual(response2.status_code, 400)
+        self.assertIn('parent', response2.data)
 
 
-'''
 class UpdateCommentsAPITestCase(APITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
     ]
 
+    def setUp(self):
+        self.all_comments = Comment.objects.all()
+        self.all_users = User.objects.all()
+        self.with_permission = self.all_users.get(username='useradmin_test')
+        self.comments_test_group = AbakusGroup.objects.get(name='CommentTest')
+        self.comments_test_group.add_user(self.with_permission)
+        self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
+        self.test_comment = Comment.objects.first()
+
     modified_comment = {
         'text': 'whats up'
     }
 
-    def setUp(self):
-        self.all_users = User.objects.all()
-
-        self.with_perm = self.all_users.get(username='useradmin_test')
-        self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.with_perm)
-        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
-
     def successful_update(self, updater, update_object):
         self.client.force_authenticate(user=updater)
-        response = self.client.put(_get_detail_url(update_object.username), self.modified_user)
-        user = User.objects.get(pk=update_object.pk)
-
+        response = self.client.patch(_get_detail_url(update_object.pk), self.modified_comment)
+        comment = Comment.objects.get(pk=update_object.pk)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(set(response.data.keys()), set(DetailedUserSerializer.Meta.fields))
 
-        for key, value in self.modified_user.items():
-            self.assertEqual(getattr(user, key), value)
+        for key, value in self.modified_comment.items():
+            self.assertEqual(getattr(comment, key), value)
 
     def test_self(self):
-        self.successful_update(self.without_perm, self.without_perm)
+        self.successful_update(self.test_comment.created_by, self.test_comment)
 
     def test_with_useradmin(self):
-        self.successful_update(self.with_perm, self.test_user)
+        self.successful_update(self.with_permission, self.test_comment)
 
-    def test_other_with_normal_user(self):
-        self.client.force_authenticate(user=self.without_perm)
-        response = self.client.put(_get_detail_url(self.test_user.username), self.modified_user)
-        user = User.objects.get(pk=self.test_user.pk)
+    def test_with_new_comment_target(self):
+        comment_update = self.modified_comment.copy()
+        comment_target = '{0}-{1}'.format(
+            ContentType.objects.get_for_model(Article).app_label,
+            Article.objects.last().pk
+        )
+        comment_update['comment_target'] = comment_target
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.put(_get_detail_url(self.test_comment.pk), comment_update)
+        comment = Comment.objects.get(pk=self.test_comment.pk)
 
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(user, self.test_user)
+        self.assertEqual(comment, self.test_comment)
 
-    def test_update_with_super_user(self):
-        self.successful_update(self.with_perm, self.test_user)
+    def test_other_with_normal_user(self):
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.put(_get_detail_url(self.test_comment.pk), self.modified_comment)
+        comment = Comment.objects.get(pk=self.test_comment.pk)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(comment, self.test_comment)
 
 
 class DeleteUsersAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
-
-    _test_user_data = {
-        'username': 'new_testuser',
-        'first_name': 'new',
-        'last_name': 'test_user',
-        'email': 'new@testuser.com',
-    }
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
+    ]
 
     def setUp(self):
+        self.all_comments = Comment.objects.all()
         self.all_users = User.objects.all()
-
-        self.with_perm = self.all_users.get(username='useradmin_test')
-        self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.with_perm)
-        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
-
-        self.test_user = get_test_user()
+        self.with_permission = self.all_users.get(username='useradmin_test')
+        self.comments_test_group = AbakusGroup.objects.get(name='CommentTest')
+        self.comments_test_group.add_user(self.with_permission)
+        self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
+        self.test_comment = Comment.objects.get(pk=1)
+        self.test_comment_2 = Comment.objects.get(pk=2)
 
     def successful_delete(self, user):
         self.client.force_authenticate(user=user)
-        response = self.client.delete(_get_detail_url(self.test_user.username))
+        response = self.client.delete(_get_detail_url(self.test_comment.pk))
 
         self.assertEqual(response.status_code, 204)
-        self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
+        self.assertRaises(Comment.DoesNotExist, Comment.objects.get, pk=self.test_comment.pk)
 
     def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.without_perm)
-        response = self.client.delete(_get_detail_url(self.test_user.username))
-        users = User.objects.filter(pk=self.test_user.pk)
+        self.client.force_authenticate(user=self.without_permission)
+        response = self.client.delete(_get_detail_url(self.test_comment_2.pk))
+        comments = User.objects.filter(pk=self.test_comment_2.pk)
 
         self.assertEqual(response.status_code, 403)
-        self.assertTrue(len(users))
+        self.assertTrue(len(comments))
+
+    def test_with_owner(self):
+        self.successful_delete(self.test_comment.created_by)
 
     def test_with_useradmin(self):
-        self.successful_delete(self.with_perm)
-
-
-class RetrieveSelfTestCase(APITestCase):
-    fixtures = ['test_users.yaml']
-
-    def setUp(self):
-        self.user = User.objects.get(pk=1)
-
-    def test_self_authed(self):
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(reverse('api:v1:user-me'))
-
-        self.assertEqual(response.status_code, 200)
-        for field in DetailedUserSerializer.Meta.fields:
-            self.assertEqual(getattr(self.user, field), response.data[field])
-
-    def test_self_unauthed(self):
-        response = self.client.get(reverse('api:v1:user-me'))
-        self.assertEqual(response.status_code, 401)
-'''
+        self.successful_delete(self.with_permission)
