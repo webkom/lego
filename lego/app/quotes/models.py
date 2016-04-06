@@ -2,7 +2,7 @@ from basis.models import BasisModel
 from django.db import models
 
 from lego.permissions.models import ObjectPermissionsModel
-from lego.users.models import User, AbakusGroup
+from lego.users.models import AbakusGroup, User
 
 
 class Quote(BasisModel, ObjectPermissionsModel):

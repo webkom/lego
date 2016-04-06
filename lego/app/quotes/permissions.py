@@ -1,7 +1,8 @@
+from rest_framework.exceptions import PermissionDenied
+
 from lego.permissions.filters import ObjectPermissionsFilter
 from lego.permissions.keyword_permissions import KeywordPermissions
 from lego.permissions.object_permissions import ObjectPermissions
-from rest_framework.exceptions import PermissionDenied
 
 
 class QuotePermissionsFilter(ObjectPermissionsFilter):
