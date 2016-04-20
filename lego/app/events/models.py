@@ -13,15 +13,14 @@ from .exceptions import NoAvailablePools
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
     """
-    An event has a type (e.g. Company presentation, Party, etc). Eventually, each type of event might have
-    slightly different 'requirements' or fields. For example, a company presentation will be connected to a company from
-    our company database.
+    An event has a type (e.g. Company presentation, Party. Eventually, each type of event might
+    have slightly different 'requirements' or fields. For example, a company presentation will be
+    connected to a company from our company database.
 
-    An event has between 1 and X pools, each with their own capacity, to separate users based on groups.
-    At `merge_time` all pools are combined into one.
+    An event has between 1 and X pools, each with their own capacity,
+    to separate users based on groups. At `merge_time` all pools are combined into one.
 
     An event has a waiting list, filled with users who register after the event is full.
-
     """
 
     COMPANY_PRESENTATION = 0
@@ -82,12 +81,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     def register(self, user):
         """
-        Creates a registration for the event, and automatically selects the optimal pool for the user.
-        First checks if the user can register at all, raises an exception if not. Then checks if the pools
-        that the user can possibly join are full or not. If all are full, a registration for the
-        waiting list is created. If there's more than one possible pool that isn't full,
+        Creates a registration for the event,
+        and automatically selects the optimal pool for the user.
+
+        First checks if the user can register at all, raises an exception if not. Then checks if
+        the pools that the user can possibly join are full or not. If all are full, a registration
+        for the waiting list is created. If there's more than one possible pool that isn't full,
         calculates the total amount of users that can join each pool, and selects the most
-        exclusive pool. If several pools have the same exclusivity, selects the biggest pool of these.
+        exclusive pool. If several pools have the same exclusivity,
+        selects the biggest pool of these.
 
         :param user: The user who is trying to register
         :return: The registration (in the chosen pool)
@@ -153,7 +155,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
-        If the event isn't merged, bumps the first user in the waiting list who is able to join `pool`.
+        If the event isn't merged, bumps the first user in
+        the waiting list who is able to join `pool`.
 
         :param pool: The pool where the unregistration happened.
         """
@@ -168,7 +171,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         Pops the appropriate user/registration from the waiting list,
         and alters his registration to put him in a pool.
 
-        :param from_pool: A pool with a free slot in the event. If the event is merged, this will be null.
+        :param from_pool: A pool with a free slot. If the event is merged, this will be null.
         """
         if self.waiting_list.number_of_registrations > 0:
             top = self.waiting_list.pop(from_pool=from_pool)
@@ -286,7 +289,7 @@ class WaitingList(BasisModel):
         """
         Adds a user to the waiting list, along with what pools the user is waiting for.
 
-        :param pools: The pools that the user is allowed to join, saved for bumping purposes (used in pop).
+        :param pools: Pools that the user is allowed to join, saved for bumping (used in pop).
         :return: A registration for this waiting list, with `pool=null` and `waiting_pools=pools`
         """
         reg = self.registrations.create(event=self.event,
@@ -301,7 +304,7 @@ class WaitingList(BasisModel):
         Pops the first user in the waiting list that can join `from_pool`.
         If `from_pool=None`, pops the first user in the waiting list overall.
 
-        :param from_pool: The pool we are bumping to. If `pop` is called post-merge, there is no pool.
+        :param from_pool: The pool we are bumping to. If post-merge, there is no pool.
         :return: The registration that is first in line for said pool.
         """
         if from_pool:
