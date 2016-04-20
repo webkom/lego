@@ -218,7 +218,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def capacity(self):
         aggregate = self.all_pools.filter(activation_date__lte=timezone.now())\
             .aggregate(Sum('capacity'))
-        return aggregate['capacity__sum']
+        return aggregate['capacity__sum'] or 0
 
     @property
     def number_of_registrations(self):
