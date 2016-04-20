@@ -120,6 +120,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             else:
                 return self.registrations.create(event=self, user=user, pool=possible_pools[0])
 
+        # If the event is merged we can skip a lot of logic
         if self.is_merged:
             if self.is_full:
                 return self.waiting_list.add(user=user, pools=possible_pools)
