@@ -19,6 +19,7 @@ Contents:
     Permissions <permissions>
     Mail <mail>
     Authentication <authentication>
+    Events <events>
 
 Indices and tables
 ==================
