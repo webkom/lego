@@ -12,6 +12,17 @@ from .exceptions import NoAvailablePools
 
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
+    """
+    An event has a type (e.g. Company presentation, Party, etc). Eventually, each type of event might have
+    slightly different 'requirements' or fields. For example, a company presentation will be connected to a company from
+    our company database.
+
+    An event has between 1 and X pools, each with their own capacity, to separate users based on groups.
+    At `merge_time` all pools are combined into one.
+
+    An event has a waiting list, filled with users who register after the event is full.
+
+    """
 
     COMPANY_PRESENTATION = 0
     COURSE = 1
@@ -58,9 +69,30 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return False
 
     def admin_register(self, request_user, user, pool):
+        """
+        Currently incomplete. Used to force registration for a user, even if the event is full
+        or if the user isn't allowed to register.
+
+        :param request_user: The user who forces the registration. Has to be an admin.
+        :param user: The user who will be registered
+        :param pool: What pool the registration will be created for
+        :return: The registration
+        """
         return self.registrations.create(event=self, user=user, pool=pool)
 
     def register(self, user):
+        """
+        Creates a registration for the event, and automatically selects the optimal pool for the user.
+        First checks if the user can register at all, raises an exception if not. Then checks if the pools
+        that the user can possibly join are full or not. If all are full, a registration for the
+        waiting list is created. If there's more than one possible pool that isn't full,
+        calculates the total amount of users that can join each pool, and selects the most
+        exclusive pool. If several pools have the same exclusivity, selects the biggest pool of these.
+
+        :param user: The user who is trying to register
+        :return: The registration (in the chosen pool)
+        """
+
         possible_pools = [pool
                           for pool in self.all_pools
                           if self.can_register(user, pool)]
@@ -82,6 +114,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if not possible_pools:
                 return self.waiting_list.add(user=user, pools=full_pools)
 
+            if len(possible_pools) == 1:
+                return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+
         elif self.is_full:
             return self.waiting_list.add(user=user, pools=possible_pools)
 
@@ -99,6 +134,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.registrations.create(event=self, user=user, pool=chosen_pool)
 
     def unregister(self, user):
+        """
+        Pulls the registration, and clears relevant fields. Sets unregistration date.
+        If the user was in a pool, and not in the waiting list,
+        notifies the waiting list that there might be a bump available.
+        """
         registration = self.registrations.get(user=user)
         pool = registration.pool
         registration.pool = None
@@ -110,6 +150,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             self.notify_unregistration(pool)
 
     def notify_unregistration(self, pool):
+        """
+        Checks if there is an available spot in the event.
+        If so, and the event is merged, bumps the first person in the waiting list.
+        If the event isn't merged, bumps the first user in the waiting list who is able to join `pool`.
+
+        :param pool: The pool where the unregistration happened.
+        """
         if self.number_of_registrations < self.capacity:
             if self.is_merged:
                 self.bump()
@@ -117,6 +164,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 self.bump(from_pool=pool)
 
     def bump(self, from_pool=None):
+        """
+        Pops the appropriate user/registration from the waiting list,
+        and alters his registration to put him in a pool.
+
+        :param from_pool: A pool with a free slot in the event. If the event is merged, this will be null.
+        """
         if self.waiting_list.number_of_registrations > 0:
             top = self.waiting_list.pop(from_pool=from_pool)
             if from_pool:
@@ -198,7 +251,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
 class Pool(BasisModel):
     """
-    Pool which keeps track of users able to register from different grades.
+    Pool which keeps track of users able to register from different grades/groups.
     """
 
     name = models.CharField(max_length=100)
@@ -220,6 +273,9 @@ class Pool(BasisModel):
 
 
 class WaitingList(BasisModel):
+    """
+    List of registrations that keeps track of users who registered after the event was full.
+    """
     event = models.OneToOneField(Event, related_name="waiting_list")
 
     @property
@@ -227,6 +283,12 @@ class WaitingList(BasisModel):
         return self.registrations.count()
 
     def add(self, user, pools):
+        """
+        Adds a user to the waiting list, along with what pools the user is waiting for.
+
+        :param pools: The pools that the user is allowed to join, saved for bumping purposes (used in pop).
+        :return: A registration for this waiting list, with `pool=null` and `waiting_pools=pools`
+        """
         reg = self.registrations.create(event=self.event,
                                         user=user,
                                         waiting_list=self)
@@ -235,6 +297,13 @@ class WaitingList(BasisModel):
         return reg
 
     def pop(self, from_pool=None):
+        """
+        Pops the first user in the waiting list that can join `from_pool`.
+        If `from_pool=None`, pops the first user in the waiting list overall.
+
+        :param from_pool: The pool we are bumping to. If `pop` is called post-merge, there is no pool.
+        :return: The registration that is first in line for said pool.
+        """
         if from_pool:
             top = self.registrations.filter(waiting_pool__id=from_pool.id).first()
         else:
@@ -245,6 +314,9 @@ class WaitingList(BasisModel):
 
 
 class Registration(BasisModel):
+    """
+    A registration for an event. Can be connected to either a pool or a waiting list.
+    """
     user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
