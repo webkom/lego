@@ -84,9 +84,20 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         Creates a registration for the event,
         and automatically selects the optimal pool for the user.
 
-        First checks if the user can register at all, raises an exception if not. Then checks if
-        the pools that the user can possibly join are full or not. If all are full, a registration
-        for the waiting list is created. If there's more than one possible pool that isn't full,
+        First checks if the user can register at all, raises an exception if not.
+
+        If there is only one possible pool, checks if the pool is full and registers for
+        the waiting list or the pool accordingly.
+
+        If the event is merged, and it isn't full, joins any pool.
+        Otherwise, joins the waiting list.
+
+        If the event isn't merged, checks if the pools that the user can
+        possibly join are full or not. If all are full, a registration for
+        the waiting list is created. If there's only one pool that isn't full,
+        register for it.
+
+        If there's more than one possible pool that isn't full,
         calculates the total amount of users that can join each pool, and selects the most
         exclusive pool. If several pools have the same exclusivity,
         selects the biggest pool of these.
@@ -107,10 +118,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if possible_pools[0].is_full:
                 return self.waiting_list.add(user=user, pools=possible_pools)
             else:
-                return self.registrations.create(event=self, pool=possible_pools[0], user=user)
+                return self.registrations.create(event=self, user=user, pool=possible_pools[0])
 
-        if not self.is_merged:
-
+        if self.is_merged:
+            if self.is_full:
+                return self.waiting_list.add(user=user, pools=possible_pools)
+            else:
+                return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+        else:
             full_pools = self.calculate_and_pop_full_pools(possible_pools)
 
             if not possible_pools:
@@ -118,9 +133,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
             if len(possible_pools) == 1:
                 return self.registrations.create(event=self, user=user, pool=possible_pools[0])
-
-        elif self.is_full:
-            return self.waiting_list.add(user=user, pools=possible_pools)
 
         # Returns a dictionary where key = pool and value = potential members
         potential_members = self.calculate_potential_members(possible_pools)
