@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin',
 
     'django_extensions',
     'djangosecure',
@@ -27,7 +28,6 @@ INSTALLED_APPS = [
     'lego.utils',
     'lego.permissions',
 
-    'lego.app.oauth',
     'lego.app.articles',
     'lego.app.content',
     'lego.app.events',
@@ -35,14 +35,10 @@ INSTALLED_APPS = [
     'lego.app.comments',
 ]
 
-MIGRATION_MODULES = {
-    'oauth2_provider': 'lego.migrations.oauth2_provider'
-}
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
-    'lego.permissions.backends.KeywordPermissionBackend',
+    'lego.permissions.backends.AbakusPermissionBackend',
     'oauth2_provider.backends.OAuth2Backend',
 )
 LOGIN_URL = '/authorization/login/'
@@ -100,8 +96,6 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'lego.utils.json_web_tokens.response_handler'
 }
-
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
 
 ROOT_URLCONF = 'lego.urls'
 
