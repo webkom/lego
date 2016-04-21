@@ -5,7 +5,6 @@ from .models import ObjectPermissionsModel
 
 class AbakusPermissions(permissions.BasePermission):
 
-    AUTHENTICATION_NOT_REQUIRED = '/sudo/admin/users/unauthenticated/'
     OBJECT_METHODS = ['retrieve', 'update', 'partial_update', 'destroy']
 
     perms_map = {
@@ -22,7 +21,7 @@ class AbakusPermissions(permissions.BasePermission):
             'app_label': model_cls._meta.app_label,
             'model_name': model_cls._meta.model_name
         }
-        return [perm % kwargs for perm in perms] if perms else []
+        return [perm % kwargs for perm in perms] if perms else perms
 
     def has_permission(self, request, view):
         user = request.user
@@ -36,9 +35,11 @@ class AbakusPermissions(permissions.BasePermission):
             self.perms_map.get(view.action),
             view.get_queryset().model
         )
-        if self.AUTHENTICATION_NOT_REQUIRED in required_permission or \
-                (request.user.has_perms(required_permission) and user.is_authenticated()):
-            setattr(request, 'user_has_keyword_permissions', user.is_authenticated())
+
+        if required_permission is None \
+                or (request.user.has_perms(required_permission) and user.is_authenticated()):
+            setattr(request, 'user_has_keyword_permissions', user.is_authenticated() or
+                    required_permission is None)
             return True
 
         # If we use object permission, this method needs to return True in order to run the
@@ -57,8 +58,8 @@ class AbakusPermissions(permissions.BasePermission):
             self.perms_map.get(view.action),
             view.get_queryset().model
         )
-        if self.AUTHENTICATION_NOT_REQUIRED in required_permission or \
-                (request.user.has_perms(required_permission) and user.is_authenticated()):
+        if required_permission is None \
+                or (request.user.has_perms(required_permission) and user.is_authenticated()):
             return True
 
         # Handle object permissions

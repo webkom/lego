@@ -15,7 +15,7 @@ def can_retrieve_abakusgroup(group, retriever):
 class UsersPermissions(AbakusPermissions):
     perms_map = {
         'list': ['/sudo/admin/users/list/'],
-        'retrieve': None,
+        'retrieve': [],
         'create': ['/sudo/admin/users/create/'],
         'update': ['/sudo/admin/users/update/'],
         'partial_update': ['/sudo/admin/users/update/'],
@@ -39,9 +39,9 @@ class UsersPermissions(AbakusPermissions):
 
 class AbakusGroupPermissions(AbakusPermissions):
     perms_map = {
-        'list': None,
-        'hierarchy': None,
-        'retrieve': None,
+        'list': [],
+        'hierarchy': [],
+        'retrieve': [],
         'create': ['/sudo/admin/groups/create/'],
         'update': ['/sudo/admin/groups/update/'],
         'partial_update': ['/sudo/admin/groups/update/'],
