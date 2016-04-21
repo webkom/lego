@@ -3,7 +3,7 @@
   fields:
     title: faget get rekt
     author: 1
-    ingress: much good
+    description: much good
     text: >
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -16,7 +16,7 @@
   fields:
     title: Ikkje løye det!
     author: 1
-    ingress: Om du e Tore?
+    description: Om du e Tore?
     text: Tore Tang, en gammal mann. Hele webkom kjenner han.
     can_view_groups:
       - 5
@@ -26,6 +26,6 @@
   fields:
     title: Alle kan se!
     author: 1
-    ingress: Håper jeg ..
+    description: Håper jeg ..
     text: huehehehuuehhuehuehuehuehue
 
