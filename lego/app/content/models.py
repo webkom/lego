@@ -12,7 +12,7 @@ class Content(models.Model):
 
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User)
-    ingress = models.TextField()
+    description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
 

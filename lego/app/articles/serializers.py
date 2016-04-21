@@ -13,10 +13,10 @@ class DetailedArticleSerializer(BasisSerializer):
 
     class Meta:
         model = Article
-        fields = ('title', 'author', 'ingress', 'text', 'comments', 'comment_target')
+        fields = ('title', 'author', 'description', 'text', 'comments', 'comment_target')
 
 
 class PublicArticleSerializer(BasisSerializer):
     class Meta:
         model = Article
-        fields = ('id', 'title', 'ingress')
+        fields = ('id', 'title', 'description')

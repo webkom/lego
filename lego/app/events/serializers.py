@@ -11,5 +11,5 @@ class EventSerializer(BasisSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'ingress', 'text', 'comments', 'comment_target', 'end_time',
+        fields = ('id', 'title', 'description', 'text', 'comments', 'comment_target', 'end_time',
                   'event_type', 'location', 'author', 'start_time')

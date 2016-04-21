@@ -3,7 +3,7 @@
   fields:
     title: BedPres1
     author: 1
-    ingress: TestIngress1
+    description: TestIngress1
     text: TestText1
     event_type: 0
     location: R1
@@ -17,7 +17,7 @@
   fields:
     title: Webkom2
     author: 2
-    ingress: TestIngress2
+    description: TestIngress2
     text: TestText2
     event_type: 3
     location: F254

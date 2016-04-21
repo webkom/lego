@@ -1,76 +1,88 @@
 - model: events.Event
   fields:
-    title: BEKK
-    author: 1
-    ingress: Dette er en fin event
-    text:
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    event_type: 0
-    location: R1
-    start_time: '2015-11-04T13:20:30+03:00'
-    end_time: '2015-11-04T13:20:30+03:00'
-    can_view_groups:
-      - 1
-
-- model: events.Event
-  fields:
-    title: Itera
+    title: Fadderpåmelding
     author: 2
-    ingress: Dette er en annen event
+    description:
+      Det er på tide med årets fadderpåmelding!
     text:
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      En fadder har som oppgave å ta imot de nye studentene som
+      starter på Data- og Kommunikasjonsteknologi til høsten.
+      De skal vise frem Trondheim fra byens beste side gjennom sosiale
+      aktiviteter i regi av Abakus.
+
+      En fadder har som oppgave å ta imot de nye studentene som
+      starter på Data- og Kommunikasjonsteknologi til høsten.
+      De skal vise frem Trondheim fra byens beste side gjennom sosiale
+      aktiviteter i regi av Abakus.
+
+      Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange i år!
+      Har du lyst til å være fadder for de nye førsteklassingene, og sørge for at deres
+      første uker i Trondheim blir et minne for livet er det nå du må melde deg.
+      Når vi har fått nok faddere og påmeldingen stenger, vil det være mulig å
+      sende inn ønsker om hvem man har lyst til å være på faddergruppe sammen med per mail.
+      Mer info rundt dette kommer fortløpende i Facebookgruppen som alle fadderne blir meldt inn i.
+      Vi håper så mange som mulig har lyst til å være fadder i år!
     event_type: 3
     location: F254
     start_time: '2015-11-03T13:20:30+03:00'
     end_time: '2015-11-03T13:20:30+03:00'
-    can_view_groups:
-      - 10
 
 - model: events.Event
   fields:
-    title: Microsoft
+    title: Casino Royale
     author: 2
-    ingress: For en event altså.
-    text:
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    description:
+      Det er igjen duket for Casino Royale.
+      Det betyr finstasen på, poker, rulett, klassiske
+      blackjack og nytt i år... eget nybegynnerbord.
+    text: |
+      Alt finner sted på Håndverkeren.
+      Arrangementet blir i år tilpasset alle, uavhengig om pokerferdighetene er på plass eller ei.
+      Det vil si at vi arrangerer et nybegynnerbord, så du har nå gode muligheter til å lære deg poker
+      en gang for alle. Dessuten er dette en ypperlig anledning å samles en siste gang før
+      eksamensperioden starter for fullt. En hyggelig lounge vil settes opp med muligheter for
+      hyggelige samtaler eller pust i bakken mellom slagene. Du trenger med andre ord ikke spille
+      hele kvelden, da du kan komme og gå som du vil til spillbordene.
+      Ellers vil Håndverkeren bli dekorert for anledningen, og velkomstdrink vil bli servert ved
+      ankomst. Etter arrangementet går turen til byen for de som måtte ønske det.
+      Til info:
+      Antrekk: Dress/smoking/kjole
+      Premieutdelinger vil avholdes med blandt annet:
+      Beste pokerspiller(flest chips)
+      Beste Antrekk (King and Queen)
+      Medbrakt drikke er tillat.
     event_type: 3
     location: F254
     start_time: '2015-11-02T13:20:30+03:00'
     end_time: '2015-11-02T13:20:30+03:00'
-    can_view_groups:
-      - 10
 
 - model: events.Event
   fields:
-    title: Google
+    title: DNB
     author: 2
-    ingress: Lorem ipsum dolor sit amet.
-    text:
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    event_type: 3
+    description: Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den?
+    text: |
+      DNB har Norges mest besøkte nett- og mobilbank. Det er vi i IT stolte av.
+
+      Med over 800 IT-kollegaer griper vi fatt i nye utfordringer og muligheter. Det er vi som leverer de digitale løsningene i DNB. Da er gode løsninger og sikkerhet viktig.
+
+      Den 7. april vil vi dele refleksjoner og eksempler rundt hvor viktig IT er for DNB fremover,
+      med ekstra fokus på IT-utvikling og informasjonssikkerhet.
+
+      Etter presentasjonen tar vi buss ned til byen der det blir bespisning og mingling.
+
+      Bedkom minner om at oppmøte er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:
+    event_type: 0
     location: F254
     start_time: '2015-11-01T13:20:30+03:00'
     end_time: '2015-11-01T13:20:30+03:00'
-    can_view_groups:
-      - 10
 
 - model: events.Event
   fields:
     title: Yahoo
     author: 2
-    ingress: Lorem ipsum dolor sit amet.
+    description: |
+      Bedriftspresentasjon for Abakus med Yahoo!
     text:
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -82,3 +94,94 @@
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
       - 10
+
+- model: events.Event
+  fields:
+    title: BEKK
+    author: 1
+    description: |
+      Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme igang?
+    text: |
+      Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen mellom dem er?
+      Har du kanskje testa ut webutvikling, men ikke fått knappene til å havne der du vil ha dem?
+      Da er du velkommen til Webutvikling101.
+
+      Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av webutvikling:
+
+      Første runde skal vi lære om de underliggende prinsippene i webutvikling.
+      Vi ser på hvordan CSS påvirker HTML og hvordan du kan bruke CSS til å
+      forandre hvordan nettleseren presenterer siden både i layout og form.
+      Vi ser også på hvordan du kan legge til enkel dynamikk og interaksjon med JavaScript.
+
+      På dag to tar vi et steg videre og ser på hvordan vi kan bruke JavaScript for å kommunisere
+      med en server for å både sende og motta data. Vi skal også se på hvordan navigasjon
+      mellom nettsider fungerer og hvordan vi kan benytte JavaScript til å endre hva som
+      skjer når vi navigerer.
+
+      Dag tre vil være en litt friere dag. Vi kommer til å presentere en rekke utfordringer
+      som tar for seg et aspekt ved webutvikling som dere kan få bryne dere på. Målet med denne
+      dagen er å utforske mulighetene webben gir. Vi stiller med spisskompetanse og dere stiller
+      med nysgjerrighet og ståpå-vilje.
+
+      Ha med egen PC, valgfri editor og nyeste node.js v4 eller nyere (https://nodejs.org).
+      Etter kurset vil vi dra ned til sentrum hvor vi vil få god mat & drikke!
+      Vi gjør oppmerksom på at deltakere på del 1 & 2 vil få prioritet på del 3
+      Instruks for hvordan installere node:
+      Gå til https://nodejs.org/en/
+      Last ned nyeste stable (5.7.1)
+      Kjør filen
+      Følg installasjons-anvisningene
+      Åpne terminalen For OS X: finnes under Applications/Utilities/Terminal.
+      For Windows: klikk windows + r for å få opp run dialogen. skriv “cmd” og trykk enter.
+      Skriv node --version i terminalen trykk enter. Hvis alt er i orden skal
+      den svare med versjonsnummer, v5.7.1
+    event_type: 0
+    location: R1
+    start_time: '2015-11-04T13:20:30+03:00'
+    end_time: '2015-11-04T13:20:30+03:00'
+
+- model: events.Event
+  fields:
+    title: Itera
+    author: 2
+    description:
+      Hvem tar flagget først? Du eller din studievenn?
+      Itera kjører Capture the ”flag” med Java og Lego Mindstorms!
+    text: |
+      Lego Lego Lego. Vi får ikke nok av Lego, forhåpentligvis gjelder det samme for deg.
+      Vi tar med oss roboter til Trondheim nok en gang, men denne gangen for å konkurrere om
+      å fange ”flagget” først. Hvert lag får ei sone som skal forsvare og en sone som
+      skal angripes. Utfordringa blir å kode og bygge den beste forsvarsroboten og den beste
+      angrepsroboten. Her gjelder det å finne frem sine beste triks for å holde seg
+      i spill og samle mest mulig poeng!
+
+      Banen er delt opp i 4 farger for å kunne navigere seg rundt på banen, samt kalkulere
+      posisjon til de andre robotene. Alle roboter kommuniserer sin fargeposisjon til en server som
+      vil kalkulere livestatus i spillet, samt sende ut fargeposisjon til alle roboter. På banen
+      vil det være plassert to flaggsirkler, et for hvert lag. Når du er på motstanderens flaggsirkel
+      vil du få poeng....men pass på så ikke motstanderen dytter deg av banen!
+
+      For å styre robotene bruker vi et custom OS, leJOS, slik at vi kan bruke Java i
+      stedet for "pek og klikk"-språket som følger med originalt. Du kan lese mer
+      om leJOS på http://www.lejos.org/. Alle vil få tildelt et rammeverk som vil ta seg
+      av lesing av posisjon, kommunikasjon med server, samt gi tilgang på metoder for
+      å navigere roboten.
+
+      Git-repo finnes her: https://github.com/Itera/HelloBrick
+
+      Vi tar med ferdigkonfigurerte maskiner slik at vi kan bruk mest mulig tid
+      på koding og seriøs konstruksjon av kampmaskiner. Hvert lag får tildelt
+      2 roboter som skal bygges og kodes til en forsvarsmaskin og en
+      angrepsmaskin. Hvert lag består av 8 studenter (4 til angrepsrobot og 4 til forsvarsrobot).
+
+      Det blir servert pizza og sushi under kurset. På slutten av kvelden kjører vi kamp.
+      Måtte det beste laget vinne :) Når vi er ferdig tar vi
+      turen til Work-Work for mingling og shuffleboard.
+
+      Det vil bli lagt ut detaljerte regler sammen med kodebase noen dager før kurset
+      slik at alle stiller likt på kampadagen! Skulle du være 1.klassing og føler du har nok
+      javakunnskaper til å delta er det bare å sende mail til arrangør hvis det er ledige plasser.
+    event_type: 0
+    location: F254
+    start_time: '2015-11-01T13:20:30+03:00'
+    end_time: '2015-11-01T13:20:30+03:00'

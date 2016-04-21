@@ -6,7 +6,7 @@ from lego.users.models import AbakusGroup, User
 _test_event_data = {
     'title': 'Event',
     'author': 1,
-    'ingress': 'TestIngress',
+    'description': 'TestIngress',
     'text': 'TestText',
     'event_type': 4,
     'location': 'F252',
