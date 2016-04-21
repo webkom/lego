@@ -2,7 +2,7 @@
   fields:
     title: Ny komité i Abakus
     author: 1
-    ingress:
+    description:
       Etter langt å lenge har HS endelig blitt enig.
     text:
       Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
@@ -21,7 +21,7 @@
   fields:
     title: Dette er en syk artikkel
     author: 1
-    ingress:
+    description:
       Eller hur hur hur hur.
     text:
       Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
