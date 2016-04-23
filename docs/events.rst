@@ -52,7 +52,7 @@ In the unregistration-method the registration belonging to the user is acquired,
 is stored in a temporary variable, and the fields ``pool``, ``waiting_list`` and ``waiting_pool``
 are cleared. The unregistration date is set, and it is saved.
 
-Then we call ``notify_unregistration(pool)``, where `pool = the temporary pool from earlier`.
+Then we call ``check_for_bump(pool)``, where `pool = the temporary pool from earlier`.
 Here we check if there's room for a bump, and if so we call the bump-method. The `from_pool`-argument
 is the pool we unregistered from earlier. If the event is merged, we ignore the pool.
 

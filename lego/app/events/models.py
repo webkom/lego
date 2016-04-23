@@ -162,9 +162,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration.unregistration_date = timezone.now()
         registration.save()
         if pool:
-            self.notify_unregistration(pool)
+            self.check_for_bump(pool)
 
-    def notify_unregistration(self, pool):
+    def check_for_bump(self, pool):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
@@ -255,14 +255,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def find_most_exclusive_pools(self, potential_members):
         lowest = potential_members[min(potential_members, key=potential_members.get)]
         equal_pools = []
-        for pool in potential_members:
-            if potential_members[pool] == lowest:
+        for pool, members in potential_members.items():
+            if members == lowest:
                 equal_pools.append(pool)
         return equal_pools
 
     def select_highest_capacity(self, pools):
         capacities = [pool.capacity for pool in pools]
         return pools[capacities.index(min(capacities))]
+
 
 
 class Pool(BasisModel):
@@ -308,8 +309,8 @@ class WaitingList(BasisModel):
         reg = self.registrations.create(event=self.event,
                                         user=user,
                                         waiting_list=self)
-        for _pool in pools:
-            reg.waiting_pool.add(_pool)
+        for pool in pools:
+            reg.waiting_pool.add(pool)
         return reg
 
     def pop(self, from_pool=None):
