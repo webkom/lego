@@ -248,7 +248,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         for pool in pools:
             potential_users = 0
             for group in pool.permission_groups.all():
-                potential_users += group.users.count()
+                potential_users += group.number_of_users
             potential_members[pool] = potential_users
         return potential_members
 
@@ -262,7 +262,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     def select_highest_capacity(self, pools):
         capacities = [pool.capacity for pool in pools]
-        return pools[capacities.index(min(capacities))]
+        return pools[capacities.index(max(capacities))]
 
 
 class Pool(BasisModel):
