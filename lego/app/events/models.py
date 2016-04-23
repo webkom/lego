@@ -265,7 +265,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return pools[capacities.index(min(capacities))]
 
 
-
 class Pool(BasisModel):
     """
     Pool which keeps track of users able to register from different grades/groups.
