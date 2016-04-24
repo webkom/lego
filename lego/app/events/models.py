@@ -107,13 +107,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
 
         possible_pools = [pool
-                          for pool in self.all_pools
+                          for pool in self.pools.all()
                           if self.can_register(user, pool)]
         if not possible_pools:
             raise NoAvailablePools()
 
         # If there's only one pool we can skip a lot of logic
-        if len(possible_pools) == 1 and self.number_of_pools == 1:
+        if len(possible_pools) == 1 and self.pools.count() == 1:
 
             if possible_pools[0].is_full:
                 return self.waiting_list.add(user=user, pools=possible_pools)
@@ -204,7 +204,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def is_merged(self):
         if self.merge_time is None:
             return True
-        if self.number_of_pools > 1:
+        if self.pools.count() > 1:
             return timezone.now() >= self.merge_time
 
     @property
@@ -216,7 +216,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def capacity(self):
-        aggregate = self.all_pools.filter(activation_date__lte=timezone.now())\
+        aggregate = self.pools.all().filter(activation_date__lte=timezone.now())\
             .aggregate(Sum('capacity'))
         return aggregate['capacity__sum'] or 0
 
@@ -224,18 +224,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def number_of_registrations(self):
         return self.registrations.filter(waiting_list=None, waiting_pool=None,
                                          unregistration_date=None).count()
-
-    @property
-    def number_of_waiting_registrations(self):
-        return self.waiting_list.number_of_registrations
-
-    @property
-    def all_pools(self):
-        return self.pools.all()
-
-    @property
-    def number_of_pools(self):
-        return self.pools.count()
 
     def calculate_and_pop_full_pools(self, pools):
         full_pools = [pool for pool in pools if pool.is_full]
