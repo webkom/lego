@@ -198,7 +198,8 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Abakus').add_user(user)
             event.register(user=user)
 
-        self.assertEqual(event.waiting_list.number_of_registrations, people_to_place_in_waiting_list)
+        self.assertEqual(event.waiting_list.number_of_registrations,
+                         people_to_place_in_waiting_list)
 
     def test_can_register_pre_merge(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
