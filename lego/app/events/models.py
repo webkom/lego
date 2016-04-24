@@ -1,3 +1,4 @@
+from basis.managers import BasisModelManager
 from basis.models import BasisModel
 from django.db import models
 from django.db.models import Sum
@@ -9,6 +10,13 @@ from lego.permissions.models import ObjectPermissionsModel
 from lego.users.models import AbakusGroup, User
 
 from .exceptions import NoAvailablePools
+
+
+class EventManager(BasisModelManager):
+    def create(self, *args, **kwargs):
+        instance = super().create(*args, **kwargs)
+        WaitingList.objects.create(event=instance)
+        return instance
 
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
@@ -44,12 +52,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
 
+    objects = EventManager()
+
     class Meta:
         ordering = ['start_time']
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        WaitingList.objects.get_or_create(event=self)
 
     def __str__(self):
         return self.title
