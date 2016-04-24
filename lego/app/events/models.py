@@ -127,16 +127,17 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             else:
                 return self.registrations.create(event=self, user=user, pool=possible_pools[0])
         else:
-            full_pools = self.calculate_and_pop_full_pools(possible_pools)
 
-            if not possible_pools:
+            full_pools, open_pools = self.calculate_full_pools(possible_pools)
+
+            if not open_pools:
                 return self.waiting_list.add(user=user, pools=full_pools)
 
-            if len(possible_pools) == 1:
+            if len(open_pools) == 1:
                 return self.registrations.create(event=self, user=user, pool=possible_pools[0])
 
         # Returns a dictionary where key = pool and value = potential members
-        potential_members = self.calculate_potential_members(possible_pools)
+        potential_members = self.calculate_potential_members(open_pools)
 
         # Returns a list of the pool(s) with the least amount of potential members
         exclusive_pools = self.find_most_exclusive_pools(potential_members)
@@ -225,11 +226,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.registrations.filter(waiting_list=None, waiting_pool=None,
                                          unregistration_date=None).count()
 
-    def calculate_and_pop_full_pools(self, pools):
-        full_pools = [pool for pool in pools if pool.is_full]
-        for pool in full_pools:
-            pools.remove(pool)
-        return full_pools
+    def calculate_full_pools(self, pools):
+        full_pools = []
+        open_pools = []
+        for pool in pools:
+            if pool.is_full:
+                full_pools.append(pool)
+            else:
+                open_pools.append(pool)
+        return full_pools, open_pools
 
     def calculate_potential_members(self, pools):
         potential_members = {}
