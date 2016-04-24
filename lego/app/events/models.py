@@ -149,7 +149,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         exclusive_pools = self.find_most_exclusive_pools(potential_members)
 
         if len(exclusive_pools) == 1:
-            chosen_pool = exclusive_pools[0]
+            chosen_pool = Pool.objects.get(id=exclusive_pools[0])
         else:
             chosen_pool = self.select_highest_capacity(exclusive_pools)
 
@@ -248,20 +248,20 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             potential_users = 0
             for group in pool.permission_groups.all():
                 potential_users += group.number_of_users
-            potential_members[pool] = potential_users
+            potential_members[pool.id] = potential_users
         return potential_members
 
     def find_most_exclusive_pools(self, potential_members):
         lowest = potential_members[min(potential_members, key=potential_members.get)]
         equal_pools = []
-        for pool, members in potential_members.items():
+        for pool_id, members in potential_members.items():
             if members == lowest:
-                equal_pools.append(pool)
+                equal_pools.append(pool_id)
         return equal_pools
 
     def select_highest_capacity(self, pools):
-        capacities = [pool.capacity for pool in pools]
-        return pools[capacities.index(max(capacities))]
+        capacities = [Pool.objects.get(id=pool_id).capacity for pool_id in pools]
+        return Pool.objects.get(id=pools[capacities.index(max(capacities))])
 
 
 class Pool(BasisModel):
