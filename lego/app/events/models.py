@@ -142,11 +142,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if len(open_pools) == 1:
                 return self.registrations.create(event=self, user=user, pool=possible_pools[0])
 
-        # Returns a dictionary where key = pool and value = potential members
-        potential_members = self.calculate_potential_members(open_pools)
-
         # Returns a list of the pool(s) with the least amount of potential members
-        exclusive_pools = self.find_most_exclusive_pools(potential_members)
+        exclusive_pools = self.find_most_exclusive_pools(open_pools)
 
         if len(exclusive_pools) == 1:
             chosen_pool = exclusive_pools[0]
@@ -242,22 +239,18 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 open_pools.append(pool)
         return full_pools, open_pools
 
-    def calculate_potential_members(self, pools):
-        potential_members = {}
+    def find_most_exclusive_pools(self, pools):
+        lowest = float('inf')
+        equal = []
         for pool in pools:
-            potential_users = 0
-            for group in pool.permission_groups.all():
-                potential_users += group.number_of_users
-            potential_members[pool] = potential_users
-        return potential_members
-
-    def find_most_exclusive_pools(self, potential_members):
-        lowest = potential_members[min(potential_members, key=potential_members.get)]
-        equal_pools = []
-        for pool, members in potential_members.items():
-            if members == lowest:
-                equal_pools.append(pool)
-        return equal_pools
+            groups = pool.permission_groups.all()
+            users = sum(g.number_of_users for g in groups)
+            if users == lowest:
+                equal.append(pool)
+            elif users < lowest:
+                equal = [pool]
+                lowest = users
+        return equal
 
     def select_highest_capacity(self, pools):
         capacities = [pool.capacity for pool in pools]
