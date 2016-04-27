@@ -118,39 +118,40 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if not possible_pools:
             raise NoAvailablePools()
 
-        # If there's only one pool we can skip a lot of logic
-        if len(possible_pools) == 1 and self.pools.count() == 1:
-
-            if possible_pools[0].is_full:
-                return self.waiting_list.add(user=user, pools=possible_pools)
-            else:
-                return self.registrations.create(event=self, user=user, pool=possible_pools[0])
-
         # If the event is merged we can skip a lot of logic
         if self.is_merged:
             if self.is_full:
                 return self.waiting_list.add(user=user, pools=possible_pools)
             else:
                 return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+
+        # If there's only one pool we can skip a lot of logic
+        if len(possible_pools) == 1 and self.pools.count() == 1:
+
+            if possible_pools[0].is_full:
+                return self.waiting_list.add(user=user, pools=possible_pools)
+
+            return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+
+        # Calculates which pools that are full or open for registration based on capacity
+        full_pools, open_pools = self.calculate_full_pools(possible_pools)
+
+        if not open_pools:
+            return self.waiting_list.add(user=user, pools=full_pools)
+
+        elif len(open_pools) == 1:
+            return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+
         else:
+            # Returns a list of the pool(s) with the least amount of potential members
+            exclusive_pools = self.find_most_exclusive_pools(open_pools)
 
-            full_pools, open_pools = self.calculate_full_pools(possible_pools)
+            if len(exclusive_pools) == 1:
+                chosen_pool = exclusive_pools[0]
+            else:
+                chosen_pool = self.select_highest_capacity(exclusive_pools)
 
-            if not open_pools:
-                return self.waiting_list.add(user=user, pools=full_pools)
-
-            if len(open_pools) == 1:
-                return self.registrations.create(event=self, user=user, pool=possible_pools[0])
-
-        # Returns a list of the pool(s) with the least amount of potential members
-        exclusive_pools = self.find_most_exclusive_pools(open_pools)
-
-        if len(exclusive_pools) == 1:
-            chosen_pool = exclusive_pools[0]
-        else:
-            chosen_pool = self.select_highest_capacity(exclusive_pools)
-
-        return self.registrations.create(event=self, user=user, pool=chosen_pool)
+            return self.registrations.create(event=self, user=user, pool=chosen_pool)
 
     def unregister(self, user):
         """
@@ -207,9 +208,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def is_merged(self):
         if self.merge_time is None:
-            return True
-        if self.pools.count() > 1:
-            return timezone.now() >= self.merge_time
+            return False
+        return timezone.now() >= self.merge_time
 
     @property
     def is_full(self):
