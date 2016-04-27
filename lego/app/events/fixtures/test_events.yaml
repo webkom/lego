@@ -54,26 +54,6 @@
     can_view_groups:
       - 1
 
-- model: events.WaitingList
-  pk: 1
-  fields:
-    event: 1
-
-- model: events.WaitingList
-  pk: 2
-  fields:
-    event: 2
-
-- model: events.WaitingList
-  pk: 3
-  fields:
-    event: 3
-
-- model: events.WaitingList
-  pk: 4
-  fields:
-    event: 4
-
 - model: events.Pool
   pk: 1
   fields:
