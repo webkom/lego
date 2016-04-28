@@ -2,13 +2,14 @@ from lego.permissions.permissions import AbakusPermissions
 
 
 class EventPermissions(AbakusPermissions):
+    # This mapping is needed to enforce events permissions on nested objects.
     perms_map = {
-        'list': None,
-        'retrieve': '/sudo/admin/events/retrieve/',
-        'create': '/sudo/admin/events/create/',
-        'update': '/sudo/admin/events/update/',
-        'partial_update': '/sudo/admin/events/update/',
-        'destroy': '/sudo/admin/events/destroy/',
+        'list': ['/sudo/admin/events/list/'],
+        'create': ['/sudo/admin/events/create/'],
+        'retrieve': ['/sudo/admin/events/retrieve/'],
+        'update': ['/sudo/admin/events/update/'],
+        'partial_update': ['/sudo/admin/events/update/'],
+        'destroy': ['/sudo/admin/events/destroy/'],
     }
 
 
