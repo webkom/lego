@@ -1,4 +1,3 @@
-# -*- coding: utf--8 -*-
 from basis.models import BasisModel
 
 from lego.app.content.models import Content
