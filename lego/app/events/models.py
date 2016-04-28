@@ -77,7 +77,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def waiting_pool_registrations(self):
-        return self.registrations.filter(waiting_pool__isnull=False, pool=None)
+        return self.registrations.filter(pool=None).exclude(waiting_pool=None)
 
     def add_to_waiting_pools(self, user, pools):
         """
@@ -102,8 +102,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if from_pool:
             top = self.registrations.filter(waiting_pool__id=from_pool.id).first()
         else:
-            top = self.registrations.first()
-        top.save()
+            top = self.waiting_pool_registrations.first()
         return top
 
     def register(self, user):

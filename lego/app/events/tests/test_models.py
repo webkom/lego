@@ -468,7 +468,7 @@ class RegistrationTestCase(TestCase):
             event.register(user=user)
 
         self.assertEqual(pool.number_of_registrations, pool_registrations_before + 3)
-        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before + 2)
+        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before + 1)
         self.assertEqual(event.number_of_registrations, number_of_registered_before + 3)
 
         event.unregister(user=pre_reg)
