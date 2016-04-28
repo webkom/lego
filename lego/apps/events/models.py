@@ -198,6 +198,49 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 self.bump()
             elif pool.waiting_registrations.count() > 0:
                 self.bump(from_pool=pool)
+            else:
+                # Figure out which pools have waiting registrations
+                # so that we can move someone in that pool to the
+                # open pool(param), and then bump
+                pools_to_balance = []
+                for _pool in self.pools.all():
+                    if _pool.waiting_registrations.count() > 0:
+                        pools_to_balance.append(_pool)
+
+                # Pull the first in the waiting list for each of the pools
+                # that have waiting registrations
+                firsts, temp = [], []
+                for reg in self.registrations.all():
+                    check = False
+                    for _pool in reg.waiting_pool.all():
+                        if _pool not in temp:
+                            check = True
+                            temp.append(_pool)
+                    if check:
+                        firsts.append(reg)
+                    if len(temp) == len(pools_to_balance):
+                        break
+
+                # Iterate over the first waiting registration for each pool
+                # and try to rebalance the pools they are waiting for
+                balanced_pools = []
+                bumped = False
+                for waiting_reg in firsts:
+                    for _pool in waiting_reg.waiting_pool.all():
+                        if _pool not in balanced_pools:
+                            # REBALANCING HAPPENS HERE
+                            # Iterates over registrations in a full pool,
+                            # and checks if they can be moved to the open pool
+                            for old_reg in self.registrations.filter(pool=_pool):
+                                if self.can_register(reg.user, pool):
+                                    old_reg.pool = pool
+                                    self.bump(_pool)
+                                    # Should bump `waiting_reg`, since it should
+                                    # be the first waiting registration for `_pool`
+                                    bumped = True
+                            balanced_pools.append(_pool)
+                    if len(balanced_pools) == len(pools_to_balance) or bumped:
+                        break
 
     def bump(self, from_pool=None):
         """
