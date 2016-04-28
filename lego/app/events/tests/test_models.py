@@ -322,8 +322,14 @@ class RegistrationTestCase(TestCase):
     def test_register_after_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         user = User.objects.get(pk=1)
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        registrations_before = event.number_of_registrations
+
         event.unregister(user)
+        self.assertEqual(event.number_of_registrations, registrations_before - 1)
+
         event.register(user)
+        self.assertEqual(event.number_of_registrations, registrations_before)
 
     def test_unregistering_non_existing_user(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
