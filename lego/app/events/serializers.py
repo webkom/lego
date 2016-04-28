@@ -49,8 +49,7 @@ class EventReadDetailedSerializer(BasisSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
-                  'comments', 'comment_target', 'start_time', 'end_time', 'pools',
-                  'capacity', 'waiting_list')
+                  'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
 
 
 class PoolCreateAndUpdateSerializer(BasisSerializer):
