@@ -1,7 +1,7 @@
 - model: events.Event
   pk: 1
   fields:
-    title: BedPres1
+    title: POOLS_WITH_REGISTRATIONS
     author: 1
     description: TestIngress1
     text: TestText1
@@ -15,7 +15,7 @@
 - model: events.Event
   pk: 2
   fields:
-    title: Webkom2
+    title: NO_POOLS_ABAKUS
     author: 2
     description: TestIngress2
     text: TestText2
@@ -24,4 +24,88 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
+      - 1
+
+- model: events.Event
+  pk: 3
+  fields:
+    title: NO_POOLS_WEBKOM
+    author: 3
+    description: TestIngress3
+    text: TestText3
+    event_type: 3
+    location: F254
+    start_time: '2011-09-01T13:20:30+03:00'
+    end_time: '2012-09-01T13:20:30+03:00'
+    can_view_groups:
       - 10
+
+- model: events.Event
+  pk: 4
+  fields:
+    title: POOLS_NO_REGISTRATIONS
+    author: 4
+    description: TestIngress4
+    text: TestText4
+    event_type: 4
+    location: R1
+    start_time: '2011-09-01T13:20:30+03:00'
+    end_time: '2012-09-01T13:20:30+03:00'
+    can_view_groups:
+      - 1
+
+- model: events.Pool
+  pk: 1
+  fields:
+    name: Abakusmember
+    capacity: 2
+    event: 1
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 1
+
+- model: events.Pool
+  pk: 2
+  fields:
+    name: Webkom
+    capacity: 3
+    event: 1
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 10
+
+- model: events.Pool
+  pk: 3
+  fields:
+    name: Abakusmember
+    capacity: 3
+    event: 4
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 1
+
+- model: events.Pool
+  pk: 4
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 4
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 10
+
+- model: events.Registration
+  pk: 1
+  fields:
+    user: 1
+    event: 1
+    pool: 1
+    registration_date: '2011-09-01T13:20:30+03:00'
+
+- model: events.Registration
+  pk: 2
+  fields:
+    user: 2
+    event: 1
+    pool: 1
+    registration_date: '2011-09-01T13:20:30+03:00'
