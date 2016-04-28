@@ -73,7 +73,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param pool: What pool the registration will be created for
         :return: The registration
         """
-        return self.registrations.create(event=self, user=user, pool=pool)
+        return self.registrations.update_or_create(event=self, user=user,
+                                                   defaults={'pool': pool,
+                                                             'unregistration_date': None})[0]
 
     @property
     def waiting_pool_registrations(self):
@@ -86,7 +88,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param pools: Pools that the user is allowed to join, saved for bumping (used in pop).
         :return: A registration for this waiting list, with `pool=null` and `waiting_pools=pools`
         """
-        registration = self.registrations.create(event=self, user=user)
+        registration = self.registrations.get_or_create(event=self, user=user)[0]
         for pool in pools:
             registration.waiting_pool.add(pool)
         return registration
@@ -142,8 +144,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.is_merged:
             if self.is_full:
                 return self.add_to_waiting_pools(user=user, pools=possible_pools)
-            else:
-                return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+
+            return self.registrations.update_or_create(event=self, user=user,
+                                                       defaults={'pool': possible_pools[0],
+                                                                 'unregistration_date': None})[0]
 
         # If there's only one pool we can skip a lot of logic
         if len(possible_pools) == 1 and self.pools.count() == 1:
@@ -151,7 +155,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if possible_pools[0].is_full:
                 return self.add_to_waiting_pools(user=user, pools=possible_pools)
 
-            return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+            return self.registrations.update_or_create(event=self, user=user,
+                                                       defaults={'pool': possible_pools[0],
+                                                                 'unregistration_date': None})[0]
 
         # Calculates which pools that are full or open for registration based on capacity
         full_pools, open_pools = self.calculate_full_pools(possible_pools)
@@ -160,7 +166,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return self.add_to_waiting_pools(user=user, pools=full_pools)
 
         elif len(open_pools) == 1:
-            return self.registrations.create(event=self, user=user, pool=possible_pools[0])
+            return self.registrations.update_or_create(event=self, user=user,
+                                                       defaults={'pool': possible_pools[0],
+                                                                 'unregistration_date': None})[0]
 
         else:
             # Returns a list of the pool(s) with the least amount of potential members
@@ -171,7 +179,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             else:
                 chosen_pool = self.select_highest_capacity(exclusive_pools)
 
-            return self.registrations.create(event=self, user=user, pool=chosen_pool)
+            return self.registrations.update_or_create(event=self, user=user,
+                                                       defaults={'pool': chosen_pool,
+                                                                 'unregistration_date': None})[0]
 
     def unregister(self, user):
         """
@@ -235,7 +245,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.capacity <= self.number_of_registrations
 
     def is_registered(self, user):
-        return self.registrations.filter(user=user).exists()
+        return self.registrations.filter(user=user).exclude(pool=None).exists()
 
     @property
     def capacity(self):
@@ -312,6 +322,7 @@ class Registration(BasisModel):
 
     class Meta:
         unique_together = ('user', 'event')
+        ordering = ['registration_date']
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
