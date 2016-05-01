@@ -184,62 +184,40 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if pool:
             self.check_for_bump(pool)
 
-    def check_for_bump(self, pool):
+    def check_for_bump(self,  open_pool):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
         If the event isn't merged, bumps the first user in
         the waiting list who is able to join `pool`.
 
-        :param pool: The pool where the unregistration happened.
+        :param open_pool: The pool where the unregistration happened.
         """
         if self.number_of_registrations < self.capacity:
             if self.is_merged:
                 self.bump()
-            elif pool.waiting_registrations.count() > 0:
-                self.bump(from_pool=pool)
+            elif open_pool.waiting_registrations.count() > 0:
+                self.bump(from_pool=open_pool)
             else:
-                # Figure out which pools have waiting registrations
-                # so that we can move someone in that pool to the
-                # open pool(param), and then bump
-                pools_to_balance = []
-                for _pool in self.pools.all():
-                    if _pool.waiting_registrations.count() > 0:
-                        pools_to_balance.append(_pool)
-
                 # Pull the first in the waiting list for each of the pools
                 # that have waiting registrations
-                firsts, temp = [], []
-                for reg in self.registrations.all():
-                    check = False
-                    for _pool in reg.waiting_pool.all():
-                        if _pool not in temp:
-                            check = True
-                            temp.append(_pool)
-                    if check:
-                        firsts.append(reg)
-                    if len(temp) == len(pools_to_balance):
-                        break
+                top_waiting_regs = self.get_top_of_waiting_list()
 
                 # Iterate over the first waiting registration for each pool
                 # and try to rebalance the pools they are waiting for
                 balanced_pools = []
                 bumped = False
-                for waiting_reg in firsts:
-                    for _pool in waiting_reg.waiting_pool.all():
-                        if _pool not in balanced_pools:
+                for waiting_reg in top_waiting_regs:
+                    for full_pool in waiting_reg.waiting_pool.all():
+                        if full_pool not in balanced_pools:
                             # REBALANCING HAPPENS HERE
-                            # Iterates over registrations in a full pool,
-                            # and checks if they can be moved to the open pool
-                            for old_reg in self.registrations.filter(pool=_pool):
-                                if self.can_register(reg.user, pool):
-                                    old_reg.pool = pool
-                                    self.bump(_pool)
-                                    # Should bump `waiting_reg`, since it should
-                                    # be the first waiting registration for `_pool`
-                                    bumped = True
-                            balanced_pools.append(_pool)
-                    if len(balanced_pools) == len(pools_to_balance) or bumped:
+                            balanced_pools.append(full_pool)
+                            bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)
+
+                        if bumped:
+                            # Should find a way to avoid breaking on `bumped` twice
+                            break
+                    if len(balanced_pools) == len(self.get_pools_with_queue()) or bumped:
                         break
 
     def bump(self, from_pool=None):
@@ -317,6 +295,50 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def select_highest_capacity(self, pools):
         capacities = [pool.capacity for pool in pools]
         return pools[capacities.index(max(capacities))]
+
+    def get_pools_with_queue(self):
+        pools_with_waiting_registration = []
+        for pool in self.pools.all():
+            if pool.waiting_registrations.count() > 0:
+                pools_with_waiting_registration.append(pool)
+        return pools_with_waiting_registration
+
+    def get_top_of_waiting_list(self):
+        """
+        Pulls the first X registrations that are waiting, until
+        all pools that have waiting registrations are covered.
+        :return:
+        """
+        # Could send this number as an argument?
+        pools_to_balance = len(self.get_pools_with_queue())
+
+        firsts, temp = [], []
+        for reg in self.registrations.all():
+            if reg.pool is None and reg.unregistration_date is None:
+                check = False
+                for _pool in reg.waiting_pool.all():
+                    if _pool not in temp:
+                        check = True
+                        temp.append(_pool)
+                if check:
+                    firsts.append(reg)
+                if len(temp) == pools_to_balance:
+                    break
+        return firsts
+
+    def rebalance_pool(self, from_pool, to_pool):
+        # Iterates over registrations in a full pool,
+        # and checks if they can be moved to the open pool
+        bumped = False
+        for old_reg in self.registrations.filter(pool=from_pool):
+            if self.can_register(old_reg.user, to_pool):
+                old_reg.pool = to_pool
+                old_reg.save()
+                self.bump(from_pool=from_pool)
+                bumped = True
+                # Should bump `waiting_reg`, since it should
+                # be the first waiting registration for `_pool`
+        return bumped
 
 
 class Pool(BasisModel):
