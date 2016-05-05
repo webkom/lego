@@ -107,6 +107,26 @@ class RegistrationTestCase(TestCase):
         event.register(user=user)
         self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
 
+    def test_can_register_to_single_open_pool(self):
+        users = get_dummy_users(10)
+        abakus_users = users[:6]
+        webkom_users = users[6:]
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool_one = event.pools.get(name='Abakusmember')
+        pool_two = event.pools.get(name='Webkom')
+
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in webkom_users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        for user in webkom_users:
+            event.register(user=user)
+
+        self.assertEqual(pool_one.number_of_registrations, 2)
+        self.assertEqual(pool_two.number_of_registrations, 2)
+        self.assertEqual(event.number_of_registrations, 4)
+
     def test_can_register_with_automatic_pool_selection(self):
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
