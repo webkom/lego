@@ -153,7 +153,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         elif len(open_pools) == 1:
             return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': possible_pools[0],
+                                                       defaults={'pool': open_pools[0],
                                                                  'unregistration_date': None})[0]
 
         else:
