@@ -77,10 +77,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                                                    defaults={'pool': pool,
                                                              'unregistration_date': None})[0]
 
-    @property
-    def waiting_pool_registrations(self):
-        return self.registrations.filter(pool=None).exclude(waiting_pool=None)
-
     def add_to_waiting_pools(self, user, pools):
         """
         Adds a user to the waiting list, along with what pools the user is waiting for.
@@ -140,19 +136,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if not possible_pools:
             raise NoAvailablePools()
 
-        # If the event is merged we can skip a lot of logic
-        if self.is_merged:
+        # If the event is merged or has only one pool we can skip a lot of logic
+        if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
             if self.is_full:
-                return self.add_to_waiting_pools(user=user, pools=possible_pools)
-
-            return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': possible_pools[0],
-                                                                 'unregistration_date': None})[0]
-
-        # If there's only one pool we can skip a lot of logic
-        if len(possible_pools) == 1 and self.pools.count() == 1:
-
-            if possible_pools[0].is_full:
                 return self.add_to_waiting_pools(user=user, pools=possible_pools)
 
             return self.registrations.update_or_create(event=self, user=user,
@@ -167,7 +153,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         elif len(open_pools) == 1:
             return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': possible_pools[0],
+                                                       defaults={'pool': open_pools[0],
                                                                  'unregistration_date': None})[0]
 
         else:
@@ -234,6 +220,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def is_activated(self, pool):
         return pool.activation_date <= timezone.now()
 
+    def is_registered(self, user):
+        return self.registrations.filter(user=user).exclude(pool=None).exists()
+
     @property
     def is_merged(self):
         if self.merge_time is None:
@@ -243,9 +232,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def is_full(self):
         return self.capacity <= self.number_of_registrations
-
-    def is_registered(self, user):
-        return self.registrations.filter(user=user).exclude(pool=None).exists()
 
     @property
     def capacity(self):
@@ -257,6 +243,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def number_of_registrations(self):
         return self.registrations.filter(waiting_pool=None,
                                          unregistration_date=None).count()
+
+    @property
+    def waiting_pool_registrations(self):
+        return self.registrations.filter(pool=None).exclude(waiting_pool=None)
 
     def calculate_full_pools(self, pools):
         full_pools = []
