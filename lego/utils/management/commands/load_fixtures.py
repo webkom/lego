@@ -65,6 +65,7 @@ class Command(BaseCommand):
             call_command('loaddata', 'lego/apps/events/fixtures/development_pools.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_registrations.yaml')
             call_command('loaddata', 'lego/apps/flatpages/fixtures/development_pages.yaml')
+            call_command('loaddata', 'lego/apps/bdb/fixtures/development_companies.yaml')
             call_command('loaddata', 'lego/apps/articles/fixtures/development_articles.yaml')
             call_command('loaddata', 'lego/apps/quotes/fixtures/development_quotes.yaml')
             call_command('loaddata', 'lego/apps/oauth/fixtures/development_applications.yaml')
