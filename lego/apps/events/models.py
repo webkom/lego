@@ -178,9 +178,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration.unregistration_date = timezone.now()
         registration.save()
         if pool:
-            self.check_for_bump(pool)
+            self.check_for_bump_or_rebalance(pool)
 
-    def check_for_bump(self,  open_pool):
+    def check_for_bump_or_rebalance(self,  open_pool):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
@@ -195,27 +195,29 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             elif open_pool.waiting_registrations.count() > 0:
                 self.bump(from_pool=open_pool)
             else:
-                # Pull the first in the waiting list for each of the pools
-                # that have waiting registrations
-                top_waiting_regs = self.get_top_of_waiting_list()
+                self.try_to_rebalance(open_pool=open_pool)
 
-                # Iterate over the first waiting registration for each pool
-                # and try to rebalance the pools they are waiting for
-                pools_to_balance = len(self.get_pools_with_queue())
-                balanced_pools = []
-                bumped = False
-                for waiting_reg in top_waiting_regs:
-                    for full_pool in waiting_reg.waiting_pool.all():
-                        if full_pool not in balanced_pools:
-                            # REBALANCING HAPPENS HERE
-                            balanced_pools.append(full_pool)
-                            bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)
+    def try_to_rebalance(self, open_pool):
+        # Pull the first in the waiting list for each of the pools
+        # that have waiting registrations
+        top_waiting_registrations = self.get_top_of_waiting_list()
 
-                        if bumped:
-                            # Should find a way to avoid breaking on `bumped` twice
-                            break
-                    if len(balanced_pools) == pools_to_balance or bumped:
-                        break
+        # Iterate over the first waiting registration for each pool
+        # and try to rebalance the pools they are waiting for
+        pools_to_balance = len(self.get_pools_with_queue())
+        balanced_pools = []
+        bumped = False
+        for waiting_registration in top_waiting_registrations:
+            for full_pool in waiting_registration.waiting_pool.all():
+
+                if full_pool not in balanced_pools:
+                    balanced_pools.append(full_pool)
+                    bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)
+
+                if bumped:
+                    break
+            if len(balanced_pools) == pools_to_balance or bumped:
+                break
 
     def bump(self, from_pool=None):
         """
@@ -315,27 +317,27 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         # Could send this number as an argument?
         pools_to_balance = len(self.get_pools_with_queue())
 
-        firsts, temp = [], []
-        for reg in self.registrations.filter(pool=None, unregistration_date=None):
-            check = False
-            for pool in reg.waiting_pool.all():
-                if pool not in temp:
-                    check = True
-                    temp.append(pool)
-            if check:
-                firsts.append(reg)
-            if len(temp) == pools_to_balance:
+        top_of_waiting_list, covered_pools = [], []
+        for waiting_registration in self.registrations.filter(pool=None, unregistration_date=None):
+            covered = False
+            for pool in waiting_registration.waiting_pool.all():
+                if pool not in covered_pools:
+                    covered = True
+                    covered_pools.append(pool)
+            if covered:
+                top_of_waiting_list.append(waiting_registration)
+            if len(covered_pools) == pools_to_balance:
                 break
-        return firsts
+        return top_of_waiting_list
 
     def rebalance_pool(self, from_pool, to_pool):
         # Iterates over registrations in a full pool,
         # and checks if they can be moved to the open pool
         bumped = False
-        for old_reg in self.registrations.filter(pool=from_pool):
-            if self.has_pool_permission(old_reg.user, to_pool):
-                old_reg.pool = to_pool
-                old_reg.save()
+        for old_registration in self.registrations.filter(pool=from_pool):
+            if self.has_pool_permission(old_registration.user, to_pool):
+                old_registration.pool = to_pool
+                old_registration.save()
                 self.bump(from_pool=from_pool)
                 bumped = True
                 # Should bump `waiting_reg`, since it should
