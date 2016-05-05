@@ -57,11 +57,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.is_registered(user):
             return False
 
-        for group in pool.permission_groups.all():
-            if group in user.all_groups:
-                return True
-
-        return False
+        return self.has_pool_permission(user, pool)
 
     def admin_register(self, request_user, user, pool):
         """
@@ -205,6 +201,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
                 # Iterate over the first waiting registration for each pool
                 # and try to rebalance the pools they are waiting for
+                pools_to_balance = len(self.get_pools_with_queue())
                 balanced_pools = []
                 bumped = False
                 for waiting_reg in top_waiting_regs:
@@ -217,7 +214,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                         if bumped:
                             # Should find a way to avoid breaking on `bumped` twice
                             break
-                    if len(balanced_pools) == len(self.get_pools_with_queue()) or bumped:
+                    if len(balanced_pools) == pools_to_balance or bumped:
                         break
 
     def bump(self, from_pool=None):
@@ -253,6 +250,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def is_full(self):
         return self.capacity <= self.number_of_registrations
+
+    def has_pool_permission(self, user, pool):
+        for group in pool.permission_groups.all():
+            if group in user.all_groups:
+                return True
+        return False
 
     @property
     def capacity(self):
@@ -313,17 +316,16 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         pools_to_balance = len(self.get_pools_with_queue())
 
         firsts, temp = [], []
-        for reg in self.registrations.all():
-            if reg.pool is None and reg.unregistration_date is None:
-                check = False
-                for _pool in reg.waiting_pool.all():
-                    if _pool not in temp:
-                        check = True
-                        temp.append(_pool)
-                if check:
-                    firsts.append(reg)
-                if len(temp) == pools_to_balance:
-                    break
+        for reg in self.registrations.filter(pool=None, unregistration_date=None):
+            check = False
+            for pool in reg.waiting_pool.all():
+                if pool not in temp:
+                    check = True
+                    temp.append(pool)
+            if check:
+                firsts.append(reg)
+            if len(temp) == pools_to_balance:
+                break
         return firsts
 
     def rebalance_pool(self, from_pool, to_pool):
@@ -331,7 +333,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         # and checks if they can be moved to the open pool
         bumped = False
         for old_reg in self.registrations.filter(pool=from_pool):
-            if self.can_register(old_reg.user, to_pool):
+            if self.has_pool_permission(old_reg.user, to_pool):
                 old_reg.pool = to_pool
                 old_reg.save()
                 self.bump(from_pool=from_pool)
