@@ -186,6 +186,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         If so, and the event is merged, bumps the first person in the waiting list.
         If the event isn't merged, bumps the first user in
         the waiting list who is able to join `pool`.
+        If noone is waiting for said pool, see if anyone is waiting for
+        any of the other pools and attempt to rebalance.
 
         :param open_pool: The pool where the unregistration happened.
         """
@@ -198,15 +200,19 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 self.try_to_rebalance(open_pool=open_pool)
 
     def try_to_rebalance(self, open_pool):
-        # Pull the first in the waiting list for each of the pools
-        # that have waiting registrations
+        """
+        Pull the top waiting registrations for all pools, and try to
+        move users in the pools they are waiting for to `open_pool` so
+        that someone can be bumped.
+
+        :param open_pool: The pool where the unregistration happened.
+        """
         top_waiting_registrations = self.get_top_of_waiting_list()
 
-        # Iterate over the first waiting registration for each pool
-        # and try to rebalance the pools they are waiting for
         pools_to_balance = len(self.get_pools_with_queue())
         balanced_pools = []
         bumped = False
+
         for waiting_registration in top_waiting_registrations:
             for full_pool in waiting_registration.waiting_pool.all():
 
@@ -311,8 +317,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def get_top_of_waiting_list(self):
         """
         Pulls the first X registrations that are waiting, until
-        all pools that have waiting registrations are covered.
-        :return:
+        all pools that have waiting registrations are covered by
+        their `waiting_pool`.
+
+        :return: The top X waiting users.
         """
         # Could send this number as an argument?
         pools_to_balance = len(self.get_pools_with_queue())
@@ -331,8 +339,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return top_of_waiting_list
 
     def rebalance_pool(self, from_pool, to_pool):
-        # Iterates over registrations in a full pool,
-        # and checks if they can be moved to the open pool
+        """
+        Iterates over registrations in a full pool, and checks
+        if they can be moved to the open pool. If possible, moves
+        a registration and calls `bump(from_pool)`.
+
+        :param from_pool: A full pool with waiting registrations.
+        :param to_pool: A pool with one open slot.
+        :return: Boolean, whether or not `bump()` has been called.
+        """
         bumped = False
         for old_registration in self.registrations.filter(pool=from_pool):
             if self.has_pool_permission(old_registration.user, to_pool):
@@ -340,8 +355,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 old_registration.save()
                 self.bump(from_pool=from_pool)
                 bumped = True
-                # Should bump `waiting_reg`, since it should
-                # be the first waiting registration for `_pool`
         return bumped
 
 
