@@ -521,11 +521,11 @@ class RegistrationTestCase(TestCase):
 
     def test_bump_after_rebalance(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        pool_one = event.pools.get(name='Abakusmember') # Pool1 - abakus - 0/3
-        pool_two = event.pools.get(name='Webkom')       # Pool2 - webkom - 0/2
+        pool_one = event.pools.get(name='Abakusmember')
+        pool_two = event.pools.get(name='Webkom')
         users = get_dummy_users(6)
-        abakus_users=users[0:3]
-        webkom_users=users[3:6]
+        abakus_users = users[0:3]
+        webkom_users = users[3:6]
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         for user in webkom_users:
@@ -535,26 +535,25 @@ class RegistrationTestCase(TestCase):
             event.register(user)
         for user in abakus_users:
             event.register(user)
-        pool_one_number_of_regs_before = pool_one.number_of_registrations
-        pool_two_number_of_regs_before = pool_two.number_of_registrations
+
+        pool_one_before = pool_one.number_of_registrations
+        pool_two_before = pool_two.number_of_registrations
         pool_one_waiting_before = pool_one.waiting_registrations.count()
         pool_two_waiting_before = pool_two.waiting_registrations.count()
 
         event.unregister(webkom_users[0])
-
-        self.assertEqual(pool_one.number_of_registrations, pool_one_number_of_regs_before)
-        self.assertEqual(pool_two.number_of_registrations, pool_two_number_of_regs_before)
+        self.assertEqual(pool_one.number_of_registrations, pool_one_before)
+        self.assertEqual(pool_two.number_of_registrations, pool_two_before)
         self.assertEqual(pool_one.waiting_registrations.count(), pool_one_waiting_before - 1)
         self.assertEqual(pool_two.waiting_registrations.count(), pool_two_waiting_before)
 
-
     def test_user_is_moved_after_rebalance(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        pool_one = event.pools.get(name='Abakusmember') # Pool1 - abakus - 0/3
-        pool_two = event.pools.get(name='Webkom')       # Pool2 - webkom - 0/2
+        pool_one = event.pools.get(name='Abakusmember')
+        pool_two = event.pools.get(name='Webkom')
         users = get_dummy_users(6)
-        abakus_users=users[0:3]
-        webkom_users=users[3:6]
+        abakus_users = users[0:3]
+        webkom_users = users[3:6]
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         for user in webkom_users:
@@ -571,6 +570,31 @@ class RegistrationTestCase(TestCase):
         event.unregister(webkom_users[0])
         moved_user_registration = event.registrations.get(user=webkom_users[2])
         self.assertEqual(moved_user_registration.pool, pool_two)
+
+    def test_correct_user_is_bumped_after_rebalance(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool_one = event.pools.get(name='Abakusmember')
+        users = get_dummy_users(7)
+        abakus_users = users[0:4]
+        webkom_users = users[4:7]
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in webkom_users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        for user in webkom_users:
+            event.register(user)
+        for user in abakus_users:
+            event.register(user)
+
+        pool_one_waiting_before = pool_one.waiting_registrations.count()
+        user_to_be_bumped = pool_one.waiting_registrations.first().user
+        user_not_to_be_bumped = pool_one.waiting_registrations.get(user=abakus_users[3]).user
+
+        event.unregister(webkom_users[0])
+        self.assertEqual(event.registrations.get(user=user_to_be_bumped).pool, pool_one)
+        self.assertIsNone(event.registrations.get(user=user_not_to_be_bumped).pool)
+        self.assertEqual(pool_one.waiting_registrations.count(), pool_one_waiting_before - 1)
 
 
 class AssertInvariant:
