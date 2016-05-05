@@ -57,7 +57,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.is_registered(user):
             return False
 
-        return self.has_pool_permission(user, pool)
+        for group in pool.permission_groups.all():
+            if group in user.all_groups:
+                return True
+        return False
 
     def admin_register(self, request_user, user, pool):
         """
@@ -322,9 +325,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param to_pool: A pool with one open slot.
         :return: Boolean, whether or not `bump()` has been called.
         """
+        to_pool_permissions = to_pool.permission_groups.all()
         bumped = False
         for old_registration in self.registrations.filter(pool=from_pool):
-            if self.has_pool_permission(old_registration.user, to_pool):
+            moveable = False
+            for group in to_pool_permissions:
+                if group in old_registration.user.all_groups:
+                    moveable = True
+            if moveable:
                 old_registration.pool = to_pool
                 old_registration.save()
                 self.bump(from_pool=from_pool)
