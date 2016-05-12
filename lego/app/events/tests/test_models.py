@@ -466,7 +466,7 @@ class RegistrationTestCase(TestCase):
         pool_one_size_before = pool_one.number_of_registrations
         pool_two_size_before = pool_two.number_of_registrations
 
-        user_to_unregister = pool_two.registrations.first().user
+        user_to_unregister = event.registrations.first().user
 
         event.unregister(user_to_unregister)
 
