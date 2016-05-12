@@ -572,6 +572,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(moved_user_registration.pool, pool_two)
 
     def test_correct_user_is_bumped_after_rebalance(self):
+        # Correct as in first user available for the rebalanced pool
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool_one = event.pools.get(name='Abakusmember')
         users = get_dummy_users(7)
