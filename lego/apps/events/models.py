@@ -329,8 +329,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         bumped = False
         for old_registration in self.registrations.filter(pool=from_pool):
             moveable = False
+            user_groups = old_registration.user.all_groups
             for group in to_pool_permissions:
-                if group in old_registration.user.all_groups:
+                if group in user_groups:
                     moveable = True
             if moveable:
                 old_registration.pool = to_pool
