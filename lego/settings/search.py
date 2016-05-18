@@ -1,0 +1,4 @@
+SEARCH_ID_FIELD = 'id'
+SEARCH_DJANGO_CT_FIELD = 'django_ct'
+SEARCH_DJANGO_ID_FIELD = 'django_id'
+SEARCH_TEMPLATE_NAME = 'lego-search'
