@@ -5,7 +5,7 @@ from lego.search.registry import index_registry
 
 
 class Command(BaseCommand):
-    help = "Rebuild all indexes in Elasticsearch."
+    help = 'Rebuild all indexes in Elasticsearch.'
 
     def handle(self, *args, **options):
         elasticsearch_backend.clear()

@@ -13,7 +13,7 @@ def string_to_instance(content_string):
     content_type_string, id_string = content_string.split('-')
     app_label, model_name = content_type_string.split('.')
     content_type = ContentType.objects.get(app_label=app_label, model=model_name)
-    return content_type.get_object_for_this_type(id=id)
+    return content_type.get_object_for_this_type(id=id_string)
 
 
 def instance_to_content_type_string(instance):

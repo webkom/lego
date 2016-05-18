@@ -6,6 +6,7 @@ from lego.app.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.app.feed.views import NotificationFeedViewSet
 from lego.app.flatpages.views import PageViewSet
 from lego.app.oauth.views import AccessTokenViewSet, ApplicationViewSet
+from lego.search.views import AutocompleteViewSet, SearchViewSet
 from lego.users.views.abakus_groups import AbakusGroupViewSet
 from lego.users.views.users import UsersViewSet
 
@@ -22,3 +23,5 @@ router.register(r'events/(?P<event_pk>[^/]+)/register',
                 RegistrationViewSet, base_name='register')
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
+router.register(r'search', SearchViewSet, base_name='search')
+router.register(r'autocomplete', AutocompleteViewSet, base_name='autocomplete')
