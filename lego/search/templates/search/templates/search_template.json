@@ -1,0 +1,78 @@
+{
+  "order": 0,
+  "template": "{{ index }}",
+  "settings": {
+    "index": {
+      "refresh_interval": "5s"
+    },
+    "analysis": {
+      "filter": {
+        "norwegian_stop": {
+          "type":       "stop",
+          "stopwords":  "_norwegian_"
+        },
+        "norwegian_stemmer": {
+          "type":       "stemmer",
+          "language":   "norwegian"
+        }
+      },
+      "analyzer": {
+        "norwegian": {
+          "tokenizer":  "standard",
+          "char_filter": ["html_strip"],
+          "filter": [
+            "lowercase",
+            "norwegian_stop",
+            "norwegian_stemmer"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "_default_": {
+      "_source": {
+        "enabled": true
+      },
+      "dynamic_templates": [
+        {
+          "strings": {
+            "mapping": {
+              "index": "analyzed",
+              "type": "string",
+              "analyzer": "norwegian"
+            },
+            "match_mapping_type": "string",
+            "match": "*"
+          }
+        }
+      ],
+      "_all": {
+        "enabled": true
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "django_ct": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "django_id": {
+          "type": "integer",
+          "index": "not_analyzed"
+        },
+        "autocomplete": {
+          "type" : "completion",
+          "analyzer" : "simple",
+          "search_analyzer" : "simple",
+          "payloads" : true
+        }
+      }
+    }
+  },
+  "aliases": {
+
+  }
+}
