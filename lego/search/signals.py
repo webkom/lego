@@ -9,7 +9,7 @@ signal_handler = SignalHandler()
 
 @receiver(post_save)
 def post_save_callback(sender, **kwargs):
-    if not settings.TESTING:  # We do not want to run the indexing pipeline while testing.
+    if not settings.TESTING:
         signal_handler.on_save(
             sender, kwargs.get('instance'), kwargs.get('created'), kwargs.get('update_fields')
         )
@@ -17,5 +17,5 @@ def post_save_callback(sender, **kwargs):
 
 @receiver(post_delete)
 def post_delete_callback(sender, **kwargs):
-    if not settings.TESTING:  # We do not want to run the indexing pipeline while testing.
+    if not settings.TESTING:
         signal_handler.on_delete(sender, kwargs.get('instance'))

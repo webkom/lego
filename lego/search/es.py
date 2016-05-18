@@ -6,6 +6,10 @@ from elasticsearch.helpers import bulk
 
 
 class ElasticSearchBackend:
+    """
+    This backend support bulk and single updates and removal of objects in the index.
+    The autocomplete and search functions returns content identifiers for matched objects.
+    """
 
     def __init__(self):
         self.connection = Elasticsearch(hosts=settings.ELASTICSEARCH, ca_certs=certifi.where())
@@ -16,22 +20,22 @@ class ElasticSearchBackend:
         """
         return bulk(self.connection, actions, stats_only=True)
 
-    def _index(self, payload, type, id):
+    def _index(self, payload, type_, id_):
         action = {
             '_op_type': 'index',
             '_index': settings.SEARCH_INDEX,
-            '_type': type,
-            '_id': id,
+            '_type': type_,
+            '_id': id_,
         }
         action.update(payload)
         return action
 
-    def _remove(self, type, id):
+    def _remove(self, type_, id_):
         action = {
             '_op_type': 'delete',
             '_index': settings.SEARCH_INDEX,
-            '_type': type,
-            '_id': id,
+            '_type': type_,
+            '_id': id_,
         }
         return action
 
@@ -52,16 +56,16 @@ class ElasticSearchBackend:
         return self.connection.indices.put_template(name, template)
 
     def update_many(self, payload_tuples):
-        return self._bulk([self._index(data, type, id) for data, type, id in payload_tuples])
+        return self._bulk([self._index(data, type_, id_) for data, type_, id_ in payload_tuples])
 
     def remove_many(self, payload_tuples):
-        return self._bulk([self._remove(type, id) for type, id in payload_tuples])
+        return self._bulk([self._remove(type_, id_) for type_, id_ in payload_tuples])
 
-    def update(self, data, type, id):
-        return self.update_many([(data, type, id)])
+    def update(self, data, type_, id_):
+        return self.update_many([(data, type_, id_)])
 
-    def remove(self, type, id):
-        return self.remove_many([(type, id)])
+    def remove(self, type_, id_):
+        return self.remove_many([(type_, id_)])
 
     def clear(self):
         self._clear()
@@ -97,9 +101,9 @@ class ElasticSearchBackend:
                 }
             }
         }
-        payload = self._search(search_query)
-        if payload:
-            hits = payload['hits']['hits']
+        result = self._search(search_query)
+        if result:
+            hits = result['hits']['hits']
             return [{
                 'content_type': hit['_source'][settings.SEARCH_DJANGO_CT_FIELD],
                 'object_id': hit['_source'][settings.SEARCH_DJANGO_ID_FIELD]
