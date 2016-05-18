@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'lego.app.articles',
     'lego.app.content',
     'lego.app.events',
+    'lego.app.feed',
     'lego.app.flatpages',
     'lego.app.comments',
 ]

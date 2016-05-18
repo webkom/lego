@@ -32,12 +32,10 @@ schedule = {}
 
 app.conf.update(
     CELERYBEAT_SCHEDULE=schedule,
-    CELERYBEAT_SCHEDULER='djcelery.schedulers.DatabaseScheduler',
     CELERY_RESULT_BACKEND=None,
     CELERY_TRACK_STARTED=True,
     CELERY_SEND_EVENTS=True,
-    CELERY_RESULT_SERIALIZER='json',
-    CELERY_TASK_SERIALIZER='json',
+    CELERY_TASK_SERIALIZER='pickle',
     CELERY_ENABLE_UTC=True,
     CELERY_DISABLE_RATE_LIMITS=True,
     CELERY_IGNORE_RESULT=True,
