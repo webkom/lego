@@ -22,3 +22,26 @@ class AggregatedFeedSerializer(serializers.Serializer):
 class MarkSerializer(serializers.Serializer):
     seen = serializers.BooleanField(default=False)
     read = serializers.BooleanField(default=False)
+
+
+class StoreActivitySerializer(serializers.Serializer):
+
+    time = serializers.DateTimeField()
+    verb = serializers.IntegerField(source='verb.id')
+    actor = serializers.CharField()
+    object = serializers.CharField(allow_null=True)
+    target = serializers.CharField(allow_null=True)
+    extra_context = serializers.DictField(default={}, required=False)
+
+
+class StoreAggregatedActivitySerializer(serializers.Serializer):
+
+    group = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+    seen_at = serializers.DateTimeField(allow_null=True)
+    read_at = serializers.DateTimeField(allow_null=True)
+
+    activities = StoreActivitySerializer(many=True)
+    dehydrated_ids = serializers.ListField(source='_activity_ids')
+    minimized_activities = serializers.IntegerField()
