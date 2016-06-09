@@ -7,3 +7,4 @@
     name: test
     description: test api application
     client_id: testid
+    skip_authorization: true

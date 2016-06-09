@@ -16,7 +16,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
-    'djangosecure',
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
@@ -102,6 +101,14 @@ JWT_AUTH = {
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
+# Tokens is valid for 10 years, this makes it easier for clients. No refresh token required. This
+# may be a security flaw, but with a token management system this should be fine.
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 31557600 * 10,
+    'SCOPES': {
+        'user': 'Grants access to the user profile'
+    }
+}
 
 ROOT_URLCONF = 'lego.urls'
 
