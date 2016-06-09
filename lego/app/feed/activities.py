@@ -28,13 +28,13 @@ class FeedActivity(Activity):
             setattr(self, content_type_field, None)
         elif isinstance(object_, six.text_type):
             content_type, object_id = object_.split('-')
-            setattr(self, id_field, object_id)
+            setattr(self, id_field, int(object_id))
             setattr(self, content_type_field, content_type)
         elif object_ is None:
             setattr(self, id_field, None)
             setattr(self, content_type_field, None)
         else:
-            setattr(self, id_field, object_.id)
+            setattr(self, id_field, int(object_.id))
             setattr(self, content_type_field, '{0}.{1}'.format(
                 object_._meta.app_label,
                 object_._meta.model_name
