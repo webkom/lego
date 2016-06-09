@@ -48,3 +48,13 @@ MIDDLEWARE_CLASSES = [
 
 # Celery
 BROKER_URL = env('CELERY_BROKER_URL')
+
+# Stream Framework
+STREAM_REDIS_CONFIG = {
+    'default': {
+        'host': env('REDIS_STREAM_HOST'),
+        'port': env('REDIS_STREAM_PORT'),
+        'db': env('REDIS_STREAM_DB'),
+        'password': env('REDIS_STREAM_PASSWORD')
+    },
+}

@@ -10,7 +10,6 @@ class FeedActivitySerializer(serializers.Serializer):
 
 
 class AggregatedFeedSerializer(serializers.Serializer):
-
     id = serializers.IntegerField(source='serialization_id')
     verb = serializers.CharField(source='verb.infinitive')
     created_at = serializers.DateTimeField()
@@ -25,7 +24,10 @@ class MarkSerializer(serializers.Serializer):
 
 
 class StoreActivitySerializer(serializers.Serializer):
-
+    """
+    This serializer is used to serialize our custom activity. The DRF serializer is a convenient
+    way to do this. Used for storage.
+    """
     time = serializers.DateTimeField()
     verb = serializers.IntegerField(source='verb.id')
     actor = serializers.CharField()
@@ -35,7 +37,10 @@ class StoreActivitySerializer(serializers.Serializer):
 
 
 class StoreAggregatedActivitySerializer(serializers.Serializer):
-
+    """
+    This serializer is used to serialize a aggregated feed with our custom activity class. The DRF
+    serializer is a convenient way to do this. Used for storage.
+    """
     group = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()

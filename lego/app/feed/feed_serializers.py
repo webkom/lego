@@ -12,6 +12,9 @@ from .serializers import StoreActivitySerializer, StoreAggregatedActivitySeriali
 
 
 class FeedActivitySerializer(BaseSerializer):
+    """
+    This serializer is used to serialize and deserialize our custom activity.
+    """
 
     def check_type(self, data):
         if not isinstance(data, FeedActivity):
@@ -27,7 +30,7 @@ class FeedActivitySerializer(BaseSerializer):
         stream = BytesIO(serialized_activity.encode('utf-8'))
         data = JSONParser().parse(stream)
         serializer = StoreActivitySerializer(data=data)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         return self.dict_to_object(serializer.validated_data)
 
     def dict_to_object(self, payload):
@@ -44,6 +47,10 @@ class FeedActivitySerializer(BaseSerializer):
 
 
 class AggregatedFeedSerializer(BaseAggregatedSerializer):
+    """
+    This serializer is used to serialize and deserialize the aggregated feed with our custom
+    activity.
+    """
     dehydrate = False
     date_fields = ['created_at', 'updated_at', 'seen_at', 'read_at']
 
@@ -58,7 +65,7 @@ class AggregatedFeedSerializer(BaseAggregatedSerializer):
         stream = BytesIO(serialized_aggregated.encode('utf-8'))
         data = JSONParser().parse(stream)
         serializer = StoreAggregatedActivitySerializer(data=data)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         return self.dict_to_object(serializer.validated_data)
 
     def dict_to_object(self, payload):

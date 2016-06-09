@@ -8,6 +8,7 @@ from .feed_serializers import AggregatedFeedSerializer
 class NotificationFeed(RedisNotificationFeed):
     """
     The notification feed is special, normally we use a Feed or AggregatedFeed.
+    The notification feed has support for seen and clicked activities.
     """
     key_format = 'feed:notification:%(user_id)s'
     markers_key_format = 'feed:notification:%(user_id)s'

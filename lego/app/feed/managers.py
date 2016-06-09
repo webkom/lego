@@ -55,3 +55,5 @@ class NotificationFeedManager:
                 fanout_priority=FanoutPriority.HIGH
             )
         self.metrics.on_activity_removed()
+
+notification_feed_manager = NotificationFeedManager()
