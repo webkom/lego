@@ -10,9 +10,10 @@ from lego.users.models import User
 
 class NotificationFeedManagerTestCase(TestCase):
 
-    fixtures = ['test_user.yaml']
+    fixtures = ['test_users.yaml']
 
-    user = User.objects.get(id=1)
+    def setUp(self):
+        self.user = User.objects.get(id=1)
 
     def test_get_feed(self):
         """Check the get_user_feed function. The function should return a NotificationFeed based on

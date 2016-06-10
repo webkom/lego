@@ -10,12 +10,14 @@ from lego.users.models import User
 
 class ActivityTestCase(TestCase):
 
-    fixtures = ['test_users.yaml', 'test_arcicles.yaml', 'test_comments.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
+                'test_comments.yaml']
 
-    user = User.objects.get(id=1)
-    article = Article.objects.get(id=2)
-    comment = Comment.objects.filter(content_type=21, object_id=article.id).first()
-    test_time = now()
+    def setUp(self):
+        self.user = User.objects.get(id=1)
+        self.article = Article.objects.get(id=2)
+        self.comment = Comment.objects.filter(content_type=21, object_id=self.article.id).first()
+        self.test_time = now()
 
     def test_create_activity(self):
         """Check that the objects gets stored as content_strings."""

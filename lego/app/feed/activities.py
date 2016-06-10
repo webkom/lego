@@ -1,4 +1,3 @@
-import six
 from django.utils.timezone import is_aware, make_naive
 from pytz import utc
 from stream_framework.activity import Activity, AggregatedActivity
@@ -23,10 +22,10 @@ class FeedActivity(Activity):
         id_field = '%s_id' % field
         content_type_field = '%s_content_type' % field
 
-        if isinstance(object_, six.integer_types):
+        if isinstance(object_, int):
             setattr(self, id_field, object_)
             setattr(self, content_type_field, None)
-        elif isinstance(object_, six.text_type):
+        elif isinstance(object_, str):
             content_type, object_id = object_.split('-')
             setattr(self, id_field, int(object_id))
             setattr(self, content_type_field, content_type)
