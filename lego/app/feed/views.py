@@ -1,5 +1,5 @@
 from rest_framework import decorators, mixins, permissions, response, status, viewsets
-
+from lego.utils.pagination import APIPagination
 from .managers import NotificationFeedManager
 from .serializers import AggregatedFeedSerializer, MarkSerializer
 from .tasks import notifications_mark, notifications_mark_all
@@ -16,6 +16,7 @@ class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = AggregatedFeedSerializer
     manager = NotificationFeedManager()
+    pagination_class = [APIPagination]
 
     def get_feed_key(self):
         return self.request.user.id
