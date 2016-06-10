@@ -1,5 +1,4 @@
 from django.conf.urls import include, url
-from django.contrib import admin
 from django.views.generic import TemplateView
 from oauth2_provider import views as oauth2_views
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
@@ -25,8 +24,6 @@ urlpatterns = [
     url(r'^api/', include('lego.api.urls', namespace='api')),
 
     url(r'^authorization/', include(authorization_urlpatterns)),
-
-    url(r'^admin/', admin.site.urls),
 
     url(r'^$', TemplateView.as_view(template_name='landing.html'), name='landing_page'),
 ]
