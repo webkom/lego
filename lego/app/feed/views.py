@@ -1,8 +1,10 @@
 from rest_framework import decorators, mixins, permissions, response, status, viewsets
+
+from lego.app.feed.feeds import NotificationFeed
 from lego.utils.pagination import APIPagination
+
 from .managers import NotificationFeedManager
 from .serializers import AggregatedFeedSerializer, MarkSerializer
-from .tasks import notifications_mark, notifications_mark_all
 
 
 class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
@@ -16,7 +18,7 @@ class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = AggregatedFeedSerializer
     manager = NotificationFeedManager()
-    pagination_class = [APIPagination]
+    pagination_class = APIPagination
 
     def get_feed_key(self):
         return self.request.user.id
@@ -36,8 +38,9 @@ class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        notifications_mark_all.delay(self.get_feed_key(), **data)
-        return response.Response({}, status=status.HTTP_202_ACCEPTED)
+        feed = NotificationFeed(self.get_feed_key())
+        feed.mark_all(**data)
+        return response.Response({}, status=status.HTTP_200_OK)
 
     @decorators.detail_route(
         permission_classes=[permissions.IsAuthenticated],
@@ -48,8 +51,9 @@ class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        notifications_mark.delay(self.get_feed_key(), pk, **data)
-        return response.Response({}, status=status.HTTP_202_ACCEPTED)
+        feed = NotificationFeed(self.get_feed_key())
+        feed.mark_activity(pk, **data)
+        return response.Response({}, status=status.HTTP_200_OK)
 
     @decorators.list_route(
         permission_classes=[permissions.IsAuthenticated],

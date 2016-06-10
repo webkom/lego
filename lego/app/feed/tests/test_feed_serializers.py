@@ -12,30 +12,34 @@ from lego.users.models import User
 
 class FeedActivitySerializerTestCase(TestCase):
 
-    fixtures = ['test_users.yaml', 'test_arcicles.yaml', 'test_comments.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
+                'test_comments.yaml']
 
-    user = User.objects.get(id=1)
-    article = Article.objects.get(id=2)
-    comment = Comment.objects.filter(content_type=21, object_id=article.id).first()
+    def setUp(self):
+        self.user = User.objects.get(id=1)
+        self.article = Article.objects.get(id=2)
+        self.comment = Comment.objects.filter(content_type=21, object_id=self.article.id).first()
 
-    activity = FeedActivity(
-        actor=user,
-        verb=CommentVerb,
-        object=comment,
-        target=article,
-        extra_context={
-            'content': comment.text
-        }
-    )
-    aggregated_activity = FeedAggregatedActivity(
-        'test-group', [activity], created_at=datetime.utcnow(), updated_at=datetime.utcnow()
-    )
+        self.activity = FeedActivity(
+            actor=self.user,
+            verb=CommentVerb,
+            object=self.comment,
+            target=self.article,
+            extra_context={
+                'content': self.comment.text
+            }
+        )
+        self.aggregated_activity = FeedAggregatedActivity(
+            'test-group', [self.activity],
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
 
-    serializer = FeedActivitySerializer(FeedActivity)
-    aggregated_serializer = AggregatedFeedSerializer(
-        aggregated_activity_class=FeedAggregatedActivity,
-        activity_class=FeedActivity
-    )
+        self.serializer = FeedActivitySerializer(FeedActivity)
+        self.aggregated_serializer = AggregatedFeedSerializer(
+            aggregated_activity_class=FeedAggregatedActivity,
+            activity_class=FeedActivity
+        )
 
     def test_serializer(self):
         """Check if the relevant variables gets restored."""

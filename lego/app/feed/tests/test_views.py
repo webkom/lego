@@ -13,15 +13,16 @@ from lego.users.models import User
 
 class NotificationViewsTestCase(APITestCase):
 
-    fixtures = ['test_users.yaml', 'test_arcicles.yaml', 'test_comments.yaml']
-
-    url = '/api/v1/notifications/'
-    user = User.objects.get(id=1)
-    second_user = User.objects.get(id=2)
-    article = Article.objects.get(id=2)
-    comment = Comment.objects.filter(content_type=21, object_id=article.id).first()
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
+                'test_comments.yaml']
 
     def setUp(self):
+        self.url = '/api/v1/notifications/'
+        self.user = User.objects.get(id=1)
+        self.second_user = User.objects.get(id=2)
+        self.article = Article.objects.get(id=2)
+        self.comment = Comment.objects.filter(content_type=21, object_id=self.article.id).first()
+
         get_redis_connection().flushdb()
         self.activity = activities.FeedActivity(
             actor=self.user,
@@ -51,8 +52,8 @@ class NotificationViewsTestCase(APITestCase):
             '{url}mark_all/'.format(url=self.url), data={'read': True, 'seen': True}
         )
 
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        mock_mark_all.assert_called_once_with(True, True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        mock_mark_all.assert_called_once_with(read=True, seen=True)
 
     @mock.patch('lego.app.feed.feeds.NotificationFeed.mark_activity')
     def test_mark(self, mock_mark_activity):
@@ -66,5 +67,5 @@ class NotificationViewsTestCase(APITestCase):
             ), data={'read': True, 'seen': True}
         )
 
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        mock_mark_activity.assert_called_once_with('10', True, True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        mock_mark_activity.assert_called_once_with('10', read=True, seen=True)
