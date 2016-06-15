@@ -1,4 +1,5 @@
 from .base import INSTALLED_APPS
+from .rest_framework import REST_FRAMEWORK
 
 DEBUG = False
 
@@ -24,3 +25,15 @@ CACHES = {
         'LOCATION': 'unique-snowflake'
     }
 }
+
+STREAM_REDIS_CONFIG = {
+    'default': {
+        'host': '127.0.0.1',
+        'port': 6379,
+        'db': 10,
+        'password': None
+    },
+}
+
+# We don't care about pagination in the tests
+REST_FRAMEWORK['DEFAULT_PAGINATION_CLASS'] = None
