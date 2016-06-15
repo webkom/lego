@@ -15,7 +15,6 @@ djangorestframework-jwt==1.8.0
 djangorestframework-camel-case==0.2.0
 django-basis==0.4.0
 django-extensions==1.6.7
-django-haystack==2.4.1
 django-autoslug==1.9.3
 django-filter==0.13.0
 django-oauth-toolkit==0.10.0
@@ -23,4 +22,3 @@ django-cors-headers==1.1.0
 django-celery==3.1.17
 django-mptt==0.8.4
 django-environ==0.4.0
-django-secure==1.0.1

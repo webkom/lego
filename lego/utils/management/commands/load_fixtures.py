@@ -7,7 +7,6 @@ from django.core.management import BaseCommand
 from lego.app.articles.models import Article
 from lego.app.comments.models import Comment
 from lego.app.events.models import Event
-from lego.app.oauth.models import APIApplication
 from lego.users.models import AbakusGroup, Membership, User
 
 
@@ -33,7 +32,6 @@ class Command(BaseCommand):
         self.load_from_fixture('users/fixtures/initial_abakus_groups.yaml', AbakusGroup)
         self.load_from_fixture('users/fixtures/initial_users.yaml', User)
         self.load_from_fixture('users/fixtures/initial_memberships.yaml', Membership)
-        self.load_from_fixture('app/oauth/fixtures/initial_applications.yaml', APIApplication)
 
         if settings.DEVELOPMENT:
             self.stdout.write('Loading development fixtures:')
@@ -41,7 +39,5 @@ class Command(BaseCommand):
             self.load_from_fixture('app/events/fixtures/development_events.yaml', Event)
             self.load_from_fixture('app/articles/fixtures/development_articles.yaml', Article)
             self.load_from_fixture('app/comments/fixtures/development_comments.yaml', Comment)
-            self.load_from_fixture('app/oauth/fixtures/development_applications.yaml',
-                                   APIApplication)
 
         self.stdout.write('Done!')

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block body %}
+
+    <section class="hero is-fullheight login">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-4 is-offset-4">
+                        <div class="box">
+                            <figure class="image">
+                                <img class="logo" src="{% static "assets/img/logo.png" %}">
+                            </figure>
+
+                            <h2 class="subtitle has-text-centered">Login</h2>
+
+                            {% if form.errors %}
+                                <div class="notification is-warning">
+                                    Your username and password didn't match. Please try again.
+                                </div>
+                            {% endif %}
+
+                            <form method="post" action="{% url 'login' %}" class="form">
+                                {% csrf_token %}
+                                {% if next %}
+                                    <input type="hidden" name="next" value="{{ next }}" />
+                                {% endif %}
+                                <p class="control">
+                                    <input class="input" type="text" placeholder="Username" name="username">
+                                </p>
+                                <p class="control">
+                                    <input class="input" type="password" placeholder="Password" name="password">
+                                </p>
+                                <input type="submit" class="button is-outlined is-pulled-right" value="Login" />
+                                <div class="is-clearfix"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock body %}

@@ -73,7 +73,7 @@ LOGGING = {
             'filters': ['require_debug_true'],
         },
         'django.requests': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
             'filters': ['require_debug_true'],
         }

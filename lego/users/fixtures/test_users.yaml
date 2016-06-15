@@ -2,6 +2,7 @@
   pk: 1
   fields:
     username: test1
+    password: pbkdf2_sha256$24000$zowF0cRkFimt$qzeoY9hZ0X3zDhlG0FP8imaGto8S2N6ed1AMp83xcn4= # test
     first_name: test
     last_name: user1
     email: test1@user.com
