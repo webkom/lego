@@ -1,61 +1,48 @@
+{% extends "base.html" %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="{% static "assets/img/favicon.png" %}" type="image/png">
-    <title>{{ SITE.name }}</title>
-    <style>
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-        }
+{% block body %}
 
-        .bg {
-            height: 100%;
-            width: 100%;
-            background: url({% static "assets/img/landing.png" %}) no-repeat;
-            background-position: center;
-            background-size: 50%
-        }
+    <section class="hero is-fullheight">
 
-        .about {
-            background: #222;
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            height: 50px;
-            width: 100%;
-            color: #fafafa;
-            line-height: 50px;
-            text-align: center;
-            font-size: 30px;
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
-            font-weight: 100;
-        }
+        <div class="hero-head">
+            <div class="container">
+                <nav class="nav">
+                    <div class="nav-left"></div>
+                    <div class="nav-center">
+                        {% if user.is_authenticated %}
+                            <a class="nav-item" href="{% url "logout" %}">Logout</a>
+                        {% else %}
+                            <a class="nav-item" href="{% url "login" %}">Login</a>
+                        {% endif %}
+                        <a class="nav-item" href="{% url "api:default" %}">API</a>
+                        <span class="nav-item">
+                            <img src="{% static "assets/img/logo.png" %}">
+                        </span>
+                        <a class="nav-item" href="{{ SITE.documentation_url }}">Documentation</a>
+                        <a class="nav-item" href="mailto:{{ SITE.contact_email }}">Contact</a>
+                    </div>
+                    <div class="nav-right"></div>
+                </nav>
+            </div>
+        </div>
 
-        .about .logo {
-            position: absolute;
-            bottom: 0;
-            right: 10px;
-            padding-top: 13px;
-            padding-bottom: 14px;
-            padding-left: 0;
-            display: inline-block;
-            width: 91px;
-            height: 20px;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAAAQCAYAAAC4LkmaAAAD5ElEQVRYw92XXUhUQRTHV0UTs5I+qSx3Crz3QeghSCiIMBGSSCgi0odAMkQKipCiXqRIKCqkDwkziV4qLDCfesja/NbMVvKzD6gsNS0Ls3TVvP3Hzq3jdHf3roQPHvjhnXPHMzP/nTNzrsNhYX3O2NlgHUgG8bLtsGmGYawGOYzlXvp9NX5bieM/GOLkGX/N6ZhOg0Cx4DYYAgZDtotfOLX1NhZw3JhsB2a0cBAmDXgUwSbR5YwdaRJanp8FlCvClc5Y4SBKii/BOO/AUy/iYcJzwChNvpv+DoKwGSccxIgC/XaFk7iF5mkQWpzF5FPY5E+z503TINyJ6RbuWCCiSd6CeqFVWUw+nyYud10MW0iuD+FegkrQC96Dm2AV6xcOikAT6AKfQRu4BBaxfjmqcPTjuYhs8h01fcp8bpE/j/nkGgpBB/gC+kE7SJDC1QcqXC+oEPqQhRivaeK11G6jdqMP4aysE0RSvyAf/Wq8CQfSWVsuPIr6XTedynzekNvFjp0uL+MmSeEGAxVOUi708TKhRyplyJ80Jd8Vao+DxV6E+0G7JwsUsxgZrG81uAgywR7afaYtsRBuOxim5wGgs1h2hUtm8a6BnWCfzB4gHFMRTfJY6Eal0JeygbPYQFvJl8p8af7OODzPA2PkL/Jxnh22SEsu3Cf2vE35X7vCJbIY8qiYpZ5xvYGK1gMeQjjsuGA28D22u8y0iGaD37BzOaD9gfz3mW8+2Es7uITORV/CmVZtIbpd4cKUcVrBBi5caaDCoRA2qoTezwYNpZSQ9o1KA0kBGGHlSZAN4V6R/xG145QdpJov4f650e0KR74VoJ7FkpviLAiRwu0K9GJAihooR4rYABsNe7YmgB13l9p32KSlOAlWNZsiXAfVj9LcIHgqwpE/BBxi8aSdk8IFgzq7wj0XmrwYhuuEFs6Cn2JBu2gSJt3sXbaNM+4n+fPJZ6aL20/pwX1rlbouY6rCsfcrQYuZVWa6xoAef6K1IEVduE0bhZakBG2ggGNmGaGcT+P0vsxCuO/gPNjNzklpqdSvlX2B7KALp9mPcLIciaTaUNpHMFe56ScEpaK9gF1KLuXCS6cbdgvd7hPr5GddTKcz1t3rpeDFDpuo3Z4JLVERZiETpsrLr+Wm9x4QYaOOk6kWTv3O+El/p49duN+iRErxE89lUZeqVjxpgc1CC0YqngRN+KwaeCK0sWqhe2qE3oPv08t4DrUQZTMJIznoRbgjrE88+SqofYHqMg9V57KWi1a+HK5SvTdKl0cui7eM+mVa+OSl9YB88pBfwPq2U7w+mQm062S/QjZ2Lc3J/NE7aOyIX8er3stPFC04AAAAAElFTkSuQmCC') no-repeat center 16px;
-        }
-    </style>
-</head>
-<body>
-    <div class="bg"></div>
-    <div class="about">
-        {{ SITE.slogan }}
-        <div class="logo"></div>
-    </div>
-</body>
-</html>
+        <div class="hero-body">
+            <div class="container">
+                <img src="{% static "assets/img/landing.png" %}">
+            </div>
+        </div>
+
+        <div class="hero-foot">
+            <footer class="footer">
+                <div class="container">
+                    <div class="content has-text-centered">
+                        <h1 class="title">{{ SITE.slogan }}</h1>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+    </section>
+
+{% endblock %}

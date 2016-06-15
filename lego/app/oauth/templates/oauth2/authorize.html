@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block body %}
+
+    <section class="hero is-fullheight login">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-4 is-offset-4">
+                        <div class="box">
+                            <figure class="image">
+                                <img class="logo" src="{% static "assets/img/logo.png" %}">
+                            </figure>
+
+                            <h2 class="subtitle has-text-centered">Authorize application</h2>
+
+                            {% if not error %}
+
+                                <form id="authorizationForm" method="post">
+                                    {% csrf_token %}
+
+                                    <h1 class="title">{{ application.name }}</h1>
+                                    <h2 class="subtitle">{{ application.description }}</h2>
+
+                                    <div class="content">
+                                        <p>The application requires the following scopes:</p>
+                                        <ul class="list">
+                                        {% for scope in scopes_descriptions %}
+                                            <li>{{ scope }}</li>
+                                        {% endfor %}
+                                        </ul>
+                                    </div>
+
+                                    {% for field in form %}
+                                        {% if field.is_hidden %}
+                                            {{ field }}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <div class="control is-grouped is-pulled-right">
+                                        <p class="control">
+                                            <input type="submit" class="button is-outlined is-danger" value="Cancel" />
+                                        </p>
+                                        <p class="control">
+                                            <input type="submit" class="button is-outlined is-pulled-right" name="allow" value="Authorize" />
+                                        </p>
+                                    </div>
+                                </form>
+                                <div class="is-clearfix"></div>
+
+                            {% else %}
+                                <div class="notification is-danger">
+                                    <h2 class="subtitle">Error: {{ error.error }}</h2>
+                                    <p>{{ error.description }}</p>
+                                </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock body %}

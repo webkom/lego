@@ -5,7 +5,7 @@ from lego.app.oauth.models import APIApplication
 
 
 class APIApplicationTestCase(TestCase):
-    fixtures = ['initial_users.yaml', 'initial_applications.yaml']
+    fixtures = ['test_users.yaml', 'test_applications.yaml']
 
     def test_initial_application(self):
         api_app = APIApplication.objects.get(pk=1)
