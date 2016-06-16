@@ -1,7 +1,7 @@
-from lego.permissions.permissions import AbakusPermissions
+from lego.permissions.permissions import AbakusObjectPermission
 
 
-class EventPermissions(AbakusPermissions):
+class EventPermissions(AbakusObjectPermission):
     # This mapping is needed to enforce events permissions on nested objects.
     perms_map = {
         'list': ['/sudo/admin/events/list/'],
