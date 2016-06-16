@@ -1,0 +1,10 @@
+- model: oauth.APIApplication
+  pk: 1
+  fields:
+    user: 1
+    client_type: public
+    authorization_grant_type: password
+    name: test
+    description: test api application
+    client_id: testid
+    skip_authorization: true
