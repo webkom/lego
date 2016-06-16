@@ -1,4 +1,4 @@
-from lego.permissions.permissions import AbakusPermissions
+from lego.permissions.permissions import AbakusObjectPermission
 from lego.users.models import Membership
 
 
@@ -12,7 +12,7 @@ def can_retrieve_abakusgroup(group, retriever):
     return group in retriever.all_groups or retriever.has_perm(required_permission)
 
 
-class UsersPermissions(AbakusPermissions):
+class UsersPermissions(AbakusObjectPermission):
     perms_map = {
         'list': ['/sudo/admin/users/list/'],
         'retrieve': [],
@@ -37,7 +37,7 @@ class UsersPermissions(AbakusPermissions):
         return super().has_object_permission(request, view, obj)
 
 
-class AbakusGroupPermissions(AbakusPermissions):
+class AbakusGroupPermissions(AbakusObjectPermission):
     perms_map = {
         'list': [],
         'hierarchy': [],
