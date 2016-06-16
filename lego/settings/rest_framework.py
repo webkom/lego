@@ -4,7 +4,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ],
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_RENDERER_CLASSES': [
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
     ],
@@ -16,5 +15,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'lego.permissions.filters.AbakusObjectPermissionFilter',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'lego.utils.pagination.APIPagination',
+    'PAGE_SIZE': 30,
+    'EXCEPTION_HANDLER': 'lego.utils.exceptions.exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
