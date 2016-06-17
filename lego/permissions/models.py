@@ -41,7 +41,7 @@ class ObjectPermissionsModel(models.Model):
         """
 
         if not user.is_authenticated():
-            return not self.needs_auth() and self.can_view_groups.count() == 0
+            return not self.needs_auth()
 
         can_view_groups = self.can_view_groups.all()
 
@@ -58,7 +58,7 @@ class ObjectPermissionsModel(models.Model):
         """
 
         if not user.is_authenticated():
-            return not self.needs_auth() and self.can_view_groups.count() == 0
+            return not self.needs_auth()
 
         return (user == getattr(self, 'created_by', False) or user in self.can_edit_users.all() or
                 _check_intersection(user.all_groups, self.can_edit_groups.all()))

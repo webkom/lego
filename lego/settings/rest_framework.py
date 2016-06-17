@@ -11,8 +11,7 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'lego.permissions.permissions.AbakusAuthenticationPermission',
-        'lego.permissions.permissions.AbakusObjectPermission',
+        'lego.permissions.permissions.AbakusPermission',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'lego.permissions.filters.AbakusObjectPermissionFilter',
