@@ -38,7 +38,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_without_view_permissions(self):
         self.client.force_authenticate(user=self.without_permission)
@@ -55,11 +55,12 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_view_permissions(self):
         self.client.force_authenticate(user=self.with_permission)
-
+        content_type = ContentType.objects.get_for_model(Article)
         post_data = {
             'text': 'Hey',
-            'comment_target': '{0}-{1}'.format(
-                ContentType.objects.get_for_model(Article).app_label,
+            'comment_target': '{0}.{1}-{2}'.format(
+                content_type.app_label,
+                content_type.model,
                 Article.objects.first().pk
             )
         }
@@ -86,10 +87,12 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_invalid_contenttype(self):
         self.client.force_authenticate(user=self.with_permission)
+        content_type = ContentType.objects.get_for_model(Article)
         post_data = {
             'text': 'Hey',
-            'comment_target': '{0}-{1}'.format(
-                ContentType.objects.get_for_model(Article).app_label+'xyz',
+            'comment_target': '{0}.{1}-{2}'.format(
+                content_type.app_label+'xyz',
+                content_type.model,
                 Article.objects.first().pk
             )
         }
@@ -114,8 +117,10 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_parent(self):
         self.client.force_authenticate(user=self.with_permission)
-        comment_target = '{0}-{1}'.format(
-            ContentType.objects.get_for_model(Article).app_label,
+        content_type = ContentType.objects.get_for_model(Article)
+        comment_target = '{0}.{1}-{2}'.format(
+            content_type.app_label,
+            content_type.model,
             Article.objects.last().pk
         )
 
@@ -135,12 +140,15 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_invalid_parent(self):
         self.client.force_authenticate(user=self.with_permission)
-        comment_target = '{0}-{1}'.format(
-            ContentType.objects.get_for_model(Article).app_label,
+        content_type = ContentType.objects.get_for_model(Article)
+        comment_target = '{0}.{1}-{2}'.format(
+            content_type.app_label,
+            content_type.model,
             Article.objects.last().pk
         )
-        comment_target_2 = '{0}-{1}'.format(
-            ContentType.objects.get_for_model(Article).app_label,
+        comment_target_2 = '{0}.{1}-{2}'.format(
+            content_type.app_label,
+            content_type.model,
             Article.objects.first().pk
         )
 
@@ -161,8 +169,10 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_nonexistent_parent(self):
         self.client.force_authenticate(user=self.with_permission)
-        comment_target = '{0}-{1}'.format(
-            ContentType.objects.get_for_model(Article).app_label,
+        content_type = ContentType.objects.get_for_model(Article)
+        comment_target = '{0}.{1}-{2}'.format(
+            content_type.app_label,
+            content_type.model,
             Article.objects.last().pk
         )
 

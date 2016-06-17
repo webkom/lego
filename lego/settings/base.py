@@ -35,14 +35,10 @@ INSTALLED_APPS = [
     'lego.app.comments',
 ]
 
-MIGRATION_MODULES = {
-    'oauth2_provider': 'lego.migrations.oauth2_provider'
-}
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
-    'lego.permissions.backends.KeywordPermissionBackend',
+    'lego.permissions.backends.AbakusPermissionBackend',
     'oauth2_provider.backends.OAuth2Backend',
 )
 LOGIN_URL = '/authorization/login/'

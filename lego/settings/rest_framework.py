@@ -10,6 +10,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'lego.permissions.permissions.AbakusPermission',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'lego.permissions.filters.AbakusObjectPermissionFilter',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'lego.utils.pagination.APIPagination',
     'PAGE_SIZE': 30,
     'EXCEPTION_HANDLER': 'lego.utils.exceptions.exception_handler',

@@ -19,6 +19,7 @@ class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     serializer_class = AggregatedFeedSerializer
     manager = NotificationFeedManager()
     pagination_class = APIPagination
+    filter_backends = []
 
     def get_feed_key(self):
         return self.request.user.id

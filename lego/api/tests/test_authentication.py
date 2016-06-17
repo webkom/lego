@@ -20,16 +20,16 @@ class JSONWebTokenTestCase(APITestCase):
             self.assertEqual(getattr(self.user, field), user[field])
 
     def test_authenticate(self):
-        response = self.client.post(reverse('obtain_jwt_token'), self.user_data)
+        response = self.client.post(reverse('jwt:obtain_jwt_token'), self.user_data)
         self.assertContains(response, 'token')
         self.check_user(response.data['user'])
 
     def test_refresh(self):
-        token_response = self.client.post(reverse('obtain_jwt_token'), self.user_data)
+        token_response = self.client.post(reverse('jwt:obtain_jwt_token'), self.user_data)
         token_data = {
             'token': token_response.data['token']
         }
-        refresh_response = self.client.post(reverse('refresh_jwt_token'), token_data)
+        refresh_response = self.client.post(reverse('jwt:refresh_jwt_token'), token_data)
 
         self.assertContains(refresh_response, 'token')
         self.check_user(refresh_response.data['user'])

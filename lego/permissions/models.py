@@ -14,16 +14,13 @@ class ObjectPermissionsModel(models.Model):
     Abstract model that provides fields that can be used for object permissions.
     """
 
-    can_edit_users = models.ManyToManyField(User, related_name='can_edit_%(class)s', blank=True,
-                                            null=True)
+    can_edit_users = models.ManyToManyField(User, related_name='can_edit_%(class)s', blank=True)
 
-    can_edit_groups = models.ManyToManyField(AbakusGroup,
-                                             related_name='can_edit_%(class)s', blank=True,
-                                             null=True)
+    can_edit_groups = models.ManyToManyField(AbakusGroup, related_name='can_edit_%(class)s',
+                                             blank=True)
 
-    can_view_groups = models.ManyToManyField(AbakusGroup,
-                                             related_name='can_view_%(class)s', blank=True,
-                                             null=True)
+    can_view_groups = models.ManyToManyField(AbakusGroup, related_name='can_view_%(class)s',
+                                             blank=True)
 
     require_auth = models.BooleanField(_('require auth'), default=False)
 
@@ -33,7 +30,7 @@ class ObjectPermissionsModel(models.Model):
         abstract = True
 
     def needs_auth(self):
-        return self.require_auth or len(self.can_view_groups.all()) > 0
+        return self.require_auth or self.can_view_groups.count() > 0
 
     def can_view(self, user):
         """
@@ -50,7 +47,7 @@ class ObjectPermissionsModel(models.Model):
 
         if not can_view_groups:
             return True
-        return (user == self.created_by or
+        return (user == getattr(self, 'created_by', False) or
                 _check_intersection(user.all_groups, can_view_groups))
 
     def can_edit(self, user):
@@ -63,6 +60,5 @@ class ObjectPermissionsModel(models.Model):
         if not user.is_authenticated():
             return not self.needs_auth()
 
-        return (user == self.created_by or
-                user in self.can_edit_users.all() or
-                len(set(user.all_groups).intersection(self.can_edit_groups.all())))
+        return (user == getattr(self, 'created_by', False) or user in self.can_edit_users.all() or
+                _check_intersection(user.all_groups, self.can_edit_groups.all()))
