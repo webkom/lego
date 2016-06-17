@@ -14,11 +14,7 @@ def can_retrieve_abakusgroup(group, retriever):
 
 class UsersPermissions(AbakusPermission):
     permission_map = {
-        'list': ['/sudo/admin/users/list/'],
-        'create': ['/sudo/admin/users/create/'],
-        'update': ['/sudo/admin/users/update/'],
-        'partial_update': ['/sudo/admin/users/update/'],
-        'destroy': ['/sudo/admin/users/destroy/'],
+        'retrieve': [],
     }
 
     allowed_individual = ['retrieve', 'update', 'partial_update']
@@ -38,7 +34,9 @@ class UsersPermissions(AbakusPermission):
 
 class AbakusGroupPermissions(AbakusPermission):
     permission_map = {
+        'list': [],
         'create': ['/sudo/admin/groups/create/'],
+        'retrieve': [],
         'update': ['/sudo/admin/groups/update/'],
         'partial_update': ['/sudo/admin/groups/update/'],
         'destroy': ['/sudo/admin/groups/destroy/'],
