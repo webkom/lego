@@ -28,6 +28,9 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     objects = AbakusGroupManager()
 
+    def __str__(self):
+        return self.name
+
     @property
     def is_committee(self):
         if self.parent:
@@ -46,9 +49,6 @@ class AbakusGroup(MPTTModel, PersistentModel):
     def remove_user(self, user):
         membership = Membership.objects.get(user=user, abakus_group=self)
         membership.delete()
-
-    def __str__(self):
-        return self.name
 
     def natural_key(self):
         return self.name

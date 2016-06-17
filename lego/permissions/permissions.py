@@ -7,30 +7,25 @@ class AbakusPermission(permissions.BasePermission):
 
     OBJECT_METHODS = ['retrieve', 'update', 'partial_update', 'destroy']
 
-    permission_map = {
-        'list': ['/sudo/admin/%(model_name)ss/list/'],
-        'create': ['/sudo/admin/%(model_name)ss/create/'],
-        'retrieve': ['/sudo/admin/%(model_name)ss/retrieve/'],
-        'update': ['/sudo/admin/%(model_name)ss/update/'],
-        'partial_update': ['/sudo/admin/%(model_name)ss/update/'],
-        'destroy': ['/sudo/admin/%(model_name)ss/destroy/'],
-    }
+    default_permission = '/sudo/admin/{model_name}s/{action}/'
+    default_require_auth = True
 
-    authentication_map = {
-        'list': True,
-        'create': True,
-        'retrieve': True,
-        'update': True,
-        'partial_update': True,
-        'destroy': True
-    }
+    permission_map = {}
+    authentication_map = {}
 
-    def get_required_object_permissions(self, perms, model_cls):
+    def get_required_object_permissions(self, action, model_cls):
+        if action == 'partial_update':
+            action = 'update'
+
         kwargs = {
             'app_label': model_cls._meta.app_label,
-            'model_name': model_cls._meta.model_name
+            'model_name': model_cls._meta.model_name,
+            'action': action
         }
-        return [perm % kwargs for perm in perms] if perms else []
+        perms = self.permission_map.get(action, [
+            self.default_permission
+        ])
+        return [perm.format(**kwargs) for perm in perms]
 
     def has_permission(self, request, view):
         # Workaround to ensure DjangoModelPermissions are not applied
@@ -39,11 +34,13 @@ class AbakusPermission(permissions.BasePermission):
             return True
 
         required_permissions = self.get_required_object_permissions(
-            self.permission_map.get(view.action),
+            view.action,
             view.get_queryset().model
         )
 
-        requires_authentication = self.authentication_map.get(view.action, True)
+        requires_authentication = self.authentication_map.get(
+            view.action, self.default_require_auth
+        )
 
         authenticated = request.user and request.user.is_authenticated()
         user = request.user
@@ -70,11 +67,13 @@ class AbakusPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         required_permissions = self.get_required_object_permissions(
-            self.permission_map.get(view.action),
+            view.action,
             view.get_queryset().model
         )
 
-        requires_authentication = self.authentication_map.get(view.action, True)
+        requires_authentication = self.authentication_map.get(
+            view.action, self.default_require_auth
+        )
 
         authenticated = request.user and request.user.is_authenticated()
         user = request.user
