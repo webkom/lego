@@ -139,7 +139,7 @@ class CreateAbakusGroupAPITestCase(APITestCase):
         ]}
 
         response = self.client.post(_get_list_url(), group)
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(expected_data, response.data)
 
     def test_without_auth(self):
