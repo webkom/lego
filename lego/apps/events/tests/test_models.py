@@ -597,6 +597,159 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=user_not_to_be_bumped).pool)
         self.assertEqual(pool_one.waiting_registrations.count(), pool_one_waiting_before - 1)
 
+    def test_doesnt_have_pool_permission(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        user = get_dummy_users(1)[0]
+        abakus_pool = event.pools.get(name='Abakusmember')
+        webkom_pool = event.pools.get(name='Webkom')
+        self.assertFalse(event.has_pool_permission(user, abakus_pool))
+        self.assertFalse(event.has_pool_permission(user, webkom_pool))
+
+    def test_has_some_pool_permissions(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        user = get_dummy_users(1)[0]
+        abakus_pool = event.pools.get(name='Abakusmember')
+        webkom_pool = event.pools.get(name='Webkom')
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        self.assertTrue(event.has_pool_permission(user, abakus_pool))
+        self.assertFalse(event.has_pool_permission(user, webkom_pool))
+
+    def test_has_all_pool_permissions(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        user = get_dummy_users(1)[0]
+        abakus_pool = event.pools.get(name='Abakusmember')
+        webkom_pool = event.pools.get(name='Webkom')
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        self.assertTrue(event.has_pool_permission(user, abakus_pool))
+        self.assertTrue(event.has_pool_permission(user, webkom_pool))
+
+    def test_number_of_pools_with_queue(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(7)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users[4:]:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        self.assertEqual(event.get_number_of_pools_with_queue(), 0)
+        for user in users[:4]:
+            event.register(user)
+        self.assertEqual(event.get_number_of_pools_with_queue(), 1)
+        for user in users[4:]:
+            event.register(user)
+        self.assertEqual(event.get_number_of_pools_with_queue(), 2)
+
+    def test_rebalance_pool_method(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        abakus_pool = event.pools.get(name='Abakusmember')
+        webkom_pool = event.pools.get(name='Webkom')
+        users = get_dummy_users(4)
+        abakus_user = users[0]
+        webkom_users = users[1:]
+        AbakusGroup.objects.get(name='Abakus').add_user(abakus_user)
+        for user in webkom_users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+        event.register(abakus_user)
+        for user in webkom_users[:2]:
+            event.register(user)
+
+        self.assertFalse(event.rebalance_pool(abakus_pool, webkom_pool))
+        self.assertEqual(abakus_pool.number_of_registrations, 1)
+        self.assertEqual(webkom_pool.number_of_registrations, 2)
+
+        event.register(webkom_users[2])
+        event.unregister(webkom_users[0])
+        self.assertEqual(abakus_pool.number_of_registrations, 2)
+        self.assertEqual(webkom_pool.number_of_registrations, 1)
+
+        self.assertTrue(event.rebalance_pool(abakus_pool, webkom_pool))
+        self.assertEqual(abakus_pool.number_of_registrations, 1)
+        self.assertEqual(webkom_pool.number_of_registrations, 2)
+
+    def test_calculate_full_pools(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        abakus_pool = event.pools.get(name='Abakusmember')
+        webkom_pool = event.pools.get(name='Webkom')
+        users = get_dummy_users(5)
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        full_pools, open_pools = event.calculate_full_pools([abakus_pool, webkom_pool])
+        self.assertEqual(len(full_pools), 0)
+        self.assertEqual(len(open_pools), 2)
+
+        for user in users[:3]:
+            event.register(user)
+        full_pools, open_pools = event.calculate_full_pools([abakus_pool, webkom_pool])
+        self.assertEqual(len(full_pools), 1)
+        self.assertEqual(len(open_pools), 1)
+
+        for user in users[3:]:
+            event.register(user)
+        full_pools, open_pools = event.calculate_full_pools([abakus_pool, webkom_pool])
+        self.assertEqual(len(full_pools), 2)
+        self.assertEqual(len(open_pools), 0)
+
+    def test_find_most_exclusive_pool(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        webkom_pool = event.pools.get(name='Webkom')
+        abakus_pool = event.pools.get(name='Abakusmember')
+
+        users = get_dummy_users(3)
+        user_three = users.pop()
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        AbakusGroup.objects.get(name='Webkom').add_user(user_three)
+
+        self.assertEqual(event.find_most_exclusive_pools(
+            [webkom_pool, abakus_pool])[0], webkom_pool)
+        self.assertEqual(len(event.find_most_exclusive_pools([webkom_pool, abakus_pool])), 1)
+
+    def test_find_most_exclusive_when_equal(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        webkom_pool = event.pools.get(name='Webkom')
+        abakus_pool = event.pools.get(name='Abakusmember')
+        users = get_dummy_users(3)
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+        self.assertEqual(len(event.find_most_exclusive_pools([webkom_pool, abakus_pool])), 2)
+
+    def test_select_highest_capacity(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        webkom_pool = event.pools.get(name='Webkom')
+        abakus_pool = event.pools.get(name='Abakusmember')
+        self.assertEqual(event.select_highest_capacity([abakus_pool, webkom_pool]), abakus_pool)
+
+    def test_get_top_of_waiting_list(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(4)
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users:
+            event.register(user)
+
+        self.assertEqual(event.get_top_of_waiting_list()[0].user, users[3])
+
+    def test_get_top_of_waiting_list_from_two_pools(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(7)
+        for user in users[:4]:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users[:4]:
+            event.register(user)
+        for user in users[4:]:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+        for user in users[4:]:
+            event.register(user)
+        lst = event.get_top_of_waiting_list()
+        for x in range(len(lst)):
+            lst[x] = lst[x].user
+
+        self.assertEqual(len(lst), 2)
+        self.assertIn(users[3], lst)
+        self.assertIn(users[6], lst)
+
 
 class AssertInvariant:
     def __init__(self, waiting_list):
