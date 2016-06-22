@@ -16,8 +16,8 @@ class LegoAuthorizationView(AuthorizationView):
 
 class ApplicationViewSet(viewsets.ModelViewSet):
     """
-    Manage applications. This views is currently disabled, we need to decide how to handle
-    permissions.
+    Manage applications. This viewset requires keyword permissions, but object permissions can be
+    implemented when we opens up / if we opens up the API.
     """
     serializer_class = ApplicationSerializer
     queryset = APIApplication.objects.all()
