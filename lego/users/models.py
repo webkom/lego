@@ -39,9 +39,8 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     @cached_property
     def number_of_users(self):
-        members = Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True))\
-            .distinct()
-        return len(set([m.user for m in members]))
+        return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True))\
+            .distinct('user').count()
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
