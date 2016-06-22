@@ -121,6 +121,15 @@ class UserTestCase(TestCase):
         abakus.remove_user(self.user)
         self.assertEqual(abakus.number_of_users, 0)
 
+    def test_add_user_to_two_groups(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
+        self.assertEqual(AbakusGroup.objects.get(name='Abakus').number_of_users, 1)
+        self.assertEqual(AbakusGroup.objects.get(name='Webkom').number_of_users, 0)
+
+        AbakusGroup.objects.get(name='Webkom').add_user(self.user)
+        self.assertEqual(AbakusGroup.objects.get(name='Abakus').number_of_users, 1)
+        self.assertEqual(AbakusGroup.objects.get(name='Webkom').number_of_users, 1)
+
     def test_natural_key(self):
         found_user = User.objects.get_by_natural_key(self.user.username)
         self.assertEqual(self.user, found_user)
