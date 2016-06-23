@@ -623,7 +623,7 @@ class RegistrationTestCase(TestCase):
         self.assertTrue(event.has_pool_permission(user, abakus_pool))
         self.assertTrue(event.has_pool_permission(user, webkom_pool))
 
-    def test_number_of_pools_with_queue(self):
+    def test_number_of_pools_with_waiting_list(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         users = get_dummy_users(7)
 
@@ -632,13 +632,13 @@ class RegistrationTestCase(TestCase):
         for user in users[4:]:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
-        self.assertEqual(event.get_number_of_pools_with_queue(), 0)
+        self.assertEqual(event.get_number_of_pools_with_waiting_list(), 0)
         for user in users[:4]:
             event.register(user)
-        self.assertEqual(event.get_number_of_pools_with_queue(), 1)
+        self.assertEqual(event.get_number_of_pools_with_waiting_list(), 1)
         for user in users[4:]:
             event.register(user)
-        self.assertEqual(event.get_number_of_pools_with_queue(), 2)
+        self.assertEqual(event.get_number_of_pools_with_waiting_list(), 2)
 
     def test_rebalance_pool_method(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
