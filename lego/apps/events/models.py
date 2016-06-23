@@ -188,8 +188,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
         If the event isn't merged, bumps the first user in
-        the waiting list who is able to join `pool`.
-        If noone is waiting for said pool, see if anyone is waiting for
+        the waiting list who is able to join `open_pool`.
+        If no one is waiting for `open_pool`, check if anyone is waiting for
         any of the other pools and attempt to rebalance.
 
         :param open_pool: The pool where the unregistration happened.
@@ -204,8 +204,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     def bump(self, from_pool=None):
         """
-        Pops the appropriate user/registration from the waiting list,
-        and alters his registration to put him in a pool.
+        Pops the appropriate user/registration from the waiting list of `from_pool`,
+        and alters the registration to set it's pool.
 
         :param from_pool: A pool with a free slot. If the event is merged, this will be null.
         """
@@ -284,7 +284,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         capacities = [pool.capacity for pool in pools]
         return pools[capacities.index(max(capacities))]
 
-    def get_number_of_pools_with_queue(self):
+    def get_number_of_pools_with_waiting_list(self):
         counter = 0
         for pool in self.pools.all():
             if pool.waiting_registrations.count() > 0:
@@ -300,7 +300,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The top X waiting users.
         """
         if not pools_to_balance:
-            pools_to_balance = self.get_number_of_pools_with_queue()
+            pools_to_balance = self.get_number_of_pools_with_waiting_list()
 
         top_of_waiting_list, covered_pools = [], []
         for waiting_registration in self.waiting_pool_registrations:
@@ -348,7 +348,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         :param open_pool: The pool where the unregistration happened.
         """
-        pools_to_balance = self.get_number_of_pools_with_queue()
+        pools_to_balance = self.get_number_of_pools_with_waiting_list()
         top_waiting_registrations = self.get_top_of_waiting_list(pools_to_balance=pools_to_balance)
 
         balanced_pools = []
