@@ -22,7 +22,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
 
     permissions = ArrayField(
-        models.CharField(validators=[KeywordPermissionValidator()], max_length=30),
+        models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
         verbose_name='permissions', default=list
     )
 

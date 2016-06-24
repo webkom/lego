@@ -67,3 +67,14 @@
       - /sudo/admin/comments/update/
       - /sudo/admin/comments/destroy/
 
+- model: users.AbakusGroup
+  pk: 6
+  fields:
+    name: APIApplicationTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 105
+    permissions:
+      - /sudo/admin/apiapplications/list/
+      - /sudo/admin/apiapplications/create/

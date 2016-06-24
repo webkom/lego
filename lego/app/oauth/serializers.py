@@ -9,7 +9,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = APIApplication
-        fields = ['name', 'description', 'user', 'redirect_uris', 'client_type',
+        fields = ['id', 'name', 'description', 'user', 'redirect_uris', 'client_type',
                   'authorization_grant_type', 'client_id', 'client_secret', 'skip_authorization']
         read_only_fields = ['client_id', 'client_secret']
 
@@ -20,4 +20,4 @@ class AccessTokenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AccessToken
-        fields = ['user', 'token', 'application', 'expires', 'scopes']
+        fields = ['id', 'user', 'token', 'application', 'expires', 'scopes']
