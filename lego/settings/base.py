@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'mptt',
+    'channels',
 
     'lego.utils',
     'lego.apps.users',
@@ -142,3 +143,10 @@ STATSD_PATCHES = [
 STATSD_MODEL_SIGNALS = True
 STATSD_CELERY_SIGNALS = True
 STATSD_PREFIX = 'lego'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgi_redis.RedisChannelLayer',
+        'ROUTING': 'lego.apps.websockets.routing.routing'
+    }
+}
