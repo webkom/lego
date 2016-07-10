@@ -27,6 +27,7 @@ CACHES = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS += [
+    'django_statsd',
     'debug_toolbar',
 ]
 MIDDLEWARE_CLASSES = [
@@ -45,6 +46,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
+    'django_statsd.panel.StatsdPanel'
 ]
 
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += ['rest_framework.renderers.BrowsableAPIRenderer']
@@ -59,3 +61,5 @@ STREAM_REDIS_CONFIG = {
         'password': None
     },
 }
+
+STATSD_CLIENT = 'django_statsd.clients.toolbar'
