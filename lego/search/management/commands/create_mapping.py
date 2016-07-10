@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from lego.search.es import backend as elasticsearch_backend
+from lego.search.backends.elasticsearch import backend as elasticsearch_backend
 
 
 class Command(BaseCommand):
