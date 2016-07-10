@@ -58,3 +58,6 @@ STREAM_REDIS_CONFIG = {
         'password': env('REDIS_STREAM_PASSWORD')
     },
 }
+
+# Statsd
+STATSD_CLIENT = 'django_statsd.clients.normal'
