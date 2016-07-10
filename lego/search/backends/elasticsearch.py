@@ -1,7 +1,7 @@
 import certifi
 from django.conf import settings
 from django.template.loader import render_to_string
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch.helpers import bulk
 
 
@@ -40,7 +40,10 @@ class ElasticSearchBackend:
         return action
 
     def _clear(self):
-        return self.connection.indices.delete(settings.SEARCH_INDEX)
+        try:
+            return self.connection.indices.delete(settings.SEARCH_INDEX)
+        except NotFoundError:
+            pass
 
     def _search(self, payload):
         return self.connection.search(settings.SEARCH_INDEX, body=payload)
@@ -106,7 +109,8 @@ class ElasticSearchBackend:
             hits = result['hits']['hits']
             return [{
                 'content_type': hit['_source'][settings.SEARCH_DJANGO_CT_FIELD],
-                'object_id': hit['_source'][settings.SEARCH_DJANGO_ID_FIELD]
+                'object_id': hit['_source'][settings.SEARCH_DJANGO_ID_FIELD],
+                'score': hit['_score']
             } for hit in hits]
         return None
 

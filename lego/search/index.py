@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.encoding import force_text
 
-from lego.search.es import backend as es
+from lego.search.backends.elasticsearch import backend as es
 from lego.utils.content_types import instance_to_content_type_string, instance_to_string
 
 
