@@ -21,5 +21,5 @@ django-filter==0.13.0
 django-oauth-toolkit==0.10.0
 django-cors-headers==1.1.0
 django-celery==3.1.17
-django-mptt==0.8.4
+django-mptt==0.8.5
 django-environ==0.4.0
