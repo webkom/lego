@@ -28,4 +28,4 @@ class Content(models.Model):
 
     @property
     def comment_target(self):
-        return '{0}-{1}'.format(self._meta.app_label, self.pk)
+        return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)

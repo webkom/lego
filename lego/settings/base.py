@@ -16,7 +16,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
-    'djangosecure',
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
@@ -31,18 +30,15 @@ INSTALLED_APPS = [
     'lego.app.articles',
     'lego.app.content',
     'lego.app.events',
+    'lego.app.feed',
     'lego.app.flatpages',
     'lego.app.comments',
 ]
 
-MIGRATION_MODULES = {
-    'oauth2_provider': 'lego.migrations.oauth2_provider'
-}
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
-    'lego.permissions.backends.KeywordPermissionBackend',
+    'lego.permissions.backends.AbakusPermissionBackend',
     'oauth2_provider.backends.OAuth2Backend',
 )
 LOGIN_URL = '/authorization/login/'
@@ -63,6 +59,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'django_statsd.middleware.GraphiteRequestTimingMiddleware',
+    'django_statsd.middleware.GraphiteMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -102,6 +100,14 @@ JWT_AUTH = {
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
+# Tokens is valid for 10 years, this makes it easier for clients. No refresh token required. This
+# may be a security flaw, but with a token management system this should be fine.
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 31557600 * 10,
+    'SCOPES': {
+        'user': 'Grants access to the user profile'
+    }
+}
 
 ROOT_URLCONF = 'lego.urls'
 
@@ -128,3 +134,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
 MEDIA_URL = '/media/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+STATSD_PATCHES = [
+    'django_statsd.patches.db',
+    'django_statsd.patches.cache',
+]
+STATSD_MODEL_SIGNALS = True
+STATSD_CELERY_SIGNALS = True
+STATSD_PREFIX = 'lego'
