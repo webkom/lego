@@ -11,7 +11,7 @@ class Comment(BasisModel, ObjectPermissionsModel):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
-    parent = models.ForeignKey('self', null=True)
+    parent = models.ForeignKey('self', null=True, blank=True)
 
     def __str__(self):
         return '{0} - {1}'.format(self.created_by, self.text[:30])

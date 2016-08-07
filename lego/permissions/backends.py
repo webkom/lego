@@ -1,9 +1,14 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
 
-class KeywordPermissionBackend:
+class AbakusPermissionBackend:
+    """
+    This backend makes it possuble to check for keyword permissions using the standard django
+    method: user.has_perm('/sudo/').
+    """
+
     authenticate = ModelBackend.authenticate
+    get_user = ModelBackend.get_user
 
     def get_group_permissions(self, user_obj, obj=None):
         if user_obj.is_anonymous() or obj is not None:
@@ -14,7 +19,6 @@ class KeywordPermissionBackend:
             available_perms = group.permissions
             if available_perms:
                 perms.update(available_perms)
-
         return perms
 
     def get_all_permissions(self, user_obj, obj=None):
@@ -27,10 +31,3 @@ class KeywordPermissionBackend:
                 return True
 
         return False
-
-    def get_user(self, user_id):
-        user_model = get_user_model()
-        try:
-            return user_model.objects.get(pk=user_id)
-        except user_model.DoesNotExist:
-            return None

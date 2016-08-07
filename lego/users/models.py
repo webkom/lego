@@ -1,5 +1,5 @@
 from basis.models import BasisModel, PersistentModel
-from django.contrib import auth
+from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
@@ -17,19 +17,19 @@ from .validators import username_validator
 
 
 class AbakusGroup(MPTTModel, PersistentModel):
-    name = models.CharField(max_length=80, unique=True)
+    name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
+
     permissions = ArrayField(
-        models.CharField(validators=[KeywordPermissionValidator()],
-                         max_length=30),
+        models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
         verbose_name='permissions', default=list
     )
 
     objects = AbakusGroupManager()
 
-    class Meta:
-        unique_together = 'name',
+    def __str__(self):
+        return self.name
 
     @property
     def is_committee(self):
@@ -40,7 +40,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     @cached_property
     def number_of_users(self):
         return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True))\
-            .distinct().count()
+            .distinct('user').count()
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
@@ -50,14 +50,12 @@ class AbakusGroup(MPTTModel, PersistentModel):
         membership = Membership.objects.get(user=user, abakus_group=self)
         membership.delete()
 
-    def __str__(self):
-        return self.name
-
     def natural_key(self):
-        return self.name.lower(),
+        return self.name
 
 
 class PermissionsMixin(models.Model):
+
     abakus_groups = models.ManyToManyField(
         AbakusGroup,
         through='Membership',
@@ -68,32 +66,36 @@ class PermissionsMixin(models.Model):
         related_query_name='user'
     )
 
+    @cached_property
+    def is_superuser(self):
+        return '/sudo/' in self.get_all_permissions()
+    is_staff = is_superuser
+
+    get_group_permissions = DjangoPermissionMixin.get_group_permissions
+    get_all_permissions = DjangoPermissionMixin.get_all_permissions
+    has_module_perms = DjangoPermissionMixin.has_module_perms
+    has_perms = DjangoPermissionMixin.has_perms
+    has_perm = DjangoPermissionMixin.has_perm
+
     class Meta:
         abstract = True
 
-    def get_permissions(self):
-        permissions = set()
-        for backend in auth.get_backends():
-            if hasattr(backend, 'get_all_permissions'):
-                permissions.update(backend.get_all_permissions(self))
+    @cached_property
+    def all_groups(self):
+        own_groups = set()
 
-        return permissions
+        for group in self.abakus_groups.all():
+            if group not in own_groups:
+                own_groups.add(group)
+                own_groups = own_groups.union(set(group.get_ancestors()))
 
-    def has_perm(self, perm):
-        """
-        Returns True if the user has the specified permission. This method
-        queries all available auth backends, but returns immediately if any
-        backend returns True. Thus, a user who has permission from a single
-        auth backend is assumed to have permission in general.
-        """
-
-        for backend in auth.get_backends():
-            if hasattr(backend, 'has_perm'):
-                if backend.has_perm(self, perm):
-                    return True
+        return list(own_groups)
 
 
 class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
+    """
+    Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
+    """
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -106,10 +108,6 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=True)
-    is_staff = models.BooleanField(
-        default=False,
-        help_text=_('Designates whether the user can log into this admin site.')
-    )
     is_active = models.BooleanField(
         default=True,
         help_text=_('Designates whether this user should be treated as '
@@ -121,17 +119,6 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
-
-    @cached_property
-    def all_groups(self):
-        own_groups = set()
-
-        for group in self.abakus_groups.all():
-            if group not in own_groups:
-                own_groups.add(group)
-                own_groups = own_groups.union(set(group.get_ancestors()))
-
-        return list(own_groups)
 
     def get_full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name).strip()
@@ -151,10 +138,10 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
 
 class Membership(BasisModel):
-    MEMBER = 'M'
-    LEADER = 'L'
-    CO_LEADER = 'CL'
-    TREASURER = 'T'
+    MEMBER = 'member'
+    LEADER = 'leader'
+    CO_LEADER = 'co-leader'
+    TREASURER = 'treasurer'
 
     ROLES = (
         (MEMBER, _('Member')),
@@ -168,7 +155,7 @@ class Membership(BasisModel):
     user = models.ForeignKey(User)
     abakus_group = models.ForeignKey(AbakusGroup)
 
-    role = models.CharField(max_length=2, choices=ROLES, default=MEMBER)
+    role = models.CharField(max_length=20, choices=ROLES, default=MEMBER)
     is_active = models.BooleanField(default=True)
 
     start_date = models.DateField(auto_now_add=True, blank=True)

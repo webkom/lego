@@ -1,4 +1,4 @@
-from lego.permissions.keyword_permissions import KeywordPermissions
+from lego.permissions.permissions import AbakusPermission
 from lego.users.models import Membership
 
 
@@ -12,37 +12,40 @@ def can_retrieve_abakusgroup(group, retriever):
     return group in retriever.all_groups or retriever.has_perm(required_permission)
 
 
-class UsersPermissions(KeywordPermissions):
-    perms_map = {
-        'list': '/sudo/admin/users/list/',
-        'retrieve': None,
-        'create': '/sudo/admin/users/create/',
-        'update': '/sudo/admin/users/update/',
-        'partial_update': '/sudo/admin/users/update/',
-        'destroy': '/sudo/admin/users/destroy/',
+class UsersPermissions(AbakusPermission):
+    permission_map = {
+        'retrieve': [],
     }
 
     allowed_individual = ['retrieve', 'update', 'partial_update']
 
-    def has_object_permission(self, request, view, obj):
+    def is_self(self, request, view, obj):
         if view.action in self.allowed_individual and obj == request.user:
             return True
 
+    def has_permission(self, request, view):
+        return True if view.action in self.OBJECT_METHODS else super().has_permission(request, view)
+
+    def has_object_permission(self, request, view, obj):
+        if self.is_self(request, view, obj):
+            return True
         return super().has_object_permission(request, view, obj)
 
 
-class AbakusGroupPermissions(KeywordPermissions):
-    perms_map = {
-        'list': None,
-        'hierarchy': None,
-        'retrieve': None,
-        'create': '/sudo/admin/groups/create/',
-        'update': '/sudo/admin/groups/update/',
-        'partial_update': '/sudo/admin/groups/update/',
-        'destroy': '/sudo/admin/groups/destroy/',
+class AbakusGroupPermissions(AbakusPermission):
+    permission_map = {
+        'list': [],
+        'create': ['/sudo/admin/groups/create/'],
+        'retrieve': [],
+        'update': ['/sudo/admin/groups/update/'],
+        'partial_update': ['/sudo/admin/groups/update/'],
+        'destroy': ['/sudo/admin/groups/destroy/'],
     }
 
     allowed_leader = ['update', 'partial_update']
+
+    def has_permission(self, request, view):
+        return True if view.action in self.allowed_leader else super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
         if view.action in self.allowed_leader:

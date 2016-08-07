@@ -1,0 +1,22 @@
+.login .logo {
+    width: 10em;
+    margin: auto;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.nav .nav-item {
+    width: 130px;
+}
+
+.footer {
+    background-color: #222;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.footer .title {
+    color: #FFF;
+    margin: auto;
+}
+

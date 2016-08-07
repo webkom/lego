@@ -32,3 +32,14 @@ class KeywordPermissionValidatorTestCase(TestCase):
             validator.__call__,
             'sudo/'
         )
+
+    def test_regex_validator_double_start_slash(self):
+        """
+        Two slashes in the beginning of the string is not allowed.
+        """
+        validator = KeywordPermissionValidator()
+        self.assertRaises(
+            ValidationError,
+            validator.__call__,
+            '//sudo/'
+        )

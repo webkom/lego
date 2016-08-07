@@ -33,8 +33,9 @@ class PermissionTestCase(APITestCase):
         Object permissions shouldn't stop users from creating objects, as that's handled by
         model permissions.
         """
-
+        self.webkom.add_user(self.disallowed_user)
         request = self.factory.post('/permissiontest/', self.test_update_object)
+        force_authenticate(request, self.disallowed_user)
         view = TestViewSet.as_view({'post': 'create'})
 
         response = view(request)
@@ -103,16 +104,13 @@ class PermissionTestCase(APITestCase):
         self.assertEqual(edited_object['name'], self.test_update_object['name'])
 
     def test_edit_unsuccessful(self):
-        self.webkom.add_user(self.disallowed_user)
-        self.test_object.can_view_groups.add(self.webkom)
-
         request = self.factory.put('/permissiontest/', self.test_update_object)
         force_authenticate(request, self.disallowed_user)
         view = TestViewSet.as_view({'put': 'update'})
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_edit_own(self):
         request = self.factory.put('/permissiontest/', self.test_update_object)
@@ -135,7 +133,6 @@ class PermissionTestCase(APITestCase):
         self.assertEqual(response.status_code, 204)
 
     def test_delete_unsuccessful(self):
-        self.webkom.add_user(self.disallowed_user)
         self.test_object.can_view_groups.add(self.webkom)
 
         request = self.factory.delete('/permissiontest/')
@@ -144,4 +141,4 @@ class PermissionTestCase(APITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)

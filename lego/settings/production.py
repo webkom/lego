@@ -40,7 +40,6 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(os.path.dirname(BASE_DIR)),
 }
 INSTALLED_APPS += [
-    'cachalot',
     'raven.contrib.django.raven_compat',
 ]
 MIDDLEWARE_CLASSES = [
@@ -49,3 +48,16 @@ MIDDLEWARE_CLASSES = [
 
 # Celery
 BROKER_URL = env('CELERY_BROKER_URL')
+
+# Stream Framework
+STREAM_REDIS_CONFIG = {
+    'default': {
+        'host': env('REDIS_STREAM_HOST'),
+        'port': env('REDIS_STREAM_PORT'),
+        'db': env('REDIS_STREAM_DB'),
+        'password': env('REDIS_STREAM_PASSWORD')
+    },
+}
+
+# Statsd
+STATSD_CLIENT = 'django_statsd.clients.normal'
