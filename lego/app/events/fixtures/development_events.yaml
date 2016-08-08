@@ -1,187 +1,1778 @@
-- model: events.Event
-  fields:
-    title: Fadderpåmelding
-    author: 2
-    description:
-      Det er på tide med årets fadderpåmelding!
-    text:
-      En fadder har som oppgave å ta imot de nye studentene som
-      starter på Data- og Kommunikasjonsteknologi til høsten.
-      De skal vise frem Trondheim fra byens beste side gjennom sosiale
-      aktiviteter i regi av Abakus.
-
-      En fadder har som oppgave å ta imot de nye studentene som
-      starter på Data- og Kommunikasjonsteknologi til høsten.
-      De skal vise frem Trondheim fra byens beste side gjennom sosiale
-      aktiviteter i regi av Abakus.
-
-      Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange i år!
-      Har du lyst til å være fadder for de nye førsteklassingene, og sørge for at deres
-      første uker i Trondheim blir et minne for livet er det nå du må melde deg.
-      Når vi har fått nok faddere og påmeldingen stenger, vil det være mulig å
-      sende inn ønsker om hvem man har lyst til å være på faddergruppe sammen med per mail.
-      Mer info rundt dette kommer fortløpende i Facebookgruppen som alle fadderne blir meldt inn i.
-      Vi håper så mange som mulig har lyst til å være fadder i år!
-    event_type: 3
-    location: F254
-    start_time: '2015-11-03T13:20:30+03:00'
-    end_time: '2015-11-03T13:20:30+03:00'
-
-- model: events.Event
-  fields:
-    title: Casino Royale
-    author: 2
-    description:
-      Det er igjen duket for Casino Royale.
-      Det betyr finstasen på, poker, rulett, klassiske
-      blackjack og nytt i år... eget nybegynnerbord.
-    text: |
-      Alt finner sted på Håndverkeren.
-      Arrangementet blir i år tilpasset alle, uavhengig om pokerferdighetene er på plass eller ei.
-      Det vil si at vi arrangerer et nybegynnerbord, så du har nå gode muligheter til å lære deg poker
-      en gang for alle. Dessuten er dette en ypperlig anledning å samles en siste gang før
-      eksamensperioden starter for fullt. En hyggelig lounge vil settes opp med muligheter for
-      hyggelige samtaler eller pust i bakken mellom slagene. Du trenger med andre ord ikke spille
-      hele kvelden, da du kan komme og gå som du vil til spillbordene.
-      Ellers vil Håndverkeren bli dekorert for anledningen, og velkomstdrink vil bli servert ved
-      ankomst. Etter arrangementet går turen til byen for de som måtte ønske det.
-      Til info:
-      Antrekk: Dress/smoking/kjole
-      Premieutdelinger vil avholdes med blandt annet:
-      Beste pokerspiller(flest chips)
-      Beste Antrekk (King and Queen)
-      Medbrakt drikke er tillat.
-    event_type: 3
-    location: F254
-    start_time: '2015-11-02T13:20:30+03:00'
-    end_time: '2015-11-02T13:20:30+03:00'
-
-- model: events.Event
-  fields:
-    title: DNB
-    author: 2
-    description: Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den?
-    text: |
-      DNB har Norges mest besøkte nett- og mobilbank. Det er vi i IT stolte av.
-
-      Med over 800 IT-kollegaer griper vi fatt i nye utfordringer og muligheter. Det er vi som leverer de digitale løsningene i DNB. Da er gode løsninger og sikkerhet viktig.
-
-      Den 7. april vil vi dele refleksjoner og eksempler rundt hvor viktig IT er for DNB fremover,
-      med ekstra fokus på IT-utvikling og informasjonssikkerhet.
-
-      Etter presentasjonen tar vi buss ned til byen der det blir bespisning og mingling.
-
-      Bedkom minner om at oppmøte er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:
-    event_type: 0
-    location: F254
-    start_time: '2015-11-01T13:20:30+03:00'
-    end_time: '2015-11-01T13:20:30+03:00'
-
-- model: events.Event
-  fields:
-    title: Yahoo
-    author: 2
-    description: |
-      Bedriftspresentasjon for Abakus med Yahoo!
-    text:
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    event_type: 3
-    location: F254
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
-    can_view_groups:
-      - 10
-
-- model: events.Event
-  fields:
-    title: BEKK
+- fields:
     author: 1
-    description: |
-      Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme igang?
-    text: |
-      Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen mellom dem er?
-      Har du kanskje testa ut webutvikling, men ikke fått knappene til å havne der du vil ha dem?
-      Da er du velkommen til Webutvikling101.
-
-      Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av webutvikling:
-
-      Første runde skal vi lære om de underliggende prinsippene i webutvikling.
-      Vi ser på hvordan CSS påvirker HTML og hvordan du kan bruke CSS til å
-      forandre hvordan nettleseren presenterer siden både i layout og form.
-      Vi ser også på hvordan du kan legge til enkel dynamikk og interaksjon med JavaScript.
-
-      På dag to tar vi et steg videre og ser på hvordan vi kan bruke JavaScript for å kommunisere
-      med en server for å både sende og motta data. Vi skal også se på hvordan navigasjon
-      mellom nettsider fungerer og hvordan vi kan benytte JavaScript til å endre hva som
-      skjer når vi navigerer.
-
-      Dag tre vil være en litt friere dag. Vi kommer til å presentere en rekke utfordringer
-      som tar for seg et aspekt ved webutvikling som dere kan få bryne dere på. Målet med denne
-      dagen er å utforske mulighetene webben gir. Vi stiller med spisskompetanse og dere stiller
-      med nysgjerrighet og ståpå-vilje.
-
-      Ha med egen PC, valgfri editor og nyeste node.js v4 eller nyere (https://nodejs.org).
-      Etter kurset vil vi dra ned til sentrum hvor vi vil få god mat & drikke!
-      Vi gjør oppmerksom på at deltakere på del 1 & 2 vil få prioritet på del 3
-      Instruks for hvordan installere node:
-      Gå til https://nodejs.org/en/
-      Last ned nyeste stable (5.7.1)
-      Kjør filen
-      Følg installasjons-anvisningene
-      Åpne terminalen For OS X: finnes under Applications/Utilities/Terminal.
-      For Windows: klikk windows + r for å få opp run dialogen. skriv “cmd” og trykk enter.
-      Skriv node --version i terminalen trykk enter. Hvis alt er i orden skal
-      den svare med versjonsnummer, v5.7.1
+    can_view_groups: [1]
+    description: TBA
+    end_time: '2016-10-27T20:00:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-10-27T17:15:00+00:00'
+    text: TBA
+    title: EINR
+  model: events.Event
+  pk: 1
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Know IT Objectnet AS er et teknologi - og proudktavhengig konsulentselkap
+      med kontorer i Oslo
+    end_time: '2016-10-25T23:59:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-10-25T17:00:00+00:00'
+    text: TBA
+    title: Knowit AS
+  model: events.Event
+  pk: 2
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Accenture er et globalt konsulentselskap som leverer tjenester innenfor
+      rådgivning, teknologi og outsourcing, med omkring 256 000 ansatte som arbeider
+      for kunder i mer enn 120 land.
+    end_time: '2016-10-13T23:59:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-10-13T17:00:00+00:00'
+    text: TBA
+    title: Accenture
+  model: events.Event
+  pk: 3
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Bedriftspresentasjon med Netlight '
+    end_time: '2016-10-11T23:59:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-10-11T17:00:00+00:00'
+    text: TBA
+    title: 'Netlight '
+  model: events.Event
+  pk: 4
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: EY (tidligere Ernst & Young)
+    end_time: '2016-10-06T23:59:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-10-06T17:00:00+00:00'
+    text: TBA
+    title: EY (tidligere Ernst & Young)
+  model: events.Event
+  pk: 5
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: TBA
+    end_time: '2016-10-04T20:00:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-10-04T17:15:00+00:00'
+    text: TBA
+    title: Facebook
+  model: events.Event
+  pk: 6
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Velkommen til lunsjpresentasjon med Sopra Steria.
+    end_time: '2016-09-19T23:00:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-09-19T17:00:00+00:00'
+    text: TBA
+    title: Sopra Steria
+  model: events.Event
+  pk: 7
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Årets BedEx går som vanlig til Oslo og varer i tre dager.\r\nPåmeldingen\
+      \ er åpen for alle 5. klassinger"
+    end_time: '2016-09-10T12:00:00+00:00'
+    event_type: 3
+    location: Oslo
+    start_time: '2016-09-07T07:00:00+00:00'
+    text: "Ekskursjonen går til Oslo og varer i tre dager. Bedriftene vi skal besøke\
+      \ er Visma, Skatteetaten, Sopra Steria, Accenture, BEKK, Finn.no og Knowit.\r\
+      \nFlyet går fra Værnes lufthavn 7. september kl 09:20. Vi ønsker at dere møter\
+      \ opp kl 08:20 for å få materialet dere trenger. Det er ingen felles hjemreise,\
+      \ så den er dere nødt til å ordne selv. Vi legger opp til å tilbakebetale litt\
+      \ av hjemreisen mot kvittering, mer info om dette kommer.\r\nVi har også i år\
+      \ bestemt oss for at vi skal bestille hotell fram til lørdagen, slik at ingen\
+      \ behøver å reise hjem etter siste bedrift på fredagen.\r\nPå grunn av frister\
+      \ fra Norwegian og Thon Hotel Spectrum er det ikke mulig å melde seg av ekskursjonen\
+      \ etter 17. August klokken 23:59. Alle utgifter ved denne turen er dekket av\
+      \ bedriftene.\r\nEr det noe du lurer på angående påmeldingen eller turen generelt\
+      \ så send mail til bedex'at'abakus.no. Mer praktisk info kommer etter at påmeldingen\
+      \ er ferdig."
+    title: BedEx
+  model: events.Event
+  pk: 8
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: ' TBA'
+    end_time: '2016-09-09T22:00:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-09-09T17:00:00+00:00'
+    text: TBA
+    title: Capra Consulting
+  model: events.Event
+  pk: 9
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Bedriftspresentasjon med DIPS. '
+    end_time: '2016-09-06T23:59:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-09-06T17:00:00+00:00'
+    text: TBA
+    title: 'DIPS '
+  model: events.Event
+  pk: 10
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Abakus feirer sine nye medlemmer & inviterer til storslått galla
+      i Frimurerlogen, 3. september!
+    end_time: '2016-09-03T23:59:00+00:00'
+    event_type: 4
+    location: 'Frimurerlogen '
+    start_time: '2016-09-03T18:00:00+00:00'
+    text: "I tradisjon tro ønsker vi å feire opptaket av våre nye medlemmer. Begivenheten\
+      \ vil i år, som i fjor, finne sted på Frimurerlogen, så hold av lørdag 2. september.\
+      \ \r\n\r\nBallet starter kl. 18:00, og omkring midnattstider beveger vi oss\
+      \ til underetasjen hvor tidenes nachspiel vil bli holdt!\r\n\r\nPrisen inkluderer\
+      \ velkomstdrink ved inngangen, 2-retters middag samt to drikkeenheter.\r\n\r\
+      \nAntrekk: Studentergalla\r\n\r\nPris per deltaker/pris per gjest: 330/450"
+    title: Immatrikuleringsball
+  model: events.Event
+  pk: 11
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Mesan AS er et norsk IT-konsulentselskap som holder til i Oslo sentrum.
+      Mesans målsetning er ikke å bli størst, men å være best i Norge på utvikling
+      av skreddersydde løsninger innen privat og offentlig sektor.
+    end_time: '2016-09-01T20:00:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-09-01T17:00:00+00:00'
+    text: TBA
+    title: Mesan
+  model: events.Event
+  pk: 12
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: ' '
+    end_time: '2016-08-30T21:00:00+00:00'
+    event_type: 1
+    location: TBA
+    start_time: '2016-08-30T17:00:00+00:00'
+    text: TBA
+    title: Deloitte AS
+  model: events.Event
+  pk: 13
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Som tidligere blir det også i år sommerfest i Oslo for alle abakuler. '
+    end_time: '2016-07-02T23:55:00+00:00'
+    event_type: 3
+    location: Dattera til Hagen
+    start_time: '2016-07-02T19:00:00+00:00'
+    text: "Det hele vil finne sted på Dattera til Hagen, hvor vi har andre etasje\
+      \ for oss selv fra klokken 19.00.\r\n\r\nDette har tidligere vært en stor suksess,\
+      \ og vi håper så mange som mulig kommer!\r\n\r\nSe FB-event [her](https://www.facebook.com/events/145740885823144/)."
+    title: Abakus' sommerfest 2016
+  model: events.Event
+  pk: 14
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Etter nok en lang og slitsom eksamensperiode fortjener alle og enhver\
+      \ en storslått eksamensfest!\r\n"
+    end_time: '2016-06-11T23:59:00+00:00'
+    event_type: 2
+    location: Trondheim
+    start_time: '2016-06-11T20:00:00+00:00'
+    text: Mer informasjon kommer.
+    title: Eksamensfest
+  model: events.Event
+  pk: 15
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
+      å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
+      til høsten. De skal vise frem Trondheim fra byens beste side gjennom sosiale
+      aktiviteter i regi av Abakus.
+    end_time: '2016-06-01T20:00:00+00:00'
+    event_type: 4
+    location: '-'
+    start_time: '2016-04-20T13:00:00+00:00'
+    text: "Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
+      \ i år! Har du lyst til å være fadder for de nye førsteklassingene, og sørge\
+      \ for at deres første uker i Trondheim blir et minne for livet er det nå du\
+      \ må melde deg.\r\n\r\nNår vi har fått nok faddere og påmeldingen stenger, vil\
+      \ det være mulig å sende inn ønsker om hvem man har lyst til å være på faddergruppe\
+      \ sammen med per mail. Mer info rundt dette kommer fortløpende i Facebookgruppen\
+      \ som alle fadderne blir meldt inn i.\r\n\r\nVi håper så mange som mulig har\
+      \ lyst til å være fadder i år!"
+    title: Fadderpåmelding Kommunikasjonsteknologi
+  model: events.Event
+  pk: 16
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
+      å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
+      til høsten. De skal vise frem Trondheim frem fra sin beste side igjennom sosiale
+      aktiviteter i regi av Abakus.
+    end_time: '2016-06-01T20:00:00+00:00'
+    event_type: 4
+    location: '-'
+    start_time: '2016-04-20T17:15:00+00:00'
+    text: "Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
+      \ i år! Har du lyst til å være fadder for de nye førsteklassingene, og sørge\
+      \ for at deres første uker i Trondheim blir et minne for livet er det nå du\
+      \ må melde deg.\r\n\r\nNår vi har fått nok faddere og påmeldingen stenger, vil\
+      \ det være mulig å sende inn ønsker om hvem man har lyst til å være på faddergruppe\
+      \ sammen med per mail. Det er 3-4 faddere per gruppe. Mer info rundt dette kommer\
+      \ fortløpende i Facebookgruppen som alle fadderne blir meldt inn i.\r\n\r\n\
+      Vi håper så mange som mulig har lyst til å være fadder i år!"
+    title: Fadderpåmelding Datateknologi
+  model: events.Event
+  pk: 17
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Lei av å lese til eksamen sa du? Ta deg en time fri fra lesesalen
+      og grill med Abakus!
+    end_time: '2016-05-20T15:00:00+00:00'
+    event_type: 4
+    location: Høyskoleparken
+    start_time: '2016-05-20T14:00:00+00:00'
+    text: "Vi ønsker i år som i fjor å samle abakuler til en hyggelig sammenkomst\
+      \ i eksamensperioden. \r\n\r\nAlle er velkomne til å møte opp på plenen foran\
+      \ Hovedbygget for å grille klokken 14.00. Alle kan (og bør) med forhåpentligvis\
+      \ god samvittighet hvile hjernecellene etter en økt med krevende lesing!\r\n\
+      \r\nAbakus stiller med ketchup, sennep, sprøløk, potetsalat og engangsgriller.\
+      \ **Still derfor opp med grillmat selv!**\r\n\r\nHåper så mange som mulig vil\
+      \ komme!\r\n\r\nNB: Værforbehold. Regner det denne dagen prøver vi flytte den.\
+      \ Påminnelse vil postes i Abakus-gruppa på Facebook."
+    title: Eksamensgrilling
+  model: events.Event
+  pk: 18
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Abakus inviterer i år igjen til 17. mai-frokost i Kjelhuset for\
+      \ å feire vår grunnlovsdag.\r\n\r\n"
+    end_time: '2016-05-17T11:30:00+00:00'
+    event_type: 4
+    location: Kjelhuset
+    start_time: '2016-05-17T09:30:00+00:00'
+    text: "Vi dekker til langbord med hvite duker, og kler opp Kjelkantina i rødt,\
+      \ hvit og blått! På menyen er det en bedre frokost bestående av de deiligste\
+      \ pålegg, laks, eggerøre og hva en ellers måtte ønske, samt store mengder kake.\
+      \ Når alle er mette og forsynte går vi samlet ned til sentrum for å ta del i\
+      \ 17. mai-toget.\r\n\r\n- Pris for Abakus-medlemmer: Gratis!\r\n\r\n\r\nDet\
+      \ er førstemann til mølla-prinsippet som gjelder, så vær tidlig ute og sikre\
+      \ deg en plass!\r\n\r\n**PS:** det er ikke lov å ha med medbrakt alkohol!\r\n\
+      \r\n**PS2:** I første omgang prioriterer vi medlemmer av Abakus. Det vil bli\
+      \ åpnet for gjester dersom det er ledige plasser etter avmeldingsfrist. Pris\
+      \ for gjester: 50 kr (ta med kontanter!)\r\n\r\n_Tenk at nå er dagen her som\
+      \ jeg har lengtet etter! Jeg skal gå i toget, og jeg er så glad! Du kan tro\
+      \ jeg skal nok synge ut av alle krefter, svinge flagget mitt og rope høyt HURRA!_\r\
+      \n\r\nVel møtt!"
+    title: 17. mai-frokost
+  model: events.Event
+  pk: 19
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Fagstaben i TDT4100 Objektorientert Programmering holder et uoffisielt
+      eksamenskurs i Java. '
+    end_time: '2016-05-15T16:00:00+00:00'
     event_type: 0
-    location: R1
-    start_time: '2015-11-04T13:20:30+03:00'
-    end_time: '2015-11-04T13:20:30+03:00'
-
-- model: events.Event
-  fields:
-    title: Itera
-    author: 2
-    description:
-      Hvem tar flagget først? Du eller din studievenn?
-      Itera kjører Capture the ”flag” med Java og Lego Mindstorms!
-    text: |
-      Lego Lego Lego. Vi får ikke nok av Lego, forhåpentligvis gjelder det samme for deg.
-      Vi tar med oss roboter til Trondheim nok en gang, men denne gangen for å konkurrere om
-      å fange ”flagget” først. Hvert lag får ei sone som skal forsvare og en sone som
-      skal angripes. Utfordringa blir å kode og bygge den beste forsvarsroboten og den beste
-      angrepsroboten. Her gjelder det å finne frem sine beste triks for å holde seg
-      i spill og samle mest mulig poeng!
-
-      Banen er delt opp i 4 farger for å kunne navigere seg rundt på banen, samt kalkulere
-      posisjon til de andre robotene. Alle roboter kommuniserer sin fargeposisjon til en server som
-      vil kalkulere livestatus i spillet, samt sende ut fargeposisjon til alle roboter. På banen
-      vil det være plassert to flaggsirkler, et for hvert lag. Når du er på motstanderens flaggsirkel
-      vil du få poeng....men pass på så ikke motstanderen dytter deg av banen!
-
-      For å styre robotene bruker vi et custom OS, leJOS, slik at vi kan bruke Java i
-      stedet for "pek og klikk"-språket som følger med originalt. Du kan lese mer
-      om leJOS på http://www.lejos.org/. Alle vil få tildelt et rammeverk som vil ta seg
-      av lesing av posisjon, kommunikasjon med server, samt gi tilgang på metoder for
-      å navigere roboten.
-
-      Git-repo finnes her: https://github.com/Itera/HelloBrick
-
-      Vi tar med ferdigkonfigurerte maskiner slik at vi kan bruk mest mulig tid
-      på koding og seriøs konstruksjon av kampmaskiner. Hvert lag får tildelt
-      2 roboter som skal bygges og kodes til en forsvarsmaskin og en
-      angrepsmaskin. Hvert lag består av 8 studenter (4 til angrepsrobot og 4 til forsvarsrobot).
-
-      Det blir servert pizza og sushi under kurset. På slutten av kvelden kjører vi kamp.
-      Måtte det beste laget vinne :) Når vi er ferdig tar vi
-      turen til Work-Work for mingling og shuffleboard.
-
-      Det vil bli lagt ut detaljerte regler sammen med kodebase noen dager før kurset
-      slik at alle stiller likt på kampadagen! Skulle du være 1.klassing og føler du har nok
-      javakunnskaper til å delta er det bare å sende mail til arrangør hvis det er ledige plasser.
+    location: TBA
+    start_time: '2016-05-14T11:00:00+00:00'
+    text: 'Forelesningene vil være spesielt rettet mot de som har vært borti pensum
+      og kjenner seg igjen, men trenger en god oppsummering før eksamen. Vi vil gå
+      gjennom det meste av pensum: objektorientering (inkl. innkapsling, arv, polymorfi,
+      overriding og abstrakte klasser), exceptions, grensesnitt, iterators, comparators,
+      objektstrukturer og observatør-observert-teknikken. Det vil også komme en del
+      generelle tips til programmeringsmetodikk, og gå gjennom eksempler og oppgaver. '
+    title: Eksamenskurs i Java
+  model: events.Event
+  pk: 20
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Dataforeningen arrangerer i samarbeid med Abakus og Online studentkveld
+      i forbindelse med "Sikkerhet og Sårbarhet 2016".
+    end_time: '2016-05-09T21:30:00+00:00'
     event_type: 0
-    location: F254
-    start_time: '2015-11-01T13:20:30+03:00'
-    end_time: '2015-11-01T13:20:30+03:00'
+    location: R5
+    start_time: '2016-05-09T17:15:00+00:00'
+    text: "Den digitale hverdagen er for de fleste å anse som hvilken som helst hverdag.\
+      \ Dette er nå normen, og den skal fungere hele tiden, overalt. Disse nye forventningene\
+      \ gjør med risikobildet: Sårbarheten i samfunnet øker, tradisjonelle tiltak\
+      \ er ikke lenger tilstrekkelig, og brudd på informasjonssikkerhet er nå normalen.\r\
+      \n\r\nDet blir pizza eller sushi på drivhuset etter foredragene. Det vil bli\
+      \ servert snacks og kaffe underveis.\r\n\r\nStudentkvelden er en glimrende anledning\
+      \ til å møte bedrifter og fagfolk med god kompetanse innen sikkerhet. Ta deg\
+      \ fri fra eksamenslesningen! Kom, diskuter og lær!\r\n\r\n## Program ##\r\n\
+      **17:15-17:25** - Lyntale, _EY_\r\n\r\n**17:25-17:35** - Lyntale, _FFI_\r\n\r\
+      \n**17:35-17:45** - Lyntale, _Mnemonic_\r\n\r\n**17:55-18:40** - Personvern\
+      \ og informasjons-sikkerhet i UH-sektoren, _Bjørn Erik Thon_\r\n\r\n**18:55-19:25**\
+      \ - Angrepets anatomi, _Erlend Oftedal_\r\n\r\n**19:35-20:20** - Humor i sikkerhetsarbeidet\
+      \ – morsomt eller bare latterlig?, _John Arild A. Johansen_\r\n\r\n**20:20-21:30**\
+      \ - Mingling og bespisning på Drivhuset\r\n\r\n## Foredrag ##\r\n\r\n####Personvern\
+      \ og informasjons-sikkerhet i UH-sektoren####\r\n\r\n_Bjørn Erik Thon, Datatilsynet_\r\
+      \n\r\nPersonvern er viktigere enn noen sinne. Utdanningssektoren lagrer store\
+      \ mengder opplysninger om norske borgere, men hvordan er ståa her? Har de kontroll\
+      \ på dataene sine, respekterer de studenter og elevers personvern og vil de\
+      \ i framtida kaste seg på trenden med stordata-analyse? Bli med på en reise\
+      \ gjennom personvern-utfordringene anno 2016, lær mer om hvordan data kan sikres\
+      \ og få svar på hvordan framtidas utfordringer kan møtes.\r\n\r\n\r\n####Angrepets\
+      \ anatomi####\r\n\r\n\r\n_Erlend Oftedal, Konsulent i Blank Oslo og Leder av\
+      \ OWASP Norway_\r\n\r\nEt målrettet angrep mot systemene dine. Hvordan kan en\
+      \ angriper finne veien inn og hva gjør han når han er kommet inn?\r\nVi følger\
+      \ et angrep mot en organisasjon utenifra og ser på noen av aktivitetene angriperen\
+      \ kan gjøre i forskjellige faser av angrepet.\r\n\r\n####Humor i sikkerhetsarbeidet\
+      \ – morsomt eller bare latterlig?####\r\n\r\n_John Arild A. Johansen, Informasjonssikkerhetsleder/CISO,\
+      \ Helsedirektoratet og Direktoratet for e-helse_\r\n\r\nDet er en kjensgjerning\
+      \ vi sikkerhetsfolk jobber med et av de meste usexy områdene i bransjen. Kan\
+      \ humor hjelpe? Er humor og sikkerhet forenelig? Hvor grensen? Når blir det\
+      \ useriøst? Hva fungerer og hva fungerer absolutt ikke? Vil de ansatte ta sikkerhet\
+      \ seriøst etter dette? Et ubetinget og rungende «ja» mener nå foredragsholder\
+      \ John Arild Johansen (som ikke er standup-komiker, men sikkerhetssjef).\r\n\
+      \r\n## Sponsorer ##\r\n\r\n#### FFI ####\r\n\r\nForsvarets forskningsinstitutt\
+      \ (FFI) er forsvarssektorens sentrale forskningsinstitusjon og har til formål\
+      \ å drive forskning og utvikling for Forsvarets behov. FFI er rådgiver for Forsvarets\
+      \ politiske og militære ledelse.\r\n\r\nMiljøet vårt er attraktivt først og\
+      \ fremst fordi vi er teknologisk i front og arbeider nært med oppdragsgiverne\
+      \ våre. Utviklingen av teknologi og kunnskap skjer med utgangspunkt i en bred\
+      \ militærteknisk kompetanse i et utviklende og inspirerende forskningsmiljø.\
+      \ Arbeidet innebærer blant annet nær kontakt med Forsvaret, industrien og andre\
+      \ forskningsinstitusjoner i inn- og utland.\r\n\r\nVi har et aktivt, kreativt\
+      \ og sosialt miljø innen IKT-sikkerhet, som jobber med dagens og morgendagens\
+      \ teknologi både for PC-er og mobile enheter. FFI har arbeidet med slike problemstillinger\
+      \ i lengre tid, og har et solid forskningsmiljø innen temaet.\r\n\r\n\r\n####EY####\r\
+      \n\r\nEY er en internasjonal konsulentvirksomhet med over 220.000 ansatte. Visjonen\
+      \ vår er «Building a better working world». Som ansatt i EY får vi mulighet\
+      \ til å utvikle oss og være med og påvirke norsk næringsliv på en positiv måte.\
+      \ I Norge er vi 1.750 ansatte og vi har konsulenter som jobber med bla informasjonssikkerhet,\
+      \ risikohåndtering og IT-revisjon.\r\n\r\nVi gir kundene våre objektive råd\
+      \ innen viktige problemstillinger knyttet til informasjonssikkerhet. Vi støtter\
+      \ dem ved implementeringer av styringssystem for informasjonssikkerhet samt\
+      \ gjennomfører sikkerhetsvurderinger innen teknologi, prosesser og det menneskelige\
+      \ aspektet.\r\n\r\nVi vil snakke om hvordan ansatte kan være et viktig sikringstiltak\
+      \ for en virksomhet og hvordan EY kan hjelpe virksomheter med dette. Vi vil\
+      \ bla diskutere: Hva skjer om en virksomhet blir infisert av «ransomeware» eller\
+      \ passorddatabasen kommer i hendene på kriminelle? Hvordan kan ledere vite hva\
+      \ som skjer og sørge for hindre det?\r\n\r\n\r\n####Mnemonic####\r\n\r\nmnemonic\
+      \ helps businesses manage their security risks, protect their data, and defend\
+      \ against cyber threats.\r\n\r\nOur expert team of security consultants, product\
+      \ specialists, threat researchers, incident responders, and ethical hackers,\
+      \ combined with our Argus security platform, ensures we stay ahead of advanced\
+      \ cyberattacks and protect our customers from evolving threats.\r\n\r\nAcknowledged\
+      \ by Gartner as a notable vendor in delivering Managed Security Services, threat\
+      \ intelligence, and advanced targeted attack detection, we are among the largest\
+      \ IT security service providers in Europe, the preferred security partner of\
+      \ the region’s top companies, and a trusted source of threat intelligence to\
+      \ Europol and other law enforcement agencies globally.\r\n\r\nWith intelligence-driven\
+      \ managed security services, 120+ security experts, and partnerships with leading\
+      \ security vendors, mnemonic enables businesses to stay secure and compliant\
+      \ while reducing costs."
+    title: Sikkerhet og Sårbarhet
+  model: events.Event
+  pk: 21
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Uoffisielt repetisjonskurs i Krets- og Digitalteknikk med fokus på
+      eksamensoppgaver og pensum.
+    end_time: '2016-05-07T16:00:00+00:00'
+    event_type: 0
+    location: EL5
+    start_time: '2016-05-07T10:15:00+00:00'
+    text: Nils Barlaug holder lørdag 7. mai en uoffisiell eksamensforelesning i TFE4101
+      Krets- og Digitalteknikk. Det vil bli gått igjennom relevant pensum til eksamen
+      og er en sjanse for alle som har faget til å friske opp kunnskapene sine før
+      den store dagen nærmer seg. Kurset arrangeres i samarbeid med Abakus, men er
+      åpent for alle.
+    title: Eksamensforelesning i Krets- og digitalteknikk
+  model: events.Event
+  pk: 22
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Det er på tide med årets fadderpåmelding for masterstudenter! En\
+      \ fadder har som oppgave å ta imot de studentene som starter på 2-årig master\
+      \ til høsten. De skal vise frem Trondheim fra sin beste side gjennom sosiale\
+      \ aktiviteter i regi av Abakus. Alle som går 3, 4. eller 5. klasse til høsten\
+      \ kan melde seg til å være fadder. \r\n\r\n"
+    end_time: '2016-05-01T23:59:00+00:00'
+    event_type: 3
+    location: '-'
+    start_time: '2016-04-20T17:15:00+00:00'
+    text: "Å være fadder for 4. klasse er mer fritt enn å være fadder for 1. klasse\
+      \ og du er ikke nødt til å være med alle dager. Vi er på med noe av opplegget\
+      \ Arrkom arrangerer og arrangerer noe selv. Etter å ha meldt deg på, er det\
+      \ fint om du fyller [denne](http://goo.gl/forms/bMR7oPQMTq) Google Form-en for\
+      \ at vi skal vite når du kommer til Trondheim og hvilken fadder t-skjorte størrelse\
+      \ du trenger. \r\n\r\nbackup håper mange har lyst til å være faddere i år!"
+    title: Fadderpåmelding for masterstudenter
+  model: events.Event
+  pk: 23
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Fundator AS arrangerer fagsamling her i Trondheim fredag den 29.
+      april fra kl. 8:30 til kl 16:00. Vi har satt av 10 plasser til studenter fra
+      3.-5. klasse datateknologi og kommunikasjonteknologi med interesse for konsulentbransjen.
+    end_time: '2016-04-29T16:00:00+00:00'
+    event_type: 3
+    location: Trondheim
+    start_time: '2016-04-29T08:30:00+00:00'
+    text: "Årets temaer er sikkerhet og prosjektledelse. Vi kommer blant annet til\
+      \ å kjøre en tretimers workshop med Metasploit hvor vi øver på penetrasjonstesting\
+      \ ved å løse kryptiske oppgaver. I tillegg til det faglige påfyllet så spanderer\
+      \ vi også en fin lunsj, og vi lodder ut noen billetter til Trondheim Developer\
+      \ Conference blant de studentene som deltar. I tillegg til en god lunsj, så\
+      \ serverer vi kaffe, leskedrikk, popcorn og softis underveis.\r\n \r\nI tillegg\
+      \ til våre egne konsulenter deltar også flere representanter fra våre kunder\
+      \ og samarbeidspartnere.\r\n \r\nVelkommen!"
+    title: Fundator
+  model: events.Event
+  pk: 24
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Velkommen til lunsjpresentasjon med DNV GL. Etter presentasjonen
+      på 45 minutter vil det bli mingling på skolen med servering av pizza og brus.
+    end_time: '2016-04-28T15:00:00+00:00'
+    event_type: 1
+    location: KJL 1
+    start_time: '2016-04-28T12:00:00+00:00'
+    text: "DNV GL is undergoing a digital transformation encompassing all business\
+      \ models and work processes applied by the company in its global operations.\
+      \ New digital solutions offer new analytics tools and communication methods\
+      \ that allows automation of work that previously required manual labour, and\
+      \ it allows re-innovation of business models that have served the industries\
+      \ for decades. At DNV GL, we need more people who can challenge our status quo,\
+      \ and help us build the business models of the future in the maritime, oil&gas,\
+      \ and energy industries.\r\n\r\n_Bedkom minner om at oppmøte er kl. 12:00, ventelisten\
+      \ åpner 12:10 og presentasjonen starter 12:15._"
+    title: DNV GL
+  model: events.Event
+  pk: 25
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Velkommen til Abakus sin fagdag på mobil plattform. \r\n\r\nEttersom\
+      \ mer og mer av folks internett-vaner og aktiviteter skjer på mobilen ønsker\
+      \ vi å sette fokus på hvordan vi best mulig kan utvikle løsninger til dette\
+      \ mediumet. I Samarbeid med Schibsted og Mesan vil vi se på teknologier, programmeringsspråk\
+      \ og prinsipper for å utvikle applikasjoner tilpasset til den mobile plattform.\
+      \  \r\n\r\n"
+    end_time: '2016-04-27T20:00:00+00:00'
+    event_type: 0
+    location: R8
+    start_time: '2016-04-27T16:00:00+00:00'
+    text: "Kvelden vil bestå av varierte foredrag og workshop, tilpasset til ulike\
+      \ nivåer. Du står selv fritt til å velge hvilket du vil være med på, og det\
+      \ er mulig å bytte underveis. Alt opplegg i R8 vil være på et nivå som alle\
+      \ kan forstå. \r\n\r\nFor dere som ikke kommer med, er det mulig å være med\
+      \ på det opplegget dere ønsker uansett, men dere kan ikke garanteres mat. \r\
+      \n\r\nProgram: \r\n\r\n- 16:15. Felles start i R8. \r\n- 16:25. \r\n    - R8:\
+      \ How to build an app\r\n    - R9: Mobil sikkerhet.  \r\n- 17:20. \r\n    -\
+      \ R8: Dynamisk layout i native apps \r\n    - R9: React Native. (Forkunnskap:\
+      \ Bør ha vært borti JavaScript)\r\n- 18:15. \r\n    - R8: Workshop: En gøy intro\
+      \ til Android-programmering gjennom spill\r\n    - R9: Workshop: Dynamisk layout\
+      \ i native apps\r\n- 20:00->\r\n    Pizza. \r\n\r\n\r\nDet vil bli servert baguette\
+      \ underveis og pizza etter arrangementet. \r\n\r\n\r\n\r\nBilde: http://bizzarecreations.in/mobile-development/"
+    title: Fagdag i Mobil utvikling
+  model: events.Event
+  pk: 26
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: '**Velkommen til Lightning Talks! IDI inviterer, i samarbeid med
+      Fagkom fra Online og Abakus, studenter og ansatte til en hyggelig kveld sammen.**'
+    end_time: '2016-04-25T20:00:00+00:00'
+    event_type: 0
+    location: Work-Work (Munkegata 58)
+    start_time: '2016-04-25T17:15:00+00:00'
+    text: "![Bilde](http://i68.tinypic.com/k3wu2f.jpg \"Abakus/Online/IDI.png\")\r\
+      \n\r\nIDIs studenter og ansatte sitter på en enorm mengde kunnskap. Selv om\
+      \ vi hver uke har mulighet til å gå på kurs for å få enda mer kunnskap, ønsker\
+      \ vi denne kvelden å sette oss selv i fokus. Dette blir en kveld hvor både studenter\
+      \ og ansatte kan gi uttrykk for sine meninger og dele av sin kunnskap, eller\
+      \ bare lene seg tilbake og lære av andre.\r\n\r\nEn lyntale varer i maksimalt\
+      \ 10 minutter, og prøver å spre et budskap på en rask og røff måte. Målet er\
+      \ å skape en interesse eller en debatt blant publikum.\r\n\r\nArrangementet\
+      \ vil finne sted på Work-Work i Munkegata i sentrum. Bespisning vil bli burgere\
+      \ fra SuperHero Burger. \r\n\r\n**Når du melder deg på må du velge mellom disse\
+      \ tre burgere: **\r\n\r\n\r\n1. Mr Classic Burger\r\n2. Bacon Cheese Burger\r\
+      \n3. Spicy Chicken Burger\r\n\r\n(Dersom du har matallergier gi beskjed, så\
+      \ tar vi hensyn til det) \r\n\r\n**Her er programmet for kvelden:** \r\n\r\n\
+      - 17:00: Oppmøte og registrering\r\n- 17:15: Bespisning\r\n- 18:00 - 18:10:\
+      \ Tri Nguyen - “Fuse - lag kule mobilapplikasjoner!”\r\n- 18:10 - 18:20: Rune\
+      \ Sætre - \"Japan pluss Alpha\"\r\n- 18:20 - 18:30: Andreas Løve Selvik - \"\
+      Counter Strike i nettleseren?!\"\r\n- 18:30: Pause\r\n- 18:45 - 18:55: Matias\
+      \ Christensen - \"@&#!, en symbolsk reise.\"\r\n- 18:55 - 19:05: Kristine Steine\
+      \ - “Treat yo self”\r\n- 19:20: Quiz\r\n- 20:00: Mingling m shuffleboard og\
+      \ god stemning!\r\n\r\n\r\n\r\n"
+    title: Lightning Talks
+  model: events.Event
+  pk: 27
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Da er det på tide med årets andre (og semesterets siste) AbelLan.
+    end_time: '2016-04-24T07:00:00+00:00'
+    event_type: 3
+    location: Drivhuset
+    start_time: '2016-04-23T18:00:00+00:00'
+    text: "Detaljert informasjon kommer på [Facebook](https://www.facebook.com/events/718813778259009/).\r\
+      \n\r\n\r\nSted: Drivhuset\r\n\r\nTidspunkt: 18:00"
+    title: Abellan April 2016
+  model: events.Event
+  pk: 28
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Det er igjen duket for Casino Royale. Det betyr finstasen på, poker,
+      rulett, klassiske blackjack og nytt i år... eget nybegynnerbord. Alt finner
+      sted på Håndverkeren.
+    end_time: '2016-04-21T23:59:00+00:00'
+    event_type: 4
+    location: Håndverkeren
+    start_time: '2016-04-21T19:00:00+00:00'
+    text: "Arrangementet blir i år tilpasset alle, uavhengig om pokerferdighetene\
+      \ er på plass eller ei. Det vil si at vi arrangerer et nybegynnerbord, så du\
+      \ har nå gode muligheter til å lære deg poker en gang for alle. Dessuten er\
+      \ dette en ypperlig anledning å samles en siste gang før eksamensperioden starter\
+      \ for fullt. \r\n\r\nEn hyggelig lounge vil settes opp med muligheter for hyggelige\
+      \ samtaler eller pust i bakken mellom slagene. Du trenger med andre ord ikke\
+      \ spille hele kvelden, da du kan komme og gå som du vil til spillbordene.\r\n\
+      \ \r\nEllers vil Håndverkeren bli dekorert for anledningen, og velkomstdrink\
+      \ vil bli servert ved ankomst. Etter arrangementet går turen til byen for de\
+      \ som måtte ønske det. \r\n\r\nTil info:\r\n \r\n- Antrekk: Dress/smoking/kjole\r\
+      \n\r\n- Premieutdelinger vil avholdes med blandt annet:\r\n- - Beste pokerspiller(flest\
+      \ chips)\r\n- - Beste Antrekk (King and Queen)\r\n\r\n\r\n- Medbrakt drikke\
+      \ er tillat. "
+    title: Casino Royale
+  model: events.Event
+  pk: 29
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Et nytt semester går mot slutten og fadderperioden 2016 nærmer seg\
+      \ med stormskritt.\r\n"
+    end_time: '2016-04-18T12:00:00+00:00'
+    event_type: 3
+    location: S2
+    start_time: '2016-04-18T10:30:00+00:00'
+    text: "Om bare noen måneder strømmer tusenvis av nye studenter til Trondheim.\
+      \ Mange kommer rett fra videregående, de fleste har ikke bodd for seg selv før\
+      \ og antageligvis alle er fylt med et hav av forventninger. Som fersk student\
+      \ kan Studentbyen og -tilværelsen virke både overveldende og skremmende.\r\n\
+      \r\nI løpet av fadderperioden håper vi å gi de nye studentene ved Data- og Kommunikasjonsteknologi\
+      \ en mer behagelig start på studiet. I løpet av to (intense) uker skal fadderbarna\
+      \ vises rundt på skolen og i byen,  møte og bli kjent med medstudenter, og ikke\
+      \ minst ha det veldig, veldig gøy.\r\n\r\nFor å gjøre dette mulig trenger vi\
+      \ hjelp fra alle abakuler, særlig de som til høsten begynner i 2. klasse. De\
+      \ fleste husker sikkert hvor godt og betryggende det var å ha noen erfarne studenter\
+      \ man kunne lene seg på, og bli guidet av gjennom to uker med fart, spenning\
+      \ og nye impulser.\r\n\r\nHar du lyst til å være en del av fadderperioden 2016?\
+      \ \r\n18. april, klokken 10:30 arrangerer Arrkom infomøte for den kommende fadderperioden\
+      \ i S2.\r\n"
+    title: Infomøte for faddere
+  model: events.Event
+  pk: 30
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Få mennesker kan feste hardere, lengre og mer høylytt enn meksikanere,
+      men blant de få er definitivt Labamba og abakulene! '
+    end_time: '2016-04-16T01:00:00+00:00'
+    event_type: 2
+    location: ' Klostergata 60 '
+    start_time: '2016-04-15T19:00:00+00:00'
+    text: "Fredag 15. april er det duket for en fiesta av så godt kaliber at meksikanere\
+      \ har åpnet tårekanalene på vidt gap i ren sjalusi. Vi har tømt samtlige Sør-Amerikanske\
+      \ land for tequila for nå drikkes det til det er tosifret promille og alle snakker\
+      \ flytende spansk! Bart, sombrero og god stemning er obligatorisk - poncho er\
+      \ rått og klær er valgfritt.\r\n\r\nFiestaen blir så rå og høylytt at den er\
+      \ hos døveforeningen sine lokaler i Klostergata 60. Dette er jo et fantastisk\
+      \ kvalitetsstempel for alle vet at de er Trondheims fremste eksperter på god\
+      \ musikk!\r\n\r\nEttersom vi har nok tequila til å fylle Chihuahua, Durango\
+      \ og Jalisco tredve ganger selger vi i kjent meksikansk stil tequila til skampris:\
+      \ \r\n19-20: 10 kroner, \r\n20-21: 15 kroner, \r\n21-22: 20 kroner, \r\n22-01:\
+      \ 25 kroner\r\n\r\nViva la fiesta!"
+    title: Fiesta!
+  model: events.Event
+  pk: 31
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Nå har vi lyst å dele en av fagdagene med resten av bransjen, og
+      vi har et begrenset antall gratis plasser for studenter. Søknadsfrist 15. Mars!
+    end_time: '2016-04-15T21:00:00+00:00'
+    event_type: 3
+    location: Radisson Blu Scandinavia, Holbergs plass, Oslo
+    start_time: '2016-04-15T08:00:00+00:00'
+    text: "I BEKK er vi opptatt av faglig utvikling og kunnskapsdeling. Hvert år arrangerer\
+      \ vi tre fagdager der alle våre ansatte deltar. Vi står selv som foredragsholdere\
+      \ og workshop-fasilitatorer – vi har stor tro på å lære av og med hverandre.\r\
+      \n\r\nFagdagen er gratis for et begrenset antall studenter. Vil du være med?\
+      \ Bare fortell oss hva du studerer og hvorfor du vil delta!\r\n\r\nSend inn\
+      \ din søknad på [fagdag.bekk.no](http://fagdag.bekk.no ) \r\n\r\nSøknadsfrist:\
+      \ 15. Mars\r\n"
+    title: BEKK
+  model: events.Event
+  pk: 32
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Har du lyst til å sette opp en egen server i skyen med basic sikkerhetsoppsett?
+      Knowit kommer for å snakker om kjente sikkerhetstiltak og guider deg gjennom
+      oppsettet
+    end_time: '2016-04-14T20:00:00+00:00'
+    event_type: 0
+    location: H3
+    start_time: '2016-04-14T17:00:00+00:00'
+    text: "De beste kursene gir deg noe kult som du kan ha etter kurset, derfor vil\
+      \ du etter vårt sikkerhetskurs sitte igjen med en sikret webserver som du kan\
+      \ bruke til personlige websider, CV, prosjekter, APIer eller hva enn du måtte\
+      \ ønske.\r\n\r\nVi skal fortelle en kort sikkerhetshistorie, prate om Server\
+      \ Hosting, SSH, HTTPS, OWASP, Tor, og mer. Kurset avsluttes med en konkurranse.\r\
+      \n\r\n_Forberedelse:_\r\n- Registrer deg for GitHubs Student Pack her: https://education.github.com/pack\r\
+      \n\r\n_Utstyrkrav:_\r\n- Ta med egen datamaskin, samt strømkabel.\r\n\r\n_Forkunnskapskrav:_\
+      \ \r\n- Ingen.\r\n\r\n\r\nAgenda:\r\n\r\n- Kort om Knowit\r\n\r\n- Lyntaler:\
+      \ Samfundets datalekkasje / Server hosting /      SSH/HTTPS / OWASP / Tor\r\n\
+      \r\n- Serveroppsett del 1\r\n\r\n- Pause med underholdning og mat\r\n\r\n- Serveroppsett\
+      \ del 2\r\n\r\n- Konkurranse med premier\r\n\r\n- Øl og mingling v/ Work-Work\r\
+      \n\r\n\r\n\r\n\r\n\r\n\r\n"
+    title: IT-Sikkerhet med Knowit
+  model: events.Event
+  pk: 33
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Vil du lære mer om kunstig intelligens?\r\n=======================================\r\
+      \n\r\n**Næringslivsnettverket KiD med Accenture, Telenor og NTNU vil gi en innføring\
+      \ i kunstig intelligens gjennom korte inspirasjonsforedrag og kreativ idémyldring.\
+      \ Det vil også være premietrekning av en Lego Mindstorm og en Chromecast!**\r\
+      \n \r\n\r\n\r\n"
+    end_time: '2016-04-11T21:00:00+00:00'
+    event_type: 1
+    location: KJL1
+    start_time: '2016-04-11T17:00:00+00:00'
+    text: "**Program for kvelden**\r\n\r\n17:00 Dørene åpner\r\n\r\n17:15 - 17:20\
+      \ Velkommen ved Torbjørn Eik-Nes\r\n\r\n17:20 – 18:20 Inspirasjonsforedrag ved\
+      \ IDI, Accenture, Telenor Research og Simula.\r\n\r\n18:20 - 18:30 Presentasjon\
+      \ av gruppeoppgaver/inndeling av grupper\r\n\r\n18:30 – 19:30 Idémyldring og\
+      \ oppgaveløsning i grupper og bespisning\r\n\r\n19:30 – 20:15 Presentasjoner\
+      \ og premietrekning\r\n\r\n\r\n**En smakebit på foredragene:**\r\n \r\n_«Kunstig\
+      \ Intelligens:  Teknologi, Tull, Trolldom, Trussel?»_\r\n\r\nFagfeltet har kjørt\
+      \ en berg-og-dale bane av forventninger, suksess, svikt, skepsis og frykt gjennom\
+      \ sine 60 år.  Hvorfor ble det slik, og hvorfor er det så mye mediaoppmerksomhet\
+      \ rundt KI nå?» \r\nKeith/IDI\r\n \r\n*«Ledelse i maskinalderen: Hvordan kunstig\
+      \ intelligens kommer til å endre lederens jobb»*\r\n\r\n«Ledere bruker mesteparten\
+      \ av tiden sin på oppgaver intelligente maskiner snart kan gjøre for dem. Vil\
+      \ man få maskiner i ledergruppen? Vegard vil presentere nordiske og internasjonale\
+      \ resultater fra en undersøkelse blant 1770 ledere globalt og vil snakke om\
+      \ hvordan fremtidens ledere vil jobbe med intelligente maskiner og trenge helt\
+      \ nye ferdigheter for å lykkes.» \r\nTorbjørn/Vegard (Accenture)\r\n\r\n*«Bildegjenkjenning»*\r\
+      \n\r\nNevrale nettverk står nå for \"state of the art\" innen bildegjenkjenning,\
+      \ noe som også er kjent som deep learning. Presentasjonen vil vise kort potensialet,\
+      \ hva vi gjør i Telenor Research, og oppfordre til tanker om hva denne metodologien\
+      \ kan brukes til..» \r\nAxel Tidemann/Telenor Research\r\n \r\n\r\n\r\n\r\n\r\
+      \n"
+    title: KiD
+  model: events.Event
+  pk: 34
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Lørdag 9. april inviterer Abakus til Vaargalla!
+    end_time: '2016-04-10T08:00:00+00:00'
+    event_type: 4
+    location: Banksalen
+    start_time: '2016-04-09T15:00:00+00:00'
+    text: "Hva er vel bedre for å feire at våren er her, enn en egen galla for det?\
+      \ Vaargallaen blir ærverdig, minnerik og en anledning til å ta på seg finstasen\
+      \ for å vise seg fra sin beste side! Arrangementet er for alle, så bli med og\
+      \ ta del i Abakus' gamle tradisjoner, og vær med på å skape nye!\r\n\r\nDet\
+      \ vil først bli vorspiel på Håndverkeren klokken 16:30, før vi går videre til\
+      \ Banksalen klokken 18:30. Når festlighetene i Banksalen er over rundt klokken\
+      \ 24:00 beveger vi oss tilbake til Håndverkeren for en storslagen efterfest.\r\
+      \n\r\nVi benytter også anledningen til å hedre de nye medlemmene i Den Gyldne\
+      \ Kulerammes Orden. Abakus sin studenterorden Ordo Abaci Aurei (lat. Den Gyldne\
+      \ Kulerammes Orden) er stiftet for å hedre og belønne særlig utmerkede fortjenester\
+      \ for linjeforeningen Abakus og dens medlemmer. I likhet med andre studenterordenener,\
+      \ som for eksempel Studentersamfundets «Det Sorte Faars Ridderskap», har også\
+      \ Den Gyldne Kulerammes Orden sine egne sære tradisjoner med pomp og prakt,\
+      \ ironi og tull, dysterhet og dårskap, og håp og savn. Opp til flere av disse\
+      \ vil deltakerene skue i løpet av kvelden.\r\n\r\nPraktisk Info\r\n==================\r\
+      \n\r\nVorspiel: Håndverkeren (LaBamba står i baren med Abacash)\r\n\r\nSted\
+      \ for Vaargallaen: Banksalen\r\n\r\nEfterfest: Håndverkeren (LaBamba står i\
+      \ baren med Abacash til 03:00)\r\n\r\nAntrekk: Studentergalla med Abakus-utmerkelser\r\
+      \n\r\nDato: Lørdag 9. april 2016\r\n\r\nKlokkeslett: 16:30 på Håndverkeren,\
+      \ 18:30 på Banksalen.\r\n\r\nMat: 2-retters middag, en bong inkludert\r\n\r\n\
+      Pris: 270"
+    title: Vaargalla
+  model: events.Event
+  pk: 35
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den? '
+    end_time: '2016-04-07T20:00:00+00:00'
+    event_type: 1
+    location: KJL1
+    start_time: '2016-04-07T17:00:00+00:00'
+    text: "DNB har Norges mest besøkte nett- og mobilbank. Det er vi i IT stolte av.\r\
+      \n\r\nMed over 800 IT-kollegaer griper vi fatt i nye utfordringer og muligheter.\
+      \ Det er vi som leverer de digitale løsningene i DNB. Da er gode løsninger og\
+      \ sikkerhet viktig. \r\n\r\nDen 7. april vil vi dele refleksjoner og eksempler\
+      \ rundt hvor viktig IT er for DNB fremover, med ekstra fokus på IT-utvikling\
+      \ og informasjonssikkerhet. \r\n\r\nEtter presentasjonen tar vi buss ned til\
+      \ byen der det blir bespisning og mingling.\r\n\r\n_Bedkom minner om at oppmøte\
+      \ er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:15._"
+    title: DnB
+  model: events.Event
+  pk: 36
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
+      eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
+      hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
+      Vi viser deg state-of-the-art frontendteknologi med fokus på konsepter fra funksjonell
+      programmering!
+    end_time: '2016-04-06T19:00:00+00:00'
+    event_type: 0
+    location: EL2
+    start_time: '2016-04-06T16:00:00+00:00'
+    text: "Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
+      \ konsepter herfra brukes i stor grad i moderne frontendutvikling. Vi holder\
+      \ oss unna rammeverk i første omgang, og ser heller på grunnleggende programmering\
+      \ i javascript.\r\n\r\nPå dag to introduserer vi React - dagens ubestridte rammeverkkonge\
+      \ på weben. Vi begynner å lage en applikasjon, og knytter praksis sammen med\
+      \ konseptene fra funksjonell programmering.\r\n\r\nPå kursets siste dag skal\
+      \ vi snakke om Redux og hvordan vi bygger store, interaktive applikasjoner som\
+      \ er enkle å forstå og vedlikeholde.\r\n\r\nEtter kurset vil vi dra ned til\
+      \ sentrum hvor vi vil få god mat & drikke!\r\n\r\nVi gjør oppmerksom på at deltakere\
+      \ på del 2 vil få prioritet på del 3"
+    title: Funksjonell programmering i Javascript med React og Redux  3 av 3
+  model: events.Event
+  pk: 37
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme
+      igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen
+      mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene
+      til å havne der du vil ha dem? Da er du velkommen til Webutvikling101.
+    end_time: '2016-04-06T19:00:00+00:00'
+    event_type: 0
+    location: EL1
+    start_time: '2016-04-06T16:00:00+00:00'
+    text: "Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
+      \ webutvikling:\r\n\r\nFørste runde skal vi lære om de underliggende prinsippene\
+      \ i webutvikling. Vi ser på hvordan CSS påvirker HTML og hvordan du kan bruke\
+      \ CSS til å forandre hvordan nettleseren presenterer siden både i layout og\
+      \ form. Vi ser også på hvordan du kan legge til enkel dynamikk og interaksjon\
+      \ med JavaScript.\r\n\r\nPå dag to tar vi et steg videre og ser på hvordan vi\
+      \ kan bruke JavaScript for å kommunisere med en server for å både sende og motta\
+      \ data. Vi skal også se på hvordan navigasjon mellom nettsider fungerer og hvordan\
+      \ vi kan benytte JavaScript til å endre hva som skjer når vi navigerer.\r\n\r\
+      \nDag tre vil være en litt friere dag. Vi kommer til å presentere en rekke utfordringer\
+      \ som tar for seg et aspekt ved webutvikling som dere kan få bryne dere på.\
+      \ Målet med denne dagen er å utforske mulighetene webben gir. Vi stiller med\
+      \ spisskompetanse og dere stiller med nysgjerrighet og ståpå-vilje.\r\n\r\n\
+      Ha med egen PC, valgfri editor og nyeste node.js v4 eller nyere ([https://nodejs.org](https://nodejs.org)).\r\
+      \n\r\nEtter kurset vil vi dra ned til sentrum hvor vi vil få god mat & drikke!\r\
+      \n\r\nVi gjør oppmerksom på at deltakere på del 1 & 2 vil få prioritet på del\
+      \ 3\r\n\r\nInstruks for hvordan installere node:\r\n\r\n1. Gå til https://nodejs.org/en/\r\
+      \n\r\n2. Last ned nyeste stable (5.7.1)\r\n\r\n3. Kjør filen\r\n\r\n4. Følg\
+      \ installasjons-anvisningene\r\n\r\n5. Åpne terminalen\r\n**For OS X**: finnes\
+      \ under Applications/Utilities/Terminal. **For Windows**: klikk windows + r\
+      \ for å få opp run dialogen. skriv “cmd” og trykk enter.\r\n\r\n6. Skriv node\
+      \  --version i terminalen trykk enter. Hvis alt er i orden skal den svare med\
+      \ versjonsnummer, v5.7.1"
+    title: Webutvikling101 3 av 3
+  model: events.Event
+  pk: 38
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Hvem tar flagget først? Du eller din studievenn? Itera kjører Capture
+      the ”flag” med Java og Lego Mindstorms! [Promovideo](https://vimeo.com/160542061)
+    end_time: '2016-04-05T20:00:00+00:00'
+    event_type: 0
+    location: IT-Vest 454
+    start_time: '2016-04-05T17:00:00+00:00'
+    text: "Lego Lego Lego. Vi får ikke nok av Lego, forhåpentligvis gjelder det samme\
+      \ for deg. Vi tar med oss roboter til Trondheim nok en gang, men denne gangen\
+      \ for å konkurrere om å fange ”flagget” først. Hvert lag får ei sone som skal\
+      \ forsvare og en sone som skal angripes. Utfordringa blir å kode og bygge den\
+      \ beste forsvarsroboten og den beste angrepsroboten. Her gjelder det å finne\
+      \ frem sine beste triks for å holde seg i spill og samle mest mulig poeng!\r\
+      \n\r\nBanen er delt opp i 4 farger for å kunne navigere seg rundt på banen,\
+      \ samt kalkulere posisjon til de andre robotene. Alle roboter kommuniserer sin\
+      \ fargeposisjon til en server som vil kalkulere livestatus i spillet, samt sende\
+      \ ut fargeposisjon til alle roboter. På banen vil det være plassert to flaggsirkler,\
+      \ et for hvert lag. Når du er på motstanderens flaggsirkel vil du få poeng....men\
+      \ pass på så ikke motstanderen dytter deg av banen!\r\n\r\nFor å styre robotene\
+      \ bruker vi et custom OS, leJOS, slik at vi kan bruke Java i stedet for \"pek\
+      \ og klikk\"-språket som følger med originalt. Du kan lese mer om leJOS på http://www.lejos.org/.\
+      \ Alle vil få tildelt et rammeverk som vil ta seg av lesing av posisjon, kommunikasjon\
+      \ med server, samt gi tilgang på metoder for å navigere roboten.\r\n\r\nGit-repo\
+      \ finnes her: https://github.com/Itera/HelloBrick\r\n\r\nVi tar med ferdigkonfigurerte\
+      \ maskiner slik at vi kan bruk mest mulig tid på koding og seriøs konstruksjon\
+      \ av kampmaskiner. Hvert lag får tildelt 2 roboter som skal bygges og kodes\
+      \ til en forsvarsmaskin og en angrepsmaskin. Hvert lag består av 8 studenter\
+      \ (4 til angrepsrobot og 4 til forsvarsrobot).\r\n\r\nDet blir servert pizza\
+      \ og sushi under kurset. På slutten av kvelden kjører vi kamp. Måtte det beste\
+      \ laget vinne :) Når vi er ferdig tar vi turen til Work-Work for mingling og\
+      \ shuffleboard.\r\n\r\nDet vil bli lagt ut detaljerte regler sammen med kodebase\
+      \ noen dager før kurset slik at alle stiller likt på kampadagen! Skulle du være\
+      \ 1.klassing og føler du har nok javakunnskaper til å delta er det bare å sende\
+      \ mail til arrangør hvis det er ledige plasser."
+    title: Lego Mindstorms med Itera
+  model: events.Event
+  pk: 39
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Lei av å avstandsbeundre den søte jenta fra maskin? Eller han kjekke
+      hunken på Emil? Keen på å bli bedre kjent med den kule gjengen på bakerste rad
+      i forelesning? Dette er sjansen til å ta grep og bli bedre kjent på tvers av
+      linjene!
+    end_time: '2016-03-31T23:00:00+00:00'
+    event_type: 4
+    location: D12
+    start_time: '2016-03-31T19:00:00+00:00'
+    text: "Tiden har kommet for at Mannhullet, Emil, Abakus, Smørekoppen og Janus\
+      \ forenes! Teknologivennefesten arrangeres 31. mars og er en fest for alle teknologiretningene.\
+      \ \r\n\r\nEtter vors med hver respektive linje (teknologiretning for indøkere)\
+      \ samles alle på D12 for en uforglemmelig kveld! \r\nVi har liveband som går\
+      \ på kl. 23 og DJ utover kvelden. Dette vil dere ikke gå glipp av!\r\n\r\nVi\
+      \ kjører felles vors på Håndverker'n.\r\nFor info gå inn på:\r\n[https://www.facebook.com/events/257452054586185/](https://www.facebook.com/events/257452054586185/).\r\
+      \n\r\n\r\nAntrekk:\r\nRødt!"
+    title: Teknologivennefest
+  model: events.Event
+  pk: 40
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Et praktisk kurs hvor vi lærer hvordan man setter opp IT-infrastruktur
+      i skyløsningen Microsoft Azure. Vi skal se på tre ulike metoder for å opprette
+      virtuelle maskiner (VM), og konfigurere VM-en til en webserver. Første metode
+      er manuelt, deretter automatisert og tilslutt med «Infrastructure as Code».
+      Kurset passer perfekt for deg som ønsker å lære om IT-infrastruktur og Microsoft-teknologier.
+    end_time: '2016-03-15T19:00:00+00:00'
+    event_type: 0
+    location: H3
+    start_time: '2016-03-15T17:15:00+00:00'
+    text: "Kurset vil være inndelt i tre deler. Hver del starter med 5-10 minutter\
+      \ teori, etterfulgt av ca. 20 minutter der man får prøve selv.\r\n\r\n- Del\
+      \ 1: Manuelt oppsett av webserver\r\n- Del 2: Automatisert oppsett av webserver\
+      \   \r\n- Del 3: Fremtidens oppsett av webserver\r\n\r\nDet blir servert pizza\
+      \ og sushi når kurset starter. Etter kurset tar vi turen til Brygghus 9 for\
+      \ mingling. \r\n\r\nTa med deg PC. I forkant av kurset må du gjennomføre noen\
+      \ enkle forberedelser, guide finner du [her](http://azurekurs.mastech.no). Gjør\
+      \ kun det som står under \"Forberedelser\". "
+    title: En reise hvor IT-infrastruktur blir kode
+  model: events.Event
+  pk: 41
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: 'Dersom du er glad i kaffe og har lyst til å lære hvordan du kan
+      lage bedre kaffe hjemme, da er denne kaffekvelden hos Dromedar noe for deg.
+      Det blir et kurs med fokus på svart kaffe, hvor man kan få smake på forskjellige
+      typer kaffe og lære nyttig tips og triks. '
+    end_time: '2016-03-13T19:00:00+00:00'
+    event_type: 0
+    location: Dromedar Moxness, Olav Tryggvassonsgate 14
+    start_time: '2016-03-13T16:00:00+00:00'
+    text: "Vi starter med en liten søtchilismak og litt kaker, før vi får vite litt\
+      \ om kaffens lange vei fra busk til kopp. Deretter blir det en sammenlignende\
+      \ smaking av kaffe fra verdens mest spennende opprinnelser (cupping). Tilslutt\
+      \ teori og tips til hjemmekaffen av våre beste bryggemetoder (kalita, aeropress\
+      \ og softbrew), og dette er direkte oveførbart til å heve nivået på kaffen man\
+      \ lager i ettertid. \r\n\r\nDenne kvelden tar i underkant av tre timer, og kurset\
+      \ går i Dromedar sitt kursrom på dromedar moxness. Legg merke til at kurset\
+      \ starter 16.00 (ikke 16.15). "
+    title: Kaffekurs hos Dromedar Kaffebar
+  model: events.Event
+  pk: 42
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: StartIT er et faglig arrangement sponset av Abakus, som spesielt
+      promoterer innovasjon innen IT. I år er det mange spennende foredrag man kan
+      bli med på!
+    end_time: '2016-03-10T21:00:00+00:00'
+    event_type: 3
+    location: Radisson Blu Royal Garden
+    start_time: '2016-03-10T17:00:00+00:00'
+    text: "Merk at arrangementet er eksternt og at påmeldingen foregår på [StartIT\
+      \ sine sider](https://startntnu.hoopla.no/sales/startit/) **3. mars**\r\n------------------\r\
+      \n\r\n[Påmelding skjer ved å følge denne linken.](https://startntnu.hoopla.no/sales/startit/)\r\
+      \n\r\nStartIT er et arrangement som har hovedfokus på innovasjon i teknologiverdenen.\
+      \ Hit kommer flinke foredragsholdere med ulik bakgrunn for å formidle sin kunnskap.\
+      \ Her vil man lære om livet som gründer, teknologiske trender og moderne problemløsingsmetoder.\
+      \ Arrangementet skal fungere som en arena der gründere og studenter kan møte\
+      \ hverandre, danne team og starte sine egne eventyr.\r\n\r\nStartIT inviterer\
+      \ kjente og spennende foredragsholdere. Disse er med for å inspirere studentene\
+      \ til å ta det steget mange ikke tør ta. Tidligere foredragsholdere inkluderer\
+      \ Steve Wozniak, JottaCloud, Mathias Mikkelsen og mange fler.\r\n\r\nPå StartIT\
+      \ vil du møte mennesker som har en idé eller som har et ønske om å en dag bli\
+      \ gründer. Du trenger ikke ha en idé eller et ønske om å bli gründer for å delta,\
+      \ men forhåpentligvis vil kvelden tenne en liten flamme. Dette gir alle mulighet\
+      \ til å knytte viktige kontakter for fremtiden."
+    title: StartIT
+  model: events.Event
+  pk: 43
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
+      eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
+      hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
+      Vi viser deg state-of-the-art frontendteknologi med fokus på konsepter fra funksjonell
+      programmering!
+    end_time: '2016-03-09T20:00:00+00:00'
+    event_type: 0
+    location: EL2
+    start_time: '2016-03-09T16:00:00+00:00'
+    text: "Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
+      \ konsepter herfra brukes i stor grad i moderne frontendutvikling. Vi holder\
+      \ oss unna rammeverk i første omgang, og ser heller på grunnleggende programmering\
+      \ i javascript.\r\n\r\nPå dag to introduserer vi React - dagens ubestridte rammeverkkonge\
+      \ på weben. Vi begynner å lage en applikasjon, og knytter praksis sammen med\
+      \ konseptene fra funksjonell programmering.\r\n\r\nPå kursets siste dag skal\
+      \ vi snakke om Redux og hvordan vi bygger store, interaktive applikasjoner som\
+      \ er enkle å forstå og vedlikeholde.\r\n\r\nUnder kurset vil vi ha en pause\
+      \ med bespisning og mingling, hvor vi etter pausen vil fortsette med kurset.\r\
+      \n\r\nVi gjør oppmerksom på at deltakere på del 1 vil få prioritet på del 2\
+      \ & 3"
+    title: Funksjonell programmering i Javascript med React og Redux 2 av 3
+  model: events.Event
+  pk: 44
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme\
+      \ igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen\
+      \ mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene\
+      \ til å havne der du vil ha dem? Da er du velkommen til Webutvikling101.\r\n\
+      \r\n"
+    end_time: '2016-03-09T20:00:00+00:00'
+    event_type: 0
+    location: EL1
+    start_time: '2016-03-09T16:00:00+00:00'
+    text: "Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
+      \ webutvikling:\r\n\r\nFørste runde skal vi lære om de underliggende prinsippene\
+      \ i webutvikling. Vi ser på hvordan CSS påvirker HTML og hvordan du kan bruke\
+      \ CSS til å forandre hvordan nettleseren presenterer siden både i layout og\
+      \ form. Vi ser også på hvordan du kan legge til enkel dynamikk og interaksjon\
+      \ med JavaScript.\r\n\r\nPå dag to tar vi et steg videre og ser på hvordan vi\
+      \ kan bruke JavaScript for å kommunisere med en server for å både sende og motta\
+      \ data. Vi skal også se på hvordan navigasjon mellom nettsider fungerer og hvordan\
+      \ vi kan benytte JavaScript til å endre hva som skjer når vi navigerer.\r\n\r\
+      \nDag tre vil være en litt friere dag. Vi kommer til å presentere en rekke utfordringer\
+      \ som tar for seg et aspekt ved webutvikling som dere kan få bryne dere på.\
+      \ Målet med denne dagen er å utforske mulighetene webben gir. Vi stiller med\
+      \ spisskompetanse og dere stiller med nysgjerrighet og ståpå-vilje.\r\n\r\n\
+      Ha med egen PC, valgfri editor og nyeste node.js v4 eller nyere ([https://nodejs.org](https://nodejs.org)).\r\
+      \n\r\nUnder kurset vil vi ha en pause med bespisning og mingling, hvor vi etter\
+      \ pausen vil fortsette med kurset.\r\n\r\nVi gjør oppmerksom på at deltakere\
+      \ på del 1 vil få prioritet på del 2 & 3\r\n\r\nInstruks for hvordan installere\
+      \ node:\r\n\r\n1. Gå til https://nodejs.org/en/\r\n\r\n2. Last ned nyeste stable\
+      \ (5.7.1)\r\n\r\n3. Kjør filen\r\n\r\n4. Følg installasjons-anvisningene\r\n\
+      \r\n5. Åpne terminalen\r\n**For OS X**: finnes under Applications/Utilities/Terminal.\
+      \ **For Windows**: klikk windows + r for å få opp run dialogen. skriv “cmd”\
+      \ og trykk enter.\r\n\r\n6. Skriv node  --version i terminalen trykk enter.\
+      \ Hvis alt er i orden skal den svare med versjonsnummer, v5.7.1"
+    title: Webutvikling101 2 av 3
+  model: events.Event
+  pk: 45
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: "Acando er et konsulentselskap som bistår offentlige og private kunder\
+      \ i å lykkes. Vi er ofte engasjert i utfordrende og virksomhetskritiske leveranser\
+      \ og prosjekter hvor vår innsats kan bli et være eller ikke være for våre kunder.\
+      \   \r\n"
+    end_time: '2016-03-08T22:00:00+00:00'
+    event_type: 1
+    location: Acandos lokaler i Trondheim
+    start_time: '2016-03-08T17:00:00+00:00'
+    text: "Hos oss vil du jobbe med mange spennende kunder, prosjekter og problemstillinger.\
+      \ Våre kunder etterspør dyktige konsulenter som kan bistå dem med å realisere\
+      \ nye løsninger basert på dagens og morgendagens teknologi. Vi forbedrer og\
+      \ effektiviserer virksomheter, prosesser og tjenester ved hjelp av IKT. \r\n\
+      \r\nAcando Gruppen har ca. 1800 ansatte i fire land i Europa og leveransesentre\
+      \ i India og Latvia. Acando hadde en omsetning på nærmere to milliarder svenske\
+      \ kroner i 2014 og er notert på Nasdaq. Stockholm. Vi tilbyr et meget godt fagmiljø\
+      \ der alle er opptatt av å dele og hjelpe hverandre til å lykkes. Vi har et\
+      \ godt sosialt miljø og legger vekt på å skape balanse mellom jobb og fritid.\r\
+      \n\r\nBedriftspresentasjonen vil være i Acandos lokaler på Solsiden.\r\n\r\n\
+      _Bedkom vil minne om at oppmøte er foran hovedbygget kl. 17:00, ventelisten\
+      \ åpner 17:10 og bussen kjører 17:15._"
+    title: Acando
+  model: events.Event
+  pk: 46
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Har du lyst å leke deg med video i nettleser?  Vil du lære å lage
+      din egen videospiller og koble den til webkameraet ditt? Kantega ønsker velkommen
+      til kodeworkshop med solide doser HTML5-magi. Det bare fantasien din som setter
+      grenser, så her lover vi utfordringer selv til de som har programmert i flere
+      år.
+    end_time: '2016-03-07T20:00:00+00:00'
+    event_type: 0
+    location: Bassengbakken 4
+    start_time: '2016-03-07T17:15:00+00:00'
+    text: "Med litt enkel Javascript-programmering kan du gjøre alt dette. Du kan\
+      \ også legge på egne effekter, kjenne igjen farger og objekter, gjøre bakgrunner\
+      \ gjennomsiktig og spille av musikkvideoer på en Post-It-lapp.\r\n\r\nSelve\
+      \ programmeringen er ikke spesielt vanskelig, så her trenger du ikke være ekspert\
+      \ for å ha det gøy mens du lager noe fancy du kan imponere vennene dine med.\
+      \ \r\n\r\nTa med deg laptop med webkamera og Chrome. Kantega stiller med resten\
+      \ av det du trenger!\r\n\r\n**Vi ønsker hjertelig velkommen til en lærerik og\
+      \ morsom kveld med god mat og drikke, og hyggelig sosialt samvær.**\r\n\r\n\
+      - Kantega inviterer til sine egne lokaler i Bassengbakken ved solsiden. Det\
+      \ vil bli satt opp buss fra hovedbygget på Gløshaugen. **Møt opp kl 17.00! Bussen\
+      \ drar 17.15 presis.**\r\n\r\n- Ved oppstart av kurset vil det bli servert ferske\
+      \ baguetter fra Franske nytelser.\r\n\r\n- Etter kurset vil det bli servert\
+      \ sushi fra Sabrura m. kyllingspyd og salat. Dette blir innledet med vinsmaking\
+      \ ledet av Kantegas egne vinkelnere. Det blir hyggelig mingling med servering\
+      \ av alkohol. \r\n\r\n_Mange av Kantegas ansatte startet med å jobbe deltid\
+      \ hos oss i studietiden. Nå vil vi bli kjent med flere. Kantega er en spennende\
+      \ og annerledes arbeidsplass. Vi lager IT-løsninger kundene vår ikke greier\
+      \ seg uten. Hos oss blir du utfordret faglig i et prisbelønnet arbeidsmiljø.\
+      \ Hos Kantega får alle mulighet til å bli likeverdige eiere i selskapet._ \r\
+      \n"
+    title: 'HTML5 Pixel-Magic '
+  model: events.Event
+  pk: 47
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Da er det klart for å samle Abakus sine komiteer for en Helgesamling
+      uten like!
+    end_time: '2016-03-06T12:00:00+00:00'
+    event_type: 4
+    location: Sundmans Fjällgård, Åre
+    start_time: '2016-03-05T09:00:00+00:00'
+    text: "I år arrangeres Helgesamlingen på Sundmans Fjellgård fra 5 - 6 mars. \r\
+      \n\r\nDet blir satt opp buss på dagen den 5. og hjem igjen dagen etter, 6. mars.\r\
+      \n\r\nPakkeliste:  \r\n- Alkohol! Det blir stopp på Coop på veien, så det går\
+      \ an å kjøpe drikke der (om man bestiller i forkant)  \r\n- Dynetrekk, putetrekk\
+      \ og laken  \r\n- Mat hvis du ønsker noe eget utenom felles (blir servert lunsj,\
+      \ middag, nattmat og frokost)  \r\n\r\nTemaet for workshopen er arrangementstilbudet\
+      \ i Abakus. Hvilke arrangementer bør vi satse på? Hvilke savner vi i tilbudet\
+      \ vårt? Er det noen som er overflødige? Treffer vi bredt nok? Her gjelder arrangementer\
+      \ for  Arrkom, Koskom, LaBamba, Bedkom og Fagkom.\r\n\r\nProgram:  \r\nTid\t\
+      Aktivitet  \r\n10:30\tAvreise  \r\n14:30\tAnkomst og Lunsj  \r\n15:30\tTeambuilding\
+      \  \r\n18:00\tPause  \r\n18:30\tWorkshop  \r\n21:00\tMiddag  \r\n01:00\tNattmat\
+      \  \r\n09:00\tFrokost  \r\n10:00\tRydding  \r\n11:00\tUtsjekk  \r\n11:30   Avreise\
+      \   \r\n\r\nDet vil bli festligheter og morsomheter i full Abakusstil så det\
+      \ er bare å glede seg!"
+    title: Helgesamling
+  model: events.Event
+  pk: 48
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Velkommen til Abakus årlige generalforsamling! På Abakus' ordinære
+      generalforsamling skal regnskap og årsberetning for 2015 legges frem. Forslag
+      til statuttendringer vil legges frem og det skal velges totalt 6 stillinger.
+    end_time: '2016-03-04T23:59:00+00:00'
+    event_type: 3
+    location: EL5
+    start_time: '2016-03-04T16:15:00+00:00'
+    text: "Viktige dokumenter å gjøre seg kjent med i forkant:  \r\n---------------------------------------------------\r\
+      \n- [Referat fra åpen diskusjonskveld 8. februar](https://abakus.no/uploads/common/diskusjonskveld08022016.pdf)\
+      \  \r\n- [Abakus' statutter](http://statutter.abakus.no/abakus-statutter.pdf)\
+      \  \r\n- [Abakus' fonds statutter](http://statutter.abakus.no/fond-statutter.pdf)\r\
+      \n- [Sakspapirer og dagsorden](https://abakus.no/uploads/common/sakspapirer2016.pdf)\
+      \  \r\n\r\nFor å gjøre Generalforsamlingen så effektiv som mulig ber Hovedstyret\
+      \ om at alle forbereder seg godt til de forskjellige sakene.\r\n\r\nAvstemninger\
+      \ vil som i 2015 gjennomføres ved bruk av [Abakus Vote](https://github.com/webkom/vote).\r\
+      \n\r\nKandidater til valg\r\n------------------\r\n**Fondstyret - Æresmedlem**\
+      \  \r\n\r\n- Marte Berg Innset  \r\n\r\n**Fondstyret - Tidligere økonomiansvarlig\
+      \ i Hovedstyret**  \r\n\r\n- Kristoffer Finckenhagen  \r\n- Thinius Rosé  \r\
+      \n\r\n**Fondstyret - Abakus-medlem**  \r\n\r\n- Vemund Santi\r\n\r\n**Abakus-leder**\
+      \  \r\n\r\n- Gaute Solbu Kleiven  \r\n- Vegard Hellem  \r\n- Henrietta Eide\
+      \ Bleness  \r\n- Stein-Otto Svorstøl  \r\n- Mats Lundell-Nygjelten  \r\n- Thomas\
+      \ Ulvøen\r\n\r\n**Nestleder i Hovedstyret**  \r\n\r\n- Tone Kathrine Ervik Winsnes\
+      \  \r\n- Vegard Hellem  \r\n- Edvard Viggaklev Bakken  \r\n- Tiril Merethe Solberg\
+      \  \r\n\r\n**Økonomiansvarlig i Hovedstyret**  \r\n\r\n- Hege Haavaldsen  \r\
+      \n\r\nGjennomføring av valg\r\n---------------------\r\n**Fondstyret**  \r\n\
+      Kandidatene holder en lukket appell (dvs. andre kandidater får ikke høre på)\
+      \ på opptil 2 minutter. Så gjennomføres en åpen spørsmålsrunde på (3*antall\
+      \ kandidater) minutter der alle kandidatene hører hvert spørsmål og de andre\
+      \ kandidatenes svar. Rekkefølgen på hvem som svarer først går på rullering.\
+      \ Etter dette gjennomføres avstemning der man velges ved alminnelig flertall.\r\
+      \n\r\n**Abakus-leder**  \r\nKandidatene holder en lukket appell på opptil 3\
+      \ minutter. Så gjennomføres en åpen spørsmålsrunde på (3*antall kandidater)\
+      \ minutter der alle kandidatene hører hvert spørsmål og de andre kandidatenes\
+      \ svar. Etter dette holdes en innledende avstemning der kandidaten med færrest\
+      \ antall stemmer fjernes inntil vi enten har en vinner ved alminnelig flertall,\
+      \ eller vi står igjen med tre kandidater. Om vi står igjen med tre kandidater\
+      \ uten at noen allerede har fått alminnelig flertall gjennomføres en åpen debatt\
+      \ i 20 minutter med 2 forhåndsbestemte temaer (se nedenfor) samt mulighet for\
+      \ flere spørsmål fra salen. Etter dette får hver kandidat presentere en 30 sekunders\
+      \ punchline (åpent, alle kandidatene hører hverandre) før vi går til siste avstemning\
+      \ der kandidaten med færrest antall stemmer fjernes inntil vi står igjen med\
+      \ en vinner ved alminnelig flertall.\r\n\r\nTemaer:  \r\n\r\n - Abakus' økonomi\
+      \ - hvordan blir ditt budsjett?  \r\n - Lederens rolle i Abakus  \r\n\r\n**Nestleder,\
+      \ og økonomiansvarlig i Hovedstyret**  \r\nSamme prosess som for Fondstyret,\
+      \ med 30 sekunders åpen punchline mellom spørsmålsrunde og avstemning.\r\n\r\
+      \nLes mer om stillingene til Hovedstyret [her](https://abakus.no/announcement/71/)\
+      \ og Fondsstyret [her](https://abakus.no/announcement/70/).\r\n\r\nDet vil bli\
+      \ servert kake, kaffe, brus og pizza. Mer info kommer. Spørsmål kan sendes til\
+      \ hs@abakus.no Vel møtt!"
+    title: Generalforsamling
+  model: events.Event
+  pk: 49
+- fields:
+    author: 1
+    can_view_groups: [1]
+    description: Vår kjære hovedsamarbeidspartner BEKK inviterer til bedriftspresentasjon.
+      Meld deg på og bli bedre kjent med selskapet!
+    end_time: '2016-03-03T23:00:00+00:00'
+    event_type: 1
+    location: EL6
+    start_time: '2016-03-03T17:00:00+00:00'
+    text: "Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter\
+      \ for store private og offentlige virksomheter innen strategisk rådgivning,\
+      \ utvikling av IT-systemer og design av digitale tjenester. Vi er i dag over\
+      \ 380 fagpersoner.\r\n\r\nVi arbeider innen:\r\n\r\n**MANAGEMENT CONSULTING**\r\
+      \nVirksomheter som evner å skape gode opplevelser for sine kunder er fremtidens\
+      \ vinnere. Bekk Management Consulting hjelper deg til en kundesentrisk tilnærming\
+      \ for å sikre vedvarende konkurransekraft og lønnsomhet. Vår ambisjon er at\
+      \ våre kunder skal være best på sine kunder.\r\n\r\n**TECHNOLOGY CONSULTING**\r\
+      \nMed over 200 systemutviklere, it-arkitekter og prosjektledere er BEKK et av\
+      \ landets største systemutviklingsmiljøer. Stor faglig bredde og et tydelig\
+      \ kvalitetsfokus har gjort oss til foretrukket leverandør når Norges største\
+      \ virksomheter skal utvikle avanserte teknologiløsninger.\r\n\r\n**INTERACTIVE\
+      \ CONSULTING**\r\nBekk Interactive utvikler digitale tjenester for landets mest\
+      \ kjente merkevarer. Vi bryr oss om forretningsmål, konvertering, effekt og\
+      \ målbare resultater. For oss er estetikk og brukeropplevelse en selvfølge og\
+      \ ikke et mål i seg selv, enten vi utvikler for desktop, mobil, nettbrett, infoboards\
+      \ eller tv.\r\n\r\n_Vi vil minne om at registreringen åpner 17.00, ventelisten\
+      \ åpner 17.10 og at arrangementet begynner 17.15._  "
+    title: BEKK
+  model: events.Event
+  pk: 50
+- fields:
+    activation_date: '2016-10-27T17:15:00+00:00'
+    capacity: 10
+    event: 1
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 1
+- fields:
+    activation_date: '2016-10-25T17:00:00+00:00'
+    capacity: 10
+    event: 2
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 2
+- fields:
+    activation_date: '2016-10-13T17:00:00+00:00'
+    capacity: 10
+    event: 3
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 3
+- fields:
+    activation_date: '2016-10-11T17:00:00+00:00'
+    capacity: 10
+    event: 4
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 4
+- fields:
+    activation_date: '2016-10-06T17:00:00+00:00'
+    capacity: 10
+    event: 5
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 5
+- fields:
+    activation_date: '2016-10-04T17:15:00+00:00'
+    capacity: 10
+    event: 6
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 6
+- fields:
+    activation_date: '2016-09-19T17:00:00+00:00'
+    capacity: 10
+    event: 7
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 7
+- fields:
+    activation_date: '2016-09-07T07:00:00+00:00'
+    capacity: 10
+    event: 8
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 8
+- fields:
+    activation_date: '2016-09-09T17:00:00+00:00'
+    capacity: 10
+    event: 9
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 9
+- fields:
+    activation_date: '2016-09-06T17:00:00+00:00'
+    capacity: 10
+    event: 10
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 10
+- fields:
+    activation_date: '2016-09-03T18:00:00+00:00'
+    capacity: 10
+    event: 11
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 11
+- fields:
+    activation_date: '2016-09-01T17:00:00+00:00'
+    capacity: 10
+    event: 12
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 12
+- fields:
+    activation_date: '2016-08-30T17:00:00+00:00'
+    capacity: 10
+    event: 13
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 13
+- fields:
+    activation_date: '2016-07-02T19:00:00+00:00'
+    capacity: 10
+    event: 14
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 14
+- fields:
+    activation_date: '2016-06-11T20:00:00+00:00'
+    capacity: 10
+    event: 15
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 15
+- fields:
+    activation_date: '2016-04-20T13:00:00+00:00'
+    capacity: 10
+    event: 16
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 16
+- fields:
+    activation_date: '2016-04-20T17:15:00+00:00'
+    capacity: 10
+    event: 17
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 17
+- fields:
+    activation_date: '2016-05-20T14:00:00+00:00'
+    capacity: 10
+    event: 18
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 18
+- fields:
+    activation_date: '2016-05-17T09:30:00+00:00'
+    capacity: 10
+    event: 19
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 19
+- fields:
+    activation_date: '2016-05-14T11:00:00+00:00'
+    capacity: 10
+    event: 20
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 20
+- fields:
+    activation_date: '2016-05-09T17:15:00+00:00'
+    capacity: 10
+    event: 21
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 21
+- fields:
+    activation_date: '2016-05-07T10:15:00+00:00'
+    capacity: 10
+    event: 22
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 22
+- fields:
+    activation_date: '2016-04-20T17:15:00+00:00'
+    capacity: 10
+    event: 23
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 23
+- fields:
+    activation_date: '2016-04-29T08:30:00+00:00'
+    capacity: 10
+    event: 24
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 24
+- fields:
+    activation_date: '2016-04-28T12:00:00+00:00'
+    capacity: 10
+    event: 25
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 25
+- fields:
+    activation_date: '2016-04-27T16:00:00+00:00'
+    capacity: 10
+    event: 26
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 26
+- fields:
+    activation_date: '2016-04-25T17:15:00+00:00'
+    capacity: 10
+    event: 27
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 27
+- fields:
+    activation_date: '2016-04-23T18:00:00+00:00'
+    capacity: 10
+    event: 28
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 28
+- fields:
+    activation_date: '2016-04-21T19:00:00+00:00'
+    capacity: 10
+    event: 29
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 29
+- fields:
+    activation_date: '2016-04-18T10:30:00+00:00'
+    capacity: 10
+    event: 30
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 30
+- fields:
+    activation_date: '2016-04-15T19:00:00+00:00'
+    capacity: 10
+    event: 31
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 31
+- fields:
+    activation_date: '2016-04-15T08:00:00+00:00'
+    capacity: 10
+    event: 32
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 32
+- fields:
+    activation_date: '2016-04-14T17:00:00+00:00'
+    capacity: 10
+    event: 33
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 33
+- fields:
+    activation_date: '2016-04-11T17:00:00+00:00'
+    capacity: 10
+    event: 34
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 34
+- fields:
+    activation_date: '2016-04-09T15:00:00+00:00'
+    capacity: 10
+    event: 35
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 35
+- fields:
+    activation_date: '2016-04-07T17:00:00+00:00'
+    capacity: 10
+    event: 36
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 36
+- fields:
+    activation_date: '2016-04-06T16:00:00+00:00'
+    capacity: 10
+    event: 37
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 37
+- fields:
+    activation_date: '2016-04-06T16:00:00+00:00'
+    capacity: 10
+    event: 38
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 38
+- fields:
+    activation_date: '2016-04-05T17:00:00+00:00'
+    capacity: 10
+    event: 39
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 39
+- fields:
+    activation_date: '2016-03-31T19:00:00+00:00'
+    capacity: 10
+    event: 40
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 40
+- fields:
+    activation_date: '2016-03-15T17:15:00+00:00'
+    capacity: 10
+    event: 41
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 41
+- fields:
+    activation_date: '2016-03-13T16:00:00+00:00'
+    capacity: 10
+    event: 42
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 42
+- fields:
+    activation_date: '2016-03-10T17:00:00+00:00'
+    capacity: 10
+    event: 43
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 43
+- fields:
+    activation_date: '2016-03-09T16:00:00+00:00'
+    capacity: 10
+    event: 44
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 44
+- fields:
+    activation_date: '2016-03-09T16:00:00+00:00'
+    capacity: 10
+    event: 45
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 45
+- fields:
+    activation_date: '2016-03-08T17:00:00+00:00'
+    capacity: 10
+    event: 46
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 46
+- fields:
+    activation_date: '2016-03-07T17:15:00+00:00'
+    capacity: 10
+    event: 47
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 47
+- fields:
+    activation_date: '2016-03-05T09:00:00+00:00'
+    capacity: 10
+    event: 48
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 48
+- fields:
+    activation_date: '2016-03-04T16:15:00+00:00'
+    capacity: 10
+    event: 49
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 49
+- fields:
+    activation_date: '2016-03-03T17:00:00+00:00'
+    capacity: 10
+    event: 50
+    name: Abakusmember
+    permission_groups: [1]
+  model: events.Pool
+  pk: 50
+- fields: {event: 1790, pool: 1, registration_date: '2016-10-27T17:15:00+00:00', user: 1}
+  model: events.Registration
+  pk: 1
+- fields: {event: 1777, pool: 2, registration_date: '2016-10-25T17:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 2
+- fields: {event: 1782, pool: 3, registration_date: '2016-10-13T17:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 3
+- fields: {event: 1789, pool: 4, registration_date: '2016-10-11T17:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 4
+- fields: {event: 1786, pool: 5, registration_date: '2016-10-06T17:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 5
+- fields: {event: 1792, pool: 6, registration_date: '2016-10-04T17:15:00+00:00', user: 1}
+  model: events.Registration
+  pk: 6
+- fields: {event: 1775, pool: 7, registration_date: '2016-09-19T17:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 7
+- fields: {event: 1772, pool: 8, registration_date: '2016-09-07T07:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 8
+- fields: {event: 1796, pool: 9, registration_date: '2016-09-09T17:00:00+00:00', user: 1}
+  model: events.Registration
+  pk: 9
+- fields: {event: 1776, pool: 10, registration_date: '2016-09-06T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 10
+- fields: {event: 1767, pool: 11, registration_date: '2016-09-03T18:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 11
+- fields: {event: 1783, pool: 12, registration_date: '2016-09-01T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 12
+- fields: {event: 1779, pool: 13, registration_date: '2016-08-30T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 13
+- fields: {event: 1791, pool: 14, registration_date: '2016-07-02T19:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 14
+- fields: {event: 1771, pool: 15, registration_date: '2016-06-11T20:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 15
+- fields: {event: 1794, pool: 16, registration_date: '2016-04-20T13:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 16
+- fields: {event: 1795, pool: 17, registration_date: '2016-04-20T17:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 17
+- fields: {event: 1788, pool: 18, registration_date: '2016-05-20T14:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 18
+- fields: {event: 1784, pool: 19, registration_date: '2016-05-17T09:30:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 19
+- fields: {event: 1793, pool: 20, registration_date: '2016-05-14T11:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 20
+- fields: {event: 1769, pool: 21, registration_date: '2016-05-09T17:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 21
+- fields: {event: 1781, pool: 22, registration_date: '2016-05-07T10:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 22
+- fields: {event: 1797, pool: 23, registration_date: '2016-04-20T17:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 23
+- fields: {event: 1770, pool: 24, registration_date: '2016-04-29T08:30:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 24
+- fields: {event: 1787, pool: 25, registration_date: '2016-04-28T12:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 25
+- fields: {event: 1766, pool: 26, registration_date: '2016-04-27T16:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 26
+- fields: {event: 1765, pool: 27, registration_date: '2016-04-25T17:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 27
+- fields: {event: 1785, pool: 28, registration_date: '2016-04-23T18:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 28
+- fields: {event: 1748, pool: 29, registration_date: '2016-04-21T19:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 29
+- fields: {event: 1778, pool: 30, registration_date: '2016-04-18T10:30:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 30
+- fields: {event: 1780, pool: 31, registration_date: '2016-04-15T19:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 31
+- fields: {event: 1754, pool: 32, registration_date: '2016-04-15T08:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 32
+- fields: {event: 1735, pool: 33, registration_date: '2016-04-14T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 33
+- fields: {event: 1715, pool: 34, registration_date: '2016-04-11T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 34
+- fields: {event: 1747, pool: 35, registration_date: '2016-04-09T15:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 35
+- fields: {event: 1724, pool: 36, registration_date: '2016-04-07T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 36
+- fields: {event: 1690, pool: 37, registration_date: '2016-04-06T16:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 37
+- fields: {event: 1753, pool: 38, registration_date: '2016-04-06T16:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 38
+- fields: {event: 1773, pool: 39, registration_date: '2016-04-05T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 39
+- fields: {event: 1768, pool: 40, registration_date: '2016-03-31T19:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 40
+- fields: {event: 1727, pool: 41, registration_date: '2016-03-15T17:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 41
+- fields: {event: 1740, pool: 42, registration_date: '2016-03-13T16:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 42
+- fields: {event: 1672, pool: 43, registration_date: '2016-03-10T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 43
+- fields: {event: 1689, pool: 44, registration_date: '2016-03-09T16:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 44
+- fields: {event: 1752, pool: 45, registration_date: '2016-03-09T16:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 45
+- fields: {event: 1734, pool: 46, registration_date: '2016-03-08T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 46
+- fields: {event: 1703, pool: 47, registration_date: '2016-03-07T17:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 47
+- fields: {event: 1696, pool: 48, registration_date: '2016-03-05T09:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 48
+- fields: {event: 1697, pool: 49, registration_date: '2016-03-04T16:15:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 49
+- fields: {event: 1710, pool: 50, registration_date: '2016-03-03T17:00:00+00:00',
+    user: 1}
+  model: events.Registration
+  pk: 50
