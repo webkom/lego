@@ -15,7 +15,7 @@ djangorestframework==3.4.3
 djangorestframework-jwt==1.8.0
 djangorestframework-camel-case==0.2.0
 django-basis==0.4.0
-django-extensions==1.6.7
+django-extensions==1.7.0
 django-autoslug==1.9.3
 django-filter==0.13.0
 django-oauth-toolkit==0.10.0
