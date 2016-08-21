@@ -23,5 +23,5 @@ router.register(r'events/(?P<event_pk>[^/]+)/register',
                 RegistrationViewSet, base_name='register')
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
-router.register(r'search', SearchViewSet, base_name='search')
-router.register(r'autocomplete', AutocompleteViewSet, base_name='autocomplete')
+router.register(r'search/search', SearchViewSet, base_name='search')
+router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomplete')

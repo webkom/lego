@@ -64,5 +64,5 @@ STREAM_REDIS_CONFIG = {
 STATSD_CLIENT = 'django_statsd.clients.toolbar'
 
 ELASTICSEARCH = [
-    {'host': 'localhost'},
+    {'host': '127.0.0.1'},
 ]
