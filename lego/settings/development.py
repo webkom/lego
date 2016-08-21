@@ -2,7 +2,6 @@ from .base import INSTALLED_APPS, MIDDLEWARE_CLASSES
 from .rest_framework import REST_FRAMEWORK
 
 DEBUG = True
-TEMPLATE_DEBUG = True
 DEVELOPMENT = True
 
 SECRET_KEY = 'secret'
@@ -63,3 +62,7 @@ STREAM_REDIS_CONFIG = {
 }
 
 STATSD_CLIENT = 'django_statsd.clients.toolbar'
+
+ELASTICSEARCH = [
+    {'host': '127.0.0.1'},
+]

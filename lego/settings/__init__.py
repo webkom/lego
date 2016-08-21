@@ -5,6 +5,7 @@ TESTING = 'test' in sys.argv[:2]  # Check if manage.py test has been run
 from .base import *  # noqa
 from .lego import *  # noqa
 from .rest_framework import *  # noqa
+from .search import *  # noqa
 from .logging import *  # noqa
 
 if TESTING:

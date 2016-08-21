@@ -14,3 +14,5 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+
+SEARCH_INDEX = 'lego-search'
