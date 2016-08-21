@@ -2,20 +2,20 @@ from django.conf import settings
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
-from .signal_handler import SignalHandler
+from .signal_handler import AsyncSignalHandler
 
-signal_handler = SignalHandler()
+signal_handler = AsyncSignalHandler()
 
 
 @receiver(post_save)
-def post_save_callback(sender, **kwargs):
+def post_save_callback(**kwargs):
     if not settings.TESTING:
         signal_handler.on_save(
-            sender, kwargs.get('instance'), kwargs.get('created'), kwargs.get('update_fields')
+            kwargs.get('instance')
         )
 
 
 @receiver(post_delete)
-def post_delete_callback(sender, **kwargs):
+def post_delete_callback(**kwargs):
     if not settings.TESTING:
-        signal_handler.on_delete(sender, kwargs.get('instance'))
+        signal_handler.on_delete(kwargs.get('instance'))

@@ -51,7 +51,7 @@ class ElasticSearchBackend:
     def _suggest(self, payload):
         return self.connection.suggest(payload, index=settings.SEARCH_INDEX)
 
-    def _create_template(self, name=settings.SEARCH_TEMPLATE_NAME):
+    def create_template(self, name=settings.SEARCH_TEMPLATE_NAME):
         context = {
             'index': settings.SEARCH_INDEX
         }

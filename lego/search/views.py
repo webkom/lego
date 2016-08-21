@@ -1,4 +1,4 @@
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from .search import autocomplete, search
@@ -29,4 +29,7 @@ class AutocompleteViewSet(viewsets.GenericViewSet):
 
         query = serializer.data['query']
 
-        return Response(autocomplete(query, self.request.user))
+        autocomplete_result = autocomplete(query, self.request.user)
+        if autocomplete_result:
+            return Response(autocomplete_result)
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -7,4 +7,4 @@ class Command(BaseCommand):
     help = 'Upload the index-template to Elasticsearch.'
 
     def handle(self, *args, **options):
-        elasticsearch_backend._create_template()
+        elasticsearch_backend.create_template()
