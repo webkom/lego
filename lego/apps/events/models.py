@@ -74,33 +74,38 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         return self.registrations.update_or_create(event=self, user=user,
                                                    defaults={'pool': pool,
-                                                             'unregistration_date': None})[0]
+                                                             'unregistration_date': None,
+                                                             'is_waiting': False})[0]
 
-    def add_to_waiting_pools(self, user, pools):
+    def add_to_waiting_list(self, user):
         """
-        Adds a user to the waiting list, along with what pools the user is waiting for.
+        Adds a user to the waiting list.
 
-        :param pools: Pools that the user is allowed to join, saved for bumping (used in pop).
-        :return: A registration for this waiting list, with `pool=null` and `waiting_pools=pools`
+        :param user: The user that will be registered to the waiting list.
+        :return: A registration for the waiting list, with `pool=null` and `is_waiting=True`
         """
-        registration = self.registrations.get_or_create(event=self, user=user)[0]
-        for pool in pools:
-            registration.waiting_pool.add(pool)
-        return registration
+        return self.registrations.get_or_create(event=self, user=user)[0]
 
-    def pop_from_waiting_pool(self, from_pool=None):
+    def pop_from_waiting_list(self, to_pool=None):
         """
-        Pops the first user in the waiting list that can join `from_pool`.
+        Pops the first user in the waiting list that can join `to_pool`.
         If `from_pool=None`, pops the first user in the waiting list overall.
 
         :param from_pool: The pool we are bumping to. If post-merge, there is no pool.
         :return: The registration that is first in line for said pool.
         """
-        if from_pool:
-            top = self.registrations.filter(waiting_pool__id=from_pool.id).first()
-        else:
-            top = self.waiting_pool_registrations.first()
-        return top
+        if to_pool:
+            permission_groups = to_pool.permission_groups.all()
+            for registration in self.waiting_registrations:
+                for group in registration.user.all_groups:
+                    if group in permission_groups:
+                        return registration
+        return self.waiting_registrations.first()
+
+    def get_possible_pools(self, user):
+        return [pool
+                for pool in self.pools.all()
+                if self.can_register(user, pool)]
 
     def register(self, user):
         """
@@ -129,31 +134,31 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The registration (in the chosen pool)
         """
 
-        possible_pools = [pool
-                          for pool in self.pools.all()
-                          if self.can_register(user, pool)]
+        possible_pools = self.get_possible_pools(user)
         if not possible_pools:
             raise NoAvailablePools()
 
         # If the event is merged or has only one pool we can skip a lot of logic
         if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
             if self.is_full:
-                return self.add_to_waiting_pools(user=user, pools=possible_pools)
+                return self.add_to_waiting_list(user=user)
 
             return self.registrations.update_or_create(event=self, user=user,
                                                        defaults={'pool': possible_pools[0],
-                                                                 'unregistration_date': None})[0]
+                                                                 'unregistration_date': None,
+                                                                 'is_waiting': False})[0]
 
         # Calculates which pools that are full or open for registration based on capacity
         full_pools, open_pools = self.calculate_full_pools(possible_pools)
 
         if not open_pools:
-            return self.add_to_waiting_pools(user=user, pools=full_pools)
+            return self.add_to_waiting_list(user=user)
 
         elif len(open_pools) == 1:
             return self.registrations.update_or_create(event=self, user=user,
                                                        defaults={'pool': open_pools[0],
-                                                                 'unregistration_date': None})[0]
+                                                                 'unregistration_date': None,
+                                                                 'is_waiting': False})[0]
 
         else:
             # Returns a list of the pool(s) with the least amount of potential members
@@ -166,7 +171,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
             return self.registrations.update_or_create(event=self, user=user,
                                                        defaults={'pool': chosen_pool,
-                                                                 'unregistration_date': None})[0]
+                                                                 'unregistration_date': None,
+                                                                 'is_waiting': False})[0]
 
     def unregister(self, user):
         """
@@ -177,13 +183,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration = self.registrations.get(user=user)
         pool = registration.pool
         registration.pool = None
-        registration.waiting_pool.clear()
+        registration.is_waiting = False
         registration.unregistration_date = timezone.now()
         registration.save()
         if pool:
             self.check_for_bump_or_rebalance(pool)
 
-    def check_for_bump_or_rebalance(self,  open_pool):
+    def check_for_bump_or_rebalance(self, open_pool):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
@@ -197,26 +203,31 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.number_of_registrations < self.capacity:
             if self.is_merged:
                 self.bump()
-            elif open_pool.waiting_registrations.count() > 0:
-                self.bump(from_pool=open_pool)
             else:
+                for registration in self.waiting_registrations:
+                    if open_pool in self.get_possible_pools(registration.user):
+                        return self.bump(to_pool=open_pool)
                 self.try_to_rebalance(open_pool=open_pool)
 
-    def bump(self, from_pool=None):
+    def bump(self, to_pool=None):
         """
-        Pops the appropriate user/registration from the waiting list of `from_pool`,
-        and alters the registration to set it's pool.
+        Pops the appropriate registration from the waiting list,
+        and moves the registration from the waiting list to `to pool`.
 
-        :param from_pool: A pool with a free slot. If the event is merged, this will be null.
+        :param to_pool: A pool with a free slot. If the event is merged, this will be null.
         """
-        if self.waiting_pool_registrations.count() > 0:
-            top = self.pop_from_waiting_pool(from_pool=from_pool)
-            if from_pool:
-                pool = top.waiting_pool.filter(id=from_pool.id)
-                top.pool = pool[0]
+        if self.waiting_registrations.count() > 0:
+            if to_pool:
+                top = self.pop_from_waiting_list(to_pool)
+                top.pool = to_pool
             else:
-                top.pool = top.waiting_pool.first()
-            top.waiting_pool.clear()
+                top = self.pop_from_waiting_list()
+
+                for pool in self.pools.all():
+                    if pool in self.get_possible_pools(top.user):
+                        top.pool = pool
+                        break
+            top.is_waiting = False
             top.unregistration_date = None
             top.save()
 
@@ -250,12 +261,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def number_of_registrations(self):
-        return self.registrations.filter(waiting_pool=None,
+        return self.registrations.filter(is_waiting=False,
                                          unregistration_date=None).count()
 
     @property
-    def waiting_pool_registrations(self):
-        return self.registrations.filter(pool=None).exclude(waiting_pool=None)
+    def waiting_registrations(self):
+        return self.registrations.filter(pool=None, is_waiting=True)
 
     def calculate_full_pools(self, pools):
         full_pools = []
@@ -284,37 +295,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         capacities = [pool.capacity for pool in pools]
         return pools[capacities.index(max(capacities))]
 
-    def get_number_of_pools_with_waiting_list(self):
-        counter = 0
-        for pool in self.pools.all():
-            if pool.waiting_registrations.count() > 0:
-                counter += 1
-        return counter
-
-    def get_top_of_waiting_list(self, pools_to_balance=None):
-        """
-        Pulls the first X registrations that are waiting, until
-        all pools that have waiting registrations are covered by
-        their `waiting_pool`.
-
-        :return: The top X waiting users.
-        """
-        if not pools_to_balance:
-            pools_to_balance = self.get_number_of_pools_with_waiting_list()
-
-        top_of_waiting_list, covered_pools = [], []
-        for waiting_registration in self.waiting_pool_registrations:
-            covered = False
-            for pool in waiting_registration.waiting_pool.all():
-                if pool not in covered_pools:
-                    covered = True
-                    covered_pools.append(pool)
-            if covered:
-                top_of_waiting_list.append(waiting_registration)
-            if len(covered_pools) == pools_to_balance:
-                break
-        return top_of_waiting_list
-
     def rebalance_pool(self, from_pool, to_pool):
         """
         Iterates over registrations in a full pool, and checks
@@ -336,7 +316,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if moveable:
                 old_registration.pool = to_pool
                 old_registration.save()
-                self.bump(from_pool=from_pool)
+                self.bump(to_pool=from_pool)
                 bumped = True
         return bumped
 
@@ -348,23 +328,18 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         :param open_pool: The pool where the unregistration happened.
         """
-        pools_to_balance = self.get_number_of_pools_with_waiting_list()
-        top_waiting_registrations = self.get_top_of_waiting_list(pools_to_balance=pools_to_balance)
-
         balanced_pools = []
         bumped = False
 
-        for waiting_registration in top_waiting_registrations:
-            for full_pool in waiting_registration.waiting_pool.all():
+        for waiting_registration in self.waiting_registrations:
+            for full_pool in self.get_possible_pools(waiting_registration.user):
 
                 if full_pool not in balanced_pools:
                     balanced_pools.append(full_pool)
                     bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)
 
                 if bumped:
-                    break
-            if len(balanced_pools) == pools_to_balance or bumped:
-                break
+                    return
 
 
 class Pool(BasisModel):
@@ -380,7 +355,7 @@ class Pool(BasisModel):
 
     @property
     def number_of_registrations(self):
-        return self.registrations.count()
+        return self.registrations.filter(is_waiting=False).count()
 
     @property
     def is_full(self):
@@ -397,7 +372,7 @@ class Registration(BasisModel):
     user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
-    waiting_pool = models.ManyToManyField(Pool, null=True, related_name='waiting_registrations')
+    is_waiting = models.BooleanField(default=True)
     registration_date = models.DateTimeField(auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
 
