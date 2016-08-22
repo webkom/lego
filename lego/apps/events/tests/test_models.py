@@ -435,28 +435,20 @@ class RegistrationTestCase(TestCase):
         self.assertLessEqual(event.number_of_registrations, event.capacity)
 
     def test_unregistering_and_bumping_post_merge(self):
-        event = Event.objects.get(title='NO_POOLS_ABAKUS')
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         event.merge_time = timezone.now() - timedelta(hours=24)
-        permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
-        permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
+        pool_one = event.pools.get(name='Abakusmember')
+        pool_two = event.pools.get(name='Webkom')
 
-        pool_one = Pool.objects.create(
-            name='Abakus', capacity=1, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
-        pool_one.permission_groups = permission_groups_one
+        users = get_dummy_users(6)
+        abakus_users = users[:3]
+        webkom_users = users[3:5]
+        abakus_users.append(users[5])
 
-        pool_two = Pool.objects.create(
-            name='Webkom', capacity=1, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
-        pool_two.permission_groups = permission_groups_two
-
-        users = get_dummy_users(3)
-        user_three = users.pop()
-        for user in users:
+        for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-        AbakusGroup.objects.get(name='Webkom').add_user(user_three)
-
-        event.register(user=user_three)
+        for user in webkom_users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         for user in users:
             event.register(user=user)
@@ -466,7 +458,7 @@ class RegistrationTestCase(TestCase):
         pool_one_size_before = pool_one.number_of_registrations
         pool_two_size_before = pool_two.number_of_registrations
 
-        user_to_unregister = event.registrations.first().user
+        user_to_unregister = pool_two.registrations.get(user=webkom_users[0]).user
 
         event.unregister(user_to_unregister)
 
