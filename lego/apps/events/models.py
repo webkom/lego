@@ -217,14 +217,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param to_pool: A pool with a free slot. If the event is merged, this will be null.
         """
         if self.waiting_registrations.count() > 0:
+            top = self.pop_from_waiting_list(to_pool)
             if to_pool:
-                top = self.pop_from_waiting_list(to_pool)
                 top.pool = to_pool
             else:
-                top = self.pop_from_waiting_list()
-
+                possible_pools = self.get_possible_pools(top.user)
                 for pool in self.pools.all():
-                    if pool in self.get_possible_pools(top.user):
+                    if pool in possible_pools:
                         top.pool = pool
                         break
             top.is_waiting = False
@@ -355,7 +354,7 @@ class Pool(BasisModel):
 
     @property
     def number_of_registrations(self):
-        return self.registrations.filter(is_waiting=False).count()
+        return self.registrations.count()
 
     @property
     def is_full(self):
