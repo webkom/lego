@@ -26,7 +26,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         verbose_name='permissions', default=list
     )
 
-    objects = AbakusGroupManager()
+    group_objects = AbakusGroupManager()
 
     def __str__(self):
         return self.name
@@ -119,6 +119,8 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
+
+    backend = 'lego.permissions.backends.AbakusPermissionBackend'
 
     def get_full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name).strip()

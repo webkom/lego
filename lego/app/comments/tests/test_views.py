@@ -17,7 +17,7 @@ def _get_detail_url(pk):
 
 class CreateCommentsAPITestCase(APITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml'
     ]
 
     def setUp(self):
@@ -194,10 +194,17 @@ class CreateCommentsAPITestCase(APITestCase):
 
 class UpdateCommentsAPITestCase(APITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
     ]
 
     def setUp(self):
+        Comment.objects.create(
+            created_by_id=4, text='first comment', content_object=Article.objects.get(id=1)
+        )
+        Comment.objects.create(
+            created_by_id=3, text='second comment', content_object=Article.objects.get(id=2)
+        )
+
         self.all_comments = Comment.objects.all()
         self.all_users = User.objects.all()
         self.with_permission = self.all_users.get(username='useradmin_test')
@@ -250,18 +257,23 @@ class UpdateCommentsAPITestCase(APITestCase):
 
 class DeleteUsersAPITestCase(APITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml'
     ]
 
     def setUp(self):
+        self.test_comment = Comment.objects.create(
+            created_by_id=4, text='first comment', content_object=Article.objects.get(id=1)
+        )
+        self.test_comment_2 = Comment.objects.create(
+            created_by_id=3, text='second comment', content_object=Article.objects.get(id=2)
+        )
+
         self.all_comments = Comment.objects.all()
         self.all_users = User.objects.all()
         self.with_permission = self.all_users.get(username='useradmin_test')
         self.comments_test_group = AbakusGroup.objects.get(name='CommentTest')
         self.comments_test_group.add_user(self.with_permission)
         self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
-        self.test_comment = Comment.objects.get(pk=1)
-        self.test_comment_2 = Comment.objects.get(pk=2)
 
     def successful_delete(self, user):
         self.client.force_authenticate(user=user)
@@ -273,10 +285,7 @@ class DeleteUsersAPITestCase(APITestCase):
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.delete(_get_detail_url(self.test_comment_2.pk))
-        comments = User.objects.filter(pk=self.test_comment_2.pk)
-
         self.assertEqual(response.status_code, 403)
-        self.assertTrue(len(comments))
 
     def test_with_owner(self):
         self.successful_delete(self.test_comment.created_by)
