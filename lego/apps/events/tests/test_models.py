@@ -437,6 +437,7 @@ class RegistrationTestCase(TestCase):
     def test_unregistering_and_bumping_post_merge(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         event.merge_time = timezone.now() - timedelta(hours=24)
+        event.save()
         pool_one = event.pools.get(name='Abakusmember')
         pool_two = event.pools.get(name='Webkom')
 
