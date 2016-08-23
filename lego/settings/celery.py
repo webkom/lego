@@ -2,8 +2,10 @@ from __future__ import absolute_import
 
 import os
 
-import celery
-from django.conf import settings
+import celery  # noqa
+from django.conf import settings  # noqa
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
 
 
 class Celery(celery.Celery):
@@ -20,8 +22,6 @@ class Celery(celery.Celery):
         # hook into the Celery error handler
         register_signal(client)
 
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
 
 app = celery.Celery('lego')
 
@@ -43,4 +43,5 @@ app.conf.update(
     CELERY_PREFETCH_MULTIPLIER=2,
     CELERYD_HIJACK_ROOT_LOGGER=False,
     CELERY_REDIRECT_STDOUTS=False,
+    CELERY_ACCEPT_CONTENT=['pickle', 'json']
 )

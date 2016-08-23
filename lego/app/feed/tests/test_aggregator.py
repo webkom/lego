@@ -10,8 +10,7 @@ from lego.users.models import User
 
 class AggregatorTestCase(TestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
-                'test_comments.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.user = User.objects.get(id=1)
