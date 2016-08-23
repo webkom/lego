@@ -16,7 +16,7 @@ class AbakusGroupTestCase(TestCase):
         self.assertFalse(self.non_committee.is_committee)
 
     def test_natural_key(self):
-        found_group = AbakusGroup.objects.get_by_natural_key(self.non_committee.name)
+        found_group = AbakusGroup.group_objects.get_by_natural_key(self.non_committee.name)
         self.assertEqual(self.non_committee, found_group)
 
 

@@ -19,7 +19,6 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
-    'djcelery',
     'mptt',
 
     'lego.users',
@@ -67,7 +66,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

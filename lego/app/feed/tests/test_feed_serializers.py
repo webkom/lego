@@ -12,13 +12,14 @@ from lego.users.models import User
 
 class FeedActivitySerializerTestCase(TestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
-                'test_comments.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.user = User.objects.get(id=1)
         self.article = Article.objects.get(id=2)
-        self.comment = Comment.objects.filter(content_type=21, object_id=self.article.id).first()
+        self.comment = Comment.objects.create(
+            content_object=self.article, created_by=self.user, text='comment'
+        )
 
         self.activity = FeedActivity(
             actor=self.user,

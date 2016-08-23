@@ -9,6 +9,7 @@ class AbakusPermissionBackend:
 
     authenticate = ModelBackend.authenticate
     get_user = ModelBackend.get_user
+    user_can_authenticate = ModelBackend.user_can_authenticate
 
     def get_group_permissions(self, user_obj, obj=None):
         if user_obj.is_anonymous() or obj is not None:

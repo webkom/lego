@@ -5,8 +5,6 @@ DEBUG = False
 
 SECRET_KEY = 'secret'
 
-TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DATABASES = {
@@ -46,3 +44,5 @@ STATSD_CELERY_SIGNALS = False
 ELASTICSEARCH = [
     {'host': 'localhost'},
 ]
+
+CELERY_ALWAYS_EAGER = True

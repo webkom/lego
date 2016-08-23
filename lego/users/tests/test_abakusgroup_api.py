@@ -236,7 +236,8 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
         response = self.client.delete(_get_detail_url(self.test_group.pk))
 
         self.assertEqual(response.status_code, 204)
-        self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get, pk=self.test_group.pk)
+        self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.group_objects.get,
+                          pk=self.test_group.pk)
 
     def test_without_auth(self):
         response = self.client.delete(_get_detail_url(self.test_group.pk))
