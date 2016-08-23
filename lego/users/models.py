@@ -71,6 +71,14 @@ class PermissionsMixin(models.Model):
         return '/sudo/' in self.get_all_permissions()
     is_staff = is_superuser
 
+    @property
+    def is_abakus_member(self):
+        return 'Abakus' in [group.name for group in self.all_groups]
+
+    @property
+    def is_abakom_member(self):
+        return bool(filter(lambda group: group.is_committee, self.all_groups))
+
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
     has_module_perms = DjangoPermissionMixin.has_module_perms

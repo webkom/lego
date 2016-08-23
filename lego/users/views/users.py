@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from lego.users.models import User
 from lego.users.permissions import UsersPermissions
-from lego.users.serializers import DetailedUserSerializer, UserSerializer
+from lego.users.serializers import MeSerializer, UserSerializer
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -16,5 +16,5 @@ class UsersViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['GET'], permission_classes=[IsAuthenticated])
     def me(self, request):
-        serializer = DetailedUserSerializer(request.user)
+        serializer = MeSerializer(request.user)
         return Response(serializer.data)
