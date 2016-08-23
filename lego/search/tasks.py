@@ -1,4 +1,4 @@
-from lego.settings import celery_app
+from lego import celery_app
 
 from .registry import get_model_index
 

@@ -15,5 +15,3 @@ else:
         from .local import *  # noqa
     except ImportError as e:
         raise ImportError("Couldn't load local settings lego.settings.local")
-
-from .celery import app as celery_app  # noqa
