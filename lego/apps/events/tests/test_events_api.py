@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, User
 
 _test_event_data = [
@@ -72,8 +72,13 @@ def _get_pools_detail_url(event_pk, pool_pk):
                                                  'pk': pool_pk})
 
 
-def _get_register_list_url(event_pk):
-    return reverse('api:v1:register-list', kwargs={'event_pk': event_pk})
+def _get_registrations_list_url(event_pk):
+    return reverse('api:v1:registrations-list', kwargs={'event_pk': event_pk})
+
+
+def _get_registrations_detail_url(event_pk, registration_pk):
+    return reverse('api:v1:registrations-detail', kwargs={'event_pk': event_pk,
+                                                          'pk': registration_pk})
 
 
 class ListEventsTestCase(APITestCase):
@@ -190,13 +195,28 @@ class CreateRegistrationsTestCase(APITestCase):
 
     def test_create(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        registration_response = self.client.post(_get_register_list_url(event.id), {})
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 201)
 
     def test_register_no_pools(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
-        registration_response = self.client.post(_get_register_list_url(event.id), {})
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 400)
+
+    def test_unregister(self):
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        registration = Registration.objects.get(user=self.abakus_user, event=event)
+        registration_response = self.client.delete(_get_registrations_detail_url(event.id,
+                                                                                 registration.id))
+        self.assertEqual(registration_response.status_code, 204)
+
+    def test_unregister_multiple_times(self):
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        registration = Registration.objects.get(user=self.abakus_user, event=event)
+        self.client.delete(_get_registrations_detail_url(event.id, registration.id))
+        registration_response = self.client.delete(_get_registrations_detail_url(event.id,
+                                                                                 registration.id))
+        self.assertEqual(registration_response.status_code, 204)
 
 
 class ListRegistrationsTestCase(APITestCase):
