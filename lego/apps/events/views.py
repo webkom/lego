@@ -53,3 +53,6 @@ class RegistrationViewSet(viewsets.ModelViewSet):
             return Registration.objects.filter(event=event_id, pool=pool_id)
         elif event_id:
             return Registration.objects.filter(event=event_id)
+
+    def perform_destroy(self, instance):
+        instance.event.unregister(instance.user)
