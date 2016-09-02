@@ -342,13 +342,15 @@ class Pool(BasisModel):
     activation_date = models.DateTimeField()
     permission_groups = models.ManyToManyField(AbakusGroup)
 
-    @property
-    def number_of_registrations(self):
-        return self.registrations.count()
+    def delete(self, using=None, force=False):
+        if self.registrations.count() == 0:
+            super().delete()
+        else:
+            raise ValueError
 
     @property
     def is_full(self):
-        return self.number_of_registrations >= self.capacity
+        return self.registrations.count() >= self.capacity
 
     def __str__(self):
         return self.name

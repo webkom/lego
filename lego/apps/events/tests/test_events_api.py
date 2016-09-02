@@ -210,14 +210,6 @@ class CreateRegistrationsTestCase(APITestCase):
                                                                                  registration.id))
         self.assertEqual(registration_response.status_code, 204)
 
-    def test_unregister_multiple_times(self):
-        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
-        registration = Registration.objects.get(user=self.abakus_user, event=event)
-        self.client.delete(_get_registrations_detail_url(event.id, registration.id))
-        registration_response = self.client.delete(_get_registrations_detail_url(event.id,
-                                                                                 registration.id))
-        self.assertEqual(registration_response.status_code, 204)
-
 
 class ListRegistrationsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
