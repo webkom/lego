@@ -74,15 +74,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         return self.registrations.update_or_create(event=self, user=user,
                                                    defaults={'pool': pool,
-                                                             'unregistration_date': None,
-                                                             'is_waiting': False})[0]
+                                                             'unregistration_date': None})[0]
 
     def add_to_waiting_list(self, user):
         """
         Adds a user to the waiting list.
 
         :param user: The user that will be registered to the waiting list.
-        :return: A registration for the waiting list, with `pool=null` and `is_waiting=True`
+        :return: A registration for the waiting list, with `pool=null`
         """
         return self.registrations.get_or_create(event=self, user=user)[0]
 
@@ -143,8 +142,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
             return self.registrations.update_or_create(event=self, user=user,
                                                        defaults={'pool': possible_pools[0],
-                                                                 'unregistration_date': None,
-                                                                 'is_waiting': False})[0]
+                                                                 'unregistration_date': None})[0]
 
         # Calculates which pools that are full or open for registration based on capacity
         full_pools, open_pools = self.calculate_full_pools(possible_pools)
@@ -155,8 +153,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         elif len(open_pools) == 1:
             return self.registrations.update_or_create(event=self, user=user,
                                                        defaults={'pool': open_pools[0],
-                                                                 'unregistration_date': None,
-                                                                 'is_waiting': False})[0]
+                                                                 'unregistration_date': None})[0]
 
         else:
             # Returns a list of the pool(s) with the least amount of potential members
@@ -169,8 +166,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
             return self.registrations.update_or_create(event=self, user=user,
                                                        defaults={'pool': chosen_pool,
-                                                                 'unregistration_date': None,
-                                                                 'is_waiting': False})[0]
+                                                                 'unregistration_date': None})[0]
 
     def unregister(self, user):
         """
@@ -181,7 +177,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration = self.registrations.get(user=user)
         pool = registration.pool
         registration.pool = None
-        registration.is_waiting = False
         registration.unregistration_date = timezone.now()
         registration.save()
         if pool:
@@ -223,7 +218,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     if self.can_register(top.user, pool):
                         top.pool = pool
                         break
-            top.is_waiting = False
             top.unregistration_date = None
             top.save()
 
@@ -257,12 +251,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def number_of_registrations(self):
-        return self.registrations.filter(is_waiting=False,
-                                         unregistration_date=None).count()
+        return self.registrations.filter(unregistration_date=None).exclude(pool=None).count()
 
     @property
     def waiting_registrations(self):
-        return self.registrations.filter(pool=None, is_waiting=True)
+        return self.registrations.filter(pool=None, unregistration_date=None)
 
     def calculate_full_pools(self, pools):
         full_pools = []
@@ -368,7 +361,6 @@ class Registration(BasisModel):
     user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
-    is_waiting = models.BooleanField(default=True)
     registration_date = models.DateTimeField(auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
 
