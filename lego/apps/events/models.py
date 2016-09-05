@@ -342,11 +342,11 @@ class Pool(BasisModel):
     activation_date = models.DateTimeField()
     permission_groups = models.ManyToManyField(AbakusGroup)
 
-    def delete(self, using=None, force=False):
-        if self.registrations.count() == 0:
-            super().delete()
+    def delete(self, *args, **kwargs):
+        if self.registrations.exist():
+            super().delete(*args, **kwargs)
         else:
-            raise ValueError
+            raise ValueError('Registrations exist in Pool')
 
     @property
     def is_full(self):
