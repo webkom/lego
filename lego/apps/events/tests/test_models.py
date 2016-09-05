@@ -105,7 +105,7 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
         event.register(user=user)
-        self.assertEqual(pool.number_of_registrations, event.number_of_registrations)
+        self.assertEqual(pool.registrations.count(), event.number_of_registrations)
 
     def test_can_register_to_single_open_pool(self):
         users = get_dummy_users(10)
@@ -123,8 +123,8 @@ class RegistrationTestCase(TestCase):
         for user in webkom_users:
             event.register(user=user)
 
-        self.assertEqual(pool_one.number_of_registrations, 2)
-        self.assertEqual(pool_two.number_of_registrations, 2)
+        self.assertEqual(pool_one.registrations.count(), 2)
+        self.assertEqual(pool_two.registrations.count(), 2)
         self.assertEqual(event.number_of_registrations, 4)
 
     def test_can_register_with_automatic_pool_selection(self):
@@ -135,8 +135,8 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
         event.register(user=user)
-        self.assertEqual(pool.number_of_registrations, 1)
-        self.assertEqual(pool_2.number_of_registrations, 0)
+        self.assertEqual(pool.registrations.count(), 1)
+        self.assertEqual(pool_2.registrations.count(), 0)
 
     def test_registration_picks_correct_pool(self):
         users = get_dummy_users(15)
@@ -154,13 +154,13 @@ class RegistrationTestCase(TestCase):
 
         event.register(user=webkom_users[0])
 
-        self.assertEqual(pool.number_of_registrations, 0)
-        self.assertEqual(pool_2.number_of_registrations, 1)
+        self.assertEqual(pool.registrations.count(), 0)
+        self.assertEqual(pool_2.registrations.count(), 1)
 
         event.register(user=webkom_users[1])
         event.register(user=abakus_users[0])
-        self.assertEqual(pool.number_of_registrations, 1)
-        self.assertEqual(pool_2.number_of_registrations, 2)
+        self.assertEqual(pool.registrations.count(), 1)
+        self.assertEqual(pool_2.registrations.count(), 2)
 
     def test_no_duplicate_registrations(self):
         users = get_dummy_users(2)
@@ -169,7 +169,7 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.get(id=4)
         AbakusGroup.objects.get(name='Webkom').add_user(user_1)
         AbakusGroup.objects.get(name='Abakus').add_user(user_2)
-        self.assertEqual(pool.number_of_registrations, 0)
+        self.assertEqual(pool.registrations.count(), 0)
 
         event.register(user=user_1)
         pool_two = Pool.objects.create(name='test', capacity=1, event=event,
@@ -178,8 +178,8 @@ class RegistrationTestCase(TestCase):
             event.register(user=user_1)
 
         self.assertEqual(event.number_of_registrations, 1)
-        self.assertEqual(pool.number_of_registrations, 1)
-        self.assertEqual(pool_two.number_of_registrations, 0)
+        self.assertEqual(pool.registrations.count(), 1)
+        self.assertEqual(pool_two.registrations.count(), 0)
 
     def test_can_not_register_pre_activation(self):
         user = get_dummy_users(1)[0]
@@ -204,9 +204,9 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Abakus').add_user(user)
             event.register(user=user)
 
-        self.assertEqual(event.waiting_registrations.count(), people_2_place_in_waiting_list)
-        self.assertEqual(pool.number_of_registrations, pool.capacity)
-        self.assertEqual(event.number_of_registrations, pool.number_of_registrations)
+        self.assertEqual(event.waiting_pool_registrations.count(), people_2_place_in_waiting_list)
+        self.assertEqual(pool.registrations.count(), pool.capacity)
+        self.assertEqual(event.number_of_registrations, pool.registrations.count())
 
     def test_number_of_waiting_registrations(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -231,11 +231,11 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(user_two)
 
         event.register(user=user_one)
-        n_registrants = pool_one.number_of_registrations
-        self.assertEqual(pool_one.number_of_registrations, event.number_of_registrations)
+        n_registrants = pool_one.registrations.count()
+        self.assertEqual(pool_one.registrations.count(), event.number_of_registrations)
 
         event.register(user=user_two)
-        n_registrants += pool_two.number_of_registrations
+        n_registrants += pool_two.registrations.count()
         self.assertEqual(n_registrants, event.number_of_registrations)
 
     def test_can_register_post_merge(self):
@@ -263,9 +263,9 @@ class RegistrationTestCase(TestCase):
             permission_groups_two[0].add_user(user)
             event.register(user=user)
 
-        registrations = pool_one.number_of_registrations + pool_two.number_of_registrations
-        self.assertEqual(pool_one.number_of_registrations, 2)
-        self.assertEqual(pool_two.number_of_registrations, 1)
+        registrations = pool_one.registrations.count() + pool_two.registrations.count()
+        self.assertEqual(pool_one.registrations.count(), 2)
+        self.assertEqual(pool_two.registrations.count(), 1)
         self.assertEqual(registrations, event.number_of_registrations)
 
     def test_can_only_register_with_correct_permission_group(self):
@@ -284,7 +284,7 @@ class RegistrationTestCase(TestCase):
         with self.assertRaises(NoAvailablePools):
             event.register(user=user)
 
-        self.assertEqual(pool.number_of_registrations, 0)
+        self.assertEqual(pool.registrations.count(), 0)
 
     def test_placed_in_waiting_list_post_merge(self):
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
@@ -314,14 +314,14 @@ class RegistrationTestCase(TestCase):
 
         waiting_list_before = event.waiting_registrations.count()
         regs_before = event.number_of_registrations
-        pool_before = pool.number_of_registrations
+        pool_before = pool.registrations.count()
 
         event.bump(to_pool=pool)
 
         self.assertEqual(event.number_of_registrations, regs_before + 1)
-        self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
-        self.assertEqual(event.waiting_registrations.first().user, users[4])
-        self.assertEqual(pool.number_of_registrations, pool_before + 1)
+        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before - 1)
+        self.assertEqual(event.waiting_pool_registrations.first().user, users[4])
+        self.assertEqual(pool.registrations.count(), pool_before + 1)
 
     def test_unregistering_from_event(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -333,11 +333,11 @@ class RegistrationTestCase(TestCase):
 
         event.register(user=users[0])
         registrations_before = event.number_of_registrations
-        pool_registrations_before = pool.number_of_registrations
+        pool_registrations_before = pool.registrations.count()
         event.unregister(users[0])
 
         self.assertEqual(event.number_of_registrations, registrations_before - 1)
-        self.assertEqual(pool.number_of_registrations, pool_registrations_before - 1)
+        self.assertEqual(pool.registrations.count(), pool_registrations_before - 1)
 
     def test_register_after_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
@@ -403,14 +403,14 @@ class RegistrationTestCase(TestCase):
             event.register(user=user)
 
         event_size_before = event.number_of_registrations
-        pool_size_before = pool.number_of_registrations
-        waiting_list_before = event.waiting_registrations.count()
+        pool_size_before = pool.registrations.count()
+        waiting_list_before = event.waiting_pool_registrations.count()
 
         event.unregister(users[-1])
 
         self.assertEqual(event.number_of_registrations, event_size_before)
-        self.assertEqual(pool.number_of_registrations, pool_size_before)
-        self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
+        self.assertEqual(pool.registrations.count(), pool_size_before)
+        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.capacity)
 
     def test_unregistering_and_bumping(self):
@@ -424,12 +424,12 @@ class RegistrationTestCase(TestCase):
 
         waiting_list_before = event.waiting_registrations.count()
         event_size_before = event.number_of_registrations
-        pool_size_before = pool.number_of_registrations
+        pool_size_before = pool.registrations.count()
 
         user_to_unregister = event.registrations.first().user
         event.unregister(user_to_unregister)
 
-        self.assertEqual(pool.number_of_registrations, pool_size_before)
+        self.assertEqual(pool.registrations.count(), pool_size_before)
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.capacity)
@@ -456,18 +456,18 @@ class RegistrationTestCase(TestCase):
 
         waiting_list_before = event.waiting_registrations.count()
         event_size_before = event.number_of_registrations
-        pool_one_size_before = pool_one.number_of_registrations
-        pool_two_size_before = pool_two.number_of_registrations
+        pool_one_size_before = pool_one.registrations.count()
+        pool_two_size_before = pool_two.registrations.count()
 
         user_to_unregister = pool_two.registrations.get(user=webkom_users[0]).user
 
         event.unregister(user_to_unregister)
 
         self.assertEqual(event.number_of_registrations, event_size_before)
-        self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
-        self.assertEqual(pool_one.number_of_registrations, pool_one_size_before + 1)
-        self.assertGreater(pool_one.number_of_registrations, pool_one.capacity)
-        self.assertEqual(pool_two.number_of_registrations, pool_two_size_before - 1)
+        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before - 1)
+        self.assertEqual(pool_one.registrations.count(), pool_one_size_before + 1)
+        self.assertGreater(pool_one.registrations.count(), pool_one.capacity)
+        self.assertEqual(pool_two.registrations.count(), pool_two_size_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.capacity)
 
     def test_bumping_when_bumped_has_several_pools_available(self):
@@ -477,22 +477,22 @@ class RegistrationTestCase(TestCase):
         pre_reg = event.registrations.first().user
         pool = event.pools.get(name='Webkom')
 
-        pool_registrations_before = pool.number_of_registrations
-        waiting_list_before = event.waiting_registrations.count()
+        pool_registrations_before = pool.registrations.count()
+        waiting_list_before = event.waiting_pool_registrations.count()
         number_of_registered_before = event.number_of_registrations
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
             event.register(user=user)
 
-        self.assertEqual(pool.number_of_registrations, pool_registrations_before + 3)
-        self.assertEqual(event.waiting_registrations.count(), waiting_list_before + 1)
+        self.assertEqual(pool.registrations.count(), pool_registrations_before + 3)
+        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before + 1)
         self.assertEqual(event.number_of_registrations, number_of_registered_before + 3)
 
         event.unregister(user=pre_reg)
 
-        self.assertEqual(pool.number_of_registrations, pool_registrations_before + 3)
-        self.assertEqual(event.waiting_registrations.count(), waiting_list_before)
+        self.assertEqual(pool.registrations.count(), pool_registrations_before + 3)
+        self.assertEqual(event.waiting_pool_registrations.count(), waiting_list_before)
         self.assertEqual(event.number_of_registrations, number_of_registered_before + 3)
 
         event.unregister(user=user_0)
