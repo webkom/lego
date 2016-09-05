@@ -1,29 +1,26 @@
-# LEGO Er Ganske Oppdelt
-[![Build status](https://ci.frigg.io/badges/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/)
-[![Coverage status](https://ci.frigg.io/badges/coverage/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/)
+# LEGO [![Build status](https://ci.frigg.io/badges/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/) [![Coverage status](https://ci.frigg.io/badges/coverage/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/)
 
-[Waffle](https://waffle.io/webkom/lego)
+> LEGO Er Ganske Oppdelt
 
-Noob guide for setting up LEGO: 
-https://github.com/webkom/lego/wiki/Noob-Guide
+We use [Waffle](https://waffle.io/webkom/lego) for simple project management.
 
-```bash
-$ make
-  development - install dev requirements, setup local.py and run migrations
-  venv        - create virtualenv venv-folder
-  production  - deploy production (used by chewie)
-```
+[Noob guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide)
 
-## Development
+## Getting started
 
-### Mac
+LEGO requires python3, virtualenv, docker and docker-compose. Services like Postgres, Redis and
+Elasticsearch runs in docker.
 
-Requires [Homebrew](http://brew.sh/).
 
 ```bash
-brew update
-brew install python3 postgresql
-make venv # Or create a virtualenv your preferred way
-make development
-source venv/bin/activate
+    git clone git@github.com:webkom/lego.git && cd lego/
+    virtualenv venv -p python3
+    source venv/bin/activate
+    docker-compose up
+    python manage.py migrate
+    python manage.py runserver
 ```
+
+We recommend Pycharm for development, use your @stud.ntnu.no email to register a free professional
+account.
+
