@@ -21,24 +21,24 @@ INSTALLED_APPS = [
     'corsheaders',
     'mptt',
 
-    'lego.users',
     'lego.utils',
-    'lego.permissions',
-    'lego.search',
 
-    'lego.app.oauth',
-    'lego.app.articles',
-    'lego.app.content',
-    'lego.app.events',
-    'lego.app.feed',
-    'lego.app.flatpages',
-    'lego.app.comments',
+    'lego.apps.users',
+    'lego.apps.permissions',
+    'lego.apps.articles',
+    'lego.apps.comments',
+    'lego.apps.content',
+    'lego.apps.events',
+    'lego.apps.feed',
+    'lego.apps.flatpages',
+    'lego.apps.oauth',
+    'lego.apps.search',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
-    'lego.permissions.backends.AbakusPermissionBackend',
+    'lego.apps.permissions.backends.AbakusPermissionBackend',
     'oauth2_provider.backends.OAuth2Backend',
 )
 LOGIN_URL = '/authorization/login/'

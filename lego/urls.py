@@ -9,7 +9,7 @@ jwt_urlpatterns = [
 ]
 
 authorization_urlpatterns = [
-    url(r'^oauth2/', include('lego.app.oauth.urls', namespace='oauth2_provider')),
+    url(r'^oauth2/', include('lego.apps.oauth.urls', namespace='oauth2_provider')),
     url(r'', include(jwt_urlpatterns, namespace='jwt')),
     url(r'^login/', login, {'template_name': 'authorization/login.html'}, name='login'),
     url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
