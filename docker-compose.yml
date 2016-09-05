@@ -5,6 +5,7 @@ services:
     image: 'elasticsearch:2.3'
     ports:
      - '127.0.0.1:9200:9200'
+
   kibana:
     image: 'kibana:4'
     ports:
@@ -12,3 +13,14 @@ services:
     links:
       - elasticsearch
 
+  postgres:
+    image: postgres:9.5
+    ports:
+      - '127.0.0.1:5432:5432'
+    environment:
+      - POSTGRES_USER=lego
+
+  redis:
+    image: redis:latest
+    ports:
+      - '127.0.0.1:6379:6379'

@@ -1,15 +1,6 @@
 LEGO Er Ganske Oppdelt  |frigg| |coverage|
 ==========================================
 
-
-::
-
-    $ make
-      dev        - install dev requirements
-      prod       - install prod requirements
-      venv       - create virtualenv venv-folder
-      production - deploy production (used by chewie)
-
 Contents:
 
 .. toctree::
