@@ -1,8 +1,8 @@
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
-from lego.users.models import User
-from lego.users.serializers import DetailedUserSerializer
+from lego.apps.users.models import User
+from lego.apps.users.serializers import DetailedUserSerializer
 
 
 class JSONWebTokenTestCase(APITestCase):

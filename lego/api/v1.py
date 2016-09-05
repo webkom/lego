@@ -1,14 +1,14 @@
 from rest_framework import routers
 
-from lego.app.articles.views.articles import ArticlesViewSet
-from lego.app.comments.views.comments import CommentViewSet
-from lego.app.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
-from lego.app.feed.views import NotificationFeedViewSet
-from lego.app.flatpages.views import PageViewSet
-from lego.app.oauth.views import AccessTokenViewSet, ApplicationViewSet
-from lego.search.views import AutocompleteViewSet, SearchViewSet
-from lego.users.views.abakus_groups import AbakusGroupViewSet
-from lego.users.views.users import UsersViewSet
+from lego.apps.articles.views.articles import ArticlesViewSet
+from lego.apps.comments.views.comments import CommentViewSet
+from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
+from lego.apps.feed.views import NotificationFeedViewSet
+from lego.apps.flatpages.views import PageViewSet
+from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
+from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
+from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
+from lego.apps.users.views.users import UsersViewSet
 
 router = routers.DefaultRouter()
 router.register(r'users', UsersViewSet)

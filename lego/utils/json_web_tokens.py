@@ -1,4 +1,4 @@
-from lego.users.serializers import DetailedUserSerializer
+from lego.apps.users.serializers import DetailedUserSerializer
 
 
 def response_handler(token, user=None, request=None):
