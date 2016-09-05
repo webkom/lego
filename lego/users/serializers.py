@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from lego.users.fields import AbakusGroupListField
 from lego.users.models import AbakusGroup, User
 from lego.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
 
@@ -44,6 +45,26 @@ class UserSerializer(DetailedUserSerializer):
             serializer = DetailedUserSerializer(instance, context=self.context)
 
         return serializer.data
+
+
+class MeSerializer(serializers.ModelSerializer):
+    committees = AbakusGroupListField()
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'full_name',
+            'email',
+            'is_staff',
+            'is_active',
+            'committees',
+            'is_abakus_member',
+            'is_abakom_member'
+        )
 
 
 class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
