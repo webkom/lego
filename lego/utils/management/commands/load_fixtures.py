@@ -4,9 +4,9 @@ from django.conf import settings
 from django.core import serializers
 from django.core.management import BaseCommand
 
-from lego.app.articles.models import Article
-from lego.app.events.models import Event
-from lego.users.models import AbakusGroup, Membership, User
+from lego.apps.articles.models import Article
+from lego.apps.events.models import Event
+from lego.apps.users.models import AbakusGroup, Membership, User
 
 
 def create_if_missing(obj, model):
@@ -28,14 +28,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('Loading regular fixtures:')
-        self.load_from_fixture('users/fixtures/initial_abakus_groups.yaml', AbakusGroup)
-        self.load_from_fixture('users/fixtures/initial_users.yaml', User)
-        self.load_from_fixture('users/fixtures/initial_memberships.yaml', Membership)
+        self.load_from_fixture('apps/users/fixtures/initial_abakus_groups.yaml', AbakusGroup)
+        self.load_from_fixture('apps/users/fixtures/initial_users.yaml', User)
+        self.load_from_fixture('apps/users/fixtures/initial_memberships.yaml', Membership)
 
         if settings.DEVELOPMENT:
             self.stdout.write('Loading development fixtures:')
-            self.load_from_fixture('users/fixtures/development_users.yaml', User)
-            self.load_from_fixture('app/events/fixtures/development_events.yaml', Event)
-            self.load_from_fixture('app/articles/fixtures/development_articles.yaml', Article)
+            self.load_from_fixture('apps/users/fixtures/development_users.yaml', User)
+            self.load_from_fixture('apps/events/fixtures/development_events.yaml', Event)
+            self.load_from_fixture('apps/articles/fixtures/development_articles.yaml', Article)
 
         self.stdout.write('Done!')

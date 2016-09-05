@@ -15,7 +15,7 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS += ('lego.permissions.tests',)
+INSTALLED_APPS += ('lego.apps.permissions.tests',)
 
 CACHES = {
     'default': {
