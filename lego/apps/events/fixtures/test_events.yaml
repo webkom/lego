@@ -100,7 +100,6 @@
     user: 1
     event: 1
     pool: 1
-    is_waiting: False
     registration_date: '2011-09-01T13:20:30+03:00'
 
 - model: events.Registration
@@ -109,5 +108,4 @@
     user: 2
     event: 1
     pool: 1
-    is_waiting: False
     registration_date: '2011-09-01T13:20:30+03:00'
