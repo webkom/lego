@@ -103,9 +103,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.waiting_registrations.first()
 
     def get_possible_pools(self, user):
-        return [pool
-                for pool in self.pools.all()
-                if self.can_register(user, pool)]
+        return [pool for pool in self.pools.all() if self.can_register(user, pool)]
 
     def register(self, user):
         """
@@ -221,9 +219,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if to_pool:
                 top.pool = to_pool
             else:
-                possible_pools = self.get_possible_pools(top.user)
                 for pool in self.pools.all():
-                    if pool in possible_pools:
+                    if self.can_register(top.user, pool):
                         top.pool = pool
                         break
             top.is_waiting = False
