@@ -99,10 +99,9 @@ JWT_AUTH = {
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
-# Tokens is valid for 10 years, this makes it easier for clients. No refresh token required. This
-# may be a security flaw, but with a token management system this should be fine.
+# Tokens is valid for 7 days.
 OAUTH2_PROVIDER = {
-    'ACCESS_TOKEN_EXPIRE_SECONDS': 31557600 * 10,
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 86400 * 7,
     'SCOPES': {
         'user': 'Grants access to the user profile'
     }

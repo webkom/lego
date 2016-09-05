@@ -48,8 +48,7 @@ class UserSerializer(DetailedUserSerializer):
 
 
 class MeSerializer(serializers.ModelSerializer):
-
-    groups = AbakusGroupListField(source='all_groups')
+    committees = AbakusGroupListField()
 
     class Meta:
         model = User
@@ -62,7 +61,7 @@ class MeSerializer(serializers.ModelSerializer):
             'email',
             'is_staff',
             'is_active',
-            'groups',
+            'committees',
             'is_abakus_member',
             'is_abakom_member'
         )

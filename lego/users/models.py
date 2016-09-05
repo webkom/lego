@@ -79,6 +79,10 @@ class PermissionsMixin(models.Model):
     def is_abakom_member(self):
         return bool(filter(lambda group: group.is_committee, self.all_groups))
 
+    @property
+    def committees(self):
+        return [group for group in self.all_groups if group.is_committee]
+
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
     has_module_perms = DjangoPermissionMixin.has_module_perms
