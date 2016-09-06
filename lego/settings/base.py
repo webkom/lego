@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'lego.apps.tags',
     'lego.apps.quotes',
     'lego.apps.reactions',
-    'lego.apps.websockets'
+    'lego.apps.websockets',
+    'lego.apps.joblistings'
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
