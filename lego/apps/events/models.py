@@ -209,7 +209,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         :param to_pool: A pool with a free slot. If the event is merged, this will be null.
         """
-        if self.waiting_registrations.count() > 0:
+        if self.waiting_registrations.exists():
             top = self.pop_from_waiting_list(to_pool)
             if to_pool:
                 top.pool = to_pool
