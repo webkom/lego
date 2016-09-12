@@ -20,17 +20,13 @@ class CommentSerializer(BasisModelSerializer):
     def validate(self, attrs):
         comment_target = attrs.get('content_object')
 
-        if comment_target:
-            if not comment_target.can_view(self.context['request'].user):
-                raise ValidationError({'access_denied': 'You do not have permission to view the '
-                                       'comment_target'})
-            if 'parent' in attrs:
-                parent = attrs['parent']
-                if parent.object_id != comment_target.id or parent.content_type != \
-                        ContentType.objects.get_for_model(comment_target):
-                    raise ValidationError({
-                        'parent': 'parent does not point to the same comment_target'
-                    })
+        if comment_target and 'parent' in attrs:
+            parent = attrs['parent']
+            if parent.object_id != comment_target.id or parent.content_type != \
+                    ContentType.objects.get_for_model(comment_target):
+                raise ValidationError({
+                    'parent': 'parent does not point to the same comment_target'
+                })
 
         return attrs
 
