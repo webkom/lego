@@ -1,4 +1,4 @@
-# LEGO [![Build status](https://ci.frigg.io/badges/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/) [![Coverage status](https://ci.frigg.io/badges/coverage/webkom/lego/)](https://ci.frigg.io/webkom/lego/last/)
+# LEGO [![CircleCI](https://circleci.com/gh/webkom/lego/tree/master.svg?style=svg&circle-token=26520c314e094786c87c6a14af78c0cd7c82caec)](https://circleci.com/gh/webkom/lego/tree/master)
 
 > LEGO Er Ganske Oppdelt
 
