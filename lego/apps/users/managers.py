@@ -1,4 +1,4 @@
-from basis.managers import PersistentModelManager
+from lego.utils.managers import PersistentModelManager
 
 
 class AbakusGroupManager(PersistentModelManager):

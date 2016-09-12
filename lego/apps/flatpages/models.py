@@ -1,9 +1,9 @@
-from basis.models import BasisModel
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from markdown import markdown
 
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.utils.models import BasisModel
 
 
 class Page(BasisModel, ObjectPermissionsModel):

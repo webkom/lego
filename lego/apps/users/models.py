@@ -1,4 +1,3 @@
-from basis.models import BasisModel, PersistentModel
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
@@ -12,6 +11,7 @@ from mptt.models import MPTTModel
 
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users.managers import AbakusGroupManager, MembershipManager, UserManager
+from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
 

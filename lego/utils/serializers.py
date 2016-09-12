@@ -30,3 +30,10 @@ class GenericRelationField(serializers.CharField):
             self.fail('does_not_exist', data=data)
         except MultipleObjectsReturned:
             self.fail('multiple_objects_returned')
+
+
+class BasisModelSerializer(serializers.ModelSerializer):
+    def save(self, **kwargs):
+        request = self.context['request']
+        kwargs['current_user'] = request.user
+        super().save(**kwargs)
