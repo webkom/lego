@@ -1,14 +1,13 @@
-from basis.serializers import BasisSerializer
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DateTimeField
 
 from lego.apps.comments.models import Comment
 from lego.apps.users.serializers import PublicUserSerializer
-from lego.utils.serializers import GenericRelationField
+from lego.utils.serializers import BasisModelSerializer, GenericRelationField
 
 
-class CommentSerializer(BasisSerializer):
+class CommentSerializer(BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source='created_by')
     created_at = DateTimeField(read_only=True)
     updated_at = DateTimeField(read_only=True)
