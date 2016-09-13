@@ -208,7 +208,10 @@ class CreateRegistrationsTestCase(APITestCase):
         registration = Registration.objects.get(user=self.abakus_user, event=event)
         registration_response = self.client.delete(_get_registrations_detail_url(event.id,
                                                                                  registration.id))
+
+        get_unregistered = self.client.get(_get_registrations_detail_url(event.id, registration.id))
         self.assertEqual(registration_response.status_code, 204)
+        self.assertEqual(get_unregistered.status_code, 404)
 
 
 class ListRegistrationsTestCase(APITestCase):
