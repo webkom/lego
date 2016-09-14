@@ -1,0 +1,30 @@
+machine:
+  post:
+    - wget https://s3.amazonaws.com/circle-downloads/circle-pyenv-python-3.5.1_1.0_amd64.deb
+    - sudo dpkg -i circle-pyenv-python-3.5.1_1.0_amd64.deb
+  python:
+    version: 3.5.1
+  services:
+    - redis
+  environment:
+    CASS_DRIVER_NO_CYTHON: 1
+    CASS_DRIVER_NO_EXTENSIONS: 1
+
+dependencies:
+  cache_directories:
+    - .tox
+  pre:
+    - pip install tox
+    - sudo -u postgres createuser lego -s
+  override:
+    - tox --notest
+
+test:
+  pre:
+    - make lego/settings/local.py
+  override:
+    - tox -e tests
+    - tox -e isort
+    - tox -e flake8
+    - tox -e coverage
+    - tox -e docs
