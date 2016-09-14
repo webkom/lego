@@ -1,8 +1,8 @@
-from lego.apps.users.serializers import DetailedUserSerializer
+from lego.apps.users.serializers import MeSerializer
 
 
 def response_handler(token, user=None, request=None):
     return {
         'token': token,
-        'user': DetailedUserSerializer(user).data
+        'user': MeSerializer(user).data
     }
