@@ -1,12 +1,12 @@
+from lego.apps.quotes.serializers import QuoteSerializer
 from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from lego.app.quotes.models import Quote, QuoteLike
-from lego.app.quotes.permissions import QuotePermissions, QuotePermissionsFilter
-from lego.app.quotes.serializers import QuoteSerializer
+from lego.apps.quotes.models import (Quote, QuoteLike)
+from lego.apps.quotes.permissions import QuotePermissions, QuotePermissionsFilter
 
 
 class QuoteViewSet(viewsets.ModelViewSet):

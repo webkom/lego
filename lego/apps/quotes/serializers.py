@@ -1,9 +1,7 @@
 from basis.serializers import BasisSerializer
+from lego.apps.quotes.models import Quote, QuoteLike
+from lego.apps.users.serializers import PublicUserSerializer
 from rest_framework import serializers
-
-from lego.app.quotes.models import Quote, QuoteLike
-from lego.app.quotes.permissions import QuotePermissions
-from lego.users.serializers import PublicUserSerializer
 
 
 class QuoteSerializer(BasisSerializer):
@@ -14,7 +12,7 @@ class QuoteSerializer(BasisSerializer):
     def user_permissions(self, obj):
         user = self.context['request'].user
         permissions = []
-        if user.has_perm(QuotePermissions.perms_map['approve']):
+        if user.has_perm('/sudo/admin/quotes/change-approval/'):
             permissions.append('can_approve')
         return permissions
 
@@ -23,7 +21,7 @@ class QuoteSerializer(BasisSerializer):
 
     def user_author(self, obj):
         user = self.context['request'].user
-        if user.has_perm(QuotePermissions.perms_map['approve']):
+        if user.has_perm('/sudo/admin/quotes/change-approval/'):
             return PublicUserSerializer(obj.author).data
         else:
             return None

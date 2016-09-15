@@ -1,14 +1,12 @@
 from basis.models import BasisModel
 from django.db import models
+from lego.apps.content.models import Content
 
-from lego.permissions.models import ObjectPermissionsModel
-from lego.users.models import AbakusGroup, User
+from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.users.models import AbakusGroup, User
 
 
-class Quote(BasisModel, ObjectPermissionsModel):
-    title = models.CharField(max_length=255)
-    author = models.ForeignKey(User)
-    text = models.TextField()
+class Quote(Content, BasisModel, ObjectPermissionsModel):
     source = models.CharField(max_length=255)
     approved = models.BooleanField(default=False)
     permission_groups = models.ManyToManyField(AbakusGroup)
