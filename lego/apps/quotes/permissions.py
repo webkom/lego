@@ -24,6 +24,14 @@ class QuotePermissionsFilter(AbakusObjectPermissionFilter):
 
 
 class QuotePermissions(AbakusPermission):
+    permission_map = {
+        'list': [],
+        'list-unapproved': '/sudo/admin/quotes/list-unapproved/',
+        'like': [],
+        'unlike': [],
+        'approve': '/sudo/admin/quotes/change-approval/',
+        'unapprove': '/sudo/admin/quotes/change-approval/',
+    }
+
     def has_object_permission(self, request, view, obj):
-        obj = obj.quote
         return super().has_object_permission(request, view, obj)

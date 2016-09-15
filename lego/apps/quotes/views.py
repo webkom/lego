@@ -15,13 +15,6 @@ class QuoteViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, QuotePermissions)
     serializer_class = QuoteSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = QuoteSerializer(instance, context={'request': request})
-        return Response(
-            serializer.data
-        )
-
     @detail_route(methods=['POST'])
     def like(self, request, pk=None):
         return self._like_quote(request=request)

@@ -86,10 +86,10 @@
     level: 0
     lft: 1
     rght: 2
-    tree_id: 104
+    tree_id: 106
     permissions:
       - /sudo/admin/quotes/like/
-      - /sudo/admin/quotes/approve/
+      - /sudo/admin/quotes/change-approval/
       - /sudo/admin/quotes/list/
       - /sudo/admin/quotes/retrieve/
       - /sudo/admin/quotes/create/

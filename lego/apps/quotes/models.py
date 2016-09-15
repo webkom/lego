@@ -14,11 +14,6 @@ class Quote(Content, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
-    # TODO: Need to fix this before merging, dirty workaround.
-    # Some commit in master changed how permissions work.
-    def can_view(self, user):
-        return True
-
     @property
     def likes(self):
         return QuoteLike.objects.filter(quote=self).count()
