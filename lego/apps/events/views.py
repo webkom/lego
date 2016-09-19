@@ -47,6 +47,4 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        if event_id:
-            return Registration.objects.filter(event=event_id, unregistration_date=None)
-        return Registration.objects.filter(unregistration_date=None)
+        return Registration.objects.filter(event=event_id, unregistration_date=None)
