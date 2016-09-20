@@ -14,6 +14,8 @@ class ContentTestMixin:
         self.assertEqual(self.item.author, self.user1)
         self.assertNotEqual(self.item.author, self.user2)
 
+
+class SlugContentTestMixin:
     @mock.patch('django.db.models.Model.save')
     def test_slug(self, mock_save):
         self.item = self.model(id=1, title='CORRECTSLUG')
