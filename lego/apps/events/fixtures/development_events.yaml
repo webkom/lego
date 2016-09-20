@@ -1585,194 +1585,153 @@
     permission_groups: [1]
   model: events.Pool
   pk: 50
-- fields: {event: 1790, pool: 1, registration_date: '2016-10-27T17:15:00+00:00', user: 1}
+- fields: {event: 1, pool: 1, registration_date: '2016-10-27T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 1
-- fields: {event: 1777, pool: 2, registration_date: '2016-10-25T17:00:00+00:00', user: 1}
+- fields: {event: 2, pool: 2, registration_date: '2016-10-25T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 2
-- fields: {event: 1782, pool: 3, registration_date: '2016-10-13T17:00:00+00:00', user: 1}
+- fields: {event: 3, pool: 3, registration_date: '2016-10-13T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 3
-- fields: {event: 1789, pool: 4, registration_date: '2016-10-11T17:00:00+00:00', user: 1}
+- fields: {event: 4, pool: 4, registration_date: '2016-10-11T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 4
-- fields: {event: 1786, pool: 5, registration_date: '2016-10-06T17:00:00+00:00', user: 1}
+- fields: {event: 5, pool: 5, registration_date: '2016-10-06T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 5
-- fields: {event: 1792, pool: 6, registration_date: '2016-10-04T17:15:00+00:00', user: 1}
+- fields: {event: 6, pool: 6, registration_date: '2016-10-04T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 6
-- fields: {event: 1775, pool: 7, registration_date: '2016-09-19T17:00:00+00:00', user: 1}
+- fields: {event: 7, pool: 7, registration_date: '2016-09-19T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 7
-- fields: {event: 1772, pool: 8, registration_date: '2016-09-07T07:00:00+00:00', user: 1}
+- fields: {event: 8, pool: 8, registration_date: '2016-09-07T07:00:00+00:00', user: 1}
   model: events.Registration
   pk: 8
-- fields: {event: 1796, pool: 9, registration_date: '2016-09-09T17:00:00+00:00', user: 1}
+- fields: {event: 9, pool: 9, registration_date: '2016-09-09T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 9
-- fields: {event: 1776, pool: 10, registration_date: '2016-09-06T17:00:00+00:00',
-    user: 1}
+- fields: {event: 10, pool: 10, registration_date: '2016-09-06T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 10
-- fields: {event: 1767, pool: 11, registration_date: '2016-09-03T18:00:00+00:00',
-    user: 1}
+- fields: {event: 11, pool: 11, registration_date: '2016-09-03T18:00:00+00:00', user: 1}
   model: events.Registration
   pk: 11
-- fields: {event: 1783, pool: 12, registration_date: '2016-09-01T17:00:00+00:00',
-    user: 1}
+- fields: {event: 12, pool: 12, registration_date: '2016-09-01T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 12
-- fields: {event: 1779, pool: 13, registration_date: '2016-08-30T17:00:00+00:00',
-    user: 1}
+- fields: {event: 13, pool: 13, registration_date: '2016-08-30T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 13
-- fields: {event: 1791, pool: 14, registration_date: '2016-07-02T19:00:00+00:00',
-    user: 1}
+- fields: {event: 14, pool: 14, registration_date: '2016-07-02T19:00:00+00:00', user: 1}
   model: events.Registration
   pk: 14
-- fields: {event: 1771, pool: 15, registration_date: '2016-06-11T20:00:00+00:00',
-    user: 1}
+- fields: {event: 15, pool: 15, registration_date: '2016-06-11T20:00:00+00:00', user: 1}
   model: events.Registration
   pk: 15
-- fields: {event: 1794, pool: 16, registration_date: '2016-04-20T13:00:00+00:00',
-    user: 1}
+- fields: {event: 16, pool: 16, registration_date: '2016-04-20T13:00:00+00:00', user: 1}
   model: events.Registration
   pk: 16
-- fields: {event: 1795, pool: 17, registration_date: '2016-04-20T17:15:00+00:00',
-    user: 1}
+- fields: {event: 17, pool: 17, registration_date: '2016-04-20T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 17
-- fields: {event: 1788, pool: 18, registration_date: '2016-05-20T14:00:00+00:00',
-    user: 1}
+- fields: {event: 18, pool: 18, registration_date: '2016-05-20T14:00:00+00:00', user: 1}
   model: events.Registration
   pk: 18
-- fields: {event: 1784, pool: 19, registration_date: '2016-05-17T09:30:00+00:00',
-    user: 1}
+- fields: {event: 19, pool: 19, registration_date: '2016-05-17T09:30:00+00:00', user: 1}
   model: events.Registration
   pk: 19
-- fields: {event: 1793, pool: 20, registration_date: '2016-05-14T11:00:00+00:00',
-    user: 1}
+- fields: {event: 20, pool: 20, registration_date: '2016-05-14T11:00:00+00:00', user: 1}
   model: events.Registration
   pk: 20
-- fields: {event: 1769, pool: 21, registration_date: '2016-05-09T17:15:00+00:00',
-    user: 1}
+- fields: {event: 21, pool: 21, registration_date: '2016-05-09T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 21
-- fields: {event: 1781, pool: 22, registration_date: '2016-05-07T10:15:00+00:00',
-    user: 1}
+- fields: {event: 22, pool: 22, registration_date: '2016-05-07T10:15:00+00:00', user: 1}
   model: events.Registration
   pk: 22
-- fields: {event: 1797, pool: 23, registration_date: '2016-04-20T17:15:00+00:00',
-    user: 1}
+- fields: {event: 23, pool: 23, registration_date: '2016-04-20T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 23
-- fields: {event: 1770, pool: 24, registration_date: '2016-04-29T08:30:00+00:00',
-    user: 1}
+- fields: {event: 24, pool: 24, registration_date: '2016-04-29T08:30:00+00:00', user: 1}
   model: events.Registration
   pk: 24
-- fields: {event: 1787, pool: 25, registration_date: '2016-04-28T12:00:00+00:00',
-    user: 1}
+- fields: {event: 25, pool: 25, registration_date: '2016-04-28T12:00:00+00:00', user: 1}
   model: events.Registration
   pk: 25
-- fields: {event: 1766, pool: 26, registration_date: '2016-04-27T16:00:00+00:00',
-    user: 1}
+- fields: {event: 26, pool: 26, registration_date: '2016-04-27T16:00:00+00:00', user: 1}
   model: events.Registration
   pk: 26
-- fields: {event: 1765, pool: 27, registration_date: '2016-04-25T17:15:00+00:00',
-    user: 1}
+- fields: {event: 27, pool: 27, registration_date: '2016-04-25T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 27
-- fields: {event: 1785, pool: 28, registration_date: '2016-04-23T18:00:00+00:00',
-    user: 1}
+- fields: {event: 28, pool: 28, registration_date: '2016-04-23T18:00:00+00:00', user: 1}
   model: events.Registration
   pk: 28
-- fields: {event: 1748, pool: 29, registration_date: '2016-04-21T19:00:00+00:00',
-    user: 1}
+- fields: {event: 29, pool: 29, registration_date: '2016-04-21T19:00:00+00:00', user: 1}
   model: events.Registration
   pk: 29
-- fields: {event: 1778, pool: 30, registration_date: '2016-04-18T10:30:00+00:00',
-    user: 1}
+- fields: {event: 30, pool: 30, registration_date: '2016-04-18T10:30:00+00:00', user: 1}
   model: events.Registration
   pk: 30
-- fields: {event: 1780, pool: 31, registration_date: '2016-04-15T19:00:00+00:00',
-    user: 1}
+- fields: {event: 31, pool: 31, registration_date: '2016-04-15T19:00:00+00:00', user: 1}
   model: events.Registration
   pk: 31
-- fields: {event: 1754, pool: 32, registration_date: '2016-04-15T08:00:00+00:00',
-    user: 1}
+- fields: {event: 32, pool: 32, registration_date: '2016-04-15T08:00:00+00:00', user: 1}
   model: events.Registration
   pk: 32
-- fields: {event: 1735, pool: 33, registration_date: '2016-04-14T17:00:00+00:00',
-    user: 1}
+- fields: {event: 33, pool: 33, registration_date: '2016-04-14T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 33
-- fields: {event: 1715, pool: 34, registration_date: '2016-04-11T17:00:00+00:00',
-    user: 1}
+- fields: {event: 34, pool: 34, registration_date: '2016-04-11T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 34
-- fields: {event: 1747, pool: 35, registration_date: '2016-04-09T15:00:00+00:00',
-    user: 1}
+- fields: {event: 35, pool: 35, registration_date: '2016-04-09T15:00:00+00:00', user: 1}
   model: events.Registration
   pk: 35
-- fields: {event: 1724, pool: 36, registration_date: '2016-04-07T17:00:00+00:00',
-    user: 1}
+- fields: {event: 36, pool: 36, registration_date: '2016-04-07T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 36
-- fields: {event: 1690, pool: 37, registration_date: '2016-04-06T16:00:00+00:00',
-    user: 1}
+- fields: {event: 37, pool: 37, registration_date: '2016-04-06T16:00:00+00:00', user: 1}
   model: events.Registration
   pk: 37
-- fields: {event: 1753, pool: 38, registration_date: '2016-04-06T16:00:00+00:00',
-    user: 1}
+- fields: {event: 38, pool: 38, registration_date: '2016-04-06T16:00:00+00:00', user: 1}
   model: events.Registration
   pk: 38
-- fields: {event: 1773, pool: 39, registration_date: '2016-04-05T17:00:00+00:00',
-    user: 1}
+- fields: {event: 39, pool: 39, registration_date: '2016-04-05T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 39
-- fields: {event: 1768, pool: 40, registration_date: '2016-03-31T19:00:00+00:00',
-    user: 1}
+- fields: {event: 40, pool: 40, registration_date: '2016-03-31T19:00:00+00:00', user: 1}
   model: events.Registration
   pk: 40
-- fields: {event: 1727, pool: 41, registration_date: '2016-03-15T17:15:00+00:00',
-    user: 1}
+- fields: {event: 41, pool: 41, registration_date: '2016-03-15T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 41
-- fields: {event: 1740, pool: 42, registration_date: '2016-03-13T16:00:00+00:00',
-    user: 1}
+- fields: {event: 42, pool: 42, registration_date: '2016-03-13T16:00:00+00:00', user: 1}
   model: events.Registration
   pk: 42
-- fields: {event: 1672, pool: 43, registration_date: '2016-03-10T17:00:00+00:00',
-    user: 1}
+- fields: {event: 43, pool: 43, registration_date: '2016-03-10T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 43
-- fields: {event: 1689, pool: 44, registration_date: '2016-03-09T16:00:00+00:00',
-    user: 1}
+- fields: {event: 44, pool: 44, registration_date: '2016-03-09T16:00:00+00:00', user: 1}
   model: events.Registration
   pk: 44
-- fields: {event: 1752, pool: 45, registration_date: '2016-03-09T16:00:00+00:00',
-    user: 1}
+- fields: {event: 45, pool: 45, registration_date: '2016-03-09T16:00:00+00:00', user: 1}
   model: events.Registration
   pk: 45
-- fields: {event: 1734, pool: 46, registration_date: '2016-03-08T17:00:00+00:00',
-    user: 1}
+- fields: {event: 46, pool: 46, registration_date: '2016-03-08T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 46
-- fields: {event: 1703, pool: 47, registration_date: '2016-03-07T17:15:00+00:00',
-    user: 1}
+- fields: {event: 47, pool: 47, registration_date: '2016-03-07T17:15:00+00:00', user: 1}
   model: events.Registration
   pk: 47
-- fields: {event: 1696, pool: 48, registration_date: '2016-03-05T09:00:00+00:00',
-    user: 1}
+- fields: {event: 48, pool: 48, registration_date: '2016-03-05T09:00:00+00:00', user: 1}
   model: events.Registration
   pk: 48
-- fields: {event: 1697, pool: 49, registration_date: '2016-03-04T16:15:00+00:00',
-    user: 1}
+- fields: {event: 49, pool: 49, registration_date: '2016-03-04T16:15:00+00:00', user: 1}
   model: events.Registration
   pk: 49
-- fields: {event: 1710, pool: 50, registration_date: '2016-03-03T17:00:00+00:00',
-    user: 1}
+- fields: {event: 50, pool: 50, registration_date: '2016-03-03T17:00:00+00:00', user: 1}
   model: events.Registration
   pk: 50
