@@ -30,3 +30,11 @@
     first_name: abakusgroup
     last_name: admin
     email: abakusgroup@admin.com
+
+- model: users.User
+  pk: 5
+  fields:
+    username: not_abakommer
+    first_name: Not
+    last_name: Abakommer
+    email: not_in@abakus.no

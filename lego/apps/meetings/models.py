@@ -11,15 +11,20 @@ class Meeting(Content, BasisModel, ObjectPermissionsModel):
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField(null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
 
-    report = models.TextField(null=True)
-    report_author = models.ForeignKey(User, null=True, related_name='meetings_reports')
+    report = models.TextField(blank=True)
+    report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
 
     def invite(self, user):
         return self.invitations.update_or_create(user=user,
-                                          meeting=self,
-                                          defaults={'status': MeetingInvitation.NO_ANSWER})
+                                                 meeting=self,
+                                                 defaults={'status': MeetingInvitation.NO_ANSWER})
+
+
+class Participant(BasisModel, ObjectPermissionsModel):
+    meeting = models.ForeignKey(Meeting, related_name='participants')
+    user = models.ForeignKey(User)
 
 
 class MeetingInvitation(BasisModel, ObjectPermissionsModel):
@@ -36,4 +41,13 @@ class MeetingInvitation(BasisModel, ObjectPermissionsModel):
 
     meeting = models.ForeignKey(Meeting, related_name='invitations')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES)
-    user = models.ForeignKey(User, related_name='meeting_invitations', null=True)
+    user = models.ForeignKey(User, related_name='meeting_invitations')
+
+    def accept(self):
+        self.status = self.ATTENDING
+        self.meeting.participants.update_or_create(meeting=self.meeting, user=self.user)
+        self.save()
+
+    def reject(self):
+        self.status = self.NOT_ATTENDING
+        self.save()
