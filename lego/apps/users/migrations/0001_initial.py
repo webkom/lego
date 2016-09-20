@@ -3,14 +3,15 @@
 from __future__ import unicode_literals
 
 import basis.models
-from django.conf import settings
 import django.contrib.postgres.fields
 import django.core.validators
-from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import lego.apps.permissions.validators
 import mptt.fields
+from django.conf import settings
+from django.db import migrations, models
+
+import lego.apps.permissions.validators
 
 
 class Migration(migrations.Migration):
