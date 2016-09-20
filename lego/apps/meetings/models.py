@@ -17,7 +17,7 @@ class Meeting(Content, BasisModel, ObjectPermissionsModel):
     report_author = models.ForeignKey(User, null=True, related_name='meetings_reports')
 
     def invite(self, user):
-        self.invitations.update_or_create(user=user,
+        return self.invitations.update_or_create(user=user,
                                           meeting=self,
                                           defaults={'status': MeetingInvitation.NO_ANSWER})
 
