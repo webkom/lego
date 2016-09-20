@@ -17,6 +17,19 @@ class Content(models.Model):
     comments = GenericRelation(Comment)
     slug = models.SlugField(null=True, unique=True)
 
+    @property
+    def likes(self):
+        return ContentLike.objects.filter(content=self).count()
+
+    def has_liked(self, user):
+        return ContentLike.objects.filter(user=user, content=self).exists()
+
+    def like(self, user):
+        return ContentLike.objects.create(user=user, content=self)
+
+    def unlike(self, user):
+        ContentLike.objects.filter(user=user, content=self).delete()
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.slug:
@@ -29,3 +42,11 @@ class Content(models.Model):
     @property
     def comment_target(self):
         return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
+
+
+class ContentLike(models.Model):
+    user = models.ForeignKey(User)
+    content = models.ForeignKey(Content)
+
+    class Meta:
+        unique_together = ('user', 'content')
