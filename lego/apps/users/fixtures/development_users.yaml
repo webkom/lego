@@ -2,7 +2,7 @@
     email: adiykgoaet@gmail.com
     first_name: Anonymous
     last_name: user
-    password: null
+    password: fu_eirsyl
     username: anonymous
   model: users.User
   pk: 1
@@ -10,7 +10,7 @@
     email: tnmxpclxrn@gmail.com
     first_name: Per Kristian J
     last_name: Fjellby
-    password: null
+    password: fu_eirsyl
     username: perkrifj
   model: users.User
   pk: 2
@@ -18,7 +18,7 @@
     email: lyoxhvnkuc@gmail.com
     first_name: Ståle
     last_name: Pettersen
-    password: null
+    password: fu_eirsyl
     username: stalepe
   model: users.User
   pk: 3
@@ -26,7 +26,7 @@
     email: kxrysmrqxn@gmail.com
     first_name: Anders
     last_name: Nore
-    password: null
+    password: fu_eirsyl
     username: andenor
   model: users.User
   pk: 4
@@ -34,7 +34,7 @@
     email: tljviqwbfn@gmail.com
     first_name: Fredrik
     last_name: Rydland
-    password: null
+    password: fu_eirsyl
     username: fredriry
   model: users.User
   pk: 5
@@ -42,7 +42,7 @@
     email: yzzlpjpkag@gmail.com
     first_name: Hans Andreas
     last_name: Fay
-    password: null
+    password: fu_eirsyl
     username: hansanf
   model: users.User
   pk: 6
@@ -50,7 +50,7 @@
     email: paijfnvwar@gmail.com
     first_name: Ola
     last_name: Høiby
-    password: null
+    password: fu_eirsyl
     username: hoiby
   model: users.User
   pk: 7
@@ -58,7 +58,7 @@
     email: rcqefmsmog@gmail.com
     first_name: Torborg Skjevdal
     last_name: Hansen
-    password: null
+    password: fu_eirsyl
     username: torborgs
   model: users.User
   pk: 8
@@ -66,7 +66,7 @@
     email: gavmjgaqpy@gmail.com
     first_name: Fredrik Prinsdal
     last_name: Einerkjær
-    password: null
+    password: fu_eirsyl
     username: einerkja
   model: users.User
   pk: 9
@@ -74,7 +74,7 @@
     email: ymbbpyngof@gmail.com
     first_name: Rune Bleken
     last_name: Kulstad
-    password: null
+    password: fu_eirsyl
     username: runeblek
   model: users.User
   pk: 10
@@ -82,7 +82,7 @@
     email: dvrotlpooe@gmail.com
     first_name: Karsten Peder
     last_name: Holth
-    password: null
+    password: fu_eirsyl
     username: karstenp
   model: users.User
   pk: 11
@@ -90,7 +90,7 @@
     email: lbmeconxff@gmail.com
     first_name: Knut Halvor
     last_name: Skrede
-    password: null
+    password: fu_eirsyl
     username: knuthask
   model: users.User
   pk: 12
@@ -98,7 +98,7 @@
     email: xghdvgbxgr@gmail.com
     first_name: Kristoffer Tveit
     last_name: Strømmen
-    password: null
+    password: fu_eirsyl
     username: krstr
   model: users.User
   pk: 13
@@ -106,7 +106,7 @@
     email: zbuhqaskvy@gmail.com
     first_name: Martin Rudi
     last_name: Holaker
-    password: null
+    password: fu_eirsyl
     username: marthola
   model: users.User
   pk: 14
@@ -114,7 +114,7 @@
     email: pbqmegixll@gmail.com
     first_name: Tormund Sandve
     last_name: Haus
-    password: null
+    password: fu_eirsyl
     username: tormunds
   model: users.User
   pk: 15
@@ -122,7 +122,7 @@
     email: inhtqumrws@gmail.com
     first_name: Ane Min Hofplass
     last_name: Garnaas
-    password: null
+    password: fu_eirsyl
     username: garnaas
   model: users.User
   pk: 16
@@ -130,7 +130,7 @@
     email: rnrbdlkxvh@gmail.com
     first_name: Lars Kirkholt
     last_name: Melhus
-    password: null
+    password: fu_eirsyl
     username: larskirk
   model: users.User
   pk: 17
@@ -138,7 +138,7 @@
     email: keoigdmndp@gmail.com
     first_name: Merethe
     last_name: Heggset
-    password: null
+    password: fu_eirsyl
     username: merethhe
   model: users.User
   pk: 18
@@ -146,7 +146,7 @@
     email: umwlquqvys@gmail.com
     first_name: Hanne
     last_name: Loug
-    password: null
+    password: fu_eirsyl
     username: loug
   model: users.User
   pk: 19
@@ -154,7 +154,7 @@
     email: ihbucuxkim@gmail.com
     first_name: Rune
     last_name: Aamodt
-    password: null
+    password: fu_eirsyl
     username: runeaam
   model: users.User
   pk: 20
@@ -162,7 +162,7 @@
     email: bugbzomvvj@gmail.com
     first_name: David Andrassy
     last_name: Eilertsen
-    password: null
+    password: fu_eirsyl
     username: davidae
   model: users.User
   pk: 21
@@ -170,7 +170,7 @@
     email: yafkhzscoq@gmail.com
     first_name: Jonas Granheim
     last_name: Brustad
-    password: null
+    password: fu_eirsyl
     username: jonasgra
   model: users.User
   pk: 22
@@ -178,7 +178,7 @@
     email: pcmkrqfgwp@gmail.com
     first_name: Torbjørn Aarlott
     last_name: Aase
-    password: null
+    password: fu_eirsyl
     username: torbjaas
   model: users.User
   pk: 23
@@ -186,7 +186,7 @@
     email: ysmwrvapah@gmail.com
     first_name: Kjell Gunnar
     last_name: Midtlyng
-    password: null
+    password: fu_eirsyl
     username: kjellgm
   model: users.User
   pk: 24
@@ -194,7 +194,7 @@
     email: gdwqerxieu@gmail.com
     first_name: Eirik Ola
     last_name: Aksnes
-    password: null
+    password: fu_eirsyl
     username: eirikola
   model: users.User
   pk: 25
@@ -202,7 +202,7 @@
     email: bhktrgnfch@gmail.com
     first_name: Tarjei
     last_name: Ormestøyl
-    password: null
+    password: fu_eirsyl
     username: ormestoy
   model: users.User
   pk: 26
@@ -210,7 +210,7 @@
     email: yjqgizsmbr@gmail.com
     first_name: Thomas
     last_name: Østdahl
-    password: null
+    password: fu_eirsyl
     username: thomao
   model: users.User
   pk: 27
@@ -218,7 +218,7 @@
     email: ahutihhezh@gmail.com
     first_name: Ken Oscar
     last_name: Grønnbeck
-    password: null
+    password: fu_eirsyl
     username: gronnbec
   model: users.User
   pk: 28
@@ -226,7 +226,7 @@
     email: jaecppaupj@gmail.com
     first_name: Pål
     last_name: snakkes-hos-tannlegen Ruud
-    password: null
+    password: fu_eirsyl
     username: palru
   model: users.User
   pk: 29
@@ -234,7 +234,7 @@
     email: xazpbxbosx@gmail.com
     first_name: Kjetil
     last_name: Valle
-    password: null
+    password: fu_eirsyl
     username: kjetilva
   model: users.User
   pk: 30
@@ -242,7 +242,7 @@
     email: wtlxcqmjad@gmail.com
     first_name: Helge
     last_name: Skrautvol
-    password: null
+    password: fu_eirsyl
     username: helgesk
   model: users.User
   pk: 31
@@ -250,7 +250,7 @@
     email: lkzmvuokjz@gmail.com
     first_name: Mathilde Stamsø
     last_name: Eidem
-    password: null
+    password: fu_eirsyl
     username: mathilde
   model: users.User
   pk: 32
@@ -258,7 +258,7 @@
     email: joefftkmki@gmail.com
     first_name: My Hoan Thi
     last_name: Tran
-    password: null
+    password: fu_eirsyl
     username: myhoanth
   model: users.User
   pk: 33
@@ -266,7 +266,7 @@
     email: bmmmdndzuz@gmail.com
     first_name: Øystein
     last_name: Solberg
-    password: null
+    password: fu_eirsyl
     username: oysteiso
   model: users.User
   pk: 34
@@ -274,7 +274,7 @@
     email: motzqbjllc@gmail.com
     first_name: Tore Melangen
     last_name: Havn
-    password: null
+    password: fu_eirsyl
     username: toremela
   model: users.User
   pk: 35
@@ -282,7 +282,7 @@
     email: hegypicpiq@gmail.com
     first_name: Hans Olav
     last_name: Norheim
-    password: null
+    password: fu_eirsyl
     username: hansolno
   model: users.User
   pk: 36
@@ -290,7 +290,7 @@
     email: tymxielrci@gmail.com
     first_name: Rune Walsø
     last_name: Nergård
-    password: null
+    password: fu_eirsyl
     username: runewals
   model: users.User
   pk: 37
@@ -298,7 +298,7 @@
     email: bbffsqsumm@gmail.com
     first_name: Håvard
     last_name: Farberg
-    password: null
+    password: fu_eirsyl
     username: farberg
   model: users.User
   pk: 38
@@ -306,7 +306,7 @@
     email: uyjrbmcvvg@gmail.com
     first_name: Ole Kristian Brenne
     last_name: Richstad
-    password: null
+    password: fu_eirsyl
     username: olekriri
   model: users.User
   pk: 39
@@ -314,7 +314,7 @@
     email: ustikrshml@gmail.com
     first_name: Bjarne Sletten
     last_name: Olsen
-    password: null
+    password: fu_eirsyl
     username: bjarnesl
   model: users.User
   pk: 40
@@ -322,7 +322,7 @@
     email: ylvrxewzul@gmail.com
     first_name: Thorstein
     last_name: Nicolaysen
-    password: null
+    password: fu_eirsyl
     username: noname931
   model: users.User
   pk: 41
@@ -330,7 +330,7 @@
     email: teqkxgcedl@gmail.com
     first_name: Svein-Magnus Bergan
     last_name: Sørensen
-    password: null
+    password: fu_eirsyl
     username: sms
   model: users.User
   pk: 42
@@ -338,7 +338,7 @@
     email: clbhemsgsx@gmail.com
     first_name: Joachim Hjelmås
     last_name: Andersen
-    password: null
+    password: fu_eirsyl
     username: joachimh
   model: users.User
   pk: 43
@@ -346,7 +346,7 @@
     email: ldyrhawipn@gmail.com
     first_name: Njål
     last_name: Karevoll
-    password: null
+    password: fu_eirsyl
     username: karevoll
   model: users.User
   pk: 44
@@ -354,7 +354,7 @@
     email: brvpronvuw@gmail.com
     first_name: Jon Villy Selnes
     last_name: Meidell
-    password: null
+    password: fu_eirsyl
     username: jonvilly
   model: users.User
   pk: 45
@@ -362,7 +362,7 @@
     email: yaafxepren@gmail.com
     first_name: Mia
     last_name: Bek
-    password: null
+    password: fu_eirsyl
     username: bek
   model: users.User
   pk: 46
@@ -370,7 +370,7 @@
     email: lsgphlkbri@gmail.com
     first_name: Terje
     last_name: Snarby
-    password: null
+    password: fu_eirsyl
     username: snarby
   model: users.User
   pk: 47
@@ -378,7 +378,7 @@
     email: bydxsgeiwa@gmail.com
     first_name: Øyvind
     last_name: Risan
-    password: null
+    password: fu_eirsyl
     username: risan
   model: users.User
   pk: 48
@@ -386,7 +386,7 @@
     email: lscrypjcca@gmail.com
     first_name: Esben Andre
     last_name: Føllesdal
-    password: null
+    password: fu_eirsyl
     username: esbenaf
   model: users.User
   pk: 49
@@ -394,7 +394,7 @@
     email: owjwwbbycs@gmail.com
     first_name: Håvard Håkon
     last_name: Raaen
-    password: null
+    password: fu_eirsyl
     username: havarraa
   model: users.User
   pk: 50
