@@ -21,6 +21,11 @@ class Content(models.Model):
     def comment_target(self):
         return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
 
+    def save(self, *args, **kwargs):
+        if not self.author:
+            self.author = self.created_by
+        super().save(*args, **kwargs)
+
 
 class SlugContent(Content):
     slug_length = 50
@@ -42,7 +47,6 @@ class SlugContent(Content):
         return slug[0:slice_index]
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         if not self.slug:
             self.slug = self.generate_slug()
             self.save()
