@@ -25,6 +25,9 @@ class Content(models.Model):
 
 
 class SlugContent(Content):
+    class Meta:
+        abstract = True
+
     slug = models.SlugField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
