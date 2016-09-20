@@ -4,14 +4,14 @@ from django.db.models import Sum
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from lego.apps.content.models import Content
+from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, User
 
 from .exceptions import NoAvailablePools
 
 
-class Event(Content, BasisModel, ObjectPermissionsModel):
+class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     """
     An event has a type (e.g. Company presentation, Party. Eventually, each type of event might
     have slightly different 'requirements' or fields. For example, a company presentation will be
