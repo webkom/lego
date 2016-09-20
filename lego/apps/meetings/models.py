@@ -16,8 +16,10 @@ class Meeting(Content, BasisModel, ObjectPermissionsModel):
     report = models.TextField(null=True)
     report_author = models.ForeignKey(User, null=True, related_name='meetings_reports')
 
-    # def invite(self, user):
-    #     self.invitations.update_or_create()
+    def invite(self, user):
+        self.invitations.update_or_create(user=user,
+                                          meeting=self,
+                                          defaults={'status': MeetingInvitation.NO_ANSWER})
 
 
 class MeetingInvitation(BasisModel, ObjectPermissionsModel):
@@ -34,3 +36,4 @@ class MeetingInvitation(BasisModel, ObjectPermissionsModel):
 
     meeting = models.ForeignKey(Meeting, related_name='invitations')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES)
+    user = models.ForeignKey(User, related_name='meeting_invitations', null=True)
