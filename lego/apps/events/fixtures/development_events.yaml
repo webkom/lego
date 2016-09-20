@@ -1,6 +1,7 @@
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: TBA
     end_time: '2016-10-27T20:00:00+00:00'
     event_type: 1
@@ -12,7 +13,8 @@
   pk: 1
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Know IT Objectnet AS er et teknologi - og proudktavhengig konsulentselkap
       med kontorer i Oslo
     end_time: '2016-10-25T23:59:00+00:00'
@@ -25,7 +27,8 @@
   pk: 2
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Accenture er et globalt konsulentselskap som leverer tjenester innenfor
       rådgivning, teknologi og outsourcing, med omkring 256 000 ansatte som arbeider
       for kunder i mer enn 120 land.
@@ -39,7 +42,8 @@
   pk: 3
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Bedriftspresentasjon med Netlight '
     end_time: '2016-10-11T23:59:00+00:00'
     event_type: 1
@@ -51,7 +55,8 @@
   pk: 4
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: EY (tidligere Ernst & Young)
     end_time: '2016-10-06T23:59:00+00:00'
     event_type: 1
@@ -63,7 +68,8 @@
   pk: 5
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: TBA
     end_time: '2016-10-04T20:00:00+00:00'
     event_type: 1
@@ -75,7 +81,8 @@
   pk: 6
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Velkommen til lunsjpresentasjon med Sopra Steria.
     end_time: '2016-09-19T23:00:00+00:00'
     event_type: 1
@@ -87,7 +94,8 @@
   pk: 7
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Årets BedEx går som vanlig til Oslo og varer i tre dager.\r\nPåmeldingen\
       \ er åpen for alle 5. klassinger"
     end_time: '2016-09-10T12:00:00+00:00'
@@ -112,7 +120,8 @@
   pk: 8
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: ' TBA'
     end_time: '2016-09-09T22:00:00+00:00'
     event_type: 1
@@ -124,7 +133,8 @@
   pk: 9
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Bedriftspresentasjon med DIPS. '
     end_time: '2016-09-06T23:59:00+00:00'
     event_type: 1
@@ -136,7 +146,8 @@
   pk: 10
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Abakus feirer sine nye medlemmer & inviterer til storslått galla
       i Frimurerlogen, 3. september!
     end_time: '2016-09-03T23:59:00+00:00'
@@ -154,7 +165,8 @@
   pk: 11
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Mesan AS er et norsk IT-konsulentselskap som holder til i Oslo sentrum.
       Mesans målsetning er ikke å bli størst, men å være best i Norge på utvikling
       av skreddersydde løsninger innen privat og offentlig sektor.
@@ -168,7 +180,8 @@
   pk: 12
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: ' '
     end_time: '2016-08-30T21:00:00+00:00'
     event_type: 1
@@ -180,7 +193,8 @@
   pk: 13
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Som tidligere blir det også i år sommerfest i Oslo for alle abakuler. '
     end_time: '2016-07-02T23:55:00+00:00'
     event_type: 3
@@ -194,7 +208,8 @@
   pk: 14
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Etter nok en lang og slitsom eksamensperiode fortjener alle og enhver\
       \ en storslått eksamensfest!\r\n"
     end_time: '2016-06-11T23:59:00+00:00'
@@ -207,7 +222,8 @@
   pk: 15
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
       å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
       til høsten. De skal vise frem Trondheim fra byens beste side gjennom sosiale
@@ -229,7 +245,8 @@
   pk: 16
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
       å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
       til høsten. De skal vise frem Trondheim frem fra sin beste side igjennom sosiale
@@ -251,7 +268,8 @@
   pk: 17
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Lei av å lese til eksamen sa du? Ta deg en time fri fra lesesalen
       og grill med Abakus!
     end_time: '2016-05-20T15:00:00+00:00'
@@ -271,7 +289,8 @@
   pk: 18
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Abakus inviterer i år igjen til 17. mai-frokost i Kjelhuset for\
       \ å feire vår grunnlovsdag.\r\n\r\n"
     end_time: '2016-05-17T11:30:00+00:00'
@@ -296,7 +315,8 @@
   pk: 19
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Fagstaben i TDT4100 Objektorientert Programmering holder et uoffisielt
       eksamenskurs i Java. '
     end_time: '2016-05-15T16:00:00+00:00'
@@ -314,7 +334,8 @@
   pk: 20
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Dataforeningen arrangerer i samarbeid med Abakus og Online studentkveld
       i forbindelse med "Sikkerhet og Sårbarhet 2016".
     end_time: '2016-05-09T21:30:00+00:00'
@@ -397,7 +418,8 @@
   pk: 21
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Uoffisielt repetisjonskurs i Krets- og Digitalteknikk med fokus på
       eksamensoppgaver og pensum.
     end_time: '2016-05-07T16:00:00+00:00'
@@ -414,7 +436,8 @@
   pk: 22
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Det er på tide med årets fadderpåmelding for masterstudenter! En\
       \ fadder har som oppgave å ta imot de studentene som starter på 2-årig master\
       \ til høsten. De skal vise frem Trondheim fra sin beste side gjennom sosiale\
@@ -435,7 +458,8 @@
   pk: 23
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Fundator AS arrangerer fagsamling her i Trondheim fredag den 29.
       april fra kl. 8:30 til kl 16:00. Vi har satt av 10 plasser til studenter fra
       3.-5. klasse datateknologi og kommunikasjonteknologi med interesse for konsulentbransjen.
@@ -456,7 +480,8 @@
   pk: 24
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Velkommen til lunsjpresentasjon med DNV GL. Etter presentasjonen
       på 45 minutter vil det bli mingling på skolen med servering av pizza og brus.
     end_time: '2016-04-28T15:00:00+00:00'
@@ -477,7 +502,8 @@
   pk: 25
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Velkommen til Abakus sin fagdag på mobil plattform. \r\n\r\nEttersom\
       \ mer og mer av folks internett-vaner og aktiviteter skjer på mobilen ønsker\
       \ vi å sette fokus på hvordan vi best mulig kan utvikle løsninger til dette\
@@ -505,7 +531,8 @@
   pk: 26
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: '**Velkommen til Lightning Talks! IDI inviterer, i samarbeid med
       Fagkom fra Online og Abakus, studenter og ansatte til en hyggelig kveld sammen.**'
     end_time: '2016-04-25T20:00:00+00:00'
@@ -537,7 +564,8 @@
   pk: 27
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Da er det på tide med årets andre (og semesterets siste) AbelLan.
     end_time: '2016-04-24T07:00:00+00:00'
     event_type: 3
@@ -550,7 +578,8 @@
   pk: 28
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Det er igjen duket for Casino Royale. Det betyr finstasen på, poker,
       rulett, klassiske blackjack og nytt i år... eget nybegynnerbord. Alt finner
       sted på Håndverkeren.
@@ -576,7 +605,8 @@
   pk: 29
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Et nytt semester går mot slutten og fadderperioden 2016 nærmer seg\
       \ med stormskritt.\r\n"
     end_time: '2016-04-18T12:00:00+00:00'
@@ -602,7 +632,8 @@
   pk: 30
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Få mennesker kan feste hardere, lengre og mer høylytt enn meksikanere,
       men blant de få er definitivt Labamba og abakulene! '
     end_time: '2016-04-16T01:00:00+00:00'
@@ -625,7 +656,8 @@
   pk: 31
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Nå har vi lyst å dele en av fagdagene med resten av bransjen, og
       vi har et begrenset antall gratis plasser for studenter. Søknadsfrist 15. Mars!
     end_time: '2016-04-15T21:00:00+00:00'
@@ -644,7 +676,8 @@
   pk: 32
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Har du lyst til å sette opp en egen server i skyen med basic sikkerhetsoppsett?
       Knowit kommer for å snakker om kjente sikkerhetstiltak og guider deg gjennom
       oppsettet
@@ -669,7 +702,8 @@
   pk: 33
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Vil du lære mer om kunstig intelligens?\r\n=======================================\r\
       \n\r\n**Næringslivsnettverket KiD med Accenture, Telenor og NTNU vil gi en innføring\
       \ i kunstig intelligens gjennom korte inspirasjonsforedrag og kreativ idémyldring.\
@@ -705,7 +739,8 @@
   pk: 34
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Lørdag 9. april inviterer Abakus til Vaargalla!
     end_time: '2016-04-10T08:00:00+00:00'
     event_type: 4
@@ -737,7 +772,8 @@
   pk: 35
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den? '
     end_time: '2016-04-07T20:00:00+00:00'
     event_type: 1
@@ -756,7 +792,8 @@
   pk: 36
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
       eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
       hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
@@ -781,7 +818,8 @@
   pk: 37
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme
       igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen
       mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene
@@ -818,7 +856,8 @@
   pk: 38
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Hvem tar flagget først? Du eller din studievenn? Itera kjører Capture
       the ”flag” med Java og Lego Mindstorms! [Promovideo](https://vimeo.com/160542061)
     end_time: '2016-04-05T20:00:00+00:00'
@@ -857,7 +896,8 @@
   pk: 39
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Lei av å avstandsbeundre den søte jenta fra maskin? Eller han kjekke
       hunken på Emil? Keen på å bli bedre kjent med den kule gjengen på bakerste rad
       i forelesning? Dette er sjansen til å ta grep og bli bedre kjent på tvers av
@@ -878,7 +918,8 @@
   pk: 40
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Et praktisk kurs hvor vi lærer hvordan man setter opp IT-infrastruktur
       i skyløsningen Microsoft Azure. Vi skal se på tre ulike metoder for å opprette
       virtuelle maskiner (VM), og konfigurere VM-en til en webserver. Første metode
@@ -901,7 +942,8 @@
   pk: 41
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: 'Dersom du er glad i kaffe og har lyst til å lære hvordan du kan
       lage bedre kaffe hjemme, da er denne kaffekvelden hos Dromedar noe for deg.
       Det blir et kurs med fokus på svart kaffe, hvor man kan få smake på forskjellige
@@ -923,7 +965,8 @@
   pk: 42
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: StartIT er et faglig arrangement sponset av Abakus, som spesielt
       promoterer innovasjon innen IT. I år er det mange spennende foredrag man kan
       bli med på!
@@ -951,7 +994,8 @@
   pk: 43
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
       eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
       hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
@@ -977,7 +1021,8 @@
   pk: 44
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme\
       \ igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen\
       \ mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene\
@@ -1015,7 +1060,8 @@
   pk: 45
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: "Acando er et konsulentselskap som bistår offentlige og private kunder\
       \ i å lykkes. Vi er ofte engasjert i utfordrende og virksomhetskritiske leveranser\
       \ og prosjekter hvor vår innsats kan bli et være eller ikke være for våre kunder.\
@@ -1041,7 +1087,8 @@
   pk: 46
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Har du lyst å leke deg med video i nettleser?  Vil du lære å lage
       din egen videospiller og koble den til webkameraet ditt? Kantega ønsker velkommen
       til kodeworkshop med solide doser HTML5-magi. Det bare fantasien din som setter
@@ -1076,7 +1123,8 @@
   pk: 47
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Da er det klart for å samle Abakus sine komiteer for en Helgesamling
       uten like!
     end_time: '2016-03-06T12:00:00+00:00'
@@ -1102,7 +1150,8 @@
   pk: 48
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Velkommen til Abakus årlige generalforsamling! På Abakus' ordinære
       generalforsamling skal regnskap og årsberetning for 2015 legges frem. Forslag
       til statuttendringer vil legges frem og det skal velges totalt 6 stillinger.
@@ -1157,7 +1206,8 @@
   pk: 49
 - fields:
     author: 1
-    can_view_groups: [1]
+    can_view_groups:
+    - 1
     description: Vår kjære hovedsamarbeidspartner BEKK inviterer til bedriftspresentasjon.
       Meld deg på og bli bedre kjent med selskapet!
     end_time: '2016-03-03T23:00:00+00:00'
@@ -1190,7 +1240,8 @@
     capacity: 10
     event: 1
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 1
 - fields:
@@ -1198,7 +1249,8 @@
     capacity: 10
     event: 2
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 2
 - fields:
@@ -1206,7 +1258,8 @@
     capacity: 10
     event: 3
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 3
 - fields:
@@ -1214,7 +1267,8 @@
     capacity: 10
     event: 4
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 4
 - fields:
@@ -1222,7 +1276,8 @@
     capacity: 10
     event: 5
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 5
 - fields:
@@ -1230,7 +1285,8 @@
     capacity: 10
     event: 6
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 6
 - fields:
@@ -1238,7 +1294,8 @@
     capacity: 10
     event: 7
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 7
 - fields:
@@ -1246,7 +1303,8 @@
     capacity: 10
     event: 8
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 8
 - fields:
@@ -1254,7 +1312,8 @@
     capacity: 10
     event: 9
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 9
 - fields:
@@ -1262,7 +1321,8 @@
     capacity: 10
     event: 10
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 10
 - fields:
@@ -1270,7 +1330,8 @@
     capacity: 10
     event: 11
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 11
 - fields:
@@ -1278,7 +1339,8 @@
     capacity: 10
     event: 12
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 12
 - fields:
@@ -1286,7 +1348,8 @@
     capacity: 10
     event: 13
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 13
 - fields:
@@ -1294,7 +1357,8 @@
     capacity: 10
     event: 14
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 14
 - fields:
@@ -1302,7 +1366,8 @@
     capacity: 10
     event: 15
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 15
 - fields:
@@ -1310,7 +1375,8 @@
     capacity: 10
     event: 16
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 16
 - fields:
@@ -1318,7 +1384,8 @@
     capacity: 10
     event: 17
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 17
 - fields:
@@ -1326,7 +1393,8 @@
     capacity: 10
     event: 18
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 18
 - fields:
@@ -1334,7 +1402,8 @@
     capacity: 10
     event: 19
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 19
 - fields:
@@ -1342,7 +1411,8 @@
     capacity: 10
     event: 20
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 20
 - fields:
@@ -1350,7 +1420,8 @@
     capacity: 10
     event: 21
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 21
 - fields:
@@ -1358,7 +1429,8 @@
     capacity: 10
     event: 22
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 22
 - fields:
@@ -1366,7 +1438,8 @@
     capacity: 10
     event: 23
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 23
 - fields:
@@ -1374,7 +1447,8 @@
     capacity: 10
     event: 24
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 24
 - fields:
@@ -1382,7 +1456,8 @@
     capacity: 10
     event: 25
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 25
 - fields:
@@ -1390,7 +1465,8 @@
     capacity: 10
     event: 26
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 26
 - fields:
@@ -1398,7 +1474,8 @@
     capacity: 10
     event: 27
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 27
 - fields:
@@ -1406,7 +1483,8 @@
     capacity: 10
     event: 28
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 28
 - fields:
@@ -1414,7 +1492,8 @@
     capacity: 10
     event: 29
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 29
 - fields:
@@ -1422,7 +1501,8 @@
     capacity: 10
     event: 30
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 30
 - fields:
@@ -1430,7 +1510,8 @@
     capacity: 10
     event: 31
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 31
 - fields:
@@ -1438,7 +1519,8 @@
     capacity: 10
     event: 32
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 32
 - fields:
@@ -1446,7 +1528,8 @@
     capacity: 10
     event: 33
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 33
 - fields:
@@ -1454,7 +1537,8 @@
     capacity: 10
     event: 34
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 34
 - fields:
@@ -1462,7 +1546,8 @@
     capacity: 10
     event: 35
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 35
 - fields:
@@ -1470,7 +1555,8 @@
     capacity: 10
     event: 36
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 36
 - fields:
@@ -1478,7 +1564,8 @@
     capacity: 10
     event: 37
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 37
 - fields:
@@ -1486,7 +1573,8 @@
     capacity: 10
     event: 38
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 38
 - fields:
@@ -1494,7 +1582,8 @@
     capacity: 10
     event: 39
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 39
 - fields:
@@ -1502,7 +1591,8 @@
     capacity: 10
     event: 40
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 40
 - fields:
@@ -1510,7 +1600,8 @@
     capacity: 10
     event: 41
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 41
 - fields:
@@ -1518,7 +1609,8 @@
     capacity: 10
     event: 42
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 42
 - fields:
@@ -1526,7 +1618,8 @@
     capacity: 10
     event: 43
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 43
 - fields:
@@ -1534,7 +1627,8 @@
     capacity: 10
     event: 44
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 44
 - fields:
@@ -1542,7 +1636,8 @@
     capacity: 10
     event: 45
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 45
 - fields:
@@ -1550,7 +1645,8 @@
     capacity: 10
     event: 46
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 46
 - fields:
@@ -1558,7 +1654,8 @@
     capacity: 10
     event: 47
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 47
 - fields:
@@ -1566,7 +1663,8 @@
     capacity: 10
     event: 48
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 48
 - fields:
@@ -1574,7 +1672,8 @@
     capacity: 10
     event: 49
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 49
 - fields:
@@ -1582,156 +1681,357 @@
     capacity: 10
     event: 50
     name: Abakusmember
-    permission_groups: [1]
+    permission_groups:
+    - 1
   model: events.Pool
   pk: 50
-- fields: {event: 1, pool: 1, registration_date: '2016-10-27T17:15:00+00:00', user: 1}
+- fields:
+    event: 1
+    pool: 1
+    registration_date: '2016-10-27T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 1
-- fields: {event: 2, pool: 2, registration_date: '2016-10-25T17:00:00+00:00', user: 1}
+- fields:
+    event: 2
+    pool: 2
+    registration_date: '2016-10-25T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 2
-- fields: {event: 3, pool: 3, registration_date: '2016-10-13T17:00:00+00:00', user: 1}
+- fields:
+    event: 3
+    pool: 3
+    registration_date: '2016-10-13T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 3
-- fields: {event: 4, pool: 4, registration_date: '2016-10-11T17:00:00+00:00', user: 1}
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-10-11T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 4
-- fields: {event: 5, pool: 5, registration_date: '2016-10-06T17:00:00+00:00', user: 1}
+- fields:
+    event: 5
+    pool: 5
+    registration_date: '2016-10-06T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 5
-- fields: {event: 6, pool: 6, registration_date: '2016-10-04T17:15:00+00:00', user: 1}
+- fields:
+    event: 6
+    pool: 6
+    registration_date: '2016-10-04T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 6
-- fields: {event: 7, pool: 7, registration_date: '2016-09-19T17:00:00+00:00', user: 1}
+- fields:
+    event: 7
+    pool: 7
+    registration_date: '2016-09-19T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 7
-- fields: {event: 8, pool: 8, registration_date: '2016-09-07T07:00:00+00:00', user: 1}
+- fields:
+    event: 8
+    pool: 8
+    registration_date: '2016-09-07T07:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 8
-- fields: {event: 9, pool: 9, registration_date: '2016-09-09T17:00:00+00:00', user: 1}
+- fields:
+    event: 9
+    pool: 9
+    registration_date: '2016-09-09T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 9
-- fields: {event: 10, pool: 10, registration_date: '2016-09-06T17:00:00+00:00', user: 1}
+- fields:
+    event: 10
+    pool: 10
+    registration_date: '2016-09-06T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 10
-- fields: {event: 11, pool: 11, registration_date: '2016-09-03T18:00:00+00:00', user: 1}
+- fields:
+    event: 11
+    pool: 11
+    registration_date: '2016-09-03T18:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 11
-- fields: {event: 12, pool: 12, registration_date: '2016-09-01T17:00:00+00:00', user: 1}
+- fields:
+    event: 12
+    pool: 12
+    registration_date: '2016-09-01T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 12
-- fields: {event: 13, pool: 13, registration_date: '2016-08-30T17:00:00+00:00', user: 1}
+- fields:
+    event: 13
+    pool: 13
+    registration_date: '2016-08-30T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 13
-- fields: {event: 14, pool: 14, registration_date: '2016-07-02T19:00:00+00:00', user: 1}
+- fields:
+    event: 14
+    pool: 14
+    registration_date: '2016-07-02T19:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 14
-- fields: {event: 15, pool: 15, registration_date: '2016-06-11T20:00:00+00:00', user: 1}
+- fields:
+    event: 15
+    pool: 15
+    registration_date: '2016-06-11T20:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 15
-- fields: {event: 16, pool: 16, registration_date: '2016-04-20T13:00:00+00:00', user: 1}
+- fields:
+    event: 16
+    pool: 16
+    registration_date: '2016-04-20T13:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 16
-- fields: {event: 17, pool: 17, registration_date: '2016-04-20T17:15:00+00:00', user: 1}
+- fields:
+    event: 17
+    pool: 17
+    registration_date: '2016-04-20T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 17
-- fields: {event: 18, pool: 18, registration_date: '2016-05-20T14:00:00+00:00', user: 1}
+- fields:
+    event: 18
+    pool: 18
+    registration_date: '2016-05-20T14:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 18
-- fields: {event: 19, pool: 19, registration_date: '2016-05-17T09:30:00+00:00', user: 1}
+- fields:
+    event: 19
+    pool: 19
+    registration_date: '2016-05-17T09:30:00+00:00'
+    user: 1
   model: events.Registration
   pk: 19
-- fields: {event: 20, pool: 20, registration_date: '2016-05-14T11:00:00+00:00', user: 1}
+- fields:
+    event: 20
+    pool: 20
+    registration_date: '2016-05-14T11:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 20
-- fields: {event: 21, pool: 21, registration_date: '2016-05-09T17:15:00+00:00', user: 1}
+- fields:
+    event: 21
+    pool: 21
+    registration_date: '2016-05-09T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 21
-- fields: {event: 22, pool: 22, registration_date: '2016-05-07T10:15:00+00:00', user: 1}
+- fields:
+    event: 22
+    pool: 22
+    registration_date: '2016-05-07T10:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 22
-- fields: {event: 23, pool: 23, registration_date: '2016-04-20T17:15:00+00:00', user: 1}
+- fields:
+    event: 23
+    pool: 23
+    registration_date: '2016-04-20T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 23
-- fields: {event: 24, pool: 24, registration_date: '2016-04-29T08:30:00+00:00', user: 1}
+- fields:
+    event: 24
+    pool: 24
+    registration_date: '2016-04-29T08:30:00+00:00'
+    user: 1
   model: events.Registration
   pk: 24
-- fields: {event: 25, pool: 25, registration_date: '2016-04-28T12:00:00+00:00', user: 1}
+- fields:
+    event: 25
+    pool: 25
+    registration_date: '2016-04-28T12:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 25
-- fields: {event: 26, pool: 26, registration_date: '2016-04-27T16:00:00+00:00', user: 1}
+- fields:
+    event: 26
+    pool: 26
+    registration_date: '2016-04-27T16:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 26
-- fields: {event: 27, pool: 27, registration_date: '2016-04-25T17:15:00+00:00', user: 1}
+- fields:
+    event: 27
+    pool: 27
+    registration_date: '2016-04-25T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 27
-- fields: {event: 28, pool: 28, registration_date: '2016-04-23T18:00:00+00:00', user: 1}
+- fields:
+    event: 28
+    pool: 28
+    registration_date: '2016-04-23T18:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 28
-- fields: {event: 29, pool: 29, registration_date: '2016-04-21T19:00:00+00:00', user: 1}
+- fields:
+    event: 29
+    pool: 29
+    registration_date: '2016-04-21T19:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 29
-- fields: {event: 30, pool: 30, registration_date: '2016-04-18T10:30:00+00:00', user: 1}
+- fields:
+    event: 30
+    pool: 30
+    registration_date: '2016-04-18T10:30:00+00:00'
+    user: 1
   model: events.Registration
   pk: 30
-- fields: {event: 31, pool: 31, registration_date: '2016-04-15T19:00:00+00:00', user: 1}
+- fields:
+    event: 31
+    pool: 31
+    registration_date: '2016-04-15T19:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 31
-- fields: {event: 32, pool: 32, registration_date: '2016-04-15T08:00:00+00:00', user: 1}
+- fields:
+    event: 32
+    pool: 32
+    registration_date: '2016-04-15T08:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 32
-- fields: {event: 33, pool: 33, registration_date: '2016-04-14T17:00:00+00:00', user: 1}
+- fields:
+    event: 33
+    pool: 33
+    registration_date: '2016-04-14T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 33
-- fields: {event: 34, pool: 34, registration_date: '2016-04-11T17:00:00+00:00', user: 1}
+- fields:
+    event: 34
+    pool: 34
+    registration_date: '2016-04-11T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 34
-- fields: {event: 35, pool: 35, registration_date: '2016-04-09T15:00:00+00:00', user: 1}
+- fields:
+    event: 35
+    pool: 35
+    registration_date: '2016-04-09T15:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 35
-- fields: {event: 36, pool: 36, registration_date: '2016-04-07T17:00:00+00:00', user: 1}
+- fields:
+    event: 36
+    pool: 36
+    registration_date: '2016-04-07T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 36
-- fields: {event: 37, pool: 37, registration_date: '2016-04-06T16:00:00+00:00', user: 1}
+- fields:
+    event: 37
+    pool: 37
+    registration_date: '2016-04-06T16:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 37
-- fields: {event: 38, pool: 38, registration_date: '2016-04-06T16:00:00+00:00', user: 1}
+- fields:
+    event: 38
+    pool: 38
+    registration_date: '2016-04-06T16:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 38
-- fields: {event: 39, pool: 39, registration_date: '2016-04-05T17:00:00+00:00', user: 1}
+- fields:
+    event: 39
+    pool: 39
+    registration_date: '2016-04-05T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 39
-- fields: {event: 40, pool: 40, registration_date: '2016-03-31T19:00:00+00:00', user: 1}
+- fields:
+    event: 40
+    pool: 40
+    registration_date: '2016-03-31T19:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 40
-- fields: {event: 41, pool: 41, registration_date: '2016-03-15T17:15:00+00:00', user: 1}
+- fields:
+    event: 41
+    pool: 41
+    registration_date: '2016-03-15T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 41
-- fields: {event: 42, pool: 42, registration_date: '2016-03-13T16:00:00+00:00', user: 1}
+- fields:
+    event: 42
+    pool: 42
+    registration_date: '2016-03-13T16:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 42
-- fields: {event: 43, pool: 43, registration_date: '2016-03-10T17:00:00+00:00', user: 1}
+- fields:
+    event: 43
+    pool: 43
+    registration_date: '2016-03-10T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 43
-- fields: {event: 44, pool: 44, registration_date: '2016-03-09T16:00:00+00:00', user: 1}
+- fields:
+    event: 44
+    pool: 44
+    registration_date: '2016-03-09T16:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 44
-- fields: {event: 45, pool: 45, registration_date: '2016-03-09T16:00:00+00:00', user: 1}
+- fields:
+    event: 45
+    pool: 45
+    registration_date: '2016-03-09T16:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 45
-- fields: {event: 46, pool: 46, registration_date: '2016-03-08T17:00:00+00:00', user: 1}
+- fields:
+    event: 46
+    pool: 46
+    registration_date: '2016-03-08T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 46
-- fields: {event: 47, pool: 47, registration_date: '2016-03-07T17:15:00+00:00', user: 1}
+- fields:
+    event: 47
+    pool: 47
+    registration_date: '2016-03-07T17:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 47
-- fields: {event: 48, pool: 48, registration_date: '2016-03-05T09:00:00+00:00', user: 1}
+- fields:
+    event: 48
+    pool: 48
+    registration_date: '2016-03-05T09:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 48
-- fields: {event: 49, pool: 49, registration_date: '2016-03-04T16:15:00+00:00', user: 1}
+- fields:
+    event: 49
+    pool: 49
+    registration_date: '2016-03-04T16:15:00+00:00'
+    user: 1
   model: events.Registration
   pk: 49
-- fields: {event: 50, pool: 50, registration_date: '2016-03-03T17:00:00+00:00', user: 1}
+- fields:
+    event: 50
+    pool: 50
+    registration_date: '2016-03-03T17:00:00+00:00'
+    user: 1
   model: events.Registration
   pk: 50
