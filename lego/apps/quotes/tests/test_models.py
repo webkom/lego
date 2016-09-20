@@ -1,9 +1,8 @@
-from lego.app.content.tests import ContentTestMixin
-from lego.app.quotes.models import Quote
-from lego.users.models import AbakusGroup, User
-
 from django.test import TestCase
-from lego.apps.quotes.quotes import QuoteViewSet
+from lego.apps.content.tests import ContentTestMixin
+from lego.apps.quotes.models import Quote
+from lego.apps.quotes.views import QuoteViewSet
+from lego.apps.users.models import AbakusGroup, User
 
 
 class QuoteTest(TestCase, ContentTestMixin):

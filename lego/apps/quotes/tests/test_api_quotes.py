@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, User
 
 _test_quote_data = {
     'title': 'QuoteTest',
@@ -214,14 +214,14 @@ class ApproveQuoteTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.put(_get_approve_url(3))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(user=self.abakus_user)
         response = self.client.put(_get_approve_url(3))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 10)
+        self.assertEqual(len(response.data), 50)
 
 
 class UnapproveQuoteTestCase(APITestCase):
