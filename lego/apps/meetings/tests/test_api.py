@@ -51,5 +51,3 @@ class CreateMeetingTestCase(APITestCase):
         self.client.force_authenticate(self.pleb)
         res = self.client.post(_get_list_url(), test_meeting_data[0])
         self.assertEqual(res.status_code, 403)
-
-

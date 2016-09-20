@@ -22,7 +22,7 @@
     rght: 21
     tree_id: 1
     permissions:
-      - /sudo/admin/meetings/
+      - /sudo/admin/meetings/create/
 
 - model: users.AbakusGroup
   pk: 3
