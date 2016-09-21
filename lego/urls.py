@@ -1,11 +1,12 @@
 from django.conf.urls import include, url
 from django.contrib.auth.views import login, logout
 from django.views.generic import TemplateView
-from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
 jwt_urlpatterns = [
     url(r'^token-auth/$', obtain_jwt_token, name='obtain_jwt_token'),
     url(r'^token-auth/refresh/$', refresh_jwt_token, name='refresh_jwt_token'),
+    url(r'^token-auth/verify/$', verify_jwt_token, name='verify_jwt_token'),
 ]
 
 authorization_urlpatterns = [
