@@ -24,11 +24,14 @@ class Likeable(models.Model):
         abstract = True
 
     def has_liked(self, user):
-        return Like.objects.filter(user=user, content_object=self).exists()
+        content_type = ContentType.objects.get_for_model(self)
+        return Like.objects.filter(content_type=content_type, object_id=self.id, user=user).exists()
 
     def like(self, user):
         Like.objects.create(user=user, content_object=self)
 
     def unlike(self, user):
-        Like.objects.filter(user=user, content_object=self).delete()
+        content_type = ContentType.objects.get_for_model(self)
+        like = Like.objects.get(content_type=content_type, object_id=self.id, user=user)
+        like.delete()
 
