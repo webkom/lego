@@ -1,9 +1,9 @@
-from basis.models import BasisModel
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.utils.models import BasisModel
 
 
 class Comment(BasisModel, ObjectPermissionsModel):

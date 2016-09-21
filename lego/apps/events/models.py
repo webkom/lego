@@ -1,4 +1,3 @@
-from basis.models import BasisModel
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
@@ -7,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.models import BasisModel
 
 from .exceptions import NoAvailablePools
 

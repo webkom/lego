@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import basis.models
 from django.conf import settings
 from django.db import migrations, models
+
+import lego.utils.models
 
 
 class Migration(migrations.Migration):
@@ -18,8 +19,8 @@ class Migration(migrations.Migration):
             name='TestModel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('created_at', models.DateTimeField(default=basis.models._now, editable=False)),
-                ('updated_at', models.DateTimeField(default=basis.models._now, editable=False)),
+                ('created_at', models.DateTimeField(auto_now_add=True, editable=False)),
+                ('updated_at', models.DateTimeField(auto_now=True, editable=False)),
                 ('deleted', models.BooleanField(default=False, editable=False)),
                 ('require_auth', models.BooleanField(verbose_name='require auth', default=False)),
                 ('name', models.CharField(verbose_name='name', max_length=30)),
