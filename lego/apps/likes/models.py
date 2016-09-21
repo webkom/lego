@@ -40,6 +40,4 @@ class Likeable(models.Model):
 
     def unlike(self, user):
         content_type = ContentType.objects.get_for_model(self)
-        like = Like.objects.get(content_type=content_type, object_id=self.id, user=user)
-        like.delete()
-
+        Like.objects.filter(content_type=content_type, object_id=self.id, user=user).delete()
