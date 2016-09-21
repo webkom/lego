@@ -23,6 +23,14 @@ class Likeable(models.Model):
     class Meta:
         abstract = True
 
+    def get_like(self, user):
+        content_type = ContentType.objects.get_for_model(self)
+        return Like.objects.filter(content_type=content_type, object_id=self.id, user=user)
+
+    def get_likes(self):
+        content_type = ContentType.objects.get_for_model(self)
+        return Like.objects.filter(content_type=content_type, object_id=self.id)
+
     def has_liked(self, user):
         content_type = ContentType.objects.get_for_model(self)
         return Like.objects.filter(content_type=content_type, object_id=self.id, user=user).exists()
