@@ -29,7 +29,7 @@ class QuoteSerializer(BasisSerializer):
             return None
 
     def user_likes(self, obj):
-        return obj.get_likes()
+        return obj.get_likes().count()
 
     class Meta:
         model = Quote

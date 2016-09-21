@@ -15,11 +15,11 @@ class QuoteViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, QuotePermissions)
     serializer_class = QuoteSerializer
 
-    @detail_route(methods=['POST'])
+    @detail_route(methods=['GET'])
     def like(self, request, pk=None):
         return self._like_quote(request=request)
 
-    @detail_route(methods=['POST'])
+    @detail_route(methods=['GET'])
     def unlike(self, request, pk=None):
         return self._like_quote(request=request, like=False)
 
@@ -33,15 +33,15 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     def _like_quote(self, request, like=True):
         instance = self.get_object()
-        quote_like = None
+        has_liked = instance.has_liked(user=request.user)
         if like:
-            if instance.approved and not quote_like:
+            if instance.approved and not has_liked:
                 instance.like(user=request.user)
             else:
                 # TODO: Raise a 409 instead?
                 raise PermissionDenied
         else:
-            if instance.approved and quote_like:
+            if instance.approved and has_liked:
                 instance.unlike(user=request.user)
             else:
                 # TODO: Raise a 409 instead?
