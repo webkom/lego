@@ -1,9 +1,9 @@
 from basis.models import BasisModel
-from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from lego.apps.permissions.models import ObjectPermissionsModel
 
+from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 
 
