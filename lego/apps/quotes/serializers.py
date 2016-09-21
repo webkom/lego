@@ -1,5 +1,6 @@
 from basis.serializers import BasisSerializer
-from lego.apps.quotes.models import Quote, QuoteLike
+from lego.apps.likes.models import Like
+from lego.apps.quotes.models import Quote
 from lego.apps.users.serializers import PublicUserSerializer
 from rest_framework import serializers
 
@@ -8,6 +9,7 @@ class QuoteSerializer(BasisSerializer):
     has_liked = serializers.SerializerMethodField('user_has_liked')
     author = serializers.SerializerMethodField('user_author')
     permissions = serializers.SerializerMethodField('user_permissions')
+    likes = serializers.SerializerMethodField('user_likes')
 
     def user_permissions(self, obj):
         user = self.context['request'].user
@@ -25,6 +27,9 @@ class QuoteSerializer(BasisSerializer):
             return PublicUserSerializer(obj.author).data
         else:
             return None
+
+    def user_likes(self, obj):
+        return obj.get_likes()
 
     class Meta:
         model = Quote
@@ -48,5 +53,5 @@ class QuoteSerializer(BasisSerializer):
 
 class QuoteLikeSerializer(BasisSerializer):
     class Meta:
-        model = QuoteLike
+        model = Like
         fields = ('user', 'quote')

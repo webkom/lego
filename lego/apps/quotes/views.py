@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from lego.apps.quotes.models import (Quote, QuoteLike)
+from lego.apps.quotes.models import Quote
 from lego.apps.quotes.permissions import QuotePermissions, QuotePermissionsFilter
 
 
@@ -33,7 +33,7 @@ class QuoteViewSet(viewsets.ModelViewSet):
 
     def _like_quote(self, request, like=True):
         instance = self.get_object()
-        quote_like = bool(QuoteLike.objects.filter(user=request.user, quote=instance))
+        quote_like = None
         if like:
             if instance.approved and not quote_like:
                 instance.like(user=request.user)
