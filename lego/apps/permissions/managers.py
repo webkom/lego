@@ -1,4 +1,4 @@
-from basis.managers import PersistentModelManager
+from lego.utils.models import PersistentModelManager
 
 
 class PublicObjectPermissionsManager(PersistentModelManager):

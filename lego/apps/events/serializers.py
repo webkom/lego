@@ -1,13 +1,13 @@
-from basis.serializers import BasisSerializer
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.serializers import PublicUserSerializer
+from lego.utils.serializers import BasisModelSerializer
 
 
-class RegistrationReadSerializer(BasisSerializer):
+class RegistrationReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
 
     class Meta:
@@ -15,7 +15,7 @@ class RegistrationReadSerializer(BasisSerializer):
         fields = ('id', 'user')
 
 
-class PoolReadSerializer(BasisSerializer):
+class PoolReadSerializer(BasisModelSerializer):
     registrations = RegistrationReadSerializer(many=True)
 
     class Meta:
@@ -30,7 +30,7 @@ class PoolReadSerializer(BasisSerializer):
         return pool
 
 
-class EventReadSerializer(BasisSerializer):
+class EventReadSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
 
@@ -40,7 +40,7 @@ class EventReadSerializer(BasisSerializer):
                   'comments', 'comment_target', 'start_time', 'end_time')
 
 
-class EventReadDetailedSerializer(BasisSerializer):
+class EventReadDetailedSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
     pools = PoolReadSerializer(many=True)
@@ -52,7 +52,7 @@ class EventReadDetailedSerializer(BasisSerializer):
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
 
 
-class PoolCreateAndUpdateSerializer(BasisSerializer):
+class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Pool
@@ -67,14 +67,14 @@ class PoolCreateAndUpdateSerializer(BasisSerializer):
         return pool
 
 
-class EventCreateAndUpdateSerializer(BasisSerializer):
+class EventCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
                   'start_time', 'end_time', 'merge_time')
 
 
-class RegistrationCreateAndUpdateSerializer(BasisSerializer):
+class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = ('id',)
