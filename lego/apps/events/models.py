@@ -372,3 +372,6 @@ class Registration(BasisModel):
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
+
+    def delete(self, *args, **kwargs):
+        self.event.unregister(self.user)
