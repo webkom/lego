@@ -48,3 +48,6 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
         return Registration.objects.filter(event=event_id, unregistration_date=None)
+
+    def perform_destroy(self, instance):
+        instance.event.unregister(instance.user)
