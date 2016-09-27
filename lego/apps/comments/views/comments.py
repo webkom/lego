@@ -12,4 +12,4 @@ class CommentViewSet(mixins.CreateModelMixin,
     queryset = Comment.objects.all().select_related('created_by')
     serializer_class = CommentSerializer
 
-    permission_classes = [CommentPermission]
+    permission_classes = (CommentPermission,)

@@ -19,14 +19,15 @@ class CommentPermission(AbakusPermission):
         return True
 
     def check_target_permissions(self, request):
+        comment_target = None
         try:
             comment_target = GenericRelationField()\
                             .to_internal_value(request.data.get('comment_target'))
-        except Exception:
-            comment_target = None
+        except ValidationError as e:
+            # Comment_target was not found. This will be raised in serializer at a later point.
+            # Validation does not belong in permissions
+            pass
 
         if comment_target:
             if not comment_target.can_view(request.user):
-                raise ValidationError(
-                    {'access_denied': 'You do not have permission to view the '
-                                      'comment_target'})
+                return False
