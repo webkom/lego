@@ -16,23 +16,31 @@ class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):
 
     report = models.TextField(blank=True)
     report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
+    _invited_users = models.ManyToManyField(User, through='MeetingInvitation',
+                                            related_name='meeting_invitation',
+                                            through_fields=('meeting', 'user'))
 
-    def invited_user_ids(self):
-        return self.invitations.values_list('user', flat=True)
+    @property
+    def invited_users(self):
+        """
+        As _invited_users include invitations deleted by Meeting.uninvite,
+        we need to use this property method to not show them.
+        For some reason, limit_choices_to does not work with ManyToManyField
+        when specifying a custom through table.
+        """
+        return self._invited_users.filter(invitation__deleted=False)
+
+    def participants(self):
+        return self.invited_users.filter(invitation__status=MeetingInvitation.ATTENDING)
 
     def invite(self, user):
-        return self.invitations.update_or_create(user=user,
-                                                 meeting=self,
-                                                 defaults={'status': MeetingInvitation.NO_ANSWER})
+        return self.invitation.update_or_create(user=user,
+                                                meeting=self,
+                                                defaults={'status': MeetingInvitation.NO_ANSWER})
 
     def uninvite(self, user):
-        invitation = self.invitations.get(user=user)
+        invitation = self.invitation.get(user=user)
         invitation.delete()
-
-
-class Participant(BasisModel, ObjectPermissionsModel):
-    meeting = models.ForeignKey(Meeting, related_name='participants')
-    user = models.ForeignKey(User)
 
 
 class MeetingInvitation(BasisModel, ObjectPermissionsModel):
@@ -47,13 +55,12 @@ class MeetingInvitation(BasisModel, ObjectPermissionsModel):
         (NOT_ATTENDING, 'Not attending')
     )
 
-    meeting = models.ForeignKey(Meeting, related_name='invitations')
+    meeting = models.ForeignKey(Meeting, related_name='invitation')
+    user = models.ForeignKey(User, related_name='invitation')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES)
-    user = models.ForeignKey(User, related_name='meeting_invitations')
 
     def accept(self):
         self.status = self.ATTENDING
-        self.meeting.participants.update_or_create(meeting=self.meeting, user=self.user)
         self.save()
 
     def reject(self):

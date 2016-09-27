@@ -34,7 +34,23 @@
 - model: users.User
   pk: 5
   fields:
-    username: not_abakommer
-    first_name: Not
-    last_name: Abakommer
-    email: not_in@abakus.no
+    username: abakule
+    first_name: Aba
+    last_name: Kule
+    email: abakule@abakus.no
+
+- model: users.User
+  pk: 6
+  fields:
+    username: abakommer
+    first_name: Aba
+    last_name: Kommer
+    email: abakommer@abakus.no
+
+- model: users.User
+  pk: 7
+  fields:
+    username: pleb
+    first_name: pleb
+    last_name: plebbesen
+    email: pleb@hotmail.no
