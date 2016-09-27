@@ -10,7 +10,7 @@ class MeetingTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(id=1)
-        self.meeting = Meeting.objects.get(id=1)
+        self.meeting = Meeting.objects.get(id=3)
 
     def test_can_invite(self):
         invitation = self.meeting.invite(self.user)[0]
@@ -18,10 +18,6 @@ class MeetingTestCase(TestCase):
         self.assertEqual(invitation.meeting, self.meeting)
 
     def test_can_accept_invite(self):
-        """
-        Check that a user may be invited, can accept the invitation,
-        and is in the list of participants.all() for the meeting.
-        """
         invitation = self.meeting.invite(self.user)[0]
         invitation.accept()
         self.assertIn(self.user, self.meeting.participants.all())
@@ -66,4 +62,3 @@ class MeetingTestCase(TestCase):
         self.assertEqual(len(self.meeting.invited_users.all()), 0)
         self.assertEqual(len(self.meeting.participants.all()), 0)
         self.assertEqual(len(self.meeting.invitation.all()), 0)
-

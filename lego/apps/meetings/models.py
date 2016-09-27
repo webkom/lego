@@ -58,7 +58,8 @@ class MeetingInvitation(BasisModel, ObjectPermissionsModel):
 
     meeting = models.ForeignKey(Meeting, related_name='invitation')
     user = models.ForeignKey(User, related_name='invitation')
-    status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES)
+    status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES,
+                                      default=NO_ANSWER)
 
     def accept(self):
         self.status = self.ATTENDING
