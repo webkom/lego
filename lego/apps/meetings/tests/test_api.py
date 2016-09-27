@@ -57,17 +57,34 @@ class RetrieveMeetingTestCase(APITestCase):
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)
-        self.pleb = User.objects.get(username='not_abakommer')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.pleb)
+        self.abakommer = User.objects.get(username='abakommer')
+        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
+        self.abakule = User.objects.get(username='test1')
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
+        self.pleb = User.objects.get(username='pleb')
 
     def test_participant_can_retrieve(self):
-        invited = User.objects.get(username='test1')
+        invited = self.abakule
         self.client.force_authenticate(invited)
         self.meeting.invite(invited)
         res = self.client.get(_get_detail_url(self.meeting.id))
         self.assertEqual(res.status_code, 200)
 
-    def test_dude_cannot_retrieve(self):
+    def test_uninvited_cannot_retrieve(self):
+        user = self.abakule
+        self.client.force_authenticate(user)
+        self.meeting.invite(user)
+        self.meeting.uninvite(user)
+        res = self.client.get(_get_detail_url(self.meeting.pk))
+        self.assertTrue(res.status_code >= 403)
+
+    def test_pleb_cannot_retrieve(self):
         self.client.force_authenticate(self.pleb)
         res = self.client.get(_get_detail_url(self.meeting.id))
-        self.assertEqual(res.status_code, 404)
+        self.assertTrue(res.status_code >= 403)
+
+    def test_abakus_can_attend_abameeting(self):
+        abameeting = Meeting.objects.get(title='Genvors')
+        self.client.force_authenticate(self.abakule)
+        res = self.client.get(_get_detail_url(abameeting.id))
+        self.assertEqual(res.status_code, 200)
