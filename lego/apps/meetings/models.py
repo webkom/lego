@@ -1,9 +1,9 @@
-from basis.models import BasisModel
 from django.db import models
 
 from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
+from lego.utils.models import BasisModel
 
 
 class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):

@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.apps.meetings.models import Meeting
+from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.users.models import AbakusGroup, User
 
 test_meeting_data = [
@@ -86,12 +86,31 @@ class RetrieveMeetingTestCase(APITestCase):
         res = self.client.get(_get_detail_url(self.meeting.id))
         self.assertTrue(res.status_code >= 403)
 
-    def test_abakus_can_attend_abameeting(self):
+    def test_abakus_can_retrieve_abameeting(self):
         abameeting = Meeting.objects.get(title='Genvors')
         for user in [self.abakule, self.abakommer]:
             self.client.force_authenticate(user)
             res = self.client.get(_get_detail_url(abameeting.id))
             self.assertEqual(res.status_code, 200)
+
+    def test_can_see_invitations(self):
+        self.meeting.created_by = self.abakule
+        self.meeting.save()
+        self.client.force_authenticate(self.abakule)
+
+        self.meeting.invite(self.abakommer)
+        self.meeting.invite(self.abakule)[0].accept()
+        self.meeting.invite(self.pleb)[0].accept()
+
+        for user in [self.abakule, self.abakommer, self.pleb]:
+            self.client.force_authenticate(user)
+            res = self.client.get(_get_invitations_list_url(self.meeting.id))
+            self.assertEqual(res.status_code, 200)
+            invitations = list(res.data)
+            attending = [inv for inv in invitations if inv['status'] == MeetingInvitation.ATTENDING]
+            self.assertEqual(len(attending), 2)
+            no_answer = [inv for inv in invitations if inv['status'] == MeetingInvitation.NO_ANSWER]
+            self.assertEqual(len(no_answer), 1)
 
 
 class DeleteMeetingTestCase(APITestCase):

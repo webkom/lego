@@ -1,9 +1,8 @@
-from basis.serializers import BasisSerializer
-
 from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.utils.serializers import BasisModelSerializer
 
 
-class MeetingSerializer(BasisSerializer):
+class MeetingSerializer(BasisModelSerializer):
     class Meta:
         model = Meeting
         fields = ('id', 'title', 'location', 'author', 'start_time', 'end_time', 'report',
@@ -16,7 +15,7 @@ class MeetingSerializer(BasisSerializer):
         return meeting
 
 
-class MeetingInvitationSerializer(BasisSerializer):
+class MeetingInvitationSerializer(BasisModelSerializer):
     class Meta:
         model = MeetingInvitation
         fields = ('user', 'status')
