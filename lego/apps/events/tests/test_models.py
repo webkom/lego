@@ -50,6 +50,10 @@ class PoolMethodTest(TestCase):
     def test_str(self):
         self.assertEqual(str(self.pool), self.pool.name)
 
+    def test_delete_pool(self):
+        with self.assertRaises(ValueError):
+            self.pool.delete()
+
 
 class RegistrationMethodTest(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
