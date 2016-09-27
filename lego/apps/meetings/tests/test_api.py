@@ -57,12 +57,13 @@ class RetrieveMeetingTestCase(APITestCase):
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)
-        AbakusGroup.objects.get(name='readme').add_user(self.meeting.author)
         self.pleb = User.objects.get(username='not_abakommer')
         AbakusGroup.objects.get(name='Abakus').add_user(self.pleb)
 
-    def test_author_can_retrieve(self):
-        self.client.force_authenticate(self.meeting.author)
+    def test_participant_can_retrieve(self):
+        invited = User.objects.get(username='test1')
+        self.client.force_authenticate(invited)
+        self.meeting.invite(invited)
         res = self.client.get(_get_detail_url(self.meeting.id))
         self.assertEqual(res.status_code, 200)
 

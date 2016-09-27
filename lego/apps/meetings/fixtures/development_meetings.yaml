@@ -1,7 +1,5 @@
 - fields:
     author: 1
-    can_view_groups:
-    - 9
     title: Bra møte
     location: TBA
     start_time: '2016-10-01T17:15:00+00:00'
