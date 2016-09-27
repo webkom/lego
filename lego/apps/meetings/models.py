@@ -12,17 +12,22 @@ class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
+    only_for_invited = models.BooleanField(default=False)
 
     report = models.TextField(blank=True)
     report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
 
-    def invited_users(self):
-        return self.invitations.values('user')
+    def invited_user_ids(self):
+        return self.invitations.values_list('user', flat=True)
 
     def invite(self, user):
         return self.invitations.update_or_create(user=user,
                                                  meeting=self,
                                                  defaults={'status': MeetingInvitation.NO_ANSWER})
+
+    def uninvite(self, user):
+        invitation = self.invitations.get(user=user)
+        invitation.delete()
 
 
 class Participant(BasisModel, ObjectPermissionsModel):
