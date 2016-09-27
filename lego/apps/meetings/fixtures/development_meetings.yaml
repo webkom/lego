@@ -23,3 +23,13 @@
     can_view_groups:
       - 1
 
+- model: meetings.Meeting
+  pk: 3
+  fields:
+    author: 1
+    title: Tomt møte
+    location: "null"
+    start_time: '2010-02-01T17:15:00+00:00'
+    end_time: '2011-02-01T23:59:00+00:00'
+    report: 'tomp'
+    report_author: 3
