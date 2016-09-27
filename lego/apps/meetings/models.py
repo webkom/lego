@@ -1,12 +1,12 @@
 from basis.models import BasisModel
 from django.db import models
 
-from lego.apps.content.models import Content
+from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 
 
-class Meeting(Content, BasisModel, ObjectPermissionsModel):
+class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):
 
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
@@ -15,6 +15,9 @@ class Meeting(Content, BasisModel, ObjectPermissionsModel):
 
     report = models.TextField(blank=True)
     report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
+
+    def invited_users(self):
+        return self.invitations.values('user')
 
     def invite(self, user):
         return self.invitations.update_or_create(user=user,
