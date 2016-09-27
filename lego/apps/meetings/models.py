@@ -30,6 +30,7 @@ class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):
         """
         return self._invited_users.filter(invitation__deleted=False)
 
+    @property
     def participants(self):
         return self.invited_users.filter(invitation__status=MeetingInvitation.ATTENDING)
 
