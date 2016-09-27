@@ -12,7 +12,8 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.prefetch_related('pools__permission_groups',
                                               'pools__registrations',
                                               'pools__registrations__user',
-                                              'can_view_groups')
+                                              'can_view_groups',
+                                              'comments')
 
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
