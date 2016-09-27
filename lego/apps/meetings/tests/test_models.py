@@ -24,4 +24,42 @@ class MeetingTestCase(TestCase):
         meeting = Meeting.objects.get(id=1)
         invitation = meeting.invite(user)[0]
         invitation.accept()
-        self.assertIsNotNone(meeting.participants.get(user=user))
+        self.assertIn(user, meeting.participants())
+
+    def test_double_invite(self):
+        user = User.objects.get(id=1)
+        meeting = Meeting.objects.get(id=1)
+        self.assertEqual(len(meeting.invited_users.all()), 0)
+        self.assertEqual(len(meeting.participants()), 0)
+        self.assertEqual(len(meeting.invitation.all()), 0)
+        meeting.invite(user)[0].accept()
+        meeting.invite(user)[0].accept()
+        self.assertEqual(len(meeting.invited_users.all()), 1)
+        self.assertEqual(len(meeting.participants()), 1)
+        self.assertEqual(len(meeting.invitation.all()), 1)
+
+    def test_participants(self):
+        user = User.objects.get(id=1)
+        meeting = Meeting.objects.get(id=1)
+        self.assertEqual(len(meeting.participants()), 0)
+        meeting.invite(user)
+        self.assertEqual(len(meeting.participants()), 0)
+        invitation = meeting.invitation.get(user=user)
+        invitation.accept()
+        self.assertEqual(len(meeting.participants()), 1)
+        invitation.reject()
+        self.assertEqual(len(meeting.participants()), 0)
+
+    def test_invited_users(self):
+        user = User.objects.get(id=1)
+        meeting = Meeting.objects.get(id=1)
+        self.assertEqual(len(meeting.invited_users.all()), 0)
+        meeting.invite(user)
+        self.assertEqual(len(meeting.invited_users.all()), 1)
+        invitation = meeting.invitation.get(user=user)
+        invitation.accept()
+        self.assertEqual(len(meeting.invited_users.all()), 1)
+        invitation.reject()
+        self.assertEqual(len(meeting.invited_users.all()), 1)
+        meeting.uninvite(user)
+        self.assertEqual(len(meeting.invited_users.all()), 0)
