@@ -18,8 +18,8 @@ router.register(r'articles', ArticlesViewSet)
 router.register(r'comments', CommentViewSet)
 router.register(r'notifications', NotificationFeedViewSet, base_name='feed-notifications')
 router.register(r'events', EventViewSet)
-router.register(r'events/(?P<event_pk>[^/]+)/pools', PoolViewSet)
-router.register(r'events/(?P<event_pk>[^/]+)/registrations',
+router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
+router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)

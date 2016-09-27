@@ -343,7 +343,7 @@ class Pool(BasisModel):
     permission_groups = models.ManyToManyField(AbakusGroup)
 
     def delete(self, *args, **kwargs):
-        if self.registrations.exist():
+        if not self.registrations.exists():
             super().delete(*args, **kwargs)
         else:
             raise ValueError('Registrations exist in Pool')
