@@ -24,6 +24,8 @@ class MeetingInvitationPermissions(AbakusPermission):
             return False
 
         meeting = Meeting.objects.get(id=view.kwargs['meeting_pk'])
+        if view.action == 'list' and request.user in meeting.invited_users:
+            return True
         if not meeting.can_edit(request.user):
             return False
         return True
