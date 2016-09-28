@@ -78,3 +78,21 @@
     permissions:
       - /sudo/admin/apiapplications/list/
       - /sudo/admin/apiapplications/create/
+
+- model: users.AbakusGroup
+  pk: 7
+  fields:
+    name: QuoteAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 106
+    permissions:
+      - /sudo/admin/quotes/like/
+      - /sudo/admin/quotes/change-approval/
+      - /sudo/admin/quotes/list-unapproved/
+      - /sudo/admin/quotes/list/
+      - /sudo/admin/quotes/retrieve/
+      - /sudo/admin/quotes/create/
+      - /sudo/admin/quotes/update/
+      - /sudo/admin/quotes/destroy/

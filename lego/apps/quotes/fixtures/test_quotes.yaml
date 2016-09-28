@@ -1,0 +1,26 @@
+- model: quotes.Quote
+  pk: 1
+  fields:
+    title: T-Boy om jenter
+    author: 1
+    text: Du må bruke munnen der du brukte fingrene i sted!
+    source: Tibor "Kikiriki" Vukoivic
+    approved: 1
+
+- model: quotes.Quote
+  pk: 2
+  fields:
+    title: Test tittel
+    author: 1
+    text: Just do it!
+    source: Topkek
+    approved: 1
+
+- model: quotes.Quote
+  pk: 3
+  fields:
+    title: Webkommer forsøker å avvise en invitasjon til en strippeklubb
+    author: 2
+    text: I like the big dick from the man
+    source: Webkommedlem
+    approved: 0
