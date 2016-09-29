@@ -191,6 +191,39 @@ class CreateCommentsAPITestCase(APITestCase):
         self.assertEqual(response2.status_code, 400)
         self.assertIn('parent', response2.data)
 
+    def test_with_user_who_cannot_see_parent(self):
+        self.client.force_authenticate(user=self.with_permission)
+
+        with_permission_group_ids = map(lambda g: g.id, self.with_permission.all_groups)
+
+        group = AbakusGroup.objects.exclude(id__in=with_permission_group_ids).first()
+        """
+            create an article which has a different owner and a group which with_permission does not
+            belong to. The user should then not be allowed to post a comment on this article
+        """
+
+        article = Article(
+            text='hello world',
+            author=self.without_permission
+        )
+        article.save()
+        article.can_view_groups.add(group)
+
+        content_type = ContentType.objects.get_for_model(Article)
+
+        comment_target = '{0}.{1}-{2}'.format(
+            content_type.app_label,
+            content_type.model,
+            article.id
+        )
+
+        response = self.client.post(_get_list_url(), {
+            'comment_target': comment_target,
+            'text': 'first comment'
+        })
+
+        self.assertEqual(response.status_code, 403)
+
 
 class UpdateCommentsAPITestCase(APITestCase):
     fixtures = [
@@ -234,17 +267,20 @@ class UpdateCommentsAPITestCase(APITestCase):
 
     def test_with_new_comment_target(self):
         comment_update = self.modified_comment.copy()
-        comment_target = '{0}-{1}'.format(
-            ContentType.objects.get_for_model(Article).app_label,
+
+        content_type = ContentType.objects.get_for_model(Article)
+        comment_target = '{0}.{1}-{2}'.format(
+            content_type.app_label,
+            content_type.model,
             Article.objects.last().pk
         )
+
         comment_update['comment_target'] = comment_target
-        self.client.force_authenticate(user=self.without_permission)
+        self.client.force_authenticate(user=self.with_permission)
         response = self.client.put(_get_detail_url(self.test_comment.pk), comment_update)
         comment = Comment.objects.get(pk=self.test_comment.pk)
-
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(comment, self.test_comment)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(comment.content_object, self.test_comment.content_object)
 
     def test_other_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)

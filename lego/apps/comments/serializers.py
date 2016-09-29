@@ -30,7 +30,8 @@ class CommentSerializer(BasisModelSerializer):
 
         return attrs
 
-    def update(self, instance, validated_data):
-        instance.text = validated_data.get('text', instance.text)
-        instance.save()
-        return instance
+
+class UpdateCommentSerializer(BasisModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('text',)
