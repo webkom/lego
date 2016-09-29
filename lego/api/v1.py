@@ -1,7 +1,7 @@
 from rest_framework import routers
 
 from lego.apps.articles.views.articles import ArticlesViewSet
-from lego.apps.comments.views.comments import CommentViewSet
+from lego.apps.comments.views import CommentViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.feed.views import NotificationFeedViewSet
 from lego.apps.flatpages.views import PageViewSet
