@@ -7,7 +7,6 @@ from lego.apps.users.models import AbakusGroup, User
 _test_event_data = [
     {
         'title': 'Event1',
-        'author': 1,
         'description': 'Ingress1',
         'text': 'Ingress1',
         'event_type': 4,
@@ -18,7 +17,6 @@ _test_event_data = [
     },
     {
         'title': 'Event2',
-        'author': 1,
         'description': 'Ingress2',
         'text': 'Ingress2',
         'event_type': 4,

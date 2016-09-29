@@ -1,5 +1,4 @@
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: TBA
@@ -12,7 +11,6 @@
   model: events.Event
   pk: 1
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Know IT Objectnet AS er et teknologi - og proudktavhengig konsulentselkap
@@ -26,7 +24,6 @@
   model: events.Event
   pk: 2
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Accenture er et globalt konsulentselskap som leverer tjenester innenfor
@@ -41,7 +38,6 @@
   model: events.Event
   pk: 3
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Bedriftspresentasjon med Netlight '
@@ -54,7 +50,6 @@
   model: events.Event
   pk: 4
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: EY (tidligere Ernst & Young)
@@ -67,7 +62,6 @@
   model: events.Event
   pk: 5
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: TBA
@@ -80,7 +74,6 @@
   model: events.Event
   pk: 6
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Velkommen til lunsjpresentasjon med Sopra Steria.
@@ -93,7 +86,6 @@
   model: events.Event
   pk: 7
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Årets BedEx går som vanlig til Oslo og varer i tre dager.\r\nPåmeldingen\
@@ -119,7 +111,6 @@
   model: events.Event
   pk: 8
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: ' TBA'
@@ -132,7 +123,6 @@
   model: events.Event
   pk: 9
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Bedriftspresentasjon med DIPS. '
@@ -145,7 +135,6 @@
   model: events.Event
   pk: 10
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Abakus feirer sine nye medlemmer & inviterer til storslått galla
@@ -164,7 +153,6 @@
   model: events.Event
   pk: 11
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Mesan AS er et norsk IT-konsulentselskap som holder til i Oslo sentrum.
@@ -179,7 +167,6 @@
   model: events.Event
   pk: 12
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: ' '
@@ -192,7 +179,6 @@
   model: events.Event
   pk: 13
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Som tidligere blir det også i år sommerfest i Oslo for alle abakuler. '
@@ -207,7 +193,6 @@
   model: events.Event
   pk: 14
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Etter nok en lang og slitsom eksamensperiode fortjener alle og enhver\
@@ -221,7 +206,6 @@
   model: events.Event
   pk: 15
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
@@ -244,7 +228,6 @@
   model: events.Event
   pk: 16
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
@@ -267,7 +250,6 @@
   model: events.Event
   pk: 17
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Lei av å lese til eksamen sa du? Ta deg en time fri fra lesesalen
@@ -288,7 +270,6 @@
   model: events.Event
   pk: 18
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Abakus inviterer i år igjen til 17. mai-frokost i Kjelhuset for\
@@ -314,7 +295,6 @@
   model: events.Event
   pk: 19
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Fagstaben i TDT4100 Objektorientert Programmering holder et uoffisielt
@@ -333,7 +313,6 @@
   model: events.Event
   pk: 20
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Dataforeningen arrangerer i samarbeid med Abakus og Online studentkveld
@@ -417,7 +396,6 @@
   model: events.Event
   pk: 21
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Uoffisielt repetisjonskurs i Krets- og Digitalteknikk med fokus på
@@ -435,7 +413,6 @@
   model: events.Event
   pk: 22
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Det er på tide med årets fadderpåmelding for masterstudenter! En\
@@ -457,7 +434,6 @@
   model: events.Event
   pk: 23
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Fundator AS arrangerer fagsamling her i Trondheim fredag den 29.
@@ -479,7 +455,6 @@
   model: events.Event
   pk: 24
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Velkommen til lunsjpresentasjon med DNV GL. Etter presentasjonen
@@ -501,7 +476,6 @@
   model: events.Event
   pk: 25
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Velkommen til Abakus sin fagdag på mobil plattform. \r\n\r\nEttersom\
@@ -530,7 +504,6 @@
   model: events.Event
   pk: 26
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: '**Velkommen til Lightning Talks! IDI inviterer, i samarbeid med
@@ -563,7 +536,6 @@
   model: events.Event
   pk: 27
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Da er det på tide med årets andre (og semesterets siste) AbelLan.
@@ -577,7 +549,6 @@
   model: events.Event
   pk: 28
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Det er igjen duket for Casino Royale. Det betyr finstasen på, poker,
@@ -604,7 +575,6 @@
   model: events.Event
   pk: 29
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Et nytt semester går mot slutten og fadderperioden 2016 nærmer seg\
@@ -631,7 +601,6 @@
   model: events.Event
   pk: 30
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Få mennesker kan feste hardere, lengre og mer høylytt enn meksikanere,
@@ -655,7 +624,6 @@
   model: events.Event
   pk: 31
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Nå har vi lyst å dele en av fagdagene med resten av bransjen, og
@@ -675,7 +643,6 @@
   model: events.Event
   pk: 32
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Har du lyst til å sette opp en egen server i skyen med basic sikkerhetsoppsett?
@@ -701,7 +668,6 @@
   model: events.Event
   pk: 33
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Vil du lære mer om kunstig intelligens?\r\n=======================================\r\
@@ -738,7 +704,6 @@
   model: events.Event
   pk: 34
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Lørdag 9. april inviterer Abakus til Vaargalla!
@@ -771,7 +736,6 @@
   model: events.Event
   pk: 35
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den? '
@@ -791,7 +755,6 @@
   model: events.Event
   pk: 36
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
@@ -817,7 +780,6 @@
   model: events.Event
   pk: 37
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme
@@ -855,7 +817,6 @@
   model: events.Event
   pk: 38
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Hvem tar flagget først? Du eller din studievenn? Itera kjører Capture
@@ -895,7 +856,6 @@
   model: events.Event
   pk: 39
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Lei av å avstandsbeundre den søte jenta fra maskin? Eller han kjekke
@@ -917,7 +877,6 @@
   model: events.Event
   pk: 40
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Et praktisk kurs hvor vi lærer hvordan man setter opp IT-infrastruktur
@@ -941,7 +900,6 @@
   model: events.Event
   pk: 41
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: 'Dersom du er glad i kaffe og har lyst til å lære hvordan du kan
@@ -964,7 +922,6 @@
   model: events.Event
   pk: 42
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: StartIT er et faglig arrangement sponset av Abakus, som spesielt
@@ -993,7 +950,6 @@
   model: events.Event
   pk: 43
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
@@ -1020,7 +976,6 @@
   model: events.Event
   pk: 44
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme\
@@ -1059,7 +1014,6 @@
   model: events.Event
   pk: 45
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: "Acando er et konsulentselskap som bistår offentlige og private kunder\
@@ -1086,7 +1040,6 @@
   model: events.Event
   pk: 46
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Har du lyst å leke deg med video i nettleser?  Vil du lære å lage
@@ -1122,7 +1075,6 @@
   model: events.Event
   pk: 47
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Da er det klart for å samle Abakus sine komiteer for en Helgesamling
@@ -1149,7 +1101,6 @@
   model: events.Event
   pk: 48
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Velkommen til Abakus årlige generalforsamling! På Abakus' ordinære
@@ -1205,7 +1156,6 @@
   model: events.Event
   pk: 49
 - fields:
-    author: 1
     can_view_groups:
     - 1
     description: Vår kjære hovedsamarbeidspartner BEKK inviterer til bedriftspresentasjon.

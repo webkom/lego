@@ -3,21 +3,19 @@ from django.db import models
 from django.utils.text import slugify
 
 from lego.apps.comments.models import Comment
-from lego.apps.users.models import User
 
 
 class Content(models.Model):
-    class Meta:
-        abstract = True
-
     title = models.CharField(max_length=255)
-    author = models.ForeignKey(User)
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
 
+    class Meta:
+        abstract = True
+
     def __str__(self):
-        return self.title + '(by: {})'.format(self.author)
+        return self.title
 
     @property
     def comment_target(self):
@@ -25,10 +23,10 @@ class Content(models.Model):
 
 
 class SlugContent(Content):
+    slug = models.SlugField(null=True, unique=True)
+
     class Meta:
         abstract = True
-
-    slug = models.SlugField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
