@@ -1,0 +1,238 @@
+- fields: {approved: true, author: 1, source: "Kristoffer \"Bj\xF8rn\" Larsen", text: "Hvis\
+      \ vi skal finne opp hjulet p\xE5 nytt s\xE5 kommer det jo fort ann p\xE5 hvilket\
+      \ hjul, hvor lenge det skal rulle, og hva utganspunktet er.", title: Pakkehjul}
+  model: quotes.Quote
+  pk: 1
+- fields: {approved: true, author: 1, source: "Bj\xF8rn", text: "En \xF8l i h\xE5\
+      nden er bedre en to chatter fulle av \xF8l.", title: "\xD8l-chat"}
+  model: quotes.Quote
+  pk: 2
+- fields: {approved: true, author: 1, source: Andreas, text: 'Fear leads to angular,
+      angular leads to state, state leads to suffering.', title: VIsdomdsord fra Yoda}
+  model: quotes.Quote
+  pk: 3
+- fields: {approved: true, author: 1, source: "backupm\xF8te", text: "H\xE5kon: Kan\
+      \ noen her l\xE6re meg hvordan spise knekkebr\xF8d?\r\nEmilie: Det dreier seg\
+      \ om selvtillit!", title: "Knekkebr\xF8d"}
+  model: quotes.Quote
+  pk: 4
+- fields: {approved: true, author: 1, source: Esso om at pr.abakus.no er oppe igjen,
+    text: Tits ble fikset i natt. Si fra hvis det fortsatt er noe fuck, title: Tits
+      fikset}
+  model: quotes.Quote
+  pk: 5
+- fields: {approved: true, author: 1, source: Tibor "Kikiriki" Vukoivic, text: "Du\
+      \ m\xE5 bruke munnen der du brukte fingrene i sted!", title: T-Boy om jenter}
+  model: quotes.Quote
+  pk: 6
+- fields: {approved: true, author: 1, source: Webkommedlem, text: I like the big dick
+      from the man, title: "Webkommer fors\xF8ker \xE5 avvise en invitasjon til en\
+      \ strippeklubb "}
+  model: quotes.Quote
+  pk: 7
+- fields: {approved: true, author: 1, source: "Sylliaas pr\xF8ver \xE5 forklare at\
+      \ han ikke vil ha mais i kebaben sin i Krakow", text: I don't like mice. Don't
+      touch the brown stuff., title: Sylliaas og mais}
+  model: quotes.Quote
+  pk: 8
+- fields: {approved: true, author: 1, source: Broby, text: "P\xE5 mange m\xE5ter den\
+      \ viktigste rollen i Webkom. Vurderingen av wiki-ansvarlig-rollen er invers\
+      \ proporsjonal med viktigheten og byrden vi p\xE5legger oss. Vi er \xE5 betrakte\
+      \ som the Batmans av Webkom.", title: Wiki-ansvarlig i Webkom}
+  model: quotes.Quote
+  pk: 9
+- fields: {approved: true, author: 1, source: Eirik Sylliaas, text: Det er ingenting
+      som er mer sexy enn damer som progger Python., title: Damer og Python}
+  model: quotes.Quote
+  pk: 10
+- fields: {approved: true, author: 1, source: Eirik Sylliaas, text: "Multilel, hvem\
+      \ tar p\xE5 seg denne drapssaken?", title: "Om \xE5 oppdatere Confluence pga.\
+      \ sikkerhetsproblemer"}
+  model: quotes.Quote
+  pk: 11
+- fields: {approved: true, author: 1, source: 'Anders, Stein-Otto, Odd', text: "\xAB\
+      D\xF8den dreper.\xBB\r\n\xAB10/10 liv ender i d\xF8d.\xBB\r\n\xABStopp sirkelen,\
+      \ ikke f\xE5 barn.\xBB", title: readme har svaret}
+  model: quotes.Quote
+  pk: 12
+- fields: {approved: true, author: 1, source: Falkon punch, text: En gang spruta jeg
+      inn i Russland!, title: Grensesprengende Falk}
+  model: quotes.Quote
+  pk: 13
+- fields: {approved: true, author: 1, source: Fagkom-Oliver, text: "Jeg har aldri\
+      \ blitt k\xE5t i en skoletime. -Vi har alle hatt bes\xF8k av Lucia-toget, har\
+      \ vi ikke?", title: Sexy Lucia}
+  model: quotes.Quote
+  pk: 14
+- fields: {approved: true, author: 1, source: Algdat-studass Hath, text: Han er kanskje
+      den dummeste jeg hjelper for tiden., title: Dumme studenter}
+  model: quotes.Quote
+  pk: 15
+- fields: {approved: true, author: 1, source: FagKom-Annie, text: "Jeg s\xE5 bare\
+      \ pikk.", title: "Annie om tegnspr\xE5k-guide p\xE5 nett"}
+  model: quotes.Quote
+  pk: 16
+- fields: {approved: true, author: 1, source: Sigve, text: "<sigveseb> jeg stakk innom\
+      \ n\xE5r frues kirke p\xE5 vei hjem fra byen i g\xE5r\r\n<sigveseb> tror det\
+      \ kanskje det var fordi jeg hadde h\xF8rt at odd hadde sk\xE5ret mat der en\
+      \ gang\r\n<sigveseb> men da jeg kom inn feiget jeg ut, og bare latet som om\
+      \ jeg hadde kommet inn for \xE5 be\r\n<sigveseb> hvilket jeg latet som om jeg\
+      \ gjorde en god stund fo\xF8r jeg gikk videre", title: Led oss inn i fristelse}
+  model: quotes.Quote
+  pk: 17
+- fields: {approved: true, author: 1, source: "\xC5smund", text: "F\xE5r dere H3,\
+      \ Sd, K7, K9, Rk i poker m\xE5 dere sende meg en snap, for det er sinnsykt usannsylig.",
+    title: Kortstokk i diskmat}
+  model: quotes.Quote
+  pk: 18
+- fields: {approved: true, author: 1, source: Karl, text: "Ta med plastglass i tilfelle\
+      \ hun m\xE5 drikkes pen og oppvaskmaskinen er full av slitne glass og vi er\
+      \ tomme for plastglass og vi ikke kan drikke av flaska", title: "P\xE5 sp\xF8\
+      rsm\xE5l om venninne kunne medbringes"}
+  model: quotes.Quote
+  pk: 19
+- fields: {approved: true, author: 1, source: Tib, text: "N\xE5r hun f\xE5r barn kommer\
+      \ det til \xE5 ligne p\xE5 alle.", title: Ababarn}
+  model: quotes.Quote
+  pk: 20
+- fields: {approved: true, author: 1, source: Jentefadderbarn om teknostart-gruppa,
+    text: "Det er bare meg og s\xE5nne s\xF8te nerdegutter som kommer rett fra videreg\xE5\
+      ende.", title: "\xC5 v\xE6re jente p\xE5 data"}
+  model: quotes.Quote
+  pk: 21
+- fields: {approved: true, author: 1, source: Jonski, text: "Hva? Skal du kj\xF8pe\
+      \ deg Porsche for 22'000 dollar? Det er s\xE5nn fire iPhones!", title: iPhone-valuta}
+  model: quotes.Quote
+  pk: 22
+- fields: {approved: true, author: 1, source: -Erlend LaBamba, text: "Faen! Hvorfor\
+      \ vil den ikke inn?\r\n", title: "H\xF8rt p\xE5 HR.3 Elektrolab"}
+  model: quotes.Quote
+  pk: 23
+- fields: {approved: true, author: 1, source: Mathilde, text: "\"Men det er jo urettferdig!\
+      \ Er jo bare 3 og 5 som er svarte. 2,4,6 er r\xF8!\"", title: "Om at r\xF8dt\
+      \ er slurker selv, svarte gis bort"}
+  model: quotes.Quote
+  pk: 24
+- fields: {approved: true, author: 1, source: Tibor Vukovic, text: Dette er jo ren
+      anal!, title: TekLed}
+  model: quotes.Quote
+  pk: 25
+- fields: {approved: true, author: 1, source: InterFagkom-lek, text: "Hva om H\xE5\
+      kon sl\xE5 Mangus Carslen i sjakk, da hadde Erna Solberg drept Sauron!", title: "Magnus\
+      \ Carlsen er d\xE5rlig"}
+  model: quotes.Quote
+  pk: 26
+- fields: {approved: true, author: 1, source: Silje, text: '"Du kan sikkert bare ha
+      den oppe. Regner med at du ikke raper innsida mi"', title: "Logget inn p\xE5\
+      \ Innsida p\xE5 annens pc"}
+  model: quotes.Quote
+  pk: 27
+- fields: {approved: true, author: 1, source: 'Gustav, Mikal, Stein-Otto', text: "\"\
+      Alle vet at vaflene skal v\xE6re spr\xF8 utenp\xE5 og myke inni,\" sl\xE5r Gustav\
+      \ fast.\r\n\"Akkurat som readme,\" kommenterer Mikal.\r\n\"Med et lekent lag\
+      \ av syltet\xF8y p\xE5 toppen,\" legger Stein-Otto til", title: "Hvordan skal\
+      \ stekte vafler v\xE6re?"}
+  model: quotes.Quote
+  pk: 28
+- fields: {approved: true, author: 1, source: Fagkomleder, text: "Jeg husker ikke\
+      \ hva det het det jeg drakk i g\xE5r... Asbest? Incest?", title: Absintfylla
+      i Praha}
+  model: quotes.Quote
+  pk: 29
+- fields: {approved: true, author: 1, source: "L\xF8ve", text: 'Sir, SIR, SIR!!! I
+      have been waiting for like 40 minutes. SIR!', title: Mista jakka}
+  model: quotes.Quote
+  pk: 30
+- fields: {approved: true, author: 1, source: Falkon punch, text: "Ser noen er r\xF8\
+      d hvitvin?", title: Fargeblind}
+  model: quotes.Quote
+  pk: 31
+- fields: {approved: true, author: 1, source: Tidl. Fagkom-leder, text: "Jeg kj\xF8\
+      rte Oslo-Trondheim. Hun kom over Dovre!", title: "Uaktsom kj\xF8ring"}
+  model: quotes.Quote
+  pk: 32
+- fields: {approved: true, author: 1, source: "Marte L\xF8ge", text: Fagkom-chatten
+      er en vibrator., title: Seksuell frustrasjon}
+  model: quotes.Quote
+  pk: 33
+- fields: {approved: true, author: 1, source: Danseku og HK, text: "Danseku: En datakube\
+      \ er en salat av kuboider\r\nHK: Lurer p\xE5 hvordan det smaker?\r\nDanseku:\
+      \ Abstrakt", title: Datakube}
+  model: quotes.Quote
+  pk: 34
+- fields: {approved: true, author: 1, source: KTN 20.1.2014, text: "KTN-foreleser:\
+      \ \"Hva bruker vi internett til?\"\r\nForslag fra salen: \"Porno!\"", title: Grab
+      your dick and double click}
+  model: quotes.Quote
+  pk: 35
+- fields: {approved: true, author: 1, source: 'Skau, foreleser DiskMat', text: "Fra\
+      \ salen: \"Jeg har sett et par oppgaver hvor det har v\xE6rt induksjonsbevis\
+      \ med rekursjon, s\xE5nn fibonacci og s\xE5nt. Kan du ta et eksempel p\xE5 det?\"\
+      \r\n\r\nSkau: \"Det tar jeg hvis det blir aktuelt, s\xE5 det tar jeg ikke.\"",
+    title: "Dagen f\xF8r eksamen"}
+  model: quotes.Quote
+  pk: 36
+- fields: {approved: true, author: 1, source: "Blond S\xF8rlending", text: '"Oh var
+      han kul eller var han svart?"', title: "S\xF8rlandsrasisme"}
+  model: quotes.Quote
+  pk: 37
+- fields: {approved: true, author: 1, source: Mathias Ose, text: Jeg husker tre telefonnummer
+      i verden og to av de er ikke lenger i bruk, title: Hukommelse}
+  model: quotes.Quote
+  pk: 38
+- fields: {approved: true, author: 1, source: Aleksander Burkow (facebookchat), text: "\"\
+      Also di s\xF8rongan syt f\xF8rr putt v\xE6r\"", title: Derfor skriver man ikke
+      dialekt.}
+  model: quotes.Quote
+  pk: 39
+- fields: {approved: true, author: 1, source: 'Tormod, Informatikk', text: 'Etter
+      en vanskelig oppgave om relativitetsteori: "Hvis jeg henger meg uendelig fort,
+      blir lengden min null."', title: Relativistisk selvmord}
+  model: quotes.Quote
+  pk: 40
+- fields: {approved: true, author: 1, source: "Marit \"Redakt\xF8r\" Rudlang", text: "\"\
+      S\xE5, det er en ting?\"", title: Etter webkom har forklart hva en KVM er}
+  model: quotes.Quote
+  pk: 41
+- fields: {approved: true, author: 1, source: Tibor, text: "\xD8konomiserveren v\xE5\
+      r har blitt med i et botnet. Vi tenker \xE5 bytte passord.", title: Adekvat
+      respons}
+  model: quotes.Quote
+  pk: 42
+- fields: {approved: true, author: 1, source: Gustav, text: "Jeg har filmet folk som\
+      \ har hatt sex gjennom vinduet f\xF8r. De hadde frostet glass p\xE5 badet. Dette\
+      \ er naboene v\xE5re. Men det de ikke vet er at dette frostede glasset ikke\
+      \ fungerer utenfra og inn, kun innenfra og ut.", title: Enveisfrost}
+  model: quotes.Quote
+  pk: 43
+- fields: {approved: true, author: 1, source: Patrick, text: "Hvorfor har menn bart?\
+      \ Vel, de fleste pattedyr har bart p\xE5 hele kroppen!", title: Biologi 101}
+  model: quotes.Quote
+  pk: 44
+- fields: {approved: true, author: 1, source: Patrick, text: "Har du noen gang glemt\
+      \ \xE5 trekke opp glidel\xE5sen f\xF8r du begynner \xE5 pisse?\r\n", title: 'Vent,
+      nei, andre veien'}
+  model: quotes.Quote
+  pk: 45
+- fields: {approved: true, author: 1, source: Pirumitt, text: "Jeg har v\xE6rt skremmende\
+      \ lite edru fra onsdag til i g\xE5r (mandag). ", title: "UKEf\xF8lelsen"}
+  model: quotes.Quote
+  pk: 46
+- fields: {approved: true, author: 1, source: Leder av Abakus, text: Dere var flinke
+      med fingrene idag!, title: Fingerbruk}
+  model: quotes.Quote
+  pk: 47
+- fields: {approved: true, author: 1, source: Dashiva - IRC, text: An SQL injection
+      is when you ask the waiter for a large pepperoni GIVE ME ALL YOUR MONEY with
+      a side of fries, title: SQL-injection}
+  model: quotes.Quote
+  pk: 48
+- fields: {approved: true, author: 1, source: Andreas D., text: "For \xE5 f\xE5 nye\
+      \ studenter til \xE5 delta i frivillighetskulturen:  \"Bare s\xF8k masse g\xF8\
+      y, s\xE5 blir det g\xF8y.\"", title: "S\xF8k alt!"}
+  model: quotes.Quote
+  pk: 49
+- fields: {approved: true, author: 1, source: Arve forklarer rebasing, text: Git history-en
+      er ikke en "What the fuck did you do", title: Git}
+  model: quotes.Quote
+  pk: 50

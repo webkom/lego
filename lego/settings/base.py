@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'mptt',
 
     'lego.utils',
-
     'lego.apps.users',
     'lego.apps.permissions',
     'lego.apps.articles',
@@ -33,6 +32,8 @@ INSTALLED_APPS = [
     'lego.apps.flatpages',
     'lego.apps.oauth',
     'lego.apps.search',
+    'lego.apps.likes',
+    'lego.apps.quotes'
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
