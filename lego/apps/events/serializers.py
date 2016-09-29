@@ -36,7 +36,7 @@ class EventReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time')
 
 
@@ -48,7 +48,7 @@ class EventReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
 
 
@@ -70,7 +70,7 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 class EventCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Event
-        fields = ('id', 'title', 'author', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
                   'start_time', 'end_time', 'merge_time')
 
 

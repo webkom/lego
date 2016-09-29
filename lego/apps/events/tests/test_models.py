@@ -3,10 +3,8 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from lego.apps.content.tests import ContentTestMixin
 from lego.apps.events.exceptions import NoAvailablePools
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.views import EventViewSet
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -20,14 +18,6 @@ def get_dummy_users(n):
         users.append(user)
 
     return users
-
-
-class EventTest(TestCase, ContentTestMixin):
-    fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
-                'test_users.yaml', 'test_events.yaml']
-
-    model = Event
-    ViewSet = EventViewSet
 
 
 class EventMethodTest(TestCase):

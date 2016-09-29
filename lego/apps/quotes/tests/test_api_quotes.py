@@ -41,7 +41,6 @@ class QuoteViewSetTestCase(APITestCase):
 
         self.quote_data = {
             'title': 'QuoteTest',
-            'author': 1,
             'text': 'TestText',
             'source': 'TestSource',
         }
