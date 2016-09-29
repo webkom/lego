@@ -23,7 +23,7 @@ class CommentPermission(AbakusPermission):
             if request.data.get('comment_target') is not None:
                 comment_target = string_to_instance(request.data.get('comment_target'))
 
-        except VALIDATION_EXCEPTIONS as e:
+        except VALIDATION_EXCEPTIONS:
             # Comment_target was not found. This will be raised in serializer at a later point.
             # Validation does not belong in permissions
             pass
