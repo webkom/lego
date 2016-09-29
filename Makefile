@@ -23,4 +23,8 @@ production:
 docs:
 	cd docs; make html && open _build/html/index.html
 
-.PHONY: help development production docs
+test:
+	echo "from .test import *" > lego/settings/local.py
+
+
+.PHONY: help development production docs test

@@ -15,16 +15,21 @@ dependencies:
     - .tox
   pre:
     - pip install tox
+    - pip install -r requirements/test.txt
     - sudo -u postgres createuser lego -s
   override:
     - tox --notest
 
 test:
   pre:
-    - make lego/settings/local.py
+    - make test
   override:
     - tox -e tests
     - tox -e isort
     - tox -e flake8
     - tox -e coverage
     - tox -e docs
+
+    - sudo -u postgres createdb lego
+    - python manage.py migrate
+    - python manage.py missing_migrations
