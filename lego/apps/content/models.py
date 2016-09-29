@@ -23,13 +23,26 @@ class Content(models.Model):
 
 
 class SlugContent(Content):
-    slug = models.SlugField(null=True, unique=True)
+    slug_length = 50
+    slug = models.SlugField(null=True, unique=True, max_length=slug_length)
 
     class Meta:
         abstract = True
 
+    def generate_slug(self):
+        slug = slugify('{}-{}'.format(self.id, self.title))
+        if len(slug) <= self.slug_length:
+            return slug
+
+        if slug[self.slug_length] == '-':
+            return slug[0:self.slug_length]
+
+        slug = slug[0:self.slug_length]
+        slice_index = slug.rindex('-')
+        return slug[0:slice_index]
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.slug:
-            self.slug = slugify('{}-{}'.format(self.id, self.title))
+            self.slug = self.generate_slug()
             self.save()

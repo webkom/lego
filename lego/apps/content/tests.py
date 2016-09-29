@@ -1,16 +1,40 @@
-from unittest import mock
-
+from django.test import testcases
 from django.utils.text import slugify
+from lego.apps.content.models import SlugContent
 
 
-class SlugContentTestMixin:
-    @mock.patch('django.db.models.Model.save')
-    def test_slug(self, mock_save):
-        self.item = self.model(id=1, title='CORRECTSLUG')
+class ExampleSlugContent(SlugContent):
+    pass
 
-        self.assertIsNone(self.item.slug)
-        self.item.save()
-        self.assertNotEqual('1-CORRECTSLUG', self.item.slug)
-        self.assertEqual('1-correctslug', self.item.slug)
-        self.assertEqual(slugify('1-CORRECTSLUG'), self.item.slug)
-        mock_save.assert_called_with()
+
+class APITestCase(testcases.TestCase):
+    def test_slug(self):
+        item = ExampleSlugContent(title='CORRECTSLUG')
+        self.assertIsNone(item.slug)
+        item.save()
+        self.assertNotEqual('{}-CORRECTSLUG'.format(item.id), item.slug)
+        self.assertEqual('{}-correctslug'.format(item.id), item.slug)
+        self.assertEqual(slugify('{}-CORRECTSLUG'.format(item.id)), item.slug)
+
+    def test_slug_slice(self):
+        item = ExampleSlugContent(
+            title='hey, come to this cool event and get free drinks all night')
+        item.save()
+        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id),
+                         item.slug)
+
+    def test_slug_slice_when_word_ends_at_max_len(self):
+        item = ExampleSlugContent(
+            title='hey, come to this cool event and get free driinks heh')
+        item.save()
+        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-driinks'.format(item.id),
+                         item.slug)
+
+    def test_slug_static(self):
+        item = ExampleSlugContent(
+            title='hey come to this cool event and get free drinks all night')
+        item.save()
+        item.title = 'hi'
+        item.save()
+        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id),
+                         item.slug)
