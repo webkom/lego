@@ -1,3 +1,4 @@
+from lego.apps.likes.views import LikeViewSet
 from rest_framework import routers
 
 from lego.apps.articles.views.articles import ArticlesViewSet
@@ -25,3 +26,5 @@ router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'search/search', SearchViewSet, base_name='search')
 router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomplete')
+router.register(r'like', LikeViewSet, base_name='like')
+#router.register(r'unlike/(?P<content_type>\d+)/(?P<object_id>\d+)', UnlikeViewSet, base_name='unlike')
