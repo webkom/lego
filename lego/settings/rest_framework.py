@@ -5,7 +5,7 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'lego.utils.renderers.JSONRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
