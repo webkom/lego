@@ -1,17 +1,7 @@
 from django.test import TestCase
 
-from lego.apps.content.tests import ContentTestMixin
 from lego.apps.quotes.models import Quote
-from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.users.models import AbakusGroup, User
-
-
-class QuoteTest(TestCase, ContentTestMixin):
-    fixtures = ['initial_abakus_groups.yaml', 'initial_users.yaml',
-                'test_users.yaml', 'test_quotes.yaml']
-
-    model = Quote
-    ViewSet = QuoteViewSet
 
 
 class QuoteMethodTest(TestCase):

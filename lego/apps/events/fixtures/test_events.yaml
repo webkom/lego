@@ -2,7 +2,6 @@
   pk: 1
   fields:
     title: POOLS_WITH_REGISTRATIONS
-    author: 1
     description: TestIngress1
     text: TestText1
     event_type: 0
@@ -16,7 +15,6 @@
   pk: 2
   fields:
     title: NO_POOLS_ABAKUS
-    author: 2
     description: TestIngress2
     text: TestText2
     event_type: 3
@@ -30,7 +28,6 @@
   pk: 3
   fields:
     title: NO_POOLS_WEBKOM
-    author: 3
     description: TestIngress3
     text: TestText3
     event_type: 3
@@ -44,7 +41,6 @@
   pk: 4
   fields:
     title: POOLS_NO_REGISTRATIONS
-    author: 4
     description: TestIngress4
     text: TestText4
     event_type: 4
