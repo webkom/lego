@@ -6,12 +6,4 @@ class QuoteSerializer(BasisModelSerializer):
 
     class Meta:
         model = Quote
-        fields = (
-            'id',
-            'created_at',
-            'title',
-            'author',
-            'text',
-            'source',
-            'approved',
-        )
+        fields = ('id', 'created_at', 'title', 'text', 'source', 'approved')
