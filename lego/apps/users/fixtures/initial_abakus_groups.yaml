@@ -23,6 +23,7 @@
     tree_id: 1
     permissions:
       - /sudo/admin/meetings/create/
+      - /sudo/admin/meetinginvitations/
 
 - model: users.AbakusGroup
   pk: 3
