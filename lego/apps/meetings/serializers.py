@@ -5,7 +5,7 @@ from lego.utils.serializers import BasisModelSerializer
 class MeetingSerializer(BasisModelSerializer):
     class Meta:
         model = Meeting
-        fields = ('id', 'title', 'location', 'author', 'start_time', 'end_time', 'report',
+        fields = ('id', 'title', 'location', 'start_time', 'end_time', 'report',
                   'report_author')
 
     def create(self, validated_data):
