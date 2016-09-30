@@ -5,7 +5,7 @@ from lego.apps.users.models import User
 
 
 class MeetingTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'development_meetings.yaml',
+    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 
     def setUp(self):
