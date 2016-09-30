@@ -8,7 +8,7 @@ from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.models import BasisModel
 
-from .exceptions import NoAvailablePools
+from .exceptions import NoAvailablePools, UserNotAdmin
 
 
 class Event(SlugContent, BasisModel, ObjectPermissionsModel):
@@ -72,9 +72,12 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         :param pool: What pool the registration will be created for
         :return: The registration
         """
-        return self.registrations.update_or_create(event=self, user=user,
+        if self.can_edit(request_user):
+            return self.registrations.update_or_create(event=self, user=user,
                                                    defaults={'pool': pool,
                                                              'unregistration_date': None})[0]
+        else:
+            raise UserNotAdmin()
 
     def add_to_waiting_list(self, user):
         """

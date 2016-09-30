@@ -6,7 +6,8 @@ from lego.apps.events.permissions import NestedEventPermissions
 from lego.apps.events.serializers import (EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
-                                          RegistrationCreateAndUpdateSerializer)
+                                          RegistrationCreateAndUpdateSerializer,
+                                          AdminRegistrationCreateAndUpdateSerializer)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
@@ -48,7 +49,13 @@ class PoolViewSet(viewsets.ModelViewSet):
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = (NestedEventPermissions,)
-    serializer_class = RegistrationCreateAndUpdateSerializer
+
+    def get_serializer_class(self):
+        pool = self.kwargs.get('pool', None)
+        user = self.kwargs.get('user', None)
+        if pool and user:
+            return AdminRegistrationCreateAndUpdateSerializer
+        return RegistrationCreateAndUpdateSerializer
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
@@ -56,3 +63,6 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.event.unregister(instance.user)
+
+    def create(self, request, *args, **kwargs):
+        pass
