@@ -25,6 +25,14 @@ class EventViewSet(viewsets.ModelViewSet):
 
         return EventReadSerializer
 
+    def get_queryset(self):
+        queryset = self.queryset
+        year = self.request.query_params.get('year', None)
+        month = self.request.query_params.get('month', None)
+        if year and month:
+            return queryset.filter(start_time__year=year, start_time__month=month)
+        return queryset
+
 
 class PoolViewSet(viewsets.ModelViewSet):
     queryset = Pool.objects.all()
