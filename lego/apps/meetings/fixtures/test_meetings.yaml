@@ -7,7 +7,6 @@
     end_time: '2016-10-01T18:00:00+00:00'
     report: '# Fresh\n\n halla hva skjer a?'
     report_author: 1
-    only_for_invited: True
 
 - model: meetings.Meeting
   pk: 2
