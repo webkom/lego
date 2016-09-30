@@ -34,8 +34,7 @@ class Meeting(SlugContent, BasisModel):
 
     def invite(self, user):
         return self.invitation.update_or_create(user=user,
-                                                meeting=self,
-                                                defaults={'status': MeetingInvitation.NO_ANSWER})
+                                                meeting=self)
 
     def uninvite(self, user):
         invitation = self.invitation.get(user=user)
@@ -69,3 +68,6 @@ class MeetingInvitation(BasisModel):
     def reject(self):
         self.status = self.NOT_ATTENDING
         self.save()
+
+    class Meta:
+        unique_together = ('meeting', 'user')
