@@ -5,27 +5,25 @@ from lego.apps.permissions.permissions import AbakusPermission
 class MeetingPermissions(AbakusPermission):
 
     def has_object_permission(self, request, view, meeting):
-        if view.action == 'destroy':
-            return super().has_object_permission(request, view, meeting)
-        user = request.user
-        if user in meeting.invited_users.all():
-            return True
-        if meeting.only_for_invited:
+        if not super().has_object_permission(request, view, meeting):
             return False
-        return super().has_object_permission(request, view, meeting)
+        if view.action == 'destroy':
+            return meeting.created_by == request.user
+        return meeting.can_edit(request.user)
 
 
 class MeetingInvitationPermissions(AbakusPermission):
-    permission_map = {'create': []}
 
     def has_permission(self, request, view):
-        has_permission = super(MeetingInvitationPermissions, self).has_permission(request, view)
-        if not has_permission:
-            return False
-
         meeting = Meeting.objects.get(id=view.kwargs['meeting_pk'])
-        if view.action == 'list' and request.user in meeting.invited_users:
-            return True
-        if not meeting.can_edit(request.user):
+        return meeting.can_edit(request.user)
+
+    def has_object_permission(self, request, view, invitation):
+        if not super(MeetingInvitationPermissions, self)\
+                    .has_object_permission(request, view, invitation):
             return False
-        return True
+        user = request.user
+        meeting = invitation.meeting
+        if view.action == 'destroy':
+            return meeting.created_by == user
+        return meeting.can_edit(user)

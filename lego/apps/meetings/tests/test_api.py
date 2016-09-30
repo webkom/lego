@@ -67,9 +67,9 @@ class RetrieveMeetingTestCase(APITestCase):
         self.pleb = User.objects.get(username='pleb')
 
     def test_participant_can_retrieve(self):
-        invited = self.abakule
-        self.client.force_authenticate(invited)
+        invited = self.abakommer
         self.meeting.invite(invited)
+        self.client.force_authenticate(invited)
         res = self.client.get(_get_detail_url(self.meeting.id))
         self.assertEqual(res.status_code, 200)
 
@@ -85,13 +85,6 @@ class RetrieveMeetingTestCase(APITestCase):
         self.client.force_authenticate(self.pleb)
         res = self.client.get(_get_detail_url(self.meeting.id))
         self.assertTrue(res.status_code >= 403)
-
-    def test_abakus_can_retrieve_abameeting(self):
-        abameeting = Meeting.objects.get(title='Genvors')
-        for user in [self.abakule, self.abakommer]:
-            self.client.force_authenticate(user)
-            res = self.client.get(_get_detail_url(abameeting.id))
-            self.assertEqual(res.status_code, 200)
 
     def test_can_see_invitations(self):
         self.meeting.created_by = self.abakule
@@ -162,6 +155,9 @@ class InviteToMeetingTestCase(APITestCase):
     def test_can_invite_to_own_meeting(self):
         self.meeting.created_by = self.abakommer
         self.meeting.save()
+        # This is done by default in MeetingSerializer.create
+        self.meeting.invite(self.abakommer)
+
         self.client.force_authenticate(self.abakommer)
         data = {
             'user': self.abakule.id,

@@ -1,18 +1,16 @@
 from django.db import models
 
 from lego.apps.content.models import SlugContent
-from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
 
-class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):
+class Meeting(SlugContent, BasisModel):
 
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
-    only_for_invited = models.BooleanField(default=False)
 
     report = models.TextField(blank=True)
     report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
@@ -43,8 +41,11 @@ class Meeting(SlugContent, BasisModel, ObjectPermissionsModel):
         invitation = self.invitation.get(user=user)
         invitation.delete()
 
+    def can_edit(self, user):
+        return self.invited_users.filter(id=user.id).exists()
 
-class MeetingInvitation(BasisModel, ObjectPermissionsModel):
+
+class MeetingInvitation(BasisModel):
 
     NO_ANSWER = 0
     ATTENDING = 1
