@@ -18,8 +18,6 @@
     end_time: '2017-02-01T23:59:00+00:00'
     report: '#Genvors\n\nVi fikk en fin gjeng til neste HS :)'
     report_author: 3
-    can_view_groups:
-      - 1
 
 - model: meetings.Meeting
   pk: 3

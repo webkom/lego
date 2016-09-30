@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'lego.apps.oauth',
     'lego.apps.search',
     'lego.apps.quotes',
+    # 'lego.apps.permissions.tests',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
