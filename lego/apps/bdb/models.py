@@ -6,23 +6,26 @@ from lego.utils.models import BasisModel
 
 
 class Company(BasisModel, ObjectPermissionsModel):
-    """
-    These are the values returned when calling without specific route
-    """
+
     defaut_semester = {
         "year": 2016,
         "semester": 0,
         "contacted_status": 6
     }
+
+    """ These are the values returned when calling without specific route """
     name = models.CharField(max_length=100)
     student_contact = models.ForeignKey(User, related_name='companies')
-    previous_contacts = models.ManyToManyField(User)
     admin_comment = models.CharField(max_length=100, default='', blank=True)
+    active = models.BooleanField(default=True)
     job_offer_only = models.BooleanField(default=False)
-    """
-    These are the detail route-only fields
-    """
+    bedex = models.BooleanField(default=False)
+
+    """ These are the detail route-only fields """
+    description = models.CharField(max_length=500, default='')
     phone = models.CharField(max_length=100, default='', blank=True)
+    website = models.CharField(max_length=100, default='')
+    previous_contacts = models.ManyToManyField(User)
 
     class Meta:
         ordering = ['id']
@@ -47,7 +50,15 @@ class SemesterStatus(BasisModel):
         (6, 'Ikke kontaktet')
     )
 
-    year = models.PositiveSmallIntegerField(default=2016)
+    year = models.PositiveSmallIntegerField()
     semester = models.PositiveSmallIntegerField(choices=SEMESTERS, default=0)
     contacted_status = models.PositiveSmallIntegerField(choices=CONTACT_STATUSES, default=6)
     company = models.ForeignKey(Company, related_name='semester_statuses')
+
+
+class CompanyContact(BasisModel):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100, default='')
+    mail = models.CharField(max_length=100, default='')
+    phone = models.CharField(max_length=100, default='')
+    company = models.ForeignKey(Company, related_name='company_contacts')
