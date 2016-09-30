@@ -5,7 +5,7 @@ from django.core import serializers
 from django.core.management import BaseCommand
 
 from lego.apps.articles.models import Article
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.quotes.models import Quote
 from lego.apps.users.models import AbakusGroup, Membership, User
 
@@ -37,6 +37,11 @@ class Command(BaseCommand):
             self.stdout.write('Loading development fixtures:')
             self.load_from_fixture('apps/users/fixtures/development_users.yaml', User)
             self.load_from_fixture('apps/events/fixtures/development_events.yaml', Event)
+            self.load_from_fixture('apps/events/fixtures/development_pools.yaml', Pool)
+            self.load_from_fixture(
+                'apps/events/fixtures/development_registrations.yaml',
+                Registration
+            )
             self.load_from_fixture('apps/articles/fixtures/development_articles.yaml', Article)
             self.load_from_fixture('apps/quotes/fixtures/development_quotes.yaml', Quote)
         self.stdout.write('Done!')
