@@ -2,10 +2,14 @@
   pk: 1
   fields:
     name: 'BEKK'
+    description: 'Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter for store private og offentlige virksomheter innen strategisk rådgivning, utvikling av IT-systemer og design av digitale tjenester. Vi er i dag over 370 fagpersoner.'
     student_contact: 1
     admin_comment: 'Heftig partner'
     job_offer_only: false
     phone: '+47 90909090'
+    active: true
+    website: 'bekk.no'
+    bedex: true
 
 - model: bdb.Company
   pk: 2
@@ -15,17 +19,27 @@
     admin_comment: 'Heftig partner'
     job_offer_only: false
     phone: '123 45 678'
+    active: true
 
 - model: bdb.Company
   pk: 3
   fields:
     name: 'Itera'
+    description: 'Itera er et kommunikasjons- og teknologiselskap. Vi leverer tjenester innen rådgivning og strategi, design og utvikling, drift og forvaltning. Vi er engasjerte fagspesialister som jobber i tverrfaglige team fordi vi vet at vi med ulike faglige ståsteder avdekker helt nye muligheter og løsninger som gir verdi til kundene våre.'
     student_contact: 3
     admin_comment: ''
     job_offer_only: false
     phone: ''
+    active: true
 
   # Company 1
+
+- model: bdb.CompanyContact
+  pk: 1
+  fields:
+    name: 'Abraham Finnsen'
+    mail: 'abraham@finnsen.no'
+    company: 1
 
 - model: bdb.SemesterStatus
   pk: 1
@@ -83,7 +97,55 @@
     contacted_status: 1
     company: 1
 
+- model: events.Event
+  pk: 1
+  fields:
+    can_view_groups:
+    - 1
+    event_type: 0
+    title: 'Bedpress med BEKK 1'
+    location: 'F1'
+    text: 'TBA'
+    start_time: '2016-10-25T17:00:00+00:00'
+    end_time: '2016-10-27T20:00:00+00:00'
+    company: 1
+
+- model: events.Event
+  pk: 2
+  fields:
+    can_view_groups:
+    - 1
+    event_type: 0
+    title: 'Bedpress med BEKK 2'
+    location: 'EL5'
+    text: 'Eyy'
+    start_time: '2016-11-25T17:00:00+00:00'
+    end_time: '2016-11-27T20:00:00+00:00'
+    company: 1
+
+- model: events.Event
+  pk: 3
+  fields:
+    can_view_groups:
+    - 1
+    event_type: 0
+    title: 'Bedpress med BEKK 3'
+    location: 'R2'
+    text: 'TBA'
+    start_time: '2016-12-25T17:00:00+00:00'
+    end_time: '2016-12-27T20:00:00+00:00'
+    company: 1
+
   # Company 2
+
+- model: bdb.CompanyContact
+  pk: 2
+  fields:
+    name: 'Sylliaas Eiriksen'
+    role: 'sjef'
+    mail: 'rekt@chill.no'
+    phone: '12121212'
+    company: 2
 
 - model: bdb.SemesterStatus
   pk: 8
@@ -139,6 +201,45 @@
     year: 2015
     semester: 1
     contacted_status: 4
+    company: 2
+
+- model: events.Event
+  pk: 4
+  fields:
+    can_view_groups:
+    - 1
+    event_type: 0
+    title: 'Bedpress med Facebook 1'
+    location: 'F1'
+    text: 'TBA'
+    start_time: '2016-10-25T17:00:00+00:00'
+    end_time: '2016-10-27T20:00:00+00:00'
+    company: 2
+
+- model: events.Event
+  pk: 5
+  fields:
+    can_view_groups:
+    - 1
+    event_type: 0
+    title: 'Bedpress med Facebook 2'
+    location: 'EL5'
+    text: 'Eyy'
+    start_time: '2016-11-25T17:00:00+00:00'
+    end_time: '2016-11-27T20:00:00+00:00'
+    company: 2
+
+- model: events.Event
+  pk: 6
+  fields:
+    can_view_groups:
+    - 1
+    event_type: 0
+    title: 'Bedpress med Facebook 3'
+    location: 'R2'
+    text: 'TBA'
+    start_time: '2016-12-25T17:00:00+00:00'
+    end_time: '2016-12-27T20:00:00+00:00'
     company: 2
 
   # Company 3

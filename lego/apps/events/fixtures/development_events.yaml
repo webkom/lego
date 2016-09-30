@@ -76,6 +76,7 @@
     start_time: '2016-10-04T17:15:00+00:00'
     text: TBA
     title: Facebook
+    company: 2
   model: events.Event
   pk: 6
 - fields:
@@ -89,6 +90,7 @@
     start_time: '2016-09-19T17:00:00+00:00'
     text: TBA
     title: Sopra Steria
+    company: 2
   model: events.Event
   pk: 7
 - fields:
@@ -114,6 +116,7 @@
       \ så send mail til bedex'at'abakus.no. Mer praktisk info kommer etter at påmeldingen\
       \ er ferdig."
     title: BedEx
+    company: 1
   model: events.Event
   pk: 8
 - fields:
@@ -660,6 +663,7 @@
       \ din søknad på [fagdag.bekk.no](http://fagdag.bekk.no ) \r\n\r\nSøknadsfrist:\
       \ 15. Mars\r\n"
     title: BEKK
+    company: 1
   model: events.Event
   pk: 32
 - fields:
@@ -1219,5 +1223,6 @@
       \ eller tv.\r\n\r\n_Vi vil minne om at registreringen åpner 17.00, ventelisten\
       \ åpner 17.10 og at arrangementet begynner 17.15._  "
     title: BEKK
+    company: 1
   model: events.Event
   pk: 50
