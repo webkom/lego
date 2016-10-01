@@ -1,5 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import filters, viewsets
 
+from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import NestedEventPermissions
 from lego.apps.events.serializers import (EventCreateAndUpdateSerializer,
@@ -14,6 +15,8 @@ class EventViewSet(viewsets.ModelViewSet):
                                               'pools__registrations__user',
                                               'can_view_groups',
                                               'comments')
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = EventsFilterSet
 
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
@@ -24,14 +27,6 @@ class EventViewSet(viewsets.ModelViewSet):
             return EventReadDetailedSerializer
 
         return EventReadSerializer
-
-    def get_queryset(self):
-        queryset = self.queryset
-        year = self.request.query_params.get('year', None)
-        month = self.request.query_params.get('month', None)
-        if year and month:
-            return queryset.filter(start_time__year=year, start_time__month=month)
-        return queryset
 
 
 class PoolViewSet(viewsets.ModelViewSet):
