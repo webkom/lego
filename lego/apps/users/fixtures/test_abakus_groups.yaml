@@ -118,3 +118,37 @@
     tree_id: 108
     permissions:
       - /sudo/admin/reactions/
+
+- model: users.AbakusGroup
+  pk: 10
+  fields:
+    name: InterestGroupAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 109
+    permissions:
+      - /sudo/admin/interestgroups/list/
+      - /sudo/admin/interestgroups/retrieve/
+      - /sudo/admin/interestgroups/create/
+      - /sudo/admin/interestgroups/update/
+      - /sudo/admin/interestgroups/destroy/
+
+- model: users.AbakusGroup
+  pk: 11
+  fields:
+    name: BaseInterestGroup
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 110
+
+- model: users.AbakusGroup
+  pk: 12
+  fields:
+    name: TestInterestGroup
+    level: 1
+    lft: 3
+    rght: 4
+    tree_id: 110
+    parent: 11

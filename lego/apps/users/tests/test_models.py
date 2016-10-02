@@ -4,11 +4,12 @@ from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.models import Event
+from lego.apps.social_groups.models import InterestGroup
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 
 
 class AbakusGroupTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.non_committee = AbakusGroup(name='testgroup')
@@ -18,6 +19,18 @@ class AbakusGroupTestCase(TestCase):
         committee = AbakusGroup.objects.get(name='Webkom')
         self.assertTrue(committee.is_committee)
         self.assertFalse(self.non_committee.is_committee)
+
+    def test_is_interest_group(self):
+        interest_group = InterestGroup.objects.get(name='AbaBrygg')
+        self.assertTrue(interest_group.is_interest_group)
+        self.assertFalse(self.non_committee.is_interest_group)
+
+    def test_is_social_group(self):
+        committee = AbakusGroup.objects.get(name='Webkom')
+        interest_group = AbakusGroup.objects.get(name='AbaBrygg')
+        self.assertTrue(committee.is_social_group)
+        self.assertTrue(interest_group.is_social_group)
+        self.assertFalse(self.non_committee.is_social_group)
 
     def test_natural_key(self):
         found_group = AbakusGroup.group_objects.get_by_natural_key(self.non_committee.name)
@@ -77,7 +90,7 @@ class AbakusGroupHierarchyTestCase(TestCase):
 
 
 class UserTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -101,6 +114,25 @@ class UserTestCase(TestCase):
         self.assertTrue(webkom in abakus_groups)
         self.assertTrue(abakom in abakus_groups)
         self.assertTrue(abakus in abakus_groups)
+
+    def test_interest_groups(self):
+        interest_group = AbakusGroup.objects.get(name='AbaBrygg')
+        interest_group.add_user(self.user)
+        interest_groups = self.user.interest_groups
+
+        self.assertEqual(len(interest_groups), 1)
+        self.assertTrue(interest_group in interest_groups)
+
+    def test_social_groups(self):
+        interest_group = AbakusGroup.objects.get(name='AbaBrygg')
+        interest_group.add_user(self.user)
+        commitee = AbakusGroup.objects.get(name='Webkom')
+        commitee.add_user(self.user)
+        social_groups = self.user.social_groups
+
+        self.assertEqual(len(social_groups), 2)
+        self.assertTrue(interest_group in social_groups)
+        self.assertTrue(commitee in social_groups)
 
     def test_number_of_users(self):
         abakus = AbakusGroup.objects.get(name='Abakus')

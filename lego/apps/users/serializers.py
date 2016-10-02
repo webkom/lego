@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.users.fields import AbakusGroupListField
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
 
 
@@ -59,6 +59,52 @@ class UserSerializer(DetailedUserSerializer):
             serializer = PublicUserSerializer(instance, context=self.context)
         else:
             serializer = DetailedUserSerializer(instance, context=self.context)
+
+        return serializer.data
+
+
+class DetailedMembershipSerializer(serializers.ModelSerializer):
+    user = PublicUserSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Membership
+        fields = (
+            'user',
+            'abakus_group_id',
+            'role',
+            'is_active',
+            'start_date',
+            'end_date'
+        )
+
+
+class PublicMembershipSerializer(serializers.ModelSerializer):
+    user = PublicUserSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Membership
+        fields = (
+            'user',
+            'abakus_group_id',
+            'role',
+            'is_active',
+            'start_date',
+            'end_date'
+        )
+
+
+class MembershipSerializer(DetailedUserSerializer):
+    def to_representation(self, instance):
+        view = self.context['view']
+        request = self.context['request']
+
+        # List and public retrievals use PublicMembershipSerializer,
+        # the rest uses the detailed one:
+        if (view.action == 'list' or
+                view.action == 'retrieve' and not can_retrieve_user(instance, request.user)):
+            serializer = PublicMembershipSerializer(instance, context=self.context)
+        else:
+            serializer = DetailedMembershipSerializer(instance, context=self.context)
 
         return serializer.data
 

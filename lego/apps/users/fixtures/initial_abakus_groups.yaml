@@ -136,3 +136,15 @@
     tree_id: 1
     permissions:
       - /sudo/admin/
+
+- model: users.AbakusGroup
+  pk: 12
+  fields:
+    deleted: false
+    name: BaseInterestGroup
+    description: ''
+    level: 1
+    lft: 20
+    parent: 1
+    rght: 21
+    tree_id: 1
