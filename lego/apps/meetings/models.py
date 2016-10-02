@@ -32,11 +32,15 @@ class Meeting(SlugContent, BasisModel):
     def participants(self):
         return self.invited_users.filter(invitation__status=MeetingInvitation.ATTENDING)
 
-    def invite(self, user):
+    def invite_user(self, user):
         return self.invitation.update_or_create(user=user,
                                                 meeting=self)
 
-    def uninvite(self, user):
+    def invite_group(self, group):
+        for user in group.users.all():
+            self.invite_user(user)
+
+    def uninvite_user(self, user):
         invitation = self.invitation.get(user=user)
         invitation.delete()
 
