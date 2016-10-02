@@ -1,4 +1,9 @@
+from rest_framework import serializers
+from rest_framework_jwt.serializers import User
+
 from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.apps.users.models import AbakusGroup
+from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -11,7 +16,7 @@ class MeetingSerializer(BasisModelSerializer):
     def create(self, validated_data):
         meeting = Meeting.objects.create(**validated_data)
         owner = self.context['request'].user
-        meeting.invite(owner)
+        meeting.invite_user(owner)
         return meeting
 
 
@@ -25,3 +30,11 @@ class MeetingInvitationSerializer(BasisModelSerializer):
         meeting_invitation = MeetingInvitation.objects.create(meeting=meeting,
                                                               **validated_data)
         return meeting_invitation
+
+
+class MeetingGroupInvite(serializers.Serializer):
+    group = PrimaryKeyRelatedFieldNoPKOpt(queryset=AbakusGroup.objects.all())
+
+
+class MeetingUserInvite(serializers.Serializer):
+    user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())

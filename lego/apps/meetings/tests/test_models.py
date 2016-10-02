@@ -13,12 +13,12 @@ class MeetingTestCase(TestCase):
         self.meeting = Meeting.objects.get(id=3)
 
     def test_can_invite(self):
-        invitation = self.meeting.invite(self.user)[0]
+        invitation = self.meeting.invite_user(self.user)[0]
         self.assertEqual(invitation.user, self.user)
         self.assertEqual(invitation.meeting, self.meeting)
 
     def test_can_accept_invite(self):
-        invitation = self.meeting.invite(self.user)[0]
+        invitation = self.meeting.invite_user(self.user)[0]
         invitation.accept()
         self.assertIn(self.user, self.meeting.participants.all())
 
@@ -26,15 +26,15 @@ class MeetingTestCase(TestCase):
         self.assertEqual(self.meeting.invited_users.count(), 0)
         self.assertEqual(self.meeting.participants.count(), 0)
         self.assertEqual(self.meeting.invitation.count(), 0)
-        self.meeting.invite(self.user)[0].accept()
-        self.meeting.invite(self.user)[0].accept()
+        self.meeting.invite_user(self.user)[0].accept()
+        self.meeting.invite_user(self.user)[0].accept()
         self.assertEqual(self.meeting.invited_users.count(), 1)
         self.assertEqual(self.meeting.participants.count(), 1)
         self.assertEqual(self.meeting.invitation.count(), 1)
 
     def test_participants(self):
         self.assertEqual(self.meeting.participants.count(), 0)
-        self.meeting.invite(self.user)
+        self.meeting.invite_user(self.user)
         self.assertEqual(self.meeting.participants.count(), 0)
         invitation = self.meeting.invitation.get(user=self.user)
         invitation.accept()
@@ -44,21 +44,21 @@ class MeetingTestCase(TestCase):
 
     def test_invited_users(self):
         self.assertEqual(self.meeting.invited_users.count(), 0)
-        self.meeting.invite(self.user)
+        self.meeting.invite_user(self.user)
         self.assertEqual(self.meeting.invited_users.count(), 1)
         invitation = self.meeting.invitation.get(user=self.user)
         invitation.accept()
         self.assertEqual(self.meeting.invited_users.count(), 1)
         invitation.reject()
         self.assertEqual(self.meeting.invited_users.count(), 1)
-        self.meeting.uninvite(self.user)
+        self.meeting.uninvite_user(self.user)
         self.assertEqual(self.meeting.invited_users.count(), 0)
 
     def test_delete_invitation_after_accept(self):
-        self.meeting.invite(self.user)
+        self.meeting.invite_user(self.user)
         invitation = self.meeting.invitation.get(user=self.user)
         invitation.accept()
-        self.meeting.uninvite(self.user)
+        self.meeting.uninvite_user(self.user)
         self.assertEqual(self.meeting.invited_users.count(), 0)
         self.assertEqual(self.meeting.participants.count(), 0)
         self.assertEqual(self.meeting.invitation.count(), 0)

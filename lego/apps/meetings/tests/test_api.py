@@ -68,7 +68,7 @@ class RetrieveMeetingTestCase(APITestCase):
 
     def test_participant_can_retrieve(self):
         invited = self.abakommer
-        self.meeting.invite(invited)
+        self.meeting.invite_user(invited)
         self.client.force_authenticate(invited)
         res = self.client.get(_get_detail_url(self.meeting.id))
         self.assertEqual(res.status_code, 200)
@@ -76,8 +76,8 @@ class RetrieveMeetingTestCase(APITestCase):
     def test_uninvited_cannot_retrieve(self):
         user = self.abakule
         self.client.force_authenticate(user)
-        self.meeting.invite(user)
-        self.meeting.uninvite(user)
+        self.meeting.invite_user(user)
+        self.meeting.uninvite_user(user)
         res = self.client.get(_get_detail_url(self.meeting.pk))
         self.assertTrue(res.status_code >= 403)
 
@@ -91,9 +91,9 @@ class RetrieveMeetingTestCase(APITestCase):
         self.meeting.save()
         self.client.force_authenticate(self.abakule)
 
-        self.meeting.invite(self.abakommer)
-        self.meeting.invite(self.abakule)[0].accept()
-        self.meeting.invite(self.pleb)[0].accept()
+        self.meeting.invite_user(self.abakommer)
+        self.meeting.invite_user(self.abakule)[0].accept()
+        self.meeting.invite_user(self.pleb)[0].accept()
 
         for user in [self.abakule, self.abakommer, self.pleb]:
             self.client.force_authenticate(user)
@@ -121,15 +121,13 @@ class DeleteMeetingTestCase(APITestCase):
     def test_can_delete_own_meeting(self):
         self.meeting.created_by = self.abakommer
         self.meeting.save()
-        # This is done by default in MeetingSerializer.create
-        self.meeting.invite(self.abakommer)
 
         self.client.force_authenticate(self.abakommer)
         res = self.client.delete(_get_detail_url(self.meeting.pk))
         self.assertEqual(res.status_code, 204)
 
     def test_cannot_delete_when_invited(self):
-        self.meeting.invite(self.abakommer)
+        self.meeting.invite_user(self.abakommer)
         self.client.force_authenticate(self.abakommer)
         res = self.client.delete(_get_detail_url(self.meeting.pk))
         self.assertEqual(res.status_code, 403)
@@ -145,7 +143,7 @@ class InviteToMeetingTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.meeting = Meeting.objects.get(id=1)
+        self.meeting = Meeting.objects.get(id=3)
         self.abakommer = User.objects.get(username='abakommer')
         AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
         self.abakule = User.objects.get(username='test1')
@@ -155,21 +153,31 @@ class InviteToMeetingTestCase(APITestCase):
     def test_can_invite_to_own_meeting(self):
         self.meeting.created_by = self.abakommer
         self.meeting.save()
-        # This is done by default in MeetingSerializer.create
-        self.meeting.invite(self.abakommer)
 
         self.client.force_authenticate(self.abakommer)
-        data = {
+        res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_user/', {
             'user': self.abakule.id,
-        }
-        res = self.client.post(_get_invitations_list_url(self.meeting.id), data)
+        })
         self.assertEqual(res.status_code, 201)
 
     def test_can_not_invite_to_unknown_meeting(self):
         me = self.abakommer
         self.client.force_authenticate(me)
-        data = {
+        res = self.client.post(_get_invitations_list_url(self.meeting.id), {
             'user': self.abakule.id,
-        }
-        res = self.client.post(_get_invitations_list_url(self.meeting.id), data)
+        })
         self.assertEqual(res.status_code, 403)
+
+    def test_can_invite_group(self):
+        me = self.abakommer
+        self.meeting.created_by = me
+        self.meeting.save()
+        self.client.force_authenticate(me)
+        webkom = AbakusGroup.objects.get(name='Webkom')
+        res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_group/', {
+            'group': webkom.id
+        })
+        self.assertEqual(res.status_code, 201)
+        for user in webkom.users.all():
+            present = self.meeting.invited_users.filter(id=user.id).exists()
+            self.assertTrue(present)
