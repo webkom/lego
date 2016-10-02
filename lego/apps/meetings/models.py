@@ -41,7 +41,7 @@ class Meeting(SlugContent, BasisModel):
         invitation.delete()
 
     def can_edit(self, user):
-        return self.invited_users.filter(id=user.id).exists()
+        return self.created_by == user or self.invited_users.filter(id=user.id).exists()
 
 
 class MeetingInvitation(BasisModel):
