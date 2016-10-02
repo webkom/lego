@@ -54,3 +54,11 @@
     first_name: pleb
     last_name: plebbesen
     email: pleb@hotmail.no
+
+- model: users.User
+  pk: 8
+  fields:
+    username: interestgroupadmin_test
+    first_name: interestgroup
+    last_name: admin
+    email: interestgroup@admin.com

@@ -23,6 +23,11 @@ class Command(BaseCommand):
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
             self.stdout.write('Loading development fixtures:')
             call_command('loaddata', 'lego/apps/users/fixtures/development_users.yaml')
+            call_command(
+                'loaddata',
+                'lego/apps/social_groups/fixtures/development_interest_groups.yaml'
+            )
+            call_command('loaddata', 'lego/apps/users/fixtures/development_memberships.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_events.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_pools.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_registrations.yaml')
