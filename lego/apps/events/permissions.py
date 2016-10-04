@@ -3,7 +3,7 @@ from lego.apps.permissions.permissions import AbakusPermission
 
 class EventPermissions(AbakusPermission):
     permission_map = {
-        'create': ['/sudo/admin/events/create/','/sudo/admin/events/admin-create/'],
+        'admin_register': ['/sudo/admin/events/create/'], # what permission to use??
     }
 
 

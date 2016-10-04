@@ -1,4 +1,5 @@
-from rest_framework import filters, viewsets
+from rest_framework import filters, viewsets, decorators, status
+from rest_framework.response import Response
 
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
@@ -64,5 +65,11 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.event.unregister(instance.user)
 
-    def create(self, request, *args, **kwargs):
-        pass
+    @decorators.detail_route(methods=['POST'], serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+    def admin_register(self, request, *args, **kwargs):
+        event = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        registration = event.admin_register(**serializer.validated_data)
+        #send registration in response? how?
+        return Response(status=status.HTTP_201_CREATED)
