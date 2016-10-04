@@ -4,6 +4,7 @@ from django.utils.text import slugify
 
 from lego.apps.comments.models import Comment
 from lego.apps.reactions.models import Reaction
+from lego.apps.tags.models import Tag
 
 
 class SlugModel(models.Model):
@@ -45,6 +46,7 @@ class Content(SlugModel):
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
+    tags = models.ManyToManyField(Tag)
     reactions = GenericRelation(Reaction)
     slug_field = 'title'
 
