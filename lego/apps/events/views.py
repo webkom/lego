@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import NestedEventPermissions
-from lego.apps.events.serializers import (EventCreateAndUpdateSerializer,
+from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
+                                          EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
-                                          RegistrationCreateAndUpdateSerializer,
-                                          AdminRegistrationCreateAndUpdateSerializer)
+                                          RegistrationCreateAndUpdateSerializer)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
@@ -65,11 +65,12 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.event.unregister(instance.user)
 
-    @decorators.detail_route(methods=['POST'], serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+    @decorators.detail_route(methods=['POST'],
+                             serializer_class=AdminRegistrationCreateAndUpdateSerializer)
     def admin_register(self, request, *args, **kwargs):
         event = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         registration = event.admin_register(**serializer.validated_data)
-        #send registration in response? how?
-        return Response(status=status.HTTP_201_CREATED)
+        reg_data = RegistrationCreateAndUpdateSerializer(registration).data
+        return Response(data=reg_data, status=status.HTTP_201_CREATED)

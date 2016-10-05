@@ -74,8 +74,8 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         """
         if self.can_edit(request_user):
             return self.registrations.update_or_create(event=self, user=user,
-                                                   defaults={'pool': pool,
-                                                             'unregistration_date': None})[0]
+                                                       defaults={'pool': pool,
+                                                                 'unregistration_date': None})[0]
         else:
             raise UserNotAdmin()
 
