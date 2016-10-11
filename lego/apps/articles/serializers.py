@@ -26,7 +26,8 @@ class DetailedArticleSerializer(BasisModelSerializer):
             'comments',
             'comment_target',
             'reactions',
-            'reactions_grouped'
+            'reactions_grouped',
+            'tags'
         )
 
 
@@ -35,4 +36,4 @@ class PublicArticleSerializer(BasisModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'cover', 'description')
+        fields = ('id', 'title', 'cover', 'description', 'tags')

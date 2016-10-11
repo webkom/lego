@@ -54,7 +54,7 @@ class EventReadSerializer(BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
                   'location', 'start_time', 'thumbnail', 'end_time',
-                  'total_capacity', 'company', 'registration_count')
+                  'total_capacity', 'company', 'registration_count', 'tags')
         read_only = True
 
 
@@ -72,7 +72,7 @@ class EventReadDetailedSerializer(BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools',
-                  'company', 'active_capacity', 'is_priced', 'price', 'activation_time')
+                  'company', 'active_capacity', 'is_priced', 'price', 'activation_time', 'tags')
         read_only = True
 
     def get_price(self, obj):
@@ -100,7 +100,7 @@ class EventCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'merge_time')
+                  'start_time', 'end_time', 'merge_time', 'tags')
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
