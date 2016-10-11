@@ -22,7 +22,7 @@ dependencies:
 
 test:
   pre:
-    - make test
+    - make ci_settings
   override:
     - tox -e tests
     - tox -e isort
