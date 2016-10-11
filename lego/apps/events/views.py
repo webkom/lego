@@ -7,6 +7,7 @@ from lego.apps.events.serializers import (EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer)
+from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -15,7 +16,7 @@ class EventViewSet(viewsets.ModelViewSet):
                                               'pools__registrations__user',
                                               'can_view_groups',
                                               'comments')
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
     filter_class = EventsFilterSet
 
     def get_serializer_class(self):
