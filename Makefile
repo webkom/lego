@@ -7,10 +7,10 @@ help:
 venv:
 	virtualenv -p `which python3` venv
 
-lego/settings/local.py:
+local:
 	echo "from .development import *" > lego/settings/local.py
 
-development: lego/settings/local.py
+development: local
 	venv/bin/pip install -r requirements/dev.txt --upgrade
 	venv/bin/pip install -r requirements/docs.txt --upgrade
 	venv/bin/python manage.py migrate
