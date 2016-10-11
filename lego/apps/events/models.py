@@ -73,9 +73,13 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         :return: The registration
         """
         if self.can_edit(request_user):
-            return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': pool,
-                                                                 'unregistration_date': None})[0]
+            if pool in self.pools.all():
+                return \
+                    self.registrations.update_or_create(event=self, user=user,
+                                                        defaults={'pool': pool,
+                                                                  'unregistration_date': None})[0]
+            else:
+                raise ValueError('No such pool in this event')
         else:
             raise UserNotAdmin()
 

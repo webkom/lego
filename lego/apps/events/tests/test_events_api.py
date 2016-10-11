@@ -236,3 +236,25 @@ class ListRegistrationsTestCase(APITestCase):
         event_response = self.client.get(_get_detail_url(1))
 
         self.assertEqual(event_response.status_code, 404)
+
+
+class CreateAdminRegistrationTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+    def setUp(self):
+        self.abakus_users = User.objects.all()
+
+    def test_with_admin_permission(self):
+        request_user = self.abakus_users[0]
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        AbakusGroup.objects.get(name='Webkom').add_user(request_user)
+        event.created_by = request_user
+        self.client.force_authenticate(request_user)
+        registration_response = self.client.post(_get_registrations_list_url(event.id) + 'admin_register/',
+                                                 {'request_user':request_user.id,
+                                                  'user': self.abakus_users[1].id,
+                                                  'pool': event.pools.first().id})
+        self.assertEqual(registration_response.status_code, 201)
+
+
+
