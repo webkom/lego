@@ -1,12 +1,12 @@
 from rest_framework import viewsets
 
-from lego.apps.bdb.models import Company, CompanyContact, SemesterStatus
-from lego.apps.bdb.serializers import (CompanyContactCreateAndUpdateSerializer,
-                                       CompanyContactReadSerializer,
-                                       CompanyCreateAndUpdateSerializer,
-                                       CompanyReadDetailedSerializer, CompanyReadSerializer,
-                                       SemesterStatusCreateAndUpdateSerializer,
-                                       SemesterStatusReadSerializer)
+from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
+from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerializer,
+                                             CompanyContactReadSerializer,
+                                             CompanyCreateAndUpdateSerializer,
+                                             CompanyReadDetailedSerializer, CompanyReadSerializer,
+                                             SemesterStatusCreateAndUpdateSerializer,
+                                             SemesterStatusReadSerializer)
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -27,7 +27,7 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
     queryset = SemesterStatus.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
+        if self.action in ['create', 'update', 'partial_update']:
             return SemesterStatusCreateAndUpdateSerializer
 
         return SemesterStatusReadSerializer

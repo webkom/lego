@@ -1,4 +1,4 @@
-- model: bdb.Company
+- model: companies.Company
   pk: 1
   fields:
     name: 'BEKK'
@@ -11,7 +11,7 @@
     website: 'bekk.no'
     bedex: true
 
-- model: bdb.Company
+- model: companies.Company
   pk: 2
   fields:
     name: 'Facebook'
@@ -21,7 +21,7 @@
     phone: '123 45 678'
     active: true
 
-- model: bdb.Company
+- model: companies.Company
   pk: 3
   fields:
     name: 'Itera'
@@ -34,14 +34,14 @@
 
   # Company 1
 
-- model: bdb.CompanyContact
+- model: companies.CompanyContact
   pk: 1
   fields:
     name: 'Abraham Finnsen'
     mail: 'abraham@finnsen.no'
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 1
   fields:
     year: 2016
@@ -49,7 +49,7 @@
     contacted_status: 0
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 2
   fields:
     year: 2016
@@ -57,7 +57,7 @@
     contacted_status: 1
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 3
   fields:
     year: 2017
@@ -65,7 +65,7 @@
     contacted_status: 2
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 4
   fields:
     year: 2017
@@ -73,7 +73,7 @@
     contacted_status: 3
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 5
   fields:
     year: 2018
@@ -81,7 +81,7 @@
     contacted_status: 4
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 6
   fields:
     year: 2018
@@ -89,7 +89,7 @@
     contacted_status: 5
     company: 1
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 7
   fields:
     year: 2015
@@ -138,7 +138,7 @@
 
   # Company 2
 
-- model: bdb.CompanyContact
+- model: companies.CompanyContact
   pk: 2
   fields:
     name: 'Sylliaas Eiriksen'
@@ -147,7 +147,7 @@
     phone: '12121212'
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 8
   fields:
     year: 2016
@@ -155,7 +155,7 @@
     contacted_status: 5
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 9
   fields:
     year: 2016
@@ -163,7 +163,7 @@
     contacted_status: 4
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 10
   fields:
     year: 2017
@@ -171,7 +171,7 @@
     contacted_status: 3
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 11
   fields:
     year: 2017
@@ -179,7 +179,7 @@
     contacted_status: 2
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 12
   fields:
     year: 2018
@@ -187,7 +187,7 @@
     contacted_status: 1
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 13
   fields:
     year: 2018
@@ -195,7 +195,7 @@
     contacted_status: 0
     company: 2
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 14
   fields:
     year: 2015
@@ -244,7 +244,7 @@
 
   # Company 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 15
   fields:
     year: 2016
@@ -252,7 +252,7 @@
     contacted_status: 3
     company: 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 16
   fields:
     year: 2016
@@ -260,7 +260,7 @@
     contacted_status: 0
     company: 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 17
   fields:
     year: 2017
@@ -268,7 +268,7 @@
     contacted_status: 1
     company: 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 18
   fields:
     year: 2017
@@ -276,7 +276,7 @@
     contacted_status: 6
     company: 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 19
   fields:
     year: 2018
@@ -284,7 +284,7 @@
     contacted_status: 5
     company: 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 20
   fields:
     year: 2018
@@ -292,7 +292,7 @@
     contacted_status: 3
     company: 3
 
-- model: bdb.SemesterStatus
+- model: companies.SemesterStatus
   pk: 21
   fields:
     year: 2015
