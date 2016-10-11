@@ -43,6 +43,7 @@ class Command(BaseCommand):
         call_command('loaddata', 'lego/apps/users/fixtures/initial_abakus_groups.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_users.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_memberships.yaml')
+        call_command('loaddata', 'lego/apps/tags/fixtures/initial_tags.yaml')
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
             log.info('Loading development fixtures:')

@@ -7,4 +7,3 @@ from lego.apps.tags.serializers import TagSerializer
 class TagViewSet(ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
