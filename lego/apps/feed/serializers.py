@@ -16,6 +16,7 @@ class AggregatedFeedSerializer(serializers.Serializer):
     updated_at = serializers.DateTimeField()
     last_activity = FeedActivitySerializer()
     activity_count = serializers.IntegerField()
+    actor_ids = serializers.ListField(child=serializers.IntegerField())
 
 
 class MarkSerializer(serializers.Serializer):

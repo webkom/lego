@@ -59,7 +59,7 @@ class FeedActivity(Activity):
 
 
 class FeedAggregatedActivity(AggregatedActivity):
-    max_aggregated_activities_length = 1
+    max_aggregated_activities_length = 5
 
     @property
     def activity_id(self):

@@ -15,3 +15,32 @@ class PaymentVerb(Verb):
 
 register(PaymentVerb)
 """
+from stream_framework.verbs.base import Comment as CommentVerb  # noqa
+from stream_framework.verbs.base import Verb, register
+
+
+class CreateVerb(Verb):
+    id = 6
+    infinitive = 'create'
+    past_tense = 'created'
+
+
+register(CreateVerb)
+
+
+class UpdateVerb(Verb):
+    id = 7
+    infinitive = 'update'
+    past_tense = 'updated'
+
+
+register(UpdateVerb)
+
+
+class DeleteVerb(Verb):
+    id = 8
+    infinitive = 'delete'
+    past_tense = 'deleted'
+
+
+register(DeleteVerb)

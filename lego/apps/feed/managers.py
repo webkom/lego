@@ -32,7 +32,6 @@ class NotificationFeedManager:
 
     def add_activity(self, user_ids, activity):
         operation_kwargs = dict(activities=[activity], trim=True)
-
         for feed_class in self.feed_classes.values():
             self.create_fanout_tasks(
                 user_ids,
