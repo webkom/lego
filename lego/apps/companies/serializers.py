@@ -1,7 +1,7 @@
 from rest_framework.fields import CharField
 
-from lego.apps.bdb.models import Company, CompanyContact, SemesterStatus
 from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
 from lego.apps.events.models import Event
 from lego.apps.users.serializers import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
@@ -74,8 +74,8 @@ class CompanyReadDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name', 'description', 'semester_statuses', 'student_contact',
-                  'admin_comment', 'website', 'phone', 'company_contacts', 'active',
-                  'job_offer_only', 'bedex', 'events', 'comments', 'comment_target')
+                  'admin_comment', 'website', 'phone', 'address', 'company_contacts',
+                  'active', 'job_offer_only', 'bedex', 'events', 'comments', 'comment_target')
 
 
 class CompanyCreateAndUpdateSerializer(BasisModelSerializer):

@@ -1,8 +1,8 @@
 from rest_framework import routers
 
 from lego.apps.articles.views import ArticlesViewSet
-from lego.apps.bdb.views import CompanyContactViewSet, CompanyViewSet, SemesterStatusViewSet
 from lego.apps.comments.views import CommentViewSet
+from lego.apps.companies.views import CompanyContactViewSet, CompanyViewSet, SemesterStatusViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import NotificationFeedViewSet

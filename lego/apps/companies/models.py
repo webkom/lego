@@ -1,5 +1,7 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
+from lego.apps.comments.models import Comment
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
@@ -25,7 +27,13 @@ class Company(BasisModel, ObjectPermissionsModel):
     description = models.CharField(max_length=500, default='')
     phone = models.CharField(max_length=100, default='', blank=True)
     website = models.CharField(max_length=100, default='')
+    address = models.CharField(max_length=100, default='')
     previous_contacts = models.ManyToManyField(User)
+    comments = GenericRelation(Comment)
+
+    @property
+    def comment_target(self):
+        return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
 
     class Meta:
         ordering = ['id']
