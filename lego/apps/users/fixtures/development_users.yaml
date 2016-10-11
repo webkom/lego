@@ -1,11 +1,4 @@
 - fields:
-    email: adiykgoaet@gmail.com
-    first_name: Anonymous
-    last_name: user
-    username: anonymous
-  model: users.User
-  pk: 1
-- fields:
     email: tnmxpclxrn@gmail.com
     first_name: Per Kristian J
     last_name: Fjellby
