@@ -66,7 +66,8 @@ class AbakusViewSetPermission:
                 if obj.can_edit(user):
                     permissions.append('edit')
             else:
-                # The object is not using the object permissions model, check keyword permissions instead
+                # The object is not using the object permissions model,
+                # check keyword permissions instead
                 if user.has_perm(AbakusViewSetPermission.__parse_permission_string(obj, 'update')):
                     permissions.append('edit')
 
