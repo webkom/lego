@@ -1,6 +1,6 @@
 help:
 	@echo 'lego/settings/local.py - create empty lego/settings/local.py for testing'
-	@echo 'docs                   - build and display docss
+	@echo 'docs                   - build and display docs'
 	@echo 'ci_settings            - create a lego/settings/local.py for ci'
 
 lego/settings/local.py:
