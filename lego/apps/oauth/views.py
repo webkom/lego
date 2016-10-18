@@ -21,6 +21,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ApplicationSerializer
     queryset = APIApplication.objects.all()
+    ordering = 'id'
 
 
 class AccessTokenViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
@@ -30,6 +31,7 @@ class AccessTokenViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, viewse
     serializer_class = AccessTokenSerializer
     permission_classes = [permissions.IsAuthenticated]
     queryset = AccessToken.objects.all()
+    ordering = 'id'
 
     def get_queryset(self):
         return AccessToken.objects.filter(user=self.request.user).select_related('application')

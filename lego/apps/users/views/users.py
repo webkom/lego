@@ -13,6 +13,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, UsersPermissions)
+    ordering = 'id'
 
     @list_route(methods=['GET'], permission_classes=[IsAuthenticated])
     def me(self, request):

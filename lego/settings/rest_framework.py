@@ -16,7 +16,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'lego.apps.permissions.filters.AbakusObjectPermissionFilter',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'lego.utils.pagination.APIPagination',
+    'DEFAULT_PAGINATION_CLASS': 'lego.utils.pagination.CursorPagination',
     'PAGE_SIZE': 30,
     'EXCEPTION_HANDLER': 'lego.utils.exceptions.exception_handler',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',

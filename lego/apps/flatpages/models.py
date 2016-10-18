@@ -17,7 +17,6 @@ class Page(BasisModel, ObjectPermissionsModel):
     class Meta:
         verbose_name = _('flatpage')
         verbose_name_plural = _('flatpages')
-        ordering = ('slug',)
 
     def __str__(self):
         return "%s -- %s" % (self.slug, self.title)

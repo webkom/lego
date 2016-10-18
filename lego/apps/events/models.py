@@ -40,12 +40,9 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES)
     location = models.CharField(max_length=100)
 
-    start_time = models.DateTimeField()
+    start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
-
-    class Meta:
-        ordering = ['start_time']
 
     def __str__(self):
         return self.title
@@ -373,7 +370,6 @@ class Registration(BasisModel):
 
     class Meta:
         unique_together = ('user', 'event')
-        ordering = ['registration_date']
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
