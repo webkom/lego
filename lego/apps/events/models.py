@@ -1,13 +1,13 @@
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
 
 from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.models import BasisModel
 
+from .constants import EVENT_TYPES
 from .exceptions import NoAvailablePools
 
 
@@ -22,22 +22,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     An event has a waiting list, filled with users who register after the event is full.
     """
-
-    COMPANY_PRESENTATION = 0
-    COURSE = 1
-    PARTY = 2
-    OTHER = 3
-    EVENT = 4
-
-    EVENT_TYPES = (
-        (COMPANY_PRESENTATION, _('Company presentation')),
-        (COURSE, _('Course')),
-        (PARTY, _('Party')),
-        (OTHER, _('Other')),
-        (EVENT, _('Event'))
-    )
-
-    event_type = models.PositiveSmallIntegerField(choices=EVENT_TYPES)
+    event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
     location = models.CharField(max_length=100)
 
     start_time = models.DateTimeField(db_index=True)
