@@ -26,4 +26,4 @@ class MeetingInvitationPermissions(AbakusPermission):
         meeting = invitation.meeting
         if view.action == 'destroy':
             return meeting.created_by == user
-        return meeting.can_edit(user)
+        return meeting.created_by == user or invitation.user == user
