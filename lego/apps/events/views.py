@@ -1,12 +1,16 @@
-from rest_framework import filters, viewsets
+from rest_framework import decorators, filters, status, viewsets
+from rest_framework.response import Response
 
+from lego.apps.events.exceptions import NoSuchPool
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import NestedEventPermissions
-from lego.apps.events.serializers import (EventCreateAndUpdateSerializer,
+from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
+                                          EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
-                                          RegistrationCreateAndUpdateSerializer)
+                                          RegistrationCreateAndUpdateSerializer,
+                                          RegistrationReadSerializer)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
@@ -48,7 +52,12 @@ class PoolViewSet(viewsets.ModelViewSet):
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = (NestedEventPermissions,)
-    serializer_class = RegistrationCreateAndUpdateSerializer
+    serializer_class = RegistrationReadSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return RegistrationCreateAndUpdateSerializer
+        return super().get_serializer_class()
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
@@ -56,3 +65,17 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.event.unregister(instance.user)
+
+    @decorators.list_route(methods=['POST'],
+                           serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+    def admin_register(self, request, *args, **kwargs):
+        event_id = self.kwargs.get('event_pk', None)
+        event = Event.objects.get(id=event_id)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            registration = event.admin_register(**serializer.validated_data)
+        except (ValueError):
+            raise NoSuchPool()
+        reg_data = RegistrationCreateAndUpdateSerializer(registration).data
+        return Response(data=reg_data, status=status.HTTP_201_CREATED)
