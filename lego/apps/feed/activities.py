@@ -23,7 +23,7 @@ class FeedActivity(Activity):
         content_type_field = '%s_content_type' % field
 
         if isinstance(object_, int):
-            setattr(self, id_field, object_)
+            setattr(self, id_field, int(object_))
             setattr(self, content_type_field, None)
         elif isinstance(object_, str):
             content_type, object_id = object_.split('-')
@@ -54,6 +54,14 @@ class FeedActivity(Activity):
         if self.target_content_type and self.target_id:
             return '{0}-{1}'.format(self.target_content_type, self.target_id)
 
+    @property
+    def activity_id(self):
+        return str(self.serialization_id)
+
 
 class FeedAggregatedActivity(AggregatedActivity):
     max_aggregated_activities_length = 1
+
+    @property
+    def activity_id(self):
+        return str(self.serialization_id)

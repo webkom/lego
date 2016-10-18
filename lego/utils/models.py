@@ -55,7 +55,7 @@ class BasisModel(PersistentModel, TimeStampModel):
     on all instances. A BasisModelSerializer is required when using this with rest-framework.
     """
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None,
-                                   editable=False, related_name="%(class)s_created")
+                                   editable=False, related_name="%(class)s_created", db_index=True)
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None,
                                    editable=False, related_name="%(class)s_updated")
 
