@@ -46,7 +46,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     heed_penalties = models.BooleanField(default=True)
 =======
     company = models.ForeignKey(Company, related_name='events', null=True)
-    
+
     def __str__(self):
         return self.title
 >>>>>>> Add new fields to Company, including a ForgeignKey in Event so Events can be associated with a company

@@ -36,6 +36,7 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
         if self.action in ['retrieve', 'destroy']:
             company_id = self.kwargs.select_related('company').get('company_pk', None)
             return SemesterStatus.objects.filter(company=company_id)
+        return self.queryset
 
 
 class CompanyContactViewSet(viewsets.ModelViewSet):
@@ -52,3 +53,4 @@ class CompanyContactViewSet(viewsets.ModelViewSet):
         if self.action in ['retrieve', 'destroy']:
             company_id = self.kwargs.select_related('company').get('company_pk', None)
             return CompanyContact.objects.filter(company=company_id)
+        return self.queryset
