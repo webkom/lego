@@ -39,8 +39,8 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         return self.title
 
     @classmethod
-    def async_register(cls, event_id, user):
-        EventRegister.async_register(event_id, user)
+    def async_register(cls, event_id, user_id):
+        EventRegister.async_register(event_id, user_id)
 
     def can_register(self, user, pool, future=False):
         if not self.is_activated(pool) and not future:
@@ -66,10 +66,9 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         """
 
         if self.pools.filter(id=pool.id).exists():
-            return \
-                self.registrations.update_or_create(event=self, user=user,
-                                                    defaults={'pool': pool,
-                                                              'unregistration_date': None})[0]
+            return self.registrations.update_or_create(event=self, user=user,
+                                                       defaults={'pool': pool,
+                                                                 'unregistration_date': None})[0]
         else:
             raise ValueError('No such pool in this event')
 

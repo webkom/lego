@@ -84,9 +84,9 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         fields = ('id',)
 
     def create(self, validated_data):
-        user = validated_data['current_user']
+        user_id = validated_data['current_user'].id
         event_id = self.context['view'].kwargs['event_pk']
-        Event.async_register(event_id, user)
+        Event.async_register(event_id, user_id)
         return object()
 
 
