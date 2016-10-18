@@ -8,7 +8,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
-                                          RegistrationCreateAndUpdateSerializer)
+                                          RegistrationCreateAndUpdateSerializer, RegistrationReadSerializer)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
@@ -50,13 +50,12 @@ class PoolViewSet(viewsets.ModelViewSet):
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = (NestedEventPermissions,)
+    serializer_class = RegistrationReadSerializer
 
     def get_serializer_class(self):
-        pool = self.kwargs.get('pool', None)
-        user = self.kwargs.get('user', None)
-        if pool and user:
-            return AdminRegistrationCreateAndUpdateSerializer
-        return RegistrationCreateAndUpdateSerializer
+        if self.action == 'create':
+            return RegistrationCreateAndUpdateSerializer
+        return super().get_serializer_class()
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
@@ -65,10 +64,11 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.event.unregister(instance.user)
 
-    @decorators.detail_route(methods=['POST'],
-                             serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+    @decorators.list_route(methods=['POST'],
+                           serializer_class=AdminRegistrationCreateAndUpdateSerializer)
     def admin_register(self, request, *args, **kwargs):
-        event = self.get_object()
+        event_id = self.kwargs.get('event_pk', None)
+        event = Event.objects.get(id=event_id)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         registration = event.admin_register(**serializer.validated_data)

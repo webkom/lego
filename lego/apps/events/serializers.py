@@ -87,6 +87,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         return event.register(user)
 
 
-class AdminRegistrationCreateAndUpdateSerializer(BasisModelSerializer):
+class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
+
