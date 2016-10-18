@@ -6,6 +6,6 @@ class NoAvailablePools(APIException):
     default_detail = 'No available pools.'
 
 
-class UserNotAdmin(APIException):
+class NoSuchPool(APIException):
     status_code = 403
-    default_detail = 'User does not have admin rights for this event'
+    default_detail = 'No such pool for this event'
