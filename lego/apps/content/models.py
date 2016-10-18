@@ -46,7 +46,7 @@ class Content(SlugModel):
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
     reactions = GenericRelation(Reaction)
     slug_field = 'title'
 

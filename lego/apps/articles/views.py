@@ -11,9 +11,8 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if self.action == 'list':
             return self.queryset
-
         return self.queryset.prefetch_related('author', 'comments', 'comments__created_by',
-                                              'reactions', 'reactions__created_by')
+                                              'reactions', 'reactions__created_by', 'tags')
 
     def get_serializer_class(self):
         if self.action == 'list':

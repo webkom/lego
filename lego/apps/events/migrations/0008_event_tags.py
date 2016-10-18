@@ -9,12 +9,12 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('tags', '0001_initial'),
-        ('articles', '0002_auto_20160905_2251'),
+        ('events', '0007_auto_20161018_2055'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='article',
+            model_name='event',
             name='tags',
             field=models.ManyToManyField(blank=True, to='tags.Tag'),
         ),
