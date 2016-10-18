@@ -1,0 +1,29 @@
+- model: meetings.Meeting
+  pk: 1
+  fields:
+    title: Bra møte
+    location: TBA
+    start_time: '2016-10-01T17:15:00+00:00'
+    end_time: '2016-10-01T18:00:00+00:00'
+    report: '# Fresh\n\n halla hva skjer a?'
+    report_author: 1
+
+- model: meetings.Meeting
+  pk: 2
+  fields:
+    title: Genvors
+    location: EL5
+    start_time: '2017-02-01T17:15:00+00:00'
+    end_time: '2017-02-01T23:59:00+00:00'
+    report: '#Genvors\n\nVi fikk en fin gjeng til neste HS :)'
+    report_author: 3
+
+- model: meetings.Meeting
+  pk: 3
+  fields:
+    title: Tomt møte
+    location: "null"
+    start_time: '2010-02-01T17:15:00+00:00'
+    end_time: '2011-02-01T23:59:00+00:00'
+    report: 'tomp'
+    report_author: 3

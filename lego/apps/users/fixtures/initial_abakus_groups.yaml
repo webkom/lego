@@ -9,6 +9,9 @@
     parent: null
     rght: 22
     tree_id: 1
+    permissions:
+      - /sudo/admin/meetings/create
+      - /sudo/admin/meetinginvitations/create
 
 - model: users.AbakusGroup
   pk: 2

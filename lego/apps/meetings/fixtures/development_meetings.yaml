@@ -1,0 +1,14 @@
+- model: meetings.Meeting
+  pk: 1
+  fields:
+    title: Webkommøte
+    location: Webkomkontoret
+    start_time: '2016-09-30T16:15:00+00:00'
+    end_time: '2016-10-01T02:00:00+00:00'
+    report: '# Plebkomworkshop! Halla damer, dette var et bra event.'
+    report_author: 1
+
+- model: meetings.MeetingInvitation
+  fields:
+    meeting: 1
+    user: 1
