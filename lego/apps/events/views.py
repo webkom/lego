@@ -1,4 +1,4 @@
-from rest_framework import decorators, filters, status, viewsets
+from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.events.exceptions import NoSuchPool
@@ -51,7 +51,11 @@ class PoolViewSet(viewsets.ModelViewSet):
                                                                         'registrations')
 
 
-class RegistrationViewSet(viewsets.ModelViewSet):
+class RegistrationViewSet(mixins.CreateModelMixin,
+                          mixins.RetrieveModelMixin,
+                          mixins.DestroyModelMixin,
+                          mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
     permission_classes = (NestedEventPermissions,)
     serializer_class = RegistrationReadSerializer
 

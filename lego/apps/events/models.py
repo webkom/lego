@@ -5,6 +5,7 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.content.models import SlugContent
+from lego.apps.events.tasks import EventRegister
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
@@ -36,6 +37,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     def __str__(self):
         return self.title
+
+    @classmethod
+    def async_register(cls, event_id, user):
+        EventRegister.create_registration(cls, event_id, user)
 
     def can_register(self, user, pool, future=False):
         if not self.is_activated(pool) and not future:
