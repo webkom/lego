@@ -145,3 +145,27 @@
 - model: tags.Tag
   fields:
     tag: Trondheim
+
+- model: tags.Tag
+  fields:
+    tag: Øl
+
+- model: tags.Tag
+  fields:
+    tag: Brus
+
+- model: tags.Tag
+  fields:
+    tag: Damer
+
+- model: tags.Tag
+  fields:
+    tag: Web
+
+- model: tags.Tag
+  fields:
+    tag: Microsoft
+
+- model: tags.Tag
+  fields:
+    tag: Azure
