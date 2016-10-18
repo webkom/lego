@@ -15,6 +15,12 @@ class SemesterStatusReadSerializer(BasisModelSerializer):
         fields = ('id', 'year', 'semester', 'contacted_status')
 
 
+class SemesterStatusReadDetailedSerializer(BasisModelSerializer):
+    class Meta:
+        model = SemesterStatus
+        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
+
+
 class SemesterStatusCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
@@ -60,13 +66,13 @@ class CompanyReadSerializer(BasisModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
-                  'website', 'active', 'job_offer_only', 'bedex')
+                  'active', 'job_offer_only', 'bedex')
 
 
 class CompanyReadDetailedSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
-    semester_statuses = SemesterStatusReadSerializer(many=True, read_only=True)
+    semester_statuses = SemesterStatusReadDetailedSerializer(many=True, read_only=True)
     student_contact = PublicUserSerializer(read_only=True)
     company_contacts = CompanyContactReadSerializer(many=True, read_only=True)
     events = CompanyEventReadSerializer(many=True, read_only=True)
@@ -81,4 +87,5 @@ class CompanyReadDetailedSerializer(BasisModelSerializer):
 class CompanyCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Company
-        fields = ('id', 'name', 'student_contact', 'admin_comment', 'job_offer_only', 'phone')
+        fields = ('id', 'name', 'description', 'student_contact', 'admin_comment', 'website',
+                  'phone', 'address', 'active', 'job_offer_only', 'bedex')

@@ -61,6 +61,7 @@ class SemesterStatus(BasisModel):
     year = models.PositiveSmallIntegerField()
     semester = models.PositiveSmallIntegerField(choices=SEMESTERS, default=0)
     contacted_status = models.PositiveSmallIntegerField(choices=CONTACT_STATUSES, default=6)
+    contract = models.CharField(max_length=500, default='')
     company = models.ForeignKey(Company, related_name='semester_statuses')
 
     class Meta:
