@@ -1,4 +1,4 @@
-from rest_framework import filters, viewsets, decorators, status
+from rest_framework import decorators, filters, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.events.filters import EventsFilterSet
