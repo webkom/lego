@@ -1,0 +1,19 @@
+COMPANY_PRESENTATION = 'company_presentation'
+LUNCH_PRESENTATION = 'lunch_presentation'
+COURSE = 'course'
+KID_EVENT = 'kid_event'
+PARTY = 'party'
+SOCIAL = 'social'
+OTHER = 'other'
+EVENT = 'event'
+
+EVENT_TYPES = (
+    (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
+    (LUNCH_PRESENTATION, LUNCH_PRESENTATION),
+    (COURSE, COURSE),
+    (KID_EVENT, KID_EVENT),
+    (PARTY, PARTY),
+    (SOCIAL, SOCIAL),
+    (OTHER, OTHER),
+    (EVENT, EVENT)
+)
