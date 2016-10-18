@@ -5,7 +5,7 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.content.models import SlugContent
-from lego.apps.events.tasks import EventRegister
+from lego.apps.events.tasks import EventRegister, EventUnregister
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
@@ -40,7 +40,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     @classmethod
     def async_register(cls, event_id, user):
-        EventRegister.create_registration(event_id, user)
+        EventRegister.async_register(event_id, user)
 
     def can_register(self, user, pool, future=False):
         if not self.is_activated(pool) and not future:
@@ -207,6 +207,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 Penalty.objects.create(user=user, reason='Unregistering from event too late',
                                        weight=1, source_object=self)
             self.check_for_bump_or_rebalance(pool)
+            EventUnregister.async_bump(self.id, pool.id)
 
     def check_for_bump_or_rebalance(self, open_pool):
         """
