@@ -1,4 +1,4 @@
-from .tasks import InstanceCreateTask, InstanceRemovalTask, InstanceUpdateTask
+from .tasks import InstanceEventTask
 
 
 class BaseSignalHandler:
@@ -18,10 +18,10 @@ class AsyncSignalHandler(BaseSignalHandler):
     """
 
     def on_create(self, instance):
-        InstanceCreateTask.create_instance(instance)
+        InstanceEventTask.add_to_feeds(instance, action='create')
 
     def on_update(self, instance):
-        InstanceUpdateTask.update_instance(instance)
+        InstanceEventTask.add_to_feeds(instance, action='update')
 
     def on_delete(self, instance):
-        InstanceRemovalTask.remove_instance(instance)
+        InstanceEventTask.add_to_feeds(instance, action='delete')

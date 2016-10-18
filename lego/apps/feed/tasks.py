@@ -3,63 +3,24 @@ from lego.apps.feed.managers import notification_feed_manager
 from lego.apps.feed.registry import get_handler
 
 
-class InstanceCreateTask(celery_app.Task):
+class InstanceEventTask(celery_app.Task):
 
     @classmethod
-    def create_instance(cls, instance):
+    def add_to_feeds(cls, instance, action):
         task = cls()
-        task.delay(instance)
+        task.delay(instance, action)
 
-    def run(self, instance):
+    def run(self, instance, action='update'):
         """
         Add action to feed and notificationfeed of appropriate users
         """
 
-        Handler = get_handler(instance._meta.model)
-        activity = Handler.get_activity(instance, action='create')
-        user_ids = Handler.get_user_ids(instance, action='create')
-        if len(user_ids) > 0:
-            notification_feed_manager.add_activity(
-                user_ids=user_ids,
-                activity=activity
-            )
+        Handler_cls = get_handler(instance._meta.model)
+        handler = Handler_cls(instance, action)
 
+        activity = handler.activity
+        user_ids = handler.user_ids
 
-class InstanceUpdateTask(celery_app.Task):
-
-    @classmethod
-    def update_instance(cls, instance):
-        task = cls()
-        task.delay(instance)
-
-    def run(self, instance):
-        """
-        Add action to feed and notificationfeed of appropriate users
-        """
-        Handler = get_handler(instance._meta.model)
-        activity = Handler.get_activity(instance, action='update')
-        user_ids = Handler.get_user_ids(instance, action='update')
-        if len(user_ids) > 0:
-            notification_feed_manager.add_activity(
-                user_ids=user_ids,
-                activity=activity
-            )
-
-
-class InstanceRemovalTask(celery_app.Task):
-
-    @classmethod
-    def remove_instance(cls, instance):
-        task = cls()
-        task.delay(instance)
-
-    def run(self, instance):
-        """
-        Add action to feed and notificationfeed of appropriate users
-        """
-        Handler = get_handler(instance._meta.model)
-        activity = Handler.get_activity(instance, action='delete')
-        user_ids = Handler.get_user_ids(instance, action='delete')
         if len(user_ids) > 0:
             notification_feed_manager.add_activity(
                 user_ids=user_ids,

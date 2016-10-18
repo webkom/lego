@@ -1,4 +1,4 @@
-from lego.apps.feed.handlers import BaseHandler
+from lego.apps.feed.feed_handlers import BaseHandler
 
 handler_registry = {}
 
