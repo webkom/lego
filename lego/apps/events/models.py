@@ -40,7 +40,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     @classmethod
     def async_register(cls, event_id, user):
-        EventRegister.create_registration(cls, event_id, user)
+        EventRegister.create_registration(event_id, user)
 
     def can_register(self, user, pool, future=False):
         if not self.is_activated(pool) and not future:
@@ -374,6 +374,9 @@ class Pool(BasisModel):
             super().delete(*args, **kwargs)
         else:
             raise ValueError('Registrations exist in Pool')
+
+    def active_registrations(self):
+        return self.registrations.filter(unregistration_date=None)
 
     @property
     def is_full(self):

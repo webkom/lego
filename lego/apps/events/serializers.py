@@ -18,11 +18,13 @@ class RegistrationReadSerializer(BasisModelSerializer):
 
 
 class PoolReadSerializer(BasisModelSerializer):
-    registrations = RegistrationReadSerializer(many=True)
+    active_registrations = RegistrationReadSerializer(many=True)
 
     class Meta:
         model = Pool
-        fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups', 'registrations')
+        fields = ('id', 'name', 'capacity', 'activation_date',
+                  'permission_groups', 'active_registrations')
+        read_only = True
 
     def create(self, validated_data):
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
@@ -40,18 +42,20 @@ class EventReadSerializer(BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time')
+        read_only = True
 
 
 class EventReadDetailedSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
-    pools = PoolReadSerializer(many=True)
+    pools = PoolReadSerializer(read_only=True, many=True)
     capacity = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
+        read_only = True
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
@@ -85,7 +89,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         user = validated_data['current_user']
         event_id = self.context['view'].kwargs['event_pk']
         Event.async_register(event_id, user)
-
+        return object()
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
