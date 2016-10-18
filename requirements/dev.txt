@@ -1,4 +1,4 @@
 -r base.txt
 -r docs.txt
 
-django-debug-toolbar
+django-debug-toolbar==1.6

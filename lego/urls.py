@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib.auth.views import login, logout
 from django.views.generic import TemplateView
@@ -21,3 +22,9 @@ urlpatterns = [
     url(r'^authorization/', include(authorization_urlpatterns)),
     url(r'^$', TemplateView.as_view(template_name='landing.html'), name='landing_page'),
 ]
+
+if 'debug_toolbar' in settings.INSTALLED_APPS:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
