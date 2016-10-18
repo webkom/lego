@@ -9,7 +9,7 @@ from lego.apps.meetings.serializers import (MeetingGroupInvite, MeetingInvitatio
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
-    queryset = Meeting.objects.all()
+    queryset = Meeting.objects.prefetch_related('invitations', 'invitations__user')
     permission_classes = (MeetingPermissions,)
     serializer_class = MeetingSerializer
 
@@ -33,7 +33,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
 class MeetingInvitationViewSet(viewsets.ModelViewSet):
-    queryset = MeetingInvitation.objects.all()
+    queryset = MeetingInvitation.objects.select_related('user')
     permission_classes = (MeetingInvitationPermissions,)
     lookup_field = 'user__id'
 
