@@ -1,6 +1,7 @@
 from rest_framework import decorators, filters, status, viewsets
 from rest_framework.response import Response
 
+from lego.apps.events.exceptions import NoSuchPool
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import NestedEventPermissions
@@ -72,6 +73,9 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         event = Event.objects.get(id=event_id)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        registration = event.admin_register(**serializer.validated_data)
+        try:
+            registration = event.admin_register(**serializer.validated_data)
+        except (ValueError):
+            raise NoSuchPool()
         reg_data = RegistrationCreateAndUpdateSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
