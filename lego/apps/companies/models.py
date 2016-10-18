@@ -63,6 +63,9 @@ class SemesterStatus(BasisModel):
     contacted_status = models.PositiveSmallIntegerField(choices=CONTACT_STATUSES, default=6)
     company = models.ForeignKey(Company, related_name='semester_statuses')
 
+    class Meta:
+        unique_together = ('year', 'semester', 'company')
+
 
 class CompanyContact(BasisModel):
     name = models.CharField(max_length=100)
