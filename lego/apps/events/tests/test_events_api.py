@@ -194,7 +194,11 @@ class CreateRegistrationsTestCase(APITestCase):
     def test_create(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(registration_response.data.get('status'), 'PENDING')
+        res = self.client.get(_get_registrations_list_url(event.id))
+        user_id = res.data[0].get('user', None)['id']
+        self.assertEqual(user_id, 1)
 
     def test_register_no_pools(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
