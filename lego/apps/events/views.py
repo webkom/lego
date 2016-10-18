@@ -22,6 +22,7 @@ class EventViewSet(viewsets.ModelViewSet):
                                               'comments')
     filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
     filter_class = EventsFilterSet
+    ordering = 'start_time'
 
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
