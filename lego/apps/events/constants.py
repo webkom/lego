@@ -1,11 +1,11 @@
-COMPANY_PRESENTATION = 'Company presentation'
-LUNCH_PRESENTATION = 'Lunch presentation'
-COURSE = 'Course'
-KID_EVENT = 'KID Event'
-PARTY = 'Party'
-SOCIAL = 'Social'
-OTHER = 'Other'
-EVENT = 'Event'
+COMPANY_PRESENTATION = 'company_presentation'
+LUNCH_PRESENTATION = 'lunch_presentation'
+COURSE = 'course'
+KID_EVENT = 'kid_event'
+PARTY = 'party'
+SOCIAL = 'social'
+OTHER = 'other'
+EVENT = 'event'
 
 EVENT_TYPES = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),

@@ -143,155 +143,155 @@
   model: events.Registration
   pk: 18
 - fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 10
-  model: events.Registration
-  pk: 19
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 11
-  model: events.Registration
-  pk: 20
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 12
-  model: events.Registration
-  pk: 21
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 13
-  model: events.Registration
-  pk: 22
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 14
-  model: events.Registration
-  pk: 23
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 15
-  model: events.Registration
-  pk: 24
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 16
-  model: events.Registration
-  pk: 25
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 17
-  model: events.Registration
-  pk: 26
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 18
-  model: events.Registration
-  pk: 27
-- fields:
-    event: 2
-    pool: 3
-    registration_date: '2016-10-11T17:00:00+00:00'
-    unregistration_date: null
-    user: 19
-  model: events.Registration
-  pk: 28
-- fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 1
   model: events.Registration
-  pk: 29
+  pk: 19
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 2
   model: events.Registration
-  pk: 30
+  pk: 20
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 3
   model: events.Registration
-  pk: 31
+  pk: 21
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 4
   model: events.Registration
-  pk: 32
+  pk: 22
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 5
   model: events.Registration
-  pk: 33
+  pk: 23
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 6
   model: events.Registration
-  pk: 34
+  pk: 24
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 7
   model: events.Registration
-  pk: 35
+  pk: 25
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 8
   model: events.Registration
-  pk: 36
+  pk: 26
 - fields:
     event: 3
-    pool: 4
+    pool: 3
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 9
+  model: events.Registration
+  pk: 27
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 1
+  model: events.Registration
+  pk: 28
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 2
+  model: events.Registration
+  pk: 29
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 3
+  model: events.Registration
+  pk: 30
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 4
+  model: events.Registration
+  pk: 31
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 5
+  model: events.Registration
+  pk: 32
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 6
+  model: events.Registration
+  pk: 33
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 7
+  model: events.Registration
+  pk: 34
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 35
+- fields:
+    event: 4
+    pool: 4
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 9
+  model: events.Registration
+  pk: 36
+- fields:
+    event: 4
+    pool: 5
+    registration_date: '2016-09-27T17:00:00+00:00'
+    unregistration_date: null
+    user: 10
   model: events.Registration
   pk: 37
 - fields:
@@ -299,7 +299,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 38
 - fields:
@@ -307,7 +307,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 39
 - fields:
@@ -315,7 +315,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 40
 - fields:
@@ -323,7 +323,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 41
 - fields:
@@ -331,7 +331,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 42
 - fields:
@@ -339,7 +339,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 43
 - fields:
@@ -347,7 +347,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 44
 - fields:
@@ -355,7 +355,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 45
 - fields:
@@ -363,7 +363,7 @@
     pool: 5
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 46
 - fields:
@@ -815,379 +815,379 @@
   model: events.Registration
   pk: 102
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 103
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 104
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 105
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 106
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 107
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 108
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 109
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 110
 - fields:
-    event: 8
+    event: 9
     pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 111
 - fields:
-    event: 8
-    pool: 12
-    registration_date: '2016-08-24T07:00:00+00:00'
+    event: 10
+    pool: 13
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 1
   model: events.Registration
   pk: 112
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 2
   model: events.Registration
   pk: 113
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 3
   model: events.Registration
   pk: 114
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 4
   model: events.Registration
   pk: 115
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 5
   model: events.Registration
   pk: 116
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 6
   model: events.Registration
   pk: 117
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 7
   model: events.Registration
   pk: 118
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 8
   model: events.Registration
   pk: 119
 - fields:
-    event: 9
+    event: 10
     pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 9
   model: events.Registration
   pk: 120
 - fields:
-    event: 9
-    pool: 13
-    registration_date: '2016-08-26T17:00:00+00:00'
+    event: 11
+    pool: 14
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 1
   model: events.Registration
   pk: 121
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 2
   model: events.Registration
   pk: 122
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 3
   model: events.Registration
   pk: 123
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 4
   model: events.Registration
   pk: 124
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 5
   model: events.Registration
   pk: 125
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 6
   model: events.Registration
   pk: 126
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 7
   model: events.Registration
   pk: 127
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 8
   model: events.Registration
   pk: 128
 - fields:
-    event: 9
+    event: 11
     pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 9
   model: events.Registration
   pk: 129
 - fields:
-    event: 9
-    pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    event: 11
+    pool: 15
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 10
   model: events.Registration
   pk: 130
 - fields:
-    event: 9
-    pool: 14
-    registration_date: '2016-08-26T17:00:00+00:00'
+    event: 11
+    pool: 15
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 11
   model: events.Registration
   pk: 131
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 12
   model: events.Registration
   pk: 132
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 13
   model: events.Registration
   pk: 133
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 14
   model: events.Registration
   pk: 134
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 15
   model: events.Registration
   pk: 135
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 16
   model: events.Registration
   pk: 136
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 17
   model: events.Registration
   pk: 137
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 18
   model: events.Registration
   pk: 138
 - fields:
-    event: 10
+    event: 11
     pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
+    registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 19
   model: events.Registration
   pk: 139
 - fields:
-    event: 10
-    pool: 15
-    registration_date: '2016-08-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 9
-  model: events.Registration
-  pk: 140
-- fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 1
   model: events.Registration
-  pk: 141
+  pk: 140
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 2
   model: events.Registration
-  pk: 142
+  pk: 141
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 3
   model: events.Registration
-  pk: 143
+  pk: 142
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 4
   model: events.Registration
-  pk: 144
+  pk: 143
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 5
   model: events.Registration
-  pk: 145
+  pk: 144
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 6
   model: events.Registration
-  pk: 146
+  pk: 145
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 7
   model: events.Registration
-  pk: 147
+  pk: 146
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 8
   model: events.Registration
-  pk: 148
+  pk: 147
 - fields:
-    event: 11
+    event: 12
     pool: 16
-    registration_date: '2016-08-20T18:00:00+00:00'
+    registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 9
+  model: events.Registration
+  pk: 148
+- fields:
+    event: 12
+    pool: 17
+    registration_date: '2016-08-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 10
   model: events.Registration
   pk: 149
 - fields:
@@ -1195,7 +1195,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 150
 - fields:
@@ -1203,7 +1203,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 151
 - fields:
@@ -1211,7 +1211,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 152
 - fields:
@@ -1219,7 +1219,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 153
 - fields:
@@ -1227,7 +1227,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 154
 - fields:
@@ -1235,7 +1235,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 155
 - fields:
@@ -1243,7 +1243,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 156
 - fields:
@@ -1251,7 +1251,7 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 157
 - fields:
@@ -1259,87 +1259,87 @@
     pool: 17
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 158
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 159
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 160
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 161
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 162
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 163
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 164
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 165
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 166
 - fields:
-    event: 12
+    event: 13
     pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 167
 - fields:
-    event: 12
-    pool: 18
-    registration_date: '2016-08-18T17:00:00+00:00'
+    event: 13
+    pool: 19
+    registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 168
 - fields:
@@ -1347,7 +1347,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 169
 - fields:
@@ -1355,7 +1355,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 170
 - fields:
@@ -1363,7 +1363,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 171
 - fields:
@@ -1371,7 +1371,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 172
 - fields:
@@ -1379,7 +1379,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 173
 - fields:
@@ -1387,7 +1387,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 174
 - fields:
@@ -1395,7 +1395,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 175
 - fields:
@@ -1403,7 +1403,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 176
 - fields:
@@ -1411,7 +1411,7 @@
     pool: 19
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 177
 - fields:
@@ -1943,155 +1943,155 @@
   model: events.Registration
   pk: 243
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 244
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 245
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 246
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 247
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 248
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 249
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 250
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 251
 - fields:
-    event: 18
+    event: 17
     pool: 27
-    registration_date: '2016-05-06T14:00:00+00:00'
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 18
   model: events.Registration
   pk: 252
 - fields:
-    event: 19
-    pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    event: 17
+    pool: 27
+    registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 19
   model: events.Registration
   pk: 253
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 1
   model: events.Registration
   pk: 254
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 2
   model: events.Registration
   pk: 255
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 3
   model: events.Registration
   pk: 256
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 4
   model: events.Registration
   pk: 257
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 5
   model: events.Registration
   pk: 258
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 6
   model: events.Registration
   pk: 259
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 7
   model: events.Registration
   pk: 260
 - fields:
-    event: 19
+    event: 18
     pool: 28
-    registration_date: '2016-05-03T09:30:00+00:00'
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 8
   model: events.Registration
   pk: 261
 - fields:
-    event: 19
-    pool: 29
-    registration_date: '2016-05-03T09:30:00+00:00'
+    event: 18
+    pool: 28
+    registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 9
   model: events.Registration
   pk: 262
 - fields:
@@ -2099,7 +2099,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 263
 - fields:
@@ -2107,7 +2107,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 264
 - fields:
@@ -2115,7 +2115,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 265
 - fields:
@@ -2123,7 +2123,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 266
 - fields:
@@ -2131,7 +2131,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 267
 - fields:
@@ -2139,7 +2139,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 268
 - fields:
@@ -2147,7 +2147,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 269
 - fields:
@@ -2155,7 +2155,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 270
 - fields:
@@ -2163,7 +2163,7 @@
     pool: 29
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 271
 - fields:
@@ -2311,83 +2311,83 @@
   model: events.Registration
   pk: 289
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 290
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 291
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 292
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 293
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 294
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 295
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 296
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 297
 - fields:
-    event: 22
+    event: 21
     pool: 32
-    registration_date: '2016-04-23T10:15:00+00:00'
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 18
   model: events.Registration
   pk: 298
 - fields:
-    event: 22
-    pool: 33
-    registration_date: '2016-04-23T10:15:00+00:00'
+    event: 21
+    pool: 32
+    registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 19
   model: events.Registration
   pk: 299
 - fields:
@@ -2395,7 +2395,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 300
 - fields:
@@ -2403,7 +2403,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 301
 - fields:
@@ -2411,7 +2411,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 302
 - fields:
@@ -2419,7 +2419,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 303
 - fields:
@@ -2427,7 +2427,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 304
 - fields:
@@ -2435,7 +2435,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 305
 - fields:
@@ -2443,7 +2443,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 306
 - fields:
@@ -2451,7 +2451,7 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 307
 - fields:
@@ -2459,231 +2459,231 @@
     pool: 33
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 308
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 309
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 310
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 311
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 312
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 313
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 314
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 315
 - fields:
-    event: 23
+    event: 22
     pool: 34
-    registration_date: '2016-04-06T17:15:00+00:00'
+    registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 316
 - fields:
-    event: 23
+    event: 22
     pool: 34
+    registration_date: '2016-04-23T10:15:00+00:00'
+    unregistration_date: null
+    user: 18
+  model: events.Registration
+  pk: 317
+- fields:
+    event: 22
+    pool: 34
+    registration_date: '2016-04-23T10:15:00+00:00'
+    unregistration_date: null
+    user: 19
+  model: events.Registration
+  pk: 318
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 1
+  model: events.Registration
+  pk: 319
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 2
+  model: events.Registration
+  pk: 320
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 3
+  model: events.Registration
+  pk: 321
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 4
+  model: events.Registration
+  pk: 322
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 5
+  model: events.Registration
+  pk: 323
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 6
+  model: events.Registration
+  pk: 324
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 7
+  model: events.Registration
+  pk: 325
+- fields:
+    event: 23
+    pool: 35
+    registration_date: '2016-04-06T17:15:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 326
+- fields:
+    event: 23
+    pool: 35
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 9
   model: events.Registration
-  pk: 317
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
-  pk: 318
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 2
-  model: events.Registration
-  pk: 319
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 3
-  model: events.Registration
-  pk: 320
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 4
-  model: events.Registration
-  pk: 321
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 5
-  model: events.Registration
-  pk: 322
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 6
-  model: events.Registration
-  pk: 323
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 7
-  model: events.Registration
-  pk: 324
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 8
-  model: events.Registration
-  pk: 325
-- fields:
-    event: 24
-    pool: 35
-    registration_date: '2016-04-15T08:30:00+00:00'
-    unregistration_date: null
-    user: 9
-  model: events.Registration
-  pk: 326
-- fields:
-    event: 25
-    pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
   pk: 327
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 1
   model: events.Registration
   pk: 328
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 2
   model: events.Registration
   pk: 329
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 3
   model: events.Registration
   pk: 330
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 4
   model: events.Registration
   pk: 331
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 5
   model: events.Registration
   pk: 332
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 6
   model: events.Registration
   pk: 333
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 7
   model: events.Registration
   pk: 334
 - fields:
-    event: 25
+    event: 24
     pool: 36
-    registration_date: '2016-04-14T12:00:00+00:00'
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 8
   model: events.Registration
   pk: 335
 - fields:
-    event: 25
-    pool: 37
-    registration_date: '2016-04-14T12:00:00+00:00'
+    event: 24
+    pool: 36
+    registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 9
   model: events.Registration
   pk: 336
 - fields:
@@ -2691,7 +2691,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 337
 - fields:
@@ -2699,7 +2699,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 338
 - fields:
@@ -2707,7 +2707,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 339
 - fields:
@@ -2715,7 +2715,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 340
 - fields:
@@ -2723,7 +2723,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 341
 - fields:
@@ -2731,7 +2731,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 342
 - fields:
@@ -2739,7 +2739,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 343
 - fields:
@@ -2747,7 +2747,7 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 344
 - fields:
@@ -2755,311 +2755,311 @@
     pool: 37
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 345
 - fields:
-    event: 26
+    event: 25
     pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 346
 - fields:
-    event: 26
+    event: 25
     pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 2
-  model: events.Registration
-  pk: 347
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 3
-  model: events.Registration
-  pk: 348
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 4
-  model: events.Registration
-  pk: 349
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 5
-  model: events.Registration
-  pk: 350
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 6
-  model: events.Registration
-  pk: 351
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 7
-  model: events.Registration
-  pk: 352
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 8
-  model: events.Registration
-  pk: 353
-- fields:
-    event: 26
-    pool: 38
-    registration_date: '2016-04-13T16:00:00+00:00'
-    unregistration_date: null
-    user: 9
-  model: events.Registration
-  pk: 354
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
-  pk: 355
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 2
-  model: events.Registration
-  pk: 356
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 3
-  model: events.Registration
-  pk: 357
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 4
-  model: events.Registration
-  pk: 358
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 5
-  model: events.Registration
-  pk: 359
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 6
-  model: events.Registration
-  pk: 360
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 7
-  model: events.Registration
-  pk: 361
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 8
-  model: events.Registration
-  pk: 362
-- fields:
-    event: 27
-    pool: 39
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 9
-  model: events.Registration
-  pk: 363
-- fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
-    unregistration_date: null
-    user: 10
-  model: events.Registration
-  pk: 364
-- fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 11
   model: events.Registration
-  pk: 365
+  pk: 347
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 12
   model: events.Registration
-  pk: 366
+  pk: 348
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 13
   model: events.Registration
-  pk: 367
+  pk: 349
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 14
   model: events.Registration
-  pk: 368
+  pk: 350
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 15
   model: events.Registration
-  pk: 369
+  pk: 351
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 16
   model: events.Registration
-  pk: 370
+  pk: 352
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 17
   model: events.Registration
-  pk: 371
+  pk: 353
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 18
   model: events.Registration
-  pk: 372
+  pk: 354
 - fields:
-    event: 27
-    pool: 40
-    registration_date: '2016-04-11T17:15:00+00:00'
+    event: 25
+    pool: 38
+    registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 19
   model: events.Registration
-  pk: 373
+  pk: 355
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 1
   model: events.Registration
-  pk: 374
+  pk: 356
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 2
   model: events.Registration
-  pk: 375
+  pk: 357
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 3
   model: events.Registration
-  pk: 376
+  pk: 358
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 4
   model: events.Registration
-  pk: 377
+  pk: 359
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 5
   model: events.Registration
-  pk: 378
+  pk: 360
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 6
   model: events.Registration
-  pk: 379
+  pk: 361
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 7
   model: events.Registration
-  pk: 380
+  pk: 362
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 8
   model: events.Registration
-  pk: 381
+  pk: 363
 - fields:
-    event: 28
-    pool: 41
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 39
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 9
   model: events.Registration
-  pk: 382
+  pk: 364
 - fields:
-    event: 28
-    pool: 42
-    registration_date: '2016-04-09T18:00:00+00:00'
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 10
+  model: events.Registration
+  pk: 365
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 11
+  model: events.Registration
+  pk: 366
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 12
+  model: events.Registration
+  pk: 367
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 13
+  model: events.Registration
+  pk: 368
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 14
+  model: events.Registration
+  pk: 369
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 15
+  model: events.Registration
+  pk: 370
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 16
+  model: events.Registration
+  pk: 371
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 17
+  model: events.Registration
+  pk: 372
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 18
+  model: events.Registration
+  pk: 373
+- fields:
+    event: 26
+    pool: 40
+    registration_date: '2016-04-13T16:00:00+00:00'
+    unregistration_date: null
+    user: 19
+  model: events.Registration
+  pk: 374
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 1
+  model: events.Registration
+  pk: 375
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 2
+  model: events.Registration
+  pk: 376
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 3
+  model: events.Registration
+  pk: 377
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 4
+  model: events.Registration
+  pk: 378
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 5
+  model: events.Registration
+  pk: 379
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 6
+  model: events.Registration
+  pk: 380
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 7
+  model: events.Registration
+  pk: 381
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 382
+- fields:
+    event: 27
+    pool: 41
+    registration_date: '2016-04-11T17:15:00+00:00'
+    unregistration_date: null
+    user: 9
   model: events.Registration
   pk: 383
 - fields:
@@ -3067,7 +3067,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 384
 - fields:
@@ -3075,7 +3075,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 385
 - fields:
@@ -3083,7 +3083,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 386
 - fields:
@@ -3091,7 +3091,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 387
 - fields:
@@ -3099,7 +3099,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 388
 - fields:
@@ -3107,7 +3107,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 389
 - fields:
@@ -3115,7 +3115,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 390
 - fields:
@@ -3123,7 +3123,7 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 391
 - fields:
@@ -3131,87 +3131,87 @@
     pool: 42
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 392
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 393
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 394
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 395
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 396
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 397
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 398
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 399
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 400
 - fields:
-    event: 29
+    event: 28
     pool: 43
-    registration_date: '2016-04-07T19:00:00+00:00'
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 18
   model: events.Registration
   pk: 401
 - fields:
-    event: 29
-    pool: 44
-    registration_date: '2016-04-07T19:00:00+00:00'
+    event: 28
+    pool: 43
+    registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 19
   model: events.Registration
   pk: 402
 - fields:
@@ -3219,7 +3219,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 403
 - fields:
@@ -3227,7 +3227,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 404
 - fields:
@@ -3235,7 +3235,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 405
 - fields:
@@ -3243,7 +3243,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 406
 - fields:
@@ -3251,7 +3251,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 407
 - fields:
@@ -3259,7 +3259,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 408
 - fields:
@@ -3267,7 +3267,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 409
 - fields:
@@ -3275,7 +3275,7 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 410
 - fields:
@@ -3283,87 +3283,87 @@
     pool: 44
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 411
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 412
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 413
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 414
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 415
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 416
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 417
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 418
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 419
 - fields:
-    event: 30
+    event: 29
     pool: 45
-    registration_date: '2016-04-04T10:30:00+00:00'
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 18
   model: events.Registration
   pk: 420
 - fields:
-    event: 30
-    pool: 46
-    registration_date: '2016-04-04T10:30:00+00:00'
+    event: 29
+    pool: 45
+    registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 19
   model: events.Registration
   pk: 421
 - fields:
@@ -3371,7 +3371,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 422
 - fields:
@@ -3379,7 +3379,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 423
 - fields:
@@ -3387,7 +3387,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 424
 - fields:
@@ -3395,7 +3395,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 425
 - fields:
@@ -3403,7 +3403,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 426
 - fields:
@@ -3411,7 +3411,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 427
 - fields:
@@ -3419,7 +3419,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 428
 - fields:
@@ -3427,7 +3427,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 429
 - fields:
@@ -3435,7 +3435,7 @@
     pool: 46
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 430
 - fields:
@@ -3663,83 +3663,83 @@
   model: events.Registration
   pk: 458
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 459
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 460
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 461
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 462
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 463
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 464
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 465
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 466
 - fields:
-    event: 32
+    event: 33
     pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 467
 - fields:
-    event: 32
-    pool: 50
-    registration_date: '2016-04-01T08:00:00+00:00'
+    event: 33
+    pool: 51
+    registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 468
 - fields:
@@ -3747,7 +3747,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 469
 - fields:
@@ -3755,7 +3755,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 470
 - fields:
@@ -3763,7 +3763,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 471
 - fields:
@@ -3771,7 +3771,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 472
 - fields:
@@ -3779,7 +3779,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 473
 - fields:
@@ -3787,7 +3787,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 474
 - fields:
@@ -3795,7 +3795,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 475
 - fields:
@@ -3803,7 +3803,7 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 476
 - fields:
@@ -3811,87 +3811,87 @@
     pool: 51
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 477
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 478
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 479
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 480
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 481
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 482
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 483
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 484
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 485
 - fields:
-    event: 33
+    event: 34
     pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 486
 - fields:
-    event: 33
-    pool: 52
-    registration_date: '2016-03-31T17:00:00+00:00'
+    event: 34
+    pool: 53
+    registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 487
 - fields:
@@ -3899,7 +3899,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 488
 - fields:
@@ -3907,7 +3907,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 489
 - fields:
@@ -3915,7 +3915,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 490
 - fields:
@@ -3923,7 +3923,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 491
 - fields:
@@ -3931,7 +3931,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 492
 - fields:
@@ -3939,7 +3939,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 493
 - fields:
@@ -3947,7 +3947,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 494
 - fields:
@@ -3955,7 +3955,7 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 495
 - fields:
@@ -3963,87 +3963,87 @@
     pool: 53
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 496
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 497
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 498
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 499
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 500
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 501
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 502
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 503
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 504
 - fields:
-    event: 34
+    event: 35
     pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 505
 - fields:
-    event: 34
-    pool: 54
-    registration_date: '2016-03-28T17:00:00+00:00'
+    event: 35
+    pool: 55
+    registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 506
 - fields:
@@ -4051,7 +4051,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 507
 - fields:
@@ -4059,7 +4059,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 508
 - fields:
@@ -4067,7 +4067,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 509
 - fields:
@@ -4075,7 +4075,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 510
 - fields:
@@ -4083,7 +4083,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 511
 - fields:
@@ -4091,7 +4091,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 512
 - fields:
@@ -4099,7 +4099,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 513
 - fields:
@@ -4107,7 +4107,7 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 514
 - fields:
@@ -4115,87 +4115,87 @@
     pool: 55
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 515
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 516
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 517
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 518
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 519
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 520
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 521
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 522
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 523
 - fields:
-    event: 35
+    event: 36
     pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 524
 - fields:
-    event: 35
-    pool: 56
-    registration_date: '2016-03-26T15:00:00+00:00'
+    event: 36
+    pool: 57
+    registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 525
 - fields:
@@ -4203,7 +4203,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 526
 - fields:
@@ -4211,7 +4211,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 527
 - fields:
@@ -4219,7 +4219,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 528
 - fields:
@@ -4227,7 +4227,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 529
 - fields:
@@ -4235,7 +4235,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 530
 - fields:
@@ -4243,7 +4243,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 531
 - fields:
@@ -4251,7 +4251,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 532
 - fields:
@@ -4259,7 +4259,7 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 533
 - fields:
@@ -4267,87 +4267,87 @@
     pool: 57
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 534
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 535
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 536
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 537
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 538
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 539
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 540
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 541
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 542
 - fields:
-    event: 36
+    event: 37
     pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 543
 - fields:
-    event: 36
-    pool: 58
-    registration_date: '2016-03-24T17:00:00+00:00'
+    event: 37
+    pool: 59
+    registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 544
 - fields:
@@ -4355,7 +4355,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 545
 - fields:
@@ -4363,7 +4363,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 546
 - fields:
@@ -4371,7 +4371,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 547
 - fields:
@@ -4379,7 +4379,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 548
 - fields:
@@ -4387,7 +4387,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 549
 - fields:
@@ -4395,7 +4395,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 550
 - fields:
@@ -4403,7 +4403,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 551
 - fields:
@@ -4411,7 +4411,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 552
 - fields:
@@ -4419,7 +4419,7 @@
     pool: 59
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 553
 - fields:
@@ -4647,83 +4647,83 @@
   model: events.Registration
   pk: 581
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 1
   model: events.Registration
   pk: 582
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 2
   model: events.Registration
   pk: 583
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 3
   model: events.Registration
   pk: 584
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 4
   model: events.Registration
   pk: 585
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 5
   model: events.Registration
   pk: 586
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 6
   model: events.Registration
   pk: 587
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 7
   model: events.Registration
   pk: 588
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 8
   model: events.Registration
   pk: 589
 - fields:
-    event: 39
+    event: 40
     pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 9
   model: events.Registration
   pk: 590
 - fields:
-    event: 39
-    pool: 63
-    registration_date: '2016-03-22T17:00:00+00:00'
+    event: 40
+    pool: 64
+    registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 10
   model: events.Registration
   pk: 591
 - fields:
@@ -4731,7 +4731,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 592
 - fields:
@@ -4739,7 +4739,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 593
 - fields:
@@ -4747,7 +4747,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 594
 - fields:
@@ -4755,7 +4755,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 595
 - fields:
@@ -4763,7 +4763,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 596
 - fields:
@@ -4771,7 +4771,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 597
 - fields:
@@ -4779,7 +4779,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 598
 - fields:
@@ -4787,7 +4787,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 599
 - fields:
@@ -4795,7 +4795,7 @@
     pool: 64
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 600
 - fields:
@@ -4871,155 +4871,155 @@
   model: events.Registration
   pk: 609
 - fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 10
-  model: events.Registration
-  pk: 610
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 11
-  model: events.Registration
-  pk: 611
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 12
-  model: events.Registration
-  pk: 612
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 13
-  model: events.Registration
-  pk: 613
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 14
-  model: events.Registration
-  pk: 614
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 15
-  model: events.Registration
-  pk: 615
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 16
-  model: events.Registration
-  pk: 616
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 17
-  model: events.Registration
-  pk: 617
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 18
-  model: events.Registration
-  pk: 618
-- fields:
-    event: 41
-    pool: 66
-    registration_date: '2016-03-01T17:15:00+00:00'
-    unregistration_date: null
-    user: 19
-  model: events.Registration
-  pk: 619
-- fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 1
   model: events.Registration
-  pk: 620
+  pk: 610
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 2
   model: events.Registration
-  pk: 621
+  pk: 611
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 3
   model: events.Registration
-  pk: 622
+  pk: 612
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 4
   model: events.Registration
-  pk: 623
+  pk: 613
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 5
   model: events.Registration
-  pk: 624
+  pk: 614
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 6
   model: events.Registration
-  pk: 625
+  pk: 615
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 7
   model: events.Registration
-  pk: 626
+  pk: 616
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 8
   model: events.Registration
-  pk: 627
+  pk: 617
 - fields:
     event: 42
-    pool: 67
+    pool: 66
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 9
+  model: events.Registration
+  pk: 618
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 1
+  model: events.Registration
+  pk: 619
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 2
+  model: events.Registration
+  pk: 620
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 3
+  model: events.Registration
+  pk: 621
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 4
+  model: events.Registration
+  pk: 622
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 5
+  model: events.Registration
+  pk: 623
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 6
+  model: events.Registration
+  pk: 624
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 7
+  model: events.Registration
+  pk: 625
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 626
+- fields:
+    event: 43
+    pool: 67
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 9
+  model: events.Registration
+  pk: 627
+- fields:
+    event: 43
+    pool: 68
+    registration_date: '2016-02-25T17:00:00+00:00'
+    unregistration_date: null
+    user: 10
   model: events.Registration
   pk: 628
 - fields:
@@ -5027,7 +5027,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 11
   model: events.Registration
   pk: 629
 - fields:
@@ -5035,7 +5035,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 12
   model: events.Registration
   pk: 630
 - fields:
@@ -5043,7 +5043,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 13
   model: events.Registration
   pk: 631
 - fields:
@@ -5051,7 +5051,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 14
   model: events.Registration
   pk: 632
 - fields:
@@ -5059,7 +5059,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 15
   model: events.Registration
   pk: 633
 - fields:
@@ -5067,7 +5067,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 16
   model: events.Registration
   pk: 634
 - fields:
@@ -5075,7 +5075,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 17
   model: events.Registration
   pk: 635
 - fields:
@@ -5083,7 +5083,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 18
   model: events.Registration
   pk: 636
 - fields:
@@ -5091,7 +5091,7 @@
     pool: 68
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 19
   model: events.Registration
   pk: 637
 - fields:
@@ -5167,531 +5167,531 @@
   model: events.Registration
   pk: 646
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 647
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 648
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 649
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 650
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 651
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 652
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 653
 - fields:
-    event: 45
+    event: 44
     pool: 70
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 654
 - fields:
-    event: 45
+    event: 44
     pool: 70
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 18
+  model: events.Registration
+  pk: 655
+- fields:
+    event: 44
+    pool: 70
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 19
+  model: events.Registration
+  pk: 656
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 1
+  model: events.Registration
+  pk: 657
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 2
+  model: events.Registration
+  pk: 658
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 3
+  model: events.Registration
+  pk: 659
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 4
+  model: events.Registration
+  pk: 660
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 5
+  model: events.Registration
+  pk: 661
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 6
+  model: events.Registration
+  pk: 662
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 7
+  model: events.Registration
+  pk: 663
+- fields:
+    event: 45
+    pool: 71
+    registration_date: '2016-02-24T16:00:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 664
+- fields:
+    event: 45
+    pool: 71
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 9
   model: events.Registration
-  pk: 655
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
-  pk: 656
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 2
-  model: events.Registration
-  pk: 657
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 3
-  model: events.Registration
-  pk: 658
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 4
-  model: events.Registration
-  pk: 659
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 5
-  model: events.Registration
-  pk: 660
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 6
-  model: events.Registration
-  pk: 661
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 7
-  model: events.Registration
-  pk: 662
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 8
-  model: events.Registration
-  pk: 663
-- fields:
-    event: 46
-    pool: 71
-    registration_date: '2016-02-23T17:00:00+00:00'
-    unregistration_date: null
-    user: 9
-  model: events.Registration
-  pk: 664
-- fields:
-    event: 47
-    pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
   pk: 665
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 10
   model: events.Registration
   pk: 666
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 11
   model: events.Registration
   pk: 667
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 12
   model: events.Registration
   pk: 668
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 13
   model: events.Registration
   pk: 669
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 14
   model: events.Registration
   pk: 670
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 15
   model: events.Registration
   pk: 671
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 16
   model: events.Registration
   pk: 672
 - fields:
-    event: 47
+    event: 45
     pool: 72
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 17
   model: events.Registration
   pk: 673
 - fields:
-    event: 47
-    pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    event: 45
+    pool: 72
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 18
   model: events.Registration
   pk: 674
 - fields:
-    event: 47
-    pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    event: 45
+    pool: 72
+    registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 19
   model: events.Registration
   pk: 675
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 1
   model: events.Registration
   pk: 676
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 2
   model: events.Registration
   pk: 677
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 3
   model: events.Registration
   pk: 678
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 4
   model: events.Registration
   pk: 679
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 5
   model: events.Registration
   pk: 680
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 6
   model: events.Registration
   pk: 681
 - fields:
-    event: 47
+    event: 46
     pool: 73
-    registration_date: '2016-02-22T17:15:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 7
   model: events.Registration
   pk: 682
 - fields:
-    event: 47
+    event: 46
     pool: 73
+    registration_date: '2016-02-23T17:00:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 683
+- fields:
+    event: 46
+    pool: 73
+    registration_date: '2016-02-23T17:00:00+00:00'
+    unregistration_date: null
+    user: 9
+  model: events.Registration
+  pk: 684
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 1
+  model: events.Registration
+  pk: 685
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 2
+  model: events.Registration
+  pk: 686
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 3
+  model: events.Registration
+  pk: 687
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 4
+  model: events.Registration
+  pk: 688
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 5
+  model: events.Registration
+  pk: 689
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 6
+  model: events.Registration
+  pk: 690
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 7
+  model: events.Registration
+  pk: 691
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 8
+  model: events.Registration
+  pk: 692
+- fields:
+    event: 47
+    pool: 74
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 9
+  model: events.Registration
+  pk: 693
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 10
+  model: events.Registration
+  pk: 694
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 11
+  model: events.Registration
+  pk: 695
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 12
+  model: events.Registration
+  pk: 696
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 13
+  model: events.Registration
+  pk: 697
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 14
+  model: events.Registration
+  pk: 698
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 15
+  model: events.Registration
+  pk: 699
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 16
+  model: events.Registration
+  pk: 700
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 17
+  model: events.Registration
+  pk: 701
+- fields:
+    event: 47
+    pool: 75
+    registration_date: '2016-02-22T17:15:00+00:00'
+    unregistration_date: null
+    user: 18
+  model: events.Registration
+  pk: 702
+- fields:
+    event: 47
+    pool: 75
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 19
   model: events.Registration
-  pk: 683
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
-  pk: 684
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 2
-  model: events.Registration
-  pk: 685
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 3
-  model: events.Registration
-  pk: 686
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 4
-  model: events.Registration
-  pk: 687
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 5
-  model: events.Registration
-  pk: 688
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 6
-  model: events.Registration
-  pk: 689
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 7
-  model: events.Registration
-  pk: 690
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 8
-  model: events.Registration
-  pk: 691
-- fields:
-    event: 48
-    pool: 74
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 9
-  model: events.Registration
-  pk: 692
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 10
-  model: events.Registration
-  pk: 693
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 11
-  model: events.Registration
-  pk: 694
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 12
-  model: events.Registration
-  pk: 695
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 13
-  model: events.Registration
-  pk: 696
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 14
-  model: events.Registration
-  pk: 697
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 15
-  model: events.Registration
-  pk: 698
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 16
-  model: events.Registration
-  pk: 699
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 17
-  model: events.Registration
-  pk: 700
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 18
-  model: events.Registration
-  pk: 701
-- fields:
-    event: 48
-    pool: 75
-    registration_date: '2016-02-20T09:00:00+00:00'
-    unregistration_date: null
-    user: 19
-  model: events.Registration
-  pk: 702
-- fields:
-    event: 49
-    pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
-    unregistration_date: null
-    user: 1
-  model: events.Registration
   pk: 703
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 1
   model: events.Registration
   pk: 704
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 2
   model: events.Registration
   pk: 705
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 3
   model: events.Registration
   pk: 706
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 4
   model: events.Registration
   pk: 707
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 5
   model: events.Registration
   pk: 708
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 6
   model: events.Registration
   pk: 709
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 7
   model: events.Registration
   pk: 710
 - fields:
-    event: 49
+    event: 48
     pool: 76
-    registration_date: '2016-02-19T16:15:00+00:00'
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 8
   model: events.Registration
   pk: 711
 - fields:
-    event: 49
-    pool: 77
-    registration_date: '2016-02-19T16:15:00+00:00'
+    event: 48
+    pool: 76
+    registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 9
   model: events.Registration
   pk: 712
 - fields:
@@ -5699,7 +5699,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 713
 - fields:
@@ -5707,7 +5707,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 714
 - fields:
@@ -5715,7 +5715,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 715
 - fields:
@@ -5723,7 +5723,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 716
 - fields:
@@ -5731,7 +5731,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 717
 - fields:
@@ -5739,7 +5739,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 718
 - fields:
@@ -5747,7 +5747,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 719
 - fields:
@@ -5755,7 +5755,7 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 720
 - fields:
@@ -5763,87 +5763,87 @@
     pool: 77
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 721
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 1
+    user: 10
   model: events.Registration
   pk: 722
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 2
+    user: 11
   model: events.Registration
   pk: 723
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 3
+    user: 12
   model: events.Registration
   pk: 724
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 4
+    user: 13
   model: events.Registration
   pk: 725
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 5
+    user: 14
   model: events.Registration
   pk: 726
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 6
+    user: 15
   model: events.Registration
   pk: 727
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 7
+    user: 16
   model: events.Registration
   pk: 728
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 8
+    user: 17
   model: events.Registration
   pk: 729
 - fields:
-    event: 50
+    event: 49
     pool: 78
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 9
+    user: 18
   model: events.Registration
   pk: 730
 - fields:
-    event: 50
-    pool: 79
-    registration_date: '2016-02-18T17:00:00+00:00'
+    event: 49
+    pool: 78
+    registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
-    user: 10
+    user: 19
   model: events.Registration
   pk: 731
 - fields:
@@ -5851,7 +5851,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 11
+    user: 1
   model: events.Registration
   pk: 732
 - fields:
@@ -5859,7 +5859,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 12
+    user: 2
   model: events.Registration
   pk: 733
 - fields:
@@ -5867,7 +5867,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 13
+    user: 3
   model: events.Registration
   pk: 734
 - fields:
@@ -5875,7 +5875,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 14
+    user: 4
   model: events.Registration
   pk: 735
 - fields:
@@ -5883,7 +5883,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 15
+    user: 5
   model: events.Registration
   pk: 736
 - fields:
@@ -5891,7 +5891,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 16
+    user: 6
   model: events.Registration
   pk: 737
 - fields:
@@ -5899,7 +5899,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 17
+    user: 7
   model: events.Registration
   pk: 738
 - fields:
@@ -5907,7 +5907,7 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 18
+    user: 8
   model: events.Registration
   pk: 739
 - fields:
@@ -5915,6 +5915,86 @@
     pool: 79
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
-    user: 19
+    user: 9
   model: events.Registration
   pk: 740
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 10
+  model: events.Registration
+  pk: 741
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 11
+  model: events.Registration
+  pk: 742
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 12
+  model: events.Registration
+  pk: 743
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 13
+  model: events.Registration
+  pk: 744
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 14
+  model: events.Registration
+  pk: 745
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 15
+  model: events.Registration
+  pk: 746
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 16
+  model: events.Registration
+  pk: 747
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 17
+  model: events.Registration
+  pk: 748
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 18
+  model: events.Registration
+  pk: 749
+- fields:
+    event: 50
+    pool: 80
+    registration_date: '2016-02-18T17:00:00+00:00'
+    unregistration_date: null
+    user: 19
+  model: events.Registration
+  pk: 750
