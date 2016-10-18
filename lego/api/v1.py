@@ -1,3 +1,4 @@
+from lego.apps.reactions.views import ReactionViewSet, ReactionTypeViewSet
 from rest_framework import routers
 
 from lego.apps.articles.views.articles import ArticlesViewSet
@@ -31,3 +32,5 @@ router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomp
 router.register(r'quotes', QuoteViewSet)
 router.register(r'search/search', SearchViewSet, base_name='search')
 router.register(r'users', UsersViewSet)
+router.register(r'reactions', ReactionViewSet)
+router.register(r'reaction_types', ReactionTypeViewSet)
