@@ -1,13 +1,13 @@
 from rest_framework import decorators, mixins, permissions, response, status, viewsets
 
 from lego.apps.feed.feeds import NotificationFeed
-from lego.utils.pagination import APIPagination
+from lego.utils.pagination import CursorPagination
 
 from .managers import NotificationFeedManager
 from .serializers import AggregatedFeedSerializer, MarkSerializer
 
 
-class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class NotificationFeedViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Actions:
 
@@ -18,8 +18,9 @@ class NotificationFeedViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = AggregatedFeedSerializer
     manager = NotificationFeedManager()
-    pagination_class = APIPagination
     filter_backends = []
+    pagination_class = CursorPagination
+    ordering = '-activity_id'
 
     def get_feed_key(self):
         return self.request.user.id

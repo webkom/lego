@@ -7,7 +7,7 @@ class PageAPITestCase(APITestCase):
     fixtures = ['pages.yaml']
 
     def setUp(self):
-        self.pages = Page.public_objects.all()
+        self.pages = Page.public_objects.all().order_by('created_by')
 
     def test_get_pages(self):
         response = self.client.get('/api/v1/pages/')

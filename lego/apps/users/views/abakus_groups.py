@@ -10,6 +10,7 @@ class AbakusGroupViewSet(viewsets.ModelViewSet):
     queryset = AbakusGroup.group_objects.all()
     serializer_class = AbakusGroupSerializer
     permission_classes = (IsAuthenticated, AbakusGroupPermissions)
+    ordering = 'id'
 
     def get_queryset(self):
         if self.action == 'retrieve':
