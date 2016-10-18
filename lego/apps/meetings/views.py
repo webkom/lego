@@ -35,3 +35,5 @@ class MeetingInvitationViewSet(viewsets.ModelViewSet):
     queryset = MeetingInvitation.objects.all()
     permission_classes = (MeetingInvitationPermissions,)
     serializer_class = MeetingInvitationSerializer
+
+    lookup_field = 'user__id'

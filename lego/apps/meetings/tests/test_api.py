@@ -160,6 +160,20 @@ class InviteToMeetingTestCase(APITestCase):
         })
         self.assertEqual(res.status_code, 201)
 
+    def test_member_can_invite_to_meeting(self):
+        self.meeting.created_by = self.abakule
+        self.meeting.save()
+
+        me = self.abakommer
+        self.meeting.invite_user(me)
+
+        self.client.force_authenticate(me)
+        res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_user/', {
+            'user': self.pleb.id,
+        })
+        self.assertEqual(res.status_code, 201)
+
+
     def test_can_not_invite_to_unknown_meeting(self):
         me = self.abakommer
         self.client.force_authenticate(me)
@@ -181,3 +195,47 @@ class InviteToMeetingTestCase(APITestCase):
         for user in webkom.users.all():
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertTrue(present)
+
+class UpdateInviteTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.meeting = Meeting.objects.get(id=3)
+        self.abakommer = User.objects.get(username='abakommer')
+        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
+        self.abakule = User.objects.get(username='test1')
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
+        self.pleb = User.objects.get(username='pleb')
+
+    def test_can_update_own_status(self):
+        me = self.abakommer
+
+        invite = self.meeting.invite_user(me)[0]
+        self.assertEqual(invite.status, 0)
+        self.client.force_authenticate(me)
+        res = self.client.put(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
+            'status': 1
+        })
+        self.assertEqual(res.status_code, 200)
+        invite.refresh_from_db()
+        self.assertEqual(invite.status, 1)
+
+    def test_cannot_update_other_status(self):
+        me = self.abakommer
+        other = self.pleb
+
+        self.meeting.invite_user(me)
+        invite = self.meeting.invite_user(other)[0]
+        self.assertEqual(invite.status, 0)
+        self.client.force_authenticate(me)
+        res = self.client.put(_get_invitations_list_url(self.meeting.id) + str(other.id) + '/', {
+            'status': 1
+        })
+        self.assertEqual(res.status_code, 403)
+        invite.refresh_from_db()
+        self.assertEqual(invite.status, 0)
+
+
+
+
