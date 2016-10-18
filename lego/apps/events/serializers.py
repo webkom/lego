@@ -35,13 +35,11 @@ class PoolReadSerializer(BasisModelSerializer):
 
 
 class EventReadSerializer(BasisModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
 
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'comments', 'comment_target', 'start_time', 'end_time')
+                  'start_time', 'end_time')
         read_only = True
 
 
