@@ -1,5 +1,4 @@
 from lego import celery_app
-from lego.apps.events.models import Event
 
 
 class EventRegister(celery_app.Task):
@@ -10,5 +9,6 @@ class EventRegister(celery_app.Task):
         task.delay(event_id, user)
 
     def run(self, event_id, user):
+        from lego.apps.events.models import Event
         event = Event.objects.get(pk=event_id)
         event.register(user)
