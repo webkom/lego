@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.permissions import MeetingInvitationPermissions, MeetingPermissions
 from lego.apps.meetings.serializers import (MeetingGroupInvite, MeetingInvitationSerializer,
-                                            MeetingSerializer, MeetingUserInvite)
+                                            MeetingInvitationUpdateSerializer, MeetingSerializer,
+                                            MeetingUserInvite)
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
@@ -34,6 +35,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
 class MeetingInvitationViewSet(viewsets.ModelViewSet):
     queryset = MeetingInvitation.objects.all()
     permission_classes = (MeetingInvitationPermissions,)
-    serializer_class = MeetingInvitationSerializer
-
     lookup_field = 'user__id'
+
+    def get_serializer_class(self):
+        if self.action in ('update', 'partial_update'):
+            return MeetingInvitationUpdateSerializer
+        return MeetingInvitationSerializer

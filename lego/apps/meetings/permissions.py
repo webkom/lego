@@ -4,9 +4,11 @@ from lego.apps.permissions.permissions import AbakusPermission
 
 class MeetingPermissions(AbakusPermission):
 
+    check_object_permission = True
+
     def has_object_permission(self, request, view, meeting):
-        if not super().has_object_permission(request, view, meeting):
-            return False
+        if super().has_object_permission(request, view, meeting):
+            return True
         if view.action == 'destroy':
             return meeting.created_by == request.user
         return meeting.can_edit(request.user)
@@ -19,9 +21,9 @@ class MeetingInvitationPermissions(AbakusPermission):
         return meeting.can_edit(request.user)
 
     def has_object_permission(self, request, view, invitation):
-        if not super(MeetingInvitationPermissions, self)\
+        if super(MeetingInvitationPermissions, self)\
                     .has_object_permission(request, view, invitation):
-            return False
+            return True
         user = request.user
         meeting = invitation.meeting
         if view.action == 'destroy':
