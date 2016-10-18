@@ -46,6 +46,6 @@ class MeetingSerializer(BasisModelSerializer):
 
     def create(self, validated_data):
         meeting = Meeting.objects.create(**validated_data)
-        owner = self.context['request'].user
+        owner = validated_data['current_user']
         meeting.invite_user(owner)
         return meeting
