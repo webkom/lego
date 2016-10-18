@@ -71,7 +71,9 @@ class RegistrationViewSet(mixins.CreateModelMixin,
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        event_id = self.kwargs.get('event_pk', None)
+        user_id = request.user.id
+        Event.async_register(event_id, user_id)
         return Response(data={'status': 'PENDING'}, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):

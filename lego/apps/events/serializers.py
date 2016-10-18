@@ -83,12 +83,6 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         model = Registration
         fields = ('id',)
 
-    def create(self, validated_data):
-        user_id = validated_data['current_user'].id
-        event_id = self.context['view'].kwargs['event_pk']
-        Event.async_register(event_id, user_id)
-        return object()
-
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
