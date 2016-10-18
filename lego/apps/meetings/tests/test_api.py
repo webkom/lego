@@ -45,14 +45,6 @@ class CreateMeetingTestCase(APITestCase):
         res = self.client.post(_get_list_url(), test_meeting_data[0])
         self.assertEqual(res.status_code, 201)
 
-    def test_pleb_cannot_create(self):
-        """
-        Regular Abakus members cannot create a meeting
-        """
-        self.client.force_authenticate(self.abakule)
-        res = self.client.post(_get_list_url(), test_meeting_data[0])
-        self.assertEqual(res.status_code, 403)
-
 
 class RetrieveMeetingTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
@@ -173,6 +165,18 @@ class InviteToMeetingTestCase(APITestCase):
         })
         self.assertEqual(res.status_code, 201)
 
+    def test_abakulemember_can_invite_to_meeting(self):
+        self.meeting.created_by = self.abakommer
+        self.meeting.save()
+
+        me = self.abakule
+        self.meeting.invite_user(me)
+
+        self.client.force_authenticate(me)
+        res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_user/', {
+            'user': self.pleb.id,
+        })
+        self.assertEqual(res.status_code, 201)
 
     def test_can_not_invite_to_unknown_meeting(self):
         me = self.abakommer
@@ -196,6 +200,7 @@ class InviteToMeetingTestCase(APITestCase):
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertTrue(present)
 
+
 class UpdateInviteTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
@@ -212,14 +217,14 @@ class UpdateInviteTestCase(APITestCase):
         me = self.abakommer
 
         invite = self.meeting.invite_user(me)[0]
-        self.assertEqual(invite.status, 0)
+        self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
         self.client.force_authenticate(me)
-        res = self.client.put(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
-            'status': 1
+        res = self.client.patch(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
+            'status': MeetingInvitation.ATTENDING
         })
         self.assertEqual(res.status_code, 200)
         invite.refresh_from_db()
-        self.assertEqual(invite.status, 1)
+        self.assertEqual(invite.status, MeetingInvitation.ATTENDING)
 
     def test_cannot_update_other_status(self):
         me = self.abakommer
@@ -227,15 +232,11 @@ class UpdateInviteTestCase(APITestCase):
 
         self.meeting.invite_user(me)
         invite = self.meeting.invite_user(other)[0]
-        self.assertEqual(invite.status, 0)
+        self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
         self.client.force_authenticate(me)
-        res = self.client.put(_get_invitations_list_url(self.meeting.id) + str(other.id) + '/', {
-            'status': 1
+        res = self.client.patch(_get_invitations_list_url(self.meeting.id) + str(other.id) + '/', {
+            'status': MeetingInvitation.ATTENDING
         })
         self.assertEqual(res.status_code, 403)
         invite.refresh_from_db()
-        self.assertEqual(invite.status, 0)
-
-
-
-
+        self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
