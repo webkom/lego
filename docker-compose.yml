@@ -2,7 +2,7 @@ version: '2'
 
 services:
   elasticsearch:
-    image: 'elasticsearch:2.3'
+    image: 'elasticsearch:2.4'
     ports:
      - '127.0.0.1:9200:9200'
 
