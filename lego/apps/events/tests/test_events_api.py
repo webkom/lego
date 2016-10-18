@@ -156,7 +156,7 @@ class CreateEventsTestCase(APITestCase):
         pool_update_response = self.client.put(_get_pools_detail_url(self.event_id, self.pool_id),
                                                _test_pools_data[1])
         pool_get_response = self.client.get(_get_pools_detail_url(self.event_id, self.pool_id))
-        pool_get_response.data.pop('registrations')  # The put does not return updated data
+        pool_get_response.data.pop('active_registrations')  # The put does not return updated data
 
         self.assertEqual(pool_update_response.status_code, 200)
         self.assertIsNotNone(pool_get_response.data.pop('id'))
@@ -203,7 +203,10 @@ class CreateRegistrationsTestCase(APITestCase):
     def test_register_no_pools(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(registration_response.data.get('status'), 'PENDING')
+        res = self.client.get(_get_registrations_list_url(event.id))
+        self.assertEqual(res.data, [])
 
     def test_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
@@ -231,7 +234,7 @@ class ListRegistrationsTestCase(APITestCase):
 
         registrations_exist = False
         for pool in event_response.data.get('pools', None):
-            if pool.get('registrations', None):
+            if pool.get('activeRegistrations', None):
                 registrations_exist = True
         self.assertTrue(registrations_exist)
 
