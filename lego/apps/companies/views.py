@@ -13,11 +13,10 @@ class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
+        if self.action in ['create', 'update', 'partial_update']:
             return CompanyCreateAndUpdateSerializer
 
-        company_id = self.kwargs.get('pk', None)
-        if company_id:
+        elif self.action in ['retrieve', 'destroy']:
             return CompanyReadDetailedSerializer
 
         return CompanyReadSerializer
@@ -33,8 +32,9 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
         return SemesterStatusReadSerializer
 
     def get_queryset(self):
-        company_id = self.kwargs.get('company_pk', None)
-        if company_id:
+
+        if self.action in ['retrieve', 'destroy']:
+            company_id = self.kwargs.select_related('company').get('company_pk', None)
             return SemesterStatus.objects.filter(company=company_id)
 
 
@@ -42,12 +42,13 @@ class CompanyContactViewSet(viewsets.ModelViewSet):
     queryset = CompanyContact.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
+        if self.action in ['create', 'update', 'partial_update']:
             return CompanyContactCreateAndUpdateSerializer
 
         return CompanyContactReadSerializer
 
     def get_queryset(self):
-        company_id = self.kwargs.get('company_pk', None)
-        if company_id:
+
+        if self.action in ['retrieve', 'destroy']:
+            company_id = self.kwargs.select_related('company').get('company_pk', None)
             return CompanyContact.objects.filter(company=company_id)
