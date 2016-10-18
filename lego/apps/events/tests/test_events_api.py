@@ -241,20 +241,55 @@ class ListRegistrationsTestCase(APITestCase):
 class CreateAdminRegistrationTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
+
     def setUp(self):
         self.abakus_users = User.objects.all()
+        self.request_user, self.user = self.abakus_users[0:2]
+        self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        self.pool = self.event.pools.first()
 
     def test_with_admin_permission(self):
-        request_user = self.abakus_users[0]
-        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        AbakusGroup.objects.get(name='Webkom').add_user(request_user)
-        event.created_by = request_user
-        self.client.force_authenticate(request_user)
-        registration_response = self.client.post(_get_registrations_list_url(event.id) + 'admin_register/',
-                                                 {'request_user':request_user.id,
-                                                  'user': self.abakus_users[1].id,
-                                                  'pool': event.pools.first().id})
+        AbakusGroup.objects.get(name='Webkom').add_user(self.request_user)
+        pool_two = self.event.pools.get(name='Webkom')
+
+        self.assertFalse(self.event.can_register(self.user, self.pool))
+        self.client.force_authenticate(self.request_user)
+
+        registration_response = self.client.post(_get_registrations_list_url(self.event.id)
+                                                 + 'admin_register/',
+                                                 {'user': self.user.id,
+                                                  'pool': self.pool.id})
+
         self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(self.pool.registrations.count(), 1)
+        self.assertEqual(pool_two.registrations.count(), 0)
 
+    def test_without_admin_permission(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
 
+        self.assertTrue(self.event.can_register(self.user, self.pool))
+        self.client.force_authenticate(self.request_user)
 
+        registration_response = self.client.post(_get_registrations_list_url(self.event.id)
+                                                 + 'admin_register/',
+                                                 {'user': self.user.id,
+                                                  'pool': self.pool.id})
+
+        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(self.event.number_of_registrations, 0)
+
+    def test_with_nonexistant_pool(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.request_user)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
+        nonexistant_pool_id = len(self.event.pools.all())
+
+        self.assertTrue(self.event.can_register(self.user, self.pool))
+        self.client.force_authenticate(self.request_user)
+
+        registration_response = self.client.post(_get_registrations_list_url(self.event.id)
+                                                 + 'admin_register/',
+                                                 {'user': self.user.id,
+                                                  'pool': nonexistant_pool_id})
+
+        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(self.event.number_of_registrations, 0)

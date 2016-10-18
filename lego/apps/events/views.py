@@ -8,7 +8,8 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
-                                          RegistrationCreateAndUpdateSerializer, RegistrationReadSerializer)
+                                          RegistrationCreateAndUpdateSerializer,
+                                          RegistrationReadSerializer)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
