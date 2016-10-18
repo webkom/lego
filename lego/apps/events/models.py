@@ -62,7 +62,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 return True
         return False
 
-    def admin_register(self, request_user, user, pool):
+    def admin_register(self, user, pool):
         """
         Currently incomplete. Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
@@ -72,9 +72,14 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         :param pool: What pool the registration will be created for
         :return: The registration
         """
-        return self.registrations.update_or_create(event=self, user=user,
-                                                   defaults={'pool': pool,
-                                                             'unregistration_date': None})[0]
+
+        if self.pools.filter(id=pool.id).exists():
+            return \
+                self.registrations.update_or_create(event=self, user=user,
+                                                    defaults={'pool': pool,
+                                                              'unregistration_date': None})[0]
+        else:
+            raise ValueError('No such pool in this event')
 
     def add_to_waiting_list(self, user):
         """
