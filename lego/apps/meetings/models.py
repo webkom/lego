@@ -26,22 +26,22 @@ class Meeting(SlugContent, BasisModel):
         For some reason, limit_choices_to does not work with ManyToManyField
         when specifying a custom through table.
         """
-        return self._invited_users.filter(invitation__deleted=False)
+        return self._invited_users.filter(invitations__deleted=False)
 
     @property
     def participants(self):
-        return self.invited_users.filter(invitation__status=MeetingInvitation.ATTENDING)
+        return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
 
     def invite_user(self, user):
-        return self.invitation.update_or_create(user=user,
-                                                meeting=self)
+        return self.invitations.update_or_create(user=user,
+                                                 meeting=self)
 
     def invite_group(self, group):
         for user in group.users.all():
             self.invite_user(user)
 
     def uninvite_user(self, user):
-        invitation = self.invitation.get(user=user)
+        invitation = self.invitations.get(user=user)
         invitation.delete()
 
     def can_edit(self, user):
@@ -60,8 +60,8 @@ class MeetingInvitation(BasisModel):
         (NOT_ATTENDING, 'Not attending')
     )
 
-    meeting = models.ForeignKey(Meeting, related_name='invitation')
-    user = models.ForeignKey(User, related_name='invitation')
+    meeting = models.ForeignKey(Meeting, related_name='invitations')
+    user = models.ForeignKey(User, related_name='invitations')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES,
                                       default=NO_ANSWER)
 

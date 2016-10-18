@@ -31,19 +31,22 @@ class CreateMeetingTestCase(APITestCase):
                 'test_users.yaml']
 
     def setUp(self):
-        self.abakom_user = User.objects.get(id=1)
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakom_user)
-
-        self.abakule = User.objects.get(username='abakule')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
+        self.abakommer = User.objects.get(username='abakommer')
+        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
+        self.pleb = User.objects.get(username='pleb')
 
     def test_meeting_create(self):
         """
-        All Abakom users should be able to create a meeting
+        All Abakus users should be able to create a meeting
         """
-        self.client.force_authenticate(user=self.abakom_user)
+        self.client.force_authenticate(user=self.abakommer)
         res = self.client.post(_get_list_url(), test_meeting_data[0])
         self.assertEqual(res.status_code, 201)
+
+    def test_pleb_cannot_create(self):
+        self.client.force_authenticate(user=self.pleb)
+        res = self.client.post(_get_list_url(), test_meeting_data[0])
+        self.assertEqual(res.status_code, 403)
 
 
 class RetrieveMeetingTestCase(APITestCase):
@@ -71,12 +74,12 @@ class RetrieveMeetingTestCase(APITestCase):
         self.meeting.invite_user(user)
         self.meeting.uninvite_user(user)
         res = self.client.get(_get_detail_url(self.meeting.pk))
-        self.assertTrue(res.status_code >= 403)
+        self.assertTrue(res.status_code, 403)
 
     def test_pleb_cannot_retrieve(self):
         self.client.force_authenticate(self.pleb)
         res = self.client.get(_get_detail_url(self.meeting.id))
-        self.assertTrue(res.status_code >= 403)
+        self.assertEqual(res.status_code, 403)
 
     def test_can_see_invitations(self):
         self.meeting.created_by = self.abakule
@@ -240,3 +243,13 @@ class UpdateInviteTestCase(APITestCase):
         self.assertEqual(res.status_code, 403)
         invite.refresh_from_db()
         self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
+
+    def test_cannot_update_to_other_user(self):
+        me = self.abakule
+        invite = self.meeting.invite_user(me)[0]
+        self.client.force_authenticate(me)
+        self.client.patch(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
+            'user': self.pleb.id
+        })
+        invite.refresh_from_db()
+        self.assertEqual(invite.user, me)

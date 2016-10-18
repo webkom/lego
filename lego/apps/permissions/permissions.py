@@ -12,6 +12,7 @@ class AbakusPermission(permissions.BasePermission):
 
     permission_map = {}
     authentication_map = {}
+    check_object_permission = False
 
     def get_required_object_permissions(self, action, model_cls):
         if action == 'partial_update':
@@ -59,7 +60,8 @@ class AbakusPermission(permissions.BasePermission):
         # permissions in the filter backend and per object.
         get_queryset = getattr(view, 'get_queryset', None)
         if get_queryset:
-            object_permissions = issubclass(get_queryset().model, ObjectPermissionsModel)
+            object_permissions = issubclass(get_queryset().model, ObjectPermissionsModel)\
+                                 or self.check_object_permission
             if object_permissions and not view.action == 'create':
                 return True
 

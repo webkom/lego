@@ -10,7 +10,7 @@ from lego.utils.serializers import BasisModelSerializer
 class MeetingSerializer(BasisModelSerializer):
     class Meta:
         model = Meeting
-        fields = ('id', 'title', 'location', 'start_time', 'end_time', 'report',
+        fields = ('id', 'created_by', 'title', 'location', 'start_time', 'end_time', 'report',
                   'report_author')
 
     def create(self, validated_data):
@@ -30,6 +30,12 @@ class MeetingInvitationSerializer(BasisModelSerializer):
         meeting_invitation = MeetingInvitation.objects.create(meeting=meeting,
                                                               **validated_data)
         return meeting_invitation
+
+
+class MeetingInvitationUpdateSerializer(BasisModelSerializer):
+    class Meta:
+        model = MeetingInvitation
+        fields = ('status',)
 
 
 class MeetingGroupInvite(serializers.Serializer):
