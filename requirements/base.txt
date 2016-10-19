@@ -11,7 +11,7 @@ hiredis==0.2.0
 stream-framework==1.4.0
 git+https://github.com/django-statsd/django-statsd.git#67c8077
 certifi==2016.9.26
-elasticsearch==2.4.0
+elasticsearch==5.0.0
 celery==3.1.24
 
 djangorestframework==3.4.7
