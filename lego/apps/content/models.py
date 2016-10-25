@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from lego.apps.comments.models import Comment
+from lego.apps.reactions.models import Reaction
 
 
 class Content(models.Model):
@@ -10,6 +11,7 @@ class Content(models.Model):
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
+    reactions = GenericRelation(Reaction)
 
     class Meta:
         abstract = True
