@@ -1,10 +1,13 @@
+from datetime import timedelta
+
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 
 from .constants import EVENT_TYPES
@@ -28,6 +31,11 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
+
+    penalties = GenericRelation(Penalty)
+    penalty_weight = models.PositiveIntegerField(default=1)
+    penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
+    heed_penalties = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -87,6 +95,17 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                     if group in permission_groups:
                         return registration
         return self.waiting_registrations.first()
+
+    def get_earliest_registration_time(self, user, pools=None):
+        if not pools:
+            pools = self.get_possible_pools(user)
+        reg_time = min(pool.activation_date for pool in pools)
+        if self.heed_penalties:
+            if user.get_penalties() == 2:
+                return reg_time + timedelta(hours=12)
+            elif user.get_penalties() == 1:
+                return reg_time + timedelta(hours=3)
+        return reg_time
 
     def get_possible_pools(self, user):
         return [pool for pool in self.pools.all() if self.can_register(user, pool)]
