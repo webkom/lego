@@ -34,6 +34,11 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
     heed_penalties = models.BooleanField(default=True)
 
+    max_tickets_per_user = models.PositiveSmallIntegerField(default=1)
+    is_priced = models.BooleanField(default=False)
+    price_member = models.PositiveSmallIntegerField(default=0)
+    price_guest = models.PositiveSmallIntegerField(default=0)
+
     def __str__(self):
         return self.title
 
@@ -406,6 +411,9 @@ class Registration(BasisModel):
                               default=constants.PENDING_REGISTER,
                               choices=constants.STATUSES)
 
+    ticket_count = models.PositiveSmallIntegerField(default=1)
+    charge_id = models.CharField(null=True, max_length=50)
+
     class Meta:
         unique_together = ('user', 'event')
         ordering = ['registration_date']
@@ -428,3 +436,14 @@ class Registration(BasisModel):
         self.status = status
         self.save()
         return self
+
+    @property
+    def cost(self):
+        if self.ticket_count <= 0:
+            raise ValueError('Illegal amount of tickets')
+
+        cost = self.event.price_member
+        if self.ticket_count == 1:
+            return cost
+        else:
+            return cost + (self.ticket_count - 1) * self.event.price_guest
