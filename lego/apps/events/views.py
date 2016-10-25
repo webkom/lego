@@ -1,9 +1,11 @@
+import stripe
 from django.db import transaction
 from rest_framework import decorators, filters, mixins, status, viewsets
+from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import NoSuchPool
+from lego.apps.events.exceptions import NoSuchPool, PaymentExists
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import NestedEventPermissions
@@ -12,7 +14,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
-                                          RegistrationReadSerializer)
+                                          RegistrationReadSerializer, StripeSerializer)
 from lego.apps.events.tasks import async_register, async_unregister
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
@@ -28,14 +30,65 @@ class EventViewSet(viewsets.ModelViewSet):
     ordering = 'start_time'
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
+        if self.action in ['create', 'partial_update', 'update']:
             return EventCreateAndUpdateSerializer
-
-        event_id = self.kwargs.get('pk', None)
-        if event_id:
+        if self.action == 'list':
+            return EventReadSerializer
+        if self.action == 'retrieve':
             return EventReadDetailedSerializer
 
-        return EventReadSerializer
+        return super().get_serializer_class()
+
+    @decorators.detail_route(methods=['POST'], serializer_class=StripeSerializer)
+    def payment(self, request, *args, **kwargs):
+        event_id = self.kwargs.get('pk', None)
+        event = Event.objects.get(id=event_id)
+        registration = event.registrations.get(user__id=request.user.id)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if not registration or not event.is_priced:
+            raise PermissionDenied()
+
+        if registration.charge_id:
+            raise PaymentExists()
+
+        try:
+            response = stripe.Charge.create(
+                amount=registration.cost,
+                currency='NOK',
+                source=request.data['token'],
+                description=event.slug,
+                metadata={
+                    'EVENT_ID': event_id,
+                    'USER': registration.user.full_name,
+                    'EMAIL': registration.user.email
+                }
+            )
+
+            registration.charge_id = response.id
+            registration.save()
+            return Response(data=response, status=status.HTTP_200_OK)
+        except stripe.error.RateLimitError:
+            # Too many requests made to the API too quickly
+            pass
+        except stripe.error.CardError:
+            raise ValidationError("Card declined")
+        except stripe.error.AuthenticationError:
+            # Authentication with Stripe's API failed
+            # (maybe you changed API keys recently)
+            pass
+        except stripe.error.APIConnectionError:
+            # Network communication with Stripe failed
+            pass
+        except stripe.error.InvalidRequestError:
+            raise ValidationError("Invalid request")
+        except stripe.error.StripeError:
+            # Display a very generic error to the user, and maybe send
+            # yourself an email
+            pass
+        except Exception:
+            raise APIException()
 
 
 class PoolViewSet(viewsets.ModelViewSet):
@@ -105,7 +158,7 @@ class RegistrationViewSet(mixins.CreateModelMixin,
         serializer.is_valid(raise_exception=True)
         try:
             registration = event.admin_register(**serializer.validated_data)
-        except (ValueError):
+        except ValueError:
             raise NoSuchPool()
         reg_data = RegistrationCreateAndUpdateSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
