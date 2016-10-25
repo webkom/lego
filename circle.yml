@@ -11,8 +11,6 @@ machine:
     CASS_DRIVER_NO_EXTENSIONS: 1
 
 dependencies:
-  cache_directories:
-    - .tox
   pre:
     - pip install tox
     - pip install -r requirements/test.txt
