@@ -1,4 +1,3 @@
-from lego.apps.reactions.views import ReactionViewSet, ReactionTypeViewSet
 from rest_framework import routers
 
 from lego.apps.articles.views.articles import ArticlesViewSet
@@ -9,6 +8,7 @@ from lego.apps.flatpages.views import PageViewSet
 from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
+from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.users import UsersViewSet

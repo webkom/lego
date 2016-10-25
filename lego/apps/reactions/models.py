@@ -12,7 +12,9 @@ class ReactionManager(BasisModelManager):
 
 
 class ReactionType(BasisModel):
-    name = models.CharField(max_length=20, primary_key=True)
+    short_code = models.CharField(max_length=20, primary_key=True)
+    unicode = models.CharField(max_length=20, db_index=True)
+
 
 class Reaction(BasisModel):
     type = models.ForeignKey(ReactionType)
