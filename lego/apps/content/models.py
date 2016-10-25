@@ -13,6 +13,20 @@ class Content(models.Model):
     comments = GenericRelation(Comment)
     reactions = GenericRelation(Reaction)
 
+    @property
+    def reactions_grouped(self):
+        grouped = {}
+        for reaction in self.reactions.all():
+            if reaction.type_id not in grouped:
+                grouped[reaction.type_id] = {
+                    'type': reaction.type_id,
+                    'count': 0,
+                    'users': []
+                }
+            grouped[reaction.type_id]['count'] += 1
+            grouped[reaction.type_id]['users'].append(reaction.created_by)
+        return grouped.values()
+
     class Meta:
         abstract = True
 

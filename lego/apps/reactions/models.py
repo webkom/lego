@@ -25,5 +25,8 @@ class Reaction(BasisModel):
 
     objects = ReactionManager()
 
+    def __repr__(self):
+        return str(self)
+
     def __str__(self):
-        return '{0} - {1}'.format(self.created_by, self.reaction)
+        return '{0} - {1}'.format(self.created_by, self.type_id)
