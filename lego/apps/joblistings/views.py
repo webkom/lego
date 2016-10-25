@@ -1,9 +1,8 @@
 from rest_framework import viewsets
 
 from lego.apps.joblistings.models import Joblisting
-from lego.apps.joblistings.serializer import (JoblistingSerializer,
-                                              JoblistingDetailedSerializer,
-                                              JoblistingCreateAndUpdateSerializer)
+from lego.apps.joblistings.serializer import (JoblistingCreateAndUpdateSerializer,
+                                              JoblistingDetailedSerializer, JoblistingSerializer)
 
 
 class JoblistingViewSet(viewsets.ModelViewSet):

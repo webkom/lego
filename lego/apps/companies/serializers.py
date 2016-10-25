@@ -55,7 +55,7 @@ class CompanyContactCreateAndUpdateSerializer(BasisModelSerializer):
 class PublicCompanyReadSerializer(BasisModelSerializer):
     class Meta:
         model = Company
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'website')
 
 
 class CompanyReadSerializer(BasisModelSerializer):
