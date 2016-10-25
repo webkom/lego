@@ -3,6 +3,7 @@ from rest_framework.fields import CharField
 from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.events.exceptions import RegistrationException
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.serializers import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -84,7 +85,10 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     def create(self, validated_data):
         user = validated_data['current_user']
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
-        return event.register(user)
+        try:
+            return event.register(user)
+        except ValueError as e:
+            raise RegistrationException(e)
 
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):

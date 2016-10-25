@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -157,7 +155,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     def get_penalties(self):
         # Returns the total penalty weight for this user
-        count = Penalty.objects.valid().filter(user=self).aggregate(Sum('weight'))['weight__sum']
+        count = Penalty.objects.valid().filter(user=self).aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
 
 
@@ -205,7 +203,7 @@ class Penalty(BasisModel):
     objects = UserPenaltyManager()
 
     def expires(self):
-        dt = Penalty.objects.penalty_offset(self.created_at) - (datetime.today() - self.created_at)
+        dt = Penalty.objects.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
         return dt.days
 
 

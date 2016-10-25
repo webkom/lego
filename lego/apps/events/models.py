@@ -11,7 +11,6 @@ from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 
 from .constants import EVENT_TYPES
-from .exceptions import NoAvailablePools
 
 
 class Event(SlugContent, BasisModel, ObjectPermissionsModel):
@@ -40,8 +39,8 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
-    def can_register(self, user, pool):
-        if not self.is_activated(pool):
+    def can_register(self, user, pool, future=False):
+        if not self.is_activated(pool) and not future:
             return False
 
         if self.is_registered(user):
@@ -98,7 +97,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     def get_earliest_registration_time(self, user, pools=None):
         if not pools:
-            pools = self.get_possible_pools(user)
+            pools = self.get_possible_pools(user, future=True)
         reg_time = min(pool.activation_date for pool in pools)
         if self.heed_penalties:
             if user.get_penalties() == 2:
@@ -107,8 +106,8 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 return reg_time + timedelta(hours=3)
         return reg_time
 
-    def get_possible_pools(self, user):
-        return [pool for pool in self.pools.all() if self.can_register(user, pool)]
+    def get_possible_pools(self, user, future=False):
+        return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
 
     def register(self, user):
         """
@@ -139,7 +138,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
         possible_pools = self.get_possible_pools(user)
         if not possible_pools:
-            raise NoAvailablePools()
+            raise ValueError('No available pools')
+
+        if self.get_earliest_registration_time(user, possible_pools) > timezone.now():
+            raise ValueError('No active pools at this time for this user')
 
         # If the event is merged or has only one pool we can skip a lot of logic
         if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):

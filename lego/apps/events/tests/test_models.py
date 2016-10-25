@@ -3,7 +3,6 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from lego.apps.events.exceptions import NoAvailablePools
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup, User
 
@@ -175,7 +174,7 @@ class RegistrationTestCase(TestCase):
         event.register(user=user_1)
         pool_two = Pool.objects.create(name='test', capacity=1, event=event,
                                        activation_date=(timezone.now() - timedelta(hours=24)))
-        with self.assertRaises(NoAvailablePools):
+        with self.assertRaises(ValueError):
             event.register(user=user_1)
 
         self.assertEqual(event.number_of_registrations, 1)
@@ -190,7 +189,7 @@ class RegistrationTestCase(TestCase):
         Pool.objects.create(
             name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() + timedelta(hours=24)))
-        with self.assertRaises(NoAvailablePools):
+        with self.assertRaises(ValueError):
             event.register(user=user)
         self.assertEqual(event.number_of_registrations, 0)
         self.assertEqual(event.waiting_registrations.count(), 0)
@@ -282,7 +281,7 @@ class RegistrationTestCase(TestCase):
         user = get_dummy_users(1)[0]
         permission_groups_one[0].add_user(user)
 
-        with self.assertRaises(NoAvailablePools):
+        with self.assertRaises(ValueError):
             event.register(user=user)
 
         self.assertEqual(pool.registrations.count(), 0)
