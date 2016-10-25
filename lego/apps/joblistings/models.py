@@ -1,40 +1,42 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
-from lego.apps.articles.models import Article
+from lego.apps.companies.models import Company, CompanyContact
+from lego.apps.content.models import Content
 from lego.utils.models import BasisModel
 
 
-class Joblisting(BasisModel):
-    title = models.CharField(max_length=100)
-    content = models.OneToOneField(Article)
+class Workplace(BasisModel):
+    town = models.CharField(max_length=100)
 
+
+class Joblisting(Content, BasisModel):
     YEAR_CHOICES = (
-        (u'1',u'1'),
-        (u'2',u'2'),
-        (u'3',u'3'),
-        (u'4',u'4'),
-        (u'5',u'5')
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5)
     )
 
-    FULL_TIME = 0
-    PART_TIME = 1
-    SUMMER_JOB = 2
-    OTHER = 3
+    FULL_TIME = 'full_time'
+    PART_TIME = 'part_time'
+    SUMMER_JOB = 'summer_job'
+    OTHER = 'other'
 
     JOB_TYPE_CHOICES = (
-        (FULL_TIME, _('Full time')),
-        (PART_TIME, _('Part time')),
-        (SUMMER_JOB, _('Summer job')),
-        (OTHER, _('Other')),
+        (FULL_TIME, FULL_TIME),
+        (PART_TIME, PART_TIME),
+        (SUMMER_JOB, SUMMER_JOB),
+        (OTHER, OTHER),
     )
 
-    deadline = models.DateTimeField()
+    company = models.ForeignKey(Company, related_name='joblistings')
+    responsible = models.ForeignKey(CompanyContact, related_name='joblistings', null=True)
+    deadline = models.DateTimeField(null=True)
     visible_from = models.DateTimeField()
     visible_to = models.DateTimeField()
-    job_type = models.PositiveIntegerField(choices=JOB_TYPE_CHOICES)
-    workplaces = models.CharField(max_length=100)
-    from_year = models.CharField(max_length=10, choices=YEAR_CHOICES, default='1')
-    to_year = models.CharField(max_length=10, choices=YEAR_CHOICES, default='5')
+    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES)
+    workplaces = models.ManyToManyField(Workplace)
+    from_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default='1')
+    to_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default='5')
     application_url = models.URLField(null=True, blank=True)
-    application_email = models.EmailField(null=True, blank=True)
