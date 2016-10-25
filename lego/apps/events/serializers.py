@@ -100,6 +100,10 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         fields = ('id',)
 
 
+class StripeSerializer(serializers.Serializer):
+    token = serializers.CharField()
+
+
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
