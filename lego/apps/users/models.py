@@ -1,5 +1,9 @@
+from datetime import datetime
+
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
 from django.db import models
@@ -10,7 +14,8 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from lego.apps.permissions.validators import KeywordPermissionValidator
-from lego.apps.users.managers import AbakusGroupManager, MembershipManager, UserManager
+from lego.apps.users.managers import AbakusGroupManager, MembershipManager, UserManager,\
+    UserPenaltyManager
 from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
@@ -150,6 +155,11 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     def natural_key(self):
         return self.username,
 
+    def get_penalties(self):
+        # Returns the total penalty weight for this user
+        count = Penalty.objects.valid().filter(user=self).aggregate(Sum('weight'))['weight__sum']
+        return count or 0
+
 
 class Membership(BasisModel):
     MEMBER = 'member'
@@ -180,3 +190,22 @@ class Membership(BasisModel):
 
     def __str__(self):
         return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.abakus_group)
+
+
+class Penalty(BasisModel):
+
+    user = models.ForeignKey(User, related_name='penalties')
+    reason = models.CharField(max_length=1000)
+    weight = models.IntegerField(default=1)
+
+    object = GenericForeignKey('content_type', 'object_id')
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+
+    objects = UserPenaltyManager()
+
+    def expires(self):
+        dt = Penalty.objects.penalty_offset(self.created_at) - (datetime.today() - self.created_at)
+        return dt.days
+
+
