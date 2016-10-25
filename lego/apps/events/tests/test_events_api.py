@@ -1,3 +1,4 @@
+import stripe
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
 
@@ -301,3 +302,34 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         self.assertEqual(registration_response.status_code, 403)
         self.assertEqual(self.event.number_of_registrations, 0)
+
+
+class StripePaymentTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.get(pk=1)
+        self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        self.event.is_priced = True
+        self.event.max_tickets_per_user = 2
+        self.event.price_member = 10000
+        self.event.price_guest = 15000
+        self.event.save()
+
+    def test_payment(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        self.client.post(_get_registrations_list_url(self.event.id), {})
+        token = stripe.Token.create(
+            card={
+                "number": '4242424242424242',
+                "exp_month": 12,
+                "exp_year": 2016,
+                "cvc": '123'
+            },
+        )
+        res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': token.id})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data.get('amount'), 10000)
+        self.assertEqual(res.data.get('status', None), 'succeeded')
