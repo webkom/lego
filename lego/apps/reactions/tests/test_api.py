@@ -2,9 +2,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-
-from lego.apps.reactions.models import ReactionType, Reaction
 from lego.apps.articles.models import Article
+from lego.apps.reactions.models import Reaction, ReactionType
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -18,7 +17,8 @@ def _get_detail_url(pk):
 
 class CreateReactionsAPITestCase(APITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_reaction_types.yaml', 'test_articles.yaml'
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_reaction_types.yaml',
+        'test_articles.yaml'
     ]
 
     def get_test_data(self, article_id):
@@ -63,7 +63,6 @@ class CreateReactionsAPITestCase(APITestCase):
         response = self.client.post(_get_list_url(), test_data)
         self.assertEqual(response.status_code, 400)
 
-
     def test_invalid_reaction_type(self):
         test_data = {
             **self.test_data,
@@ -72,7 +71,6 @@ class CreateReactionsAPITestCase(APITestCase):
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
         self.assertEqual(response.status_code, 400)
-
 
 
 class DeleteReactionsAPITestCase(APITestCase):
