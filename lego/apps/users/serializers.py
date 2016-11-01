@@ -1,11 +1,24 @@
 from rest_framework import serializers
 
 from lego.apps.users.fields import AbakusGroupListField
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
+from lego.utils.serializers import BasisModelSerializer, GenericRelationField
+
+
+class PenaltySerializer(BasisModelSerializer):
+    source = GenericRelationField(source=object)
+
+    class Meta:
+        model = Penalty
+        fields = (
+            'id', 'user', 'reason', 'weight', 'source'
+        )
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
+    active_penalties = PenaltySerializer(many=True, read_only=True)
+
     class Meta:
         model = User
         fields = (
@@ -17,6 +30,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'email',
             'is_staff',
             'is_active',
+            'active_penalties'
         )
 
 

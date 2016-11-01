@@ -2,8 +2,8 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from lego.utils.managers import PersistentModelManager
 from lego.settings.lego import PENALTY_DURATION, PENALTY_IGNORE_SUMMER, PENALTY_IGNORE_WINTER
+from lego.utils.managers import PersistentModelManager
 
 
 class AbakusGroupManager(PersistentModelManager):

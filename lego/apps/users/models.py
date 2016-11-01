@@ -12,8 +12,8 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from lego.apps.permissions.validators import KeywordPermissionValidator
-from lego.apps.users.managers import AbakusGroupManager, MembershipManager, UserManager,\
-    UserPenaltyManager
+from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
+                                      UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
@@ -155,7 +155,8 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     def get_penalties(self):
         # Returns the total penalty weight for this user
-        count = Penalty.objects.valid().filter(user=self).aggregate(models.Sum('weight'))['weight__sum']
+        count = Penalty.objects.valid().filter(user=self)\
+            .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
 
 
@@ -205,5 +206,3 @@ class Penalty(BasisModel):
     def expires(self):
         dt = Penalty.objects.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
         return dt.days
-
-
