@@ -1,3 +1,5 @@
+from unittest import skipIf
+
 import stripe
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
@@ -304,6 +306,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.assertEqual(self.event.number_of_registrations, 0)
 
 
+@skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
 class StripePaymentTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
