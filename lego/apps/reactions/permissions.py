@@ -4,18 +4,25 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
 class ReactionPermission(AbakusPermission):
+    check_object_permission = True
+
+    def has_object_permission(self, request, view, reaction):
+        if super().has_object_permission(request, view, reaction):
+            return True
+
+        return reaction.created_by == request.user
 
     def has_permission(self, request, view):
 
         has_permission = super(ReactionPermission, self).has_permission(request, view)
 
-        if not has_permission:
-            return False
+        if has_permission:
+            return True
 
         if view.action == 'create':
             return self.check_target_permissions(request)
 
-        return True
+        return False
 
     def check_target_permissions(self, request):
         target = None

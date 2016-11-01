@@ -1,0 +1,12 @@
+- model: reactions.ReactionType
+  pk: simple_smile
+  fields:
+    short_code: ":simple_smile:"
+    unicode: 123abc
+
+
+- model: reactions.ReactionType
+  pk: simple_smile2
+  fields:
+    short_code: ":simple_smile2:"
+    unicode: 456abc
