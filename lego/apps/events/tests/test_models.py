@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 
 
 def get_dummy_users(n):
@@ -97,6 +97,7 @@ class RegistrationTestCase(TestCase):
 
     def setUp(self):
         Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
+        Event.objects.all().update(heed_penalties=True)
 
     def test_can_register_single_pool(self):
         user = get_dummy_users(1)[0]
@@ -693,6 +694,238 @@ class RegistrationTestCase(TestCase):
         webkom_pool = event.pools.get(name='Webkom')
         abakus_pool = event.pools.get(name='Abakusmember')
         self.assertEqual(event.select_highest_capacity([abakus_pool, webkom_pool]), abakus_pool)
+
+    def test_get_earliest_registration_time_no_penalties(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        webkom_pool = event.pools.get(name='Webkom')
+        abakus_pool = event.pools.get(name='Abakusmember')
+
+        current_time = timezone.now()
+        webkom_pool.activation_date = current_time
+        webkom_pool.save()
+        abakus_pool.activation_date = current_time-timedelta(hours=1)
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        earliest_registration, reason = event.get_earliest_registration_time(user,
+                                                                             [webkom_pool,
+                                                                              abakus_pool])
+        self.assertEqual(earliest_registration, current_time-timedelta(hours=1))
+        self.assertIsNone(reason)
+
+    def test_get_earliest_registration_time_ignore_penalties(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.heed_penalties = False
+        event.save()
+
+        current_time = timezone.now()
+        webkom_pool = event.pools.get(name='Webkom')
+        webkom_pool.activation_date = current_time
+        webkom_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=1)
+        penalties = user.get_penalties()
+
+        earliest_registration, reason = event.get_earliest_registration_time(user,
+                                                                             [webkom_pool],
+                                                                             penalties)
+        self.assertEqual(earliest_registration, current_time)
+        self.assertIsNone(reason)
+
+    def test_get_earliest_registration_time_one_penalty(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        webkom_pool = event.pools.get(name='Webkom')
+        webkom_pool.activation_date = current_time
+        webkom_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=1)
+        penalties = user.get_penalties()
+
+        earliest_registration, reason = event.get_earliest_registration_time(user,
+                                                                             [webkom_pool],
+                                                                             penalties)
+        self.assertEqual(earliest_registration, current_time + timedelta(hours=3))
+        self.assertEqual(reason, '1 penalty')
+
+    def test_get_earliest_registration_time_two_penalties(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        webkom_pool = event.pools.get(name='Webkom')
+        webkom_pool.activation_date = current_time
+        webkom_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=2)
+        penalties = user.get_penalties()
+
+        earliest_registration, reason = event.get_earliest_registration_time(user,
+                                                                             [webkom_pool],
+                                                                             penalties)
+        self.assertEqual(earliest_registration, current_time + timedelta(hours=12))
+        self.assertEqual(reason, '2 penalties')
+
+    def test_cant_register_with_one_penalty_before_delay(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        abakus_pool = event.pools.get(name='Abakusmember')
+        abakus_pool.activation_date = current_time
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=1)
+
+    def test_can_register_with_one_penalty_after_delay(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        abakus_pool = event.pools.get(name='Abakusmember')
+        abakus_pool.activation_date = current_time - timedelta(hours=3)
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=1)
+
+        event.register(user)
+        self.assertEqual(event.number_of_registrations, 1)
+
+    def test_cant_register_with_two_penalties_before_delay(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        abakus_pool = event.pools.get(name='Abakusmember')
+        abakus_pool.activation_date = current_time
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=2)
+
+        with self.assertRaises(ValueError):
+            event.register(user)
+
+    def test_can_register_with_two_penalties_after_delay(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        abakus_pool = event.pools.get(name='Abakusmember')
+        abakus_pool.activation_date = current_time - timedelta(hours=12)
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=2)
+
+        event.register(user)
+        self.assertEqual(event.number_of_registrations, 1)
+
+    def test_waiting_list_on_three_penalties(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=3)
+
+        event.register(user)
+        self.assertEqual(event.number_of_registrations, 0)
+        self.assertEqual(event.waiting_registrations.count(), 1)
+
+    def test_waiting_list_on_three_penalties_post_merge(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.merge_time = timezone.now() - timedelta(hours=24)
+        event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=3)
+
+        event.register(user)
+        self.assertEqual(event.number_of_registrations, 0)
+        self.assertEqual(event.waiting_registrations.count(), 1)
+
+    def test_not_bumped_if_three_penalties(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        users = get_dummy_users(5)
+        abakus_users = users[:5]
+        waiting_users = users[3:5]
+
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users:
+            event.register(user=user)
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+
+        Penalty.objects.create(user=waiting_users[0], reason='test', weight=3)
+        event.unregister(users[0])
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
+
+    def test_not_bumped_if_three_penalties_post_merge(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        users = get_dummy_users(7)
+        abakus_users = users[:5]
+        webkom_users = users[5:7]
+        waiting_users = users[3:5]
+
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in webkom_users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+        for user in users:
+            event.register(user=user)
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+
+        event.merge_time = timezone.now() - timedelta(hours=24)
+        event.save()
+        Penalty.objects.create(user=waiting_users[0], reason='test', weight=3)
+
+        event.unregister(webkom_users[0])
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
+
+    def test_bumped_if_penalties_expire_while_waiting(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        users = get_dummy_users(5)
+        penalty_one = Penalty.objects.create(user=users[0], reason='test', weight=1)
+        Penalty.objects.create(user=users[0], reason='test', weight=2)
+        abakus_users = users[:5]
+        waiting_users = [users[0], users[4]]
+
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users:
+            event.register(user=user)
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+
+        penalty_one.created_at = timezone.now() - timedelta(days=20)
+        penalty_one.save()
+        event.unregister(users[1])
+
+        self.assertIsNotNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
 
 class AdminRegistrationTestCase(TestCase):
