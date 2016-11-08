@@ -69,26 +69,10 @@ class EventViewSet(viewsets.ModelViewSet):
             registration.charge_id = response.id
             registration.save()
             return Response(data=response, status=status.HTTP_200_OK)
-        except stripe.error.RateLimitError:
-            # Too many requests made to the API too quickly
-            pass
         except stripe.error.CardError:
-            raise ValidationError("Card declined")
-        except stripe.error.AuthenticationError:
-            # Authentication with Stripe's API failed
-            # (maybe you changed API keys recently)
-            pass
-        except stripe.error.APIConnectionError:
-            # Network communication with Stripe failed
-            pass
+            raise ValidationError({'error': 'Card declined'})
         except stripe.error.InvalidRequestError:
-            raise ValidationError("Invalid request")
-        except stripe.error.StripeError:
-            # Display a very generic error to the user, and maybe send
-            # yourself an email
-            pass
-        except Exception:
-            raise APIException()
+            raise ValidationError({'error': 'Invalid request'})
 
 
 class PoolViewSet(viewsets.ModelViewSet):
