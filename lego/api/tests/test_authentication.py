@@ -2,7 +2,6 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.users.models import User
-from lego.apps.users.serializers import DetailedUserSerializer
 
 
 class JSONWebTokenTestCase(APITestCase):
@@ -16,8 +15,24 @@ class JSONWebTokenTestCase(APITestCase):
         }
 
     def check_user(self, user):
-        for field in DetailedUserSerializer.Meta.fields:
-            self.assertEqual(getattr(self.user, field), user[field])
+
+        # Pulled from DetailedUserSerializer
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'full_name',
+            'email',
+            'is_staff',
+            'is_active',
+            'penalties'
+        )
+        for field in fields:
+            if field == 'penalties':
+                self.assertEqual(len(self.user.penalties.valid()), len(user['penalties']))
+            else:
+                self.assertEqual(getattr(self.user, field), user[field])
 
     def test_authenticate(self):
         response = self.client.post(reverse('jwt:obtain_jwt_token'), self.user_data)
