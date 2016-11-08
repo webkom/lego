@@ -1,7 +1,5 @@
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
 from django.db import models
@@ -153,7 +151,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     def natural_key(self):
         return self.username,
 
-    def get_penalties(self):
+    def number_of_penalties(self):
         # Returns the total penalty weight for this user
         count = Penalty.objects.valid().filter(user=self)\
             .aggregate(models.Sum('weight'))['weight__sum']
@@ -196,10 +194,7 @@ class Penalty(BasisModel):
     user = models.ForeignKey(User, related_name='penalties')
     reason = models.CharField(max_length=1000)
     weight = models.IntegerField(default=1)
-
-    object = GenericForeignKey('content_type', 'object_id')
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    source_event = models.ForeignKey('events.Event', related_name='penalties')
 
     objects = UserPenaltyManager()
 
