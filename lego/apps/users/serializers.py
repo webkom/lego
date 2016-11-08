@@ -3,10 +3,9 @@ from rest_framework import serializers
 from lego.apps.users.fields import AbakusGroupListField
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
-from lego.utils.serializers import BasisModelSerializer
 
 
-class PenaltySerializer(BasisModelSerializer):
+class PenaltySerializer(serializers.ModelSerializer):
     class Meta:
         model = Penalty
         fields = (

@@ -55,3 +55,11 @@ class AbakusGroupPermissions(AbakusPermission):
             return is_owner or super().has_object_permission(request, view, obj)
 
         return super().has_object_permission(request, view, obj)
+
+
+class PenaltyPermissions(AbakusPermission):
+
+    permission_map = {
+        'create': [],
+        'destroy': []
+    }

@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
@@ -31,7 +30,6 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
 
-    penalties = GenericRelation(Penalty)
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
     heed_penalties = models.BooleanField(default=True)
@@ -202,7 +200,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                     and pool.unregistration_deadline \
                     and pool.unregistration_deadline < timezone.now():
                 Penalty.objects.create(user=user, reason='Unregistering from event too late',
-                                       weight=1, object=self)
+                                       weight=1, source_object=self)
             self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
