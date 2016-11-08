@@ -84,7 +84,9 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         :param user: The user that will be registered to the waiting list.
         :return: A registration for the waiting list, with `pool=null`
         """
-        return self.registrations.get_or_create(event=self, user=user)[0]
+        return self.registrations.update_or_create(event=self, user=user,
+                                                   defaults={'pool': None,
+                                                             'unregistration_date': None})[0]
 
     def pop_from_waiting_list(self, to_pool=None):
         """
@@ -166,9 +168,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 if self.is_full or penalties == 3:
                     return self.add_to_waiting_list(user=user)
 
-                return self.registrations.update_or_create(event=self, user=user,
-                                                           defaults={'pool': possible_pools[0],
-                                                                     'unregistration_date': None})[0]
+                return self.registrations.update_or_create(
+                    event=self,
+                    user=user,
+                    defaults={'pool': possible_pools[0], 'unregistration_date': None})[0]
 
         # Calculates which pools that are full or open for registration based on capacity
         full_pools, open_pools = self.calculate_full_pools(possible_pools)
@@ -178,9 +181,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
         with cache.lock(self.id):
             if len(open_pools) == 1:
-                return self.registrations.update_or_create(event=self, user=user,
-                                                           defaults={'pool': open_pools[0],
-                                                                     'unregistration_date': None})[0]
+                return self.registrations.update_or_create(
+                    event=self,
+                    user=user,
+                    defaults={'pool': open_pools[0], 'unregistration_date': None})[0]
 
             else:
                 # Returns a list of the pool(s) with the least amount of potential members
@@ -191,9 +195,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 else:
                     chosen_pool = self.select_highest_capacity(exclusive_pools)
 
-                return self.registrations.update_or_create(event=self, user=user,
-                                                           defaults={'pool': chosen_pool,
-                                                                     'unregistration_date': None})[0]
+                return self.registrations.update_or_create(
+                    event=self,
+                    user=user,
+                    defaults={'pool': chosen_pool, 'unregistration_date': None})[0]
 
     def unregister(self, user):
         """
@@ -255,7 +260,6 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                     if self.can_register(top.user, pool):
                         top.pool = pool
                         break
-            top.unregistration_date = None
             top.save()
 
     def is_activated(self, pool):
