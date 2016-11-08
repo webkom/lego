@@ -91,14 +91,14 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         if to_pool:
             permission_groups = to_pool.permission_groups.all()
             for registration in self.waiting_registrations:
-                if self.heed_penalties and registration.user.get_penalties() < 3:
+                if self.heed_penalties and registration.user.number_of_penalties() < 3:
                     for group in registration.user.all_groups:
                         if group in permission_groups:
                             return registration
 
         if self.heed_penalties:
             for registration in self.waiting_registrations:
-                if registration.user.get_penalties() < 3:
+                if registration.user.number_of_penalties() < 3:
                     return registration
 
         return self.waiting_registrations.first()
@@ -110,10 +110,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         reg_time = min(pool.activation_date for pool in pools)
         if penalties and self.heed_penalties:
             if penalties == 2:
-                return (reg_time + timedelta(hours=12), '2 penalties')
+                return reg_time + timedelta(hours=12)
             if penalties == 1:
-                return (reg_time + timedelta(hours=3), '1 penalty')
-        return (reg_time, None)
+                return reg_time + timedelta(hours=3)
+        return reg_time
 
     def get_possible_pools(self, user, future=False):
         return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
@@ -146,13 +146,12 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         """
         penalties = None
         if self.heed_penalties:
-            penalties = user.get_penalties()
+            penalties = user.number_of_penalties()
         possible_pools = self.get_possible_pools(user)
         if not possible_pools:
             raise ValueError('No available pools')
-        earliest_time, reason = self.get_earliest_registration_time(user, possible_pools, penalties)
-        if earliest_time > timezone.now():
-            raise ValueError(reason or 'Not open yet')
+        if self.get_earliest_registration_time(user, possible_pools, penalties) > timezone.now():
+            raise ValueError('Not open yet')
 
         # If the event is merged or has only one pool we can skip a lot of logic
         if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
@@ -199,7 +198,9 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         registration.unregistration_date = timezone.now()
         registration.save()
         if pool:
-            if pool.unregistration_deadline and pool.unregistration_deadline < timezone.now():
+            if self.heed_penalties \
+                    and pool.unregistration_deadline \
+                    and pool.unregistration_deadline < timezone.now():
                 Penalty.objects.create(user=user, reason='Unregistering from event too late',
                                        weight=1, object=self)
             self.check_for_bump_or_rebalance(pool)
