@@ -709,11 +709,8 @@ class RegistrationTestCase(TestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(user)
 
-        earliest_registration, reason = event.get_earliest_registration_time(user,
-                                                                             [webkom_pool,
-                                                                              abakus_pool])
-        self.assertEqual(earliest_registration, current_time-timedelta(hours=1))
-        self.assertIsNone(reason)
+        earliest_reg = event.get_earliest_registration_time(user, [webkom_pool, abakus_pool])
+        self.assertEqual(earliest_reg, current_time-timedelta(hours=1))
 
     def test_get_earliest_registration_time_ignore_penalties(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -727,14 +724,11 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=1)
-        penalties = user.get_penalties()
+        Penalty.objects.create(user=user, reason='test', weight=1, source_event=event)
+        penalties = user.number_of_penalties()
 
-        earliest_registration, reason = event.get_earliest_registration_time(user,
-                                                                             [webkom_pool],
-                                                                             penalties)
-        self.assertEqual(earliest_registration, current_time)
-        self.assertIsNone(reason)
+        earliest_reg = event.get_earliest_registration_time(user, [webkom_pool], penalties)
+        self.assertEqual(earliest_reg, current_time)
 
     def test_get_earliest_registration_time_one_penalty(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -746,14 +740,11 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=1)
-        penalties = user.get_penalties()
+        Penalty.objects.create(user=user, reason='test', weight=1, source_event=event)
+        penalties = user.number_of_penalties()
 
-        earliest_registration, reason = event.get_earliest_registration_time(user,
-                                                                             [webkom_pool],
-                                                                             penalties)
-        self.assertEqual(earliest_registration, current_time + timedelta(hours=3))
-        self.assertEqual(reason, '1 penalty')
+        earliest_reg = event.get_earliest_registration_time(user, [webkom_pool], penalties)
+        self.assertEqual(earliest_reg, current_time + timedelta(hours=3))
 
     def test_get_earliest_registration_time_two_penalties(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -765,14 +756,11 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=2)
-        penalties = user.get_penalties()
+        Penalty.objects.create(user=user, reason='test', weight=2, source_event=event)
+        penalties = user.number_of_penalties()
 
-        earliest_registration, reason = event.get_earliest_registration_time(user,
-                                                                             [webkom_pool],
-                                                                             penalties)
-        self.assertEqual(earliest_registration, current_time + timedelta(hours=12))
-        self.assertEqual(reason, '2 penalties')
+        earliest_reg = event.get_earliest_registration_time(user, [webkom_pool], penalties)
+        self.assertEqual(earliest_reg, current_time + timedelta(hours=12))
 
     def test_cant_register_with_one_penalty_before_delay(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -784,7 +772,10 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=1)
+        Penalty.objects.create(user=user, reason='test', weight=1, source_event=event)
+
+        with self.assertRaises(ValueError):
+            event.register(user)
 
     def test_can_register_with_one_penalty_after_delay(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -796,7 +787,7 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=1)
+        Penalty.objects.create(user=user, reason='test', weight=1, source_event=event)
 
         event.register(user)
         self.assertEqual(event.number_of_registrations, 1)
@@ -811,7 +802,7 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=2)
+        Penalty.objects.create(user=user, reason='test', weight=2, source_event=event)
 
         with self.assertRaises(ValueError):
             event.register(user)
@@ -826,7 +817,7 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=2)
+        Penalty.objects.create(user=user, reason='test', weight=2, source_event=event)
 
         event.register(user)
         self.assertEqual(event.number_of_registrations, 1)
@@ -836,7 +827,7 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=3)
+        Penalty.objects.create(user=user, reason='test', weight=3, source_event=event)
 
         event.register(user)
         self.assertEqual(event.number_of_registrations, 0)
@@ -849,7 +840,7 @@ class RegistrationTestCase(TestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
-        Penalty.objects.create(user=user, reason='test', weight=3)
+        Penalty.objects.create(user=user, reason='test', weight=3, source_event=event)
 
         event.register(user)
         self.assertEqual(event.number_of_registrations, 0)
@@ -870,7 +861,7 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
-        Penalty.objects.create(user=waiting_users[0], reason='test', weight=3)
+        Penalty.objects.create(user=waiting_users[0], reason='test', weight=3, source_event=event)
         event.unregister(users[0])
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
@@ -896,7 +887,7 @@ class RegistrationTestCase(TestCase):
 
         event.merge_time = timezone.now() - timedelta(hours=24)
         event.save()
-        Penalty.objects.create(user=waiting_users[0], reason='test', weight=3)
+        Penalty.objects.create(user=waiting_users[0], reason='test', weight=3, source_event=event)
 
         event.unregister(webkom_users[0])
 
@@ -907,8 +898,9 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(5)
-        penalty_one = Penalty.objects.create(user=users[0], reason='test', weight=1)
-        Penalty.objects.create(user=users[0], reason='test', weight=2)
+        penalty_one = Penalty.objects.create(user=users[0], reason='test',
+                                             weight=1, source_event=event)
+        Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
         abakus_users = users[:5]
         waiting_users = [users[0], users[4]]
 

@@ -3,21 +3,24 @@ from rest_framework import serializers
 from lego.apps.users.fields import AbakusGroupListField
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
-from lego.utils.serializers import BasisModelSerializer, GenericRelationField
+from lego.utils.serializers import BasisModelSerializer
 
 
 class PenaltySerializer(BasisModelSerializer):
-    source = GenericRelationField(source=object)
-
     class Meta:
         model = Penalty
         fields = (
-            'id', 'user', 'reason', 'weight', 'source'
+            'id', 'user', 'reason', 'weight', 'source_event'
         )
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
-    active_penalties = PenaltySerializer(many=True, read_only=True)
+    penalties = serializers.SerializerMethodField('get_valid_penalties')
+
+    def get_valid_penalties(self, user):
+        qs = Penalty.objects.valid().filter(user=user)
+        serializer = PenaltySerializer(instance=qs, many=True)
+        return serializer.data
 
     class Meta:
         model = User
@@ -30,7 +33,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'email',
             'is_staff',
             'is_active',
-            'active_penalties'
+            'penalties'
         )
 
 
@@ -63,6 +66,12 @@ class UserSerializer(DetailedUserSerializer):
 
 class MeSerializer(serializers.ModelSerializer):
     committees = AbakusGroupListField()
+    penalties = serializers.SerializerMethodField('get_valid_penalties')
+
+    def get_valid_penalties(self, user):
+        qs = Penalty.objects.valid().filter(user=user)
+        serializer = PenaltySerializer(instance=qs, many=True)
+        return serializer.data
 
     class Meta:
         model = User
@@ -77,7 +86,8 @@ class MeSerializer(serializers.ModelSerializer):
             'is_active',
             'committees',
             'is_abakus_member',
-            'is_abakom_member'
+            'is_abakom_member',
+            'penalties'
         )
 
 
