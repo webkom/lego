@@ -19,12 +19,12 @@ class EventRegister(celery_app.Task):
 class EventUnregister(celery_app.Task):
 
     @classmethod
-    def async_bump(cls, event, pool):
+    def async_unregister(cls, event_id, user_id):
         task = cls()
-        task.delay(event, pool)
+        task.delay(event_id, user_id)
 
-    def run(self, event_id, pool_id):
-        from lego.apps.events.models import Event, Pool
+    def run(self, event_id, user_id):
+        from lego.apps.events.models import Event, User
         event = Event.objects.get(pk=event_id)
-        pool = Pool.objects.get(pk=pool_id)
-        event.check_for_bump_or_rebalance(pool)
+        user = User.objects.get(pk=user_id)
+        event.unregister(user)
