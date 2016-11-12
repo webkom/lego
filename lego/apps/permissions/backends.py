@@ -3,6 +3,7 @@ from django.contrib.auth.backends import ModelBackend
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import AbakusPermission
 
+
 class AbakusPermissionBackend:
     """
     This backend makes it possuble to check for keyword permissions using the standard django
@@ -91,7 +92,8 @@ class AbakusViewSetPermission:
         ignore_methods = ['filter_class']
         # Loop through all the methods for the view
         for methodname in dir(view.__class__):
-            # Ignore the method if it is in AbakusModelViewSet, ignore_methods or already exists in permissions
+            # Ignore the method if it is in AbakusModelViewSet,
+            # ignore_methods or if the method already exists in permissions
             if methodname in viewset_methods \
                     or methodname in ignore_methods\
                     or methodname in permissions:
@@ -99,7 +101,8 @@ class AbakusViewSetPermission:
             attr = getattr(view.__class__, methodname)
             httpmethods = getattr(attr, 'bind_to_methods', None)
             detail = getattr(attr, 'detail', True)
-            # Check if the method is a detailed_route or variable is not callable (i.e. it's a not function/method)
+            # Check if the method is a detailed_route or variable is not callable
+            # (i.e. it's a not function/method)
             # Ignore it if so.
             if detail or not callable(attr):
                 continue
