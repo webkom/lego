@@ -163,8 +163,8 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
             raise ValueError('Not open yet')
 
         # If the event is merged or has only one pool we can skip a lot of logic
-        if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
-            with cache.lock(self.id):
+        with cache.lock(self.id):
+            if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
                 if self.is_full or penalties == 3:
                     return self.add_to_waiting_list(user=user)
 
@@ -173,32 +173,30 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                     user=user,
                     defaults={'pool': possible_pools[0], 'unregistration_date': None})[0]
 
-        # Calculates which pools that are full or open for registration based on capacity
-        full_pools, open_pools = self.calculate_full_pools(possible_pools)
+            # Calculates which pools that are full or open for registration based on capacity
+            full_pools, open_pools = self.calculate_full_pools(possible_pools)
 
-        if not open_pools or penalties == 3:
-            return self.add_to_waiting_list(user=user)
+            if not open_pools or penalties == 3:
+                return self.add_to_waiting_list(user=user)
 
-        with cache.lock(self.id):
             if len(open_pools) == 1:
                 return self.registrations.update_or_create(
                     event=self,
                     user=user,
                     defaults={'pool': open_pools[0], 'unregistration_date': None})[0]
 
+            # Returns a list of the pool(s) with the least amount of potential members
+            exclusive_pools = self.find_most_exclusive_pools(open_pools)
+
+            if len(exclusive_pools) == 1:
+                chosen_pool = exclusive_pools[0]
             else:
-                # Returns a list of the pool(s) with the least amount of potential members
-                exclusive_pools = self.find_most_exclusive_pools(open_pools)
+                chosen_pool = self.select_highest_capacity(exclusive_pools)
 
-                if len(exclusive_pools) == 1:
-                    chosen_pool = exclusive_pools[0]
-                else:
-                    chosen_pool = self.select_highest_capacity(exclusive_pools)
-
-                return self.registrations.update_or_create(
-                    event=self,
-                    user=user,
-                    defaults={'pool': chosen_pool, 'unregistration_date': None})[0]
+            return self.registrations.update_or_create(
+                event=self,
+                user=user,
+                defaults={'pool': chosen_pool, 'unregistration_date': None})[0]
 
     def unregister(self, user):
         """
