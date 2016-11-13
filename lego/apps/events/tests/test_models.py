@@ -99,6 +99,10 @@ class RegistrationTestCase(TestCase):
         Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
         Event.objects.all().update(heed_penalties=True)
 
+    def tearDown(self):
+        from django_redis import get_redis_connection
+        get_redis_connection("default").flushall()
+
     def test_can_register_single_pool(self):
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
