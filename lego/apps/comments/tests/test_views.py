@@ -29,10 +29,12 @@ class CreateCommentsAPITestCase(APITestCase):
         self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
 
     def test_without_auth(self):
+        content_type = ContentType.objects.get_for_model(Article)
         post_data = {
             'text': 'Hey',
-            'comment_target': '{0}-{1}'.format(
-                ContentType.objects.get_for_model(Article).app_label,
+            'comment_target': '{0}.{1}-{2}'.format(
+                content_type.app_label,
+                content_type.model,
                 Article.objects.first().pk
             )
         }

@@ -96,3 +96,25 @@
       - /sudo/admin/quotes/create/
       - /sudo/admin/quotes/update/
       - /sudo/admin/quotes/destroy/
+
+- model: users.AbakusGroup
+  pk: 8
+  fields:
+    name: ReactionTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 107
+    permissions:
+      - /sudo/admin/reactions/create/
+
+- model: users.AbakusGroup
+  pk: 9
+  fields:
+    name: ReactionAdminTest
+    level: 0
+    lft: 1
+    rght: 2
+    tree_id: 108
+    permissions:
+      - /sudo/admin/reactions/
