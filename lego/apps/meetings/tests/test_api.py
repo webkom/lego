@@ -55,6 +55,7 @@ class RetrieveMeetingTestCase(APITestCase):
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)
+        self.meeting2 = Meeting.objects.get(id=2)
         self.abakommer = User.objects.get(username='abakommer')
         AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
         self.abakule = User.objects.get(username='test1')
@@ -89,6 +90,8 @@ class RetrieveMeetingTestCase(APITestCase):
         self.meeting.invite_user(self.abakommer)
         self.meeting.invite_user(self.abakule)[0].accept()
         self.meeting.invite_user(self.pleb)[0].accept()
+
+        self.meeting2.invite_user(self.pleb)
 
         for user in [self.abakule, self.abakommer, self.pleb]:
             self.client.force_authenticate(user)

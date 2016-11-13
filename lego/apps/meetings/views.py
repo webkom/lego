@@ -41,3 +41,6 @@ class MeetingInvitationViewSet(viewsets.ModelViewSet):
         if self.action in ('update', 'partial_update'):
             return MeetingInvitationUpdateSerializer
         return MeetingInvitationSerializer
+
+    def get_queryset(self):
+        return MeetingInvitation.objects.filter(meeting=self.kwargs['meeting_pk'])
