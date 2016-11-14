@@ -1,0 +1,45 @@
+pipeline:
+  tests:
+    image: python:3.5
+    when:
+      event: push
+    environment:
+      - CASS_DRIVER_NO_CYTHON=1
+      - CASS_DRIVER_NO_EXTENSIONS=1
+    commands:
+      - pip install tox
+      - pip install -r requirements/test.txt
+      - make ci_settings
+
+      - python manage.py migrate
+      - python manage.py missing_migrations
+
+      - tox -e tests
+      - tox -e isort
+      - tox -e flake8
+      - tox -e coverage
+      - tox -e docs
+
+  docker:
+    image: plugins/docker
+    when:
+      branch: master
+      event: push
+    registry: https://registry.abakus.no
+    repo: registry.abakus.no/webkom/lego
+    tag: latest
+
+  slack:
+    image: plugins/slack
+    when:
+      status: [ success, failure ]
+      event: push
+    channel: lego
+
+services:
+  database:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_USER=lego
+  cache:
+    image: redis
