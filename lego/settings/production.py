@@ -59,7 +59,6 @@ STREAM_REDIS_CONFIG = {
     }
 }
 
-# Doppins
 CHANNEL_LAYERS['default']['CONFIG'] = {
     'hosts': [env('CHANNELS_REDIS_URL')]
 }
