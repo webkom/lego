@@ -3,9 +3,6 @@ from channels import Group
 from lego.apps.events.websockets import find_event_groups
 from lego.apps.websockets.auth import jwt_create_channel_session, jwt_retrieve_channel_session
 
-# TODO: Find this in all apps, automagically:
-# find_methods contain functions used to detect what
-# channels groups a user might belong to:
 
 find_methods = [
     find_event_groups
