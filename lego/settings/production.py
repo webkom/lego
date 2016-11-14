@@ -3,7 +3,7 @@ import os
 import environ
 import raven
 
-from lego.settings import BASE_DIR, INSTALLED_APPS, MIDDLEWARE_CLASSES
+from lego.settings import BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES
 
 from .secure import *  # noqa
 
@@ -56,7 +56,11 @@ STREAM_REDIS_CONFIG = {
         'port': env('REDIS_STREAM_PORT'),
         'db': env('REDIS_STREAM_DB'),
         'password': env('REDIS_STREAM_PASSWORD')
-    },
+    }
+}
+
+CHANNEL_LAYERS['default']['CONFIG'] = {
+    'hosts': [env('CHANNELS_REDIS_URL')]
 }
 
 # Statsd
