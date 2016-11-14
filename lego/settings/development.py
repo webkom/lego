@@ -52,7 +52,7 @@ DEBUG_TOOLBAR_PANELS = [
 
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += ['rest_framework.renderers.BrowsableAPIRenderer']
 
-BROKER_URL = 'redis://127.0.0.1'
+CELERY_BROKER_URL = 'redis://127.0.0.1'
 
 STREAM_REDIS_CONFIG = {
     'default': {
