@@ -56,4 +56,5 @@ class NotificationFeedManager:
             )
         self.metrics.on_activity_removed()
 
+
 notification_feed_manager = NotificationFeedManager()

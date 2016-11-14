@@ -114,4 +114,5 @@ class ElasticSearchBackend:
             } for hit in hits]
         return None
 
+
 backend = ElasticSearchBackend()

@@ -19,6 +19,7 @@ def version_redirect(request, path):
 
     return HttpResponseRedirect(new_path)
 
+
 urlpatterns = [
     url(r'^v1/', include(v1.urls, namespace='v1')),
 
