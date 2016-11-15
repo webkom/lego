@@ -58,11 +58,12 @@ class AbakusPermission(permissions.BasePermission):
         if getattr(view, '_ignore_model_permissions', False):
             return True
 
-        required_permissions, requires_authentication, authenticated, user = self.__get_pre_permissions(
-            action=view.action,
-            model=view.get_queryset().model,
-            user=request.user
-        )
+        required_permissions, requires_authentication, authenticated, user = \
+            self.__get_pre_permissions(
+                action=view.action,
+                model=view.get_queryset().model,
+                user=request.user
+            )
 
         # Check explicit authentication requirements (authentication_map)
         if not requires_authentication:
@@ -86,11 +87,12 @@ class AbakusPermission(permissions.BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        required_permissions, requires_authentication, authenticated, user = self.__get_pre_permissions(
-            action=view.action,
-            model=view.get_queryset().model,
-            user=request.user
-        )
+        required_permissions, requires_authentication, authenticated, user = \
+            self.__get_pre_permissions(
+                action=view.action,
+                model=view.get_queryset().model,
+                user=request.user
+            )
 
         # Check explicit authentication requirements (authentication_map)
         if not requires_authentication:
