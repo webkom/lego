@@ -12,7 +12,9 @@ class ElasticSearchBackend:
     """
 
     def __init__(self):
-        self.connection = Elasticsearch(hosts=settings.ELASTICSEARCH, ca_certs=certifi.where())
+        hosts = getattr(settings, 'ELASTICSEARCH', None)
+        if hosts:
+            self.connection = Elasticsearch(hosts=settings.ELASTICSEARCH, ca_certs=certifi.where())
 
     def _bulk(self, actions):
         """

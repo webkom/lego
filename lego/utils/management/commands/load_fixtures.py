@@ -12,7 +12,7 @@ class Command(BaseCommand):
         call_command('loaddata', 'lego/apps/users/fixtures/initial_users.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_memberships.yaml')
 
-        if settings.DEVELOPMENT:
+        if getattr(settings, 'DEVELOPMENT', None):
             self.stdout.write('Loading development fixtures:')
             call_command('loaddata', 'lego/apps/users/fixtures/development_users.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_events.yaml')
