@@ -62,6 +62,3 @@ STREAM_REDIS_CONFIG = {
 CHANNEL_LAYERS['default']['CONFIG'] = {
     'hosts': [env('CHANNELS_REDIS_URL')]
 }
-
-# Statsd
-STATSD_CLIENT = 'django_statsd.clients.normal'

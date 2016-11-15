@@ -62,8 +62,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 MIDDLEWARE_CLASSES = [
-    'django_statsd.middleware.GraphiteRequestTimingMiddleware',
-    'django_statsd.middleware.GraphiteMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -135,14 +133,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
 MEDIA_URL = '/media/'
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-STATSD_PATCHES = [
-    'django_statsd.patches.db',
-    'django_statsd.patches.cache',
-]
-STATSD_MODEL_SIGNALS = True
-STATSD_CELERY_SIGNALS = True
-STATSD_PREFIX = 'lego'
 
 CHANNEL_LAYERS = {
     'default': {
