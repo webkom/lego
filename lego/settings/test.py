@@ -37,11 +37,6 @@ STREAM_REDIS_CONFIG = {
 # We don't care about pagination in the tests
 REST_FRAMEWORK['DEFAULT_PAGINATION_CLASS'] = None
 
-STATSD_CLIENT = 'django_statsd.clients.null'
-STATSD_PATCHES = []
-STATSD_MODEL_SIGNALS = False
-STATSD_CELERY_SIGNALS = False
-
 ELASTICSEARCH = [
     {'host': 'localhost'},
 ]
