@@ -9,7 +9,6 @@ raven==5.31.0
 redis==2.10.5
 hiredis==0.2.0
 stream-framework==1.4.0
-git+https://github.com/django-statsd/django-statsd.git#67c8077
 certifi==2016.9.26
 elasticsearch==2.4.0
 asgi_redis==0.14.1
