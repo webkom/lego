@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import os
 
 import celery  # noqa
-from django.conf import settings  # noqa
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
 
@@ -25,23 +24,20 @@ class Celery(celery.Celery):
 
 app = celery.Celery('lego')
 
-app.config_from_object('django.conf:settings')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
 
 schedule = {}
 
 app.conf.update(
-    CELERYBEAT_SCHEDULE=schedule,
-    CELERY_RESULT_BACKEND=None,
-    CELERY_TRACK_STARTED=True,
-    CELERY_SEND_EVENTS=True,
-    CELERY_TASK_SERIALIZER='pickle',
-    CELERY_ENABLE_UTC=True,
-    CELERY_DISABLE_RATE_LIMITS=True,
-    CELERY_IGNORE_RESULT=True,
-    CELERY_ACKS_LATE=False,
-    CELERY_PREFETCH_MULTIPLIER=2,
-    CELERYD_HIJACK_ROOT_LOGGER=False,
-    CELERY_REDIRECT_STDOUTS=False,
-    CELERY_ACCEPT_CONTENT=['pickle', 'json']
+    beat_schedule=schedule,
+    result_backend=None,
+    task_track_started=True,
+    task_serializer='pickle',
+    worker_disable_rate_limits=True,
+    task_ignore_result=True,
+    task_acks_late=False,
+    worker_hijack_root_logger=False,
+    worker_redirect_stdouts=False,
+    accept_content=['pickle', 'json']
 )
