@@ -41,14 +41,6 @@ class AbakusViewSetPermission:
     """
     This class makes it possible to append a users permissions to a viewset response
     """
-    @classmethod
-    def __parse_permission_string(cls, obj, action):
-        kwargs = {
-            'app_label': obj._meta.app_label,
-            'model_name': obj._meta.model_name,
-            'action': action
-        }
-        return AbakusPermission.default_permission.format(**kwargs)
 
     @staticmethod
     def get_permissions(view, obj, user):
@@ -57,7 +49,7 @@ class AbakusViewSetPermission:
         # Return permissions regarding if the user can create objects
         if view.action == 'list':
             # Check if user has permissions to create an object in this model
-            if user.has_perm(AbakusViewSetPermission.__parse_permission_string(obj, 'create')):
+            if user.has_perm(AbakusPermission.parse_permission_string('create', obj._meta)):
                 permissions.append('create')
         elif view.action == 'retrieve':
             # Check if the object is using the object permissions model
@@ -68,11 +60,11 @@ class AbakusViewSetPermission:
             else:
                 # The object is not using the object permissions model,
                 # check keyword permissions instead
-                if user.has_perm(AbakusViewSetPermission.__parse_permission_string(obj, 'update')):
+                if user.has_perm(AbakusPermission.parse_permission_string('update', obj._meta)):
                     permissions.append('edit')
 
             # Check if user has permissions to destroy the object
-            if user.has_perm(AbakusViewSetPermission.__parse_permission_string(obj, 'destroy')):
+            if user.has_perm(AbakusPermission.parse_permission_string('destroy', obj._meta)):
                 permissions.append('delete')
 
             # Loop through all the permission classes in the ViewSet
