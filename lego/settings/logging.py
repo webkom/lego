@@ -22,7 +22,7 @@ LOGGING = {
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['sentry', 'console', 'syslog', 'statsd'],
+        'handlers': ['sentry', 'console', 'syslog'],
     },
     'formatters': {
         'verbose': {
@@ -50,11 +50,6 @@ LOGGING = {
             'class': 'logging.handlers.SysLogHandler',
             'facility': 'local7',
             'formatter': 'syslog',
-        },
-        'statsd': {
-            'level': 'CRITICAL',
-            'filters': ['skip_if_testing'],
-            'class': 'django_statsd.loggers.errors.StatsdHandler',
         },
     },
     'loggers': {
