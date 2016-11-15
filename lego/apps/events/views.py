@@ -1,7 +1,7 @@
 import stripe
 from django.db import transaction
 from rest_framework import decorators, filters, mixins, status, viewsets
-from rest_framework.exceptions import APIException, PermissionDenied, ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
@@ -65,8 +65,8 @@ class EventViewSet(viewsets.ModelViewSet):
                     'EMAIL': registration.user.email
                 }
             )
-
             registration.charge_id = response.id
+            registration.charge_status = response.status
             registration.save()
             return Response(data=response, status=status.HTTP_200_OK)
         except stripe.error.CardError:

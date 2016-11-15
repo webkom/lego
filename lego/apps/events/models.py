@@ -413,6 +413,7 @@ class Registration(BasisModel):
 
     ticket_count = models.PositiveSmallIntegerField(default=1)
     charge_id = models.CharField(null=True, max_length=50)
+    charge_status = models.CharField(null=True, max_length=50)
 
     class Meta:
         unique_together = ('user', 'event')
