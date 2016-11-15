@@ -1,4 +1,4 @@
-from .tasks import InstanceRemovalTask, InstanceUpdateTask
+from .tasks import instance_removal, instance_update
 
 
 class BaseSignalHandler:
@@ -16,7 +16,7 @@ class AsyncSignalHandler(BaseSignalHandler):
     """
 
     def on_save(self, instance):
-        InstanceUpdateTask.update_instance(instance)
+        instance_update.delay(instance)
 
     def on_delete(self, instance):
-        InstanceRemovalTask.remove_instance(instance)
+        instance_removal.delay(instance)
