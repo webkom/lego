@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
@@ -12,6 +14,7 @@ from mptt.models import MPTTModel
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
                                       UserPenaltyManager)
+from lego.settings.lego import PENALTY_DURATION, PENALTY_IGNORE_SUMMER, PENALTY_IGNORE_WINTER
 from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
@@ -201,3 +204,35 @@ class Penalty(BasisModel):
     def expires(self):
         dt = Penalty.objects.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
         return dt.days
+
+    @staticmethod
+    def penalty_offset(start_date, forwards=True):
+
+        remaining_days = PENALTY_DURATION.days
+        offset_days = 0
+        multiplier = 1 if forwards else -1
+
+        while remaining_days > 0:
+
+            date_to_check = start_date + (multiplier * timedelta(days=offset_days))
+
+            if not Penalty.ignore_date(date_to_check):
+                remaining_days -= 1
+
+            offset_days += 1
+
+        return timedelta(days=offset_days)
+
+    @staticmethod
+    def ignore_date(date):
+        summer_from, summer_to = PENALTY_IGNORE_SUMMER
+        winter_from, winter_to = PENALTY_IGNORE_WINTER
+        if summer_from \
+                < (date.month, date.day) \
+                < summer_to:
+            return True
+        elif winter_to \
+                < (date.month, date.day) \
+                < winter_from:
+            return False
+        return True
