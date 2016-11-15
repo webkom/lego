@@ -308,6 +308,10 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
 class StripePaymentTestCase(APITestCase):
+    """
+    Testing cards used:
+    https://stripe.com/docs/testing#cards
+    """
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -326,13 +330,53 @@ class StripePaymentTestCase(APITestCase):
         self.client.post(_get_registrations_list_url(self.event.id), {})
         token = stripe.Token.create(
             card={
-                "number": '4242424242424242',
-                "exp_month": 12,
-                "exp_year": 2016,
-                "cvc": '123'
+                'number': '4242424242424242',
+                'exp_month': 12,
+                'exp_year': 2016,
+                'cvc': '123'
             },
         )
         res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': token.id})
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data.get('amount'), 10000)
         self.assertEqual(res.data.get('status', None), 'succeeded')
+
+    def test_card_declined(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        self.client.post(_get_registrations_list_url(self.event.id), {})
+        token = stripe.Token.create(
+            card={
+                'number': '4000000000000002',
+                'exp_month': 12,
+                'exp_year': 2016,
+                'cvc': '123'
+            }
+        )
+        res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': token.id})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data.get('error', None), 'Card declined')
+
+    def test_card_incorrect_cvc(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        self.client.post(_get_registrations_list_url(self.event.id), {})
+        token = stripe.Token.create(
+            card={
+                'number': '4000000000000127',
+                'exp_month': 12,
+                'exp_year': 2016,
+                'cvc': '123'
+            }
+        )
+        res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': token.id})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data.get('error', None), 'Card declined')
+
+    def test_card_invalid_request(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        self.client.post(_get_registrations_list_url(self.event.id), {})
+        res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': 'invalid'})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data.get('error', None), 'Invalid request')
