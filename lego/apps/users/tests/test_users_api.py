@@ -1,7 +1,11 @@
+from datetime import timedelta
+
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.events.models import Event
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers import DetailedUserSerializer, PublicUserSerializer
 
 _test_user_data = {
@@ -239,7 +243,7 @@ class DeleteUsersAPITestCase(APITestCase):
 
 
 class RetrieveSelfTestCase(APITestCase):
-    fixtures = ['test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -249,9 +253,38 @@ class RetrieveSelfTestCase(APITestCase):
         response = self.client.get(reverse('api:v1:user-me'))
 
         self.assertEqual(response.status_code, 200)
-        for field in DetailedUserSerializer.Meta.fields:
-            self.assertEqual(getattr(self.user, field), response.data[field])
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'full_name',
+            'email',
+            'is_staff',
+            'is_active',
+            'penalties'
+        )
+        for field in fields:
+            if field == 'penalties':
+                self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
+            else:
+                self.assertEqual(getattr(self.user, field), response.data[field])
 
     def test_self_unauthed(self):
         response = self.client.get(reverse('api:v1:user-me'))
         self.assertEqual(response.status_code, 401)
+
+    def test_own_penalties_serializer(self):
+        source = Event.objects.all().first()
+        Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
+                               user=self.user, reason='test', weight=1, source_event=source)
+        Penalty.objects.create(created_at=timezone.now()-timedelta(days=19, hours=23, minutes=59),
+                               user=self.user, reason='test', weight=1, source_event=source)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse('api:v1:user-me'))
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
+        self.assertEqual(len(response.data['penalties']), 1)
+        self.assertEqual(len(response.data['penalties'][0]), 5)

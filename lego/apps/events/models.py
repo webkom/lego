@@ -1,14 +1,15 @@
+from datetime import timedelta
+
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.content.models import SlugContent
 from lego.apps.permissions.models import ObjectPermissionsModel
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 
 from .constants import EVENT_TYPES
-from .exceptions import NoAvailablePools
 
 
 class Event(SlugContent, BasisModel, ObjectPermissionsModel):
@@ -29,11 +30,15 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
 
+    penalty_weight = models.PositiveIntegerField(default=1)
+    penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
+    heed_penalties = models.BooleanField(default=True)
+
     def __str__(self):
         return self.title
 
-    def can_register(self, user, pool):
-        if not self.is_activated(pool):
+    def can_register(self, user, pool, future=False):
+        if not self.is_activated(pool) and not future:
             return False
 
         if self.is_registered(user):
@@ -77,19 +82,39 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         Pops the first user in the waiting list that can join `to_pool`.
         If `from_pool=None`, pops the first user in the waiting list overall.
 
-        :param from_pool: The pool we are bumping to. If post-merge, there is no pool.
+        :param to_pool: The pool we are bumping to. If post-merge, there is no pool.
         :return: The registration that is first in line for said pool.
         """
+
         if to_pool:
             permission_groups = to_pool.permission_groups.all()
             for registration in self.waiting_registrations:
-                for group in registration.user.all_groups:
-                    if group in permission_groups:
-                        return registration
+                if self.heed_penalties and registration.user.number_of_penalties() < 3:
+                    for group in registration.user.all_groups:
+                        if group in permission_groups:
+                            return registration
+
+        if self.heed_penalties:
+            for registration in self.waiting_registrations:
+                if registration.user.number_of_penalties() < 3:
+                    return registration
+
         return self.waiting_registrations.first()
 
-    def get_possible_pools(self, user):
-        return [pool for pool in self.pools.all() if self.can_register(user, pool)]
+    def get_earliest_registration_time(self, user, pools=None, penalties=None):
+
+        if not pools:
+            pools = self.get_possible_pools(user, future=True)
+        reg_time = min(pool.activation_date for pool in pools)
+        if penalties and self.heed_penalties:
+            if penalties == 2:
+                return reg_time + timedelta(hours=12)
+            if penalties == 1:
+                return reg_time + timedelta(hours=3)
+        return reg_time
+
+    def get_possible_pools(self, user, future=False):
+        return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
 
     def register(self, user):
         """
@@ -117,14 +142,18 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         :param user: The user who is trying to register
         :return: The registration (in the chosen pool)
         """
-
+        penalties = None
+        if self.heed_penalties:
+            penalties = user.number_of_penalties()
         possible_pools = self.get_possible_pools(user)
         if not possible_pools:
-            raise NoAvailablePools()
+            raise ValueError('No available pools')
+        if self.get_earliest_registration_time(user, possible_pools, penalties) > timezone.now():
+            raise ValueError('Not open yet')
 
         # If the event is merged or has only one pool we can skip a lot of logic
         if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
-            if self.is_full:
+            if self.is_full or penalties == 3:
                 return self.add_to_waiting_list(user=user)
 
             return self.registrations.update_or_create(event=self, user=user,
@@ -134,7 +163,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         # Calculates which pools that are full or open for registration based on capacity
         full_pools, open_pools = self.calculate_full_pools(possible_pools)
 
-        if not open_pools:
+        if not open_pools or penalties == 3:
             return self.add_to_waiting_list(user=user)
 
         elif len(open_pools) == 1:
@@ -167,6 +196,11 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         registration.unregistration_date = timezone.now()
         registration.save()
         if pool:
+            if self.heed_penalties \
+                    and pool.unregistration_deadline \
+                    and pool.unregistration_deadline < timezone.now():
+                Penalty.objects.create(user=user, reason='Unregistering from event too late',
+                                       weight=1, source_object=self)
             self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
@@ -327,6 +361,7 @@ class Pool(BasisModel):
     capacity = models.PositiveSmallIntegerField(default=0)
     event = models.ForeignKey(Event, related_name='pools')
     activation_date = models.DateTimeField()
+    unregistration_deadline = models.DateTimeField(null=True)
     permission_groups = models.ManyToManyField(AbakusGroup)
 
     def delete(self, *args, **kwargs):

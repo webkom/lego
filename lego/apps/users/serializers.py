@@ -1,11 +1,26 @@
 from rest_framework import serializers
 
 from lego.apps.users.fields import AbakusGroupListField
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
 
 
+class PenaltySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Penalty
+        fields = (
+            'id', 'user', 'reason', 'weight', 'source_event'
+        )
+
+
 class DetailedUserSerializer(serializers.ModelSerializer):
+    penalties = serializers.SerializerMethodField('get_valid_penalties')
+
+    def get_valid_penalties(self, user):
+        qs = Penalty.objects.valid().filter(user=user)
+        serializer = PenaltySerializer(instance=qs, many=True)
+        return serializer.data
+
     class Meta:
         model = User
         fields = (
@@ -17,6 +32,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'email',
             'is_staff',
             'is_active',
+            'penalties'
         )
 
 
@@ -49,6 +65,12 @@ class UserSerializer(DetailedUserSerializer):
 
 class MeSerializer(serializers.ModelSerializer):
     committees = AbakusGroupListField()
+    penalties = serializers.SerializerMethodField('get_valid_penalties')
+
+    def get_valid_penalties(self, user):
+        qs = Penalty.objects.valid().filter(user=user)
+        serializer = PenaltySerializer(instance=qs, many=True)
+        return serializer.data
 
     class Meta:
         model = User
@@ -63,7 +85,8 @@ class MeSerializer(serializers.ModelSerializer):
             'is_active',
             'committees',
             'is_abakus_member',
-            'is_abakom_member'
+            'is_abakom_member',
+            'penalties'
         )
 
 

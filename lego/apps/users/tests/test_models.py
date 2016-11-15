@@ -1,6 +1,10 @@
-from django.test import TestCase
+from datetime import timedelta
 
-from lego.apps.users.models import AbakusGroup, Membership, User
+from django.test import TestCase
+from django.utils import timezone
+
+from lego.apps.events.models import Event
+from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 
 
 class AbakusGroupTestCase(TestCase):
@@ -162,3 +166,40 @@ class MembershipTestCase(TestCase):
         found_membership = Membership.objects.get_by_natural_key(self.test_user.username,
                                                                  self.test_committee.name)
         self.assertEqual(self.test_membership, found_membership)
+
+
+class PenaltyTestCase(TestCase):
+    fixtures = ['test_users.yaml', 'initial_abakus_groups.yaml', 'test_events.yaml']
+
+    def setUp(self):
+        self.test_user = User.objects.get(pk=1)
+        self.source = Event.objects.all().first()
+
+    def test_create_penalty(self):
+        penalty = Penalty.objects.create(user=self.test_user, reason='test',
+                                         weight=1, source_event=self.source)
+
+        self.assertEqual(self.test_user.number_of_penalties(), 1)
+        self.assertEqual(self.test_user, penalty.user)
+        self.assertEqual('test', penalty.reason)
+        self.assertEqual(1, penalty.weight)
+        self.assertEqual(self.source, penalty.source_event)
+        self.assertEqual(self.source.id, penalty.source_event.id)
+
+    def test_count_weights(self):
+        weights = [1, 2]
+        for weight in weights:
+            Penalty.objects.create(user=self.test_user, reason='test',
+                                   weight=weight, source_event=self.source)
+
+        self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
+
+    def test_only_count_active_penalties(self):
+
+        Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
+                               user=self.test_user, reason='test', weight=1,
+                               source_event=self.source)
+        Penalty.objects.create(created_at=timezone.now()-timedelta(days=19, hours=23, minutes=59),
+                               user=self.test_user, reason='test', weight=1,
+                               source_event=self.source)
+        self.assertEqual(self.test_user.number_of_penalties(), 1)
