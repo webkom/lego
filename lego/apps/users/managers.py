@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from lego.utils.managers import PersistentModelManager
 
 
@@ -15,3 +17,12 @@ class MembershipManager(PersistentModelManager):
     def get_by_natural_key(self, username, abakus_group_name):
         return self.get(user__username__iexact=username.lower(),
                         abakus_group__name__iexact=abakus_group_name.lower())
+
+
+class UserPenaltyManager(PersistentModelManager):
+
+    def valid(self):
+        from lego.apps.users.models import Penalty
+        offset = Penalty.penalty_offset(timezone.now(), False)
+        return super(UserPenaltyManager, self).get_queryset().\
+            filter(created_at__gt=timezone.now() - offset)

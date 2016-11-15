@@ -199,7 +199,7 @@ class CreateRegistrationsTestCase(APITestCase):
     def test_register_no_pools(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 400)
+        self.assertEqual(registration_response.status_code, 403)
 
     def test_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
