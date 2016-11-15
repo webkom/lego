@@ -6,20 +6,20 @@ from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
-<<<<<<< cfe421b306c738781b028c02aa41c6d0575db83d
-<<<<<<< 6fb4b2a06dd7970493203ec6e3a38b7a2b4188ce
-from lego.apps.content.models import Content
-from lego.apps.events import constants
-=======
 from lego.apps.bdb.models import Company
-=======
 from lego.apps.companies.models import Company
->>>>>>> Renamed bdb to companies
-from lego.apps.content.models import SlugContent
->>>>>>> Add new fields to Company, including a ForgeignKey in Event so Events can be associated with a company
+from lego.apps.content.models import Content, SlugContent
+from lego.apps.events import constants
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
+
+<<<<<<< cfe421b306c738781b028c02aa41c6d0575db83d
+<<<<<<< 6fb4b2a06dd7970493203ec6e3a38b7a2b4188ce
+=======
+=======
+>>>>>>> Renamed bdb to companies
+>>>>>>> Add new fields to Company, including a ForgeignKey in Event so Events can be associated with a company
 
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
