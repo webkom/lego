@@ -21,4 +21,5 @@ class Command(BaseCommand):
             call_command('loaddata', 'lego/apps/articles/fixtures/development_articles.yaml')
             call_command('loaddata', 'lego/apps/quotes/fixtures/development_quotes.yaml')
             call_command('loaddata', 'lego/apps/oauth/fixtures/development_applications.yaml')
+            call_command('loaddata', 'lego/apps/reactions/fixtures/emojione_reaction_types.yaml')
         self.stdout.write('Done!')
