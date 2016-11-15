@@ -14,6 +14,30 @@ class AbakusPermission(permissions.BasePermission):
     authentication_map = {}
     check_object_permission = False
 
+    @classmethod
+    def parse_permission_string(cls, action, model_cls):
+        kwargs = {
+            'app_label': model_cls.app_label,
+            'model_name': model_cls.model_name,
+            'action': action
+        }
+        return cls.default_permission.format(**kwargs)
+
+    def __get_pre_permissions(self, action, model, user):
+        required_permissions = self.get_required_object_permissions(
+            action,
+            model
+        )
+
+        requires_authentication = self.authentication_map.get(
+            action, self.default_require_auth
+        )
+
+        authenticated = user and user.is_authenticated()
+        user = user
+
+        return required_permissions, requires_authentication, authenticated, user
+
     def get_required_object_permissions(self, action, model_cls):
         if action == 'partial_update':
             action = 'update'
@@ -34,17 +58,11 @@ class AbakusPermission(permissions.BasePermission):
         if getattr(view, '_ignore_model_permissions', False):
             return True
 
-        required_permissions = self.get_required_object_permissions(
-            view.action,
-            view.get_queryset().model
+        required_permissions, requires_authentication, authenticated, user = self.__get_pre_permissions(
+            action=view.action,
+            model=view.get_queryset().model,
+            user=request.user
         )
-
-        requires_authentication = self.authentication_map.get(
-            view.action, self.default_require_auth
-        )
-
-        authenticated = request.user and request.user.is_authenticated()
-        user = request.user
 
         # Check explicit authentication requirements (authentication_map)
         if not requires_authentication:
@@ -68,17 +86,11 @@ class AbakusPermission(permissions.BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        required_permissions = self.get_required_object_permissions(
-            view.action,
-            view.get_queryset().model
+        required_permissions, requires_authentication, authenticated, user = self.__get_pre_permissions(
+            action=view.action,
+            model=view.get_queryset().model,
+            user=request.user
         )
-
-        requires_authentication = self.authentication_map.get(
-            view.action, self.default_require_auth
-        )
-
-        authenticated = request.user and request.user.is_authenticated()
-        user = request.user
 
         # Check explicit authentication requirements (authentication_map)
         if not requires_authentication:
