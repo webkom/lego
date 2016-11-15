@@ -10,6 +10,10 @@ def add_to_feeds(instance, action='update'):
     """
 
     Handler_cls = get_handler(instance._meta.model)
+    if Handler_cls is None:
+        # No handler registered for model
+        return
+
     handler = Handler_cls(instance, action)
 
     activity = handler.activity

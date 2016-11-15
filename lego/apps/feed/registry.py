@@ -1,5 +1,3 @@
-from lego.apps.feed.feed_handlers import BaseHandler
-
 handler_registry = {}
 
 
@@ -19,5 +17,3 @@ def get_handler(model):
         return handler_registry[model]
     except KeyError:
         pass
-
-    return BaseHandler
