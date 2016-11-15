@@ -1,7 +1,6 @@
 import os
 
 import environ
-import raven
 
 from lego.settings import BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES
 
@@ -37,7 +36,7 @@ SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 SENTRY_DSN = env('SENTRY')
 RAVEN_CONFIG = {
     'dsn': SENTRY_DSN,
-    'release': raven.fetch_git_sha(os.path.dirname(BASE_DIR)),
+    'release': env('RELEASE', default='latest')
 }
 INSTALLED_APPS += [
     'raven.contrib.django.raven_compat',
@@ -53,12 +52,17 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 STREAM_REDIS_CONFIG = {
     'default': {
         'host': env('REDIS_STREAM_HOST'),
-        'port': env('REDIS_STREAM_PORT'),
+        'port': env('REDIS_STREAM_PORT', default=6379),
         'db': env('REDIS_STREAM_DB'),
-        'password': env('REDIS_STREAM_PASSWORD')
+        'password': env('REDIS_STREAM_PASSWORD', default=None)
     }
 }
 
 CHANNEL_LAYERS['default']['CONFIG'] = {
     'hosts': [env('CHANNELS_REDIS_URL')]
 }
+
+# Elasticsearch
+ELASTICSEARCH = [
+    {'host': env('ELASTICSEARCH_HOST')},
+]
