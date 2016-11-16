@@ -43,9 +43,10 @@ class ElasticSearchBackend:
 
     def _clear(self):
         try:
-            return self.connection.indices.delete(settings.SEARCH_INDEX)
+            self.connection.indices.delete(settings.SEARCH_INDEX)
         except NotFoundError:
             pass
+        self.connection.indices.create(settings.SEARCH_INDEX)
 
     def _search(self, payload):
         return self.connection.search(settings.SEARCH_INDEX, body=payload)
