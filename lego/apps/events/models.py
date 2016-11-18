@@ -84,7 +84,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     def get_possible_pools(self, user, future=False):
         return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
 
-    def register(self, registration_id):
+    def register(self, registration):
         """
         Evaluates a pending registration for the event,
         and automatically selects the optimal pool for the registration.
@@ -108,10 +108,9 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         exclusive pool. If several pools have the same exclusivity,
         selects the biggest pool of these.
 
-        :param registration_id: The id of the registration that gets evaluated
+        :param registration: The registration that gets evaluated
         :return: The registration (in the chosen pool)
         """
-        registration = Registration.objects.get(id=registration_id)
         user = registration.user
         penalties = None
         if self.heed_penalties:
@@ -149,22 +148,22 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
             return registration.add_to_pool(chosen_pool)
 
-    def unregister(self, user):
+    def unregister(self, registration):
         """
         Pulls the registration, and clears relevant fields. Sets unregistration date.
         If the user was in a pool, and not in the waiting list,
         notifies the waiting list that there might be a bump available.
         """
         # Locks unregister so that no user can register before bump is executed.
-
-        registration = self.registrations.get(user=user)
         pool = registration.pool
         with cache.lock(self.id):
             registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
-                    Penalty.objects.create(user=user, reason='Unregistering from event too late',
-                                           weight=1, source_object=self)
+                    Penalty.objects.create(user=registration.user,
+                                           reason='Unregistering from event too late',
+                                           weight=1,
+                                           source_object=self)
                 self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
