@@ -6,12 +6,10 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.content.models import SlugContent
+from lego.apps.events import constants
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
-
-from .constants import EVENT_TYPES
-from .tasks import async_register, async_unregister
 
 
 class Event(SlugContent, BasisModel, ObjectPermissionsModel):
@@ -25,7 +23,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     An event has a waiting list, filled with users who register after the event is full.
     """
-    event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
+    event_type = models.CharField(max_length=50, choices=constants.EVENT_TYPES)
     location = models.CharField(max_length=100)
 
     start_time = models.DateTimeField(db_index=True)
@@ -39,14 +37,6 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
-    @classmethod
-    def async_register(cls, event_id, user_id):
-        async_register.delay(event_id, user_id)
-
-    @classmethod
-    def async_unregister(cls, event_id, user_id):
-        async_unregister.delay(event_id, user_id)
-
     def admin_register(self, user, pool):
         """
         Used to force registration for a user, even if the event is full
@@ -56,11 +46,14 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         :param pool: What pool the registration will be created for
         :return: The registration
         """
-
         if self.pools.filter(id=pool.id).exists():
-            return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': pool,
-                                                                 'unregistration_date': None})[0]
+            return self.registrations.update_or_create(
+                event=self,
+                user=user,
+                defaults={'pool': pool,
+                          'unregistration_date': None,
+                          'status': constants.STATUS_SUCCESS}
+            )[0]
         else:
             raise ValueError('No such pool in this event')
 
@@ -91,12 +84,13 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     def get_possible_pools(self, user, future=False):
         return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
 
-    def register(self, user):
+    def register(self, registration_id):
         """
-        Creates a registration for the event,
-        and automatically selects the optimal pool for the user.
+        Evaluates a pending registration for the event,
+        and automatically selects the optimal pool for the registration.
 
-        First checks if the user can register at all, raises an exception if not.
+        First checks if there exist any legal pools for the pending registration,
+        raises an exception if not.
 
         If there is only one possible pool, checks if the pool is full and registers for
         the waiting list or the pool accordingly.
@@ -104,7 +98,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         If the event is merged, and it isn't full, joins any pool.
         Otherwise, joins the waiting list.
 
-        If the event isn't merged, checks if the pools that the user can
+        If the event isn't merged, checks if the pools that the pending registration can
         possibly join are full or not. If all are full, a registration for
         the waiting list is created. If there's only one pool that isn't full,
         register for it.
@@ -114,9 +108,11 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         exclusive pool. If several pools have the same exclusivity,
         selects the biggest pool of these.
 
-        :param user: The user who is trying to register
+        :param registration_id: The id of the registration that gets evaluated
         :return: The registration (in the chosen pool)
         """
+        registration = Registration.objects.get(id=registration_id)
+        user = registration.user
         penalties = None
         if self.heed_penalties:
             penalties = user.number_of_penalties()
@@ -130,24 +126,18 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         with cache.lock(self.id):
             if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
                 if self.is_full or penalties == 3:
-                    return self.add_to_waiting_list(user=user)
+                    return registration.add_to_waiting_list()
 
-                return self.registrations.update_or_create(
-                    event=self,
-                    user=user,
-                    defaults={'pool': possible_pools[0], 'unregistration_date': None})[0]
+                return registration.add_to_pool(possible_pools[0])
 
             # Calculates which pools that are full or open for registration based on capacity
             full_pools, open_pools = self.calculate_full_pools(possible_pools)
 
             if not open_pools or penalties == 3:
-                return self.add_to_waiting_list(user=user)
+                return registration.add_to_waiting_list()
 
             if len(open_pools) == 1:
-                return self.registrations.update_or_create(
-                    event=self,
-                    user=user,
-                    defaults={'pool': open_pools[0], 'unregistration_date': None})[0]
+                return registration.add_to_pool(open_pools[0])
 
             # Returns a list of the pool(s) with the least amount of potential members
             exclusive_pools = self.find_most_exclusive_pools(open_pools)
@@ -157,10 +147,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
             else:
                 chosen_pool = self.select_highest_capacity(exclusive_pools)
 
-            return self.registrations.update_or_create(
-                event=self,
-                user=user,
-                defaults={'pool': chosen_pool, 'unregistration_date': None})[0]
+            return registration.add_to_pool(chosen_pool)
 
     def unregister(self, user):
         """
@@ -173,9 +160,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         registration = self.registrations.get(user=user)
         pool = registration.pool
         with cache.lock(self.id):
-            registration.pool = None
-            registration.unregistration_date = timezone.now()
-            registration.save()
+            registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
                     Penalty.objects.create(user=user, reason='Unregistering from event too late',
@@ -359,11 +344,14 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     @property
     def number_of_registrations(self):
-        return self.registrations.filter(unregistration_date=None).exclude(pool=None).count()
+        return self.registrations.filter(unregistration_date=None,
+                                         status=constants.STATUS_SUCCESS).exclude(pool=None).count()
 
     @property
     def waiting_registrations(self):
-        return self.registrations.filter(pool=None, unregistration_date=None)
+        return self.registrations.filter(pool=None,
+                                         unregistration_date=None,
+                                         status=constants.STATUS_SUCCESS)
 
 
 class Pool(BasisModel):
@@ -413,6 +401,9 @@ class Registration(BasisModel):
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
     registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
+    status = models.CharField(max_length=10,
+                              default=constants.STATUS_PENDING,
+                              choices=constants.STATUSES)
 
     class Meta:
         unique_together = ('user', 'event')
@@ -420,3 +411,19 @@ class Registration(BasisModel):
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
+
+    def add_to_pool(self, pool):
+        return self.set_values(pool, None, constants.STATUS_SUCCESS)
+
+    def add_to_waiting_list(self):
+        return self.set_values(None, None, constants.STATUS_SUCCESS)
+
+    def unregister(self):
+        return self.set_values(None, timezone.now(), constants.STATUS_SUCCESS)
+
+    def set_values(self, pool, unregistration_date, status):
+        self.pool = pool
+        self.unregistration_date = unregistration_date
+        self.status = status
+        self.save()
+        return self
