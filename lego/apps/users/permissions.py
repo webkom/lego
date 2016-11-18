@@ -1,3 +1,5 @@
+from django.contrib.auth.models import AnonymousUser
+
 from lego.apps.permissions.permissions import AbakusPermission
 from lego.apps.users.models import Membership
 
@@ -48,7 +50,7 @@ class AbakusGroupPermissions(AbakusPermission):
         return True if view.action in self.allowed_leader else super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
-        if view.action in self.allowed_leader:
+        if view.action in self.allowed_leader and not isinstance(request.user, AnonymousUser):
             user = request.user
             is_owner = bool(Membership.objects.filter(abakus_group=obj, user=user,
                                                       role=Membership.LEADER))
