@@ -177,9 +177,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
             registration.unregistration_date = timezone.now()
             registration.save()
             if pool:
-                if self.heed_penalties \
-                        and pool.unregistration_deadline \
-                        and pool.unregistration_deadline < timezone.now():
+                if self.heed_penalties and pool.passed_unregistration_deadline():
                     Penalty.objects.create(user=user, reason='Unregistering from event too late',
                                            weight=1, source_object=self)
                 self.check_for_bump_or_rebalance(pool)
@@ -396,6 +394,11 @@ class Pool(BasisModel):
     @property
     def is_activated(self):
         return self.activation_date <= timezone.now()
+
+    def passed_unregistration_deadline(self):
+        if self.unregistration_deadline:
+            return self.unregistration_deadline < timezone.now()
+        return False
 
     def __str__(self):
         return self.name
