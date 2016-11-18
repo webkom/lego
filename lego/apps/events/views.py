@@ -87,6 +87,8 @@ class RegistrationViewSet(mixins.CreateModelMixin,
         return Response(data=registration_serializer.data, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):
+        instance.status = constants.STATUS_PENDING
+        instance.save()
         async_unregister.delay(instance.id)
 
     @decorators.list_route(methods=['POST'],
