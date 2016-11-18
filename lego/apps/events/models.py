@@ -411,11 +411,12 @@ class Registration(BasisModel):
     user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
-    registration_date = models.DateTimeField(auto_now_add=True)
+    registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user', 'event')
+        ordering = ['registration_date']
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})

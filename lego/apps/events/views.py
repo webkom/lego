@@ -58,6 +58,7 @@ class RegistrationViewSet(mixins.CreateModelMixin,
                           viewsets.GenericViewSet):
     permission_classes = (NestedEventPermissions,)
     serializer_class = RegistrationReadSerializer
+    ordering = 'registration_date'
 
     def get_serializer_class(self):
         if self.action == 'create':
