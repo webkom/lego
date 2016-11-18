@@ -14,7 +14,7 @@ class RegistrationReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user')
+        fields = ('id', 'user', 'status')
 
 
 class PoolReadSerializer(BasisModelSerializer):

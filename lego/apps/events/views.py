@@ -1,6 +1,8 @@
+from django.db import transaction
 from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.response import Response
 
+from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
@@ -11,6 +13,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
                                           RegistrationReadSerializer)
+from lego.apps.events.tasks import async_register, async_unregister
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
@@ -67,18 +70,24 @@ class RegistrationViewSet(mixins.CreateModelMixin,
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        return Registration.objects.filter(event=event_id, unregistration_date=None)
+        return Registration.objects.filter(event=event_id,
+                                           unregistration_date=None,
+                                           status=constants.STATUS_SUCCESS)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         event_id = self.kwargs.get('event_pk', None)
         user_id = request.user.id
-        Event.async_register(event_id, user_id)
-        return Response(data={'status': 'PENDING'}, status=status.HTTP_200_OK)
+        with transaction.atomic():
+            registration = Registration.objects.get_or_create(event_id=event_id,
+                                                              user_id=user_id)[0]
+            transaction.on_commit(lambda: async_register.delay(registration.id))
+        registration_serializer = RegistrationReadSerializer(registration)
+        return Response(data=registration_serializer.data, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):
-        Event.async_unregister(instance.event.id, instance.user.id)
+        async_unregister.delay(instance.event.id, instance.user.id)
 
     @decorators.list_route(methods=['POST'],
                            serializer_class=AdminRegistrationCreateAndUpdateSerializer)
