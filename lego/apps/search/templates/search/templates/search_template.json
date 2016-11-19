@@ -67,7 +67,13 @@
           "type" : "completion",
           "analyzer" : "simple",
           "search_analyzer" : "simple",
-          "payloads" : true
+          "contexts": [
+            {
+              "name": "ct",
+              "type": "category",
+              "path": "type"
+            }
+          ]
         }
       }
     }

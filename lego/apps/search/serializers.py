@@ -12,3 +12,4 @@ class SearchTestModelSerializer(serializers.ModelSerializer):
 
 class QuerySerializer(serializers.Serializer):
     query = serializers.CharField()
+    types = serializers.ListField(child=serializers.CharField(), default=[])
