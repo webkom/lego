@@ -137,7 +137,7 @@
 - model: users.AbakusGroup
   pk: 11
   fields:
-    name: BaseInterestGroup
+    name: Interessegrupper
     level: 0
     lft: 1
     rght: 2

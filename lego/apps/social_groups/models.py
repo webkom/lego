@@ -21,4 +21,4 @@ class Committee(SocialGroup):
 class InterestGroup(SocialGroup):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.parent = AbakusGroup.objects.get(name='BaseInterestGroup')
+        self.parent = AbakusGroup.objects.get(name='Interessegrupper')

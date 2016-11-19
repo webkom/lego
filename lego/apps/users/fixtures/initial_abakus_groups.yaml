@@ -141,7 +141,7 @@
   pk: 12
   fields:
     deleted: false
-    name: BaseInterestGroup
+    name: Interessegrupper
     description: ''
     level: 1
     lft: 20

@@ -7,8 +7,8 @@ from lego.apps.social_groups.serializers import InterestGroupSerializer
 
 class InterestGroupViewSet(viewsets.ModelViewSet):
     queryset = InterestGroup.group_objects.all()
+    permission_classes = [InterestGroupPermissions]
     serializer_class = InterestGroupSerializer
-    permission_classes = (InterestGroupPermissions,)
     ordering = 'id'
 
     def get_queryset(self):
