@@ -63,7 +63,7 @@ class UserSerializer(DetailedUserSerializer):
         return serializer.data
 
 
-class DetailedMembershipSerializer(serializers.ModelSerializer):
+class MembershipSerializer(serializers.ModelSerializer):
     user = PublicUserSerializer(many=False, read_only=True)
 
     class Meta:
@@ -76,37 +76,6 @@ class DetailedMembershipSerializer(serializers.ModelSerializer):
             'start_date',
             'end_date'
         )
-
-
-class PublicMembershipSerializer(serializers.ModelSerializer):
-    user = PublicUserSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = Membership
-        fields = (
-            'user',
-            'abakus_group_id',
-            'role',
-            'is_active',
-            'start_date',
-            'end_date'
-        )
-
-
-class MembershipSerializer(DetailedUserSerializer):
-    def to_representation(self, instance):
-        view = self.context['view']
-        request = self.context['request']
-
-        # List and public retrievals use PublicMembershipSerializer,
-        # the rest uses the detailed one:
-        if (view.action == 'list' or
-                view.action == 'retrieve' and not can_retrieve_user(instance, request.user)):
-            serializer = PublicMembershipSerializer(instance, context=self.context)
-        else:
-            serializer = DetailedMembershipSerializer(instance, context=self.context)
-
-        return serializer.data
 
 
 class MeSerializer(serializers.ModelSerializer):

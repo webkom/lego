@@ -44,7 +44,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     @property
     def is_interest_group(self):
         if self.parent:
-            return self.parent.name == 'BaseInterestGroup'
+            return self.parent.name == 'Interessegrupper'
         return False
 
     @property

@@ -10,23 +10,7 @@ _test_group_data = {
     'description_long': 'hooooooly moly'
 }
 
-_public_serializer_fields = (
-    'id',
-    'name',
-    'number_of_users',
-    'description',
-    'description_long'
-)
-
-_rendered_public_serializer_fields = (
-    'id',
-    'name',
-    'numberOfUsers',
-    'description',
-    'descriptionLong'
-)
-
-_detailed_serializer_fields = (
+_serializer_fields = (
     'id',
     'name',
     'number_of_users',
@@ -35,7 +19,7 @@ _detailed_serializer_fields = (
     'permissions'
 )
 
-_rendered_detailed_serializer_fields = (
+_rendered_serializer_fields = (
     'id',
     'name',
     'numberOfUsers',
@@ -69,7 +53,7 @@ class ListInterestGroupAPITestCase(APITestCase):
 
         for group in response.data:
             keys = set(group.keys())
-            self.assertEqual(keys, set(_rendered_public_serializer_fields))
+            self.assertEqual(keys, set(_rendered_serializer_fields))
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())
@@ -104,7 +88,7 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
 
         self.assertEqual(group['number_of_users'], 1)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(_detailed_serializer_fields))
+        self.assertEqual(keys, set(_serializer_fields))
 
     def test_without_auth(self):
         response = self.client.get(_get_detail_url(1))
@@ -120,7 +104,7 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
         keys = set(group.keys())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(_detailed_serializer_fields))
+        self.assertEqual(keys, set(_serializer_fields))
 
     def test_without_permission(self):
         new_group = InterestGroup.objects.create(name='new_group')
@@ -131,7 +115,7 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
         keys = set(group.keys())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(_public_serializer_fields))
+        self.assertEqual(keys, set(_serializer_fields))
 
 
 class CreateInterestGroupAPITestCase(APITestCase):
@@ -198,7 +182,7 @@ class UpdateInterestGroupAPITestCase(APITestCase):
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
-        parent_group = AbakusGroup.objects.get(name='BaseInterestGroup')
+        parent_group = AbakusGroup.objects.get(name='Interessegrupper')
         self.modified_group = {
             'name': 'modified_interest_group',
             'description': 'this is a modified interest group',
