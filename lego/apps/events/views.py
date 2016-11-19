@@ -72,7 +72,7 @@ class RegistrationViewSet(mixins.CreateModelMixin,
         event_id = self.kwargs.get('event_pk', None)
         return Registration.objects.filter(event=event_id,
                                            unregistration_date=None,
-                                           status=constants.STATUS_SUCCESS)
+                                           status=constants.STATUS_SUCCESS).prefetch_related('user')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

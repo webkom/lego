@@ -371,9 +371,6 @@ class Pool(BasisModel):
         else:
             raise ValueError('Registrations exist in Pool')
 
-    def active_registrations(self):
-        return self.registrations.filter(unregistration_date=None)
-
     @property
     def is_full(self):
         return self.registrations.count() >= self.capacity

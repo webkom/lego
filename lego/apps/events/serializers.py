@@ -15,15 +15,16 @@ class RegistrationReadSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = ('id', 'user', 'status')
+        read_only = True
 
 
 class PoolReadSerializer(BasisModelSerializer):
-    active_registrations = RegistrationReadSerializer(many=True)
+    registrations = RegistrationReadSerializer(many=True)
 
     class Meta:
         model = Pool
         fields = ('id', 'name', 'capacity', 'activation_date',
-                  'permission_groups', 'active_registrations')
+                  'permission_groups', 'registrations')
         read_only = True
 
     def create(self, validated_data):
