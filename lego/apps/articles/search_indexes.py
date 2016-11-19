@@ -9,7 +9,7 @@ class ArticleModelIndex(SearchIndex):
     model = Article
     serializer_class = DetailedArticleSerializer
 
-    def get_autocomplete_text(self, instance):
+    def get_autocomplete(self, instance):
         return instance.title
 
 

@@ -4,6 +4,8 @@ from django.template.loader import render_to_string
 from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch.helpers import bulk
 
+from lego.apps.search.registry import get_content_string_index
+
 
 class ElasticSearchBackend:
     """
@@ -48,8 +50,10 @@ class ElasticSearchBackend:
             pass
         self.connection.indices.create(settings.SEARCH_INDEX)
 
-    def _search(self, payload):
-        return self.connection.search(settings.SEARCH_INDEX, body=payload)
+    def _search(self, payload, types=None):
+        if types:
+            types = ','.join(types)
+        return self.connection.search(settings.SEARCH_INDEX, doc_type=types, body=payload)
 
     def _suggest(self, payload):
         return self.connection.suggest(payload, index=settings.SEARCH_INDEX)
@@ -76,46 +80,70 @@ class ElasticSearchBackend:
     def clear(self):
         self._clear()
 
-    def autocomplete(self, query):
+    def autocomplete(self, query, types):
         autocomplete_query = {
             'autocomplete': {
-                'text': query,
+                'prefix': query,
                 'completion': {
                     'field': 'autocomplete',
                     'fuzzy': {
                         'fuzziness': 2
-                    }
+                    },
+                    'size': 10,
                 }
             }
         }
-        result = self._suggest(autocomplete_query)
-        payload = result['autocomplete'][0]['options']
-        if payload:
-            return {
-                'text': payload[0]['text'],
-                'content_type': payload[0]['payload']['ct'],
-                'object_id': payload[0]['payload']['id'],
-            }
-        return None
 
-    def search(self, query):
+        if types:
+            autocomplete_query['autocomplete']['completion']['contexts'] = {
+                'ct': types
+            }
+
+        result = self._suggest(autocomplete_query)
+
+        def parse_result(hit):
+            autocomplete_result = {
+                'text': hit['text'],
+                'content_type': hit['_type'],
+                'object_id': hit['_id'],
+                'score': hit['_score']
+            }
+
+            search_index = get_content_string_index(hit['_type'])
+            if search_index:
+                payload_fields = search_index.get_autocomplete_fields()
+                if payload_fields:
+                    payload = {}
+                    for field in payload_fields:
+                        field_value = hit['_source'].get(field)
+                        if field_value:
+                            payload[field] = field_value
+                    autocomplete_result['payload'] = payload
+
+            return autocomplete_result
+
+        return map(parse_result, result['autocomplete'][0]['options'])
+
+    def search(self, query, types):
         search_query = {
             'query': {
                 'query_string': {
                     'query': query,
                     'analyze_wildcard': True,
-                }
+                },
             }
         }
-        result = self._search(search_query)
-        if result:
-            hits = result['hits']['hits']
-            return [{
+
+        result = self._search(search_query, types or None)
+
+        def parse_result(hit):
+            return {
                 'content_type': hit['_source'][settings.SEARCH_DJANGO_CT_FIELD],
                 'object_id': hit['_source'][settings.SEARCH_DJANGO_ID_FIELD],
                 'score': hit['_score']
-            } for hit in hits]
-        return None
+            }
+
+        return map(parse_result, result['hits']['hits'])
 
 
 backend = ElasticSearchBackend()
