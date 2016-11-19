@@ -1,6 +1,8 @@
-from rest_framework import decorators, filters, status, viewsets
+from django.db import transaction
+from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.response import Response
 
+from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
@@ -11,6 +13,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
                                           RegistrationReadSerializer)
+from lego.apps.events.tasks import async_register, async_unregister
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 
@@ -51,9 +54,14 @@ class PoolViewSet(viewsets.ModelViewSet):
                                                                         'registrations')
 
 
-class RegistrationViewSet(viewsets.ModelViewSet):
+class RegistrationViewSet(mixins.CreateModelMixin,
+                          mixins.RetrieveModelMixin,
+                          mixins.DestroyModelMixin,
+                          mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
     permission_classes = (NestedEventPermissions,)
     serializer_class = RegistrationReadSerializer
+    ordering = 'registration_date'
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -62,10 +70,26 @@ class RegistrationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        return Registration.objects.filter(event=event_id, unregistration_date=None)
+        return Registration.objects.filter(event=event_id,
+                                           unregistration_date=None,
+                                           status=constants.STATUS_SUCCESS).prefetch_related('user')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        event_id = self.kwargs.get('event_pk', None)
+        user_id = request.user.id
+        with transaction.atomic():
+            registration = Registration.objects.get_or_create(event_id=event_id,
+                                                              user_id=user_id)[0]
+            transaction.on_commit(lambda: async_register.delay(registration.id))
+        registration_serializer = RegistrationReadSerializer(registration)
+        return Response(data=registration_serializer.data, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):
-        instance.event.unregister(instance.user)
+        instance.status = constants.STATUS_PENDING
+        instance.save()
+        async_unregister.delay(instance.id)
 
     @decorators.list_route(methods=['POST'],
                            serializer_class=AdminRegistrationCreateAndUpdateSerializer)

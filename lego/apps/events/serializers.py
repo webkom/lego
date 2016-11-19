@@ -3,7 +3,6 @@ from rest_framework.fields import CharField
 from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
-from lego.apps.events.exceptions import RegistrationException
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.serializers import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -15,7 +14,8 @@ class RegistrationReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user')
+        fields = ('id', 'user', 'status')
+        read_only = True
 
 
 class PoolReadSerializer(BasisModelSerializer):
@@ -23,7 +23,9 @@ class PoolReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Pool
-        fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups', 'registrations')
+        fields = ('id', 'name', 'capacity', 'activation_date',
+                  'permission_groups', 'registrations')
+        read_only = True
 
     def create(self, validated_data):
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
@@ -34,25 +36,25 @@ class PoolReadSerializer(BasisModelSerializer):
 
 
 class EventReadSerializer(BasisModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
 
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'comments', 'comment_target', 'start_time', 'end_time')
+                  'start_time', 'end_time')
+        read_only = True
 
 
 class EventReadDetailedSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
-    pools = PoolReadSerializer(many=True)
+    pools = PoolReadSerializer(read_only=True, many=True)
     capacity = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
+        read_only = True
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
@@ -81,14 +83,6 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = ('id',)
-
-    def create(self, validated_data):
-        user = validated_data['current_user']
-        event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
-        try:
-            return event.register(user)
-        except ValueError as e:
-            raise RegistrationException(e)
 
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
