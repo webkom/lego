@@ -68,4 +68,4 @@ ELASTICSEARCH = [
     {'host': '127.0.0.1'},
 ]
 
-CELERY_ALWAYS_EAGER = True
+CELERY_TASK_ALWAYS_EAGER = True
