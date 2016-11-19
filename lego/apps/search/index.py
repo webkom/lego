@@ -45,6 +45,13 @@ class SearchIndex:
         """
         return None
 
+    def get_autocomplete_fields(self):
+        """
+        Implement this method or autocomplete_fields to return additional fields on autocomplete
+        queries.
+        """
+        return getattr(self, 'autocomplete_fields', [])
+
     def index_queryset(self):
         """
         Default queryset to index when doing a full update.
