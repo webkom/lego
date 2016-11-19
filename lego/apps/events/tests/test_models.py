@@ -514,24 +514,25 @@ class RegistrationTestCase(TestCase):
         users = get_dummy_users(6)
         abakus_users = users[:3]
         webkom_users = users[3:5]
-        abakus_users.append(users[5])
 
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
+            event.admin_register(user, pool_one)
         for user in webkom_users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
+            event.admin_register(user, pool_two)
 
-        for user in users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
-            event.register(registration)
+        AbakusGroup.objects.get(name='Abakus').add_user(users[5])
+        registration = Registration.objects.get_or_create(event=event,
+                                                          user=users[5])[0]
+        event.register(registration)
 
         waiting_list_before = event.waiting_registrations.count()
         event_size_before = event.number_of_registrations
         pool_one_size_before = pool_one.registrations.count()
         pool_two_size_before = pool_two.registrations.count()
 
-        user_to_unregister = pool_two.registrations.get(user=webkom_users[0]).user
+        user_to_unregister = pool_two.registrations.first().user
         registration_to_unregister = Registration.objects.get(event=event, user=user_to_unregister)
 
         event.unregister(registration_to_unregister)
