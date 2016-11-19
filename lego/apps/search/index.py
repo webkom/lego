@@ -102,11 +102,12 @@ class SearchIndex:
 
         es.update(*self._get_payload_tuple(instance))
 
-    def remove_instance(self, instance, **kwargs):
+    def remove_instance(self, pk, **kwargs):
         """
         Remove a given instance from the index.
         """
-        es.remove(instance_to_content_type_string(instance), force_text(instance.id))
+        model = self.get_model()
+        es.remove(instance_to_content_type_string(model), force_text(pk))
 
     def _get_payload_tuple(self, instance):
         data = self.prepare(instance)
