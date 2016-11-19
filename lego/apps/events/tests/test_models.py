@@ -14,6 +14,7 @@ def get_dummy_users(n):
         first_name = last_name = username = email = str(i)
         user = User(username=username, first_name=first_name, last_name=last_name, email=email)
         user.save()
+        AbakusGroup.objects.get(name='Users').add_user(user)
         users.append(user)
 
     return users
@@ -55,12 +56,11 @@ class RegistrationMethodTest(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        user = get_dummy_users(1)[0]
-        AbakusGroup.objects.get(name='Abakus').add_user(user)
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
-        self.registration = event.register(registration)
+        self.event = Event.objects.get(title='POOLS_AND_PRICED')
+        self.users = get_dummy_users(2)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.users[0])
+        self.registration = Registration.objects.get_or_create(event=self.event,
+                                                               user=self.users[0])[0]
 
     def test_str(self):
         d = {
@@ -69,6 +69,16 @@ class RegistrationMethodTest(TestCase):
         }
 
         self.assertEqual(str(self.registration), str(d))
+
+    def test_member_cost(self):
+        self.registration = self.event.register(self.registration)
+        self.assertEqual(self.registration.cost, 50)
+
+    def test_user_cost(self):
+        registration = Registration.objects.get_or_create(event=self.event,
+                                                          user=self.users[1])[0]
+        self.event.register(registration)
+        self.assertEqual(registration.cost, 100)
 
 
 class PoolCapacityTestCase(TestCase):
