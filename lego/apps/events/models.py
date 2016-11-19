@@ -1,15 +1,15 @@
 from datetime import timedelta
 
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.content.models import SlugContent
+from lego.apps.events import constants
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
-
-from .constants import EVENT_TYPES
 
 
 class Event(SlugContent, BasisModel, ObjectPermissionsModel):
@@ -23,7 +23,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
 
     An event has a waiting list, filled with users who register after the event is full.
     """
-    event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
+    event_type = models.CharField(max_length=50, choices=constants.EVENT_TYPES)
     location = models.CharField(max_length=100)
 
     start_time = models.DateTimeField(db_index=True)
@@ -37,8 +37,28 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
+    def admin_register(self, user, pool):
+        """
+        Used to force registration for a user, even if the event is full
+        or if the user isn't allowed to register.
+
+        :param user: The user who will be registered
+        :param pool: What pool the registration will be created for
+        :return: The registration
+        """
+        if self.pools.filter(id=pool.id).exists():
+            return self.registrations.update_or_create(
+                event=self,
+                user=user,
+                defaults={'pool': pool,
+                          'unregistration_date': None,
+                          'status': constants.STATUS_SUCCESS}
+            )[0]
+        else:
+            raise ValueError('No such pool in this event')
+
     def can_register(self, user, pool, future=False):
-        if not self.is_activated(pool) and not future:
+        if not pool.is_activated and not future:
             return False
 
         if self.is_registered(user):
@@ -48,58 +68,6 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
             if group in user.all_groups:
                 return True
         return False
-
-    def admin_register(self, user, pool):
-        """
-        Currently incomplete. Used to force registration for a user, even if the event is full
-        or if the user isn't allowed to register.
-
-        :param request_user: The user who forces the registration. Has to be an admin.
-        :param user: The user who will be registered
-        :param pool: What pool the registration will be created for
-        :return: The registration
-        """
-
-        if self.pools.filter(id=pool.id).exists():
-            return \
-                self.registrations.update_or_create(event=self, user=user,
-                                                    defaults={'pool': pool,
-                                                              'unregistration_date': None})[0]
-        else:
-            raise ValueError('No such pool in this event')
-
-    def add_to_waiting_list(self, user):
-        """
-        Adds a user to the waiting list.
-
-        :param user: The user that will be registered to the waiting list.
-        :return: A registration for the waiting list, with `pool=null`
-        """
-        return self.registrations.get_or_create(event=self, user=user)[0]
-
-    def pop_from_waiting_list(self, to_pool=None):
-        """
-        Pops the first user in the waiting list that can join `to_pool`.
-        If `from_pool=None`, pops the first user in the waiting list overall.
-
-        :param to_pool: The pool we are bumping to. If post-merge, there is no pool.
-        :return: The registration that is first in line for said pool.
-        """
-
-        if to_pool:
-            permission_groups = to_pool.permission_groups.all()
-            for registration in self.waiting_registrations:
-                if self.heed_penalties and registration.user.number_of_penalties() < 3:
-                    for group in registration.user.all_groups:
-                        if group in permission_groups:
-                            return registration
-
-        if self.heed_penalties:
-            for registration in self.waiting_registrations:
-                if registration.user.number_of_penalties() < 3:
-                    return registration
-
-        return self.waiting_registrations.first()
 
     def get_earliest_registration_time(self, user, pools=None, penalties=None):
 
@@ -116,12 +84,13 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     def get_possible_pools(self, user, future=False):
         return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
 
-    def register(self, user):
+    def register(self, registration):
         """
-        Creates a registration for the event,
-        and automatically selects the optimal pool for the user.
+        Evaluates a pending registration for the event,
+        and automatically selects the optimal pool for the registration.
 
-        First checks if the user can register at all, raises an exception if not.
+        First checks if there exist any legal pools for the pending registration,
+        raises an exception if not.
 
         If there is only one possible pool, checks if the pool is full and registers for
         the waiting list or the pool accordingly.
@@ -129,7 +98,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         If the event is merged, and it isn't full, joins any pool.
         Otherwise, joins the waiting list.
 
-        If the event isn't merged, checks if the pools that the user can
+        If the event isn't merged, checks if the pools that the pending registration can
         possibly join are full or not. If all are full, a registration for
         the waiting list is created. If there's only one pool that isn't full,
         register for it.
@@ -139,9 +108,10 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         exclusive pool. If several pools have the same exclusivity,
         selects the biggest pool of these.
 
-        :param user: The user who is trying to register
+        :param registration: The registration that gets evaluated
         :return: The registration (in the chosen pool)
         """
+        user = registration.user
         penalties = None
         if self.heed_penalties:
             penalties = user.number_of_penalties()
@@ -152,26 +122,22 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
             raise ValueError('Not open yet')
 
         # If the event is merged or has only one pool we can skip a lot of logic
-        if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
-            if self.is_full or penalties == 3:
-                return self.add_to_waiting_list(user=user)
+        with cache.lock(self.id):
+            if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
+                if self.is_full or penalties == 3:
+                    return registration.add_to_waiting_list()
 
-            return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': possible_pools[0],
-                                                                 'unregistration_date': None})[0]
+                return registration.add_to_pool(possible_pools[0])
 
-        # Calculates which pools that are full or open for registration based on capacity
-        full_pools, open_pools = self.calculate_full_pools(possible_pools)
+            # Calculates which pools that are full or open for registration based on capacity
+            full_pools, open_pools = self.calculate_full_pools(possible_pools)
 
-        if not open_pools or penalties == 3:
-            return self.add_to_waiting_list(user=user)
+            if not open_pools or penalties == 3:
+                return registration.add_to_waiting_list()
 
-        elif len(open_pools) == 1:
-            return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': open_pools[0],
-                                                                 'unregistration_date': None})[0]
+            if len(open_pools) == 1:
+                return registration.add_to_pool(open_pools[0])
 
-        else:
             # Returns a list of the pool(s) with the least amount of potential members
             exclusive_pools = self.find_most_exclusive_pools(open_pools)
 
@@ -180,28 +146,25 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
             else:
                 chosen_pool = self.select_highest_capacity(exclusive_pools)
 
-            return self.registrations.update_or_create(event=self, user=user,
-                                                       defaults={'pool': chosen_pool,
-                                                                 'unregistration_date': None})[0]
+            return registration.add_to_pool(chosen_pool)
 
-    def unregister(self, user):
+    def unregister(self, registration):
         """
         Pulls the registration, and clears relevant fields. Sets unregistration date.
         If the user was in a pool, and not in the waiting list,
         notifies the waiting list that there might be a bump available.
         """
-        registration = self.registrations.get(user=user)
+        # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
-        registration.pool = None
-        registration.unregistration_date = timezone.now()
-        registration.save()
-        if pool:
-            if self.heed_penalties \
-                    and pool.unregistration_deadline \
-                    and pool.unregistration_deadline < timezone.now():
-                Penalty.objects.create(user=user, reason='Unregistering from event too late',
-                                       weight=1, source_object=self)
-            self.check_for_bump_or_rebalance(pool)
+        with cache.lock(self.id):
+            registration.unregister()
+            if pool:
+                if self.heed_penalties and pool.passed_unregistration_deadline():
+                    Penalty.objects.create(user=registration.user,
+                                           reason='Unregistering from event too late',
+                                           weight=1,
+                                           source_object=self)
+                self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
         """
@@ -239,71 +202,28 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                     if self.can_register(top.user, pool):
                         top.pool = pool
                         break
-            top.unregistration_date = None
             top.save()
 
-    def is_activated(self, pool):
-        return pool.activation_date <= timezone.now()
+    def try_to_rebalance(self, open_pool):
+        """
+        Pull the top waiting registrations for all pools, and try to
+        move users in the pools they are waiting for to `open_pool` so
+        that someone can be bumped.
 
-    def is_registered(self, user):
-        return self.registrations.filter(user=user).exclude(pool=None).exists()
+        :param open_pool: The pool where the unregistration happened.
+        """
+        balanced_pools = []
+        bumped = False
 
-    @property
-    def is_merged(self):
-        if self.merge_time is None:
-            return False
-        return timezone.now() >= self.merge_time
+        for waiting_registration in self.waiting_registrations:
+            for full_pool in self.get_possible_pools(waiting_registration.user):
 
-    @property
-    def is_full(self):
-        return self.capacity <= self.number_of_registrations
+                if full_pool not in balanced_pools:
+                    balanced_pools.append(full_pool)
+                    bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)
 
-    def has_pool_permission(self, user, pool):
-        for group in pool.permission_groups.all():
-            if group in user.all_groups:
-                return True
-        return False
-
-    @property
-    def capacity(self):
-        aggregate = self.pools.all().filter(activation_date__lte=timezone.now())\
-            .aggregate(Sum('capacity'))
-        return aggregate['capacity__sum'] or 0
-
-    @property
-    def number_of_registrations(self):
-        return self.registrations.filter(unregistration_date=None).exclude(pool=None).count()
-
-    @property
-    def waiting_registrations(self):
-        return self.registrations.filter(pool=None, unregistration_date=None)
-
-    def calculate_full_pools(self, pools):
-        full_pools = []
-        open_pools = []
-        for pool in pools:
-            if pool.is_full:
-                full_pools.append(pool)
-            else:
-                open_pools.append(pool)
-        return full_pools, open_pools
-
-    def find_most_exclusive_pools(self, pools):
-        lowest = float('inf')
-        equal = []
-        for pool in pools:
-            groups = pool.permission_groups.all()
-            users = sum(g.number_of_users for g in groups)
-            if users == lowest:
-                equal.append(pool)
-            elif users < lowest:
-                equal = [pool]
-                lowest = users
-        return equal
-
-    def select_highest_capacity(self, pools):
-        capacities = [pool.capacity for pool in pools]
-        return pools[capacities.index(max(capacities))]
+                if bumped:
+                    return
 
     def rebalance_pool(self, from_pool, to_pool):
         """
@@ -330,26 +250,107 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 bumped = True
         return bumped
 
-    def try_to_rebalance(self, open_pool):
+    def add_to_waiting_list(self, user):
         """
-        Pull the top waiting registrations for all pools, and try to
-        move users in the pools they are waiting for to `open_pool` so
-        that someone can be bumped.
+        Adds a user to the waiting list.
 
-        :param open_pool: The pool where the unregistration happened.
+        :param user: The user that will be registered to the waiting list.
+        :return: A registration for the waiting list, with `pool=null`
         """
-        balanced_pools = []
-        bumped = False
+        return self.registrations.update_or_create(event=self, user=user,
+                                                   defaults={'pool': None,
+                                                             'unregistration_date': None})[0]
 
-        for waiting_registration in self.waiting_registrations:
-            for full_pool in self.get_possible_pools(waiting_registration.user):
+    def pop_from_waiting_list(self, to_pool=None):
+        """
+        Pops the first user in the waiting list that can join `to_pool`.
+        If `from_pool=None`, pops the first user in the waiting list overall.
 
-                if full_pool not in balanced_pools:
-                    balanced_pools.append(full_pool)
-                    bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)
+        :param to_pool: The pool we are bumping to. If post-merge, there is no pool.
+        :return: The registration that is first in line for said pool.
+        """
 
-                if bumped:
-                    return
+        if to_pool:
+            permission_groups = to_pool.permission_groups.all()
+            for registration in self.waiting_registrations:
+                if self.heed_penalties and registration.user.number_of_penalties() < 3:
+                    for group in registration.user.all_groups:
+                        if group in permission_groups:
+                            return registration
+
+        if self.heed_penalties:
+            for registration in self.waiting_registrations:
+                if registration.user.number_of_penalties() < 3:
+                    return registration
+
+        return self.waiting_registrations.first()
+
+    @staticmethod
+    def has_pool_permission(user, pool):
+        for group in pool.permission_groups.all():
+            if group in user.all_groups:
+                return True
+        return False
+
+    @staticmethod
+    def calculate_full_pools(pools):
+        full_pools = []
+        open_pools = []
+        for pool in pools:
+            if pool.is_full:
+                full_pools.append(pool)
+            else:
+                open_pools.append(pool)
+        return full_pools, open_pools
+
+    @staticmethod
+    def find_most_exclusive_pools(pools):
+        lowest = float('inf')
+        equal = []
+        for pool in pools:
+            groups = pool.permission_groups.all()
+            users = sum(g.number_of_users for g in groups)
+            if users == lowest:
+                equal.append(pool)
+            elif users < lowest:
+                equal = [pool]
+                lowest = users
+        return equal
+
+    @staticmethod
+    def select_highest_capacity(pools):
+        capacities = [pool.capacity for pool in pools]
+        return pools[capacities.index(max(capacities))]
+
+    def is_registered(self, user):
+        return self.registrations.filter(user=user).exclude(pool=None).exists()
+
+    @property
+    def is_merged(self):
+        if self.merge_time is None:
+            return False
+        return timezone.now() >= self.merge_time
+
+    @property
+    def is_full(self):
+        return self.capacity <= self.number_of_registrations
+
+    @property
+    def capacity(self):
+        aggregate = self.pools.all().filter(activation_date__lte=timezone.now())\
+            .aggregate(Sum('capacity'))
+        return aggregate['capacity__sum'] or 0
+
+    @property
+    def number_of_registrations(self):
+        return self.registrations.filter(unregistration_date=None,
+                                         status=constants.STATUS_SUCCESS).exclude(pool=None).count()
+
+    @property
+    def waiting_registrations(self):
+        return self.registrations.filter(pool=None,
+                                         unregistration_date=None,
+                                         status=constants.STATUS_SUCCESS)
 
 
 class Pool(BasisModel):
@@ -374,6 +375,15 @@ class Pool(BasisModel):
     def is_full(self):
         return self.registrations.count() >= self.capacity
 
+    @property
+    def is_activated(self):
+        return self.activation_date <= timezone.now()
+
+    def passed_unregistration_deadline(self):
+        if self.unregistration_deadline:
+            return self.unregistration_deadline < timezone.now()
+        return False
+
     def __str__(self):
         return self.name
 
@@ -385,11 +395,31 @@ class Registration(BasisModel):
     user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
-    registration_date = models.DateTimeField(auto_now_add=True)
+    registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
+    status = models.CharField(max_length=10,
+                              default=constants.STATUS_PENDING,
+                              choices=constants.STATUSES)
 
     class Meta:
         unique_together = ('user', 'event')
+        ordering = ['registration_date']
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
+
+    def add_to_pool(self, pool):
+        return self.set_values(pool, None, constants.STATUS_SUCCESS)
+
+    def add_to_waiting_list(self):
+        return self.set_values(None, None, constants.STATUS_SUCCESS)
+
+    def unregister(self):
+        return self.set_values(None, timezone.now(), constants.STATUS_SUCCESS)
+
+    def set_values(self, pool, unregistration_date, status):
+        self.pool = pool
+        self.unregistration_date = unregistration_date
+        self.status = status
+        self.save()
+        return self

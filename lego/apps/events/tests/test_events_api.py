@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, User
@@ -182,7 +182,7 @@ class RetrievePoolsTestCase(APITestCase):
         self.assertEqual(pool_response.status_code, 403)
 
 
-class CreateRegistrationsTestCase(APITestCase):
+class RegistrationsTestCase(APITransactionTestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -194,12 +194,19 @@ class CreateRegistrationsTestCase(APITestCase):
     def test_create(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(registration_response.data.get('status'), 'PENDING')
+        res = self.client.get(_get_registrations_list_url(event.id))
+        user_id = res.data[0].get('user', None)['id']
+        self.assertEqual(user_id, 1)
 
     def test_register_no_pools(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(registration_response.data.get('status'), 'PENDING')
+        res = self.client.get(_get_registrations_list_url(event.id))
+        self.assertEqual(res.data, [])
 
     def test_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
