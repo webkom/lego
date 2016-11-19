@@ -39,11 +39,18 @@ class SearchIndex:
         serializer_class = self.get_serializer_class()
         return serializer_class(*args, **kwargs)
 
-    def get_autocomplete_text(self, instance):
+    def get_autocomplete(self, instance):
         """
         Implement this method for autocomplete support on this model.
         """
         return None
+
+    def get_autocomplete_fields(self):
+        """
+        Implement this method or autocomplete_fields to return additional fields on autocomplete
+        queries.
+        """
+        return getattr(self, 'autocomplete_fields', [])
 
     def index_queryset(self):
         """
@@ -73,14 +80,13 @@ class SearchIndex:
         data = serialized_data.data
         data.update(prepared_data)
 
-        autocomplete_input = self.get_autocomplete_text(instance)
+        autocomplete_input = self.get_autocomplete(instance)
         if autocomplete_input:
             data.update({
                 'autocomplete': {
                     'input': autocomplete_input,
-                    'payload': {
+                    'contexts': {
                         'ct': prepared_data[settings.SEARCH_DJANGO_CT_FIELD],
-                        'id': prepared_data[settings.SEARCH_DJANGO_ID_FIELD]
                     }
                 }
             })
