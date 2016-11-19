@@ -9,7 +9,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 1
+      - 2
 
 - model: events.Event
   pk: 2
@@ -22,7 +22,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 1
+      - 2
 
 - model: events.Event
   pk: 3
@@ -35,7 +35,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 10
+      - 11
 
 - model: events.Event
   pk: 4
@@ -48,7 +48,23 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 1
+      - 2
+
+- model: events.Event
+  pk: 5
+  fields:
+    title: POOLS_AND_PRICED
+    description: TestIngress1
+    text: TestText1
+    event_type: 0
+    location: R1
+    start_time: '2011-09-01T13:20:30+03:00'
+    end_time: '2012-09-01T13:20:30+03:00'
+    is_priced: True
+    price_member: 50
+    price_guest: 100
+    can_view_groups:
+      - 2
 
 - model: events.Pool
   pk: 1
@@ -58,7 +74,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 1
+      - 2
 
 - model: events.Pool
   pk: 2
@@ -68,7 +84,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 10
+      - 11
 
 - model: events.Pool
   pk: 3
@@ -78,7 +94,7 @@
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 1
+      - 2
 
 - model: events.Pool
   pk: 4
@@ -86,6 +102,26 @@
     name: Webkom
     capacity: 2
     event: 4
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 11
+
+- model: events.Pool
+  pk: 5
+  fields:
+    name: Users
+    capacity: 2
+    event: 5
+    activation_date: '2011-09-01T13:20:30+03:00'
+    permission_groups:
+      - 1
+
+- model: events.Pool
+  pk: 6
+  fields:
+    name: Abakusmember
+    capacity: 3
+    event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
       - 10

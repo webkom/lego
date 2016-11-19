@@ -4,38 +4,38 @@
     deleted: false
     description: ''
     level: 0
-    lft: 1
-    name: Abakus
+    lft: 0
+    name: Users
     parent: null
-    rght: 22
+    rght: 0
     tree_id: 1
-    permissions:
-      - /sudo/admin/meetings/create
-      - /sudo/admin/meetinginvitations/create
 
 - model: users.AbakusGroup
   pk: 2
   fields:
     deleted: false
     description: ''
-    level: 1
-    lft: 2
-    name: Abakom
-    parent: 1
-    rght: 21
-    tree_id: 1
+    level: 0
+    lft: 1
+    name: Abakus
+    parent: null
+    rght: 22
+    tree_id: 2
+    permissions:
+      - /sudo/admin/meetings/create
+      - /sudo/admin/meetinginvitations/create
 
 - model: users.AbakusGroup
   pk: 3
   fields:
     deleted: false
     description: ''
-    level: 2
-    lft: 3
-    name: Arrkom
+    level: 1
+    lft: 2
+    name: Abakom
     parent: 2
-    rght: 4
-    tree_id: 1
+    rght: 21
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 4
@@ -43,11 +43,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 5
-    name: backup
-    parent: 2
-    rght: 6
-    tree_id: 1
+    lft: 3
+    name: Arrkom
+    parent: 3
+    rght: 4
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 5
@@ -55,11 +55,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 7
-    name: Bedkom
-    parent: 2
-    rght: 8
-    tree_id: 1
+    lft: 5
+    name: backup
+    parent: 3
+    rght: 6
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 6
@@ -67,11 +67,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 9
-    name: Fagkom
-    parent: 2
-    rght: 10
-    tree_id: 1
+    lft: 7
+    name: Bedkom
+    parent: 3
+    rght: 8
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 7
@@ -79,11 +79,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 11
-    name: LaBamba
-    parent: 2
-    rght: 12
-    tree_id: 1
+    lft: 9
+    name: Fagkom
+    parent: 3
+    rght: 10
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 8
@@ -91,11 +91,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 13
-    name: PR
-    parent: 2
-    rght: 14
-    tree_id: 1
+    lft: 11
+    name: LaBamba
+    parent: 3
+    rght: 12
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 9
@@ -103,11 +103,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 15
-    name: readme
-    parent: 2
-    rght: 16
-    tree_id: 1
+    lft: 13
+    name: PR
+    parent: 3
+    rght: 14
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 10
@@ -115,13 +115,11 @@
     deleted: false
     description: ''
     level: 2
-    lft: 17
-    name: Webkom
-    parent: 2
-    rght: 18
-    tree_id: 1
-    permissions:
-      - /sudo/
+    lft: 15
+    name: readme
+    parent: 3
+    rght: 16
+    tree_id: 2
 
 - model: users.AbakusGroup
   pk: 11
@@ -129,11 +127,25 @@
     deleted: false
     description: ''
     level: 2
+    lft: 17
+    name: Webkom
+    parent: 3
+    rght: 18
+    tree_id: 2
+    permissions:
+      - /sudo/
+
+- model: users.AbakusGroup
+  pk: 12
+  fields:
+    deleted: false
+    description: ''
+    level: 2
     lft: 19
     name: Hovedstyret
-    parent: 2
+    parent: 3
     rght: 20
-    tree_id: 1
+    tree_id: 2
     permissions:
       - /sudo/admin/
 
@@ -147,4 +159,4 @@
     lft: 20
     parent: 1
     rght: 21
-    tree_id: 1
+    tree_id: 2
