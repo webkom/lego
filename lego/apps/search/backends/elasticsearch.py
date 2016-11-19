@@ -4,6 +4,8 @@ from django.template.loader import render_to_string
 from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch.helpers import bulk
 
+from lego.apps.search.registry import get_content_string_index
+
 
 class ElasticSearchBackend:
     """
@@ -100,12 +102,25 @@ class ElasticSearchBackend:
         result = self._suggest(autocomplete_query)
 
         def parse_result(hit):
-            return {
+            autocomplete_result = {
                 'text': hit['text'],
                 'content_type': hit['_type'],
                 'object_id': hit['_id'],
                 'score': hit['_score']
             }
+
+            search_index = get_content_string_index(hit['_type'])
+            if search_index:
+                payload_fields = search_index.get_autocomplete_fields()
+                if payload_fields:
+                    payload = {}
+                    for field in payload_fields:
+                        field_value = hit['_source'].get(field)
+                        if field_value:
+                            payload[field] = field_value
+                    autocomplete_result['payload'] = payload
+
+            return autocomplete_result
 
         return map(parse_result, result['autocomplete'][0]['options'])
 
