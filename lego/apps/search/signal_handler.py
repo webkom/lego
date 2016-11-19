@@ -1,3 +1,5 @@
+from lego.utils.content_types import instance_to_string
+
 from .tasks import instance_removal, instance_update
 
 
@@ -16,7 +18,9 @@ class AsyncSignalHandler(BaseSignalHandler):
     """
 
     def on_save(self, instance):
-        instance_update.delay(instance)
+        identifier = instance_to_string(instance)
+        instance_update.delay(identifier)
 
     def on_delete(self, instance):
-        instance_removal.delay(instance)
+        identifier = instance_to_string(instance)
+        instance_removal.delay(identifier)
