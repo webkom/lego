@@ -283,24 +283,15 @@ class RegistrationTestCase(TestCase):
         pool_two.permission_groups.add(permission_groups_two[0])
 
         users = get_dummy_users(3)
-        pool_one_users = 2
 
-        for user in users[:pool_one_users]:
+        for user in users:
             permission_groups_one[0].add_user(user)
             registration = Registration.objects.get_or_create(event=event,
                                                               user=user)[0]
             event.register(registration)
 
-        for user in users[pool_one_users:]:
-            permission_groups_two[0].add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
-            event.register(registration)
-
-        registrations = pool_one.registrations.count() + pool_two.registrations.count()
-        self.assertEqual(pool_one.registrations.count(), 2)
-        self.assertEqual(pool_two.registrations.count(), 1)
-        self.assertEqual(registrations, event.number_of_registrations)
+        self.assertEqual(pool_one.registrations.count(), 3)
+        self.assertEqual(pool_one.registrations.count(), event.number_of_registrations)
 
     def test_can_only_register_with_correct_permission_group(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
