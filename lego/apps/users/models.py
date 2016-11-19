@@ -41,10 +41,24 @@ class AbakusGroup(MPTTModel, PersistentModel):
             return self.parent.name == 'Abakom'
         return False
 
+    @property
+    def is_interest_group(self):
+        if self.parent:
+            return self.parent.name == 'Interessegrupper'
+        return False
+
+    @property
+    def is_social_group(self):
+        return self.is_committee or self.is_interest_group
+
+    @cached_property
+    def memberships(self):
+        return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True)) \
+            .distinct('user')
+
     @cached_property
     def number_of_users(self):
-        return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True))\
-            .distinct('user').count()
+        return self.memberships.count()
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
@@ -86,6 +100,14 @@ class PermissionsMixin(models.Model):
     @property
     def committees(self):
         return [group for group in self.all_groups if group.is_committee]
+
+    @property
+    def interest_groups(self):
+        return [group for group in self.all_groups if group.is_interest_group]
+
+    @property
+    def social_groups(self):
+        return [group for group in self.all_groups if group.is_social_group]
 
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions

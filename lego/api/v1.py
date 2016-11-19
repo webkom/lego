@@ -10,7 +10,9 @@ from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
+from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
+from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.users import UsersViewSet
 
@@ -22,9 +24,11 @@ router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
 router.register(r'groups', AbakusGroupViewSet)
+router.register(r'interest-groups', InterestGroupViewSet)
 router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
+router.register(r'memberships', MembershipViewSet)
 router.register(r'notifications', NotificationFeedViewSet, base_name='feed-notifications')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'oauth2/applications', ApplicationViewSet)

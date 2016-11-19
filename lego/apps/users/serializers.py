@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.users.fields import AbakusGroupListField
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
 
 
@@ -61,6 +61,21 @@ class UserSerializer(DetailedUserSerializer):
             serializer = DetailedUserSerializer(instance, context=self.context)
 
         return serializer.data
+
+
+class MembershipSerializer(serializers.ModelSerializer):
+    user = PublicUserSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Membership
+        fields = (
+            'user',
+            'abakus_group_id',
+            'role',
+            'is_active',
+            'start_date',
+            'end_date'
+        )
 
 
 class MeSerializer(serializers.ModelSerializer):

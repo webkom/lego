@@ -1,0 +1,91 @@
+- model: users.Membership
+  pk: 4
+  fields:
+    user:
+      - perkrifj
+    role: leader
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 5
+  fields:
+    user:
+      - stalepe
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 5
+  fields:
+    user:
+      - andenor
+    abakus_group: 13
+    start_date: 1994-01-01
+
+
+- model: users.Membership
+  pk: 6
+  fields:
+    user:
+      - fredriry
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 7
+  fields:
+    user:
+      - hansanf
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 8
+  fields:
+    user:
+      - hoiby
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 9
+  fields:
+    user:
+      - torborgs
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 10
+  fields:
+    user:
+      - einerkja
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 11
+  fields:
+    user:
+      - runeblek
+    abakus_group: 13
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 12
+  fields:
+    user:
+      - perkrifj
+    role: leader
+    abakus_group: 14
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 13
+  fields:
+    user:
+      - perkrifj
+    role: leader
+    abakus_group: 15
+    start_date: 1994-01-01
