@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.test import TestCase
 
 from lego.apps.search.search_indexes import SearchTestModelIndex
@@ -22,3 +24,8 @@ class SearchTestModelIndexTestCase(TestCase):
         self.assertEquals(test_objects[0].title, 'Webkom Søk')
         self.assertEquals(test_objects.count(), 2)
         test_objects[0].delete()
+
+    @mock.patch('lego.apps.search.index.es.remove')
+    def test_delete_instance(self, mock_es_remove):
+        self.index.remove_instance(1)
+        mock_es_remove.assert_called_once_with('search.searchtestmodel', '1')
