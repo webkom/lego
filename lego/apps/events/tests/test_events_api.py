@@ -166,7 +166,7 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(_test_pools_data[1], pool_get_response.data)
 
 
-class RetrievePoolsTestCase(APITestCase):
+class PoolsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -183,6 +183,12 @@ class RetrievePoolsTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.get(_get_pools_detail_url(1, 1))
         self.assertEqual(pool_response.status_code, 403)
+
+    def test_create_pool(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
+        self.assertEqual(pool_response.status_code, 201)
 
 
 class RegistrationsTestCase(APITransactionTestCase):
