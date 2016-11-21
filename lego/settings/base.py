@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'lego.apps.tags',
     'lego.apps.quotes',
     'lego.apps.reactions',
+    'lego.apps.trophies',
     'lego.apps.websockets'
 ]
 
