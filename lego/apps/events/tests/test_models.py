@@ -802,6 +802,23 @@ class RegistrationTestCase(TestCase):
         abakus_pool = event.pools.get(name='Abakusmember')
         self.assertEqual(event.select_highest_capacity([abakus_pool, webkom_pool]), abakus_pool)
 
+    def test_get_earliest_registration_time_without_pools_provided(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        webkom_pool = event.pools.get(name='Webkom')
+        abakus_pool = event.pools.get(name='Abakusmember')
+
+        current_time = timezone.now()
+        webkom_pool.activation_date = current_time
+        webkom_pool.save()
+        abakus_pool.activation_date = current_time - timedelta(hours=1)
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        earliest_reg = event.get_earliest_registration_time(user)
+
+        self.assertEqual(earliest_reg, abakus_pool.activation_date)
+
     def test_get_earliest_registration_time_no_penalties(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
@@ -810,7 +827,7 @@ class RegistrationTestCase(TestCase):
         current_time = timezone.now()
         webkom_pool.activation_date = current_time
         webkom_pool.save()
-        abakus_pool.activation_date = current_time-timedelta(hours=1)
+        abakus_pool.activation_date = current_time - timedelta(hours=1)
         abakus_pool.save()
 
         user = get_dummy_users(1)[0]
