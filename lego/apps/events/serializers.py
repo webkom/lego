@@ -44,7 +44,7 @@ class EventReadSerializer(BasisModelSerializer):
         read_only = True
 
 
-class EventReadDetailedSerializer(BasisModelSerializer):
+class EventReadDetailedBaseSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
     pools = PoolReadSerializer(read_only=True, many=True)
@@ -52,9 +52,24 @@ class EventReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
+        fields = ('id', 'title', 'description', 'text', 'event_type', 'location', 'comments',
+                  'comment_target', 'start_time', 'end_time', 'pools', 'capacity')
         read_only = True
+
+
+class EventReadDetailedSerializer(EventReadDetailedBaseSerializer):
+    registration_id = serializers.SerializerMethodField()
+
+    class Meta(EventReadDetailedBaseSerializer.Meta):
+        fields = ('id', 'title', 'description', 'text', 'event_type',
+                  'location', 'comments', 'comment_target', 'start_time',
+                  'end_time', 'pools', 'capacity', 'registration_id')
+
+    def get_registration_id(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            user = request.user
+            return obj.get_registration_id(user)
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
