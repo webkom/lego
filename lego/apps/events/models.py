@@ -52,7 +52,7 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
                 user=user,
                 defaults={'pool': pool,
                           'unregistration_date': None,
-                          'status': constants.STATUS_SUCCESS}
+                          'status': constants.SUCCESS_REGISTER}
             )[0]
         else:
             raise ValueError('No such pool in this event')
@@ -348,13 +348,14 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     @property
     def number_of_registrations(self):
         return self.registrations.filter(unregistration_date=None,
-                                         status=constants.STATUS_SUCCESS).exclude(pool=None).count()
+                                         status=constants.SUCCESS_REGISTER)\
+            .exclude(pool=None).count()
 
     @property
     def waiting_registrations(self):
         return self.registrations.filter(pool=None,
                                          unregistration_date=None,
-                                         status=constants.STATUS_SUCCESS)
+                                         status=constants.SUCCESS_REGISTER)
 
 
 class Pool(BasisModel):
@@ -401,8 +402,8 @@ class Registration(BasisModel):
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
     registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
-    status = models.CharField(max_length=10,
-                              default=constants.STATUS_PENDING,
+    status = models.CharField(max_length=20,
+                              default=constants.PENDING_REGISTER,
                               choices=constants.STATUSES)
 
     class Meta:
@@ -413,13 +414,13 @@ class Registration(BasisModel):
         return str({"user": self.user, "pool": self.pool})
 
     def add_to_pool(self, pool):
-        return self.set_values(pool, None, constants.STATUS_SUCCESS)
+        return self.set_values(pool, None, constants.SUCCESS_REGISTER)
 
     def add_to_waiting_list(self):
-        return self.set_values(None, None, constants.STATUS_SUCCESS)
+        return self.set_values(None, None, constants.SUCCESS_REGISTER)
 
     def unregister(self):
-        return self.set_values(None, timezone.now(), constants.STATUS_SUCCESS)
+        return self.set_values(None, timezone.now(), constants.SUCCESS_UNREGISTER)
 
     def set_values(self, pool, unregistration_date, status):
         self.pool = pool

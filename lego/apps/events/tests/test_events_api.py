@@ -195,7 +195,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(registration_response.data.get('status'), 'PENDING')
+        self.assertEqual(registration_response.data.get('status'), 'PENDING_REGISTER')
         res = self.client.get(_get_registrations_list_url(event.id))
         user_id = res.data[0].get('user', None)['id']
         self.assertEqual(user_id, 1)
@@ -204,10 +204,10 @@ class RegistrationsTestCase(APITransactionTestCase):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(registration_response.data.get('status'), 'PENDING')
+        self.assertEqual(registration_response.data.get('status'), 'PENDING_REGISTER')
         res = self.client.get(_get_registrations_list_url(event.id))
         for user in res.data:
-            self.assertEqual(user.get('status', None), 'FAILURE')
+            self.assertEqual(user.get('status', None), 'FAILURE_REGISTER')
 
     def test_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
