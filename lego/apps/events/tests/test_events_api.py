@@ -206,7 +206,8 @@ class RegistrationsTestCase(APITransactionTestCase):
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(registration_response.data.get('status'), 'PENDING')
         res = self.client.get(_get_registrations_list_url(event.id))
-        self.assertEqual(res.data, [])
+        for user in res.data:
+            self.assertEqual(user.get('status', None), 'FAILURE')
 
     def test_unregister(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
