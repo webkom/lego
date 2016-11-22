@@ -1,6 +1,7 @@
 from unittest import skipIf
 
 import stripe
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
 
@@ -338,7 +339,7 @@ class StripePaymentTestCase(APITestCase):
             card={
                 'number': '4242424242424242',
                 'exp_month': 12,
-                'exp_year': 2016,
+                'exp_year': datetime.now().year + 1,
                 'cvc': '123'
             },
         )
@@ -355,7 +356,7 @@ class StripePaymentTestCase(APITestCase):
             card={
                 'number': '4000000000000002',
                 'exp_month': 12,
-                'exp_year': 2016,
+                'exp_year': datetime.now().year + 1,
                 'cvc': '123'
             }
         )
@@ -371,7 +372,7 @@ class StripePaymentTestCase(APITestCase):
             card={
                 'number': '4000000000000127',
                 'exp_month': 12,
-                'exp_year': 2016,
+                'exp_year': datetime.now().year + 1,
                 'cvc': '123'
             }
         )
