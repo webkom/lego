@@ -71,8 +71,7 @@ class RegistrationViewSet(mixins.CreateModelMixin,
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
         return Registration.objects.filter(event=event_id,
-                                           unregistration_date=None,
-                                           status=constants.STATUS_SUCCESS).prefetch_related('user')
+                                           unregistration_date=None).prefetch_related('user')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -84,12 +83,15 @@ class RegistrationViewSet(mixins.CreateModelMixin,
                                                               user_id=user_id)[0]
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(registration)
-        return Response(data=registration_serializer.data, status=status.HTTP_200_OK)
+        return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def perform_destroy(self, instance):
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
         instance.status = constants.STATUS_PENDING
         instance.save()
+        serializer = RegistrationReadSerializer(instance)
         async_unregister.delay(instance.id)
+        return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.list_route(methods=['POST'],
                            serializer_class=AdminRegistrationCreateAndUpdateSerializer)
