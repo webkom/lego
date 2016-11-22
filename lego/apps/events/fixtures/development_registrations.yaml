@@ -4,7 +4,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 1
 - fields:
@@ -13,7 +13,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 2
 - fields:
@@ -22,7 +22,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 3
 - fields:
@@ -31,7 +31,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 4
 - fields:
@@ -40,7 +40,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 5
 - fields:
@@ -49,7 +49,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 6
 - fields:
@@ -58,7 +58,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 7
 - fields:
@@ -67,7 +67,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 8
 - fields:
@@ -76,7 +76,7 @@
     registration_date: '2016-10-13T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 9
 - fields:
@@ -85,7 +85,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 10
 - fields:
@@ -94,7 +94,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 11
 - fields:
@@ -103,7 +103,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 12
 - fields:
@@ -112,7 +112,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 13
 - fields:
@@ -121,7 +121,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 14
 - fields:
@@ -130,7 +130,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 15
 - fields:
@@ -139,7 +139,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 16
 - fields:
@@ -148,7 +148,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 17
 - fields:
@@ -157,7 +157,7 @@
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 18
 - fields:
@@ -166,7 +166,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 19
 - fields:
@@ -175,7 +175,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 20
 - fields:
@@ -184,7 +184,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 21
 - fields:
@@ -193,7 +193,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 22
 - fields:
@@ -202,7 +202,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 23
 - fields:
@@ -211,7 +211,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 24
 - fields:
@@ -220,7 +220,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 25
 - fields:
@@ -229,7 +229,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 26
 - fields:
@@ -238,7 +238,7 @@
     registration_date: '2016-09-29T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 27
 - fields:
@@ -247,7 +247,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 28
 - fields:
@@ -256,7 +256,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 29
 - fields:
@@ -265,7 +265,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 30
 - fields:
@@ -274,7 +274,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 31
 - fields:
@@ -283,7 +283,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 32
 - fields:
@@ -292,7 +292,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 33
 - fields:
@@ -301,7 +301,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 34
 - fields:
@@ -310,7 +310,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 35
 - fields:
@@ -319,7 +319,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 36
 - fields:
@@ -328,7 +328,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 37
 - fields:
@@ -337,7 +337,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 38
 - fields:
@@ -346,7 +346,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 39
 - fields:
@@ -355,7 +355,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 40
 - fields:
@@ -364,7 +364,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 41
 - fields:
@@ -373,7 +373,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 42
 - fields:
@@ -382,7 +382,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 43
 - fields:
@@ -391,7 +391,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 44
 - fields:
@@ -400,7 +400,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 45
 - fields:
@@ -409,7 +409,7 @@
     registration_date: '2016-09-27T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 46
 - fields:
@@ -418,7 +418,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 47
 - fields:
@@ -427,7 +427,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 48
 - fields:
@@ -436,7 +436,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 49
 - fields:
@@ -445,7 +445,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 50
 - fields:
@@ -454,7 +454,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 51
 - fields:
@@ -463,7 +463,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 52
 - fields:
@@ -472,7 +472,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 53
 - fields:
@@ -481,7 +481,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 54
 - fields:
@@ -490,7 +490,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 55
 - fields:
@@ -499,7 +499,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 56
 - fields:
@@ -508,7 +508,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 57
 - fields:
@@ -517,7 +517,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 58
 - fields:
@@ -526,7 +526,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 59
 - fields:
@@ -535,7 +535,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 60
 - fields:
@@ -544,7 +544,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 61
 - fields:
@@ -553,7 +553,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 62
 - fields:
@@ -562,7 +562,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 63
 - fields:
@@ -571,7 +571,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 64
 - fields:
@@ -580,7 +580,7 @@
     registration_date: '2016-09-22T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 65
 - fields:
@@ -589,7 +589,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 66
 - fields:
@@ -598,7 +598,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 67
 - fields:
@@ -607,7 +607,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 68
 - fields:
@@ -616,7 +616,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 69
 - fields:
@@ -625,7 +625,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 70
 - fields:
@@ -634,7 +634,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 71
 - fields:
@@ -643,7 +643,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 72
 - fields:
@@ -652,7 +652,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 73
 - fields:
@@ -661,7 +661,7 @@
     registration_date: '2016-09-20T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 74
 - fields:
@@ -670,7 +670,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 75
 - fields:
@@ -679,7 +679,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 76
 - fields:
@@ -688,7 +688,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 77
 - fields:
@@ -697,7 +697,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 78
 - fields:
@@ -706,7 +706,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 79
 - fields:
@@ -715,7 +715,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 80
 - fields:
@@ -724,7 +724,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 81
 - fields:
@@ -733,7 +733,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 82
 - fields:
@@ -742,7 +742,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 83
 - fields:
@@ -751,7 +751,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 84
 - fields:
@@ -760,7 +760,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 85
 - fields:
@@ -769,7 +769,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 86
 - fields:
@@ -778,7 +778,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 87
 - fields:
@@ -787,7 +787,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 88
 - fields:
@@ -796,7 +796,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 89
 - fields:
@@ -805,7 +805,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 90
 - fields:
@@ -814,7 +814,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 91
 - fields:
@@ -823,7 +823,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 92
 - fields:
@@ -832,7 +832,7 @@
     registration_date: '2016-09-05T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 93
 - fields:
@@ -841,7 +841,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 94
 - fields:
@@ -850,7 +850,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 95
 - fields:
@@ -859,7 +859,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 96
 - fields:
@@ -868,7 +868,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 97
 - fields:
@@ -877,7 +877,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 98
 - fields:
@@ -886,7 +886,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 99
 - fields:
@@ -895,7 +895,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 100
 - fields:
@@ -904,7 +904,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 101
 - fields:
@@ -913,7 +913,7 @@
     registration_date: '2016-08-24T07:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 102
 - fields:
@@ -922,7 +922,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 103
 - fields:
@@ -931,7 +931,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 104
 - fields:
@@ -940,7 +940,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 105
 - fields:
@@ -949,7 +949,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 106
 - fields:
@@ -958,7 +958,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 107
 - fields:
@@ -967,7 +967,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 108
 - fields:
@@ -976,7 +976,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 109
 - fields:
@@ -985,7 +985,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 110
 - fields:
@@ -994,7 +994,7 @@
     registration_date: '2016-08-26T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 111
 - fields:
@@ -1003,7 +1003,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 112
 - fields:
@@ -1012,7 +1012,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 113
 - fields:
@@ -1021,7 +1021,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 114
 - fields:
@@ -1030,7 +1030,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 115
 - fields:
@@ -1039,7 +1039,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 116
 - fields:
@@ -1048,7 +1048,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 117
 - fields:
@@ -1057,7 +1057,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 118
 - fields:
@@ -1066,7 +1066,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 119
 - fields:
@@ -1075,7 +1075,7 @@
     registration_date: '2016-08-23T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 120
 - fields:
@@ -1084,7 +1084,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 121
 - fields:
@@ -1093,7 +1093,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 122
 - fields:
@@ -1102,7 +1102,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 123
 - fields:
@@ -1111,7 +1111,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 124
 - fields:
@@ -1120,7 +1120,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 125
 - fields:
@@ -1129,7 +1129,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 126
 - fields:
@@ -1138,7 +1138,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 127
 - fields:
@@ -1147,7 +1147,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 128
 - fields:
@@ -1156,7 +1156,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 129
 - fields:
@@ -1165,7 +1165,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 130
 - fields:
@@ -1174,7 +1174,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 131
 - fields:
@@ -1183,7 +1183,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 132
 - fields:
@@ -1192,7 +1192,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 133
 - fields:
@@ -1201,7 +1201,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 134
 - fields:
@@ -1210,7 +1210,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 135
 - fields:
@@ -1219,7 +1219,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 136
 - fields:
@@ -1228,7 +1228,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 137
 - fields:
@@ -1237,7 +1237,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 138
 - fields:
@@ -1246,7 +1246,7 @@
     registration_date: '2016-08-20T18:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 139
 - fields:
@@ -1255,7 +1255,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 140
 - fields:
@@ -1264,7 +1264,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 141
 - fields:
@@ -1273,7 +1273,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 142
 - fields:
@@ -1282,7 +1282,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 143
 - fields:
@@ -1291,7 +1291,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 144
 - fields:
@@ -1300,7 +1300,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 145
 - fields:
@@ -1309,7 +1309,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 146
 - fields:
@@ -1318,7 +1318,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 147
 - fields:
@@ -1327,7 +1327,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 148
 - fields:
@@ -1336,7 +1336,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 149
 - fields:
@@ -1345,7 +1345,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 150
 - fields:
@@ -1354,7 +1354,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 151
 - fields:
@@ -1363,7 +1363,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 152
 - fields:
@@ -1372,7 +1372,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 153
 - fields:
@@ -1381,7 +1381,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 154
 - fields:
@@ -1390,7 +1390,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 155
 - fields:
@@ -1399,7 +1399,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 156
 - fields:
@@ -1408,7 +1408,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 157
 - fields:
@@ -1417,7 +1417,7 @@
     registration_date: '2016-08-18T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 158
 - fields:
@@ -1426,7 +1426,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 159
 - fields:
@@ -1435,7 +1435,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 160
 - fields:
@@ -1444,7 +1444,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 161
 - fields:
@@ -1453,7 +1453,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 162
 - fields:
@@ -1462,7 +1462,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 163
 - fields:
@@ -1471,7 +1471,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 164
 - fields:
@@ -1480,7 +1480,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 165
 - fields:
@@ -1489,7 +1489,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 166
 - fields:
@@ -1498,7 +1498,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 167
 - fields:
@@ -1507,7 +1507,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 168
 - fields:
@@ -1516,7 +1516,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 169
 - fields:
@@ -1525,7 +1525,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 170
 - fields:
@@ -1534,7 +1534,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 171
 - fields:
@@ -1543,7 +1543,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 172
 - fields:
@@ -1552,7 +1552,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 173
 - fields:
@@ -1561,7 +1561,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 174
 - fields:
@@ -1570,7 +1570,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 175
 - fields:
@@ -1579,7 +1579,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 176
 - fields:
@@ -1588,7 +1588,7 @@
     registration_date: '2016-08-16T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 177
 - fields:
@@ -1597,7 +1597,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 178
 - fields:
@@ -1606,7 +1606,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 179
 - fields:
@@ -1615,7 +1615,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 180
 - fields:
@@ -1624,7 +1624,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 181
 - fields:
@@ -1633,7 +1633,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 182
 - fields:
@@ -1642,7 +1642,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 183
 - fields:
@@ -1651,7 +1651,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 184
 - fields:
@@ -1660,7 +1660,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 185
 - fields:
@@ -1669,7 +1669,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 186
 - fields:
@@ -1678,7 +1678,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 187
 - fields:
@@ -1687,7 +1687,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 188
 - fields:
@@ -1696,7 +1696,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 189
 - fields:
@@ -1705,7 +1705,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 190
 - fields:
@@ -1714,7 +1714,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 191
 - fields:
@@ -1723,7 +1723,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 192
 - fields:
@@ -1732,7 +1732,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 193
 - fields:
@@ -1741,7 +1741,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 194
 - fields:
@@ -1750,7 +1750,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 195
 - fields:
@@ -1759,7 +1759,7 @@
     registration_date: '2016-06-18T19:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 196
 - fields:
@@ -1768,7 +1768,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 197
 - fields:
@@ -1777,7 +1777,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 198
 - fields:
@@ -1786,7 +1786,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 199
 - fields:
@@ -1795,7 +1795,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 200
 - fields:
@@ -1804,7 +1804,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 201
 - fields:
@@ -1813,7 +1813,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 202
 - fields:
@@ -1822,7 +1822,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 203
 - fields:
@@ -1831,7 +1831,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 204
 - fields:
@@ -1840,7 +1840,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 205
 - fields:
@@ -1849,7 +1849,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 206
 - fields:
@@ -1858,7 +1858,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 207
 - fields:
@@ -1867,7 +1867,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 208
 - fields:
@@ -1876,7 +1876,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 209
 - fields:
@@ -1885,7 +1885,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 210
 - fields:
@@ -1894,7 +1894,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 211
 - fields:
@@ -1903,7 +1903,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 212
 - fields:
@@ -1912,7 +1912,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 213
 - fields:
@@ -1921,7 +1921,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 214
 - fields:
@@ -1930,7 +1930,7 @@
     registration_date: '2016-05-28T20:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 215
 - fields:
@@ -1939,7 +1939,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 216
 - fields:
@@ -1948,7 +1948,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 217
 - fields:
@@ -1957,7 +1957,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 218
 - fields:
@@ -1966,7 +1966,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 219
 - fields:
@@ -1975,7 +1975,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 220
 - fields:
@@ -1984,7 +1984,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 221
 - fields:
@@ -1993,7 +1993,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 222
 - fields:
@@ -2002,7 +2002,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 223
 - fields:
@@ -2011,7 +2011,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 224
 - fields:
@@ -2020,7 +2020,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 225
 - fields:
@@ -2029,7 +2029,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 226
 - fields:
@@ -2038,7 +2038,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 227
 - fields:
@@ -2047,7 +2047,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 228
 - fields:
@@ -2056,7 +2056,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 229
 - fields:
@@ -2065,7 +2065,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 230
 - fields:
@@ -2074,7 +2074,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 231
 - fields:
@@ -2083,7 +2083,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 232
 - fields:
@@ -2092,7 +2092,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 233
 - fields:
@@ -2101,7 +2101,7 @@
     registration_date: '2016-04-06T13:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 234
 - fields:
@@ -2110,7 +2110,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 235
 - fields:
@@ -2119,7 +2119,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 236
 - fields:
@@ -2128,7 +2128,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 237
 - fields:
@@ -2137,7 +2137,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 238
 - fields:
@@ -2146,7 +2146,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 239
 - fields:
@@ -2155,7 +2155,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 240
 - fields:
@@ -2164,7 +2164,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 241
 - fields:
@@ -2173,7 +2173,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 242
 - fields:
@@ -2182,7 +2182,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 243
 - fields:
@@ -2191,7 +2191,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 244
 - fields:
@@ -2200,7 +2200,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 245
 - fields:
@@ -2209,7 +2209,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 246
 - fields:
@@ -2218,7 +2218,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 247
 - fields:
@@ -2227,7 +2227,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 248
 - fields:
@@ -2236,7 +2236,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 249
 - fields:
@@ -2245,7 +2245,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 250
 - fields:
@@ -2254,7 +2254,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 251
 - fields:
@@ -2263,7 +2263,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 252
 - fields:
@@ -2272,7 +2272,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 253
 - fields:
@@ -2281,7 +2281,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 254
 - fields:
@@ -2290,7 +2290,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 255
 - fields:
@@ -2299,7 +2299,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 256
 - fields:
@@ -2308,7 +2308,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 257
 - fields:
@@ -2317,7 +2317,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 258
 - fields:
@@ -2326,7 +2326,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 259
 - fields:
@@ -2335,7 +2335,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 260
 - fields:
@@ -2344,7 +2344,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 261
 - fields:
@@ -2353,7 +2353,7 @@
     registration_date: '2016-05-06T14:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 262
 - fields:
@@ -2362,7 +2362,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 263
 - fields:
@@ -2371,7 +2371,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 264
 - fields:
@@ -2380,7 +2380,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 265
 - fields:
@@ -2389,7 +2389,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 266
 - fields:
@@ -2398,7 +2398,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 267
 - fields:
@@ -2407,7 +2407,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 268
 - fields:
@@ -2416,7 +2416,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 269
 - fields:
@@ -2425,7 +2425,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 270
 - fields:
@@ -2434,7 +2434,7 @@
     registration_date: '2016-05-03T09:30:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 271
 - fields:
@@ -2443,7 +2443,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 272
 - fields:
@@ -2452,7 +2452,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 273
 - fields:
@@ -2461,7 +2461,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 274
 - fields:
@@ -2470,7 +2470,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 275
 - fields:
@@ -2479,7 +2479,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 276
 - fields:
@@ -2488,7 +2488,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 277
 - fields:
@@ -2497,7 +2497,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 278
 - fields:
@@ -2506,7 +2506,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 279
 - fields:
@@ -2515,7 +2515,7 @@
     registration_date: '2016-04-30T11:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 280
 - fields:
@@ -2524,7 +2524,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 281
 - fields:
@@ -2533,7 +2533,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 282
 - fields:
@@ -2542,7 +2542,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 283
 - fields:
@@ -2551,7 +2551,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 284
 - fields:
@@ -2560,7 +2560,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 285
 - fields:
@@ -2569,7 +2569,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 286
 - fields:
@@ -2578,7 +2578,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 287
 - fields:
@@ -2587,7 +2587,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 288
 - fields:
@@ -2596,7 +2596,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 289
 - fields:
@@ -2605,7 +2605,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 290
 - fields:
@@ -2614,7 +2614,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 291
 - fields:
@@ -2623,7 +2623,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 292
 - fields:
@@ -2632,7 +2632,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 293
 - fields:
@@ -2641,7 +2641,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 294
 - fields:
@@ -2650,7 +2650,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 295
 - fields:
@@ -2659,7 +2659,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 296
 - fields:
@@ -2668,7 +2668,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 297
 - fields:
@@ -2677,7 +2677,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 298
 - fields:
@@ -2686,7 +2686,7 @@
     registration_date: '2016-04-25T17:15:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 299
 - fields:
@@ -2695,7 +2695,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 300
 - fields:
@@ -2704,7 +2704,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 301
 - fields:
@@ -2713,7 +2713,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 302
 - fields:
@@ -2722,7 +2722,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 303
 - fields:
@@ -2731,7 +2731,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 304
 - fields:
@@ -2740,7 +2740,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 305
 - fields:
@@ -2749,7 +2749,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 306
 - fields:
@@ -2758,7 +2758,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 307
 - fields:
@@ -2767,7 +2767,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 308
 - fields:
@@ -2776,7 +2776,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 309
 - fields:
@@ -2785,7 +2785,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 310
 - fields:
@@ -2794,7 +2794,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 311
 - fields:
@@ -2803,7 +2803,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 312
 - fields:
@@ -2812,7 +2812,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 313
 - fields:
@@ -2821,7 +2821,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 314
 - fields:
@@ -2830,7 +2830,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 315
 - fields:
@@ -2839,7 +2839,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 316
 - fields:
@@ -2848,7 +2848,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 317
 - fields:
@@ -2857,7 +2857,7 @@
     registration_date: '2016-04-23T10:15:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 318
 - fields:
@@ -2866,7 +2866,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 319
 - fields:
@@ -2875,7 +2875,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 320
 - fields:
@@ -2884,7 +2884,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 321
 - fields:
@@ -2893,7 +2893,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 322
 - fields:
@@ -2902,7 +2902,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 323
 - fields:
@@ -2911,7 +2911,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 324
 - fields:
@@ -2920,7 +2920,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 325
 - fields:
@@ -2929,7 +2929,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 326
 - fields:
@@ -2938,7 +2938,7 @@
     registration_date: '2016-04-06T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 327
 - fields:
@@ -2947,7 +2947,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 328
 - fields:
@@ -2956,7 +2956,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 329
 - fields:
@@ -2965,7 +2965,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 330
 - fields:
@@ -2974,7 +2974,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 331
 - fields:
@@ -2983,7 +2983,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 332
 - fields:
@@ -2992,7 +2992,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 333
 - fields:
@@ -3001,7 +3001,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 334
 - fields:
@@ -3010,7 +3010,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 335
 - fields:
@@ -3019,7 +3019,7 @@
     registration_date: '2016-04-15T08:30:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 336
 - fields:
@@ -3028,7 +3028,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 337
 - fields:
@@ -3037,7 +3037,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 338
 - fields:
@@ -3046,7 +3046,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 339
 - fields:
@@ -3055,7 +3055,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 340
 - fields:
@@ -3064,7 +3064,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 341
 - fields:
@@ -3073,7 +3073,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 342
 - fields:
@@ -3082,7 +3082,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 343
 - fields:
@@ -3091,7 +3091,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 344
 - fields:
@@ -3100,7 +3100,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 345
 - fields:
@@ -3109,7 +3109,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 346
 - fields:
@@ -3118,7 +3118,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 347
 - fields:
@@ -3127,7 +3127,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 348
 - fields:
@@ -3136,7 +3136,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 349
 - fields:
@@ -3145,7 +3145,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 350
 - fields:
@@ -3154,7 +3154,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 351
 - fields:
@@ -3163,7 +3163,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 352
 - fields:
@@ -3172,7 +3172,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 353
 - fields:
@@ -3181,7 +3181,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 354
 - fields:
@@ -3190,7 +3190,7 @@
     registration_date: '2016-04-14T12:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 355
 - fields:
@@ -3199,7 +3199,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 356
 - fields:
@@ -3208,7 +3208,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 357
 - fields:
@@ -3217,7 +3217,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 358
 - fields:
@@ -3226,7 +3226,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 359
 - fields:
@@ -3235,7 +3235,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 360
 - fields:
@@ -3244,7 +3244,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 361
 - fields:
@@ -3253,7 +3253,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 362
 - fields:
@@ -3262,7 +3262,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 363
 - fields:
@@ -3271,7 +3271,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 364
 - fields:
@@ -3280,7 +3280,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 365
 - fields:
@@ -3289,7 +3289,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 366
 - fields:
@@ -3298,7 +3298,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 367
 - fields:
@@ -3307,7 +3307,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 368
 - fields:
@@ -3316,7 +3316,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 369
 - fields:
@@ -3325,7 +3325,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 370
 - fields:
@@ -3334,7 +3334,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 371
 - fields:
@@ -3343,7 +3343,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 372
 - fields:
@@ -3352,7 +3352,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 373
 - fields:
@@ -3361,7 +3361,7 @@
     registration_date: '2016-04-13T16:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 374
 - fields:
@@ -3370,7 +3370,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 375
 - fields:
@@ -3379,7 +3379,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 376
 - fields:
@@ -3388,7 +3388,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 377
 - fields:
@@ -3397,7 +3397,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 378
 - fields:
@@ -3406,7 +3406,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 379
 - fields:
@@ -3415,7 +3415,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 380
 - fields:
@@ -3424,7 +3424,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 381
 - fields:
@@ -3433,7 +3433,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 382
 - fields:
@@ -3442,7 +3442,7 @@
     registration_date: '2016-04-11T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 383
 - fields:
@@ -3451,7 +3451,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 384
 - fields:
@@ -3460,7 +3460,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 385
 - fields:
@@ -3469,7 +3469,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 386
 - fields:
@@ -3478,7 +3478,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 387
 - fields:
@@ -3487,7 +3487,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 388
 - fields:
@@ -3496,7 +3496,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 389
 - fields:
@@ -3505,7 +3505,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 390
 - fields:
@@ -3514,7 +3514,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 391
 - fields:
@@ -3523,7 +3523,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 392
 - fields:
@@ -3532,7 +3532,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 393
 - fields:
@@ -3541,7 +3541,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 394
 - fields:
@@ -3550,7 +3550,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 395
 - fields:
@@ -3559,7 +3559,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 396
 - fields:
@@ -3568,7 +3568,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 397
 - fields:
@@ -3577,7 +3577,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 398
 - fields:
@@ -3586,7 +3586,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 399
 - fields:
@@ -3595,7 +3595,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 400
 - fields:
@@ -3604,7 +3604,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 401
 - fields:
@@ -3613,7 +3613,7 @@
     registration_date: '2016-04-09T18:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 402
 - fields:
@@ -3622,7 +3622,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 403
 - fields:
@@ -3631,7 +3631,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 404
 - fields:
@@ -3640,7 +3640,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 405
 - fields:
@@ -3649,7 +3649,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 406
 - fields:
@@ -3658,7 +3658,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 407
 - fields:
@@ -3667,7 +3667,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 408
 - fields:
@@ -3676,7 +3676,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 409
 - fields:
@@ -3685,7 +3685,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 410
 - fields:
@@ -3694,7 +3694,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 411
 - fields:
@@ -3703,7 +3703,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 412
 - fields:
@@ -3712,7 +3712,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 413
 - fields:
@@ -3721,7 +3721,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 414
 - fields:
@@ -3730,7 +3730,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 415
 - fields:
@@ -3739,7 +3739,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 416
 - fields:
@@ -3748,7 +3748,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 417
 - fields:
@@ -3757,7 +3757,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 418
 - fields:
@@ -3766,7 +3766,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 419
 - fields:
@@ -3775,7 +3775,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 420
 - fields:
@@ -3784,7 +3784,7 @@
     registration_date: '2016-04-07T19:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 421
 - fields:
@@ -3793,7 +3793,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 422
 - fields:
@@ -3802,7 +3802,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 423
 - fields:
@@ -3811,7 +3811,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 424
 - fields:
@@ -3820,7 +3820,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 425
 - fields:
@@ -3829,7 +3829,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 426
 - fields:
@@ -3838,7 +3838,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 427
 - fields:
@@ -3847,7 +3847,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 428
 - fields:
@@ -3856,7 +3856,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 429
 - fields:
@@ -3865,7 +3865,7 @@
     registration_date: '2016-04-04T10:30:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 430
 - fields:
@@ -3874,7 +3874,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 431
 - fields:
@@ -3883,7 +3883,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 432
 - fields:
@@ -3892,7 +3892,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 433
 - fields:
@@ -3901,7 +3901,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 434
 - fields:
@@ -3910,7 +3910,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 435
 - fields:
@@ -3919,7 +3919,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 436
 - fields:
@@ -3928,7 +3928,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 437
 - fields:
@@ -3937,7 +3937,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 438
 - fields:
@@ -3946,7 +3946,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 439
 - fields:
@@ -3955,7 +3955,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 440
 - fields:
@@ -3964,7 +3964,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 441
 - fields:
@@ -3973,7 +3973,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 442
 - fields:
@@ -3982,7 +3982,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 443
 - fields:
@@ -3991,7 +3991,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 444
 - fields:
@@ -4000,7 +4000,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 445
 - fields:
@@ -4009,7 +4009,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 446
 - fields:
@@ -4018,7 +4018,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 447
 - fields:
@@ -4027,7 +4027,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 448
 - fields:
@@ -4036,7 +4036,7 @@
     registration_date: '2016-04-01T19:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 449
 - fields:
@@ -4045,7 +4045,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 450
 - fields:
@@ -4054,7 +4054,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 451
 - fields:
@@ -4063,7 +4063,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 452
 - fields:
@@ -4072,7 +4072,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 453
 - fields:
@@ -4081,7 +4081,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 454
 - fields:
@@ -4090,7 +4090,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 455
 - fields:
@@ -4099,7 +4099,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 456
 - fields:
@@ -4108,7 +4108,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 457
 - fields:
@@ -4117,7 +4117,7 @@
     registration_date: '2016-04-01T08:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 458
 - fields:
@@ -4126,7 +4126,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 459
 - fields:
@@ -4135,7 +4135,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 460
 - fields:
@@ -4144,7 +4144,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 461
 - fields:
@@ -4153,7 +4153,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 462
 - fields:
@@ -4162,7 +4162,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 463
 - fields:
@@ -4171,7 +4171,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 464
 - fields:
@@ -4180,7 +4180,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 465
 - fields:
@@ -4189,7 +4189,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 466
 - fields:
@@ -4198,7 +4198,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 467
 - fields:
@@ -4207,7 +4207,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 468
 - fields:
@@ -4216,7 +4216,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 469
 - fields:
@@ -4225,7 +4225,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 470
 - fields:
@@ -4234,7 +4234,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 471
 - fields:
@@ -4243,7 +4243,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 472
 - fields:
@@ -4252,7 +4252,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 473
 - fields:
@@ -4261,7 +4261,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 474
 - fields:
@@ -4270,7 +4270,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 475
 - fields:
@@ -4279,7 +4279,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 476
 - fields:
@@ -4288,7 +4288,7 @@
     registration_date: '2016-03-31T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 477
 - fields:
@@ -4297,7 +4297,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 478
 - fields:
@@ -4306,7 +4306,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 479
 - fields:
@@ -4315,7 +4315,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 480
 - fields:
@@ -4324,7 +4324,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 481
 - fields:
@@ -4333,7 +4333,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 482
 - fields:
@@ -4342,7 +4342,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 483
 - fields:
@@ -4351,7 +4351,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 484
 - fields:
@@ -4360,7 +4360,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 485
 - fields:
@@ -4369,7 +4369,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 486
 - fields:
@@ -4378,7 +4378,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 487
 - fields:
@@ -4387,7 +4387,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 488
 - fields:
@@ -4396,7 +4396,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 489
 - fields:
@@ -4405,7 +4405,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 490
 - fields:
@@ -4414,7 +4414,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 491
 - fields:
@@ -4423,7 +4423,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 492
 - fields:
@@ -4432,7 +4432,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 493
 - fields:
@@ -4441,7 +4441,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 494
 - fields:
@@ -4450,7 +4450,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 495
 - fields:
@@ -4459,7 +4459,7 @@
     registration_date: '2016-03-28T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 496
 - fields:
@@ -4468,7 +4468,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 497
 - fields:
@@ -4477,7 +4477,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 498
 - fields:
@@ -4486,7 +4486,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 499
 - fields:
@@ -4495,7 +4495,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 500
 - fields:
@@ -4504,7 +4504,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 501
 - fields:
@@ -4513,7 +4513,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 502
 - fields:
@@ -4522,7 +4522,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 503
 - fields:
@@ -4531,7 +4531,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 504
 - fields:
@@ -4540,7 +4540,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 505
 - fields:
@@ -4549,7 +4549,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 506
 - fields:
@@ -4558,7 +4558,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 507
 - fields:
@@ -4567,7 +4567,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 508
 - fields:
@@ -4576,7 +4576,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 509
 - fields:
@@ -4585,7 +4585,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 510
 - fields:
@@ -4594,7 +4594,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 511
 - fields:
@@ -4603,7 +4603,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 512
 - fields:
@@ -4612,7 +4612,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 513
 - fields:
@@ -4621,7 +4621,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 514
 - fields:
@@ -4630,7 +4630,7 @@
     registration_date: '2016-03-26T15:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 515
 - fields:
@@ -4639,7 +4639,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 516
 - fields:
@@ -4648,7 +4648,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 517
 - fields:
@@ -4657,7 +4657,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 518
 - fields:
@@ -4666,7 +4666,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 519
 - fields:
@@ -4675,7 +4675,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 520
 - fields:
@@ -4684,7 +4684,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 521
 - fields:
@@ -4693,7 +4693,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 522
 - fields:
@@ -4702,7 +4702,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 523
 - fields:
@@ -4711,7 +4711,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 524
 - fields:
@@ -4720,7 +4720,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 525
 - fields:
@@ -4729,7 +4729,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 526
 - fields:
@@ -4738,7 +4738,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 527
 - fields:
@@ -4747,7 +4747,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 528
 - fields:
@@ -4756,7 +4756,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 529
 - fields:
@@ -4765,7 +4765,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 530
 - fields:
@@ -4774,7 +4774,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 531
 - fields:
@@ -4783,7 +4783,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 532
 - fields:
@@ -4792,7 +4792,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 533
 - fields:
@@ -4801,7 +4801,7 @@
     registration_date: '2016-03-24T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 534
 - fields:
@@ -4810,7 +4810,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 535
 - fields:
@@ -4819,7 +4819,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 536
 - fields:
@@ -4828,7 +4828,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 537
 - fields:
@@ -4837,7 +4837,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 538
 - fields:
@@ -4846,7 +4846,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 539
 - fields:
@@ -4855,7 +4855,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 540
 - fields:
@@ -4864,7 +4864,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 541
 - fields:
@@ -4873,7 +4873,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 542
 - fields:
@@ -4882,7 +4882,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 543
 - fields:
@@ -4891,7 +4891,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 544
 - fields:
@@ -4900,7 +4900,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 545
 - fields:
@@ -4909,7 +4909,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 546
 - fields:
@@ -4918,7 +4918,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 547
 - fields:
@@ -4927,7 +4927,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 548
 - fields:
@@ -4936,7 +4936,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 549
 - fields:
@@ -4945,7 +4945,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 550
 - fields:
@@ -4954,7 +4954,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 551
 - fields:
@@ -4963,7 +4963,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 552
 - fields:
@@ -4972,7 +4972,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 553
 - fields:
@@ -4981,7 +4981,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 554
 - fields:
@@ -4990,7 +4990,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 555
 - fields:
@@ -4999,7 +4999,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 556
 - fields:
@@ -5008,7 +5008,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 557
 - fields:
@@ -5017,7 +5017,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 558
 - fields:
@@ -5026,7 +5026,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 559
 - fields:
@@ -5035,7 +5035,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 560
 - fields:
@@ -5044,7 +5044,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 561
 - fields:
@@ -5053,7 +5053,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 562
 - fields:
@@ -5062,7 +5062,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 563
 - fields:
@@ -5071,7 +5071,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 564
 - fields:
@@ -5080,7 +5080,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 565
 - fields:
@@ -5089,7 +5089,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 566
 - fields:
@@ -5098,7 +5098,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 567
 - fields:
@@ -5107,7 +5107,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 568
 - fields:
@@ -5116,7 +5116,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 569
 - fields:
@@ -5125,7 +5125,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 570
 - fields:
@@ -5134,7 +5134,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 571
 - fields:
@@ -5143,7 +5143,7 @@
     registration_date: '2016-03-23T16:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 572
 - fields:
@@ -5152,7 +5152,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 573
 - fields:
@@ -5161,7 +5161,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 574
 - fields:
@@ -5170,7 +5170,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 575
 - fields:
@@ -5179,7 +5179,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 576
 - fields:
@@ -5188,7 +5188,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 577
 - fields:
@@ -5197,7 +5197,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 578
 - fields:
@@ -5206,7 +5206,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 579
 - fields:
@@ -5215,7 +5215,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 580
 - fields:
@@ -5224,7 +5224,7 @@
     registration_date: '2016-03-22T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 581
 - fields:
@@ -5233,7 +5233,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 582
 - fields:
@@ -5242,7 +5242,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 583
 - fields:
@@ -5251,7 +5251,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 584
 - fields:
@@ -5260,7 +5260,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 585
 - fields:
@@ -5269,7 +5269,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 586
 - fields:
@@ -5278,7 +5278,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 587
 - fields:
@@ -5287,7 +5287,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 588
 - fields:
@@ -5296,7 +5296,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 589
 - fields:
@@ -5305,7 +5305,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 590
 - fields:
@@ -5314,7 +5314,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 591
 - fields:
@@ -5323,7 +5323,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 592
 - fields:
@@ -5332,7 +5332,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 593
 - fields:
@@ -5341,7 +5341,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 594
 - fields:
@@ -5350,7 +5350,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 595
 - fields:
@@ -5359,7 +5359,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 596
 - fields:
@@ -5368,7 +5368,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 597
 - fields:
@@ -5377,7 +5377,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 598
 - fields:
@@ -5386,7 +5386,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 599
 - fields:
@@ -5395,7 +5395,7 @@
     registration_date: '2016-03-17T19:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 600
 - fields:
@@ -5404,7 +5404,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 601
 - fields:
@@ -5413,7 +5413,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 602
 - fields:
@@ -5422,7 +5422,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 603
 - fields:
@@ -5431,7 +5431,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 604
 - fields:
@@ -5440,7 +5440,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 605
 - fields:
@@ -5449,7 +5449,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 606
 - fields:
@@ -5458,7 +5458,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 607
 - fields:
@@ -5467,7 +5467,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 608
 - fields:
@@ -5476,7 +5476,7 @@
     registration_date: '2016-03-01T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 609
 - fields:
@@ -5485,7 +5485,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 610
 - fields:
@@ -5494,7 +5494,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 611
 - fields:
@@ -5503,7 +5503,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 612
 - fields:
@@ -5512,7 +5512,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 613
 - fields:
@@ -5521,7 +5521,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 614
 - fields:
@@ -5530,7 +5530,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 615
 - fields:
@@ -5539,7 +5539,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 616
 - fields:
@@ -5548,7 +5548,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 617
 - fields:
@@ -5557,7 +5557,7 @@
     registration_date: '2016-02-28T16:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 618
 - fields:
@@ -5566,7 +5566,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 619
 - fields:
@@ -5575,7 +5575,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 620
 - fields:
@@ -5584,7 +5584,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 621
 - fields:
@@ -5593,7 +5593,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 622
 - fields:
@@ -5602,7 +5602,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 623
 - fields:
@@ -5611,7 +5611,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 624
 - fields:
@@ -5620,7 +5620,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 625
 - fields:
@@ -5629,7 +5629,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 626
 - fields:
@@ -5638,7 +5638,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 627
 - fields:
@@ -5647,7 +5647,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 628
 - fields:
@@ -5656,7 +5656,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 629
 - fields:
@@ -5665,7 +5665,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 630
 - fields:
@@ -5674,7 +5674,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 631
 - fields:
@@ -5683,7 +5683,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 632
 - fields:
@@ -5692,7 +5692,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 633
 - fields:
@@ -5701,7 +5701,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 634
 - fields:
@@ -5710,7 +5710,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 635
 - fields:
@@ -5719,7 +5719,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 636
 - fields:
@@ -5728,7 +5728,7 @@
     registration_date: '2016-02-25T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 637
 - fields:
@@ -5737,7 +5737,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 638
 - fields:
@@ -5746,7 +5746,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 639
 - fields:
@@ -5755,7 +5755,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 640
 - fields:
@@ -5764,7 +5764,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 641
 - fields:
@@ -5773,7 +5773,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 642
 - fields:
@@ -5782,7 +5782,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 643
 - fields:
@@ -5791,7 +5791,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 644
 - fields:
@@ -5800,7 +5800,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 645
 - fields:
@@ -5809,7 +5809,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 646
 - fields:
@@ -5818,7 +5818,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 647
 - fields:
@@ -5827,7 +5827,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 648
 - fields:
@@ -5836,7 +5836,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 649
 - fields:
@@ -5845,7 +5845,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 650
 - fields:
@@ -5854,7 +5854,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 651
 - fields:
@@ -5863,7 +5863,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 652
 - fields:
@@ -5872,7 +5872,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 653
 - fields:
@@ -5881,7 +5881,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 654
 - fields:
@@ -5890,7 +5890,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 655
 - fields:
@@ -5899,7 +5899,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 656
 - fields:
@@ -5908,7 +5908,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 657
 - fields:
@@ -5917,7 +5917,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 658
 - fields:
@@ -5926,7 +5926,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 659
 - fields:
@@ -5935,7 +5935,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 660
 - fields:
@@ -5944,7 +5944,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 661
 - fields:
@@ -5953,7 +5953,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 662
 - fields:
@@ -5962,7 +5962,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 663
 - fields:
@@ -5971,7 +5971,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 664
 - fields:
@@ -5980,7 +5980,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 665
 - fields:
@@ -5989,7 +5989,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 666
 - fields:
@@ -5998,7 +5998,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 667
 - fields:
@@ -6007,7 +6007,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 668
 - fields:
@@ -6016,7 +6016,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 669
 - fields:
@@ -6025,7 +6025,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 670
 - fields:
@@ -6034,7 +6034,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 671
 - fields:
@@ -6043,7 +6043,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 672
 - fields:
@@ -6052,7 +6052,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 673
 - fields:
@@ -6061,7 +6061,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 674
 - fields:
@@ -6070,7 +6070,7 @@
     registration_date: '2016-02-24T16:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 675
 - fields:
@@ -6079,7 +6079,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 676
 - fields:
@@ -6088,7 +6088,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 677
 - fields:
@@ -6097,7 +6097,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 678
 - fields:
@@ -6106,7 +6106,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 679
 - fields:
@@ -6115,7 +6115,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 680
 - fields:
@@ -6124,7 +6124,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 681
 - fields:
@@ -6133,7 +6133,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 682
 - fields:
@@ -6142,7 +6142,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 683
 - fields:
@@ -6151,7 +6151,7 @@
     registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 684
 - fields:
@@ -6160,7 +6160,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 685
 - fields:
@@ -6169,7 +6169,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 686
 - fields:
@@ -6178,7 +6178,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 687
 - fields:
@@ -6187,7 +6187,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 688
 - fields:
@@ -6196,7 +6196,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 689
 - fields:
@@ -6205,7 +6205,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 690
 - fields:
@@ -6214,7 +6214,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 691
 - fields:
@@ -6223,7 +6223,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 692
 - fields:
@@ -6232,7 +6232,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 693
 - fields:
@@ -6241,7 +6241,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 694
 - fields:
@@ -6250,7 +6250,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 695
 - fields:
@@ -6259,7 +6259,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 696
 - fields:
@@ -6268,7 +6268,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 697
 - fields:
@@ -6277,7 +6277,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 698
 - fields:
@@ -6286,7 +6286,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 699
 - fields:
@@ -6295,7 +6295,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 700
 - fields:
@@ -6304,7 +6304,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 701
 - fields:
@@ -6313,7 +6313,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 702
 - fields:
@@ -6322,7 +6322,7 @@
     registration_date: '2016-02-22T17:15:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 703
 - fields:
@@ -6331,7 +6331,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 704
 - fields:
@@ -6340,7 +6340,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 705
 - fields:
@@ -6349,7 +6349,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 706
 - fields:
@@ -6358,7 +6358,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 707
 - fields:
@@ -6367,7 +6367,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 708
 - fields:
@@ -6376,7 +6376,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 709
 - fields:
@@ -6385,7 +6385,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 710
 - fields:
@@ -6394,7 +6394,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 711
 - fields:
@@ -6403,7 +6403,7 @@
     registration_date: '2016-02-20T09:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 712
 - fields:
@@ -6412,7 +6412,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 713
 - fields:
@@ -6421,7 +6421,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 714
 - fields:
@@ -6430,7 +6430,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 715
 - fields:
@@ -6439,7 +6439,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 716
 - fields:
@@ -6448,7 +6448,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 717
 - fields:
@@ -6457,7 +6457,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 718
 - fields:
@@ -6466,7 +6466,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 719
 - fields:
@@ -6475,7 +6475,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 720
 - fields:
@@ -6484,7 +6484,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 721
 - fields:
@@ -6493,7 +6493,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 722
 - fields:
@@ -6502,7 +6502,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 723
 - fields:
@@ -6511,7 +6511,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 724
 - fields:
@@ -6520,7 +6520,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 725
 - fields:
@@ -6529,7 +6529,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 726
 - fields:
@@ -6538,7 +6538,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 727
 - fields:
@@ -6547,7 +6547,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 728
 - fields:
@@ -6556,7 +6556,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 729
 - fields:
@@ -6565,7 +6565,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 730
 - fields:
@@ -6574,7 +6574,7 @@
     registration_date: '2016-02-19T16:15:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 731
 - fields:
@@ -6583,7 +6583,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 1
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 732
 - fields:
@@ -6592,7 +6592,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 2
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 733
 - fields:
@@ -6601,7 +6601,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 3
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 734
 - fields:
@@ -6610,7 +6610,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 4
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 735
 - fields:
@@ -6619,7 +6619,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 5
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 736
 - fields:
@@ -6628,7 +6628,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 6
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 737
 - fields:
@@ -6637,7 +6637,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 7
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 738
 - fields:
@@ -6646,7 +6646,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 8
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 739
 - fields:
@@ -6655,7 +6655,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 9
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 740
 - fields:
@@ -6664,7 +6664,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 10
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 741
 - fields:
@@ -6673,7 +6673,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 11
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 742
 - fields:
@@ -6682,7 +6682,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 12
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 743
 - fields:
@@ -6691,7 +6691,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 13
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 744
 - fields:
@@ -6700,7 +6700,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 14
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 745
 - fields:
@@ -6709,7 +6709,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 15
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 746
 - fields:
@@ -6718,7 +6718,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 16
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 747
 - fields:
@@ -6727,7 +6727,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 17
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 748
 - fields:
@@ -6736,7 +6736,7 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 18
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 749
 - fields:
@@ -6745,6 +6745,6 @@
     registration_date: '2016-02-18T17:00:00+00:00'
     unregistration_date: null
     user: 19
-    status: 'SUCCESS'
+    status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 750

@@ -14,7 +14,7 @@ def async_register(registration_id):
             registration.event.register(registration)
             # Notify websockets with success and send mail with on_commit
     except (ValueError, IntegrityError):
-        registration.status = constants.STATUS_FAILURE
+        registration.status = constants.FAILURE_REGISTER
         registration.save()
         # Notify websockets with failure
 
@@ -26,6 +26,6 @@ def async_unregister(registration_id):
         with transaction.atomic():
             registration.event.unregister(registration)
     except IntegrityError:
-        registration.status = constants.STATUS_FAILURE
+        registration.status = constants.FAILURE_UNREGISTER
         registration.save()
         # Notify websockets with failure

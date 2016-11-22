@@ -14,7 +14,7 @@ class RegistrationReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'status')
+        fields = ('id', 'user', 'pool', 'status')
         read_only = True
 
 
