@@ -1,7 +1,7 @@
+from datetime import datetime
 from unittest import skipIf
 
 import stripe
-from datetime import datetime
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
 
