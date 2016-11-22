@@ -81,16 +81,19 @@ class RegistrationViewSet(mixins.CreateModelMixin,
         with transaction.atomic():
             registration = Registration.objects.get_or_create(event_id=event_id,
                                                               user_id=user_id)[0]
+            registration.status = constants.PENDING_REGISTER
+            registration.save()
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(registration)
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.status = constants.STATUS_PENDING
-        instance.save()
+        with transaction.atomic():
+            instance = self.get_object()
+            instance.status = constants.PENDING_UNREGISTER
+            instance.save()
+            transaction.on_commit(lambda: async_unregister.delay(instance.id))
         serializer = RegistrationReadSerializer(instance)
-        async_unregister.delay(instance.id)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.list_route(methods=['POST'],
