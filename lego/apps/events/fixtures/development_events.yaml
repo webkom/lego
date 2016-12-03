@@ -8,6 +8,9 @@
     start_time: '2016-10-27T17:15:00+00:00'
     text: TBA
     title: EINR
+    is_priced: True
+    price_member: 50
+    price_guest: 100
   model: events.Event
   pk: 1
 - fields:
@@ -753,6 +756,9 @@
       \ 18:30 på Banksalen.\r\n\r\nMat: 2-retters middag, en bong inkludert\r\n\r\n\
       Pris: 270"
     title: Vaargalla
+    is_priced: True
+    price_member: 27000
+    price_guest: 35000
   model: events.Event
   pk: 35
 - fields:

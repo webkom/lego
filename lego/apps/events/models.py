@@ -35,8 +35,8 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
     heed_penalties = models.BooleanField(default=True)
 
     is_priced = models.BooleanField(default=False)
-    price_member = models.PositiveSmallIntegerField(default=0)
-    price_guest = models.PositiveSmallIntegerField(default=0)
+    price_member = models.PositiveIntegerField(default=0)
+    price_guest = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -333,6 +333,11 @@ class Event(SlugContent, BasisModel, ObjectPermissionsModel):
         registration = self.registrations.filter(user=user).exclude(pool=None).first()
         return registration.id if registration else None
 
+    def get_price(self, user):
+        if user.is_abakus_member:
+            return self.price_member
+        return self.price_guest
+
     @property
     def is_merged(self):
         if self.merge_time is None:
@@ -435,9 +440,3 @@ class Registration(BasisModel):
         self.status = status
         self.save()
         return self
-
-    @property
-    def cost(self):
-        if self.user.is_abakus_member:
-            return self.event.price_member
-        return self.event.price_guest

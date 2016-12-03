@@ -41,11 +41,11 @@ class EventViewSet(viewsets.ModelViewSet):
 
     @decorators.detail_route(methods=['POST'], serializer_class=StripeSerializer)
     def payment(self, request, *args, **kwargs):
-        event_id = self.kwargs.get('pk', None)
-        event = Event.objects.get(id=event_id)
-        registration = event.registrations.get(user__id=request.user.id)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        event_id = self.kwargs.get('pk', None)
+        event = Event.objects.get(id=event_id)
+        registration = event.registrations.get(user=request.user)
 
         if not registration or not event.is_priced:
             raise PermissionDenied()
@@ -55,9 +55,9 @@ class EventViewSet(viewsets.ModelViewSet):
 
         try:
             response = stripe.Charge.create(
-                amount=registration.cost,
+                amount=event.get_price(registration.user),
                 currency='NOK',
-                source=request.data['token'],
+                source=serializer.data['token'],
                 description=event.slug,
                 metadata={
                     'EVENT_ID': event_id,

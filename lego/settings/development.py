@@ -1,3 +1,7 @@
+import os
+
+import stripe
+
 from .base import INSTALLED_APPS, MIDDLEWARE_CLASSES
 from .rest_framework import REST_FRAMEWORK
 
@@ -5,6 +9,7 @@ DEBUG = True
 DEVELOPMENT = True
 
 SECRET_KEY = 'secret'
+stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
 
 DATABASES = {
     'default': {
