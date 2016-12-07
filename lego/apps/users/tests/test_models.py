@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
@@ -207,6 +208,11 @@ class PenaltyTestCase(TestCase):
         self.test_user = User.objects.get(pk=1)
         self.source = Event.objects.all().first()
 
+    def fake_time(self, y, m, d):
+        dt = timezone.datetime(y, m, d)
+        dt = timezone.pytz.timezone('UTC').localize(dt)
+        return dt
+
     def test_create_penalty(self):
         penalty = Penalty.objects.create(user=self.test_user, reason='test',
                                          weight=1, source_event=self.source)
@@ -227,11 +233,24 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
 
     def test_only_count_active_penalties(self):
+        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 10, 1)):
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
+                                   user=self.test_user, reason='test', weight=1,
+                                   source_event=self.source)
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=19,
+                                                                       hours=23,
+                                                                       minutes=59),
+                                   user=self.test_user, reason='test', weight=1,
+                                   source_event=self.source)
+            self.assertEqual(self.test_user.number_of_penalties(), 1)
 
-        Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
-                               user=self.test_user, reason='test', weight=1,
-                               source_event=self.source)
-        Penalty.objects.create(created_at=timezone.now()-timedelta(days=19, hours=23, minutes=59),
-                               user=self.test_user, reason='test', weight=1,
-                               source_event=self.source)
-        self.assertEqual(self.test_user.number_of_penalties(), 1)
+    def test_frozen_penalties_count_as_active(self):
+        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 12, 24)):
+            print(timezone.now())
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=42),
+                                   user=self.test_user, reason='test', weight=1,
+                                   source_event=self.source)
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=15),
+                                   user=self.test_user, reason='test', weight=1,
+                                   source_event=self.source)
+            self.assertEqual(self.test_user.number_of_penalties(), 2)
