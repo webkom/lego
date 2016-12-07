@@ -61,8 +61,8 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     is_priced: True
-    price_member: 50
-    price_guest: 100
+    price_member: 10000
+    price_guest: 15000
     can_view_groups:
       - 2
 
@@ -124,7 +124,7 @@
     event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 10
+      - 2
 
 - model: events.Registration
   pk: 1
@@ -141,5 +141,14 @@
     user: 2
     event: 1
     pool: 1
+    registration_date: '2011-09-01T13:20:30+03:00'
+    status: 'SUCCESS_REGISTER'
+
+- model: events.Registration
+  pk: 3
+  fields:
+    user: 1
+    event: 5
+    pool: 5
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
