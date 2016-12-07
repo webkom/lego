@@ -85,8 +85,10 @@ class AbakusGroupHierarchyTestCase(TestCase):
 
     def test_get_descendants_include_self(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
-        self.assertEqual(set(AbakusGroup.objects.all()),
-                         set(abakus.get_descendants(include_self=True)))
+        users = AbakusGroup.objects.get(name='Users')
+        union = set(list(abakus.get_descendants(include_self=True)) +
+                    list(users.get_descendants(include_self=True)))
+        self.assertEqual(set(AbakusGroup.objects.all()), union)
 
 
 class UserTestCase(TestCase):
