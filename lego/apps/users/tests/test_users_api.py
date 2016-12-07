@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest import mock
 
 from django.core.urlresolvers import reverse
 from django.utils import timezone
@@ -275,16 +276,22 @@ class RetrieveSelfTestCase(APITestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_own_penalties_serializer(self):
-        source = Event.objects.all().first()
-        Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
-                               user=self.user, reason='test', weight=1, source_event=source)
-        Penalty.objects.create(created_at=timezone.now()-timedelta(days=19, hours=23, minutes=59),
-                               user=self.user, reason='test', weight=1, source_event=source)
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(reverse('api:v1:user-me'))
+        dt = timezone.datetime(2016, 10, 1)
+        dt = timezone.pytz.timezone('UTC').localize(dt)
+        with mock.patch('django.utils.timezone.now', return_value=dt):
+            print(timezone.now())
+            source = Event.objects.all().first()
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
+                                   user=self.user, reason='test', weight=1, source_event=source)
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=19,
+                                                                       hours=23,
+                                                                       minutes=59),
+                                   user=self.user, reason='test', weight=1, source_event=source)
+            self.client.force_authenticate(user=self.user)
+            response = self.client.get(reverse('api:v1:user-me'))
 
-        self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
-        self.assertEqual(len(response.data['penalties']), 1)
-        self.assertEqual(len(response.data['penalties'][0]), 5)
+            self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
+            self.assertEqual(len(response.data['penalties']), 1)
+            self.assertEqual(len(response.data['penalties'][0]), 5)

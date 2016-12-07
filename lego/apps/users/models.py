@@ -224,7 +224,7 @@ class Penalty(BasisModel):
     objects = UserPenaltyManager()
 
     def expires(self):
-        dt = Penalty.objects.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
+        dt = Penalty.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
         return dt.days
 
     @staticmethod
