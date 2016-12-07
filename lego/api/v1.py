@@ -3,6 +3,7 @@ from rest_framework import routers
 from lego.apps.articles.views.articles import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
+from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import NotificationFeedViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
@@ -23,6 +24,7 @@ router.register(r'events', EventViewSet)
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
+router.register(r'webhooks', StripeWebhook, base_name='webhooks')
 router.register(r'groups', AbakusGroupViewSet)
 router.register(r'interest-groups', InterestGroupViewSet)
 router.register(r'meetings', MeetingViewSet)

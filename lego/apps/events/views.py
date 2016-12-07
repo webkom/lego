@@ -14,7 +14,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
-                                          RegistrationReadSerializer, StripeSerializer)
+                                          RegistrationReadSerializer, StripeTokenSerializer)
 from lego.apps.events.tasks import async_register, async_unregister
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
@@ -39,7 +39,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
         return super().get_serializer_class()
 
-    @decorators.detail_route(methods=['POST'], serializer_class=StripeSerializer)
+    @decorators.detail_route(methods=['POST'], serializer_class=StripeTokenSerializer)
     def payment(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,7 +47,7 @@ class EventViewSet(viewsets.ModelViewSet):
         event = Event.objects.get(id=event_id)
         registration = event.registrations.get(user=request.user)
 
-        if not registration or not event.is_priced:
+        if not registration.pool or not event.is_priced:
             raise PermissionDenied()
 
         if registration.charge_id:
@@ -66,6 +66,7 @@ class EventViewSet(viewsets.ModelViewSet):
                 }
             )
             registration.charge_id = response.id
+            registration.charge_amount = response.amount
             registration.charge_status = response.status
             registration.save()
             return Response(data=response, status=status.HTTP_200_OK)

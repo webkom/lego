@@ -94,8 +94,15 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         fields = ('id',)
 
 
-class StripeSerializer(serializers.Serializer):
+class StripeTokenSerializer(serializers.Serializer):
     token = serializers.CharField()
+
+
+class StripeObjectSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    amount = serializers.IntegerField()
+    amount_refunded = serializers.IntegerField()
+    status = serializers.CharField()
 
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):

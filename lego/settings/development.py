@@ -11,6 +11,9 @@ DEVELOPMENT = True
 SECRET_KEY = 'secret'
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
 
+WEBHOOK_USERNAME = 'stripe'
+WEBHOOK_PASSWORD = 'webhook'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
