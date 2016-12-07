@@ -14,6 +14,7 @@ def get_dummy_users(n):
         first_name = last_name = username = email = str(i)
         user = User(username=username, first_name=first_name, last_name=last_name, email=email)
         user.save()
+        AbakusGroup.objects.get(name='Users').add_user(user)
         users.append(user)
 
     return users
@@ -55,12 +56,11 @@ class RegistrationMethodTest(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        user = get_dummy_users(1)[0]
-        AbakusGroup.objects.get(name='Abakus').add_user(user)
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
-        self.registration = event.register(registration)
+        self.event = Event.objects.get(title='POOLS_AND_PRICED')
+        self.users = get_dummy_users(2)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.users[0])
+        self.registration = Registration.objects.get_or_create(event=self.event,
+                                                               user=self.users[0])[0]
 
     def test_str(self):
         d = {
@@ -69,6 +69,16 @@ class RegistrationMethodTest(TestCase):
         }
 
         self.assertEqual(str(self.registration), str(d))
+
+    def test_member_cost(self):
+        self.registration = self.event.register(self.registration)
+        self.assertEqual(self.event.get_price(self.registration.user), 10000)
+
+    def test_user_cost(self):
+        registration = Registration.objects.get_or_create(event=self.event,
+                                                          user=self.users[1])[0]
+        self.event.register(registration)
+        self.assertEqual(self.event.get_price(registration.user), 15000)
 
 
 class PoolCapacityTestCase(TestCase):
@@ -792,6 +802,23 @@ class RegistrationTestCase(TestCase):
         abakus_pool = event.pools.get(name='Abakusmember')
         self.assertEqual(event.select_highest_capacity([abakus_pool, webkom_pool]), abakus_pool)
 
+    def test_get_earliest_registration_time_without_pools_provided(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        webkom_pool = event.pools.get(name='Webkom')
+        abakus_pool = event.pools.get(name='Abakusmember')
+
+        current_time = timezone.now()
+        webkom_pool.activation_date = current_time
+        webkom_pool.save()
+        abakus_pool.activation_date = current_time - timedelta(hours=1)
+        abakus_pool.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        earliest_reg = event.get_earliest_registration_time(user)
+
+        self.assertEqual(earliest_reg, abakus_pool.activation_date)
+
     def test_get_earliest_registration_time_no_penalties(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
@@ -800,7 +827,7 @@ class RegistrationTestCase(TestCase):
         current_time = timezone.now()
         webkom_pool.activation_date = current_time
         webkom_pool.save()
-        abakus_pool.activation_date = current_time-timedelta(hours=1)
+        abakus_pool.activation_date = current_time - timedelta(hours=1)
         abakus_pool.save()
 
         user = get_dummy_users(1)[0]
