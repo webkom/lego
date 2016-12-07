@@ -416,6 +416,8 @@ class Registration(BasisModel):
                               choices=constants.STATUSES)
 
     charge_id = models.CharField(null=True, max_length=50)
+    charge_amount = models.IntegerField(default=0)
+    charge_amount_refunded = models.IntegerField(default=0)
     charge_status = models.CharField(null=True, max_length=50)
 
     class Meta:
