@@ -1,4 +1,3 @@
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
@@ -26,7 +25,6 @@ class StripeWebhook(viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = StripeWebhookSerializer
 
-    @csrf_exempt
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

@@ -14,10 +14,6 @@ def get_group_for_event(event):
     return Group('event-{0}'.format(event.pk))
 
 
-def get_group_for_registration(registration):
-    return Group('registration-{0}'.format(registration.pk))
-
-
 def find_event_groups(user):
     """
     Find all channels groups the user belongs to as a result

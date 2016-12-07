@@ -72,13 +72,13 @@ class RegistrationMethodTest(TestCase):
 
     def test_member_cost(self):
         self.registration = self.event.register(self.registration)
-        self.assertEqual(self.registration.cost, 50)
+        self.assertEqual(self.event.get_price(self.registration.user), 10000)
 
     def test_user_cost(self):
         registration = Registration.objects.get_or_create(event=self.event,
                                                           user=self.users[1])[0]
         self.event.register(registration)
-        self.assertEqual(registration.cost, 100)
+        self.assertEqual(self.event.get_price(registration.user), 15000)
 
 
 class PoolCapacityTestCase(TestCase):
