@@ -244,13 +244,44 @@ class PenaltyTestCase(TestCase):
                                    source_event=self.source)
             self.assertEqual(self.test_user.number_of_penalties(), 1)
 
-    def test_frozen_penalties_count_as_active(self):
-        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 12, 10)),\
+    def test_frozen_penalties_count_as_active_winter(self):
+        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 12, 10)), \
                 override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10))):
+
+            # This penalty is created slightly less than 20 days from the freeze-point.
+            # It should be counted as active.
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=19,
+                                                                       hours=23,
+                                                                       minutes=59),
+                                   user=self.test_user, reason='active', weight=1,
+                                   source_event=self.source)
+
+            # This penalty is created exactly 20 days from the freeze-point.
+            # It should be counted as inactive.
             Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
-                                   user=self.test_user, reason='test', weight=1,
+                                   user=self.test_user, reason='inactive', weight=1,
                                    source_event=self.source)
-            Penalty.objects.create(created_at=timezone.now()-timedelta(days=15),
-                                   user=self.test_user, reason='test', weight=1,
+
+            self.assertEqual(self.test_user.number_of_penalties(), 1)
+            self.assertEqual(self.test_user.penalties.valid().first().reason, 'active')
+
+    def test_frozen_penalties_count_as_active_summer(self):
+        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 6, 12)),\
+                override_settings(PENALTY_IGNORE_SUMMER=((6, 12), (8, 15))):
+
+            # This penalty is created slightly less than 20 days from the freeze-point.
+            # It should be counted as active.
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=19,
+                                                                       hours=23,
+                                                                       minutes=59),
+                                   user=self.test_user, reason='active', weight=1,
                                    source_event=self.source)
-            self.assertEqual(self.test_user.number_of_penalties(), 2)
+
+            # This penalty is created exactly 20 days from the freeze-point.
+            # It should be counted as inactive.
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
+                                   user=self.test_user, reason='inactive', weight=1,
+                                   source_event=self.source)
+
+            self.assertEqual(self.test_user.number_of_penalties(), 1)
+            self.assertEqual(self.test_user.penalties.valid().first().reason, 'active')

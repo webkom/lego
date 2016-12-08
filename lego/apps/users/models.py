@@ -255,6 +255,6 @@ class Penalty(BasisModel):
             return True
         elif winter_to \
                 < (date.month, date.day) \
-                < winter_from:
+                <= winter_from:
             return False
         return True
