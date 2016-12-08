@@ -279,7 +279,6 @@ class RetrieveSelfTestCase(APITestCase):
         dt = timezone.datetime(2016, 10, 1)
         dt = timezone.pytz.timezone('UTC').localize(dt)
         with mock.patch('django.utils.timezone.now', return_value=dt):
-            print(timezone.now())
             source = Event.objects.all().first()
             Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
                                    user=self.user, reason='test', weight=1, source_event=source)
