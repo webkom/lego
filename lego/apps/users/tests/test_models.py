@@ -1,7 +1,7 @@
 from datetime import timedelta
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from lego.apps.events.models import Event
@@ -245,9 +245,9 @@ class PenaltyTestCase(TestCase):
             self.assertEqual(self.test_user.number_of_penalties(), 1)
 
     def test_frozen_penalties_count_as_active(self):
-        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 12, 24)):
-            print(timezone.now())
-            Penalty.objects.create(created_at=timezone.now()-timedelta(days=42),
+        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 12, 10)),\
+                override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10))):
+            Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
                                    user=self.test_user, reason='test', weight=1,
                                    source_event=self.source)
             Penalty.objects.create(created_at=timezone.now()-timedelta(days=15),
