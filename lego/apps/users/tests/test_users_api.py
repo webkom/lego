@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 from lego.apps.events.models import Event
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers import DetailedUserSerializer, PublicUserSerializer
+from lego.utils.test_utils import fake_time
 
 _test_user_data = {
     'username': 'new_testuser',
@@ -276,9 +277,7 @@ class RetrieveSelfTestCase(APITestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_own_penalties_serializer(self):
-        dt = timezone.datetime(2016, 10, 1)
-        dt = timezone.pytz.timezone('UTC').localize(dt)
-        with mock.patch('django.utils.timezone.now', return_value=dt):
+        with mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1)):
             source = Event.objects.all().first()
             Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
                                    user=self.user, reason='test', weight=1, source_event=source)

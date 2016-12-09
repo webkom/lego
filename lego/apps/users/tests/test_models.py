@@ -7,6 +7,7 @@ from django.utils import timezone
 from lego.apps.events.models import Event
 from lego.apps.social_groups.models import InterestGroup
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
+from lego.utils.test_utils import fake_time
 
 
 class AbakusGroupTestCase(TestCase):
@@ -208,11 +209,6 @@ class PenaltyTestCase(TestCase):
         self.test_user = User.objects.get(pk=1)
         self.source = Event.objects.all().first()
 
-    def fake_time(self, y, m, d):
-        dt = timezone.datetime(y, m, d)
-        dt = timezone.pytz.timezone('UTC').localize(dt)
-        return dt
-
     def test_create_penalty(self):
         penalty = Penalty.objects.create(user=self.test_user, reason='test',
                                          weight=1, source_event=self.source)
@@ -233,7 +229,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
 
     def test_only_count_active_penalties(self):
-        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 10, 1)):
+        with mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1)):
             Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
                                    user=self.test_user, reason='test', weight=1,
                                    source_event=self.source)
@@ -245,7 +241,7 @@ class PenaltyTestCase(TestCase):
             self.assertEqual(self.test_user.number_of_penalties(), 1)
 
     def test_frozen_penalties_count_as_active_winter(self):
-        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 12, 10)), \
+        with mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 12, 10)), \
                 override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10))):
 
             # This penalty is created slightly less than 20 days from the freeze-point.
@@ -266,7 +262,7 @@ class PenaltyTestCase(TestCase):
             self.assertEqual(self.test_user.penalties.valid().first().reason, 'active')
 
     def test_frozen_penalties_count_as_active_summer(self):
-        with mock.patch('django.utils.timezone.now', return_value=self.fake_time(2016, 6, 12)),\
+        with mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 6, 12)),\
                 override_settings(PENALTY_IGNORE_SUMMER=((6, 12), (8, 15))):
 
             # This penalty is created slightly less than 20 days from the freeze-point.
