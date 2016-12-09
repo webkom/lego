@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.utils.test_utils import fake_time
 
 
 def get_dummy_users(n):
@@ -1014,9 +1015,7 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(5)
-        dt = timezone.datetime(2016, 10, 1)
-        dt = timezone.pytz.timezone('UTC').localize(dt)
-        with mock.patch('django.utils.timezone.now', return_value=dt):
+        with mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1)):
             penalty_one = Penalty.objects.create(user=users[0], reason='test',
                                                  weight=1, source_event=event)
             Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
