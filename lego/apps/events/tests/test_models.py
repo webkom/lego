@@ -1011,34 +1011,34 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    def test_bumped_if_penalties_expire_while_waiting(self):
+    @mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1))
+    def test_bumped_if_penalties_expire_while_waiting(self, mock_now):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(5)
-        with mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1)):
-            penalty_one = Penalty.objects.create(user=users[0], reason='test',
-                                                 weight=1, source_event=event)
-            Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
-            abakus_users = users[:5]
-            waiting_users = [users[0], users[4]]
+        penalty_one = Penalty.objects.create(user=users[0], reason='test',
+                                             weight=1, source_event=event)
+        Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
+        abakus_users = users[:5]
+        waiting_users = [users[0], users[4]]
 
-            for user in abakus_users:
-                AbakusGroup.objects.get(name='Abakus').add_user(user)
-            for user in users:
-                registration = Registration.objects.get_or_create(event=event,
-                                                                  user=user)[0]
-                event.register(registration)
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users:
+            registration = Registration.objects.get_or_create(event=event,
+                                                              user=user)[0]
+            event.register(registration)
 
-            self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
-            self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
-            penalty_one.created_at = timezone.now() - timedelta(days=20)
-            penalty_one.save()
-            registration_to_unregister = Registration.objects.get(event=event, user=users[1])
-            event.unregister(registration_to_unregister)
+        penalty_one.created_at = timezone.now() - timedelta(days=20)
+        penalty_one.save()
+        registration_to_unregister = Registration.objects.get(event=event, user=users[1])
+        event.unregister(registration_to_unregister)
 
-            self.assertIsNotNone(event.registrations.get(user=waiting_users[0]).pool)
-            self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+        self.assertIsNotNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
 
 class AdminRegistrationTestCase(TestCase):
