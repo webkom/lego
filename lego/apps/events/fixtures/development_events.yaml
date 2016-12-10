@@ -1,6 +1,6 @@
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: TBA
     end_time: '2016-10-27T20:00:00+00:00'
     event_type: company_presentation
@@ -8,11 +8,14 @@
     start_time: '2016-10-27T17:15:00+00:00'
     text: TBA
     title: EINR
+    is_priced: True
+    price_member: 50
+    price_guest: 100
   model: events.Event
   pk: 1
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Know IT Objectnet AS er et teknologi - og proudktavhengig konsulentselkap
       med kontorer i Oslo
     end_time: '2016-10-25T23:59:00+00:00'
@@ -25,7 +28,7 @@
   pk: 2
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Accenture er et globalt konsulentselskap som leverer tjenester innenfor
       rådgivning, teknologi og outsourcing, med omkring 256 000 ansatte som arbeider
       for kunder i mer enn 120 land.
@@ -39,8 +42,8 @@
   pk: 3
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: 'Bedriftspresentasjon med Netlight '
     end_time: '2016-10-11T23:59:00+00:00'
     event_type: company_presentation
@@ -52,8 +55,8 @@
   pk: 4
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: EY (tidligere Ernst & Young)
     end_time: '2016-10-06T23:59:00+00:00'
     event_type: company_presentation
@@ -65,7 +68,7 @@
   pk: 5
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: TBA
     end_time: '2016-10-04T20:00:00+00:00'
     event_type: company_presentation
@@ -77,8 +80,8 @@
   pk: 6
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Velkommen til lunsjpresentasjon med Sopra Steria.
     end_time: '2016-09-19T23:00:00+00:00'
     event_type: company_presentation
@@ -90,7 +93,7 @@
   pk: 7
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: "Årets BedEx går som vanlig til Oslo og varer i tre dager.\r\nPåmeldingen\
       \ er åpen for alle 5. klassinger"
     end_time: '2016-09-10T12:00:00+00:00'
@@ -115,7 +118,7 @@
   pk: 8
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: ' TBA'
     end_time: '2016-09-09T22:00:00+00:00'
     event_type: company_presentation
@@ -127,7 +130,7 @@
   pk: 9
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: 'Bedriftspresentasjon med DIPS. '
     end_time: '2016-09-06T23:59:00+00:00'
     event_type: company_presentation
@@ -139,8 +142,8 @@
   pk: 10
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Abakus feirer sine nye medlemmer & inviterer til storslått galla
       i Frimurerlogen, 3. september!
     end_time: '2016-09-03T23:59:00+00:00'
@@ -158,8 +161,8 @@
   pk: 11
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Mesan AS er et norsk IT-konsulentselskap som holder til i Oslo sentrum.
       Mesans målsetning er ikke å bli størst, men å være best i Norge på utvikling
       av skreddersydde løsninger innen privat og offentlig sektor.
@@ -173,8 +176,8 @@
   pk: 12
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: ' '
     end_time: '2016-08-30T21:00:00+00:00'
     event_type: company_presentation
@@ -186,8 +189,8 @@
   pk: 13
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: 'Som tidligere blir det også i år sommerfest i Oslo for alle abakuler. '
     end_time: '2016-07-02T23:55:00+00:00'
     event_type: other
@@ -201,8 +204,8 @@
   pk: 14
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: "Etter nok en lang og slitsom eksamensperiode fortjener alle og enhver\
       \ en storslått eksamensfest!\r\n"
     end_time: '2016-06-11T23:59:00+00:00'
@@ -215,8 +218,8 @@
   pk: 15
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
       å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
       til høsten. De skal vise frem Trondheim fra byens beste side gjennom sosiale
@@ -238,8 +241,8 @@
   pk: 16
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
       å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
       til høsten. De skal vise frem Trondheim frem fra sin beste side igjennom sosiale
@@ -261,7 +264,7 @@
   pk: 17
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Lei av å lese til eksamen sa du? Ta deg en time fri fra lesesalen
       og grill med Abakus!
     end_time: '2016-05-20T15:00:00+00:00'
@@ -281,7 +284,7 @@
   pk: 18
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: "Abakus inviterer i år igjen til 17. mai-frokost i Kjelhuset for\
       \ å feire vår grunnlovsdag.\r\n\r\n"
     end_time: '2016-05-17T11:30:00+00:00'
@@ -306,7 +309,7 @@
   pk: 19
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: 'Fagstaben i TDT4100 Objektorientert Programmering holder et uoffisielt
       eksamenskurs i Java. '
     end_time: '2016-05-15T16:00:00+00:00'
@@ -324,8 +327,8 @@
   pk: 20
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Dataforeningen arrangerer i samarbeid med Abakus og Online studentkveld
       i forbindelse med "Sikkerhet og Sårbarhet 2016".
     end_time: '2016-05-09T21:30:00+00:00'
@@ -408,8 +411,8 @@
   pk: 21
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Uoffisielt repetisjonskurs i Krets- og Digitalteknikk med fokus på
       eksamensoppgaver og pensum.
     end_time: '2016-05-07T16:00:00+00:00'
@@ -426,7 +429,7 @@
   pk: 22
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: "Det er på tide med årets fadderpåmelding for masterstudenter! En\
       \ fadder har som oppgave å ta imot de studentene som starter på 2-årig master\
       \ til høsten. De skal vise frem Trondheim fra sin beste side gjennom sosiale\
@@ -447,7 +450,7 @@
   pk: 23
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Fundator AS arrangerer fagsamling her i Trondheim fredag den 29.
       april fra kl. 8:30 til kl 16:00. Vi har satt av 10 plasser til studenter fra
       3.-5. klasse datateknologi og kommunikasjonteknologi med interesse for konsulentbransjen.
@@ -468,8 +471,8 @@
   pk: 24
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Velkommen til lunsjpresentasjon med DNV GL. Etter presentasjonen
       på 45 minutter vil det bli mingling på skolen med servering av pizza og brus.
     end_time: '2016-04-28T15:00:00+00:00'
@@ -490,8 +493,8 @@
   pk: 25
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: "Velkommen til Abakus sin fagdag på mobil plattform. \r\n\r\nEttersom\
       \ mer og mer av folks internett-vaner og aktiviteter skjer på mobilen ønsker\
       \ vi å sette fokus på hvordan vi best mulig kan utvikle løsninger til dette\
@@ -519,7 +522,7 @@
   pk: 26
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: '**Velkommen til Lightning Talks! IDI inviterer, i samarbeid med
       Fagkom fra Online og Abakus, studenter og ansatte til en hyggelig kveld sammen.**'
     end_time: '2016-04-25T20:00:00+00:00'
@@ -551,8 +554,8 @@
   pk: 27
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Da er det på tide med årets andre (og semesterets siste) AbelLan.
     end_time: '2016-04-24T07:00:00+00:00'
     event_type: other
@@ -565,8 +568,8 @@
   pk: 28
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Det er igjen duket for Casino Royale. Det betyr finstasen på, poker,
       rulett, klassiske blackjack og nytt i år... eget nybegynnerbord. Alt finner
       sted på Håndverkeren.
@@ -592,7 +595,7 @@
   pk: 29
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: "Et nytt semester går mot slutten og fadderperioden 2016 nærmer seg\
       \ med stormskritt.\r\n"
     end_time: '2016-04-18T12:00:00+00:00'
@@ -618,8 +621,8 @@
   pk: 30
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: 'Få mennesker kan feste hardere, lengre og mer høylytt enn meksikanere,
       men blant de få er definitivt Labamba og abakulene! '
     end_time: '2016-04-16T01:00:00+00:00'
@@ -642,7 +645,7 @@
   pk: 31
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Nå har vi lyst å dele en av fagdagene med resten av bransjen, og
       vi har et begrenset antall gratis plasser for studenter. Søknadsfrist 15. Mars!
     end_time: '2016-04-15T21:00:00+00:00'
@@ -661,8 +664,8 @@
   pk: 32
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Har du lyst til å sette opp en egen server i skyen med basic sikkerhetsoppsett?
       Knowit kommer for å snakker om kjente sikkerhetstiltak og guider deg gjennom
       oppsettet
@@ -687,8 +690,8 @@
   pk: 33
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: "Vil du lære mer om kunstig intelligens?\r\n=======================================\r\
       \n\r\n**Næringslivsnettverket KiD med Accenture, Telenor og NTNU vil gi en innføring\
       \ i kunstig intelligens gjennom korte inspirasjonsforedrag og kreativ idémyldring.\
@@ -724,8 +727,8 @@
   pk: 34
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Lørdag 9. april inviterer Abakus til Vaargalla!
     end_time: '2016-04-10T08:00:00+00:00'
     event_type: event
@@ -753,12 +756,15 @@
       \ 18:30 på Banksalen.\r\n\r\nMat: 2-retters middag, en bong inkludert\r\n\r\n\
       Pris: 270"
     title: Vaargalla
+    is_priced: True
+    price_member: 27000
+    price_guest: 35000
   model: events.Event
   pk: 35
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: 'Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den? '
     end_time: '2016-04-07T20:00:00+00:00'
     event_type: company_presentation
@@ -777,8 +783,8 @@
   pk: 36
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
       eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
       hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
@@ -803,8 +809,8 @@
   pk: 37
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme
       igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen
       mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene
@@ -841,7 +847,7 @@
   pk: 38
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Hvem tar flagget først? Du eller din studievenn? Itera kjører Capture
       the ”flag” med Java og Lego Mindstorms! [Promovideo](https://vimeo.com/160542061)
     end_time: '2016-04-05T20:00:00+00:00'
@@ -880,8 +886,8 @@
   pk: 39
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Lei av å avstandsbeundre den søte jenta fra maskin? Eller han kjekke
       hunken på Emil? Keen på å bli bedre kjent med den kule gjengen på bakerste rad
       i forelesning? Dette er sjansen til å ta grep og bli bedre kjent på tvers av
@@ -902,7 +908,7 @@
   pk: 40
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Et praktisk kurs hvor vi lærer hvordan man setter opp IT-infrastruktur
       i skyløsningen Microsoft Azure. Vi skal se på tre ulike metoder for å opprette
       virtuelle maskiner (VM), og konfigurere VM-en til en webserver. Første metode
@@ -925,7 +931,7 @@
   pk: 41
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: 'Dersom du er glad i kaffe og har lyst til å lære hvordan du kan
       lage bedre kaffe hjemme, da er denne kaffekvelden hos Dromedar noe for deg.
       Det blir et kurs med fokus på svart kaffe, hvor man kan få smake på forskjellige
@@ -947,8 +953,8 @@
   pk: 42
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: StartIT er et faglig arrangement sponset av Abakus, som spesielt
       promoterer innovasjon innen IT. I år er det mange spennende foredrag man kan
       bli med på!
@@ -976,8 +982,8 @@
   pk: 43
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
       eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
       hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
@@ -1003,8 +1009,8 @@
   pk: 44
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: "Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme\
       \ igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen\
       \ mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene\
@@ -1042,7 +1048,7 @@
   pk: 45
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: "Acando er et konsulentselskap som bistår offentlige og private kunder\
       \ i å lykkes. Vi er ofte engasjert i utfordrende og virksomhetskritiske leveranser\
       \ og prosjekter hvor vår innsats kan bli et være eller ikke være for våre kunder.\
@@ -1068,8 +1074,8 @@
   pk: 46
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Har du lyst å leke deg med video i nettleser?  Vil du lære å lage
       din egen videospiller og koble den til webkameraet ditt? Kantega ønsker velkommen
       til kodeworkshop med solide doser HTML5-magi. Det bare fantasien din som setter
@@ -1104,7 +1110,7 @@
   pk: 47
 - fields:
     can_view_groups:
-    - 1
+    - 2
     description: Da er det klart for å samle Abakus sine komiteer for en Helgesamling
       uten like!
     end_time: '2016-03-06T12:00:00+00:00'
@@ -1130,8 +1136,8 @@
   pk: 48
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Velkommen til Abakus årlige generalforsamling! På Abakus' ordinære
       generalforsamling skal regnskap og årsberetning for 2015 legges frem. Forslag
       til statuttendringer vil legges frem og det skal velges totalt 6 stillinger.
@@ -1186,8 +1192,8 @@
   pk: 49
 - fields:
     can_view_groups:
-    - 1
-    - 10
+    - 2
+    - 11
     description: Vår kjære hovedsamarbeidspartner BEKK inviterer til bedriftspresentasjon.
       Meld deg på og bli bedre kjent med selskapet!
     end_time: '2016-03-03T23:00:00+00:00'

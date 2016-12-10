@@ -1,9 +1,14 @@
+import os
+
+import stripe
+
 from .base import INSTALLED_APPS
 from .rest_framework import REST_FRAMEWORK
 
 DEBUG = False
 
 SECRET_KEY = 'secret'
+stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

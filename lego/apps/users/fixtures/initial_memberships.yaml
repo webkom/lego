@@ -3,7 +3,15 @@
   fields:
     user:
       - webkom
-    abakus_group: 10
+    abakus_group: 1
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 2
+  fields:
+    user:
+      - webkom
+    abakus_group: 2
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -11,5 +19,5 @@
   fields:
     user:
       - webkom
-    abakus_group: 1
+    abakus_group: 11
     start_date: 1994-01-01

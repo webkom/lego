@@ -1,3 +1,7 @@
+from datetime import datetime
+from unittest import skipIf
+
+import stripe
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
 
@@ -79,6 +83,10 @@ def _get_registrations_detail_url(event_pk, registration_pk):
                                                           'pk': registration_pk})
 
 
+def _get_webhook_url():
+    return reverse('api:v1:webhooks-list')
+
+
 class ListEventsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
@@ -91,14 +99,14 @@ class ListEventsTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data), 3)
+        self.assertEqual(len(event_response.data), 4)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data), 4)
+        self.assertEqual(len(event_response.data), 5)
 
 
 class RetrieveEventsTestCase(APITestCase):
@@ -163,7 +171,7 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(_test_pools_data[1], pool_get_response.data)
 
 
-class RetrievePoolsTestCase(APITestCase):
+class PoolsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -180,6 +188,12 @@ class RetrievePoolsTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.get(_get_pools_detail_url(1, 1))
         self.assertEqual(pool_response.status_code, 403)
+
+    def test_create_pool(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
+        self.assertEqual(pool_response.status_code, 201)
 
 
 class RegistrationsTestCase(APITransactionTestCase):
@@ -301,3 +315,81 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         self.assertEqual(registration_response.status_code, 403)
         self.assertEqual(self.event.number_of_registrations, 0)
+
+
+@skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
+class StripePaymentTestCase(APITestCase):
+    """
+    Testing cards used:
+    https://stripe.com/docs/testing#cards
+    """
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.abakus_user = User.objects.get(pk=1)
+        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        self.event = Event.objects.get(title='POOLS_AND_PRICED')
+
+    def create_token(self, number, cvc):
+        return stripe.Token.create(
+            card={
+                'number': number,
+                'exp_month': 12,
+                'exp_year': datetime.now().year + 1,
+                'cvc': cvc
+            },
+        )
+
+    def issue_payment(self, token):
+        return self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': token.id})
+
+    def test_payment(self):
+        token = self.create_token('4242424242424242', '123')
+        res = self.issue_payment(token)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data.get('amount'), 10000)
+        self.assertEqual(res.data.get('status', None), 'succeeded')
+
+    def test_card_declined(self):
+        token = self.create_token('4000000000000002', '123')
+        res = self.issue_payment(token)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data.get('error', None), 'Card declined')
+
+    def test_card_incorrect_cvc(self):
+        token = self.create_token('4000000000000127', '123')
+        res = self.issue_payment(token)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data.get('error', None), 'Card declined')
+
+    def test_card_invalid_request(self):
+        res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': 'invalid'})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data.get('error', None), 'Invalid request')
+
+    def test_refund_webhook(self):
+        token = self.create_token('4242424242424242', '123')
+        res = self.issue_payment(token)
+
+        stripe.Refund.create(charge=res.data.get('id', None))
+
+        stripe_events_all = stripe.Event.all(limit=3)
+        stripe_event = None
+        for obj in stripe_events_all.data:
+            if obj.data.object.id == res.data.id:
+                stripe_event = obj
+                break
+        self.assertIsNotNone(stripe_event)
+
+        webhook = self.client.post(_get_webhook_url(), {
+            'id': stripe_event.id,
+            'type': 'charge.refunded'
+        })
+        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
+
+        self.assertEqual(webhook.status_code, 200)
+        self.assertEqual(registration.charge_status, 'succeeded')
+        self.assertEqual(registration.charge_amount, 10000)
+        self.assertEqual(registration.charge_amount_refunded, 10000)
