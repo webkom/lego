@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 
-from lego.utils.test_cases import ViewTestCase
+from lego.utils.test_utils import ViewTestCase
 
 
 class SmokeTest(ViewTestCase):
