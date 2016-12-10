@@ -1,12 +1,13 @@
 from datetime import timedelta
+from unittest import mock
 
 from django.core.urlresolvers import reverse
-from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers import DetailedUserSerializer, PublicUserSerializer
+from lego.utils.test_utils import fake_time
 
 _test_user_data = {
     'username': 'new_testuser',
@@ -274,11 +275,14 @@ class RetrieveSelfTestCase(APITestCase):
         response = self.client.get(reverse('api:v1:user-me'))
         self.assertEqual(response.status_code, 401)
 
-    def test_own_penalties_serializer(self):
+    @mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1))
+    def test_own_penalties_serializer(self, mock_now):
         source = Event.objects.all().first()
-        Penalty.objects.create(created_at=timezone.now()-timedelta(days=20),
+        Penalty.objects.create(created_at=mock_now()-timedelta(days=20),
                                user=self.user, reason='test', weight=1, source_event=source)
-        Penalty.objects.create(created_at=timezone.now()-timedelta(days=19, hours=23, minutes=59),
+        Penalty.objects.create(created_at=mock_now()-timedelta(days=19,
+                                                               hours=23,
+                                                               minutes=59),
                                user=self.user, reason='test', weight=1, source_event=source)
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse('api:v1:user-me'))

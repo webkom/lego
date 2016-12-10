@@ -1,10 +1,12 @@
 from datetime import timedelta
+from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.utils.test_utils import fake_time
 
 
 def get_dummy_users(n):
@@ -1036,7 +1038,8 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    def test_bumped_if_penalties_expire_while_waiting(self):
+    @mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1))
+    def test_bumped_if_penalties_expire_while_waiting(self, mock_now):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(5)
