@@ -1,10 +1,10 @@
+from django.conf import settings
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 
 from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.users.models import User
-from lego.settings.development import WEBHOOK_PASSWORD, WEBHOOK_USERNAME
 
 
 class StripeWebhookSerializer(serializers.Serializer):
@@ -15,7 +15,7 @@ class StripeWebhookSerializer(serializers.Serializer):
 class StripeAuthentication(BasicAuthentication):
 
     def authenticate_credentials(self, userid, password):
-        if userid == WEBHOOK_USERNAME and password == WEBHOOK_PASSWORD:
+        if userid == settings.WEBHOOK_USERNAME and password == settings.WEBHOOK_PASSWORD:
             return User(), None
         return None
 
