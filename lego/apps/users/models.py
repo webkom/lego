@@ -14,7 +14,7 @@ from mptt.models import MPTTModel
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
-                                      UserPenaltyManager)
+                                      UserPenaltyManager, FriendshipManager)
 from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
@@ -184,6 +184,16 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
             .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
 
+    def friends(self):
+        return self.friends_creator_set.filter(accepted=True) \
+               + self.friends_set.filter(accepted=True)
+
+    def sent_friend_requests(self):
+        return self.friends_creator_set.filter(accepted=False)
+
+    def received_friend_requests(self):
+        return self.friends_set.filter(accepted=False)
+
 
 class Membership(BasisModel):
     MEMBER = 'member'
@@ -214,6 +224,14 @@ class Membership(BasisModel):
 
     def __str__(self):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
+
+
+class Friendship(BasisModel):
+    one = models.ForeignKey(User, related_name='friends_creator_set')
+    two = models.ForeignKey(User, related_name='friends_set')
+    accepted = models.BooleanField(default=False)
+
+    objects = FriendshipManager()
 
 
 class Penalty(BasisModel):

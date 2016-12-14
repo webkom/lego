@@ -25,3 +25,11 @@ class UserPenaltyManager(PersistentModelManager):
         from lego.apps.users.models import Penalty
         offset = Penalty.penalty_offset(timezone.now(), False)
         return super().filter(created_at__gt=timezone.now() - offset)
+
+
+class FriendshipManager(PersistentModelManager):
+    def get_friendship(self, creator, friend):
+        try:
+            return self.get(one=creator, two=friend)
+        except self.model.DoesNotExist:
+            return self.get(one=friend, two=creator)
