@@ -60,3 +60,4 @@ venv/
 lego/settings/local.py
 lego/db.sqlite
 celerybeat.pid
+lego/files/
