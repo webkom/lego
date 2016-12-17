@@ -15,7 +15,7 @@ asgi_redis==1.0.0
 channels==0.17.3
 celery==4.0.2
 whitenoise==3.2.2
-stripe==1.43.0
+stripe==1.44.0
 
 djangorestframework==3.5.3
 djangorestframework-jwt==1.9.0
