@@ -1,37 +1,40 @@
 import socket
 
-from . import TESTING
+import structlog
+from structlog.threadlocal import wrap_dict
+
+from lego.settings import TESTING
+
+
+def skip_if_testing(*args, **kwargs):
+    return not TESTING
+
 
 hostname = socket.gethostname()
-
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console', 'syslog'],
+    },
     'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
+        'skip_if_testing': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_if_testing,
         },
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
         },
-        'skip_if_testing': {
-            '()': 'django.utils.log.CallbackFilter',
-            'callback': lambda *args, **kwargs: not TESTING,
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
         },
-    },
-    'root': {
-        'level': 'DEBUG',
-        'handlers': ['sentry', 'console', 'syslog'],
     },
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s [%(name)s] %(message)s'
         },
-        'syslog': {
-            'format': '{hostname} lego[%(process)d]: [%(name)s] %(message)s'.format(
-                hostname=hostname)
-        }
     },
     'handlers': {
         'sentry': {
@@ -41,16 +44,15 @@ LOGGING = {
         },
         'console': {
             'level': 'DEBUG',
-            'filters': ['skip_if_testing'],
+            'filters': ['skip_if_testing', 'require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
         'syslog': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.SysLogHandler',
-            'facility': 'local7',
-            'formatter': 'syslog',
-        },
+            'level': 'INFO',
+            'filters': ['skip_if_testing', 'require_debug_false'],
+            'class': 'logging.StreamHandler',
+        }
     },
     'loggers': {
         'celery': {
@@ -76,6 +78,31 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
             'filters': ['require_debug_true'],
+        },
+        'elasticsearch': {
+            'level': 'WARNING',
+            'propagate': True
         }
     },
 }
+
+
+WrappedDictClass = wrap_dict(dict)
+
+
+structlog.configure(
+    processors=[
+        structlog.stdlib.filter_by_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.JSONRenderer()
+    ],
+    context_class=WrappedDictClass,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)

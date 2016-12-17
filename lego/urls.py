@@ -4,6 +4,8 @@ from django.contrib.auth.views import login, logout
 from django.views.generic import TemplateView
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
+from lego.apps.health.urls import urlpatterns as health_urlpatterns
+
 jwt_urlpatterns = [
     url(r'^token-auth/$', obtain_jwt_token, name='obtain_jwt_token'),
     url(r'^token-auth/refresh/$', refresh_jwt_token, name='refresh_jwt_token'),
@@ -20,6 +22,7 @@ authorization_urlpatterns = [
 urlpatterns = [
     url(r'^api/', include('lego.api.urls', namespace='api')),
     url(r'^authorization/', include(authorization_urlpatterns)),
+    url(r'^', include(health_urlpatterns, namespace='health')),
     url(r'^$', TemplateView.as_view(template_name='landing.html'), name='landing_page'),
 ]
 

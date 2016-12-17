@@ -44,7 +44,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
     'lego.apps.permissions.backends.AbakusPermissionBackend',
-    'oauth2_provider.backends.OAuth2Backend',
 )
 LOGIN_URL = '/authorization/login/'
 LOGOUT_URL = '/authorization/logout/'
@@ -73,6 +72,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'lego.utils.middleware.LoggingMiddleware'
 ]
 
 TEMPLATES = [
@@ -100,7 +100,7 @@ TEMPLATES = [
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'lego.utils.json_web_tokens.response_handler'
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'lego.apps.jwt.handlers.response_handler'
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
@@ -122,7 +122,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',

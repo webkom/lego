@@ -27,3 +27,8 @@ PENALTY_IGNORE_SUMMER = (
 PENALTY_IGNORE_WINTER = (
     (12, 1), (1, 10)
 )
+
+HEALTH_CHECK_REMOTE_IPS = [
+    '10.',
+    '127.0.0.'
+]
