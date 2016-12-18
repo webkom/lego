@@ -61,5 +61,7 @@ lego/settings/local.py
 lego/files
 lego/db.sqlite
 celerybeat.pid
+lego/files/
+
 docs/
 .git/
