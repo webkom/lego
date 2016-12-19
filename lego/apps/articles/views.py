@@ -2,9 +2,10 @@ from rest_framework import viewsets
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import DetailedArticleSerializer, PublicArticleSerializer
+from lego.apps.permissions.views import PermissionsMixin
 
 
-class ArticlesViewSet(viewsets.ModelViewSet):
+class ArticlesViewSet(PermissionsMixin, viewsets.ModelViewSet):
     queryset = Article.objects.all()
 
     def get_queryset(self):

@@ -6,9 +6,10 @@ from lego.apps.meetings.permissions import MeetingInvitationPermissions, Meeting
 from lego.apps.meetings.serializers import (MeetingGroupInvite, MeetingInvitationSerializer,
                                             MeetingInvitationUpdateSerializer, MeetingSerializer,
                                             MeetingUserInvite)
+from lego.apps.permissions.views import PermissionsMixin
 
 
-class MeetingViewSet(viewsets.ModelViewSet):
+class MeetingViewSet(PermissionsMixin, viewsets.ModelViewSet):
     queryset = Meeting.objects.prefetch_related('invitations', 'invitations__user')
     permission_classes = (MeetingPermissions,)
     serializer_class = MeetingSerializer
@@ -32,7 +33,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response(data='Invited group ' + str(group.id), status=status.HTTP_201_CREATED)
 
 
-class MeetingInvitationViewSet(viewsets.ModelViewSet):
+class MeetingInvitationViewSet(PermissionsMixin, viewsets.ModelViewSet):
     queryset = MeetingInvitation.objects.select_related('user')
     permission_classes = (MeetingInvitationPermissions,)
     lookup_field = 'user__id'

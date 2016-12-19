@@ -25,8 +25,9 @@ class OauthViewsTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(len(response.data), AccessToken.objects.filter(user=self.user).count())
-        for token in response.data:
+        self.assertEqual(len(response.data['results']),
+                         AccessToken.objects.filter(user=self.user).count())
+        for token in response.data['results']:
             self.assertEqual(token['user'], self.user.id)
 
     def test_delete_token(self):

@@ -49,9 +49,9 @@ class ListInterestGroupAPITestCase(APITestCase):
         response = self.client.get(_get_list_url())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), len(self.interest_groups))
+        self.assertEqual(len(response.data['results']), len(self.interest_groups))
 
-        for group in response.data:
+        for group in response.data['results']:
             keys = set(group.keys())
             self.assertEqual(keys, set(_rendered_serializer_fields))
 

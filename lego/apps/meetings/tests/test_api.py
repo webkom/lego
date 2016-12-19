@@ -97,7 +97,7 @@ class RetrieveMeetingTestCase(APITestCase):
             self.client.force_authenticate(user)
             res = self.client.get(_get_invitations_list_url(self.meeting.id))
             self.assertEqual(res.status_code, 200)
-            invitations = list(res.data)
+            invitations = list(res.data['results'])
             attending = [inv for inv in invitations if inv['status'] == MeetingInvitation.ATTENDING]
             self.assertEqual(len(attending), 2)
             no_answer = [inv for inv in invitations if inv['status'] == MeetingInvitation.NO_ANSWER]
