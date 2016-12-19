@@ -3,7 +3,6 @@ import os
 import stripe
 
 from .base import INSTALLED_APPS
-from .rest_framework import REST_FRAMEWORK
 
 DEBUG = False
 
@@ -41,9 +40,6 @@ STREAM_REDIS_CONFIG = {
         'password': None
     },
 }
-
-# We don't care about pagination in the tests
-REST_FRAMEWORK['DEFAULT_PAGINATION_CLASS'] = None
 
 ELASTICSEARCH = [
     {'host': 'localhost'},

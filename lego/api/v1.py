@@ -1,6 +1,6 @@
 from rest_framework import routers
 
-from lego.apps.articles.views.articles import ArticlesViewSet
+from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
