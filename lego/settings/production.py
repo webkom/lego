@@ -16,6 +16,7 @@ environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+SERVER_URL = env('SERVER_URL')
 
 # Database
 DATABASES = {
@@ -30,6 +31,13 @@ CACHES = {
 # Email / We may enable the celery email backend.
 EMAIL_CONFIG = env.email()
 vars().update(EMAIL_CONFIG)
+
+# File Storage
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_REGION = 'eu-central-1'
+AWS_S3_BUCKET = env('AWS_S3_BUCKET')
+
 
 # Sentry
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
