@@ -1,5 +1,5 @@
-LEGO Er Ganske Oppdelt  |frigg| |coverage|
-==========================================
+LEGO Er Ganske Oppdelt
+======================
 
 Contents:
 
@@ -19,9 +19,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. |frigg| image:: https://ci.frigg.io/badges/webkom/lego/
-    :target: https://ci.frigg.io/webkom/lego/last/
-
-.. |coverage| image:: https://ci.frigg.io/badges/coverage/webkom/lego/
-    :target: https://ci.frigg.io/webkom/lego/last/

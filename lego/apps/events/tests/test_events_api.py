@@ -99,14 +99,14 @@ class ListEventsTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data), 4)
+        self.assertEqual(len(event_response.data['results']), 4)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data), 5)
+        self.assertEqual(len(event_response.data['results']), 5)
 
 
 class RetrieveEventsTestCase(APITestCase):
@@ -165,6 +165,7 @@ class CreateEventsTestCase(APITestCase):
                                                _test_pools_data[1])
         pool_get_response = self.client.get(_get_pools_detail_url(self.event_id, self.pool_id))
         pool_get_response.data.pop('registrations')  # The put does not return updated data
+        pool_get_response.data.pop('permissions')  # We don't care about permissions here
 
         self.assertEqual(pool_update_response.status_code, 200)
         self.assertIsNotNone(pool_get_response.data.pop('id'))
@@ -211,7 +212,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(registration_response.data.get('status'), 'PENDING_REGISTER')
         res = self.client.get(_get_registrations_list_url(event.id))
-        user_id = res.data[0].get('user', None)['id']
+        user_id = res.data['results'][0].get('user', None)['id']
         self.assertEqual(user_id, 1)
 
     def test_register_no_pools(self):
@@ -220,7 +221,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(registration_response.data.get('status'), 'PENDING_REGISTER')
         res = self.client.get(_get_registrations_list_url(event.id))
-        for user in res.data:
+        for user in res.data['results']:
             self.assertEqual(user.get('status', None), 'FAILURE_REGISTER')
 
     def test_unregister(self):
