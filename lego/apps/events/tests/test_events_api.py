@@ -1,5 +1,5 @@
 from datetime import timedelta
-from unittest import skipIf
+from unittest import mock, skipIf
 
 import stripe
 from django.core.urlresolvers import reverse
@@ -198,6 +198,7 @@ class PoolsTestCase(APITestCase):
         self.assertEqual(pool_response.status_code, 201)
 
 
+@mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
 class RegistrationsTestCase(APITransactionTestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
@@ -207,7 +208,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
-    def test_create(self):
+    def test_create(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
@@ -216,7 +217,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         user_id = res.data['results'][0].get('user', None)['id']
         self.assertEqual(user_id, 1)
 
-    def test_register_no_pools(self):
+    def test_register_no_pools(self, mock_verify_captcha):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
@@ -225,7 +226,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         for user in res.data['results']:
             self.assertEqual(user.get('status', None), 'FAILURE_REGISTER')
 
-    def test_unregister(self):
+    def test_unregister(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         registration = Registration.objects.get(user=self.abakus_user, event=event)
         registration_response = self.client.delete(_get_registrations_detail_url(event.id,

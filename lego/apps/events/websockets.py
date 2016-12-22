@@ -15,8 +15,9 @@ def find_event_groups(user):
     Find all channels groups the user belongs to as a result
     of being signed up to future events.
     """
-    after_now = Event.objects.filter(start_time__gt=datetime.now())
-    queryset = filter_queryset(user, after_now)
+    queryset = Event.objects.filter(start_time__gt=datetime.now())
+    if not user.has_perm('/sudo/admin/events/list/'):
+        queryset = filter_queryset(user, queryset)
     groups = []
     for event in queryset.all():
         groups.append(group_for_event(event))
