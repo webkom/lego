@@ -8,7 +8,7 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool, PaymentExists
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.permissions import NestedEventPermissions
+from lego.apps.events.permissions import NestedEventPermissions, verify_captcha
 from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
@@ -99,7 +99,6 @@ class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.DestroyModelMixin,
                           mixins.ListModelMixin,
                           viewsets.GenericViewSet):
-    permission_classes = (NestedEventPermissions,)
     serializer_class = RegistrationReadSerializer
     ordering = 'registration_date'
 
@@ -119,6 +118,8 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         event_id = self.kwargs.get('event_pk', None)
         user_id = request.user.id
         with transaction.atomic():
+            if not verify_captcha(request.data.get('captcha_response', None)):
+                raise ValidationError({'error': 'Bad captcha'})
             registration = Registration.objects.get_or_create(event_id=event_id,
                                                               user_id=user_id)[0]
             registration.status = constants.PENDING_REGISTER

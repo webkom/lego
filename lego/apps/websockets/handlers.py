@@ -8,7 +8,7 @@ def group_for_user(user):
 
 
 def group_for_event(event):
-    return Group('event-{0}'.format(event.pk))
+    return Group(f'event-{event.pk}')
 
 
 def find_groups(user):
@@ -18,14 +18,6 @@ def find_groups(user):
     ]
 
     return groups
-
-
-def subscribe_to_group(group, reply_channel):
-    return Group(group).add(reply_channel)
-
-
-def unsubscribe_from_group(group, reply_channel):
-    return Group(group).discard(reply_channel)
 
 
 @jwt_create_channel_session
@@ -52,8 +44,4 @@ def handle_message(message):
         "message": message['text']
     })
     '''
-    payload = message.content['text'].split(':')
-    if payload[0] == 'SUBSCRIBE':
-        subscribe_to_group(payload[1], message.reply_channel)
-    elif payload[0] == 'UNSUBSCRIBE':
-        unsubscribe_from_group(payload[1], message.reply_channel)
+    pass
