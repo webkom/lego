@@ -8,7 +8,7 @@ SITE = {
 }
 
 API_VERSION = 'v1'
-LOGIN_REDIRECT_URL = '/api/{0}/'.format(API_VERSION)
+LOGIN_REDIRECT_URL = f'/api/{API_VERSION}/'
 
 
 ADMINS = (

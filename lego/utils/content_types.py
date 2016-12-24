@@ -48,17 +48,12 @@ def instance_to_content_type_string(instance):
     """
     Convert a model instance to a string like app_label.model_name
     """
-    return '{app_label}.{model_name}'.format(
-        app_label=instance._meta.app_label,
-        model_name=instance._meta.model_name
-    )
+    return f'{instance._meta.app_label}.{instance._meta.model_name}'
 
 
 def instance_to_string(instance):
     """
     Convert a model instance to a string like app_label.model_name-instance_pk
     """
-    return '{content_type}-{instance_id}'.format(
-        content_type=instance_to_content_type_string(instance),
-        instance_id=force_text(instance.pk)
-    )
+    content_type = instance_to_content_type_string(instance)
+    return f'{content_type}-{instance.pk}'

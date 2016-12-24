@@ -14,7 +14,7 @@ class ReactionPermission(AbakusPermission):
 
     def has_permission(self, request, view):
 
-        has_permission = super(ReactionPermission, self).has_permission(request, view)
+        has_permission = super().has_permission(request, view)
 
         if has_permission:
             return True

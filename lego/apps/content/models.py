@@ -21,7 +21,7 @@ class SlugModel(models.Model):
 
     def generate_slug(self):
         content = getattr(self, self.slug_field)
-        slug = slugify('{}-{}'.format(self.pk, content))
+        slug = slugify(f'{self.pk}-{content}')
         if len(slug) <= self.slug_length:
             return slug
 
@@ -70,4 +70,4 @@ class Content(SlugModel):
 
     @property
     def comment_target(self):
-        return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
+        return f'{self._meta.app_label}.{self._meta.model_name}-{self.pk}'
