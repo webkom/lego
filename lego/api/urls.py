@@ -10,7 +10,7 @@ from .v1 import router as v1
 
 @csrf_exempt
 def version_redirect(request, path):
-    new_path = '/api/{0}/{1}/'.format(settings.API_VERSION, path)
+    new_path = f'/api/{settings.API_VERSION}/{path}/'
 
     match = resolve(new_path)
 
@@ -23,6 +23,6 @@ def version_redirect(request, path):
 urlpatterns = [
     url(r'^v1/', include(v1.urls, namespace='v1')),
 
-    url(r'^$', RedirectView.as_view(url='/api/{0}/'.format(settings.API_VERSION)), name='default'),
+    url(r'^$', RedirectView.as_view(url=f'/api/{settings.API_VERSION}/'), name='default'),
     url(r'^(.*)/$', version_redirect),
 ]

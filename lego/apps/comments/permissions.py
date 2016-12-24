@@ -7,7 +7,7 @@ class CommentPermission(AbakusPermission):
 
     def has_permission(self, request, view):
 
-        has_permission = super(CommentPermission, self).has_permission(request, view)
+        has_permission = super().has_permission(request, view)
 
         if not has_permission:
             return False

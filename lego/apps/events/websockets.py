@@ -11,7 +11,7 @@ from .models import Event
 
 
 def get_group_for_event(event):
-    return Group('event-{0}'.format(event.pk))
+    return Group(f'event-{event.pk}')
 
 
 def find_event_groups(user):

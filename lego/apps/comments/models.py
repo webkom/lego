@@ -9,7 +9,7 @@ from lego.utils.models import BasisModel
 
 class CommentManager(BasisModelManager):
     def get_queryset(self):
-        return super(CommentManager, self).get_queryset().select_related('created_by')
+        return super().get_queryset().select_related('created_by')
 
 
 class Comment(BasisModel, ObjectPermissionsModel):
@@ -23,4 +23,4 @@ class Comment(BasisModel, ObjectPermissionsModel):
     objects = CommentManager()
 
     def __str__(self):
-        return '{0} - {1}'.format(self.created_by, self.text[:30])
+        return self.text

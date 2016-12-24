@@ -39,8 +39,7 @@ class Command(BaseCommand):
 
         if changed:
             sys.exit(
-                'Apps with model changes but no corresponding '
-                'migration file: {changed}\n'.format(changed=list(changed))
+                f'Apps with model changes but no corresponding migration file: {list(changed)}\n'
             )
         else:
             sys.stdout.write('All migration files present\n')

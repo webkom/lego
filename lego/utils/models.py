@@ -37,7 +37,7 @@ class PersistentModel(models.Model):
 
     def delete(self, using=None, force=False):
         if force:
-            super(PersistentModel, self).delete(using)
+            super().delete(using)
         else:
             pre_delete.send(sender=self.__class__, instance=self)
             self.deleted = True

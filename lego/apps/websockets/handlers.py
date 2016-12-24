@@ -4,12 +4,12 @@ from lego.apps.websockets.auth import jwt_create_channel_session, jwt_retrieve_c
 
 
 def group_for_user(user):
-    return Group('user-{0}'.format(user.pk))
+    return Group(f'user-{user.pk}')
 
 
 def find_groups(user):
     groups = [
-        Group("global"),
+        Group('global'),
         group_for_user(user)
     ]
 
