@@ -3,7 +3,7 @@ from django.contrib.auth.backends import ModelBackend
 
 class AbakusPermissionBackend:
     """
-    This backend makes it possuble to check for keyword permissions using the standard django
+    This backend makes it possible to check for keyword permissions using the standard django
     method: user.has_perm('/sudo/').
     """
 

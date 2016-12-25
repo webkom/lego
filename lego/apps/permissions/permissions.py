@@ -6,6 +6,7 @@ from .models import ObjectPermissionsModel
 class AbakusPermission(permissions.BasePermission):
 
     OBJECT_METHODS = ['retrieve', 'update', 'partial_update', 'destroy']
+    safe_actions = ['retrieve', 'metadata']
 
     default_permission = '/sudo/admin/{model_name}s/{action}/'
     default_require_auth = True
@@ -14,19 +15,70 @@ class AbakusPermission(permissions.BasePermission):
     authentication_map = {}
     check_object_permission = False
 
-    def get_required_object_permissions(self, action, model_cls):
-        if action == 'partial_update':
-            action = 'update'
-
+    @classmethod
+    def default_keyword_permission(cls, action, model_cls):
+        """
+        Create default permission string based on the model class, action and default_permission
+        format. This is used when no permission is provided for a action in the permission_map.
+        """
         kwargs = {
             'app_label': model_cls._meta.app_label,
             'model_name': model_cls._meta.model_name,
             'action': action
         }
-        perms = self.permission_map.get(action, [
-            self.default_permission
+        return cls.default_permission.format(**kwargs)
+
+    def required_keyword_permissions(self, action, model_cls):
+        """
+        Get required keyword permissions based on the action and model class.
+        Override the permission_map to create custom permissions, the default_keyword_permission
+        function is used otherwise.
+        """
+        if action == 'partial_update':
+            action = 'update'
+
+        return self.permission_map.get(action, [
+            self.default_keyword_permission(action, model_cls)
         ])
-        return [perm.format(**kwargs) for perm in perms]
+
+    def require_auth(self, action):
+        """
+        The first thing we need to check is if authentication is required. Override the
+        authentication_map to change default behaviour. The default is provided by
+        default_require_auth.
+        """
+        return self.authentication_map.get(
+            action, self.default_require_auth
+        )
+
+    def is_authenticated(self, user):
+        return user and user.is_authenticated()
+
+    def _has_permission(self, action, model, user):
+        requires_authentication = self.require_auth(action)
+
+        if not requires_authentication:
+            return True
+
+        authenticated = self.is_authenticated(user)
+        required_keyword_permissions = self.required_keyword_permissions(action, model)
+
+        # Check keyword permission (permission_map)
+        has_perms = authenticated and user.has_perms(required_keyword_permissions)
+        return has_perms
+
+    def _has_object_permission(self, action, instance, user, safe_method=True):
+        keyword_permissions = self._has_permission(action, instance, user)
+        if keyword_permissions:
+            return True
+
+        # Check object permissions
+        if isinstance(instance, ObjectPermissionsModel):
+            if safe_method:
+                return instance.can_view(user)
+            return instance.can_edit(user)
+
+        return False
 
     def has_permission(self, request, view):
         # Workaround to ensure DjangoModelPermissions are not applied
@@ -34,64 +86,27 @@ class AbakusPermission(permissions.BasePermission):
         if getattr(view, '_ignore_model_permissions', False):
             return True
 
-        required_permissions = self.get_required_object_permissions(
-            view.action,
-            view.get_queryset().model
-        )
-
-        requires_authentication = self.authentication_map.get(
-            view.action, self.default_require_auth
-        )
-
-        authenticated = request.user and request.user.is_authenticated()
+        action = view.action
         user = request.user
+        queryset = view.get_queryset()
+        model = queryset.model
 
-        # Check explicit authentication requirements (authentication_map)
-        if not requires_authentication:
-            return True
-
-        # Check keyword permission (permission_map)
-        has_perms = authenticated and user.has_perms(required_permissions)
-        setattr(request, 'user_has_keyword_permissions', has_perms)
-        if has_perms:
-            return True
+        has_permission = self._has_permission(action, model, user)
+        setattr(request, 'user_has_keyword_permissions', has_permission)
 
         # If the queryset is based on the ObjectPermissionsModel model, return True and check
         # permissions in the filter backend and per object.
-        get_queryset = getattr(view, 'get_queryset', None)
-        if get_queryset:
-            object_permissions = issubclass(get_queryset().model, ObjectPermissionsModel)\
-                                 or self.check_object_permission
-            if object_permissions and not view.action == 'create':
-                return True
+        object_permissions = issubclass(
+            model, ObjectPermissionsModel
+        ) or self.check_object_permission
 
-        return False
+        if object_permissions and not view.action == 'create':
+            return True
+
+        return has_permission
 
     def has_object_permission(self, request, view, obj):
-        required_permissions = self.get_required_object_permissions(
-            view.action,
-            view.get_queryset().model
-        )
-
-        requires_authentication = self.authentication_map.get(
-            view.action, self.default_require_auth
-        )
-
-        authenticated = request.user and request.user.is_authenticated()
+        action = view.action
         user = request.user
-
-        # Check explicit authentication requirements (authentication_map)
-        if not requires_authentication:
-            return True
-
-        # Check keyword permission (permission_map)
-        if authenticated and user.has_perms(required_permissions):
-            return True
-
-        # If the object is based on the ObjectPermissionsModel, use object permissions.
-        if isinstance(obj, ObjectPermissionsModel):
-            if request.method in permissions.SAFE_METHODS:
-                return obj.can_view(user)
-            return obj.can_edit(user)
-
-        return False
+        safe_method = action in self.safe_actions
+        return self._has_object_permission(action, obj, user, safe_method)

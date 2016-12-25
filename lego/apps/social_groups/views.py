@@ -1,11 +1,12 @@
 from rest_framework import viewsets
 
+from lego.apps.permissions.views import PermissionsMixin
 from lego.apps.social_groups.models import InterestGroup
 from lego.apps.social_groups.permissions import InterestGroupPermissions
 from lego.apps.social_groups.serializers import InterestGroupSerializer
 
 
-class InterestGroupViewSet(viewsets.ModelViewSet):
+class InterestGroupViewSet(PermissionsMixin, viewsets.ModelViewSet):
     queryset = InterestGroup.group_objects.all()
     permission_classes = [InterestGroupPermissions]
     serializer_class = InterestGroupSerializer
