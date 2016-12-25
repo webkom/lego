@@ -1055,11 +1055,13 @@ class RegistrationTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=event,
                                                               user=user)[0]
             event.register(registration)
+            registration.registration_date += timedelta(seconds=user.id)
+            registration.save()
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
-        penalty_one.created_at = timezone.now() - timedelta(days=20)
+        penalty_one.created_at = mock_now() - timedelta(days=20)
         penalty_one.save()
         registration_to_unregister = Registration.objects.get(event=event, user=users[1])
         event.unregister(registration_to_unregister)
