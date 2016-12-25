@@ -7,16 +7,16 @@ class PageAPITestCase(APITestCase):
     fixtures = ['pages.yaml']
 
     def setUp(self):
-        self.pages = Page.public_objects.all().order_by('created_by')
+        self.pages = Page.public_objects.all().order_by('created_at')
 
     def test_get_pages(self):
         response = self.client.get('/api/v1/pages/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
-        self.assertEqual(response.data[0]['title'], self.pages.first().title)
-        self.assertEqual(response.data[0]['slug'], self.pages.first().slug)
-        self.assertEqual(response.data[0]['content'], self.pages.first().content)
-        self.assertEqual(response.data[0]['toc'], self.pages.first().toc)
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(response.data['results'][0]['title'], self.pages.first().title)
+        self.assertEqual(response.data['results'][0]['slug'], self.pages.first().slug)
+        self.assertEqual(response.data['results'][0]['content'], self.pages.first().content)
+        self.assertEqual(response.data['results'][0]['toc'], self.pages.first().toc)
 
     def test_get_page_with_id(self):
         response = self.client.get('/api/v1/pages/2/')

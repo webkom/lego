@@ -44,19 +44,19 @@ Modules
 
 Filters
 -------
-.. automodule:: lego.permissions.filters
+.. automodule:: lego.apps.permissions.filters
     :members:
     :show-inheritance:
 
 Models
 ------
-.. automodule:: lego.permissions.models
+.. automodule:: lego.apps.permissions.models
     :members:
     :show-inheritance:
 
 
 Permission Classes
 ------------------
-.. automodule:: lego.permissions.object_permissions
+.. automodule:: lego.apps.permissions.permissions
     :members:
     :show-inheritance:

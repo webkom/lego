@@ -91,7 +91,7 @@ class QuoteViewSetTestCase(APITestCase):
         response = self.client.get(_get_list_unapproved_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        first_quote = response.data[0]
+        first_quote = response.data['results'][0]
         self.assertFalse(first_quote['approved'])
 
     def test_list_unapproved_unauthenticated(self):
@@ -101,4 +101,4 @@ class QuoteViewSetTestCase(APITestCase):
         self.group.save()
 
         response = self.client.get(_get_list_unapproved_url())
-        self.assertFalse(response.data)
+        self.assertFalse(response.data['results'])

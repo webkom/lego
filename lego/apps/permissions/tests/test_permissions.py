@@ -72,7 +72,7 @@ class PermissionTestCase(APITestCase):
         view = TestViewSet.as_view({'get': 'list'})
 
         response = view(request)
-        test_objects = response.data
+        test_objects = response.data['results']
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(test_objects), 1)
@@ -87,7 +87,7 @@ class PermissionTestCase(APITestCase):
         view = TestViewSet.as_view({'get': 'list'})
 
         response = view(request)
-        test_objects = response.data
+        test_objects = response.data['results']
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(test_objects), 2)
