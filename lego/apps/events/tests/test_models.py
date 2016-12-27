@@ -1038,7 +1038,11 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    @mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1))
+    number_of_calls = 68
+
+    @mock.patch('django.utils.timezone.now',
+                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
+                             for i in range(number_of_calls)])
     def test_bumped_if_penalties_expire_while_waiting(self, mock_now):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
@@ -1055,8 +1059,6 @@ class RegistrationTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=event,
                                                               user=user)[0]
             event.register(registration)
-            registration.registration_date += timedelta(seconds=user.id)
-            registration.save()
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
