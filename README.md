@@ -14,7 +14,7 @@ Elasticsearch runs in docker.
 
 ```bash
     git clone git@github.com:webkom/lego.git && cd lego/
-    virtualenv venv -p python3
+    python3 -m venv venv
     source venv/bin/activate
     echo "from .development import *" > lego/settings/local.py
     pip install -r requirements/dev.txt
