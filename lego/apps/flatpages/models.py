@@ -9,10 +9,7 @@ from lego.utils.models import BasisModel
 class Page(BasisModel, ObjectPermissionsModel):
     title = models.CharField(_('title'), max_length=200)
     slug = models.CharField(_('slug'), unique=True, db_index=True, max_length=100)
-
     content = models.TextField(_('content'))
-
-    toc = models.BooleanField(default=False, verbose_name=_('Needs table of contents'))
 
     class Meta:
         verbose_name = _('flatpage')

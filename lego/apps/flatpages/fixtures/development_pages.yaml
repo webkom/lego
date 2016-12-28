@@ -1,0 +1,48 @@
+- model: flatpages.page
+  pk: 1
+  fields:
+    title: 'Webkom'
+    slug: 'webkom'
+    content: |
+      Webkom er komiteen som har det tekniske ansvaret for Abakus. Vi er en sosial gjeng på 15 studenter som sammen utvikler abakus.no og sørger for at alt fungerer som det skal.
+
+      Vi arbeider i team og får prøve oss på nye utfordringer hver dag. Dette er en komité hvor medlemmene har muligheten til å utvikle seg og lære mye utover hva skolen kan tilby.
+
+      Vi har et faglig og sosialt miljø som alltid er i utvikling og klar for en ny utfordring.
+
+      ### Webkom består av:
+
+      **Leder**:
+      * Hans-Wilhelm Warlo
+      * Edvard Viggaklev Bakken
+      * Eirik Martiniussen Sylliaas
+      * Finn Julius Stephansen-Smith
+      * Hans-Kristian Seem Koren
+      * Håvard Bjørnøy
+      * Lise Hove
+      * Marius Kotlarz
+      * Martin Ek
+      * Martin Farstad
+      * Martin Hafskjold Thoresen
+      * Nicholas Tidemann
+      * Odin Ugedal
+      * Orhan Hirsch
+      * Tiril Merethe Kyrkjeeide Solberg
+
+      ### Kontaktinfo
+      Webkom: webkom@abakus.no
+    require_auth: false
+- model: flatpages.page
+  pk: 2
+  fields:
+    title: 'Bedkom'
+    slug: 'bedkom'
+    content: '...'
+    require_auth: false
+- model: flatpages.page
+  pk: 3
+  fields:
+    title: 'Komiteinfo'
+    slug: 'komiteinfo'
+    content: '...'
+    require_auth: true

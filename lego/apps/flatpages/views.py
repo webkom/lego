@@ -10,3 +10,4 @@ class PageViewSet(PermissionsMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
     order_by = 'created_at'
+    lookup_field = 'slug'
