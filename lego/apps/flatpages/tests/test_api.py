@@ -13,19 +13,18 @@ class PageAPITestCase(APITestCase):
         response = self.client.get('/api/v1/pages/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 2)
-        self.assertEqual(response.data['results'][0]['title'], self.pages.first().title)
-        self.assertEqual(response.data['results'][0]['slug'], self.pages.first().slug)
-        self.assertEqual(response.data['results'][0]['content'], self.pages.first().content)
-        self.assertEqual(response.data['results'][0]['toc'], self.pages.first().toc)
+        first = response.data['results'][0]
+        self.assertEqual(first['title'], self.pages.first().title)
+        self.assertEqual(first['slug'], self.pages.first().slug)
+        self.assertEqual(first['content'], self.pages.first().content)
 
     def test_get_page_with_id(self):
-        response = self.client.get('/api/v1/pages/2/')
+        response = self.client.get('/api/v1/pages/bedkom/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['title'], self.pages.get(pk=2).title)
         self.assertEqual(response.data['slug'], self.pages.get(pk=2).slug)
         self.assertEqual(response.data['content'], self.pages.get(pk=2).content)
-        self.assertEqual(response.data['toc'], self.pages.get(pk=2).toc)
 
     def test_require_auth(self):
-        response = self.client.get('/api/v1/pages/3/')
+        response = self.client.get('/api/v1/pages/badslug/')
         self.assertEqual(response.status_code, 404)
