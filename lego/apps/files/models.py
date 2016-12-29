@@ -22,7 +22,7 @@ class File(TimeStampModel):
     state = models.CharField(max_length=24, choices=FILE_STATES, default=PENDING_UPLOAD)
     file_type = models.CharField(max_length=24, choices=FILE_TYPES)
     token = models.CharField(max_length=32)
-    bucket = settings.AWS_S3_BUCKET
+    bucket = getattr(settings, 'AWS_S3_BUCKET', None)
 
     def upload_done(self):
         if self.exist_on_remote():

@@ -12,9 +12,9 @@ class Storage:
 
     def __init__(self):
         self.session = boto3.Session(
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_REGION,
+            aws_access_key_id=getattr(settings, 'AWS_ACCESS_KEY_ID', None),
+            aws_secret_access_key=getattr(settings, 'AWS_SECRET_ACCESS_KEY', None),
+            region_name=getattr(settings, 'AWS_REGION', None),
         )
         self.client = self.session.client(
             's3', endpoint_url=getattr(settings, 'AWS_ENTRYPOINT', None)
