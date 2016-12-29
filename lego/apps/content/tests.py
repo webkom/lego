@@ -1,5 +1,5 @@
-from django.test import testcases
 from django.db import models
+from django.test import testcases
 from django.utils.text import slugify
 
 from lego.apps.content.models import SlugModel
