@@ -1,14 +1,16 @@
+from django.db import models
 from django.test import testcases
 from django.utils.text import slugify
 
-from lego.apps.content.models import SlugContent
+from lego.apps.content.models import SlugModel
 
 
-class ExampleSlugContent(SlugContent):
-    pass
+class ExampleSlugContent(SlugModel):
+    slug_field = 'title'
+    title = models.CharField(max_length=255)
 
 
-class APITestCase(testcases.TestCase):
+class SlugModelTestCase(testcases.TestCase):
     def test_slug(self):
         item = ExampleSlugContent(title='CORRECTSLUG')
         self.assertIsNone(item.slug)

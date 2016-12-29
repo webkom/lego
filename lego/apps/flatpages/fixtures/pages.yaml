@@ -1,21 +1,48 @@
 - model: flatpages.page
   pk: 1
   fields:
-    title: 'Webkom'
-    slug: 'webkom'
-    content: 'Awesome people'
     require_auth: false
+    title: Om oss
+    slug: om-oss
+    content: Abakus Linjeforening
+    parent: null
+    lft: 1
+    rght: 8
+    tree_id: 1
+    level: 0
 - model: flatpages.page
   pk: 2
   fields:
-    title: 'Bedkom'
-    slug: 'bedkom'
-    content: '...'
     require_auth: false
+    title: Komiteer
+    slug: komiteer
+    content: Komiteer
+    parent: 1
+    lft: 2
+    rght: 7
+    tree_id: 1
+    level: 1
 - model: flatpages.page
   pk: 3
   fields:
-    title: 'Komiteinfo'
-    slug: 'komiteinfo'
-    content: '...'
-    require_auth: true
+    require_auth: false
+    title: Webkom
+    slug: webkom
+    content: Webkom
+    parent: 2
+    lft: 3
+    rght: 4
+    tree_id: 1
+    level: 2
+- model: flatpages.page
+  pk: 4
+  fields:
+    require_auth: false
+    title: Bedkom
+    slug: bedkom
+    content: Bedkom
+    parent: 2
+    lft: 5
+    rght: 6
+    tree_id: 1
+    level: 2

@@ -1,11 +1,11 @@
 from django.db import models
 
-from lego.apps.content.models import SlugContent
+from lego.apps.content.models import Content
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
 
-class Meeting(SlugContent, BasisModel):
+class Meeting(Content, BasisModel):
 
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
