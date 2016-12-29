@@ -1,0 +1,7 @@
+
+- pk: abakus.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
