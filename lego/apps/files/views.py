@@ -1,13 +1,15 @@
 from rest_framework import decorators, exceptions, mixins, permissions, renderers, viewsets
 from rest_framework.response import Response
 
+from lego.apps.files.exceptions import UnknownFileType
+
 from .models import File
 from .serializers import FileSerializer, FileUploadSerializer
-from .utils import prepare_file_upload, validate_redirect_token
+from .utils import prepare_file_upload
 from .validators import KEY_REGEX_RAW
 
 
-class FileViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class FileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [renderers.JSONRenderer]
@@ -24,17 +26,22 @@ class FileViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
         serializer.is_valid(raise_exception=True)
 
         key = serializer.validated_data['key']
-        url, fields = prepare_file_upload(key)
+
+        try:
+            url, fields, token = prepare_file_upload(key)
+        except UnknownFileType:
+            raise exceptions.ParseError
 
         return Response({
             'url': url,
+            'file_token': token,
             'fields': fields
         })
 
     @decorators.detail_route(
         methods=['GET'],
         permission_classes=[permissions.AllowAny],
-        authentication_classes=[]
+        authentication_classes=[],
     )
     def upload_success(self, request, *args, **kwargs):
         """
@@ -42,12 +49,7 @@ class FileViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
         client with necessary data to change a file on a instance.
         """
         instance = self.get_object()
-        token = request.GET.get('token')
+        instance.upload_done()
 
-        if validate_redirect_token(instance, token):
-            instance.upload_done()
-
-            serializer = self.get_serializer(instance)
-            return Response(serializer.data)
-
-        raise exceptions.PermissionDenied('View requested with invalid token query param')
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
