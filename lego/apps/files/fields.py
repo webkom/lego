@@ -1,5 +1,10 @@
+from urllib.parse import unquote
+
 from django.core.exceptions import ObjectDoesNotExist
+from django_thumbor import generate_url
 from rest_framework import serializers
+
+from lego.apps.files.constants import IMAGE
 
 from .models import File
 from .storage import storage
@@ -47,3 +52,22 @@ class FileField(serializers.PrimaryKeyRelatedField):
             self.fail('does_not_exist', pk_value=data)
         except (TypeError, ValueError):
             self.fail('incorrect_type', data_type=type(data).__name__)
+
+
+class ImageField(FileField):
+    """
+    Load images with thumbor and on demand resizing.
+    Pass a options dict to the constructor to control thumbor.
+    """
+
+    options = {}
+
+    def __init__(self, options=None, **kwargs):
+        kwargs['allowed_types'] = [IMAGE]
+        super().__init__(**kwargs)
+
+        if options:
+            self.options = options
+
+    def to_representation(self, value):
+        return generate_url(unquote(value.pk), **self.options)
