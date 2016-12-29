@@ -1,4 +1,4 @@
-from rest_framework import decorators, exceptions, mixins, permissions, renderers, viewsets
+from rest_framework import decorators, exceptions, permissions, renderers, viewsets
 from rest_framework.response import Response
 
 from lego.apps.files.exceptions import UnknownFileType
@@ -9,7 +9,7 @@ from .utils import prepare_file_upload
 from .validators import KEY_REGEX_RAW
 
 
-class FileViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class FileViewSet(viewsets.GenericViewSet):
 
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [renderers.JSONRenderer]
