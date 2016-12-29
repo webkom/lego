@@ -39,6 +39,7 @@ class SlugModel(models.Model):
             self.slug = self.generate_slug()
             self.save()
 
+
 class Content(SlugModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
