@@ -5,14 +5,14 @@ from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
-from lego.apps.content.models import SlugContent
+from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 
 
-class Event(SlugContent, BasisModel, ObjectPermissionsModel):
+class Event(Content, BasisModel, ObjectPermissionsModel):
     """
     An event has a type (e.g. Company presentation, Party. Eventually, each type of event might
     have slightly different 'requirements' or fields. For example, a company presentation will be
