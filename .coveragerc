@@ -1,6 +1,3 @@
-[run]
-include = lego/*
-
 [report]
 exclude_lines =
     pragma: no cover
