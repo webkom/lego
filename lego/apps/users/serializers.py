@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from lego.apps.files.constants import IMAGE
+from lego.apps.files.fields import FileField
 from lego.apps.users.fields import AbakusGroupListField
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.apps.users.permissions import can_retrieve_abakusgroup, can_retrieve_user
@@ -15,6 +17,7 @@ class PenaltySerializer(serializers.ModelSerializer):
 
 class DetailedUserSerializer(serializers.ModelSerializer):
     penalties = serializers.SerializerMethodField('get_valid_penalties')
+    picture = FileField(allowed_types=[IMAGE], required=False)
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -30,6 +33,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'email',
+            'picture',
             'is_staff',
             'is_active',
             'penalties'
@@ -37,6 +41,9 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
+
+    picture = FileField(allowed_types=[IMAGE], required=False)
+
     class Meta:
         model = User
         fields = (
@@ -44,7 +51,8 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name',
-            'full_name'
+            'full_name',
+            'picture'
         )
 
 
@@ -81,6 +89,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 class MeSerializer(serializers.ModelSerializer):
     committees = AbakusGroupListField()
     penalties = serializers.SerializerMethodField('get_valid_penalties')
+    picture = FileField(allowed_types=[IMAGE], required=False)
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -96,6 +105,7 @@ class MeSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'email',
+            'picture',
             'is_staff',
             'is_active',
             'committees',

@@ -8,6 +8,8 @@ from .rest_framework import REST_FRAMEWORK
 DEBUG = True
 DEVELOPMENT = True
 
+SERVER_URL = 'http://127.0.0.1:8000'
+
 SECRET_KEY = 'secret'
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
 
@@ -61,7 +63,14 @@ DEBUG_TOOLBAR_PANELS = [
 
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] += ['rest_framework.renderers.BrowsableAPIRenderer']
 
+AWS_ACCESS_KEY_ID = 'lego-dev'
+AWS_SECRET_ACCESS_KEY = 'lego-dev'
+AWS_REGION = 'us-east-1'
+AWS_S3_BUCKET = 'lego'
+AWS_ENTRYPOINT = 'http://127.0.0.1:9000'
+
 CELERY_BROKER_URL = 'redis://127.0.0.1'
+CELERY_TASK_ALWAYS_EAGER = True
 
 STREAM_REDIS_CONFIG = {
     'default': {
@@ -75,5 +84,3 @@ STREAM_REDIS_CONFIG = {
 ELASTICSEARCH = [
     {'host': '127.0.0.1'},
 ]
-
-CELERY_TASK_ALWAYS_EAGER = True

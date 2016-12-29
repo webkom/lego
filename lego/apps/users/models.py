@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
                                       UserPenaltyManager)
@@ -146,6 +147,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=True)
+    picture = FileField()
     is_active = models.BooleanField(
         default=True,
         help_text=_('Designates whether this user should be treated as '

@@ -20,6 +20,15 @@ services:
     environment:
       - POSTGRES_USER=lego
 
+  minio:
+    image: minio/minio:edge
+    ports:
+      - '127.0.0.1:9000:9000'
+    environment:
+      - MINIO_ACCESS_KEY=lego-dev
+      - MINIO_SECRET_KEY=lego-dev
+    command: server /export
+
   redis:
     image: redis:latest
     ports:
