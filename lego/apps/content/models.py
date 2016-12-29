@@ -6,12 +6,47 @@ from lego.apps.comments.models import Comment
 from lego.apps.reactions.models import Reaction
 
 
-class Content(models.Model):
+class SlugModel(models.Model):
+    """
+    An abstract model that can be inherited to add a slug field,
+    which is defined by setting self.slug_field to the name
+    of the field.
+    """
+    slug_length = 50
+    slug_field = None
+    slug = models.SlugField(null=True, unique=True, max_length=slug_length)
+
+    class Meta:
+        abstract = True
+
+    def generate_slug(self):
+        content = getattr(self, self.slug_field)
+        slug = slugify('{}-{}'.format(self.pk, content))
+        if len(slug) <= self.slug_length:
+            return slug
+
+        if slug[self.slug_length] == '-':
+            return slug[0:self.slug_length]
+
+        slug = slug[0:self.slug_length]
+        slice_index = slug.rindex('-')
+        return slug[0:slice_index]
+
+    def save(self, *args, **kwargs):
+        # Save first to generate primary key:
+        super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = self.generate_slug()
+            self.save()
+
+
+class Content(SlugModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
     reactions = GenericRelation(Reaction)
+    slug_field = 'title'
 
     @property
     def reactions_grouped(self):
@@ -36,29 +71,3 @@ class Content(models.Model):
     @property
     def comment_target(self):
         return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
-
-
-class SlugContent(Content):
-    slug_length = 50
-    slug = models.SlugField(null=True, unique=True, max_length=slug_length)
-
-    class Meta:
-        abstract = True
-
-    def generate_slug(self):
-        slug = slugify('{}-{}'.format(self.id, self.title))
-        if len(slug) <= self.slug_length:
-            return slug
-
-        if slug[self.slug_length] == '-':
-            return slug[0:self.slug_length]
-
-        slug = slug[0:self.slug_length]
-        slice_index = slug.rindex('-')
-        return slug[0:slice_index]
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if not self.slug:
-            self.slug = self.generate_slug()
-            self.save()
