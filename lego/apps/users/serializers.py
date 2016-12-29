@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from lego.apps.files.constants import IMAGE
 from lego.apps.files.fields import FileField
 from lego.apps.users.fields import AbakusGroupListField
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
@@ -16,7 +17,7 @@ class PenaltySerializer(serializers.ModelSerializer):
 
 class DetailedUserSerializer(serializers.ModelSerializer):
     penalties = serializers.SerializerMethodField('get_valid_penalties')
-    picture = FileField()
+    picture = FileField(allowed_types=[IMAGE], required=False)
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -41,7 +42,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 
 class PublicUserSerializer(serializers.ModelSerializer):
 
-    picture = FileField()
+    picture = FileField(allowed_types=[IMAGE], required=False)
 
     class Meta:
         model = User
@@ -88,7 +89,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 class MeSerializer(serializers.ModelSerializer):
     committees = AbakusGroupListField()
     penalties = serializers.SerializerMethodField('get_valid_penalties')
-    picture = FileField()
+    picture = FileField(allowed_types=[IMAGE], required=False)
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)

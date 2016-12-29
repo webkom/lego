@@ -1,4 +1,5 @@
 import os
+from mimetypes import guess_type
 
 import boto3
 from botocore import exceptions
@@ -15,21 +16,29 @@ class Storage:
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             region_name=settings.AWS_REGION,
         )
-        self.client = self.session.client('s3')
-        self.resource = self.session.resource('s3')
+        self.client = self.session.client(
+            's3', endpoint_url=getattr(settings, 'AWS_ENTRYPOINT', None)
+        )
+        self.resource = self.session.resource(
+            's3', endpoint_url=getattr(settings, 'AWS_ENTRYPOINT', None)
+        )
 
     def generate_upload_url(self, bucket, key, redirect_url):
+        mime_type, encoding = guess_type(key)
+
         signed = self.client.generate_presigned_post(
             Bucket=bucket,
             Key=key,
             Conditions=[
-                ['content-length-range', 10, '1000000000'],
+                ['content-length-range', 10, 1000000000],
                 {'success_action_redirect': redirect_url},
-                {'acl': 'private'}
+                {'acl': 'private'},
+                {'Content-Type': mime_type}
             ],
             Fields={
                 'success_action_redirect': redirect_url,
-                'acl': 'private'
+                'acl': 'private',
+                'Content-Type': mime_type
             },
             ExpiresIn=30
         )
