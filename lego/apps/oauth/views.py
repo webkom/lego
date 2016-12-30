@@ -2,7 +2,7 @@ from oauth2_provider.models import AccessToken
 from oauth2_provider.views import AuthorizationView
 from rest_framework import mixins, permissions, viewsets
 
-from lego.apps.permissions.views import PermissionsMixin
+from lego.apps.permissions.views import AllowedPermissionsMixin
 
 from .models import APIApplication
 from .serializers import AccessTokenSerializer, ApplicationSerializer
@@ -16,7 +16,7 @@ class LegoAuthorizationView(AuthorizationView):
     template_name = 'oauth2/authorize.html'
 
 
-class ApplicationViewSet(PermissionsMixin, viewsets.ModelViewSet):
+class ApplicationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     """
     Manage applications. This viewset requires keyword permissions, but object permissions can be
     implemented when we opens up / if we opens up the API.

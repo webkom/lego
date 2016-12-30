@@ -17,10 +17,10 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           RegistrationReadSerializer, StripeTokenSerializer)
 from lego.apps.events.tasks import async_register, async_unregister
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
-from lego.apps.permissions.views import PermissionsMixin
+from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
-class EventViewSet(PermissionsMixin, viewsets.ModelViewSet):
+class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Event.objects.prefetch_related('pools__permission_groups',
                                               'pools__registrations',
                                               'pools__registrations__user',
@@ -77,7 +77,7 @@ class EventViewSet(PermissionsMixin, viewsets.ModelViewSet):
             raise ValidationError({'error': 'Invalid request'})
 
 
-class PoolViewSet(PermissionsMixin, viewsets.ModelViewSet):
+class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Pool.objects.all()
     permission_classes = (NestedEventPermissions,)
 
@@ -93,7 +93,7 @@ class PoolViewSet(PermissionsMixin, viewsets.ModelViewSet):
                                                                         'registrations')
 
 
-class RegistrationViewSet(PermissionsMixin,
+class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.CreateModelMixin,
                           mixins.RetrieveModelMixin,
                           mixins.DestroyModelMixin,

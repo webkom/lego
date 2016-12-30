@@ -16,7 +16,7 @@ class PageAPITestCase(APITestCase):
         first = response.data['results'][0]
         self.assertEqual(first['title'], self.pages.first().title)
         self.assertEqual(first['slug'], self.pages.first().slug)
-        self.assertEqual(first['content'], self.pages.first().content)
+        self.assertFalse('content' in first)
 
     def test_get_page_with_id(self):
         slug = 'webkom'
@@ -35,12 +35,3 @@ class PageAPITestCase(APITestCase):
         page = Page.objects.create(title='eh', slug='eh', require_auth=True)
         response = self.client.get('/api/v1/pages/{0}/'.format(page.slug))
         self.assertEqual(response.status_code, 404)
-
-    def test_hierarchy(self):
-        slug = 'webkom'
-        response = self.client.get('/api/v1/pages/{0}/hierarchy/'.format(slug))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 3)
-        for page in response.data:
-            # Make sure we're not retrieving siblings:
-            self.assertNotEqual(page['slug'], 'bedkom')
