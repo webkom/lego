@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'mptt',
     'channels',
+    'django_thumbor',
 
     'lego.utils',
     'lego.apps.users',
