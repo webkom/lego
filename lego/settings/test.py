@@ -49,8 +49,3 @@ ELASTICSEARCH = [
 CELERY_TASK_ALWAYS_EAGER = True
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-AWS_ACCESS_KEY_ID = 'lego-test'
-AWS_SECRET_ACCESS_KEY = 'lego-test'
-AWS_REGION = 'eu-central-1'
-AWS_S3_BUCKET = 'lego-test'

@@ -33,3 +33,23 @@ services:
     image: redis:latest
     ports:
       - '127.0.0.1:6379:6379'
+
+  thumbor:
+    build : ./thumbor
+    ports:
+      - "127.0.0.1:10000:8000"
+    environment:
+      SECURITY_KEY: 'lego-dev'
+      MAX_WIDTH: 1000
+      MAX_HEIGHT: 800
+      QUALITY: 98
+      ALLOW_UNSAFE_URL: 0
+      ALLOW_OLD_URLS: 0
+      AWS_ACCESS_KEY_ID: 'lego-dev'
+      AWS_SECRET_ACCESS_KEY: 'lego-dev'
+      TC_AWS_LOADER_BUCKET: lego
+      TC_AWS_REGION: us-east-1
+      TC_AWS_ENDPOINT: http://minio:9000
+      LOADER: tc_aws.loaders.s3_loader
+    links:
+      - minio

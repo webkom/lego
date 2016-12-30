@@ -35,9 +35,11 @@ vars().update(EMAIL_CONFIG)
 # File Storage
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = 'eu-central-1'
+AWS_REGION = env('AWS_REGION')
 AWS_S3_BUCKET = env('AWS_S3_BUCKET')
 
+THUMBOR_SERVER = env('THUMBOR_SERVER')
+THUMBOR_SECURITY_KEY = env('THUMBOR_SECURITY_KEY')
 
 # Sentry
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'

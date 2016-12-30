@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from lego.apps.files.exceptions import UnknownFileType
 
 from .models import File
-from .serializers import FileSerializer, FileUploadSerializer
+from .serializers import FileUploadSerializer
 from .utils import prepare_file_upload
 from .validators import KEY_REGEX_RAW
 
@@ -14,7 +14,7 @@ class FileViewSet(viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [renderers.JSONRenderer]
     queryset = File.objects.all()
-    serializer_class = FileSerializer
+    serializer_class = FileUploadSerializer
     lookup_field = 'key'
     lookup_value_regex = KEY_REGEX_RAW
 
@@ -22,7 +22,7 @@ class FileViewSet(viewsets.GenericViewSet):
         """
         Upload new file. This method returns instructions to the client on how to upload the file.
         """
-        serializer = FileUploadSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         key = serializer.validated_data['key']
@@ -50,6 +50,4 @@ class FileViewSet(viewsets.GenericViewSet):
         """
         instance = self.get_object()
         instance.upload_done()
-
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        return Response({})
