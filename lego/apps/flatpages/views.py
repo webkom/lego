@@ -1,12 +1,12 @@
 from rest_framework import viewsets
 
-from lego.apps.permissions.views import PermissionsMixin
+from lego.apps.permissions.views import AllowedPermissionsMixin
 
 from .models import Page
 from .serializers import PageDetailSerializer, PageListSerializer
 
 
-class PageViewSet(PermissionsMixin, viewsets.ModelViewSet):
+class PageViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
     order_by = 'created_at'
     lookup_field = 'slug'

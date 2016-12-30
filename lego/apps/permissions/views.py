@@ -14,7 +14,7 @@ def wrap_results(response):
     return response.data
 
 
-class PermissionsMixin:
+class AllowedPermissionsMixin:
     """
     Append a `permission` value on list and retrieve methods. This makes it possible for a
     frontend to decide which actions a user can perform.
