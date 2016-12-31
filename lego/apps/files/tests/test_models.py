@@ -4,11 +4,12 @@ from django.test import TestCase
 
 from lego.apps.files.exceptions import UnknownFileType
 from lego.apps.files.models import File
+from lego.apps.users.models import User
 
 
 class FileModelTestCase(TestCase):
 
-    fixtures = ['test_files.yaml']
+    fixtures = ['test_users.yaml', 'test_files.yaml']
 
     def test_get_file_type(self):
         self.assertEqual(File.get_file_type('abakus.png'), 'image')
@@ -23,8 +24,9 @@ class FileModelTestCase(TestCase):
     @mock.patch('lego.apps.files.models.storage.get_available_name', return_value='abakus-1.png')
     @mock.patch('lego.apps.files.models.get_random_string', return_value='random_string')
     def test_create_file(self, mock_get_random_string, mock_get_available_name):
-        file = File.create_file('abakus.png')
+        file = File.create_file('abakus.png', User.objects.get(id=1))
 
         self.assertEqual(file.key, mock_get_available_name.return_value)
         self.assertEqual(file.token, mock_get_random_string.return_value)
         self.assertEqual(file.file_type, 'image')
+        self.assertEqual(file.user_id, 1)

@@ -9,7 +9,7 @@ from lego.apps.files.models import File
 
 class FileFieldTestCase(TestCase):
 
-    fixtures = ['test_files.yaml']
+    fixtures = ['test_users.yaml', 'test_files.yaml']
 
     def setUp(self):
         self.field = FileField()
