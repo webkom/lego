@@ -37,11 +37,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'sentry': {
-            'level': 'WARNING',
-            'filters': ['skip_if_testing'],
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        },
         'console': {
             'level': 'DEBUG',
             'filters': ['skip_if_testing', 'require_debug_true'],
