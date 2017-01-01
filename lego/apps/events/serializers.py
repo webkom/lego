@@ -5,7 +5,8 @@ from rest_framework_jwt.serializers import User
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.events.fields import ChargeStatusField
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.users.serializers import PublicAbakusGroupSerializer, PublicUserSerializer
+from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 

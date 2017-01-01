@@ -3,7 +3,7 @@ from rest_framework import filters, viewsets
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 from lego.apps.users.filters import MembershipFilterSet
 from lego.apps.users.models import Membership
-from lego.apps.users.serializers import MembershipSerializer
+from lego.apps.users.serializers.memberships import MembershipSerializer
 
 
 class MembershipViewSet(viewsets.ModelViewSet):

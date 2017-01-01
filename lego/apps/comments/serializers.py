@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DateTimeField
 
 from lego.apps.comments.models import Comment
-from lego.apps.users.serializers import PublicUserSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer, GenericRelationField
 
 

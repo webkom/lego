@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.reactions.models import Reaction, ReactionType
-from lego.apps.users.serializers import PublicUserSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer, GenericRelationField
 
 
