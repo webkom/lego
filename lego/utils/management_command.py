@@ -1,10 +1,20 @@
-from django.core.management import BaseCommand as DjangoBaseCommand
 import logging
+
+from django.core.management import BaseCommand as DjangoBaseCommand
 
 
 class BaseCommand(DjangoBaseCommand):
+    """
+    Base command for our management commands. Implement the .run() function.
+    """
 
     def handle(self, *args, **options):
+        """
+        Set log level based on builtin -v or --verbose flag.
+        -v 0 CRITICAL
+        -v 1 INFO
+        -v 2 DEBUG
+        """
         verbosity = options['verbosity']
         log_levels = {
             0: logging.CRITICAL,
