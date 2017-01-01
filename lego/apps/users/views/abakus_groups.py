@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.permissions import AbakusGroupPermissions
-from lego.apps.users.serializers import AbakusGroupSerializer
+from lego.apps.users.serializers.abakus_groups import AbakusGroupSerializer
 
 
 class AbakusGroupViewSet(viewsets.ModelViewSet):

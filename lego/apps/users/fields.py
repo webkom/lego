@@ -1,9 +1,11 @@
-from rest_framework.serializers import Field
+from rest_framework import serializers
+
+from .models import AbakusGroup
 
 
-class AbakusGroupListField(Field):
-    """
-    Render a list of AbakusGroup as a list of strings.
-    """
-    def to_representation(self, value):
-        return [group.name for group in value]
+class AbakusGroupListField(serializers.RelatedField):
+
+    queryset = AbakusGroup.objects.all()
+
+    def to_representation(self, iterable):
+        return [{'id': group.id, 'name': group.name} for group in iterable.all()]

@@ -3,7 +3,7 @@ from rest_framework_jwt.serializers import User
 
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.users.models import AbakusGroup
-from lego.apps.users.serializers import PublicUserSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 

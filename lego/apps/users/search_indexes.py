@@ -2,7 +2,7 @@ from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
 from .models import User
-from .serializers import PublicUserSerializer
+from .serializers.users import PublicUserSerializer
 
 
 class UserIndex(SearchIndex):
