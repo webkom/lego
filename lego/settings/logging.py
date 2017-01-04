@@ -82,6 +82,14 @@ LOGGING = {
         'elasticsearch': {
             'level': 'WARNING',
             'propagate': True
+        },
+        'botocore': {
+            'level': 'WARNING',
+            'propagate': True
+        },
+        'boto3': {
+            'level': 'WARNING',
+            'propagate': True
         }
     },
 }
