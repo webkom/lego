@@ -147,7 +147,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=True)
-    picture = FileField()
+    picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
         default=True,
         help_text=_('Designates whether this user should be treated as '
