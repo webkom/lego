@@ -85,7 +85,7 @@ class File(TimeStampModel):
             raise UnknownFileType
 
     def get_file_token(self):
-        return '{key}:{token}'.format(key=self.key, token=self.token)
+        return f'{self.key}:{self.token}'
 
 
 class FileField(models.ForeignKey):

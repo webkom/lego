@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:3.6
 MAINTAINER Abakus Webkom <webkom@abakus.no>
 
 ENV PYTHONPATH /app/

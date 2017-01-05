@@ -8,7 +8,6 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
@@ -79,8 +78,8 @@ class PermissionsMixin(models.Model):
         AbakusGroup,
         through='Membership',
         through_fields=('user', 'abakus_group'),
-        blank=True, help_text=_('The groups this user belongs to. A user will '
-                                'get all permissions granted to each of their groups.'),
+        blank=True, help_text='The groups this user belongs to. A user will '
+                              'get all permissions granted to each of their groups.',
         related_name='users',
         related_query_name='user'
     )
@@ -138,22 +137,22 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     username = models.CharField(
         max_length=30,
         unique=True,
-        help_text=_('Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
         validators=[username_validator],
         error_messages={
-            'unique': _('A user with that username already exists.'),
+            'unique': 'A user with that username already exists.',
         }
     )
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    email = models.EmailField(_('email address'), blank=True)
+    first_name = models.CharField('first name', max_length=30, blank=True)
+    last_name = models.CharField('last name', max_length=30, blank=True)
+    email = models.EmailField('email address', blank=True)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
         default=True,
-        help_text=_('Designates whether this user should be treated as '
-                    'active. Unselect this instead of deleting accounts.')
+        help_text='Designates whether this user should be treated as '
+                  'active. Unselect this instead of deleting accounts.'
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField('date joined', default=timezone.now)
 
     objects = UserManager()
 
@@ -163,7 +162,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
 
     def get_full_name(self):
-        return '{0} {1}'.format(self.first_name, self.last_name).strip()
+        return f'{self.first_name} {self.last_name}'.strip()
 
     @property
     def full_name(self):
@@ -192,10 +191,10 @@ class Membership(BasisModel):
     TREASURER = 'treasurer'
 
     ROLES = (
-        (MEMBER, _('Member')),
-        (LEADER, _('Leader')),
-        (CO_LEADER, _('Co-Leader')),
-        (TREASURER, _('Treasurer'))
+        (MEMBER, 'Member'),
+        (LEADER, 'Leader'),
+        (CO_LEADER, 'Co-Leader'),
+        (TREASURER, 'Treasurer')
     )
 
     objects = MembershipManager()
@@ -213,7 +212,7 @@ class Membership(BasisModel):
         unique_together = ('user', 'abakus_group')
 
     def __str__(self):
-        return '{0} is {1} in {2}'.format(self.user, self.get_role_display(), self.abakus_group)
+        return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
 
 class Penalty(BasisModel):
