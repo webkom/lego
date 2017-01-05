@@ -1,13 +1,14 @@
 from rest_framework.test import APITestCase
 
 from lego.apps.flatpages.models import Page
+from lego.apps.users.tests.utils import create_normal_user, create_super_user
 
 
 class PageAPITestCase(APITestCase):
-    fixtures = ['pages.yaml']
+    fixtures = ['test_pages.yaml']
 
     def setUp(self):
-        self.pages = Page.public_objects.all().order_by('created_at')
+        self.pages = Page.objects.all().order_by('created_at')
 
     def test_get_pages(self):
         response = self.client.get('/api/v1/pages/')
@@ -31,7 +32,31 @@ class PageAPITestCase(APITestCase):
         response = self.client.get('/api/v1/pages/badslug/')
         self.assertEqual(response.status_code, 404)
 
-    def test_require_auth_retrieve(self):
-        page = Page.objects.create(title='eh', slug='eh', require_auth=True)
-        response = self.client.get('/api/v1/pages/{0}/'.format(page.slug))
-        self.assertEqual(response.status_code, 404)
+    def test_unauthenticated(self):
+        slug = 'webkom'
+        methods = ['post', 'patch', 'put', 'delete']
+        for method in methods:
+            call = getattr(self.client, method)
+            response = call('/api/v1/pages/{0}/'.format(slug))
+            self.assertEqual(response.status_code, 401)
+
+    def test_unauthorized(self):
+        slug = 'webkom'
+        methods = ['post', 'patch', 'put', 'delete']
+        user = create_normal_user()
+        self.client.force_login(user)
+        for method in methods:
+            call = getattr(self.client, method)
+            response = call('/api/v1/pages/{0}/'.format(slug))
+            self.assertEqual(response.status_code, 403)
+
+    def test_create_page(self):
+        page = {
+            'title': 'cat',
+            'content': 'hei'
+        }
+
+        user = create_super_user()
+        self.client.force_login(user)
+        response = self.client.post('/api/v1/pages/', data=page)
+        self.assertEqual(response.status_code, 201)
