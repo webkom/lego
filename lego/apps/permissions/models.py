@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 from lego.apps.permissions.managers import PublicObjectPermissionsManager
 from lego.apps.users.models import AbakusGroup, User
@@ -22,7 +21,7 @@ class ObjectPermissionsModel(models.Model):
     can_view_groups = models.ManyToManyField(AbakusGroup, related_name='can_view_%(class)s',
                                              blank=True)
 
-    require_auth = models.BooleanField(_('require auth'), default=False)
+    require_auth = models.BooleanField('require auth', default=False)
 
     public_objects = PublicObjectPermissionsManager()
 

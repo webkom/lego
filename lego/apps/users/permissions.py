@@ -24,7 +24,9 @@ class UsersPermissions(AbakusPermission):
             return True
 
     def has_permission(self, request, view):
-        return True if view.action in self.OBJECT_METHODS else super().has_permission(request, view)
+        if view.action in self.OBJECT_METHODS:
+            return True
+        return super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
         if self.is_self(request, view, obj):
@@ -45,13 +47,17 @@ class AbakusGroupPermissions(AbakusPermission):
     allowed_leader = ['update', 'partial_update']
 
     def has_permission(self, request, view):
-        return True if view.action in self.allowed_leader else super().has_permission(request, view)
+        if view.action in self.allowed_leader:
+            return True
+
+        return super().has_permission(request, view)
 
     def has_object_permission(self, request, view, obj):
         if view.action in self.allowed_leader and request.user.is_authenticated():
             user = request.user
-            is_owner = bool(Membership.objects.filter(abakus_group=obj, user=user,
-                                                      role=Membership.LEADER))
+            is_owner = Membership.objects.filter(
+                abakus_group=obj, user=user, role=Membership.LEADER
+            ).exists()
             return is_owner or super().has_object_permission(request, view, obj)
 
         return super().has_object_permission(request, view, obj)
