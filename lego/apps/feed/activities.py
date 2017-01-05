@@ -34,25 +34,24 @@ class FeedActivity(Activity):
             setattr(self, content_type_field, None)
         else:
             setattr(self, id_field, int(object_.id))
-            setattr(self, content_type_field, '{0}.{1}'.format(
-                object_._meta.app_label,
-                object_._meta.model_name
-            ))
+            setattr(
+                self, content_type_field, f'{object_._meta.app_label}.{object_._meta.model_name}'
+            )
 
     @property
     def actor(self):
         if self.actor_content_type and self.actor_id:
-            return '{0}-{1}'.format(self.actor_content_type, self.actor_id)
+            return f'{self.actor_content_type}-{self.actor_id}'
 
     @property
     def object(self):
         if self.object_content_type and self.object_id:
-            return '{0}-{1}'.format(self.object_content_type, self.object_id)
+            return f'{self.object_content_type}-{self.object_id}'
 
     @property
     def target(self):
         if self.target_content_type and self.target_id:
-            return '{0}-{1}'.format(self.target_content_type, self.target_id)
+            return f'{self.target_content_type}-{self.target_id}'
 
     @property
     def activity_id(self):

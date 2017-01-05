@@ -17,8 +17,7 @@ class SearchIndex:
         model = getattr(self, 'model')
         if not model:
             raise NotImplementedError(
-                'You must provide a \'get_model\' method or model attribute for the {0} '
-                'index.'.format(self))
+                f'You must provide a \'get_model\' method or model attribute for the {self} index.')
         return model
 
     def get_serializer_class(self):
