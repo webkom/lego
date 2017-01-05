@@ -22,4 +22,4 @@ class ProtectedTokenField(serializers.CharField):
     def to_representation(self, value):
         start_token = '*' * 20
         end_token = value[:10]
-        return '{start_token}{end_token}'.format(start_token=start_token, end_token=end_token)
+        return f'{start_token}{end_token}'
