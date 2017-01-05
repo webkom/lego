@@ -3,14 +3,17 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from lego.apps.content.models import SlugModel
-from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.utils.managers import TreeBasisManager
 from lego.utils.models import BasisModel
 
 
-class Page(MPTTModel, BasisModel, ObjectPermissionsModel, SlugModel):
+class Page(MPTTModel, BasisModel, SlugModel):
     title = models.CharField('title', max_length=200)
     content = models.TextField('content')
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    slug_field = 'title'
+
+    objects = TreeBasisManager()
 
     def __str__(self):
         return "%s -- %s" % (self.slug, self.title)

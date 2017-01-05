@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from django.db.models.signals import post_delete, pre_delete
+from mptt.managers import TreeManager
 
 
 class PersistentModelQuerySet(models.QuerySet):
@@ -37,3 +38,10 @@ class BasisModelManager(PersistentModelManager):
         kwargs['updated_by'] = user
         instance = super().create(*args, **kwargs)
         return instance
+
+
+class TreeBasisManager(TreeManager, BasisModelManager):
+    """
+    Ugly hack to be able to use BasisModel with django-mptt.
+    """
+    pass
