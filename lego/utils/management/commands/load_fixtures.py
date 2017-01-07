@@ -1,8 +1,15 @@
+import logging
+
 from django.conf import settings
-from django.core.management import BaseCommand, call_command
+from django.core.management import call_command
+
+from lego.utils.management_command import BaseCommand
+
+log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+
     help = 'Loads initial data from fixtures.'
 
     def add_arguments(self, parser):
@@ -13,15 +20,15 @@ class Command(BaseCommand):
             help='Load development fixtures.',
         )
 
-    def handle(self, *args, **options):
-        self.stdout.write('Loading regular fixtures:')
+    def run(self, *args, **options):
+        log.info('Loading regular fixtures:')
 
         call_command('loaddata', 'lego/apps/users/fixtures/initial_abakus_groups.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_users.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_memberships.yaml')
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
-            self.stdout.write('Loading development fixtures:')
+            log.info('Loading development fixtures:')
             call_command('loaddata', 'lego/apps/users/fixtures/development_users.yaml')
             call_command(
                 'loaddata',
@@ -36,4 +43,4 @@ class Command(BaseCommand):
             call_command('loaddata', 'lego/apps/quotes/fixtures/development_quotes.yaml')
             call_command('loaddata', 'lego/apps/oauth/fixtures/development_applications.yaml')
             call_command('loaddata', 'lego/apps/reactions/fixtures/emojione_reaction_types.yaml')
-        self.stdout.write('Done!')
+        log.info('Done!')
