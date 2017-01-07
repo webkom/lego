@@ -15,7 +15,7 @@ asgi_redis==1.0.0
 channels==0.17.3
 celery==4.0.2
 whitenoise==3.2.3
-stripe==1.44.0
+stripe==1.46.0
 structlog==16.1.0
 boto3==1.4.3
 
