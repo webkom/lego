@@ -12,7 +12,7 @@ stream-framework==1.4.0
 certifi==2016.9.26
 elasticsearch==5.0.1
 asgi_redis==1.0.0
-channels==1.0.0
+channels==1.0.1
 celery==4.0.2
 whitenoise==3.2.3
 stripe==1.46.0
