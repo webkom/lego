@@ -26,4 +26,4 @@ routing = [
 ]
 
 if settings.WS_SERVER:
-    routing.append(route("http.request", http_consumer))
+    routing.append(route('http.request', http_consumer))
