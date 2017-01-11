@@ -18,6 +18,7 @@ def find_groups(user):
 
 @jwt_create_channel_session
 def handle_connect(message):
+    message.reply_channel.send({'accept': True})
     groups = find_groups(message.user)
     for group in groups:
         group.add(message.reply_channel)
