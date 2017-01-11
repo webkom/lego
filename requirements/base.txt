@@ -11,13 +11,16 @@ hiredis==0.2.0
 stream-framework==1.4.0
 certifi==2016.9.26
 elasticsearch==5.0.1
-asgi_redis==1.0.0
-channels==0.17.3
 celery==4.0.2
 whitenoise==3.2.3
 stripe==1.46.0
 structlog==16.1.0
 boto3==1.4.3
+
+# channels:
+channels==1.0.1
+asgi_redis==1.0.0
+daphne==1.0.1
 
 djangorestframework==3.5.3
 djangorestframework-jwt==1.9.0
