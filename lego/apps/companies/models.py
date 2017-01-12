@@ -18,16 +18,14 @@ class Company(BasisModel, ObjectPermissionsModel):
     """ These are the values returned when calling without specific route """
     name = models.CharField(max_length=100)
     student_contact = models.ForeignKey(User, related_name='companies')
-    admin_comment = models.CharField(max_length=100, default='', blank=True)
+    admin_comment = models.CharField(max_length=100, blank=True)
     active = models.BooleanField(default=True)
-    job_offer_only = models.BooleanField(default=False)
-    bedex = models.BooleanField(default=False)
 
     """ These are the detail route-only fields """
-    description = models.CharField(max_length=500, default='')
-    phone = models.CharField(max_length=100, default='', blank=True)
-    website = models.CharField(max_length=100, default='')
-    address = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=500, blank=True)
+    phone = models.CharField(max_length=100, blank=True)
+    website = models.URLField(blank=True)
+    address = models.CharField(max_length=100, blank=True)
     previous_contacts = models.ManyToManyField(User)
     comments = GenericRelation(Comment)
 
@@ -61,8 +59,9 @@ class SemesterStatus(BasisModel):
     year = models.PositiveSmallIntegerField()
     semester = models.PositiveSmallIntegerField(choices=SEMESTERS, default=0)
     contacted_status = models.PositiveSmallIntegerField(choices=CONTACT_STATUSES, default=6)
-    contract = models.CharField(max_length=500, default='')
+    contract = models.CharField(max_length=500, blank=True)
     company = models.ForeignKey(Company, related_name='semester_statuses')
+    bedex = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('year', 'semester', 'company')
@@ -70,7 +69,7 @@ class SemesterStatus(BasisModel):
 
 class CompanyContact(BasisModel):
     name = models.CharField(max_length=100)
-    role = models.CharField(max_length=100, default='')
-    mail = models.CharField(max_length=100, default='')
-    phone = models.CharField(max_length=100, default='')
+    role = models.CharField(max_length=100, blank=True)
+    mail = models.EmailField(max_length=100, blank=True)
+    phone = models.CharField(max_length=100, blank=True)
     company = models.ForeignKey(Company, related_name='company_contacts')

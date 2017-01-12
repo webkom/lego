@@ -5,11 +5,9 @@
     description: 'Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter for store private og offentlige virksomheter innen strategisk rådgivning, utvikling av IT-systemer og design av digitale tjenester. Vi er i dag over 370 fagpersoner.'
     student_contact: 1
     admin_comment: 'Heftig partner'
-    job_offer_only: false
     phone: '+47 90909090'
     active: true
     website: 'bekk.no'
-    bedex: true
 
 - model: companies.Company
   pk: 2
@@ -17,7 +15,6 @@
     name: 'Facebook'
     student_contact: 2
     admin_comment: 'Heftig partner'
-    job_offer_only: false
     phone: '123 45 678'
     active: true
 
@@ -28,7 +25,6 @@
     description: 'Itera er et kommunikasjons- og teknologiselskap. Vi leverer tjenester innen rådgivning og strategi, design og utvikling, drift og forvaltning. Vi er engasjerte fagspesialister som jobber i tverrfaglige team fordi vi vet at vi med ulike faglige ståsteder avdekker helt nye muligheter og løsninger som gir verdi til kundene våre.'
     student_contact: 3
     admin_comment: ''
-    job_offer_only: false
     phone: ''
     active: true
 
@@ -154,6 +150,7 @@
     semester: 0
     contacted_status: 5
     company: 2
+    bedex: true
 
 - model: companies.SemesterStatus
   pk: 9
@@ -178,6 +175,7 @@
     semester: 1
     contacted_status: 2
     company: 2
+    bedex: true
 
 - model: companies.SemesterStatus
   pk: 12
@@ -291,6 +289,7 @@
     semester: 1
     contacted_status: 3
     company: 3
+    bedex: true
 
 - model: companies.SemesterStatus
   pk: 21

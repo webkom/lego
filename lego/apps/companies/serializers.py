@@ -11,19 +11,19 @@ from lego.utils.serializers import BasisModelSerializer
 class SemesterStatusReadSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status')
+        fields = ('id', 'year', 'semester', 'contacted_status', 'bedex')
 
 
 class SemesterStatusReadDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
+        fields = ('id', 'year', 'semester', 'contacted_status', 'bedex', 'contract')
 
 
 class SemesterStatusCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status')
+        fields = ('id', 'year', 'semester', 'contacted_status', 'bedex')
 
     def create(self, validated_data):
         company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
@@ -65,7 +65,7 @@ class CompanyReadSerializer(BasisModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
-                  'active', 'job_offer_only', 'bedex')
+                  'active')
 
 
 class CompanyReadDetailedSerializer(BasisModelSerializer):
@@ -79,11 +79,11 @@ class CompanyReadDetailedSerializer(BasisModelSerializer):
         model = Company
         fields = ('id', 'name', 'description', 'semester_statuses', 'student_contact',
                   'admin_comment', 'website', 'phone', 'address', 'company_contacts',
-                  'active', 'job_offer_only', 'bedex', 'comments', 'comment_target')
+                  'active', 'comments', 'comment_target')
 
 
 class CompanyCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name', 'description', 'student_contact', 'admin_comment', 'website',
-                  'phone', 'address', 'active', 'job_offer_only', 'bedex')
+                  'phone', 'address', 'active')

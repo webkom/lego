@@ -6,20 +6,12 @@ from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
-from lego.apps.bdb.models import Company
 from lego.apps.companies.models import Company
-from lego.apps.content.models import Content, SlugContent
+from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
-
-<<<<<<< cfe421b306c738781b028c02aa41c6d0575db83d
-<<<<<<< 6fb4b2a06dd7970493203ec6e3a38b7a2b4188ce
-=======
-=======
->>>>>>> Renamed bdb to companies
->>>>>>> Add new fields to Company, including a ForgeignKey in Event so Events can be associated with a company
 
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
@@ -39,17 +31,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
-<<<<<<< 6fb4b2a06dd7970493203ec6e3a38b7a2b4188ce
 
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
     heed_penalties = models.BooleanField(default=True)
-=======
     company = models.ForeignKey(Company, related_name='events', null=True)
-
-    def __str__(self):
-        return self.title
->>>>>>> Add new fields to Company, including a ForgeignKey in Event so Events can be associated with a company
 
     is_priced = models.BooleanField(default=False)
     price_member = models.PositiveIntegerField(default=0)
