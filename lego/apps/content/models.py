@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.db.models import ManyToManyField
 from django.utils.text import slugify
 
 from lego.apps.comments.models import Comment
@@ -46,8 +47,8 @@ class Content(SlugModel):
     description = models.TextField()
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
-    tags = models.ManyToManyField(Tag, blank=True)
     reactions = GenericRelation(Reaction)
+    tags = ManyToManyField(Tag, blank=True)
     slug_field = 'title'
 
     @property

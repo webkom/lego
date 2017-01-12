@@ -1,8 +1,8 @@
-from unittest import mock
+from django.db import models
+from django.test import testcases
+from django.utils.text import slugify
 
-from django.test import TestCase
-
-from lego.apps.content.models import SlugContent, SlugModel
+from lego.apps.content.models import SlugModel
 
 
 class ExampleSlugContent(SlugModel):
