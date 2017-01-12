@@ -6,7 +6,7 @@ from lego.apps.events import constants
 from lego.apps.events.models import Registration
 from lego.apps.events.serializers import StripeObjectSerializer
 
-from .websockets import notify_registration, notify_unregistration
+from .websockets import notify_event_registration, notify_failed_registration
 
 
 @celery_app.task(serializer='json')
@@ -16,11 +16,12 @@ def async_register(registration_id):
     try:
         with transaction.atomic():
             registration.event.register(registration)
-            transaction.on_commit(lambda: notify_registration('SOCKET_REGISTRATION', registration))
+            transaction.on_commit(lambda: notify_event_registration('SOCKET_REGISTRATION',
+                                                                    registration))
     except (ValueError, IntegrityError):
         registration.status = constants.FAILURE_REGISTER
         registration.save()
-        # Notify websockets with failure
+        notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
 
 
 @celery_app.task(serializer='json')
@@ -30,12 +31,12 @@ def async_unregister(registration_id):
     try:
         with transaction.atomic():
             registration.event.unregister(registration)
-            transaction.on_commit(lambda: notify_unregistration('SOCKET_UNREGISTRATION',
-                                                                registration, pool.id))
+            transaction.on_commit(lambda: notify_event_registration('SOCKET_UNREGISTRATION',
+                                                                    registration, pool.id))
     except IntegrityError:
         registration.status = constants.FAILURE_UNREGISTER
         registration.save()
-        # Notify websockets with failure
+        notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
 
 
 @celery_app.task(serializer='json')

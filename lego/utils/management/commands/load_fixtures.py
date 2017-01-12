@@ -1,8 +1,11 @@
 import logging
+from datetime import datetime, timedelta
 
+import pytz
 from django.conf import settings
 from django.core.management import call_command
 
+from lego.apps.events.models import Event
 from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -43,4 +46,17 @@ class Command(BaseCommand):
             call_command('loaddata', 'lego/apps/quotes/fixtures/development_quotes.yaml')
             call_command('loaddata', 'lego/apps/oauth/fixtures/development_applications.yaml')
             call_command('loaddata', 'lego/apps/reactions/fixtures/emojione_reaction_types.yaml')
+            self.update_event_dates()
         log.info('Done!')
+        self.stdout.write('Done!')
+
+    @staticmethod
+    def update_event_dates():
+        for i, event in enumerate(Event.objects.all()):
+            date = datetime.now(pytz.utc)
+            event.start_time = date + timedelta(days=i-10)
+            event.end_time = date + timedelta(days=i-10, hours=4)
+            event.save()
+            for pool in event.pools.all():
+                pool.activation_date = date - timedelta(days=1)
+                pool.save()
