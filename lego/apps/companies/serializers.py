@@ -11,19 +11,19 @@ from lego.utils.serializers import BasisModelSerializer
 class SemesterStatusReadSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status', 'bedex')
+        fields = ('id', 'year', 'semester', 'contacted_status')
 
 
 class SemesterStatusReadDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status', 'bedex', 'contract')
+        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
 
 
 class SemesterStatusCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status', 'bedex')
+        fields = ('id', 'year', 'semester', 'contacted_status')
 
     def create(self, validated_data):
         company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])

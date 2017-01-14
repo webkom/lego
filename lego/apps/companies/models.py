@@ -43,7 +43,8 @@ class Company(BasisModel, ObjectPermissionsModel):
 class SemesterStatus(BasisModel):
     SEMESTERS = (
         (0, 'Vår'),
-        (1, 'Høst')
+        (1, 'Høst'),
+        (2, 'Bedex')
     )
 
     CONTACT_STATUSES = (
@@ -61,7 +62,6 @@ class SemesterStatus(BasisModel):
     contacted_status = models.PositiveSmallIntegerField(choices=CONTACT_STATUSES, default=6)
     contract = models.CharField(max_length=500, blank=True)
     company = models.ForeignKey(Company, related_name='semester_statuses')
-    bedex = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('year', 'semester', 'company')
