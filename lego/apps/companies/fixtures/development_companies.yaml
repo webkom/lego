@@ -150,7 +150,7 @@
     semester: 0
     contacted_status: 5
     company: 2
-    bedex: true
+
 
 - model: companies.SemesterStatus
   pk: 9
@@ -175,7 +175,7 @@
     semester: 1
     contacted_status: 2
     company: 2
-    bedex: true
+
 
 - model: companies.SemesterStatus
   pk: 12
@@ -289,7 +289,6 @@
     semester: 1
     contacted_status: 3
     company: 3
-    bedex: true
 
 - model: companies.SemesterStatus
   pk: 21
@@ -297,4 +296,11 @@
     year: 2015
     semester: 1
     contacted_status: 4
+    company: 3
+
+- model: companies.SemesterStatus
+  pk: 22
+  fields:
+    year: 2016
+    semester: 2
     company: 3

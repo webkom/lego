@@ -41,8 +41,6 @@ class PoolReadSerializer(BasisModelSerializer):
 
 
 class EventReadSerializer(BasisModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
     company = PublicCompanyReadSerializer(read_only=True)
 
     class Meta:
