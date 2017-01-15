@@ -1,5 +1,6 @@
 import stripe
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -21,14 +22,25 @@ from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Event.objects.prefetch_related('pools__permission_groups',
-                                              'pools__registrations',
-                                              'pools__registrations__user',
-                                              'can_view_groups',
-                                              'comments')
     filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
     filter_class = EventsFilterSet
     ordering = 'start_time'
+
+    def get_queryset(self):
+        if self.action == 'list' and not self.request.query_params:
+            queryset = Event.objects.filter(start_time__gt=timezone.now()).prefetch_related(
+                'pools', 'pools__registrations')
+        elif self.action == 'retrieve':
+            queryset = Event.objects.prefetch_related(
+                'pools__permission_groups',
+                'pools__registrations',
+                'pools__registrations__user',
+                'can_view_groups',
+                'comments'
+            )
+        else:
+            queryset = Event.objects.all().prefetch_related('pools', 'pools__registrations')
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['create', 'partial_update', 'update']:
@@ -120,10 +132,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         with transaction.atomic():
             if not verify_captcha(request.data.get('captcha_response', None)):
                 raise ValidationError({'error': 'Bad captcha'})
-            registration = Registration.objects.get_or_create(event_id=event_id,
-                                                              user_id=user_id)[0]
-            registration.status = constants.PENDING_REGISTER
-            registration.save()
+            registration = Registration.objects.get_or_create(event_id=event_id, user_id=user_id)[0]
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(registration)
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)

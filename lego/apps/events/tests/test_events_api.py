@@ -94,6 +94,11 @@ class ListEventsTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
+        date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
+        for event in Event.objects.all():
+            event.start_time = date + timedelta(days=10)
+            event.end_time = date + timedelta(days=10, hours=4)
+            event.save()
 
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)

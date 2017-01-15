@@ -42,7 +42,7 @@ class EventReadSerializer(BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time')
+                  'start_time', 'end_time', 'total_capacity', 'registration_count')
         read_only = True
 
 
