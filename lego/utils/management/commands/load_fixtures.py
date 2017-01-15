@@ -1,9 +1,9 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-import pytz
 from django.conf import settings
 from django.core.management import call_command
+from django.utils import timezone
 
 from lego.apps.events.models import Event
 from lego.utils.management_command import BaseCommand
@@ -52,11 +52,11 @@ class Command(BaseCommand):
 
     @staticmethod
     def update_event_dates():
+        date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
         for i, event in enumerate(Event.objects.all()):
-            date = datetime.now(pytz.utc)
             event.start_time = date + timedelta(days=i-10)
             event.end_time = date + timedelta(days=i-10, hours=4)
             event.save()
             for pool in event.pools.all():
-                pool.activation_date = date - timedelta(days=1)
+                pool.activation_date = date.replace(hour=12, minute=0) - timedelta(days=1)
                 pool.save()

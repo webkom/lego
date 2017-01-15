@@ -21,7 +21,7 @@ from lego.apps.users.views.users import UsersViewSet
 router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)
 router.register(r'comments', CommentViewSet)
-router.register(r'events', EventViewSet)
+router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
