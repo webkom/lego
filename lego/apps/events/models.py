@@ -80,11 +80,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if not pools:
             pools = self.get_possible_pools(user, future=True)
+            if not pools:
+                return None
         reg_time = min(pool.activation_date for pool in pools)
-        if penalties and self.heed_penalties:
+        if self.heed_penalties:
+            if not penalties:
+                penalties = user.number_of_penalties()
             if penalties == 2:
                 return reg_time + timedelta(hours=12)
-            if penalties == 1:
+            elif penalties == 1:
                 return reg_time + timedelta(hours=3)
         return reg_time
 
