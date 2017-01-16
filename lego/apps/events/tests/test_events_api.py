@@ -167,15 +167,24 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(_test_pools_data[0], self.pool_response.data)
 
     def test_pool_update(self):
-        pool_update_response = self.client.put(_get_pools_detail_url(self.event_id, self.pool_id),
-                                               _test_pools_data[1])
+        pool_update_response = self.client.put(
+            _get_pools_detail_url(self.event_id, self.pool_id), _test_pools_data[1]
+        )
         pool_get_response = self.client.get(_get_pools_detail_url(self.event_id, self.pool_id))
         pool_get_response.data.pop('registrations')  # The put does not return updated data
         pool_get_response.data.pop('permissions')  # We don't care about permissions here
 
         self.assertEqual(pool_update_response.status_code, 200)
         self.assertIsNotNone(pool_get_response.data.pop('id'))
-        self.assertEqual(_test_pools_data[1], pool_get_response.data)
+        self.assertEqual(pool_get_response.data['name'], _test_pools_data[1]['name'])
+        self.assertEqual(pool_get_response.data['capacity'], _test_pools_data[1]['capacity'])
+        self.assertEqual(
+            pool_get_response.data['activation_date'], _test_pools_data[1]['activation_date']
+        )
+        self.assertEqual(
+            pool_get_response.data['permission_groups'][0]['id'],
+            _test_pools_data[1]['permission_groups'][0]
+        )
 
 
 class PoolsTestCase(APITestCase):
