@@ -57,6 +57,6 @@ class Command(BaseCommand):
             event.start_time = date + timedelta(days=i-10)
             event.end_time = date + timedelta(days=i-10, hours=4)
             event.save()
-            for pool in event.pools.all():
-                pool.activation_date = date.replace(hour=12, minute=0) - timedelta(days=1)
+            for j, pool in enumerate(event.pools.all()):
+                pool.activation_date = date.replace(hour=12, minute=0) + timedelta(days=i-j-11)
                 pool.save()
