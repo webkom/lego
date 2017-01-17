@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import timedelta
 from unittest import skipIf
 
 import stripe
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.events.models import Event, Registration
@@ -269,6 +270,8 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.abakus_users = User.objects.all()
         self.request_user, self.user = self.abakus_users[0:2]
         self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        self.event.start_time = timezone.now() + timedelta(hours=3)
+        self.event.save()
         self.pool = self.event.pools.first()
 
     def test_with_admin_permission(self):
@@ -338,7 +341,7 @@ class StripePaymentTestCase(APITestCase):
             card={
                 'number': number,
                 'exp_month': 12,
-                'exp_year': datetime.now().year + 1,
+                'exp_year': timezone.now().year + 1,
                 'cvc': cvc
             },
         )
