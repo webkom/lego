@@ -154,6 +154,10 @@ class CreateEventsTestCase(APITestCase):
 
     def test_event_update(self):
         event_update_response = self.client.put(_get_detail_url(self.event_id), _test_event_data[1])
+        res_event = event_update_response.data
+        expect_event = _test_event_data[1]
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
 
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         self.assertEqual(event_update_response.status_code, 200)
