@@ -1,6 +1,5 @@
 import stripe
 from django.db import transaction
-from django.utils import timezone
 from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -27,10 +26,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = 'start_time'
 
     def get_queryset(self):
-        if self.action == 'list' and not self.request.query_params:
-            queryset = Event.objects.filter(start_time__gt=timezone.now()).prefetch_related(
-                'pools', 'pools__registrations')
-        elif self.action == 'retrieve':
+        if self.action == 'retrieve':
             queryset = Event.objects.prefetch_related(
                 'pools__permission_groups',
                 'pools__registrations',
