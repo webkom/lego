@@ -58,6 +58,7 @@ class RegistrationMethodTest(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
+        Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
         self.users = get_dummy_users(2)
         AbakusGroup.objects.get(name='Abakus').add_user(self.users[0])
@@ -110,8 +111,11 @@ class RegistrationTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
-        Event.objects.all().update(heed_penalties=True)
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12),
+            heed_penalties=True
+        )
 
     def tearDown(self):
         from django_redis import get_redis_connection
@@ -905,6 +909,23 @@ class RegistrationTestCase(TestCase):
                                                               user=user)[0]
             event.register(registration)
 
+    def test_cant_register_after_event_has_started(self):
+        """Test that a user cannot register after the event has started."""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        event.start_time = current_time - timedelta(hours=3)
+        event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        registration = Registration.objects.get_or_create(event=event,
+                                                          user=user)[0]
+        with self.assertRaises(ValueError):
+            event.register(registration)
+        self.assertEqual(event.number_of_registrations, 0)
+
     def test_can_register_with_one_penalty_after_delay(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
@@ -1038,7 +1059,7 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    number_of_calls = 68
+    number_of_calls = 80
 
     @mock.patch('django.utils.timezone.now',
                 side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
@@ -1076,7 +1097,10 @@ class AdminRegistrationTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
 
     def setUp(self):
-        Event.objects.all().update(merge_time=timezone.now() + timedelta(hours=12))
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12)
+        )
 
     def test_admin_registration(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')

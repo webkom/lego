@@ -119,10 +119,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         penalties = None
         if self.heed_penalties:
             penalties = user.number_of_penalties()
+        current_time = timezone.now()
+        if self.start_time < current_time:
+            raise ValueError('Event has already started')
         possible_pools = self.get_possible_pools(user)
         if not possible_pools:
             raise ValueError('No available pools')
-        if self.get_earliest_registration_time(user, possible_pools, penalties) > timezone.now():
+        if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
             raise ValueError('Not open yet')
 
         # If the event is merged or has only one pool we can skip a lot of logic
