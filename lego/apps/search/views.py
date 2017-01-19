@@ -2,33 +2,33 @@ from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
 from .search import autocomplete, search
-from .serializers import QuerySerializer
+from .serializers import AutocompleteSerializer, QuerySerializer
 
 
-class SearchViewSet(viewsets.GenericViewSet):
+class SearchViewSet(viewsets.ViewSet):
+    """
+    Post { 'query': query, 'types': [content_type], 'filters': { event_type: ['party', 'course']} }
+    to this endpoint.
 
-    permission_classes = [permissions.AllowAny]
-    serializer_class = QuerySerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        query = serializer.data['query']
-        types = serializer.data['types']
-
-        return Response(search(query, types, self.request.user))
-
-
-class AutocompleteViewSet(viewsets.GenericViewSet):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = QuerySerializer
+    types and filters is optional.
+    """
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = QuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        return Response(list(search(user=self.request.user, **serializer.data)))
 
-        query = serializer.data['query']
-        types = serializer.data['types']
 
-        return Response(autocomplete(query, types, self.request.user))
+class AutocompleteViewSet(viewsets.ViewSet):
+    """
+    Post { 'query': query, 'types': [content_type] } to this endpoint.
+
+    types is optional.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = AutocompleteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(list(autocomplete(user=self.request.user, **serializer.data)))

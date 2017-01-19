@@ -6,9 +6,11 @@ from .serializers import PublicUserSerializer
 
 
 class UserIndex(SearchIndex):
-    model = User
+
+    queryset = User.objects.all()
     serializer_class = PublicUserSerializer
-    autocomplete_fields = ['full_name']
+    result_fields = ('username', 'first_name', 'last_name', 'full_name', 'picture')
+    autocomplete_result_fields = ('full_name', 'picture')
 
     def get_autocomplete(self, instance):
         return [instance.username, instance.full_name]
