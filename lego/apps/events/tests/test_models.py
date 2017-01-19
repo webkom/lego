@@ -98,13 +98,13 @@ class PoolCapacityTestCase(TestCase):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         capacities_to_add = [10]
         self.create_pools(event, capacities_to_add, [AbakusGroup.objects.get(name='Abakus')])
-        self.assertEqual(sum(capacities_to_add), event.capacity)
+        self.assertEqual(sum(capacities_to_add), event.active_capacity)
 
     def test_capacity_with_multiple_pools(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         capacities_to_add = [10, 20]
         self.create_pools(event, capacities_to_add, [AbakusGroup.objects.get(name='Abakus')])
-        self.assertEqual(sum(capacities_to_add), event.capacity)
+        self.assertEqual(sum(capacities_to_add), event.active_capacity)
 
 
 class RegistrationTestCase(TestCase):
@@ -485,7 +485,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(pool.registrations.count(), pool_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
-        self.assertLessEqual(event.number_of_registrations, event.capacity)
+        self.assertLessEqual(event.number_of_registrations, event.active_capacity)
 
     def test_unregistering_and_bumping(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -509,7 +509,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_size_before)
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
-        self.assertLessEqual(event.number_of_registrations, event.capacity)
+        self.assertLessEqual(event.number_of_registrations, event.active_capacity)
 
     def test_unregistering_and_bumping_post_merge(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -549,7 +549,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool_one.registrations.count(), pool_one_size_before + 1)
         self.assertGreater(pool_one.registrations.count(), pool_one.capacity)
         self.assertEqual(pool_two.registrations.count(), pool_two_size_before - 1)
-        self.assertLessEqual(event.number_of_registrations, event.capacity)
+        self.assertLessEqual(event.number_of_registrations, event.active_capacity)
 
     def test_bumping_when_bumped_has_several_pools_available(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')

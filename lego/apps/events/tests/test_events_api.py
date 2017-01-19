@@ -1,5 +1,5 @@
 from datetime import timedelta
-from unittest import skipIf
+from unittest import mock, skipIf
 
 import stripe
 from django.core.urlresolvers import reverse
@@ -94,6 +94,11 @@ class ListEventsTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
+        date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
+        for event in Event.objects.all():
+            event.start_time = date + timedelta(days=10)
+            event.end_time = date + timedelta(days=10, hours=4)
+            event.save()
 
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
@@ -162,15 +167,24 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(_test_pools_data[0], self.pool_response.data)
 
     def test_pool_update(self):
-        pool_update_response = self.client.put(_get_pools_detail_url(self.event_id, self.pool_id),
-                                               _test_pools_data[1])
+        pool_update_response = self.client.put(
+            _get_pools_detail_url(self.event_id, self.pool_id), _test_pools_data[1]
+        )
         pool_get_response = self.client.get(_get_pools_detail_url(self.event_id, self.pool_id))
         pool_get_response.data.pop('registrations')  # The put does not return updated data
         pool_get_response.data.pop('permissions')  # We don't care about permissions here
 
         self.assertEqual(pool_update_response.status_code, 200)
         self.assertIsNotNone(pool_get_response.data.pop('id'))
-        self.assertEqual(_test_pools_data[1], pool_get_response.data)
+        self.assertEqual(pool_get_response.data['name'], _test_pools_data[1]['name'])
+        self.assertEqual(pool_get_response.data['capacity'], _test_pools_data[1]['capacity'])
+        self.assertEqual(
+            pool_get_response.data['activation_date'], _test_pools_data[1]['activation_date']
+        )
+        self.assertEqual(
+            pool_get_response.data['permission_groups'][0]['id'],
+            _test_pools_data[1]['permission_groups'][0]
+        )
 
 
 class PoolsTestCase(APITestCase):
@@ -198,6 +212,7 @@ class PoolsTestCase(APITestCase):
         self.assertEqual(pool_response.status_code, 201)
 
 
+@mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
 class RegistrationsTestCase(APITransactionTestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml']
@@ -207,7 +222,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
-    def test_create(self):
+    def test_create(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
@@ -216,7 +231,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         user_id = res.data['results'][0].get('user', None)['id']
         self.assertEqual(user_id, 1)
 
-    def test_register_no_pools(self):
+    def test_register_no_pools(self, mock_verify_captcha):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
@@ -225,7 +240,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         for user in res.data['results']:
             self.assertEqual(user.get('status', None), 'FAILURE_REGISTER')
 
-    def test_unregister(self):
+    def test_unregister(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         registration = Registration.objects.get(user=self.abakus_user, event=event)
         registration_response = self.client.delete(_get_registrations_detail_url(event.id,

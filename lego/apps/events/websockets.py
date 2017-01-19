@@ -1,17 +1,12 @@
 from datetime import datetime
 
-from channels import Group
+from djangorestframework_camel_case.render import camelize
 
+from lego.apps.events.models import Event
 from lego.apps.events.serializers import EventReadDetailedSerializer, RegistrationReadSerializer
 from lego.apps.permissions.filters import filter_queryset
-from lego.apps.websockets.handlers import group_for_user
+from lego.apps.websockets.groups import group_for_event, group_for_user
 from lego.apps.websockets.notifiers import notify_group
-
-from .models import Event
-
-
-def get_group_for_event(event):
-    return Group(f'event-{event.pk}')
 
 
 def find_event_groups(user):
@@ -19,37 +14,39 @@ def find_event_groups(user):
     Find all channels groups the user belongs to as a result
     of being signed up to future events.
     """
-    after_now = Event.objects.filter(start_time__gt=datetime.now())
-    queryset = filter_queryset(user, after_now)
+    queryset = Event.objects.filter(start_time__gt=datetime.now())
+    if not user.has_perm('/sudo/admin/events/list/'):
+        queryset = filter_queryset(user, queryset)
     groups = []
     for event in queryset.all():
-        groups.append(get_group_for_event(event))
+        groups.append(group_for_event(event))
 
     return groups
 
 
-def notify_registration(type, registration):
-    group = group_for_user(registration.user)
-    serializer = RegistrationReadSerializer(registration)
-    notify_group(group, {
-        'type': type,
-        'payload': serializer.data
-    })
+def notify_event_registration(type, registration, from_pool=None):
+    group = group_for_event(registration.event)
+    notify_registration(group, type, registration, from_pool)
 
 
-def notify_unregistration(type, registration, pool_id):
+def notify_failed_registration(type, registration):
     group = group_for_user(registration.user)
-    serializer = RegistrationReadSerializer(registration)
-    payload = serializer.data
-    payload['from_pool'] = pool_id
+    notify_registration(group, type, registration)
+
+
+def notify_registration(group, type, registration, from_pool=None):
+    payload = RegistrationReadSerializer(registration).data
+    if from_pool:
+        payload['from_pool'] = from_pool
+
     notify_group(group, {
         'type': type,
-        'payload': payload
+        'payload': camelize(payload)
     })
 
 
 def event_updated_notifier(event):
-    group = get_group_for_event(event)
+    group = group_for_event(event)
     serializer = EventReadDetailedSerializer(event)
     notify_group(group, {
         'type': 'EVENT_UPDATED',
