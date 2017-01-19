@@ -24,6 +24,8 @@
     permissions:
       - /sudo/admin/meetings/create
       - /sudo/admin/meetinginvitations/create
+      - /sudo/admin/registrations/create/
+      - /sudo/admin/registrations/destroy/
 
 - model: users.AbakusGroup
   pk: 3

@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
@@ -184,7 +185,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         :param open_pool: The pool where the unregistration happened.
         """
-        if self.number_of_registrations < self.capacity:
+        if self.number_of_registrations < self.active_capacity:
             if self.is_merged:
                 self.bump()
             else:
@@ -349,25 +350,40 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def is_full(self):
-        return self.capacity <= self.number_of_registrations
+        return self.active_capacity <= self.number_of_registrations
 
     @property
-    def capacity(self):
+    def active_capacity(self):
+        """ Calculation capacity of pools that are active. """
         aggregate = self.pools.all().filter(activation_date__lte=timezone.now())\
             .aggregate(Sum('capacity'))
         return aggregate['capacity__sum'] or 0
 
     @property
+    def total_capacity(self):
+        """ Prefetch friendly calculation of the total possible capacity of the event. """
+        return sum([pool.capacity for pool in self.pools.all()])
+
+    @property
+    def registration_count(self):
+        """ Prefetch friendly counting of registrations for an event. """
+        return sum([pool.registrations.all().count() for pool in self.pools.all()])
+
+    @property
     def number_of_registrations(self):
-        return self.registrations.filter(unregistration_date=None,
-                                         status=constants.SUCCESS_REGISTER)\
-            .exclude(pool=None).count()
+        """ Registration count guaranteed not to include unregistered users. """
+        return self.registrations.filter(
+            unregistration_date=None,
+            status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
+        ).exclude(pool=None).count()
 
     @property
     def waiting_registrations(self):
-        return self.registrations.filter(pool=None,
-                                         unregistration_date=None,
-                                         status=constants.SUCCESS_REGISTER)
+        return self.registrations.filter(
+            pool=None,
+            unregistration_date=None,
+            status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
+        )
 
 
 class Pool(BasisModel):
@@ -429,6 +445,14 @@ class Registration(BasisModel):
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})
+
+    def save(self, *args, **kwargs):
+        self.validate()
+        super().save(*args, **kwargs)
+
+    def validate(self):
+        if self.pool and self.unregistration_date:
+            raise ValidationError('Pool and unregistration_date should not both be set')
 
     def add_to_pool(self, pool):
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)

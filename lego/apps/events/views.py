@@ -8,7 +8,7 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool, PaymentExists
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.permissions import NestedEventPermissions
+from lego.apps.events.permissions import NestedEventPermissions, verify_captcha
 from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
@@ -21,14 +21,22 @@ from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Event.objects.prefetch_related('pools__permission_groups',
-                                              'pools__registrations',
-                                              'pools__registrations__user',
-                                              'can_view_groups',
-                                              'comments')
     filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
     filter_class = EventsFilterSet
     ordering = 'start_time'
+
+    def get_queryset(self):
+        if self.action == 'retrieve':
+            queryset = Event.objects.prefetch_related(
+                'pools__permission_groups',
+                'pools__registrations',
+                'pools__registrations__user',
+                'can_view_groups',
+                'comments'
+            )
+        else:
+            queryset = Event.objects.all().prefetch_related('pools', 'pools__registrations')
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['create', 'partial_update', 'update']:
@@ -99,7 +107,6 @@ class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.DestroyModelMixin,
                           mixins.ListModelMixin,
                           viewsets.GenericViewSet):
-    permission_classes = (NestedEventPermissions,)
     serializer_class = RegistrationReadSerializer
     ordering = 'registration_date'
 
@@ -119,10 +126,9 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         event_id = self.kwargs.get('event_pk', None)
         user_id = request.user.id
         with transaction.atomic():
-            registration = Registration.objects.get_or_create(event_id=event_id,
-                                                              user_id=user_id)[0]
-            registration.status = constants.PENDING_REGISTER
-            registration.save()
+            if not verify_captcha(request.data.get('captcha_response', None)):
+                raise ValidationError({'error': 'Bad captcha'})
+            registration = Registration.objects.get_or_create(event_id=event_id, user_id=user_id)[0]
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(registration)
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)

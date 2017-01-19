@@ -1,17 +1,16 @@
 from channels import Group
 
+from lego.apps.events.websockets import find_event_groups
 from lego.apps.websockets.auth import jwt_create_channel_session, jwt_retrieve_channel_session
 
-
-def group_for_user(user):
-    return Group(f'user-{user.pk}')
+from .groups import group_for_user
 
 
 def find_groups(user):
     groups = [
         Group('global'),
         group_for_user(user)
-    ]
+    ] + find_event_groups(user)
 
     return groups
 
