@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import timedelta
 
 from django.conf import settings
@@ -6,6 +7,7 @@ from django.core.management import call_command
 from django.utils import timezone
 
 from lego.apps.events.models import Event
+from lego.apps.files.storage import storage
 from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -26,6 +28,18 @@ class Command(BaseCommand):
     def run(self, *args, **options):
         log.info('Loading regular fixtures:')
 
+        # Helpers
+        uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
+
+        def upload_file(file, key):
+            """
+            Helper function for file uploads to S3
+            """
+            assets_folder = os.path.join(settings.BASE_DIR, '../assets')
+            local_file = os.path.join(assets_folder, file)
+            log.info(f'Uploading {key} file to bucket')
+            storage.upload_file(uploads_bucket, key, local_file)
+
         call_command('loaddata', 'lego/apps/users/fixtures/initial_abakus_groups.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_users.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_memberships.yaml')
@@ -33,6 +47,15 @@ class Command(BaseCommand):
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
             log.info('Loading development fixtures:')
             call_command('loaddata', 'lego/apps/users/fixtures/development_users.yaml')
+
+            # Prepare storage bucket for development. We skips this in production.
+            # The bucket needs to be created manually.
+            log.info(f'Makes sure the {uploads_bucket} bucket exists')
+            storage.create_bucket(uploads_bucket)
+
+            call_command('loaddata', 'lego/apps/files/fixtures/development_files.yaml')
+            upload_file('abakus.png', 'abakus.png')
+
             call_command(
                 'loaddata',
                 'lego/apps/social_groups/fixtures/development_interest_groups.yaml'
@@ -47,8 +70,8 @@ class Command(BaseCommand):
             call_command('loaddata', 'lego/apps/oauth/fixtures/development_applications.yaml')
             call_command('loaddata', 'lego/apps/reactions/fixtures/emojione_reaction_types.yaml')
             self.update_event_dates()
+
         log.info('Done!')
-        self.stdout.write('Done!')
 
     @staticmethod
     def update_event_dates():
