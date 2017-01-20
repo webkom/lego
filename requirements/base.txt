@@ -15,7 +15,7 @@ celery==4.0.2
 whitenoise==3.2.3
 stripe==1.46.0
 structlog==16.1.0
-boto3==1.4.3
+boto3==1.4.4
 
 # channels:
 channels==1.0.2
