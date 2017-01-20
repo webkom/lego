@@ -2,14 +2,14 @@
 
 > LEGO Er Ganske Oppdelt
 
-We use [Waffle](https://waffle.io/webkom/lego) for simple project management.
+We use GitHub issues and project boards for simple project management.
 
-[Noob guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide)
+Documentation is located inside the docs/ folder in this repository. We also have a [Noob guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide)
 
 ## Getting started
 
-LEGO requires python3, virtualenv, docker and docker-compose. Services like Postgres, Redis and
-Elasticsearch runs in docker.
+LEGO requires python3.6, virtualenv, docker and docker-compose. Services like Postgres, Redis,
+Elasticsearch, Thumbor and Minio runs inside docker.
 
 
 ```bash
@@ -23,6 +23,40 @@ Elasticsearch runs in docker.
     python manage.py load_fixtures
     python manage.py runserver
 ```
+
+## Code Style
+
+This codebase uses the PEP8 code style. We enforces this with flake8. We use almost all the rules
+used in the Requests project.
+
+In addition to the standards outlined in PEP 8, we have a few guidelines:
+
+* Line-length can exceed 79 characters, to 100, when convenient.
+* Always use single-quoted strings (e.g. 'lego'), unless a single-quote occurs within the string.
+
+Additionally, one of the styles that PEP8 recommends for line continuations completely lacks all
+sense of taste, and is not to be permitted within the Requests codebase:
+
+```
+# Aligned with opening delimiter. WRONG
+foo = long_function_name(var_one, var_two,
+                         var_three, var_four)
+
+# Correct
+foo = long_function_name(
+    var_one, var_two, var_three, var_four
+)
+foo = long_function_name(
+    var_one,
+    var_two
+)
+```
+
+No. Just don't. Please.
+
+- Kenneth Reitz - Creator of the Requests project
+
+## Tools
 
 We recommend Pycharm for development, use your @stud.ntnu.no email to register a free professional
 account.
