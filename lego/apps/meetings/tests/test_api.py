@@ -138,7 +138,7 @@ class DeleteMeetingTestCase(APITestCase):
 
 class InviteToMeetingTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
-                'test_users.yaml']
+                'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=3)
@@ -147,6 +147,7 @@ class InviteToMeetingTestCase(APITestCase):
         self.abakule = User.objects.get(username='test1')
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
         self.pleb = User.objects.get(username='pleb')
+        self.AbaBrygg = AbakusGroup.objects.get(name='AbaBrygg')
 
     def test_can_invite_to_own_meeting(self):
         self.meeting.created_by = self.abakommer
@@ -156,7 +157,7 @@ class InviteToMeetingTestCase(APITestCase):
         res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_user/', {
             'user': self.abakule.id,
         })
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, 200)
 
     def test_member_can_invite_to_meeting(self):
         self.meeting.created_by = self.abakule
@@ -169,7 +170,7 @@ class InviteToMeetingTestCase(APITestCase):
         res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_user/', {
             'user': self.pleb.id,
         })
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, 200)
 
     def test_abakulemember_can_invite_to_meeting(self):
         self.meeting.created_by = self.abakommer
@@ -182,7 +183,38 @@ class InviteToMeetingTestCase(APITestCase):
         res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_user/', {
             'user': self.pleb.id,
         })
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, 200)
+
+    def test_can_bulk_invite_to_meeting(self):
+        self.meeting.created_by = self.abakommer
+        self.meeting.save()
+
+        me = self.abakule
+        self.meeting.invite_user(me)
+
+        self.client.force_authenticate(me)
+        res = self.client.post(_get_detail_url(self.meeting.id) + 'bulk_invite/', {
+            'groups': [self.AbaBrygg.name],
+            'users': [self.pleb.username]
+        })
+        self.assertEqual(res.status_code, 200)
+        for user in self.AbaBrygg.users.all():
+            present = self.meeting.invited_users.filter(id=user.id).exists()
+            self.assertTrue(present)
+        self.assertTrue(self.meeting.invited_users.filter(id=self.pleb.id))
+
+    def test_can_not_bulk_invite_to_unknown_meeting(self):
+        me = self.abakommer
+        self.client.force_authenticate(me)
+        res = self.client.post(_get_detail_url(self.meeting.id) + 'bulk_invite/', {
+            'groups': [self.AbaBrygg.name],
+            'users': [self.pleb.username]
+        })
+        self.assertEqual(res.status_code, 403)
+        for user in self.AbaBrygg.users.all():
+            present = self.meeting.invited_users.filter(id=user.id).exists()
+            self.assertFalse(present)
+        self.assertFalse(self.meeting.invited_users.filter(id=self.pleb.id))
 
     def test_can_not_invite_to_unknown_meeting(self):
         me = self.abakommer
@@ -201,7 +233,7 @@ class InviteToMeetingTestCase(APITestCase):
         res = self.client.post(_get_detail_url(self.meeting.id) + 'invite_group/', {
             'group': webkom.id
         })
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, 200)
         for user in webkom.users.all():
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertTrue(present)
