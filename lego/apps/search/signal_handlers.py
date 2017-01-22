@@ -1,7 +1,7 @@
 from lego.utils.content_types import instance_to_string
 
 from .registry import get_model_index
-from .tasks import instance_removal, instance_update
+from .tasks import instance_delete, instance_update
 
 
 class BaseSignalHandler:
@@ -23,8 +23,7 @@ class AsyncSignalHandler(BaseSignalHandler):
         Update the search index when we know how to index the instance.
         """
         identifier = instance_to_string(instance)
-        search_index = get_model_index(instance)
-        if identifier and search_index:
+        if identifier and get_model_index(instance):
             instance_update.delay(identifier)
 
     def on_delete(self, instance):
@@ -32,6 +31,5 @@ class AsyncSignalHandler(BaseSignalHandler):
         Remove the instance from the index if the instance has a search_index
         """
         identifier = instance_to_string(instance)
-        search_index = get_model_index(instance)
-        if identifier and search_index:
-            instance_removal.delay(identifier)
+        if identifier and get_model_index(instance):
+            instance_delete.delay(identifier)

@@ -6,8 +6,10 @@ from .serializers import DetailedArticleSerializer
 
 
 class ArticleModelIndex(SearchIndex):
-    model = Article
+
+    queryset = Article.objects.all()
     serializer_class = DetailedArticleSerializer
+    result_fields = ('title', 'description', 'text')
 
     def get_autocomplete(self, instance):
         return instance.title

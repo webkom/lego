@@ -8,18 +8,20 @@
     "analysis": {
       "filter": {
         "norwegian_stop": {
-          "type":       "stop",
-          "stopwords":  "_norwegian_"
+          "type": "stop",
+          "stopwords": "_norwegian_"
         },
         "norwegian_stemmer": {
-          "type":       "stemmer",
-          "language":   "norwegian"
+          "type": "stemmer",
+          "language": "norwegian"
         }
       },
       "analyzer": {
         "norwegian": {
-          "tokenizer":  "standard",
-          "char_filter": ["html_strip"],
+          "tokenizer": "standard",
+          "char_filter": [
+            "html_strip"
+          ],
           "filter": [
             "lowercase",
             "norwegian_stop",
@@ -36,14 +38,22 @@
       },
       "dynamic_templates": [
         {
-          "strings": {
+          "query": {
             "mapping": {
+              "type": "text",
               "index": "analyzed",
-              "type": "string",
               "analyzer": "norwegian"
             },
-            "match_mapping_type": "string",
-            "match": "*"
+            "match": "*",
+            "unmatch": "*_filter"
+          }
+        },
+        {
+          "filter": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match": "*_filter"
           }
         }
       ],
@@ -51,27 +61,15 @@
         "enabled": true
       },
       "properties": {
-        "id": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "django_ct": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "django_id": {
-          "type": "integer",
-          "index": "not_analyzed"
-        },
         "autocomplete": {
           "type" : "completion",
           "analyzer" : "simple",
           "search_analyzer" : "simple",
           "contexts": [
             {
-              "name": "ct",
+              "name": "content_type",
               "type": "category",
-              "path": "type"
+              "path": "content_type"
             }
           ]
         }

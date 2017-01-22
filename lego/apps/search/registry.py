@@ -1,3 +1,8 @@
+
+"""
+The index_registry dict keeps the mapping between SearchIndexes and models.
+'players.player': PlayerIndex
+"""
 index_registry = {}
 
 
@@ -12,21 +17,17 @@ def register_search_index(search_index_cls):
     index_registry[instance_to_content_type_string(model)] = search_index
 
 
-def get_content_string_index(content_string):
+def get_model_index(instance):
     """
-    Return a search index based on a string like app_label.model_name
-    """
-    try:
-        return index_registry[content_string]
-    except KeyError:
-        pass
-
-
-def get_model_index(model):
-    """
-    Retrieve the model index by model, None otherwise. Use this function to decide to index a
-    model change or not.
+    Return the index responsible for this instance. Returns None if no index is registered.
     """
     from lego.utils.content_types import instance_to_content_type_string
 
-    return get_content_string_index(instance_to_content_type_string(model))
+    return index_registry.get(instance_to_content_type_string(instance))
+
+
+def get_content_type_index(content_type):
+    """
+    Return a index based on a content_type identifier string.
+    """
+    return index_registry.get(content_type)
