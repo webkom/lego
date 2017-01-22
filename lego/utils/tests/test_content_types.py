@@ -2,7 +2,7 @@ from unittest import mock
 
 from django.test import TestCase
 
-from lego.apps.search.models import SearchTestModel
+from lego.apps.users.models import User
 from lego.utils import content_types
 
 
@@ -30,8 +30,8 @@ class ContentTypesTestCase(TestCase):
 
     def test_string_to_model_cls(self):
         self.assertEquals(
-            content_types.string_to_model_cls('search.searchtestmodel'),
-            SearchTestModel
+            content_types.string_to_model_cls('users.user'),
+            User
         )
 
         self.assertRaises(
