@@ -86,5 +86,25 @@ class Storage:
                 key = "%s_%s%s" % (file_root, get_random_string(7), file_ext)
         return key
 
+    def create_bucket(self, bucket, acl='private'):
+        """
+        Create a bucket
+        """
+        try:
+            bucket = self.resource.Bucket(bucket)
+            bucket.create(ACL=acl)
+            return bucket
+        except exceptions.ClientError:
+            pass
+
+    def upload_file(self, bucket, key, file_name):
+        """
+        Upload a file to S3 using the filename as the path to the file on the local filesystem
+        """
+        try:
+            self.client.upload_file(file_name, bucket, key)
+        except exceptions.ClientError:
+            pass
+
 
 storage = Storage()
