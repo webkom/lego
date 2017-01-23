@@ -138,7 +138,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         # If the event is merged or has only one pool we can skip a lot of logic
         with cache.lock(self.id, timeout=20):
             if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
-                if self.is_full or penalties == 3:
+                if self.is_full or penalties >= 3:
                     return registration.add_to_waiting_list()
 
                 return registration.add_to_pool(possible_pools[0])
@@ -146,7 +146,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             # Calculates which pools that are full or open for registration based on capacity
             full_pools, open_pools = self.calculate_full_pools(possible_pools)
 
-            if not open_pools or penalties == 3:
+            if not open_pools or penalties >= 3:
                 return registration.add_to_waiting_list()
 
             if len(open_pools) == 1:

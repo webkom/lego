@@ -127,8 +127,7 @@ class RegistrationTestCase(TestCase):
         pool = event.pools.first()
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(pool.registrations.count(), event.number_of_registrations)
 
@@ -146,8 +145,7 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         for user in webkom_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(pool_one.registrations.count(), 2)
@@ -161,8 +159,7 @@ class RegistrationTestCase(TestCase):
         pool_2 = event.pools.get(name='Webkom')
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(pool.registrations.count(), 1)
         self.assertEqual(pool_2.registrations.count(), 0)
@@ -181,17 +178,20 @@ class RegistrationTestCase(TestCase):
         for user in webkom_users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
-        registration_webkom_1 = Registration.objects.get_or_create(event=event,
-                                                                   user=webkom_users[0])[0]
+        registration_webkom_1 = Registration.objects.get_or_create(
+            event=event, user=webkom_users[0]
+        )[0]
         event.register(registration_webkom_1)
 
         self.assertEqual(pool.registrations.count(), 0)
         self.assertEqual(pool_2.registrations.count(), 1)
 
-        registration_webkom_2 = Registration.objects.get_or_create(event=event,
-                                                                   user=webkom_users[1])[0]
-        registration_abakus = Registration.objects.get_or_create(event=event,
-                                                                 user=abakus_users[0])[0]
+        registration_webkom_2 = Registration.objects.get_or_create(
+            event=event, user=webkom_users[1]
+        )[0]
+        registration_abakus = Registration.objects.get_or_create(
+            event=event, user=abakus_users[0]
+        )[0]
         event.register(registration_webkom_2)
         event.register(registration_abakus)
         self.assertEqual(pool.registrations.count(), 1)
@@ -206,8 +206,7 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user_2)
         self.assertEqual(pool.registrations.count(), 0)
 
-        registration_one = Registration.objects.get_or_create(event=event,
-                                                              user=user_1)[0]
+        registration_one = Registration.objects.get_or_create(event=event, user=user_1)[0]
         event.register(registration_one)
         pool_two = Pool.objects.create(name='test', capacity=1, event=event,
                                        activation_date=(timezone.now() - timedelta(hours=24)))
@@ -227,8 +226,7 @@ class RegistrationTestCase(TestCase):
             name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() + timedelta(hours=24)))
         with self.assertRaises(ValueError):
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
         self.assertEqual(event.waiting_registrations.count(), 0)
@@ -241,8 +239,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(event.waiting_registrations.count(), people_2_place_in_waiting_list)
@@ -257,8 +254,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(event.waiting_registrations.count(),
@@ -272,14 +268,12 @@ class RegistrationTestCase(TestCase):
         user_one, user_two = users[0], users[1]
         AbakusGroup.objects.get(name='Abakus').add_user(user_one)
         AbakusGroup.objects.get(name='Webkom').add_user(user_two)
-        registration_one = Registration.objects.get_or_create(event=event,
-                                                              user=user_one)[0]
+        registration_one = Registration.objects.get_or_create(event=event, user=user_one)[0]
         event.register(registration_one)
         n_registrants = pool_one.registrations.count()
         self.assertEqual(pool_one.registrations.count(), event.number_of_registrations)
 
-        registration_two = Registration.objects.get_or_create(event=event,
-                                                              user=user_two)[0]
+        registration_two = Registration.objects.get_or_create(event=event, user=user_two)[0]
         event.register(registration_two)
         n_registrants += pool_two.registrations.count()
         self.assertEqual(n_registrants, event.number_of_registrations)
@@ -302,8 +296,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups_one[0].add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(pool_one.registrations.count(), 3)
@@ -323,8 +316,7 @@ class RegistrationTestCase(TestCase):
         permission_groups_one[0].add_user(user)
 
         with self.assertRaises(ValueError):
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(pool.registrations.count(), 0)
@@ -342,8 +334,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups[0].add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(event.waiting_registrations.count(), expected_users_in_waiting_list)
@@ -355,8 +346,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         waiting_list_before = event.waiting_registrations.count()
@@ -378,8 +368,7 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         AbakusGroup.objects.get(name='Webkom').add_user(users[0])
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=users[0])[0]
+        registration = Registration.objects.get_or_create(event=event, user=users[0])[0]
         event.register(registration)
         registrations_before = event.number_of_registrations
         pool_registrations_before = pool.registrations.count()
@@ -406,8 +395,7 @@ class RegistrationTestCase(TestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(event.waiting_registrations.count(), 1)
 
@@ -435,8 +423,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups[0].add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         prev = event.pop_from_waiting_list()
@@ -455,8 +442,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             permission_groups[0].add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         prev = event.pop_from_waiting_list()
@@ -471,8 +457,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         event_size_before = event.number_of_registrations
@@ -494,8 +479,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         waiting_list_before = event.waiting_registrations.count()
@@ -530,8 +514,7 @@ class RegistrationTestCase(TestCase):
             event.admin_register(user, pool_two)
 
         AbakusGroup.objects.get(name='Abakus').add_user(users[5])
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=users[5])[0]
+        registration = Registration.objects.get_or_create(event=event, user=users[5])[0]
         event.register(registration)
 
         waiting_list_before = event.waiting_registrations.count()
@@ -564,8 +547,7 @@ class RegistrationTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertEqual(pool.registrations.count(), pool_registrations_before + 3)
@@ -587,8 +569,7 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(user)
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         registration = event.registrations.first()
 
@@ -610,12 +591,10 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         for user in webkom_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
         for user in abakus_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         pool_one_before = pool_one.registrations.count()
@@ -641,12 +620,10 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         for user in webkom_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
         for user in abakus_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         moved_user_registration = event.registrations.get(user=webkom_users[2])
@@ -670,12 +647,10 @@ class RegistrationTestCase(TestCase):
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         for user in webkom_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
         for user in abakus_users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         waiting_before = event.waiting_registrations.count()
@@ -725,20 +700,19 @@ class RegistrationTestCase(TestCase):
         for user in webkom_users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
 
-        registration_abakus = Registration.objects.get_or_create(event=event,
-                                                                 user=abakus_user)[0]
+        registration_abakus = Registration.objects.get_or_create(event=event, user=abakus_user)[0]
         event.register(registration_abakus)
         for user in webkom_users[:2]:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertFalse(event.rebalance_pool(abakus_pool, webkom_pool))
         self.assertEqual(abakus_pool.registrations.count(), 1)
         self.assertEqual(webkom_pool.registrations.count(), 2)
 
-        registration_webkom = Registration.objects.get_or_create(event=event,
-                                                                 user=webkom_users[2])[0]
+        registration_webkom = Registration.objects.get_or_create(
+            event=event, user=webkom_users[2]
+        )[0]
         event.register(registration_webkom)
 
         registration_to_unregister = Registration.objects.get(event=event, user=webkom_users[0])
@@ -763,16 +737,14 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(len(open_pools), 2)
 
         for user in users[:3]:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
         full_pools, open_pools = event.calculate_full_pools([abakus_pool, webkom_pool])
         self.assertEqual(len(full_pools), 1)
         self.assertEqual(len(open_pools), 1)
 
         for user in users[3:]:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
         full_pools, open_pools = event.calculate_full_pools([abakus_pool, webkom_pool])
         self.assertEqual(len(full_pools), 2)
@@ -905,8 +877,7 @@ class RegistrationTestCase(TestCase):
         Penalty.objects.create(user=user, reason='test', weight=1, source_event=event)
 
         with self.assertRaises(ValueError):
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
     def test_cant_register_after_event_has_started(self):
@@ -920,8 +891,7 @@ class RegistrationTestCase(TestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         with self.assertRaises(ValueError):
             event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
@@ -938,8 +908,7 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         Penalty.objects.create(user=user, reason='test', weight=1, source_event=event)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(event.number_of_registrations, 1)
 
@@ -956,8 +925,7 @@ class RegistrationTestCase(TestCase):
         Penalty.objects.create(user=user, reason='test', weight=2, source_event=event)
 
         with self.assertRaises(ValueError):
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
     def test_can_register_with_two_penalties_after_delay(self):
@@ -972,8 +940,7 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         Penalty.objects.create(user=user, reason='test', weight=2, source_event=event)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(event.number_of_registrations, 1)
 
@@ -984,8 +951,20 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         Penalty.objects.create(user=user, reason='test', weight=3, source_event=event)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+        self.assertEqual(event.number_of_registrations, 0)
+        self.assertEqual(event.waiting_registrations.count(), 1)
+
+    def test_waiting_list_on_more_than_three_penalties(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        Penalty.objects.create(user=user, reason='test', weight=2, source_event=event)
+        Penalty.objects.create(user=user, reason='test2', weight=2, source_event=event)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
         self.assertEqual(event.waiting_registrations.count(), 1)
@@ -999,8 +978,7 @@ class RegistrationTestCase(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
         Penalty.objects.create(user=user, reason='test', weight=3, source_event=event)
 
-        registration = Registration.objects.get_or_create(event=event,
-                                                          user=user)[0]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
         self.assertEqual(event.waiting_registrations.count(), 1)
@@ -1015,8 +993,7 @@ class RegistrationTestCase(TestCase):
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         for user in users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
@@ -1042,8 +1019,7 @@ class RegistrationTestCase(TestCase):
         for user in webkom_users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
         for user in users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
@@ -1077,8 +1053,7 @@ class RegistrationTestCase(TestCase):
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         for user in users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
@@ -1162,8 +1137,7 @@ class AdminRegistrationTestCase(TestCase):
         user = users[4]
         for u in users[:4]:
             AbakusGroup.objects.get(name='Abakus').add_user(u)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=u)[0]
+            registration = Registration.objects.get_or_create(event=event, user=u)[0]
             event.register(registration)
         pool = event.pools.first()
 
@@ -1180,8 +1154,7 @@ class AdminRegistrationTestCase(TestCase):
         user = users[6]
         for u in users[:6]:
             AbakusGroup.objects.get(name='Webkom').add_user(u)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=u)[0]
+            registration = Registration.objects.get_or_create(event=event, user=u)[0]
             event.register(registration)
         pool = event.pools.first()
 
