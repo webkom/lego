@@ -136,7 +136,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             raise ValueError('Not open yet')
 
         # If the event is merged or has only one pool we can skip a lot of logic
-        with cache.lock(self.id):
+        with cache.lock(self.id, timeout=20):
             if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
                 if self.is_full or penalties == 3:
                     return registration.add_to_waiting_list()
@@ -170,7 +170,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
-        with cache.lock(self.id):
+        with cache.lock(self.id, timeout=20):
             registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
