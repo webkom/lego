@@ -4,7 +4,7 @@
     user:
       - perkrifj
     role: leader
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -12,7 +12,7 @@
   fields:
     user:
       - stalepe
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -20,7 +20,7 @@
   fields:
     user:
       - andenor
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 
@@ -29,7 +29,7 @@
   fields:
     user:
       - fredriry
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -37,7 +37,7 @@
   fields:
     user:
       - hansanf
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -45,7 +45,7 @@
   fields:
     user:
       - hoiby
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -53,7 +53,7 @@
   fields:
     user:
       - torborgs
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -61,7 +61,7 @@
   fields:
     user:
       - einerkja
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -69,7 +69,7 @@
   fields:
     user:
       - runeblek
-    abakus_group: 13
+    abakus_group: 12
     start_date: 1994-01-01
 
 - model: users.Membership
