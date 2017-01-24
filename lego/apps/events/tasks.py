@@ -23,10 +23,10 @@ def async_register(self, registration_id):
                 lambda: notify_event_registration('SOCKET_REGISTRATION', registration)
             )
     except LockError as e:
-        log.error('registration_cache_lock_error', exception=e, registration=registration)
+        log.error('registration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e)
     except (ValueError, IntegrityError) as e:
-        log.error('registration_error', exception=e, registration=registration)
+        log.error('registration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_REGISTER
         registration.save()
         notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
@@ -43,10 +43,10 @@ def async_unregister(self, registration_id):
                 lambda: notify_event_registration('SOCKET_UNREGISTRATION', registration, pool.id)
             )
     except LockError as e:
-        log.error('unregistration_cache_lock_error', exception=e, registration=registration)
+        log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         self.retry(exc=e)
     except IntegrityError as e:
-        log.error('unregistration_error', exception=e, registration=registration)
+        log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
         registration.save()
         notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
