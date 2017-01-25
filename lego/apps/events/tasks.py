@@ -13,7 +13,7 @@ from .websockets import notify_event_registration, notify_failed_registration
 log = get_logger()
 
 
-@celery_app.task(serializer='json', bind=True)
+@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
 def async_register(self, registration_id):
     registration = Registration.objects.get(id=registration_id)
     try:
@@ -24,7 +24,7 @@ def async_register(self, registration_id):
             )
     except LockError as e:
         log.error('registration_cache_lock_error', exception=e, registration_id=registration.id)
-        raise self.retry(exc=e)
+        raise self.retry(exc=e, max_retries=3)
     except (ValueError, IntegrityError) as e:
         log.error('registration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_REGISTER
@@ -32,7 +32,7 @@ def async_register(self, registration_id):
         notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
 
 
-@celery_app.task(serializer='json', bind=True)
+@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
 def async_unregister(self, registration_id):
     registration = Registration.objects.get(id=registration_id)
     pool = registration.pool
@@ -44,7 +44,7 @@ def async_unregister(self, registration_id):
             )
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
-        self.retry(exc=e)
+        self.retry(exc=e, max_retries=3)
     except IntegrityError as e:
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
