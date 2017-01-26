@@ -6,6 +6,8 @@ from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
+from .constants import CONTACT_STATUSES, SEMESTERS
+
 
 class Company(BasisModel, ObjectPermissionsModel):
 
@@ -41,22 +43,6 @@ class Company(BasisModel, ObjectPermissionsModel):
 
 
 class SemesterStatus(BasisModel):
-    SEMESTERS = (
-        (0, 'Vår'),
-        (1, 'Høst'),
-        (2, 'Bedex')
-    )
-
-    CONTACT_STATUSES = (
-        (0, 'Bedpres'),
-        (1, 'Bedpres & Kurs'),
-        (2, 'Kurs'),
-        (3, 'Interessert, ikke tilbudt'),
-        (4, 'Ikke interessert'),
-        (5, 'Kontaktet'),
-        (6, 'Ikke kontaktet')
-    )
-
     year = models.PositiveSmallIntegerField()
     semester = models.PositiveSmallIntegerField(choices=SEMESTERS, default=0)
     contacted_status = models.PositiveSmallIntegerField(choices=CONTACT_STATUSES, default=6)

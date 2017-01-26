@@ -2,7 +2,7 @@ from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
-from lego.apps.users.serializers import PublicUserSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
