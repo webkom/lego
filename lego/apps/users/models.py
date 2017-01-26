@@ -13,8 +13,8 @@ from mptt.models import MPTTModel
 
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
-from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
-                                      UserPenaltyManager, FriendshipManager)
+from lego.apps.users.managers import (AbakusGroupManager, FriendshipManager, MembershipManager,
+                                      UserManager, UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
