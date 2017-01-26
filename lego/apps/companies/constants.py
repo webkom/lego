@@ -5,9 +5,9 @@ SEMESTERS = (
 )
 
 CONTACT_STATUSES = (
-    (0, 'Bedpres'),
-    (1, 'Bedpres & Kurs'),
-    (2, 'Kurs'),
+    (0, 'Company presentation'),
+    (1, 'Company presentation & course'),
+    (2, 'Course'),
     (3, 'Interested, not offered'),
     (4, 'Not interested'),
     (5, 'Contacted'),

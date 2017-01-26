@@ -11,12 +11,6 @@ from .constants import CONTACT_STATUSES, SEMESTERS
 
 class Company(BasisModel, ObjectPermissionsModel):
 
-    defaut_semester = {
-        "year": 2016,
-        "semester": 0,
-        "contacted_status": 6
-    }
-
     """ These are the values returned when calling without specific route """
     name = models.CharField(max_length=100)
     student_contact = models.ForeignKey(User, related_name='companies')
