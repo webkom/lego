@@ -39,22 +39,22 @@ class Command(BaseCommand):
             local_file = os.path.join(assets_folder, file)
             log.info(f'Uploading {key} file to bucket')
             storage.upload_file(uploads_bucket, key, local_file)
-
+        call_command('loaddata', 'lego/apps/files/fixtures/initial_files.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_abakus_groups.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_users.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_memberships.yaml')
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
             log.info('Loading development fixtures:')
+            call_command('loaddata', 'lego/apps/files/fixtures/development_files.yaml')
             call_command('loaddata', 'lego/apps/users/fixtures/development_users.yaml')
 
             # Prepare storage bucket for development. We skips this in production.
             # The bucket needs to be created manually.
             log.info(f'Makes sure the {uploads_bucket} bucket exists')
             storage.create_bucket(uploads_bucket)
-
-            call_command('loaddata', 'lego/apps/files/fixtures/development_files.yaml')
             upload_file('abakus.png', 'abakus.png')
+            upload_file('test_event_cover.png', 'test_event_cover.png')
             upload_file('test_article_cover.png', 'test_article_cover.png')
             upload_file('default_male_avatar.png', 'default_male_avatar.png')
             upload_file('default_female_avatar.png', 'default_female_avatar.png')
