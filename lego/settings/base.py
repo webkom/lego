@@ -148,3 +148,7 @@ CHANNEL_LAYERS = {
         'ROUTING': 'lego.apps.websockets.routing.routing'
     }
 }
+
+CASSANDRA_DRIVER_KWARGS = {
+    'protocol_version': 4
+}

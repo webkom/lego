@@ -11,5 +11,5 @@ class FeedConfig(AppConfig):
         """
         Import signals to start listening for events
         """
-        autodiscover_modules('feed_handlers')
-        from .signals import post_save_callback, post_delete_callback  # noqa
+        #autodiscover_modules('feed_handlers')
+        #from .signals import post_save_callback, post_delete_callback  # noqa

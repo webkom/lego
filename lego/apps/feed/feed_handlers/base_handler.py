@@ -1,4 +1,4 @@
-from lego.apps.feed.activities import FeedActivity
+from lego.apps.feed.activities import Activity
 from lego.apps.feed.verbs import CreateVerb, DeleteVerb, UpdateVerb
 
 
@@ -42,7 +42,7 @@ class BaseHandler:
 
     @property
     def activity(self):
-        return FeedActivity(
+        return Activity(
             actor=self.actor,
             verb=self.verb,
             object=self.object,

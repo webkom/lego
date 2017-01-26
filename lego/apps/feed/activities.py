@@ -1,9 +1,10 @@
 from django.utils.timezone import is_aware, make_naive
 from pytz import utc
-from stream_framework.activity import Activity, AggregatedActivity
+from stream_framework.activity import Activity as SFActivity
+from stream_framework.activity import AggregatedActivity as SFAggregatedActivity
 
 
-class FeedActivity(Activity):
+class Activity(SFActivity):
     """
     Custom activity class
     Stores actor, object and target as a content_identifier string.
@@ -58,9 +59,25 @@ class FeedActivity(Activity):
         return str(self.serialization_id)
 
 
-class FeedAggregatedActivity(AggregatedActivity):
-    max_aggregated_activities_length = 5
+class AggregatedActivity(SFAggregatedActivity):
+    max_aggregated_activities_length = 10
+
+    def __init__(self, group, activities=None, created_at=None, updated_at=None, **kwargs):
+        super().__init__(group, activities, created_at, updated_at)
 
     @property
     def activity_id(self):
         return str(self.serialization_id)
+
+
+class NotificationActivity(AggregatedActivity):
+
+    def __init__(self, group, activities=None, created_at=None, updated_at=None,
+                 read_at=None, seen_at=None):
+
+        super().__init__(
+            group=group, activities=activities, created_at=created_at, updated_at=updated_at
+        )
+
+        self.read_at = read_at
+        self.seen_at = seen_at

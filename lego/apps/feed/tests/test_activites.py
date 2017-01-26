@@ -4,7 +4,7 @@ from stream_framework.verbs.base import Comment as CommentVerb
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
-from lego.apps.feed.activities import FeedActivity
+from lego.apps.feed.activities import Activity
 from lego.apps.users.models import User
 
 
@@ -22,7 +22,7 @@ class ActivityTestCase(TestCase):
 
     def test_create_activity(self):
         """Check that the objects gets stored as content_strings."""
-        activity = FeedActivity(
+        activity = Activity(
             actor=self.user,
             verb=CommentVerb,
             object=self.comment,
@@ -40,7 +40,7 @@ class ActivityTestCase(TestCase):
 
     def test_create_activity_with_time(self):
         """Check the time storage. The time should be naive."""
-        activity = FeedActivity(
+        activity = Activity(
             time=self.test_time,
             actor=self.user,
             verb=CommentVerb,
