@@ -1,5 +1,7 @@
+from random import choice
+
 from rest_framework import filters, status, viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.views import AllowedPermissionsMixin
@@ -31,3 +33,11 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         instance = self.get_object()
         instance.unapprove()
         return Response(status=status.HTTP_200_OK)
+
+    @list_route(methods=['GET'])
+    def random(self, request):
+        queryset = self.get_queryset()
+        values = queryset.values_list('pk', flat=True)
+        instance = queryset.get(pk=choice(values))
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
