@@ -15,6 +15,7 @@ class AggregatedFeedSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
     last_activity = FeedActivitySerializer()
+    activities = FeedActivitySerializer(many=True)
     activity_count = serializers.IntegerField()
     actor_ids = serializers.ListField(child=serializers.IntegerField())
 
@@ -22,3 +23,8 @@ class AggregatedFeedSerializer(serializers.Serializer):
 class MarkSerializer(serializers.Serializer):
     seen = serializers.BooleanField(default=False)
     read = serializers.BooleanField(default=False)
+
+
+class NotificationFeedSerializer(AggregatedFeedSerializer):
+    read_at = serializers.DateTimeField()
+    seen_at = serializers.DateTimeField()
