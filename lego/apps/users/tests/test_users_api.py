@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
 from lego.apps.users.models import AbakusGroup, Penalty, User
-from lego.apps.users.serializers import DetailedUserSerializer
+from lego.apps.users.serializers.users import DetailedUserSerializer
 from lego.utils.test_utils import fake_time
 
 _test_user_data = {

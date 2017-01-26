@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from lego.apps.permissions.views import AllowedPermissionsMixin
 from lego.apps.users.models import User
 from lego.apps.users.permissions import UsersPermissions
-from lego.apps.users.serializers import MeSerializer, UserSerializer
+from lego.apps.users.serializers.users import DetailedUserSerializer, UserSerializer
 
 
 class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -16,7 +16,10 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, UsersPermissions)
     ordering = 'id'
 
-    @list_route(methods=['GET'], permission_classes=[IsAuthenticated])
+    @list_route(
+        methods=['GET'], permission_classes=[IsAuthenticated],
+        serializer_class=DetailedUserSerializer
+    )
     def me(self, request):
-        serializer = MeSerializer(request.user)
+        serializer = self.get_serializer(request.user)
         return Response(serializer.data)
