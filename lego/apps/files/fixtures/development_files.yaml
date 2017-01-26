@@ -5,3 +5,10 @@
     file_type: image
     token: token
     user: 1
+- pk: test_article_cover.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
