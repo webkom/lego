@@ -1,5 +1,3 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from lego.utils.models import BasisModel
@@ -7,6 +5,17 @@ from lego.utils.models import BasisModel
 
 class Follower(BasisModel):
     follower = models.ForeignKey('users.User', related_name='following')
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField(db_index=True)
-    following = GenericForeignKey()
+
+
+class FollowUser(Follower):
+    followed_user = models.ForeignKey('users.User', related_name='followers')
+
+
+class FollowEvent(Follower):
+    followed_event = models.ForeignKey('events.Event', related_name='followers')
+
+
+"""
+class FollowCompany(Follower):
+    followed_company = models.ForeignKey('companies.Company', related_name='followers')
+"""

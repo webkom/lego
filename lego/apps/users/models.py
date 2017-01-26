@@ -3,7 +3,6 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
 from django.db import models
@@ -13,10 +12,9 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from lego.apps.files.models import FileField
-from lego.apps.followers.models import Follower
 from lego.apps.permissions.validators import KeywordPermissionValidator
-from lego.apps.users.managers import (AbakusGroupManager, MembershipManager,
-                                      UserManager, UserPenaltyManager)
+from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
+                                      UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
 from .validators import username_validator
@@ -156,8 +154,6 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
                   'active. Unselect this instead of deleting accounts.'
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
-    following = models.ManyToManyField('self', related_name='followers', symmetrical=False,
-                                       blank=True, null=True)
 
     objects = UserManager()
 
