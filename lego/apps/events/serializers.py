@@ -4,6 +4,7 @@ from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.events.fields import ChargeStatusField
+from lego.apps.files.fields import ImageField
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.serializers import PublicAbakusGroupSerializer, PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -39,24 +40,27 @@ class PoolReadSerializer(BasisModelSerializer):
 
 
 class EventReadSerializer(BasisModelSerializer):
+    cover = ImageField(required=False, options={'height': 500})
+    thumbnail = ImageField(source='cover', required=False, options={'height': 500, 'width': 500, 'smart': True })
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'total_capacity', 'registration_count')
+        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
+                  'start_time', 'thumbnail', 'end_time', 'total_capacity', 'registration_count')
         read_only = True
 
 
 class EventReadDetailedSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
+    cover = ImageField(required=False, options={'height': 500})
     pools = PoolReadSerializer(read_only=True, many=True)
     active_capacity = serializers.ReadOnlyField()
     price = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools',
                   'active_capacity', 'is_priced', 'price')
         read_only = True

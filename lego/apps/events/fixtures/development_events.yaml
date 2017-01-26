@@ -11,6 +11,7 @@
     is_priced: True
     price_member: 50
     price_guest: 100
+    cover: test_event_cover.png
   model: events.Event
   pk: 1
 - fields:
@@ -24,6 +25,7 @@
     start_time: '2016-10-25T17:00:00+00:00'
     text: TBA
     title: Knowit AS
+    cover: test_event_cover.png
   model: events.Event
   pk: 2
 - fields:
@@ -38,6 +40,7 @@
     start_time: '2016-10-13T17:00:00+00:00'
     text: TBA
     title: Accenture
+    cover: test_event_cover.png
   model: events.Event
   pk: 3
 - fields:
@@ -51,6 +54,7 @@
     start_time: '2016-10-11T17:00:00+00:00'
     text: TBA
     title: 'Netlight '
+    cover: test_event_cover.png
   model: events.Event
   pk: 4
 - fields:
@@ -64,6 +68,7 @@
     start_time: '2016-10-06T17:00:00+00:00'
     text: TBA
     title: EY (tidligere Ernst & Young)
+    cover: test_event_cover.png
   model: events.Event
   pk: 5
 - fields:
@@ -76,6 +81,7 @@
     start_time: '2016-10-04T17:15:00+00:00'
     text: TBA
     title: Facebook
+    cover: test_event_cover.png
   model: events.Event
   pk: 6
 - fields:
@@ -89,6 +95,7 @@
     start_time: '2016-09-19T17:00:00+00:00'
     text: TBA
     title: Sopra Steria
+    cover: test_event_cover.png
   model: events.Event
   pk: 7
 - fields:
@@ -114,6 +121,7 @@
       \ så send mail til bedex'at'abakus.no. Mer praktisk info kommer etter at påmeldingen\
       \ er ferdig."
     title: BedEx
+    cover: test_event_cover.png
   model: events.Event
   pk: 8
 - fields:
@@ -126,6 +134,7 @@
     start_time: '2016-09-09T17:00:00+00:00'
     text: TBA
     title: Capra Consulting
+    cover: test_event_cover.png
   model: events.Event
   pk: 9
 - fields:
@@ -138,6 +147,7 @@
     start_time: '2016-09-06T17:00:00+00:00'
     text: TBA
     title: 'DIPS '
+    cover: test_event_cover.png
   model: events.Event
   pk: 10
 - fields:
@@ -157,6 +167,7 @@
       \ velkomstdrink ved inngangen, 2-retters middag samt to drikkeenheter.\r\n\r\
       \nAntrekk: Studentergalla\r\n\r\nPris per deltaker/pris per gjest: 330/450"
     title: Immatrikuleringsball
+    cover: test_event_cover.png
   model: events.Event
   pk: 11
 - fields:
@@ -172,6 +183,7 @@
     start_time: '2016-09-01T17:00:00+00:00'
     text: TBA
     title: Mesan
+    cover: test_event_cover.png
   model: events.Event
   pk: 12
 - fields:
@@ -185,6 +197,7 @@
     start_time: '2016-08-30T17:00:00+00:00'
     text: TBA
     title: Deloitte AS
+    cover: test_event_cover.png
   model: events.Event
   pk: 13
 - fields:
@@ -200,6 +213,7 @@
       \ for oss selv fra klokken 19.00.\r\n\r\nDette har tidligere vært en stor suksess,\
       \ og vi håper så mange som mulig kommer!\r\n\r\nSe FB-event [her](https://www.facebook.com/events/145740885823144/)."
     title: Abakus' sommerfest 2016
+    cover: test_event_cover.png
   model: events.Event
   pk: 14
 - fields:
@@ -214,6 +228,7 @@
     start_time: '2016-06-11T20:00:00+00:00'
     text: Mer informasjon kommer.
     title: Eksamensfest
+    cover: test_event_cover.png
   model: events.Event
   pk: 15
 - fields:
@@ -237,6 +252,7 @@
       \ som alle fadderne blir meldt inn i.\r\n\r\nVi håper så mange som mulig har\
       \ lyst til å være fadder i år!"
     title: Fadderpåmelding Kommunikasjonsteknologi
+    cover: test_event_cover.png
   model: events.Event
   pk: 16
 - fields:
@@ -260,6 +276,7 @@
       \ fortløpende i Facebookgruppen som alle fadderne blir meldt inn i.\r\n\r\n\
       Vi håper så mange som mulig har lyst til å være fadder i år!"
     title: Fadderpåmelding Datateknologi
+    cover: test_event_cover.png
   model: events.Event
   pk: 17
 - fields:
@@ -280,6 +297,7 @@
       \ komme!\r\n\r\nNB: Værforbehold. Regner det denne dagen prøver vi flytte den.\
       \ Påminnelse vil postes i Abakus-gruppa på Facebook."
     title: Eksamensgrilling
+    cover: test_event_cover.png
   model: events.Event
   pk: 18
 - fields:
@@ -305,6 +323,7 @@
       \ jeg skal nok synge ut av alle krefter, svinge flagget mitt og rope høyt HURRA!_\r\
       \n\r\nVel møtt!"
     title: 17. mai-frokost
+    cover: test_event_cover.png
   model: events.Event
   pk: 19
 - fields:
@@ -323,6 +342,7 @@
       objektstrukturer og observatør-observert-teknikken. Det vil også komme en del
       generelle tips til programmeringsmetodikk, og gå gjennom eksempler og oppgaver. '
     title: Eksamenskurs i Java
+    cover: test_event_cover.png
   model: events.Event
   pk: 20
 - fields:
@@ -407,6 +427,7 @@
       \ security vendors, mnemonic enables businesses to stay secure and compliant\
       \ while reducing costs."
     title: Sikkerhet og Sårbarhet
+    cover: test_event_cover.png
   model: events.Event
   pk: 21
 - fields:
@@ -425,6 +446,7 @@
       den store dagen nærmer seg. Kurset arrangeres i samarbeid med Abakus, men er
       åpent for alle.
     title: Eksamensforelesning i Krets- og digitalteknikk
+    cover: test_event_cover.png
   model: events.Event
   pk: 22
 - fields:
@@ -446,6 +468,7 @@
       \ at vi skal vite når du kommer til Trondheim og hvilken fadder t-skjorte størrelse\
       \ du trenger. \r\n\r\nbackup håper mange har lyst til å være faddere i år!"
     title: Fadderpåmelding for masterstudenter
+    cover: test_event_cover.png
   model: events.Event
   pk: 23
 - fields:
@@ -467,6 +490,7 @@
       \ til våre egne konsulenter deltar også flere representanter fra våre kunder\
       \ og samarbeidspartnere.\r\n \r\nVelkommen!"
     title: Fundator
+    cover: test_event_cover.png
   model: events.Event
   pk: 24
 - fields:
@@ -489,6 +513,7 @@
       \ and energy industries.\r\n\r\n_Bedkom minner om at oppmøte er kl. 12:00, ventelisten\
       \ åpner 12:10 og presentasjonen starter 12:15._"
     title: DNV GL
+    cover: test_event_cover.png
   model: events.Event
   pk: 25
 - fields:
@@ -518,6 +543,7 @@
       \ i native apps\r\n- 20:00->\r\n    Pizza. \r\n\r\n\r\nDet vil bli servert baguette\
       \ underveis og pizza etter arrangementet. \r\n\r\n\r\n\r\nBilde: http://bizzarecreations.in/mobile-development/"
     title: Fagdag i Mobil utvikling
+    cover: test_event_cover.png
   model: events.Event
   pk: 26
 - fields:
@@ -550,6 +576,7 @@
       \ - “Treat yo self”\r\n- 19:20: Quiz\r\n- 20:00: Mingling m shuffleboard og\
       \ god stemning!\r\n\r\n\r\n\r\n"
     title: Lightning Talks
+    cover: test_event_cover.png
   model: events.Event
   pk: 27
 - fields:
@@ -591,6 +618,7 @@
       \ chips)\r\n- - Beste Antrekk (King and Queen)\r\n\r\n\r\n- Medbrakt drikke\
       \ er tillat. "
     title: Casino Royale
+    cover: test_event_cover.png
   model: events.Event
   pk: 29
 - fields:
@@ -617,6 +645,7 @@
       \ \r\n18. april, klokken 10:30 arrangerer Arrkom infomøte for den kommende fadderperioden\
       \ i S2.\r\n"
     title: Infomøte for faddere
+    cover: test_event_cover.png
   model: events.Event
   pk: 30
 - fields:
@@ -641,6 +670,7 @@
       \ \r\n19-20: 10 kroner, \r\n20-21: 15 kroner, \r\n21-22: 20 kroner, \r\n22-01:\
       \ 25 kroner\r\n\r\nViva la fiesta!"
     title: Fiesta!
+    cover: test_event_cover.png
   model: events.Event
   pk: 31
 - fields:
@@ -660,6 +690,7 @@
       \ din søknad på [fagdag.bekk.no](http://fagdag.bekk.no ) \r\n\r\nSøknadsfrist:\
       \ 15. Mars\r\n"
     title: BEKK
+    cover: test_event_cover.png
   model: events.Event
   pk: 32
 - fields:
@@ -686,6 +717,7 @@
       \ del 2\r\n\r\n- Konkurranse med premier\r\n\r\n- Øl og mingling v/ Work-Work\r\
       \n\r\n\r\n\r\n\r\n\r\n\r\n"
     title: IT-Sikkerhet med Knowit
+    cover: test_event_cover.png
   model: events.Event
   pk: 33
 - fields:
@@ -723,6 +755,7 @@
       \ kan brukes til..» \r\nAxel Tidemann/Telenor Research\r\n \r\n\r\n\r\n\r\n\r\
       \n"
     title: KiD
+    cover: test_event_cover.png
   model: events.Event
   pk: 34
 - fields:
@@ -759,6 +792,7 @@
     is_priced: True
     price_member: 27000
     price_guest: 35000
+    cover: test_event_cover.png
   model: events.Event
   pk: 35
 - fields:
@@ -779,6 +813,7 @@
       \ byen der det blir bespisning og mingling.\r\n\r\n_Bedkom minner om at oppmøte\
       \ er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:15._"
     title: DnB
+    cover: test_event_cover.png
   model: events.Event
   pk: 36
 - fields:
@@ -805,6 +840,7 @@
       \ sentrum hvor vi vil få god mat & drikke!\r\n\r\nVi gjør oppmerksom på at deltakere\
       \ på del 2 vil få prioritet på del 3"
     title: Funksjonell programmering i Javascript med React og Redux  3 av 3
+    cover: test_event_cover.png
   model: events.Event
   pk: 37
 - fields:
@@ -843,6 +879,7 @@
       \  --version i terminalen trykk enter. Hvis alt er i orden skal den svare med\
       \ versjonsnummer, v5.7.1"
     title: Webutvikling101 3 av 3
+    cover: test_event_cover.png
   model: events.Event
   pk: 38
 - fields:
@@ -882,6 +919,7 @@
       \ 1.klassing og føler du har nok javakunnskaper til å delta er det bare å sende\
       \ mail til arrangør hvis det er ledige plasser."
     title: Lego Mindstorms med Itera
+    cover: test_event_cover.png
   model: events.Event
   pk: 39
 - fields:
@@ -904,6 +942,7 @@
       \ kjører felles vors på Håndverker'n.\r\nFor info gå inn på:\r\n[https://www.facebook.com/events/257452054586185/](https://www.facebook.com/events/257452054586185/).\r\
       \n\r\n\r\nAntrekk:\r\nRødt!"
     title: Teknologivennefest
+    cover: test_event_cover.png
   model: events.Event
   pk: 40
 - fields:
@@ -927,6 +966,7 @@
       \ enkle forberedelser, guide finner du [her](http://azurekurs.mastech.no). Gjør\
       \ kun det som står under \"Forberedelser\". "
     title: En reise hvor IT-infrastruktur blir kode
+    cover: test_event_cover.png
   model: events.Event
   pk: 41
 - fields:
@@ -949,6 +989,7 @@
       \ går i Dromedar sitt kursrom på dromedar moxness. Legg merke til at kurset\
       \ starter 16.00 (ikke 16.15). "
     title: Kaffekurs hos Dromedar Kaffebar
+    cover: test_event_cover.png
   model: events.Event
   pk: 42
 - fields:
@@ -978,6 +1019,7 @@
       \ men forhåpentligvis vil kvelden tenne en liten flamme. Dette gir alle mulighet\
       \ til å knytte viktige kontakter for fremtiden."
     title: StartIT
+    cover: test_event_cover.png
   model: events.Event
   pk: 43
 - fields:
@@ -1005,6 +1047,7 @@
       \n\r\nVi gjør oppmerksom på at deltakere på del 1 vil få prioritet på del 2\
       \ & 3"
     title: Funksjonell programmering i Javascript med React og Redux 2 av 3
+    cover: test_event_cover.png
   model: events.Event
   pk: 44
 - fields:
@@ -1044,6 +1087,7 @@
       \ og trykk enter.\r\n\r\n6. Skriv node  --version i terminalen trykk enter.\
       \ Hvis alt er i orden skal den svare med versjonsnummer, v5.7.1"
     title: Webutvikling101 2 av 3
+    cover: test_event_cover.png
   model: events.Event
   pk: 45
 - fields:
@@ -1070,6 +1114,7 @@
       _Bedkom vil minne om at oppmøte er foran hovedbygget kl. 17:00, ventelisten\
       \ åpner 17:10 og bussen kjører 17:15._"
     title: Acando
+    cover: test_event_cover.png
   model: events.Event
   pk: 46
 - fields:
@@ -1106,6 +1151,7 @@
       \ Hos Kantega får alle mulighet til å bli likeverdige eiere i selskapet._ \r\
       \n"
     title: 'HTML5 Pixel-Magic '
+    cover: test_event_cover.png
   model: events.Event
   pk: 47
 - fields:
@@ -1132,6 +1178,7 @@
       \   \r\n\r\nDet vil bli festligheter og morsomheter i full Abakusstil så det\
       \ er bare å glede seg!"
     title: Helgesamling
+    cover: test_event_cover.png
   model: events.Event
   pk: 48
 - fields:
@@ -1188,6 +1235,7 @@
       \ servert kake, kaffe, brus og pizza. Mer info kommer. Spørsmål kan sendes til\
       \ hs@abakus.no Vel møtt!"
     title: Generalforsamling
+    cover: test_event_cover.png
   model: events.Event
   pk: 49
 - fields:
@@ -1219,5 +1267,6 @@
       \ eller tv.\r\n\r\n_Vi vil minne om at registreringen åpner 17.00, ventelisten\
       \ åpner 17.10 og at arrangementet begynner 17.15._  "
     title: BEKK
+    cover: test_event_cover.png
   model: events.Event
   pk: 50

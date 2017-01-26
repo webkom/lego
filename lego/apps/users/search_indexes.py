@@ -13,7 +13,7 @@ class UserIndex(SearchIndex):
     autocomplete_result_fields = ('full_name', 'picture')
 
     def get_autocomplete(self, instance):
-        return [instance.username, instance.full_name]
+        return [instance.username, instance.full_name, instance.last_name, instance.first_name]
 
 
 register(UserIndex)
