@@ -13,7 +13,7 @@ from mptt.models import MPTTModel
 
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
-from lego.apps.users.managers import (AbakusGroupManager, FriendshipManager, MembershipManager,
+from lego.apps.users.managers import (AbakusGroupManager, MembershipManager,
                                       UserManager, UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
@@ -154,6 +154,8 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
                   'active. Unselect this instead of deleting accounts.'
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
+    following = models.ManyToManyField('self', related_name='followers', symmetrical=False,
+                                       blank=True, null=True)
 
     objects = UserManager()
 
@@ -184,15 +186,11 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
             .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
 
-    def friends(self):
-        return self.friends_creator_set.filter(accepted=True) \
-               + self.friends_set.filter(accepted=True)
+    def follow(self, user_to_follow):
+        self.following.add(user_to_follow)
 
-    def sent_friend_requests(self):
-        return self.friends_creator_set.filter(accepted=False)
-
-    def received_friend_requests(self):
-        return self.friends_set.filter(accepted=False)
+    def unfollow(self, user_to_unfollow):
+        self.following.remove(user_to_unfollow)
 
 
 class Membership(BasisModel):
@@ -224,14 +222,6 @@ class Membership(BasisModel):
 
     def __str__(self):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
-
-
-class Friendship(BasisModel):
-    one = models.ForeignKey(User, related_name='friends_creator_set')
-    two = models.ForeignKey(User, related_name='friends_set')
-    accepted = models.BooleanField(default=False)
-
-    objects = FriendshipManager()
 
 
 class Penalty(BasisModel):
