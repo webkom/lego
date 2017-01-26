@@ -10,7 +10,7 @@ from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerial
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
-    queryset = Company.objects.all()
+    queryset = Company.objects.all().prefetch_related('semester_statuses')
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
