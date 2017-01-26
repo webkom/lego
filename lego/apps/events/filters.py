@@ -8,6 +8,7 @@ class EventsFilterSet(FilterSet):
     month = CharFilter('start_time__month')
     date_after = DateFilter('start_time', lookup_expr='gte')
     date_before = DateFilter('start_time', lookup_expr='lte')
+    company = CharFilter('company')
 
     class Meta:
         model = Event
