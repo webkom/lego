@@ -137,6 +137,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     username = models.CharField(
         max_length=30,
         unique=True,
+        db_index=True,
         help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
         validators=[username_validator],
         error_messages={
