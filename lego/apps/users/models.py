@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField
 from django.core.mail import send_mail
 from django.db import models
@@ -12,6 +13,7 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from lego.apps.files.models import FileField
+from lego.apps.followers.models import Follower
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users.managers import (AbakusGroupManager, MembershipManager,
                                       UserManager, UserPenaltyManager)
@@ -185,12 +187,6 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
         count = Penalty.objects.valid().filter(user=self)\
             .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
-
-    def follow(self, user_to_follow):
-        self.following.add(user_to_follow)
-
-    def unfollow(self, user_to_unfollow):
-        self.following.remove(user_to_unfollow)
 
 
 class Membership(BasisModel):
