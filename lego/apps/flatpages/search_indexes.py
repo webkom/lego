@@ -4,6 +4,7 @@ from lego.apps.search.index import SearchIndex
 from .models import Page
 from .serializers import PageDetailSerializer
 
+
 class PageModelIndex(SearchIndex):
 
     queryset = Page.objects.all()

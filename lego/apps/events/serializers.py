@@ -4,8 +4,8 @@ from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.events.fields import ChargeStatusField
-from lego.apps.files.fields import ImageField
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.files.fields import ImageField
 from lego.apps.users.serializers import PublicAbakusGroupSerializer, PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
@@ -41,7 +41,11 @@ class PoolReadSerializer(BasisModelSerializer):
 
 class EventReadSerializer(BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
-    thumbnail = ImageField(source='cover', required=False, options={'height': 500, 'width': 500, 'smart': True })
+    thumbnail = ImageField(
+        source='cover',
+        required=False,
+        options={'height': 500, 'width': 500, 'smart': True}
+    )
 
     class Meta:
         model = Event
