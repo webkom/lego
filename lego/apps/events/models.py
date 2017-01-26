@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 
+from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.permissions.models import ObjectPermissionsModel
@@ -34,6 +35,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
     heed_penalties = models.BooleanField(default=True)
+    company = models.ForeignKey(Company, related_name='events', null=True)
 
     is_priced = models.BooleanField(default=False)
     price_member = models.PositiveIntegerField(default=0)
