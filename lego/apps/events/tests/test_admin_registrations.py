@@ -17,6 +17,10 @@ class AdminRegistrationTestCase(TestCase):
             merge_time=timezone.now() + timedelta(hours=12)
         )
 
+    def tearDown(self):
+        from django_redis import get_redis_connection
+        get_redis_connection('default').flushall()
+
     def test_admin_registration(self):
         """Test that admin can force register user into chosen pool"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')

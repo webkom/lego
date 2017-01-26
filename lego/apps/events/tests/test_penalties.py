@@ -233,7 +233,7 @@ class PenaltyTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    number_of_calls = 80
+    number_of_calls = 81
 
     @mock.patch('django.utils.timezone.now',
                 side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
@@ -242,9 +242,14 @@ class PenaltyTestCase(TestCase):
         """Test that user gets bumped when penalties expire while on waiting list"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
+        for pool in event.pools.all():
+            pool.activation_date = mock_now() - timedelta(hours=12)
+            pool.save()
+
         users = get_dummy_users(5)
-        penalty_one = Penalty.objects.create(user=users[0], reason='test',
-                                             weight=1, source_event=event)
+        penalty_one = Penalty.objects.create(
+            user=users[0], reason='test', weight=1, source_event=event
+        )
         Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
         abakus_users = users[:5]
         waiting_users = [users[0], users[4]]
@@ -265,3 +270,69 @@ class PenaltyTestCase(TestCase):
 
         self.assertIsNotNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+
+    number_of_calls = 86
+
+    @mock.patch('django.utils.timezone.now',
+                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
+                             for i in range(number_of_calls)])
+    def test_isnt_bumped_if_third_penalty_expires_but_reg_delay_is_still_active(self, mock_now):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        for pool in event.pools.all():
+            pool.activation_date = mock_now() - timedelta(hours=6)
+            pool.save()
+
+        users = get_dummy_users(5)
+        penalty_one = Penalty.objects.create(user=users[0], reason='test',
+                                             weight=1, source_event=event)
+        Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
+        abakus_users = users[:5]
+        waiting_users = [users[0], users[4]]
+
+        for user in abakus_users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+        for user in users:
+            registration = Registration.objects.get_or_create(event=event,
+                                                              user=user)[0]
+            event.register(registration)
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
+
+        penalty_one.created_at = mock_now() - timedelta(days=20)
+        penalty_one.save()
+        registration_to_unregister = Registration.objects.get(event=event, user=users[1])
+        event.unregister(registration_to_unregister)
+
+        self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
+        self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
+
+    number_of_calls = 82
+
+    @mock.patch('django.utils.timezone.now',
+                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
+                             for i in range(number_of_calls)])
+    def test_no_legal_bump(self, mock_now):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(5)
+        for pool in event.pools.all():
+            pool.activation_date = mock_now()
+            pool.save()
+
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=event,
+                                                              user=user)[0]
+            event.register(registration)
+
+        self.assertIsNone(event.registrations.get(user=users[3]).pool)
+        self.assertIsNone(event.registrations.get(user=users[4]).pool)
+
+        Penalty.objects.create(user=users[3], reason='test', weight=3, source_event=event)
+        Penalty.objects.create(user=users[4], reason='test', weight=2, source_event=event)
+
+        registration_to_unregister = Registration.objects.get(event=event, user=users[0])
+        event.unregister(registration_to_unregister)
+
+        self.assertIsNone(event.registrations.get(user=users[3]).pool)
+        self.assertIsNone(event.registrations.get(user=users[4]).pool)
