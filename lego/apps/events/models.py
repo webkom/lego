@@ -302,7 +302,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     for group in registration.user.all_groups:
                         if group in permission_groups:
                             return registration
-                return None
+            return None
 
         if self.heed_penalties:
             for registration in self.waiting_registrations:
