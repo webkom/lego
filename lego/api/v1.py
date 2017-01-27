@@ -14,7 +14,6 @@ from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
-from lego.apps.tags.views import TagViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
@@ -42,7 +41,6 @@ router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'pages', PageViewSet)
 router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomplete')
-router.register(r'tags', TagViewSet)
 router.register(r'quotes', QuoteViewSet)
 router.register(r'search/search', SearchViewSet, base_name='search')
 router.register(r'users', UsersViewSet)
