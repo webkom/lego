@@ -82,6 +82,7 @@
     text: TBA
     title: Facebook
     cover: test_event_cover.png
+    company: 2
   model: events.Event
   pk: 6
 - fields:
@@ -96,6 +97,7 @@
     text: TBA
     title: Sopra Steria
     cover: test_event_cover.png
+    company: 2
   model: events.Event
   pk: 7
 - fields:
@@ -122,6 +124,7 @@
       \ er ferdig."
     title: BedEx
     cover: test_event_cover.png
+    company: 1
   model: events.Event
   pk: 8
 - fields:
@@ -691,6 +694,7 @@
       \ 15. Mars\r\n"
     title: BEKK
     cover: test_event_cover.png
+    company: 1
   model: events.Event
   pk: 32
 - fields:
@@ -1268,5 +1272,6 @@
       \ åpner 17.10 og at arrangementet begynner 17.15._  "
     title: BEKK
     cover: test_event_cover.png
+    company: 1
   model: events.Event
   pk: 50

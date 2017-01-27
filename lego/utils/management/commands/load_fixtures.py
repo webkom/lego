@@ -64,6 +64,7 @@ class Command(BaseCommand):
                 'lego/apps/social_groups/fixtures/development_interest_groups.yaml'
             )
             call_command('loaddata', 'lego/apps/users/fixtures/development_memberships.yaml')
+            call_command('loaddata', 'lego/apps/companies/fixtures/development_companies.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_events.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_pools.yaml')
             call_command('loaddata', 'lego/apps/events/fixtures/development_registrations.yaml')
