@@ -212,14 +212,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         if self.waiting_registrations.exists():
             top = self.pop_from_waiting_list(to_pool)
-            if to_pool:
-                top.pool = to_pool
-            else:
-                for pool in self.pools.all():
-                    if self.can_register(top.user, pool):
-                        top.pool = pool
-                        break
-            top.save()
+            if top:
+                if to_pool:
+                    top.pool = to_pool
+                else:
+                    for pool in self.pools.all():
+                        if self.can_register(top.user, pool):
+                            top.pool = pool
+                            break
+                top.save()
 
     def try_to_rebalance(self, open_pool):
         """
@@ -301,6 +302,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     for group in registration.user.all_groups:
                         if group in permission_groups:
                             return registration
+                return None
 
         if self.heed_penalties:
             for registration in self.waiting_registrations:
@@ -310,6 +312,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 )
                 if penalties < 3 and earliest_reg < timezone.now():
                     return registration
+            return None
 
         return self.waiting_registrations.first()
 
