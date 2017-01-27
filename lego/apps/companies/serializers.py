@@ -23,7 +23,7 @@ class SemesterStatusReadDetailedSerializer(BasisModelSerializer):
 class SemesterStatusCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status')
+        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
 
     def create(self, validated_data):
         company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
