@@ -6,8 +6,8 @@ from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerial
                                              CompanyCreateAndUpdateSerializer,
                                              CompanyReadDetailedSerializer, CompanyReadSerializer,
                                              SemesterStatusCreateAndUpdateSerializer,
-                                             SemesterStatusReadSerializer,
-                                             SemesterStatusReadDetailedSerializer)
+                                             SemesterStatusReadDetailedSerializer,
+                                             SemesterStatusReadSerializer)
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
