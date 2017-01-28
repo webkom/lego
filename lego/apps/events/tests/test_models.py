@@ -1133,6 +1133,36 @@ class RegistrationTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
+    number_of_calls = 72
+
+    @mock.patch('django.utils.timezone.now',
+                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
+                             for i in range(number_of_calls)])
+    def test_no_legal_bump(self, mock_now):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(5)
+        for pool in event.pools.all():
+            pool.activation_date = mock_now()
+            pool.save()
+
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=event,
+                                                              user=user)[0]
+            event.register(registration)
+
+        self.assertIsNone(event.registrations.get(user=users[3]).pool)
+        self.assertIsNone(event.registrations.get(user=users[4]).pool)
+
+        Penalty.objects.create(user=users[3], reason='test', weight=3, source_event=event)
+        Penalty.objects.create(user=users[4], reason='test', weight=2, source_event=event)
+
+        registration_to_unregister = Registration.objects.get(event=event, user=users[0])
+        event.unregister(registration_to_unregister)
+
+        self.assertIsNone(event.registrations.get(user=users[3]).pool)
+        self.assertIsNone(event.registrations.get(user=users[4]).pool)
+
 
 class AdminRegistrationTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
