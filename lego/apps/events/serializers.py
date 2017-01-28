@@ -8,6 +8,7 @@ from lego.apps.events.fields import ActivationTimeField, ChargeStatusField
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
+from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
@@ -95,8 +96,7 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
         return pool
 
-
-class EventCreateAndUpdateSerializer(BasisModelSerializer):
+class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',

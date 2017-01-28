@@ -38,7 +38,18 @@ class TagsTestCase(APITestCase):
         self.assertFalse(removed in res.data.pop('tags'))
 
     def test_add_duplicate_tag(self):
-        pass
+        pk = 2
+        event = self.client.get(event_api._get_detail_url(pk))
+        event_data = event.data
+        tags = event_data.pop('tags') or []
+        self.assertTrue(len(tags) > 0)
+        event_data['tags'] = tags + tags
+        total_tags_before = Tag.objects.count()
+        res = self.client.put(event_api._get_detail_url(pk), event_data)
+        self.assertEquals(res.status_code, 200)
+        total_tags_after = Tag.objects.count()
+        self.assertEquals(total_tags_before, total_tags_after)
+        self.assertEquals(res.data['tags'], tags)
 
     def test_add_new_tag(self):
         pk = 1
@@ -50,7 +61,6 @@ class TagsTestCase(APITestCase):
 
         event_data['tags'] = [tag]
         res = self.client.put(event_api._get_detail_url(pk), event_data)
-        print(res.data)
         self.assertEquals(res.status_code, 200)
         self.assertTrue(tag in res.data.pop('tags'))
         self.assertIsNotNone(Tag.objects.filter(tag=tag).first())
