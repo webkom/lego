@@ -4,7 +4,7 @@ from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.serializers import PublicCompanyReadSerializer
-from lego.apps.events.fields import ChargeStatusField
+from lego.apps.events.fields import ActivationTimeField, ChargeStatusField
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -66,12 +66,13 @@ class EventReadDetailedSerializer(BasisModelSerializer):
     pools = PoolReadSerializer(read_only=True, many=True)
     active_capacity = serializers.ReadOnlyField()
     price = serializers.SerializerMethodField()
+    activation_time = ActivationTimeField()
 
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools',
-                  'company', 'active_capacity', 'is_priced', 'price')
+                  'company', 'active_capacity', 'is_priced', 'price', 'activation_time')
         read_only = True
 
     def get_price(self, obj):

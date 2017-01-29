@@ -19,7 +19,7 @@
     lft: 1
     name: Abakus
     parent: null
-    rght: 22
+    rght: 30
     tree_id: 2
     permissions:
       - /sudo/admin/meetings/create
@@ -152,13 +152,13 @@
       - /sudo/admin/
 
 - model: users.AbakusGroup
-  pk: 12
+  pk: 13
   fields:
     deleted: false
     name: Interessegrupper
     description: ''
     level: 1
-    lft: 20
+    lft: 22
     parent: 1
-    rght: 21
+    rght: 29
     tree_id: 2
