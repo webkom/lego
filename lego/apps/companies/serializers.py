@@ -23,7 +23,7 @@ class SemesterStatusReadDetailedSerializer(BasisModelSerializer):
 class SemesterStatusCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status')
+        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
 
     def create(self, validated_data):
         company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
@@ -77,9 +77,9 @@ class CompanyReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'semester_statuses', 'student_contact',
-                  'admin_comment', 'website', 'phone', 'address', 'company_contacts',
-                  'active', 'comments', 'comment_target')
+        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
+                  'description', 'website', 'phone', 'company_type', 'address', 'payment_mail',
+                  'company_contacts', 'active', 'comments', 'comment_target')
 
 
 class CompanyCreateAndUpdateSerializer(BasisModelSerializer):

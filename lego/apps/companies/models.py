@@ -20,8 +20,10 @@ class Company(BasisModel, ObjectPermissionsModel):
     """ These are the detail route-only fields """
     description = models.CharField(max_length=500, blank=True)
     phone = models.CharField(max_length=100, blank=True)
+    company_type = models.CharField(max_length=200, blank=True)
     website = models.URLField(blank=True)
     address = models.CharField(max_length=100, blank=True)
+    payment_mail = models.EmailField(max_length=100, blank=True)
     previous_contacts = models.ManyToManyField(User)
     comments = GenericRelation(Comment)
 

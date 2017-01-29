@@ -6,6 +6,7 @@ from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerial
                                              CompanyCreateAndUpdateSerializer,
                                              CompanyReadDetailedSerializer, CompanyReadSerializer,
                                              SemesterStatusCreateAndUpdateSerializer,
+                                             SemesterStatusReadDetailedSerializer,
                                              SemesterStatusReadSerializer)
 
 
@@ -29,12 +30,15 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return SemesterStatusCreateAndUpdateSerializer
 
+        elif self.action in ['retrieve', 'destroy']:
+            return SemesterStatusReadDetailedSerializer
+
         return SemesterStatusReadSerializer
 
     def get_queryset(self):
 
         if self.action in ['retrieve', 'destroy']:
-            company_id = self.kwargs.select_related('company').get('company_pk', None)
+            company_id = self.kwargs.get('company_pk', None)
             return SemesterStatus.objects.filter(company=company_id)
         return self.queryset
 
@@ -51,6 +55,6 @@ class CompanyContactViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
 
         if self.action in ['retrieve', 'destroy']:
-            company_id = self.kwargs.select_related('company').get('company_pk', None)
+            company_id = self.kwargs.get('company_pk', None)
             return CompanyContact.objects.filter(company=company_id)
         return self.queryset
