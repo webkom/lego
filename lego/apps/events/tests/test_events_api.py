@@ -143,6 +143,7 @@ class CreateEventsTestCase(APITestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         self.event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        self.assertEqual(self.event_response.status_code, 201)
         self.event_id = self.event_response.data.pop('id', None)
         self.pool_response = self.client.post(_get_pools_list_url(self.event_id),
                                               _test_pools_data[0])

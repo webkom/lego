@@ -17,7 +17,7 @@ class TagSerializer(ModelSerializer):
 
 
 class TagSerializerMixin(serializers.Serializer):
-    tags = TagSerializer(many=True)
+    tags = TagSerializer(many=True, required=False)
     class Meta:
         abstract = True
 
