@@ -5,7 +5,7 @@ from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import CompanyContactViewSet, CompanyViewSet, SemesterStatusViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
-from lego.apps.feed.views import NotificationFeedViewSet, UserFeedViewSet
+from lego.apps.feed.views import NotificationFeedViewSet, PersonalFeedViewSet, UserFeedViewSet
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowEventViewSet, FollowUserViewSet
@@ -51,4 +51,5 @@ router.register(r'files', FileViewSet)
 router.register(r'followers/user', FollowUserViewSet)
 router.register(r'followers/event', FollowEventViewSet)
 router.register(r'feed/user', UserFeedViewSet, base_name='feed-user')
+router.register(r'feed/personal', PersonalFeedViewSet, base_name='feed-personal')
 router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-notifications')

@@ -101,7 +101,6 @@ class FeedManager:
         This functionality is called from within stream_framework.tasks.fanout_operation
         This function is almost always called in async tasks created by stream_framework.
         """
-
         with self.metrics.fanout_timer(feed_class):
             batch_context_manager = feed_class.get_timeline_batch_interface()
             with batch_context_manager as batch_interface:
@@ -114,3 +113,6 @@ class FeedManager:
 
         fanout_count = len(operation_kwargs['activities']) * len(user_ids)
         self.metrics.on_fanout(feed_class, operation, fanout_count)
+
+
+feed_manager = FeedManager()

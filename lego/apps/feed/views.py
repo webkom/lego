@@ -2,7 +2,7 @@ from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.feed.feeds.notification.feed import NotificationFeed
-from lego.apps.feed.feeds.user.feed import UserFeed
+from lego.apps.feed.feeds.user.feed import PersonalFeed, UserFeed
 
 from .serializers import AggregatedFeedSerializer, MarkSerializer, NotificationFeedSerializer
 
@@ -75,9 +75,14 @@ class FeedListMixin:
         raise exceptions.APIException
 
 
-class UserFeedViewSet(FeedViewSet, FeedListMixin):
+class UserFeedViewSet(FeedViewSet, FeedRetrieveMixin):
 
     feed_class = UserFeed
+
+
+class PersonalFeedViewSet(FeedViewSet, FeedListMixin):
+
+    feed_class = PersonalFeed
 
     def get_queryset(self):
         return self.feed_class(self.request.user.id)

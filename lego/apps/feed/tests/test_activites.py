@@ -1,23 +1,24 @@
-from django.test import TestCase
 from django.utils.timezone import make_naive, now
 from stream_framework.verbs.base import Comment as CommentVerb
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
 from lego.apps.feed.activities import Activity
+from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import User
 
 
-class ActivityTestCase(TestCase):
+class ActivityTestCase(FeedTestBase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.user = User.objects.get(id=1)
         self.article = Article.objects.get(id=2)
-        self.comment = Comment.objects.create(
-            content_object=self.article, created_by=self.user, text='comment'
+        self.comment = Comment(
+            content_object=self.article, text='comment'
         )
+        self.comment.save(current_user=self.user)
         self.test_time = now()
 
     def test_create_activity(self):

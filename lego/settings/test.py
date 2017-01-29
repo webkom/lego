@@ -49,3 +49,5 @@ ELASTICSEARCH = [
 CELERY_TASK_ALWAYS_EAGER = True
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+STREAM_DEFAULT_KEYSPACE = 'test_stream_framework'

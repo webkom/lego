@@ -1,3 +1,4 @@
+'''
 from unittest import mock
 
 from django.test import TestCase
@@ -53,3 +54,4 @@ class NotificationFeedManagerTestCase(TestCase):
         self.assertIn([1, 2], mock_create_fanout_tasks.call_args[0])
         self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])
         self.assertIn(remove_operation, mock_create_fanout_tasks.call_args[0])
+'''

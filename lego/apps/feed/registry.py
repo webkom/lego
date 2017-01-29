@@ -5,7 +5,7 @@ def register_handler(handler_cls):
     """
     Register the search index in our index registry.
     """
-    handler_registry[handler_cls.model] = handler_cls
+    handler_registry[handler_cls.model] = handler_cls()
 
 
 def get_handler(model):

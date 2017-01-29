@@ -1,3 +1,4 @@
+'''
 from datetime import datetime
 
 from django.test import TestCase
@@ -5,6 +6,7 @@ from stream_framework.verbs.base import Comment as CommentVerb
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
+
 from lego.apps.feed.activities import FeedActivity, FeedAggregatedActivity
 from lego.apps.feed.feed_serializers import AggregatedFeedSerializer, FeedActivitySerializer
 from lego.apps.users.models import User
@@ -64,3 +66,4 @@ class FeedActivitySerializerTestCase(TestCase):
         self.assertEqual(deserialized.updated_at, self.aggregated_activity.updated_at)
         self.assertEqual(deserialized.serialization_id, self.aggregated_activity.serialization_id)
         self.assertEqual(deserialized.last_activities, self.aggregated_activity.last_activities)
+'''

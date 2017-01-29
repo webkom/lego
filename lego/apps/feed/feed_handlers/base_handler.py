@@ -1,45 +1,33 @@
-from lego.apps.feed.activities import Activity
-from lego.apps.feed.verbs import CreateVerb, DeleteVerb, UpdateVerb
-
-
 class BaseHandler:
-    verbs = dict(
-        create=CreateVerb,
-        update=UpdateVerb,
-        delete=DeleteVerb
-    )
 
-    def __init__(self, instance, action):
-        self.instance = instance
-        self.action = action
+    def __init__(self):
+        pass
 
-    @property
-    def user_ids(self):
-        return []
+    def handle_event(self, instance, event):
+        '''
+        Receives an event on an instance and sends a corresponding activity into feeds
+        :param instance: instance of object
+        :param event: type of event. For example 'create' or 'update'
+        :return: None
+        '''
 
-    @property
-    def verb(self):
-        if self.action not in self.verbs:
-            raise Exception('Action not valid. Possibilites are: {}'.format(self.verbs.keys()))
-        return self.verbs[self.action]
+        if event == 'create':
+            self.handle_create(instance)
+        elif event == 'update':
+            self.handle_update(instance)
+        elif event == 'delete':
+            self.handle_delete(instance)
 
-    @property
-    def actor(self):
-        actor = self.instance
-        if self.action == 'update' and hasattr(self.instance, 'updated_by'):
-            actor = self.instance.updated_by
-        elif hasattr(self.instance, 'created_by'):
-            actor = self.instance.created_by
-        return actor
+    def handle_create(self, instance):
+        pass
 
-    @property
-    def target(self):
-        return self.instance
+    def handle_update(self, instance):
+        pass
 
-    @property
-    def object(self):
-        return self.instance
+    def handle_delete(self, instance):
+        pass
 
+    '''
     @property
     def activity(self):
         return Activity(
@@ -48,3 +36,4 @@ class BaseHandler:
             object=self.object,
             target=self.target
         )
+    '''

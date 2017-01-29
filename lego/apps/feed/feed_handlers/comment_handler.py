@@ -1,29 +1,45 @@
 from lego.apps.comments.models import Comment
+from lego.apps.feed.activities import Activity
 from lego.apps.feed.feed_handlers.base_handler import BaseHandler
+from lego.apps.feed.feed_manager import feed_manager
+from lego.apps.feed.feeds.user.feed import PersonalFeed, UserFeed
 from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import CommentVerb, DeleteVerb, UpdateVerb
+from lego.apps.feed.verbs import CommentVerb
 
 
 class CommentHandler(BaseHandler):
-    verbs = dict(
-        create=CommentVerb,
-        update=UpdateVerb,
-        delete=DeleteVerb
-    )
-
     model = Comment
 
-    @property
-    def user_ids(self):
-        ids = []
-        if hasattr(self.target, 'created_by'):
-            ids.append(self.target.created_by)
+    manager = feed_manager
 
-        return ids
+    def handle_create(self, comment):
+        activity = self.get_activity(comment)
+        for feeds, recipients in self.get_feeds_and_recipients(comment):
+            self.manager.add_activity(activity, recipients, feeds)
 
-    @property
-    def target(self):
-        return self.instance.content_object
+    def handle_update(self, comment):
+        pass
+        # Update the comment feed entries
+
+    def handle_delete(self, comment):
+        activity = self.get_activity(comment)
+        for feeds, recipients in self.get_feeds_and_recipients(comment):
+            self.manager.remove_activity(activity, recipients, feeds)
+
+    def get_feeds_and_recipients(self, comment):
+        return [
+            ([PersonalFeed], []),
+            ([UserFeed], [comment.created_by.id])
+        ]
+
+    def get_activity(self, comment):
+        return Activity(
+            actor=comment.created_by,
+            verb=CommentVerb,
+            object=comment,
+            target=comment.content_object,
+            time=comment.created_at
+        )
 
 
 register_handler(CommentHandler)

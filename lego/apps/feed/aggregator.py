@@ -1,7 +1,7 @@
-from stream_framework.aggregators.base import NotificationAggregator
+from stream_framework.aggregators.base import RecentVerbAggregator
 
 
-class FeedAggregator(NotificationAggregator):
+class FeedAggregator(RecentVerbAggregator):
     """
     This feed aggregator groups events by target, verb and date by default. Verbs can have a
     custom aggregation_group variable for custom grouping.

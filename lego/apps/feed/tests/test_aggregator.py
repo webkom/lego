@@ -1,14 +1,14 @@
-from django.test import TestCase
 from stream_framework.verbs.base import Comment as CommentVerb
 from stream_framework.verbs.base import Verb, register
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
 from lego.apps.feed import activities, aggregator
+from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import User
 
 
-class AggregatorTestCase(TestCase):
+class AggregatorTestCase(FeedTestBase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
@@ -20,7 +20,7 @@ class AggregatorTestCase(TestCase):
 
     def test_get_group(self):
         """Check the default group generation."""
-        activity = activities.FeedActivity(
+        activity = activities.Activity(
             actor=self.user,
             verb=CommentVerb,
             object=self.comment,
@@ -42,7 +42,7 @@ class AggregatorTestCase(TestCase):
 
         register(TestVerb)
 
-        activity = activities.FeedActivity(
+        activity = activities.Activity(
             actor=self.user,
             verb=TestVerb,
             object=self.comment,

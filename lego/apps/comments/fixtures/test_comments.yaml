@@ -1,0 +1,14 @@
+- fields:
+    text: 'hello world'
+    content_type: ['articles', 'article']
+    object_id: 1
+    created_by: 1
+  model: comments.Comment
+  pk: 1
+- fields:
+    text: 'hello world 2'
+    content_type: ['articles', 'article']
+    object_id: 1
+    created_by: 1
+  model: comments.Comment
+  pk: 2
