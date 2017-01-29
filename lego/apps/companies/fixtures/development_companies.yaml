@@ -8,6 +8,9 @@
     phone: '+47 90909090'
     active: true
     website: 'bekk.no'
+    payment_mail: faktura@bekk.no
+    address: Postboks 134 Sentrum, 0102 Oslo
+    company_type: 'Konsulent, Data&Komtek'
 
 - model: companies.Company
   pk: 2
