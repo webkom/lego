@@ -1,14 +1,18 @@
-- pk: test_article_cover.png
+- pk: abakus.png
   model: files.File
   fields:
     state: ready
     file_type: image
     token: token
-    user: 1
-- pk: test_event_cover.png
+- pk: default_male_avatar.png
   model: files.File
   fields:
     state: ready
     file_type: image
     token: token
-    user: 1
+- pk: default_female_avatar.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token

@@ -9,6 +9,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
+from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
@@ -27,6 +28,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     """
     event_type = models.CharField(max_length=50, choices=constants.EVENT_TYPES)
     location = models.CharField(max_length=100)
+    cover = FileField()
 
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()

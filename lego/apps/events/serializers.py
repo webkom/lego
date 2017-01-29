@@ -6,6 +6,7 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.serializers import PublicCompanyReadSerializer
 from lego.apps.events.fields import ChargeStatusField
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.files.fields import ImageField
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -42,18 +43,25 @@ class PoolReadSerializer(BasisModelSerializer):
 
 class EventReadSerializer(BasisModelSerializer):
     company = PublicCompanyReadSerializer(read_only=True)
+    cover = ImageField(required=False, options={'height': 500})
+    thumbnail = ImageField(
+        source='cover',
+        required=False,
+        options={'height': 500, 'width': 500, 'smart': True}
+    )
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'total_capacity', 'registration_count',
-                  'company')
+        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
+                  'location', 'start_time', 'thumbnail', 'end_time',
+                  'total_capacity', 'company', 'registration_count')
         read_only = True
 
 
 class EventReadDetailedSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
+    cover = ImageField(required=False, options={'height': 500})
     company = PublicCompanyReadSerializer(read_only=True)
     pools = PoolReadSerializer(read_only=True, many=True)
     active_capacity = serializers.ReadOnlyField()
@@ -61,7 +69,7 @@ class EventReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
+        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools',
                   'company', 'active_capacity', 'is_priced', 'price')
         read_only = True
