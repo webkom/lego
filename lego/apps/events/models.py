@@ -131,14 +131,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         current_time = timezone.now()
         if self.start_time < current_time:
             raise ValueError('Event has already started')
-        possible_pools = self.get_possible_pools(user)
-        if not possible_pools:
-            raise ValueError('No available pools')
-        if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
-            raise ValueError('Not open yet')
 
-        # If the event is merged or has only one pool we can skip a lot of logic
         with cache.lock(f'event_lock-{self.id}', timeout=20):
+            possible_pools = self.get_possible_pools(user)
+            if not possible_pools:
+                raise ValueError('No available pools')
+            if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
+                raise ValueError('Not open yet')
+
+            # If the event is merged or has only one pool we can skip a lot of logic
             if self.is_merged or (len(possible_pools) == 1 and self.pools.count() == 1):
                 if self.is_full or penalties >= 3:
                     return registration.add_to_waiting_list()
