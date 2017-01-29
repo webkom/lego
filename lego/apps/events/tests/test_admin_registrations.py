@@ -18,6 +18,7 @@ class AdminRegistrationTestCase(TestCase):
         )
 
     def test_admin_registration(self):
+        """Test that admin can force register user into chosen pool"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         pool = event.pools.first()
@@ -30,6 +31,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
     def test_ar_with_wrong_pool(self):
+        """Test that admin can not register user into event using pool from other event"""
         event_one = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         event_two = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
@@ -46,6 +48,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(wrong_pool.registrations.count(), pool_no_of_regs_before)
 
     def test_ar_without_permissions_for_user(self):
+        """Test that admin can register user into pool without user having permission"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         pool = event.pools.get(name='Webkom')
@@ -59,6 +62,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
     def test_ar_after_merge(self):
+        """Test that admin can force register user into pool after merge"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         event.merge_time = timezone.now() - timedelta(hours=12)
         user = get_dummy_users(1)[0]
@@ -72,6 +76,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
     def test_ar_to_full_pool(self):
+        """Test that admin can force register user into an already full pool"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         users = get_dummy_users(5)
         user = users[4]
@@ -89,6 +94,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
     def test_ar_to_full_event(self):
+        """Test that admin can force register user into an already full event"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         users = get_dummy_users(7)
         user = users[6]
@@ -106,6 +112,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
     def test_ar_twice(self):
+        """Test that user is not registered twice when admin registered is run twice"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         pool = event.pools.get(name='Webkom')

@@ -53,6 +53,7 @@ class RegistrationTestCase(TestCase):
         get_redis_connection("default").flushall()
 
     def test_can_register_single_pool(self):
+        """Test registering user to event with only a single pool"""
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.first()
@@ -63,6 +64,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), event.number_of_registrations)
 
     def test_can_register_to_single_open_pool(self):
+        """Test registering user to event with only one pool with spots left"""
         users = get_dummy_users(10)
         abakus_users = users[:6]
         webkom_users = users[6:]
@@ -84,6 +86,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, 4)
 
     def test_can_register_with_automatic_pool_selection(self):
+        """Test that registrating user selects correct pool"""
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.get(name='Abakusmember')
@@ -95,7 +98,8 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), 1)
         self.assertEqual(pool_2.registrations.count(), 0)
 
-    def test_registration_picks_correct_pool(self):
+    def test_registrations_picks_correct_pool(self):
+        """Test that multiple registrations selects correct pools"""
         users = get_dummy_users(15)
         abakus_users = users[:10]
         webkom_users = users[10:]
@@ -129,6 +133,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool_2.registrations.count(), 2)
 
     def test_no_duplicate_registrations(self):
+        """Test that a user are not able register multiple times"""
         users = get_dummy_users(2)
         user_1, user_2 = users[0], users[1]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -149,6 +154,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool_two.registrations.count(), 0)
 
     def test_can_not_register_pre_activation(self):
+        """Test that user can not register before pool is activated"""
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
@@ -163,6 +169,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), 0)
 
     def test_waiting_list_if_full(self):
+        """Test that user is put in waiting list if pools are full"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.get(id=3)
         people_2_place_in_waiting_list = 3
@@ -178,6 +185,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, pool.registrations.count())
 
     def test_can_register_pre_merge(self):
+        """Test that user can register before the pools are merged"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool_one = event.pools.get(name='Abakusmember')
         pool_two = event.pools.get(name='Webkom')
@@ -196,6 +204,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(n_registrants, event.number_of_registrations)
 
     def test_can_register_post_merge(self):
+        """Test that users can register after the pools are merged"""
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         event.merge_time = timezone.now() - timedelta(hours=12)
         permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
@@ -220,6 +229,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool_one.registrations.count(), event.number_of_registrations)
 
     def test_can_only_register_with_correct_permission_group(self):
+        """Test that user only can register having correct permission group"""
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         event.merge_time = timezone.now() - timedelta(hours=12)
         permission_groups_one = [AbakusGroup.objects.get(name='Abakus')]
@@ -239,6 +249,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), 0)
 
     def test_placed_in_waiting_list_post_merge(self):
+        """Test waiting list after pools are merged"""
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
@@ -257,6 +268,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), expected_users_in_waiting_list)
 
     def test_bump(self):
+        """Test that waiting registration is bumped on unregistration"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.first()
         users = get_dummy_users(pool.capacity + 2)
@@ -278,6 +290,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_before + 1)
 
     def test_unregistering_from_event(self):
+        """Test that user can unregister from event"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.get(name='Webkom')
         users = get_dummy_users(5)
@@ -295,6 +308,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(pool.registrations.count(), pool_registrations_before - 1)
 
     def test_register_after_unregister(self):
+        """Test that user can re-register after having unregistered"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         user = User.objects.get(pk=1)
         AbakusGroup.objects.get(name='Abakus').add_user(user)
@@ -308,6 +322,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, registrations_before)
 
     def test_register_to_waiting_list_after_unregister(self):
+        """Test that user can re-register into waiting list after having unregistered"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
@@ -323,6 +338,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), 1)
 
     def test_unregistering_non_existing_user(self):
+        """Test that non existing user trying to unregister raises error"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         with self.assertRaises(Registration.DoesNotExist):
@@ -330,6 +346,7 @@ class RegistrationTestCase(TestCase):
             event.unregister(registration)
 
     def test_popping_from_waiting_list_pre_merge(self):
+        """Test popping of first user in waiting list before merge"""
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
@@ -349,6 +366,7 @@ class RegistrationTestCase(TestCase):
             prev = top
 
     def test_popping_from_waiting_list_post_merge(self):
+        """Test popping of first user in waiting list after merge"""
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
@@ -368,6 +386,7 @@ class RegistrationTestCase(TestCase):
             prev = registration
 
     def test_unregistering_from_waiting_list(self):
+        """Test that user can unregister from waiting list"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.first()
         users = get_dummy_users(pool.capacity + 10)
@@ -389,7 +408,8 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
         self.assertLessEqual(event.number_of_registrations, event.active_capacity)
 
-    def test_unregistering_and_bumping(self):
+    def test_unregistering_and_bumping_pre_merge(self):
+        """Test unregistration and that waiting list is bumped accordingly before merge"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.first()
         users = get_dummy_users(pool.capacity + 10)
@@ -413,6 +433,7 @@ class RegistrationTestCase(TestCase):
         self.assertLessEqual(event.number_of_registrations, event.active_capacity)
 
     def test_unregistering_and_bumping_post_merge(self):
+        """Test unregistration and that waiting list is bumped accordingly after merge"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         event.merge_time = timezone.now() - timedelta(hours=24)
         event.save()
@@ -452,6 +473,7 @@ class RegistrationTestCase(TestCase):
         self.assertLessEqual(event.number_of_registrations, event.active_capacity)
 
     def test_bumping_when_bumped_has_several_pools_available(self):
+        """Test that user is bumped when user can join multiple pools"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         users = get_dummy_users(4)
         user_0 = users[0]
@@ -483,6 +505,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, number_of_registered_before + 2)
 
     def test_unregistration_date_is_set_at_unregistration(self):
+        """Test that unregistration date gets set when unregistering"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(user)
@@ -496,6 +519,7 @@ class RegistrationTestCase(TestCase):
         self.assertIsNotNone(registration.unregistration_date)
 
     def test_bump_after_rebalance(self):
+        """Test bumping after pool rebalancing when user unregistrates"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool_one = event.pools.get(name='Abakusmember')
         pool_two = event.pools.get(name='Webkom')
@@ -525,6 +549,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), waiting_before - 1)
 
     def test_user_is_moved_after_rebalance(self):
+        """Test that user's pool has changed after being rebalanced"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool_one = event.pools.get(name='Abakusmember')
         pool_two = event.pools.get(name='Webkom')
@@ -552,7 +577,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(moved_user_registration.pool, pool_two)
 
     def test_correct_user_is_bumped_after_rebalance(self):
-        # Correct as in first user available for the rebalanced pool
+        """Test that the first user available for the rebalanced pool is bumped"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool_one = event.pools.get(name='Abakusmember')
         users = get_dummy_users(7)
@@ -581,6 +606,7 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), waiting_before - 1)
 
     def test_rebalance_pool_method(self):
+        """Test rebalancing method by moving registered user's pool to fit waiting list user"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         abakus_pool = event.pools.get(name='Abakusmember')
         webkom_pool = event.pools.get(name='Webkom')

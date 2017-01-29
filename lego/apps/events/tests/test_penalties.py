@@ -17,6 +17,7 @@ class PenaltyTestCase(TestCase):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
 
     def test_get_earliest_registration_time_ignore_penalties(self):
+        """Test method calculating the earliest registration time when penalties are ignored"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         event.heed_penalties = False
         event.save()
@@ -35,6 +36,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(earliest_reg, current_time)
 
     def test_get_earliest_registration_time_one_penalty(self):
+        """Test method calculating the earliest registration time for user with one penalty"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         current_time = timezone.now()
@@ -51,6 +53,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(earliest_reg, current_time + timedelta(hours=3))
 
     def test_get_earliest_registration_time_two_penalties(self):
+        """Test method calculating the earliest registration time for user with two penalties"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         current_time = timezone.now()
@@ -67,6 +70,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(earliest_reg, current_time + timedelta(hours=12))
 
     def test_cant_register_with_one_penalty_before_delay(self):
+        """Test that user can not register before (3 hour) delay when having one penalty"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         current_time = timezone.now()
@@ -83,6 +87,7 @@ class PenaltyTestCase(TestCase):
             event.register(registration)
 
     def test_can_register_with_one_penalty_after_delay(self):
+        """Test that user can register after (3 hour) delay has passed having one penalty"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         current_time = timezone.now()
@@ -99,6 +104,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, 1)
 
     def test_cant_register_with_two_penalties_before_delay(self):
+        """Test that user can not register before (12 hour) delay when having two penalties"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         current_time = timezone.now()
@@ -115,6 +121,7 @@ class PenaltyTestCase(TestCase):
             event.register(registration)
 
     def test_can_register_with_two_penalties_after_delay(self):
+        """Test that user can register after (12 hour) delay when having two penalties"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         current_time = timezone.now()
@@ -131,6 +138,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, 1)
 
     def test_waiting_list_on_three_penalties(self):
+        """Test that user is registered to waiting list directly when having three penalties"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         user = get_dummy_users(1)[0]
@@ -143,6 +151,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), 1)
 
     def test_waiting_list_on_more_than_three_penalties(self):
+        """Test that user is registered to waiting list directly having over three penalties"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         user = get_dummy_users(1)[0]
@@ -156,6 +165,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), 1)
 
     def test_waiting_list_on_three_penalties_post_merge(self):
+        """Test that user is registered to waiting list with three penalties after merge"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         event.merge_time = timezone.now() - timedelta(hours=24)
         event.save()
@@ -170,6 +180,7 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(event.waiting_registrations.count(), 1)
 
     def test_not_bumped_if_three_penalties(self):
+        """Test that user is not bumped on unregistration having three penalties"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(5)
@@ -193,6 +204,7 @@ class PenaltyTestCase(TestCase):
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
     def test_not_bumped_if_three_penalties_post_merge(self):
+        """Test that user is not bumped on unregistration having three penalties after merge"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(7)
@@ -227,6 +239,7 @@ class PenaltyTestCase(TestCase):
                 side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
                              for i in range(number_of_calls)])
     def test_bumped_if_penalties_expire_while_waiting(self, mock_now):
+        """Test that user gets bumped when penalties expire while on waiting list"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         users = get_dummy_users(5)

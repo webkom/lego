@@ -19,6 +19,7 @@ class EventMethodTest(TestCase):
         self.assertEqual(str(event), event.title)
 
     def test_calculate_full_pools(self):
+        """Test calculation of open and full pools for usage in registering method"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         abakus_pool = event.pools.get(name='Abakusmember')
         webkom_pool = event.pools.get(name='Webkom')
@@ -45,6 +46,7 @@ class EventMethodTest(TestCase):
         self.assertEqual(len(open_pools), 0)
 
     def test_doesnt_have_pool_permission(self):
+        """Test method checking that user does not have the appropriate permission groups"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -53,6 +55,7 @@ class EventMethodTest(TestCase):
         self.assertFalse(event.has_pool_permission(user, webkom_pool))
 
     def test_has_some_pool_permissions(self):
+        """Test method checking that user one of the appropriate permission groups"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -62,6 +65,7 @@ class EventMethodTest(TestCase):
         self.assertFalse(event.has_pool_permission(user, webkom_pool))
 
     def test_has_all_pool_permissions(self):
+        """Test method checking that user have all the appropriate permission groups"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -71,6 +75,7 @@ class EventMethodTest(TestCase):
         self.assertTrue(event.has_pool_permission(user, webkom_pool))
 
     def test_find_most_exclusive_pool(self):
+        """Test method calculating the most exclusive pool for the registering user"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -86,6 +91,7 @@ class EventMethodTest(TestCase):
         self.assertEqual(len(event.find_most_exclusive_pools([webkom_pool, abakus_pool])), 1)
 
     def test_find_most_exclusive_when_equal(self):
+        """Test method calculating the most exclusive pool when they are equally exclusive"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -95,12 +101,14 @@ class EventMethodTest(TestCase):
         self.assertEqual(len(event.find_most_exclusive_pools([webkom_pool, abakus_pool])), 2)
 
     def test_select_highest_capacity(self):
+        """Test method selecting the pool with the highest capacity"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
         abakus_pool = event.pools.get(name='Abakusmember')
         self.assertEqual(event.select_highest_capacity([abakus_pool, webkom_pool]), abakus_pool)
 
     def test_get_earliest_registration_time_without_pools_provided(self):
+        """Test method calculating the earliest registration time for user without provided pools"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -118,6 +126,7 @@ class EventMethodTest(TestCase):
         self.assertEqual(earliest_reg, abakus_pool.activation_date)
 
     def test_get_earliest_registration_time_no_penalties(self):
+        """Test method calculating the earliest registration time for two pools"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         webkom_pool = event.pools.get(name='Webkom')
         abakus_pool = event.pools.get(name='Abakusmember')
@@ -135,6 +144,7 @@ class EventMethodTest(TestCase):
         self.assertEqual(earliest_reg, current_time-timedelta(hours=1))
 
     def test_number_of_waiting_registrations(self):
+        """Test method counting the number of registrations in waiting list"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.get(name='Abakusmember')
         people_to_place_in_waiting_list = 3
