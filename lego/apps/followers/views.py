@@ -17,11 +17,11 @@ class FollowerBaseViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
 
 class FollowUserViewSet(FollowerBaseViewSet):
     serializer_class = FollowUserSerializer
-    queryset = FollowUser.objects.all()
+    queryset = FollowUser.objects.all().select_related('follower')
     filter_class = FollowUserFilterSet
 
 
 class FollowEventViewSet(FollowerBaseViewSet):
     serializer_class = FollowEventSerializer
-    queryset = FollowEvent.objects.all()
+    queryset = FollowEvent.objects.all().select_related('follower')
     filter_class = FollowEventFilterSet

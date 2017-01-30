@@ -13,6 +13,12 @@ class Follower(PersistentModel, TimeStampModel):
 class FollowUser(Follower):
     target = models.ForeignKey('users.User', related_name='followers')
 
+    class Meta:
+        unique_together = ('follower', 'target')
+
 
 class FollowEvent(Follower):
     target = models.ForeignKey('events.Event', related_name='followers')
+
+    class Meta:
+        unique_together = ('follower', 'target')

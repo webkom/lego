@@ -7,11 +7,11 @@ class FollowUserFilterSet(FilterSet):
 
     class Meta:
         model = FollowUser
-        fields = ('target', )
+        fields = ('target', 'follower')
 
 
 class FollowEventFilterSet(FilterSet):
 
     class Meta:
         model = FollowEvent
-        fields = ('target', )
+        fields = ('target', 'follower')
