@@ -4,10 +4,11 @@ from lego.apps.articles.models import Article
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.reactions.serializers import GroupedReactionSerializer, ReactionSerializer
+from lego.apps.tags.serializers import TagSerializerMixin
 from lego.utils.serializers import BasisModelSerializer
 
 
-class DetailedArticleSerializer(BasisModelSerializer):
+class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     reactions = ReactionSerializer(read_only=True, many=True)
     cover = ImageField(required=False, options={'height': 500})
@@ -26,13 +27,15 @@ class DetailedArticleSerializer(BasisModelSerializer):
             'comments',
             'comment_target',
             'reactions',
-            'reactions_grouped'
+            'reactions_grouped',
+            'tags'
         )
 
 
-class PublicArticleSerializer(BasisModelSerializer):
+class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
+
     cover = ImageField(required=False, options={'height': 300})
 
     class Meta:
         model = Article
-        fields = ('id', 'cover', 'description')
+        fields = ('id', 'title', 'cover', 'description', 'tags')

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'lego.apps.meetings',
     'lego.apps.oauth',
     'lego.apps.search',
+    'lego.apps.tags',
     'lego.apps.quotes',
     'lego.apps.reactions',
     'lego.apps.websockets'

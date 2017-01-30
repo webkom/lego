@@ -1,3 +1,15 @@
+- model: tags.Tag
+  fields:
+    tag: lorem
+
+- model: tags.Tag
+  fields:
+    tag: ipsum
+
+- model: tags.Tag
+  fields:
+    tag: sample-text
+
 - model: articles.Article
   pk: 1
   fields:
@@ -18,6 +30,10 @@
       Lorem Ipsum for dummytekst.
     can_view_groups:
       - 1
+    tags:
+      - lorem
+      - ipsum
+      - sample-text
 
 - model: articles.Article
   pk: 2
@@ -39,3 +55,6 @@
       Lorem Ipsum for dummytekst.
     can_view_groups:
       - 1
+    tags:
+      - lorem
+      - ipsum
