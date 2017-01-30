@@ -1,49 +1,31 @@
 from rest_framework import serializers
 
-from lego.apps.followers.models import Follower, FollowEvent, FollowUser
-from lego.apps.users.serializers.users import PublicUserSerializer
+from lego.apps.followers.models import FollowEvent, FollowUser
+from lego.apps.users.fields import PublicUserField
 
 
 class FollowerSerializer(serializers.ModelSerializer):
-    follower = PublicUserSerializer()
+
+    follower = PublicUserField(read_only=True)
 
     class Meta:
-        model = Follower
         fields = (
             'id',
             'follower',
+            'target',
         )
 
+    def save(self, **kwargs):
+        request = self.context['request']
+        kwargs['follower'] = request.user
+        return super().save(**kwargs)
 
-class FollowUserSerializer(serializers.ModelSerializer):
-    class Meta:
+
+class FollowUserSerializer(FollowerSerializer):
+    class Meta(FollowerSerializer.Meta):
         model = FollowUser
-        fields = (
-            'id',
-            'follower',
-            'follow_target',
-        )
 
 
-class FollowEventSerializer(serializers.ModelSerializer):
-    class Meta:
+class FollowEventSerializer(FollowerSerializer):
+    class Meta(FollowerSerializer.Meta):
         model = FollowEvent
-        fields = (
-            'id',
-            'follower',
-            'follow_target',
-        )
-
-
-"""
-class FollowCompanySerializer(serializers.ModelSerializer):
-    follow_target = COMPANY SERIALIZER HERE
-
-    class Meta:
-        model = FollowCompany
-        fields = (
-            'id',
-            'follower',
-            'follow_target',
-        )
-"""

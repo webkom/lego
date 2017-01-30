@@ -12,11 +12,9 @@ class FollowerTestCase(TestCase):
         followed = User(username=2, first_name=2, last_name=2, email=2)
         followed.save()
 
-        follow = FollowUser.objects.create(follower=follower, followed_user=followed)
+        follow = FollowUser.objects.create(follower=follower, target=followed)
 
         self.assertEqual(follow.follower, follower)
-        self.assertEqual(follow.followed_user, followed)
-        print(follower.following.all())
+        self.assertEqual(follow.target, followed)
         print(followed.followers.all())
         self.assertEqual(followed.followers.first().follower, follower)
-        self.assertEqual(follower.following.first().followed_user, followed)

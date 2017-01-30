@@ -8,7 +8,7 @@ from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import NotificationFeedViewSet
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
-from lego.apps.followers.views import FollowerViewSet
+from lego.apps.followers.views import FollowEventViewSet, FollowUserViewSet
 from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
@@ -49,4 +49,5 @@ router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction_types', ReactionTypeViewSet)
 router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
-router.register(r'followers', FollowerViewSet)
+router.register(r'followers/user', FollowUserViewSet)
+router.register(r'followers/event', FollowEventViewSet)
