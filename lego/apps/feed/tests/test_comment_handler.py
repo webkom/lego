@@ -1,6 +1,6 @@
 from lego.apps.comments.models import Comment
 from lego.apps.feed.feed_handlers import CommentHandler
-from lego.apps.feed.feeds.user.feed import UserFeed
+from lego.apps.feed.feeds.user_feed import UserFeed
 from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import User
 

@@ -51,8 +51,8 @@ class AggregatedActivitySerializer(BaseAggregatedSerializer):
             activities=self.parse_serialized_activities(serialized_aggregated['activities']),
             created_at=serialized_aggregated['created_at'],
             updated_at=serialized_aggregated['updated_at'],
-            read_at=serialized_aggregated.get('read_at'),
-            seen_at=serialized_aggregated.get('seen_at')
+            read_at=serialized_aggregated['read_at'],
+            seen_at=serialized_aggregated['seen_at']
         )
         aggregated.minimized_activities = serialized_aggregated['minimized_activities'] or 0
         return aggregated

@@ -3,8 +3,9 @@ import logging
 from cassandra.cqlengine.management import create_keyspace_simple, drop_keyspace, sync_table
 from stream_framework import settings
 
-from lego.apps.feed.feeds.notification.feed import NotificationFeed
-from lego.apps.feed.feeds.user.feed import UserFeed
+from lego.apps.feed.feeds.notification_feed import NotificationFeed
+from lego.apps.feed.feeds.personal_feed import PersonalFeed
+from lego.apps.feed.feeds.user_feed import UserFeed
 from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ class Command(BaseCommand):
     def get_cassandra_models(self):
         return [
             UserFeed.get_timeline_storage().model,
+            PersonalFeed.get_timeline_storage().model,
             NotificationFeed.get_timeline_storage().model
         ]
 

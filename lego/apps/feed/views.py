@@ -1,8 +1,9 @@
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
-from lego.apps.feed.feeds.notification.feed import NotificationFeed
-from lego.apps.feed.feeds.user.feed import PersonalFeed, UserFeed
+from lego.apps.feed.feeds.notification_feed import NotificationFeed
+from lego.apps.feed.feeds.personal_feed import PersonalFeed
+from lego.apps.feed.feeds.user_feed import UserFeed
 
 from .serializers import AggregatedFeedSerializer, MarkSerializer, NotificationFeedSerializer
 
@@ -136,14 +137,3 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         feed = self.get_queryset()
         feed.mark_activity(pk, **data)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @decorators.list_route(
-        permission_classes=[permissions.IsAuthenticated],
-        methods=['GET']
-    )
-    def notification_data(self, request):
-        """
-        The notifications_data method displays information like unreadCount and unseenCount.
-        """
-        feed = self.get_queryset()
-        return Response(feed.get_notification_data())

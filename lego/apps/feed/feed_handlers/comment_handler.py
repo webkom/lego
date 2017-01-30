@@ -2,7 +2,8 @@ from lego.apps.comments.models import Comment
 from lego.apps.feed.activities import Activity
 from lego.apps.feed.feed_handlers.base_handler import BaseHandler
 from lego.apps.feed.feed_manager import feed_manager
-from lego.apps.feed.feeds.user.feed import PersonalFeed, UserFeed
+from lego.apps.feed.feeds.personal_feed import PersonalFeed
+from lego.apps.feed.feeds.user_feed import UserFeed
 from lego.apps.feed.registry import register_handler
 from lego.apps.feed.verbs import CommentVerb
 
