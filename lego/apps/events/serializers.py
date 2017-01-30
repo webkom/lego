@@ -42,7 +42,7 @@ class PoolReadSerializer(BasisModelSerializer):
         return pool
 
 
-class EventReadSerializer(BasisModelSerializer):
+class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     company = PublicCompanyReadSerializer(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
@@ -59,7 +59,7 @@ class EventReadSerializer(BasisModelSerializer):
         read_only = True
 
 
-class EventReadDetailedSerializer(BasisModelSerializer):
+class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
@@ -97,7 +97,7 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
         return pool
 
 
-class EventCreateAndUpdateSerializer(BasisModelSerializer, TagSerializerMixin):
+class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
