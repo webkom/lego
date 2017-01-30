@@ -1,0 +1,171 @@
+- model: tags.Tag
+  fields:
+    tag: JavaScript
+
+- model: tags.Tag
+  fields:
+    tag: Java
+
+- model: tags.Tag
+  fields:
+    tag: Abakus
+
+- model: tags.Tag
+  fields:
+    tag: Arrkom
+
+- model: tags.Tag
+  fields:
+    tag: Bedkom
+
+- model: tags.Tag
+  fields:
+    tag: readme
+
+- model: tags.Tag
+  fields:
+    tag: Fagkom
+
+- model: tags.Tag
+  fields:
+    tag: LaBamba
+
+- model: tags.Tag
+  fields:
+    tag: PR
+
+- model: tags.Tag
+  fields:
+    tag: Webkom
+
+- model: tags.Tag
+  fields:
+    tag: Backup
+
+- model: tags.Tag
+  fields:
+    tag: Koskom
+
+- model: tags.Tag
+  fields:
+    tag: AbaBrygg
+
+- model: tags.Tag
+  fields:
+    tag: C#
+
+- model: tags.Tag
+  fields:
+    tag: Isbading
+
+- model: tags.Tag
+  fields:
+    tag: Turgruppa
+
+- model: tags.Tag
+  fields:
+    tag: abaGolf
+
+- model: tags.Tag
+  fields:
+    tag: Seniornett
+
+- model: tags.Tag
+  fields:
+    tag: Abarun
+
+- model: tags.Tag
+  fields:
+    tag: Stipend-Sushi
+
+- model: tags.Tag
+  fields:
+    tag: Abakos
+
+- model: tags.Tag
+  fields:
+    tag: Strikk & Drikk
+
+- model: tags.Tag
+  fields:
+    tag: Abaline
+
+- model: tags.Tag
+  fields:
+    tag: ALKISER
+
+- model: tags.Tag
+  fields:
+    tag: Abakus pokerklubb
+
+- model: tags.Tag
+  fields:
+    tag: Abamat
+
+- model: tags.Tag
+  fields:
+    tag: GameDev
+
+- model: tags.Tag
+  fields:
+    tag: Abaspin
+
+- model: tags.Tag
+  fields:
+    tag: Foppal
+
+- model: tags.Tag
+  fields:
+    tag: PPP
+
+- model: tags.Tag
+  fields:
+    tag: AbaGo
+
+- model: tags.Tag
+  fields:
+    tag: AbaSmash
+
+- model: tags.Tag
+  fields:
+    tag: Sikkerhetsgruppa
+
+- model: tags.Tag
+  fields:
+    tag: Bedpres
+
+- model: tags.Tag
+  fields:
+    tag: NTNU
+
+- model: tags.Tag
+  fields:
+    tag: Gløs
+
+- model: tags.Tag
+  fields:
+    tag: Trondheim
+
+- model: tags.Tag
+  fields:
+    tag: Øl
+
+- model: tags.Tag
+  fields:
+    tag: Brus
+
+- model: tags.Tag
+  fields:
+    tag: Damer
+
+- model: tags.Tag
+  fields:
+    tag: Web
+
+- model: tags.Tag
+  fields:
+    tag: Microsoft
+
+- model: tags.Tag
+  fields:
+    tag: Azure

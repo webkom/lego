@@ -1,0 +1,80 @@
+- model: users.User
+  pk: 1
+  fields:
+    username: admin
+    first_name: admin
+    last_name: hehe
+    email: ja@takk.lol
+
+- model: users.Membership
+  pk: 1
+  fields:
+    user:
+      - admin
+    abakus_group: 11
+    start_date: 1990-01-01
+
+- model: users.User
+  pk: 2
+  fields:
+    username: abakommer
+    first_name: Aba
+    last_name: Kommer
+    email: hue@abakus.no
+
+- model: users.Membership
+  pk: 2
+  fields:
+    user:
+      - admin
+    abakus_group: 2
+    start_date: 1990-01-01
+
+- model: users.User
+  pk: 3
+  fields:
+    username: noob
+    first_name: Ny
+    last_name: Begynner
+    email: bestemor@msn.no
+
+- model: users.Membership
+  pk: 2
+  fields:
+    user:
+      - admin
+    abakus_group: 1
+    start_date: 1990-01-01
+
+- model: events.Event
+  pk: 1
+  fields:
+    title: Javakurs
+    description: Vi lærer teknikkene bak `public static void main`
+    text: "Se del 2: AbstractBeanFactoryControllerAdapterView"
+    event_type: event
+    location: Kontoret til Javakongen
+    start_time: '2017-09-01T08:15:00+01:00'
+    end_time: '2017-09-01T15:45:00+01:00'
+
+- model: events.Event
+  pk: 2
+  fields:
+    title: Vi Har Tags!
+    description: Du vil ikke tro hva som er tagget!
+    text: Bra funksjonalitet
+    event_type: event
+    location: P15
+    start_time: '2017-09-01T08:15:00+01:00'
+    end_time: '2017-09-01T15:45:00+01:00'
+    tags:
+      - ayy
+      - lmao
+
+- model: tags.Tag
+  fields:
+    tag: ayy
+
+- model: tags.Tag
+  fields:
+    tag: lmao

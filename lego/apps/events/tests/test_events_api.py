@@ -18,7 +18,7 @@ _test_event_data = [
         'location': 'F252',
         'start_time': '2011-09-01T13:20:30Z',
         'end_time': '2012-09-01T13:20:30Z',
-        'merge_time': '2012-01-01T13:20:30Z'
+        'merge_time': '2012-01-01T13:20:30Z',
     },
     {
         'title': 'Event2',
@@ -28,7 +28,7 @@ _test_event_data = [
         'location': 'F252',
         'start_time': '2015-09-01T13:20:30Z',
         'end_time': '2015-09-01T13:20:30Z',
-        'merge_time': '2016-01-01T13:20:30Z'
+        'merge_time': '2016-01-01T13:20:30Z',
     }
 ]
 
@@ -143,6 +143,7 @@ class CreateEventsTestCase(APITestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         self.event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        self.assertEqual(self.event_response.status_code, 201)
         self.event_id = self.event_response.data.pop('id', None)
         self.pool_response = self.client.post(_get_pools_list_url(self.event_id),
                                               _test_pools_data[0])
@@ -151,15 +152,16 @@ class CreateEventsTestCase(APITestCase):
     def test_event_creation(self):
         self.assertIsNotNone(self.event_id)
         self.assertEqual(self.event_response.status_code, 201)
-        self.assertEqual(_test_event_data[0], self.event_response.data)
 
     def test_event_update(self):
         event_update_response = self.client.put(_get_detail_url(self.event_id), _test_event_data[1])
+        res_event = event_update_response.data
+        expect_event = _test_event_data[1]
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
 
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         self.assertEqual(event_update_response.status_code, 200)
-        self.assertNotEqual(_test_event_data[0], event_update_response.data)
-        self.assertEqual(_test_event_data[1], event_update_response.data)
 
     def test_pool_creation(self):
         self.assertIsNotNone(self.pool_response.data.pop('id'))

@@ -6,14 +6,18 @@ from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
 class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+
     queryset = Article.objects.all()
 
     def get_queryset(self):
-        if self.action == 'list':
-            return self.queryset
+        queryset = self.queryset.prefetch_related('tags')
 
-        return self.queryset.prefetch_related('author', 'comments', 'comments__created_by',
-                                              'reactions', 'reactions__created_by')
+        if self.action == 'list':
+            return queryset
+
+        return queryset.prefetch_related(
+            'author', 'comments', 'comments__created_by', 'reactions', 'reactions__created_by'
+        )
 
     def get_serializer_class(self):
         if self.action == 'list':

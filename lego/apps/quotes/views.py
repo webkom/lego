@@ -17,6 +17,9 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = (QuotePermissions, )
     serializer_class = QuoteSerializer
 
+    def get_queryset(self):
+        return self.queryset.prefetch_related('tags')
+
     @detail_route(methods=['PUT'])
     def approve(self, *args, **kwargs):
         instance = self.get_object()

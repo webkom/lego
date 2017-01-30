@@ -7,6 +7,7 @@ from lego.apps.companies.serializers import PublicCompanyReadSerializer
 from lego.apps.events.fields import ActivationTimeField, ChargeStatusField
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
+from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -41,7 +42,7 @@ class PoolReadSerializer(BasisModelSerializer):
         return pool
 
 
-class EventReadSerializer(BasisModelSerializer):
+class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     company = PublicCompanyReadSerializer(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
@@ -54,11 +55,11 @@ class EventReadSerializer(BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
                   'location', 'start_time', 'thumbnail', 'end_time',
-                  'total_capacity', 'company', 'registration_count')
+                  'total_capacity', 'company', 'registration_count', 'tags')
         read_only = True
 
 
-class EventReadDetailedSerializer(BasisModelSerializer):
+class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
@@ -72,7 +73,7 @@ class EventReadDetailedSerializer(BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools',
-                  'company', 'active_capacity', 'is_priced', 'price', 'activation_time')
+                  'company', 'active_capacity', 'is_priced', 'price', 'activation_time', 'tags')
         read_only = True
 
     def get_price(self, obj):
@@ -96,11 +97,11 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
         return pool
 
 
-class EventCreateAndUpdateSerializer(BasisModelSerializer):
+class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'merge_time')
+                  'start_time', 'end_time', 'merge_time', 'tags')
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
