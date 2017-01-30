@@ -22,6 +22,7 @@ test:
   pre:
     - make ci_settings
   override:
+    - python manage.py migrate_feeds
     - tox -e tests
     - tox -e isort
     - tox -e flake8
