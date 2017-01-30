@@ -19,7 +19,6 @@ class CommentHandler(BaseHandler):
 
     def handle_update(self, comment):
         pass
-        # Update the comment feed entries
 
     def handle_delete(self, comment):
         activity = self.get_activity(comment)
@@ -40,7 +39,10 @@ class CommentHandler(BaseHandler):
             verb=CommentVerb,
             object=comment,
             target=comment.content_object,
-            time=comment.created_at
+            time=comment.created_at,
+            extra_context={
+                'content': comment.text
+            }
         )
 
 

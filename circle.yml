@@ -5,6 +5,7 @@ machine:
     version: 3.6.0
   services:
     - redis
+    - cassandra
   environment:
     CASS_DRIVER_NO_CYTHON: 1
     CASS_DRIVER_NO_EXTENSIONS: 1

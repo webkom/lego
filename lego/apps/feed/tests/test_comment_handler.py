@@ -15,21 +15,34 @@ class TestCommentHandler(FeedTestBase):
         self.handler = CommentHandler()
         self.users = User.objects.all()
 
-    def test_comments_created_and_deleted(self):
-        comment1 = self.comments[0]
-        comment2 = self.comments[1]
+        self.comment1 = self.comments[0]
+        self.comment2 = self.comments[1]
+        self.feed = UserFeed(self.comment1.created_by.id)
 
-        self.handler.handle_create(comment1)
-        self.assertEqual(len(UserFeed(self.users[0].id)[0][0].activity_ids), 1)
-        self.handler.handle_create(comment1)
-        self.assertEqual(len(UserFeed(self.users[0].id)[0][0].activity_ids), 1)
-        self.handler.handle_create(comment2)
-        self.assertEqual(len(UserFeed(self.users[0].id)[0][0].activity_ids), 2)
+    def test_duplicate_create(self):
+        self.handler.handle_create(self.comment1)
+        self.assertEqual(self.activity_count(self.feed), 1)
 
-        self.handler.handle_delete(comment1)
-        self.assertEqual(len(UserFeed(self.users[0].id)[0][0].activity_ids), 1)
-        self.handler.handle_delete(comment1)
-        self.assertEqual(len(UserFeed(self.users[0].id)[0][0].activity_ids), 1)
-        self.handler.handle_delete(comment2)
-        # feed item is deleted
-        self.assertEqual(len(UserFeed(self.users[0].id)[0]), 0)
+        self.handler.handle_create(self.comment1)
+        self.assertEqual(self.activity_count(self.feed), 1)
+
+    def test_comment_delete(self):
+        self.handler.handle_create(self.comment1)
+        self.handler.handle_create(self.comment2)
+        self.assertEqual(self.activity_count(self.feed), 2)
+
+        self.handler.handle_delete(self.comment1)
+        self.assertEqual(self.activity_count(self.feed), 1)
+
+        self.handler.handle_delete(self.comment1)
+        self.assertEqual(self.activity_count(self.feed), 1)
+
+        self.handler.handle_delete(self.comment2)
+        self.assertEqual(len(self.feed[:]), 0)
+
+    def test_extra_context(self):
+        self.handler.handle_create(self.comment1)
+
+        activity = self.all_activities(self.feed)[0]
+        self.assertIn('content', activity.extra_context)
+        self.assertEqual(activity.extra_context['content'], self.comment1.text)
