@@ -22,7 +22,7 @@ class AllowedPermissionsMixin:
     def list(self, request, *args, **kwargs):
         response = super().list(request, args, kwargs)
         response.data = wrap_results(response)
-        response.data['permissions'] = get_viewset_permissions(
+        response.data['action_grant'] = get_viewset_permissions(
             self, self.get_queryset().model, None, request.user
         )
         return response
@@ -30,7 +30,7 @@ class AllowedPermissionsMixin:
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, args, kwargs)
         response.data = wrap_results(response)
-        response.data['permissions'] = get_viewset_permissions(
+        response.data['action_grant'] = get_viewset_permissions(
             self, self.get_queryset().model, self.get_object(), request.user
         )
         return response
