@@ -12,4 +12,5 @@ class InterestGroupSerializer(serializers.ModelSerializer):
             'number_of_users',
             'description',
             'description_long',
+            'permissions'
         )

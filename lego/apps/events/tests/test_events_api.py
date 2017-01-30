@@ -174,7 +174,7 @@ class CreateEventsTestCase(APITestCase):
         )
         pool_get_response = self.client.get(_get_pools_detail_url(self.event_id, self.pool_id))
         pool_get_response.data.pop('registrations')  # The put does not return updated data
-        pool_get_response.data.pop('permissions')  # We don't care about permissions here
+        pool_get_response.data.pop('action_grant')  # We don't care about permissions here
 
         self.assertEqual(pool_update_response.status_code, 200)
         self.assertIsNotNone(pool_get_response.data.pop('id'))

@@ -16,7 +16,8 @@ _serializer_fields = (
     'number_of_users',
     'description',
     'description_long',
-    'permissions'
+    'permissions',
+    'action_grant'
 )
 
 _rendered_serializer_fields = (
@@ -38,6 +39,7 @@ def _get_detail_url(pk):
 
 
 class ListInterestGroupAPITestCase(APITestCase):
+
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
 
     def setUp(self):
@@ -64,15 +66,14 @@ class ListInterestGroupAPITestCase(APITestCase):
 
 
 class RetrieveInterestGroupAPITestCase(APITestCase):
+
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
 
         self.with_permission = User.objects.get(username='interestgroupadmin_test')
-        self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk)
-                                   .first())
+        self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='InterestGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
@@ -119,15 +120,14 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
 
 
 class CreateInterestGroupAPITestCase(APITestCase):
+
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
 
         self.with_permission = User.objects.get(username='interestgroupadmin_test')
-        self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk)
-                                   .first())
+        self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='InterestGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
@@ -178,6 +178,7 @@ class CreateInterestGroupAPITestCase(APITestCase):
 
 
 class UpdateInterestGroupAPITestCase(APITestCase):
+
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
 
     def setUp(self):
@@ -191,9 +192,7 @@ class UpdateInterestGroupAPITestCase(APITestCase):
         }
 
         self.with_permission = User.objects.get(username='interestgroupadmin_test')
-        self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk)
-                                   .first())
+        self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
 
         self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
         self.leader = User.objects.create(username='leader')
@@ -234,15 +233,14 @@ class UpdateInterestGroupAPITestCase(APITestCase):
 
 
 class DeleteInterestGroupAPITestCase(APITestCase):
+
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
 
         self.with_permission = User.objects.get(username='interestgroupadmin_test')
-        self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk)
-                                   .first())
+        self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
 
         self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
         self.leader = User.objects.create(username='leader')
