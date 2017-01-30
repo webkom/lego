@@ -44,8 +44,6 @@ class FeedActivitySerializerTestCase(TestCase):
             model=NotificationFeed.get_timeline_storage().model
         )
 
-
-
     def test_aggregated_serializer(self):
         """Check if the relevant variables gets restored."""
         serialized = self.aggregated_serializer.dumps(self.aggregated_activity)

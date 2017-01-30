@@ -23,7 +23,7 @@ class AggregatedFeed(CassandraAggregatedFeed):
     aggregated_activity_class = AggregatedActivity
 
 
-class NotificationFeed(BaseNotificationFeed, AggregatedFeed):
+class NotificationFeed(AggregatedFeed, BaseNotificationFeed):
     """
     Track read/seen states on an aggregated feed.
     """

@@ -44,7 +44,6 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
             response = self.client.get(self.url)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             result = response.json()['results']
-            print(result)
             self.assertEqual(len(result), 1)
 
         test_for_user(self.user)
@@ -55,7 +54,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         """Try to mark all items in feed as seen and read."""
         self.client.force_login(self.user)
         response = self.client.post(
-            f'{self.url}mark_all', data={'read': True, 'seen': True}
+            f'{self.url}mark_all/', data={'read': True, 'seen': True}
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

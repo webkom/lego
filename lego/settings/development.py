@@ -81,6 +81,7 @@ CELERY_TASK_ALWAYS_EAGER = True
 
 STREAM_CASSANDRA_HOSTS = ['127.0.0.1']
 STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.ONE
+STREAM_DEFAULT_KEYSPACE = 'stream_framework'
 STREAM_REDIS_CONFIG = {
     'default': {
         'host': '127.0.0.1',
