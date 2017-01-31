@@ -149,3 +149,11 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         feed = self.get_queryset()
         feed.mark_activity(pk, **data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @decorators.list_route(
+        permission_classes=[permissions.IsAuthenticated],
+        methods=['GET']
+    )
+    def notification_data(self, request):
+        feed = self.get_queryset()
+        return Response(feed.get_notification_data())
