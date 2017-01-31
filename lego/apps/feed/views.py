@@ -1,6 +1,8 @@
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
+from lego.apps.feed.feeds.company_feed import CompanyFeed
+from lego.apps.feed.feeds.group_feed import GroupFeed
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
@@ -87,6 +89,16 @@ class PersonalFeedViewSet(FeedViewSet, FeedListMixin):
 
     def get_queryset(self):
         return self.feed_class(self.request.user.id)
+
+
+class GroupFeedViewSet(FeedViewSet, FeedRetrieveMixin):
+
+    feed_class = GroupFeed
+
+
+class CompanyFeedViewSet(FeedViewSet, FeedRetrieveMixin):
+
+    feed_class = CompanyFeed
 
 
 class NotificationFeedViewSet(FeedViewSet, FeedListMixin):

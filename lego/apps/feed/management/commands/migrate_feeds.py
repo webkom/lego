@@ -3,6 +3,8 @@ import logging
 from cassandra.cqlengine.management import create_keyspace_simple, drop_keyspace, sync_table
 from stream_framework import settings
 
+from lego.apps.feed.feeds.company_feed import CompanyFeed
+from lego.apps.feed.feeds.group_feed import GroupFeed
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
@@ -26,7 +28,9 @@ class Command(BaseCommand):
         return [
             UserFeed.get_timeline_storage().model,
             PersonalFeed.get_timeline_storage().model,
-            NotificationFeed.get_timeline_storage().model
+            NotificationFeed.get_timeline_storage().model,
+            CompanyFeed.get_timeline_storage().model,
+            GroupFeed.get_timeline_storage().model
         ]
 
     def setup(self):

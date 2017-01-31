@@ -71,3 +71,10 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         mock_mark_activity.assert_called_once_with('10', read=True, seen=True)
+
+
+class GroupFeedViewsTestCase(APITestCase, FeedTestBase):
+    '''
+    TODO: Test permissions for group feeds before granting users access
+    '''
+    pass

@@ -3,3 +3,8 @@
   fields:
     follower: 1
     target: 3
+- model: followers.FollowEvent
+  pk: 2
+  fields:
+    follower: 5
+    target: 4

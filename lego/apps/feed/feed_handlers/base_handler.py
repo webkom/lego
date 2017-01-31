@@ -26,14 +26,3 @@ class BaseHandler:
 
     def handle_delete(self, instance):
         pass
-
-    '''
-    @property
-    def activity(self):
-        return Activity(
-            actor=self.actor,
-            verb=self.verb,
-            object=self.object,
-            target=self.target
-        )
-    '''

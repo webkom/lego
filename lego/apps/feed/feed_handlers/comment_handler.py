@@ -27,9 +27,14 @@ class CommentHandler(BaseHandler):
             self.manager.remove_activity(activity, recipients, feeds)
 
     def get_feeds_and_recipients(self, comment):
-        result = [
-            ([PersonalFeed], []),
-        ]
+        result = []
+        if hasattr(comment.content_object, 'followers'):
+            result.append(
+                (
+                    [PersonalFeed],
+                    list(comment.content_object.followers.values_list('follower_id', flat=True))
+                )
+            )
         if comment.created_by:
             result.append(([UserFeed], [comment.created_by.id]))
         return result

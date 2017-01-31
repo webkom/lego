@@ -1,3 +1,7 @@
+from unittest import mock
+
+from stream_framework.feed_managers.base import add_operation, remove_operation
+
 from lego.apps.comments.models import Comment
 from lego.apps.feed.activities import Activity
 from lego.apps.feed.feed_manager import feed_manager
@@ -16,7 +20,6 @@ class ManagerTestCase(FeedTestBase):
 
     def setUp(self):
         self.comment = Comment.objects.first()
-
         self.activity = Activity(
             actor=self.comment.created_by,
             verb=CommentVerb,
@@ -42,3 +45,36 @@ class ManagerTestCase(FeedTestBase):
         self.assertNotIn(self.activity, self.all_activities(PersonalFeed(1)))
         self.assertIn(self.activity, self.all_activities(PersonalFeed(2)))
         self.assertIn(self.activity, self.all_activities(PersonalFeed(3)))
+
+    @mock.patch('lego.apps.feed.feed_manager.feed_manager.create_fanout_tasks')
+    def test_add_activity(self, mock_create_fanout_tasks):
+        """Make sure the create_fanout_tasks function is called with the right arguments on add"""
+
+        activity_mock = mock.Mock()
+
+        feed_manager.add_activity(
+            activity_mock,
+            [1, 2],
+            [NotificationFeed]
+        )
+
+        self.assertIn({1, 2}, mock_create_fanout_tasks.call_args[0])
+        self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])
+        self.assertIn(add_operation, mock_create_fanout_tasks.call_args[0])
+
+    @mock.patch('lego.apps.feed.feed_manager.feed_manager.create_fanout_tasks')
+    def test_remove_activity(self, mock_create_fanout_tasks):
+        """Make sure the create_fanout_tasks function is called with the right arguments on
+        remove"""
+
+        activity_mock = mock.Mock()
+
+        feed_manager.remove_activity(
+            activity_mock,
+            [1, 2],
+            [NotificationFeed]
+        )
+
+        self.assertIn({1, 2}, mock_create_fanout_tasks.call_args[0])
+        self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])
+        self.assertIn(remove_operation, mock_create_fanout_tasks.call_args[0])

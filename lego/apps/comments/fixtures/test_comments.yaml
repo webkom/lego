@@ -12,3 +12,10 @@
     created_by: 1
   model: comments.Comment
   pk: 2
+- fields:
+    text: 'nice event'
+    content_type: ['events', 'event']
+    object_id: 4
+    created_by: 1
+  model: comments.Comment
+  pk: 3
