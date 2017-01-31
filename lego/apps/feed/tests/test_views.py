@@ -109,6 +109,9 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 2)
+        notification = self.client.get(f'{self.url}').json()['results'][0]
+        self.assertFalse(notification['read'])
+        self.assertTrue(notification['seen'])
 
         res = self.client.post(f'{self.url}{notifications[0]["id"]}/mark/', data=dict(
             read=True
@@ -117,6 +120,9 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
+        notification = self.client.get(f'{self.url}').json()['results'][0]
+        self.assertTrue(notification['read'])
+        self.assertTrue(notification['seen'])
 
         '''
             Cannot unsee or unread
@@ -169,6 +175,10 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 0)
         self.assertEqual(res['unreadCount'], 0)
+
+        notification = self.client.get(f'{self.url}').json()['results'][0]
+        self.assertTrue(notification['read'])
+        self.assertTrue(notification['seen'])
 
 
 class GroupFeedViewsTestCase(APITestCase, FeedTestBase):

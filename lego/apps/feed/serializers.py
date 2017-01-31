@@ -26,5 +26,5 @@ class MarkSerializer(serializers.Serializer):
 
 
 class NotificationFeedSerializer(AggregatedFeedSerializer):
-    read_at = serializers.DateTimeField()
-    seen_at = serializers.DateTimeField()
+    read = serializers.BooleanField(source='is_read')
+    seen = serializers.BooleanField(source='is_seen')
