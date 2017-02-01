@@ -377,9 +377,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def is_registered(self, user):
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
-    def get_registration_id(self, user):
-        registration = self.registrations.filter(user=user).exclude(pool=None).first()
-        return registration.id if registration else None
+    def get_registration(self, user):
+        return self.registrations.filter(user=user).exclude(pool=None).first()
 
     def get_price(self, user):
         if user.is_abakus_member:
