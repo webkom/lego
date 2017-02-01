@@ -78,6 +78,7 @@ class MeSerializer(serializers.ModelSerializer):
             'full_name',
             'email',
             'picture',
+            'allergies',
             'is_staff',
             'is_active',
             'abakus_groups',
