@@ -233,6 +233,17 @@ class RegistrationsTestCase(APITransactionTestCase):
         user_id = res.data['results'][0].get('user', None)['id']
         self.assertEqual(user_id, 1)
 
+    def test_update(self, mock_verify_captcha):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        self.assertEqual(registration_response.status_code, 202)
+        res = self.client.put(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'feedback': 'UPDATED'}
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['feedback'], 'UPDATED')
+
     def test_register_no_pools(self, mock_verify_captcha):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
@@ -251,6 +262,24 @@ class RegistrationsTestCase(APITransactionTestCase):
         get_unregistered = self.client.get(_get_registrations_detail_url(event.id, registration.id))
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(get_unregistered.status_code, 404)
+
+    def test_required_feedback_failing(self, mock_verify_captcha):
+        """Test that register returns 400 when not providing feedback when required"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.feedback_required = True
+        event.save()
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        self.assertEqual(registration_response.status_code, 400)
+
+    def test_required_feedback_success(self, mock_verify_captcha):
+        """Test that register returns 202 when providing feedback when required"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.feedback_required = True
+        event.save()
+        registration_response = self.client.post(
+            _get_registrations_list_url(event.id), {'feedback': 'TEST'}
+        )
+        self.assertEqual(registration_response.status_code, 202)
 
 
 class ListRegistrationsTestCase(APITestCase):
@@ -298,10 +327,10 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.assertFalse(self.event.can_register(self.user, self.pool))
         self.client.force_authenticate(self.request_user)
 
-        registration_response = self.client.post(_get_registrations_list_url(self.event.id)
-                                                 + 'admin_register/',
-                                                 {'user': self.user.id,
-                                                  'pool': self.pool.id})
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_register/',
+            {'user': self.user.id, 'pool': self.pool.id}
+        )
 
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(self.pool.registrations.count(), 1)
@@ -313,10 +342,10 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.assertTrue(self.event.can_register(self.user, self.pool))
         self.client.force_authenticate(self.request_user)
 
-        registration_response = self.client.post(_get_registrations_list_url(self.event.id)
-                                                 + 'admin_register/',
-                                                 {'user': self.user.id,
-                                                  'pool': self.pool.id})
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_register/',
+            {'user': self.user.id, 'pool': self.pool.id}
+        )
 
         self.assertEqual(registration_response.status_code, 403)
         self.assertEqual(self.event.number_of_registrations, 0)
@@ -329,13 +358,24 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.assertTrue(self.event.can_register(self.user, self.pool))
         self.client.force_authenticate(self.request_user)
 
-        registration_response = self.client.post(_get_registrations_list_url(self.event.id)
-                                                 + 'admin_register/',
-                                                 {'user': self.user.id,
-                                                  'pool': nonexistant_pool_id})
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_register/',
+            {'user': self.user.id, 'pool': nonexistant_pool_id}
+        )
 
         self.assertEqual(registration_response.status_code, 403)
         self.assertEqual(self.event.number_of_registrations, 0)
+
+    def test_with_feedback(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.request_user)
+        self.client.force_authenticate(self.request_user)
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_register/',
+            {'user': self.user.id, 'pool': self.pool.id, 'feedback': 'TEST'}
+        )
+
+        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(registration_response.data.get('feedback'), 'TEST')
 
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
