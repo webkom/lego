@@ -1,4 +1,3 @@
-import stripe
 from django.db import transaction
 from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -15,7 +14,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
                                           RegistrationReadSerializer, StripeTokenSerializer)
-from lego.apps.events.tasks import async_register, async_unregister
+from lego.apps.events.tasks import async_payment, async_register, async_unregister
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 from lego.apps.permissions.views import AllowedPermissionsMixin
 
@@ -55,35 +54,15 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         event_id = self.kwargs.get('pk', None)
         event = Event.objects.get(id=event_id)
-        registration = event.registrations.get(user=request.user)
+        registration = event.get_registration(request.user)
 
-        if not registration.pool or not event.is_priced:
+        if not event.is_priced:
             raise PermissionDenied()
 
         if registration.charge_id:
             raise PaymentExists()
-
-        try:
-            response = stripe.Charge.create(
-                amount=event.get_price(registration.user),
-                currency='NOK',
-                source=serializer.data['token'],
-                description=event.slug,
-                metadata={
-                    'EVENT_ID': event_id,
-                    'USER': registration.user.full_name,
-                    'EMAIL': registration.user.email
-                }
-            )
-            registration.charge_id = response.id
-            registration.charge_amount = response.amount
-            registration.charge_status = response.status
-            registration.save()
-            return Response(data=response, status=status.HTTP_200_OK)
-        except stripe.error.CardError:
-            raise ValidationError({'error': 'Card declined'})
-        except stripe.error.InvalidRequestError:
-            raise ValidationError({'error': 'Invalid request'})
+        async_payment.delay(registration.id, serializer.data['token'])
+        return Response(data='{status: payment_queued}', status=status.HTTP_200_OK)
 
 
 class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

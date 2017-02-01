@@ -11,7 +11,7 @@ from lego import celery_app
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 
-from .websockets import notify_event_registration, notify_failed_registration
+from .websockets import notify_event_registration, notify_user_registration
 
 log = get_logger()
 
@@ -32,7 +32,7 @@ def async_register(self, registration_id):
         log.error('registration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_REGISTER
         registration.save()
-        notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
+        notify_user_registration('SOCKET_REGISTRATION_FAILED', registration)
 
 
 @celery_app.task(serializer='json', bind=True, default_retry_delay=30)
@@ -52,7 +52,43 @@ def async_unregister(self, registration_id):
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
         registration.save()
-        notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
+        notify_user_registration('SOCKET_REGISTRATION_FAILED', registration)
+
+
+@celery_app.task(serializer='json', bind=True, default_retry_delay=60)
+def async_payment(self, registration_id, token):
+    registration = Registration.objects.get(id=registration_id)
+    event = registration.event
+    try:
+        response = stripe.Charge.create(
+            amount=event.get_price(registration.user),
+            currency='NOK',
+            source=token,
+            description=event.slug,
+            metadata={
+                'EVENT_ID': event.id,
+                'USER': registration.user.full_name,
+                'EMAIL': registration.user.email
+            }
+        )
+        registration.charge_id = response.id
+        registration.charge_amount = response.amount
+        registration.charge_status = response.status
+        registration.save()
+        notify_user_registration('SOCKET_PAYMENT', registration)
+        # Notify by mail that payment succeeded
+    except stripe.error.CardError as e:
+        self.retry(exc=e)
+        notify_user_registration('SOCKET_PAYMENT_FAILED', registration, 'Card declined')
+    except stripe.error.InvalidRequestError as e:
+        log.error('invalid_request', exception=e, registration_id=registration.id)
+        self.retry(exc=e)
+        notify_user_registration('SOCKET_PAYMENT_FAILED', registration, 'Invalid request')
+    except stripe.error.StripeError as e:
+        log.error('stripe_error', exception=e, registration_id=registration.id)
+        self.retry(exc=e)
+        notify_user_registration('SOCKET_PAYMENT_FAILED', registration, 'Payment failed')
+        # Notify by mail that payment failed
 
 
 @celery_app.task(serializer='json')

@@ -1,5 +1,7 @@
 import json
 
+from djangorestframework_camel_case.render import camelize
+
 
 def notify_group(group, message):
     """
@@ -8,4 +10,4 @@ def notify_group(group, message):
     :param group: channels.Group
     :param message:
     """
-    return group.send({'text': json.dumps(message)})
+    return group.send({'text': json.dumps(camelize(message))})
