@@ -98,11 +98,7 @@ def async_payment(self, registration_id, token):
                 'EMAIL': self.registration.user.email
             }
         )
-        self.registration.charge_id = response.id
-        self.registration.charge_amount = response.amount
-        self.registration.charge_status = response.status
-        self.registration.save()
-        notify_user_registration('SOCKET_PAYMENT', self.registration)
+        return response
         # Notify by mail that payment succeeded
     except stripe.error.CardError as e:
             raise self.retry(exc=e)
@@ -113,6 +109,20 @@ def async_payment(self, registration_id, token):
         notify_user_registration('SOCKET_PAYMENT_FAILED', self.registration, 'Invalid request')
     except stripe.error.StripeError as e:
         log.error('stripe_error', exception=e, registration_id=self.registration.id)
+        raise self.retry(exc=e)
+
+
+@celery_app.task(serializer='json', bind=True)
+def registration_save(self, result, registration_id):
+    try:
+        registration = Registration.objects.get(id=registration_id)
+        registration.charge_id = result.id
+        registration.charge_amount = result.amount
+        registration.charge_status = result.status
+        registration.save()
+        notify_user_registration('SOCKET_PAYMENT', registration)
+    except IntegrityError as e:
+        log.error('registration_save_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e)
 
 
