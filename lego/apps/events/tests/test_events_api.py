@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils import timezone
 from rest_framework.test import APITestCase, APITransactionTestCase
 
+from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, User
 
@@ -220,6 +221,7 @@ class RegistrationsTestCase(APITransactionTestCase):
                 'test_users.yaml']
 
     def setUp(self):
+        Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
         self.abakus_user = User.objects.get(pk=1)
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
@@ -228,10 +230,12 @@ class RegistrationsTestCase(APITransactionTestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(registration_response.data.get('status'), 'PENDING_REGISTER')
-        res = self.client.get(_get_registrations_list_url(event.id))
-        user_id = res.data['results'][0].get('user', None)['id']
-        self.assertEqual(user_id, 1)
+        self.assertEqual(registration_response.data.get('status'), constants.PENDING_REGISTER)
+        res = self.client.get(_get_registrations_detail_url(
+            event.id, registration_response.data['id'])
+        )
+        self.assertEqual(res.data['user']['id'], 1)
+        self.assertEqual(res.data['status'], constants.SUCCESS_REGISTER)
 
     def test_update(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -248,10 +252,10 @@ class RegistrationsTestCase(APITransactionTestCase):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(registration_response.data.get('status'), 'PENDING_REGISTER')
+        self.assertEqual(registration_response.data.get('status'), constants.PENDING_REGISTER)
         res = self.client.get(_get_registrations_list_url(event.id))
         for user in res.data['results']:
-            self.assertEqual(user.get('status', None), 'FAILURE_REGISTER')
+            self.assertEqual(user.get('status', None), constants.FAILURE_REGISTER)
 
     def test_unregister(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
@@ -409,37 +413,50 @@ class StripePaymentTestCase(APITestCase):
     def test_payment(self):
         token = self.create_token('4242424242424242', '123')
         res = self.issue_payment(token)
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data.get('amount'), 10000)
-        self.assertEqual(res.data.get('status', None), 'succeeded')
+        self.assertEqual(res.status_code, 202)
+        self.assertIsNone(res.data.get('charge_status'))
+        registration_id = res.data.get('id')
+        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
+        self.assertEqual(get_object.data.get('charge_status'), 'succeeded')
 
     def test_card_declined(self):
         token = self.create_token('4000000000000002', '123')
         res = self.issue_payment(token)
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(res.data.get('error', None), 'Card declined')
+        self.assertEqual(res.status_code, 202)
+
+        registration_id = res.data.get('id')
+        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
+        self.assertEqual(get_object.data.get('charge_status'), 'card_declined')
 
     def test_card_incorrect_cvc(self):
         token = self.create_token('4000000000000127', '123')
         res = self.issue_payment(token)
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(res.data.get('error', None), 'Card declined')
+        self.assertEqual(res.status_code, 202)
+
+        registration_id = res.data.get('id')
+        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
+        self.assertEqual(get_object.data.get('charge_status'), 'incorrect_cvc')
 
     def test_card_invalid_request(self):
         res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': 'invalid'})
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(res.data.get('error', None), 'Invalid request')
+
+        self.assertEqual(res.status_code, 202)
+
+        registration_id = res.data.get('id')
+        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
+        self.assertEqual(get_object.data.get('charge_status'), 'invalid_request_error')
 
     def test_refund_webhook(self):
         token = self.create_token('4242424242424242', '123')
-        res = self.issue_payment(token)
+        self.issue_payment(token)
+        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
 
-        stripe.Refund.create(charge=res.data.get('id', None))
+        stripe.Refund.create(charge=registration.charge_id)
 
         stripe_events_all = stripe.Event.all(limit=3)
         stripe_event = None
         for obj in stripe_events_all.data:
-            if obj.data.object.id == res.data.id:
+            if obj.data.object.id == registration.charge_id:
                 stripe_event = obj
                 break
         self.assertIsNotNone(stripe_event)
@@ -448,7 +465,8 @@ class StripePaymentTestCase(APITestCase):
             'id': stripe_event.id,
             'type': 'charge.refunded'
         })
-        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
+
+        registration.refresh_from_db()
 
         self.assertEqual(webhook.status_code, 200)
         self.assertEqual(registration.charge_status, 'succeeded')

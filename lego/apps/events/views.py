@@ -62,7 +62,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if registration.charge_id:
             raise PaymentExists()
         async_payment.delay(registration.id, serializer.data['token'])
-        return Response(data='{status: payment_queued}', status=status.HTTP_200_OK)
+        payment_serializer = RegistrationReadSerializer(registration)
+        return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
