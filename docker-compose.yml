@@ -53,3 +53,8 @@ services:
       LOADER: tc_aws.loaders.s3_loader
     links:
       - minio
+
+  cassandra:
+    image: cassandra:3
+    ports:
+      - "127.0.0.1:9042:9042"

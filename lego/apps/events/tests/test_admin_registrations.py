@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup
+
 from .utils import get_dummy_users
 
 

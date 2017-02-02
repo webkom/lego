@@ -15,7 +15,9 @@ class AggregatedFeedSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
     last_activity = FeedActivitySerializer()
+    activities = FeedActivitySerializer(many=True)
     activity_count = serializers.IntegerField()
+    actor_ids = serializers.ListField(child=serializers.IntegerField())
 
 
 class MarkSerializer(serializers.Serializer):
@@ -23,30 +25,6 @@ class MarkSerializer(serializers.Serializer):
     read = serializers.BooleanField(default=False)
 
 
-class StoreActivitySerializer(serializers.Serializer):
-    """
-    This serializer is used to serialize our custom activity. The DRF serializer is a convenient
-    way to do this. Used for storage.
-    """
-    time = serializers.DateTimeField()
-    verb = serializers.IntegerField(source='verb.id')
-    actor = serializers.CharField()
-    object = serializers.CharField(allow_null=True)
-    target = serializers.CharField(allow_null=True)
-    extra_context = serializers.DictField(default={}, required=False)
-
-
-class StoreAggregatedActivitySerializer(serializers.Serializer):
-    """
-    This serializer is used to serialize a aggregated feed with our custom activity class. The DRF
-    serializer is a convenient way to do this. Used for storage.
-    """
-    group = serializers.CharField()
-    created_at = serializers.DateTimeField()
-    updated_at = serializers.DateTimeField()
-    seen_at = serializers.DateTimeField(allow_null=True)
-    read_at = serializers.DateTimeField(allow_null=True)
-
-    activities = StoreActivitySerializer(many=True)
-    dehydrated_ids = serializers.ListField(source='_activity_ids')
-    minimized_activities = serializers.IntegerField()
+class NotificationFeedSerializer(AggregatedFeedSerializer):
+    read = serializers.BooleanField(source='is_read')
+    seen = serializers.BooleanField(source='is_seen')
