@@ -1,3 +1,4 @@
+
 from datetime import datetime
 
 from django.test import TestCase
@@ -5,8 +6,9 @@ from stream_framework.verbs.base import Comment as CommentVerb
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
-from lego.apps.feed.activities import FeedActivity, FeedAggregatedActivity
-from lego.apps.feed.feed_serializers import AggregatedFeedSerializer, FeedActivitySerializer
+from lego.apps.feed.activities import Activity, AggregatedActivity
+from lego.apps.feed.feed_serializers import AggregatedActivitySerializer
+from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.users.models import User
 
 
@@ -21,7 +23,7 @@ class FeedActivitySerializerTestCase(TestCase):
             content_object=self.article, created_by=self.user, text='comment'
         )
 
-        self.activity = FeedActivity(
+        self.activity = Activity(
             actor=self.user,
             verb=CommentVerb,
             object=self.comment,
@@ -30,34 +32,22 @@ class FeedActivitySerializerTestCase(TestCase):
                 'content': self.comment.text
             }
         )
-        self.aggregated_activity = FeedAggregatedActivity(
+        self.aggregated_activity = AggregatedActivity(
             'test-group', [self.activity],
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
         )
 
-        self.serializer = FeedActivitySerializer(FeedActivity)
-        self.aggregated_serializer = AggregatedFeedSerializer(
-            aggregated_activity_class=FeedAggregatedActivity,
-            activity_class=FeedActivity
+        self.aggregated_serializer = AggregatedActivitySerializer(
+            aggregated_activity_class=AggregatedActivity,
+            activity_class=Activity,
+            model=NotificationFeed.get_timeline_storage().model
         )
-
-    def test_serializer(self):
-        """Check if the relevant variables gets restored."""
-        serialized = self.serializer.dumps(self.activity)
-        deserialized = self.serializer.loads(serialized.decode())
-
-        self.assertEqual(deserialized.time, self.activity.time)
-        self.assertEqual(deserialized.verb, self.activity.verb)
-        self.assertEqual(deserialized.actor, self.activity.actor)
-        self.assertEqual(deserialized.object, self.activity.object)
-        self.assertEqual(deserialized.target, self.activity.target)
-        self.assertEqual(deserialized.extra_context, self.activity.extra_context)
 
     def test_aggregated_serializer(self):
         """Check if the relevant variables gets restored."""
         serialized = self.aggregated_serializer.dumps(self.aggregated_activity)
-        deserialized = self.aggregated_serializer.loads(serialized.decode())
+        deserialized = self.aggregated_serializer.loads(serialized)
 
         self.assertEqual(deserialized.group, self.aggregated_activity.group)
         self.assertEqual(deserialized.created_at, self.aggregated_activity.created_at)
