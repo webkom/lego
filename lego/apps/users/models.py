@@ -236,6 +236,12 @@ class Penalty(BasisModel):
         dt = Penalty.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
         return dt.days
 
+    @property
+    def exact_expiration(self):
+        """ Returns the exact time of expiration """
+        dt = Penalty.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
+        return timezone.now() + dt
+
     @staticmethod
     def penalty_offset(start_date, forwards=True):
 
