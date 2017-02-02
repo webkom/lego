@@ -17,6 +17,7 @@ stripe==1.46.0
 structlog==16.1.0
 boto3==1.4.4
 cassandra-driver==3.7.1
+prometheus-client==0.0.19
 
 # channels:
 channels==1.0.3
