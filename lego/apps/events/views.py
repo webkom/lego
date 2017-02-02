@@ -1,3 +1,4 @@
+from celery import chain
 from django.db import transaction
 from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -14,7 +15,8 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
                                           RegistrationReadSerializer, StripeTokenSerializer)
-from lego.apps.events.tasks import async_payment, async_register, async_unregister
+from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
+                                    registration_save)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 from lego.apps.permissions.views import AllowedPermissionsMixin
 
@@ -61,7 +63,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         if registration.charge_id:
             raise PaymentExists()
-        async_payment.delay(registration.id, serializer.data['token'])
+        chain(
+            async_payment.s(registration.id, serializer.data['token']),
+            registration_save.s(registration.id)
+        ).delay()
         payment_serializer = RegistrationReadSerializer(registration)
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -71,7 +76,7 @@ class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = (NestedEventPermissions,)
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
+        if self.action in ['create', 'update']:
             return PoolCreateAndUpdateSerializer
         return PoolReadSerializer
 
