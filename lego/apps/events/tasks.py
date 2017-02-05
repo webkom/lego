@@ -31,7 +31,7 @@ def async_register(self, registration_id):
                             expiration = penalty.exact_expiration
                             if registration.event.start_time > expiration:
                                 async_bump_after_expired_penalties.apply_async(
-                                    (registration.id), eta=expiration
+                                    (registration.id,), eta=expiration
                                 )
                             return
                         total_penalty_weight -= penalty.weight
@@ -96,16 +96,18 @@ def async_bump_after_expired_penalties(self, registration_id):
     event = registration.event
     try:
         with transaction.atomic():
-            if not (event.is_full or user.number_of_penalties >= 3) and not registration.pool:
-                with cache.lock(f'event_lock-{self.id}', timeout=20):
+            if not (event.is_full or user.number_of_penalties() >= 3) and not registration.pool:
+                with cache.lock(f'event_lock-{event.id}', timeout=20):
                     """ This is a simplified version of the register method,
                     without a lot of unneeded checks """
                     if event.is_merged:
-                        event.check_for_bump_or_rebalance()
+                        event.check_for_bump_or_rebalance(event.pools.first())
+                        return
 
                     possible_pools = event.get_possible_pools(user)
                     if len(possible_pools) == 1 and event.pools.count() == 1:
                         event.check_for_bump_or_rebalance(possible_pools[0])
+                        return
 
                     open_pools = event.calculate_full_pools(possible_pools)[1]
                     if not open_pools:
@@ -141,7 +143,7 @@ def async_bump_on_pool_activation(self, event_id, pool_id):
     try:
         with transaction.atomic():
             if event.waiting_registrations.exists():
-                with cache.lock(f'event_lock-{self.id}', timeout=20):
+                with cache.lock(f'event_lock-{event_id}', timeout=20):
                     for i in range(event.waiting_registrations.count()):
                         event.check_for_bump_or_rebalance(pool)
     except LockError as e:

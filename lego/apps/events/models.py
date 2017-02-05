@@ -200,7 +200,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.number_of_registrations < self.active_capacity:
             if self.is_merged:
                 self.bump()
-            else:
+            elif not open_pool.is_full:
                 for registration in self.waiting_registrations:
                     if open_pool in self.get_possible_pools(registration.user):
                         return self.bump(to_pool=open_pool)
