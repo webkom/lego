@@ -149,6 +149,8 @@ CHANNEL_LAYERS = {
     }
 }
 
+STREAM_METRIC_CLASS = 'lego.apps.feed.feed_metrics.PrometheusFeedMetrics'
 CASSANDRA_DRIVER_KWARGS = {
-    'protocol_version': 4
+    'protocol_version': 4,
+    'lazy_connect': True
 }
