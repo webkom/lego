@@ -130,6 +130,7 @@ class PermissionsMixin(models.Model):
 
         return list(own_groups)
 
+
 class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     """
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.

@@ -14,8 +14,8 @@ CO_LEADER = 'co-leader'
 TREASURER = 'treasurer'
 
 ROLES = (
-    (MEMBER, 'Member'),
-    (LEADER, 'Leader'),
-    (CO_LEADER, 'Co-Leader'),
-    (TREASURER, 'Treasurer')
+    (MEMBER, MEMBER),
+    (LEADER, LEADER),
+    (CO_LEADER, CO_LEADER),
+    (TREASURER, TREASURER)
 )

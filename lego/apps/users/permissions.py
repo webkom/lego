@@ -1,4 +1,5 @@
 from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.users import constants
 from lego.apps.users.models import Membership
 
 
@@ -56,7 +57,7 @@ class AbakusGroupPermissions(AbakusPermission):
         if view.action in self.allowed_leader and request.user.is_authenticated():
             user = request.user
             is_owner = Membership.objects.filter(
-                abakus_group=obj, user=user, role=Membership.LEADER
+                abakus_group=obj, user=user, role=constants.LEADER
             ).exists()
             return is_owner or super().has_object_permission(request, view, obj)
 
