@@ -32,11 +32,11 @@ def handle_disconnect(message):
 
 @jwt_retrieve_channel_session
 def handle_message(message):
-    '''
+    """
     Example - broadcast message to everybody:
 
     notify_group(Group("global"), {
         "message": message['text']
     })
-    '''
+    """
     pass

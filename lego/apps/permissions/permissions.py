@@ -1,6 +1,12 @@
+from prometheus_client import Summary
 from rest_framework import permissions
 
 from .models import ObjectPermissionsModel
+
+permissions_has_permission = Summary('permissions_has_permission', 'Track has_permission')
+permissions_has_object_permission = Summary(
+    'permissions_has_object_permission', 'Track has_object_permission'
+)
 
 
 class AbakusPermission(permissions.BasePermission):
@@ -80,6 +86,7 @@ class AbakusPermission(permissions.BasePermission):
 
         return False
 
+    @permissions_has_permission.time()
     def has_permission(self, request, view):
         # Workaround to ensure DjangoModelPermissions are not applied
         # to the root view when using DefaultRouter.
@@ -105,6 +112,7 @@ class AbakusPermission(permissions.BasePermission):
 
         return has_permission
 
+    @permissions_has_object_permission.time()
     def has_object_permission(self, request, view, obj):
         action = view.action
         user = request.user
