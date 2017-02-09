@@ -10,7 +10,7 @@ from lego.apps.users.serializers.penalties import PenaltySerializer
 class DetailedUserSerializer(serializers.ModelSerializer):
 
     penalties = serializers.SerializerMethodField('get_valid_penalties')
-    picture = ImageField(required=False, options={'height': 400, 'width': 400})
+    profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -27,7 +27,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'full_name',
             'gender',
             'email',
-            'picture',
+            'profile_picture',
             'is_staff',
             'is_active',
             'penalties'
@@ -36,7 +36,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 
 class PublicUserSerializer(serializers.ModelSerializer):
 
-    profile_picture = ImageField(required=False, options={'height': 400, 'width': 400})
+    profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
 
     class Meta:
         model = User
@@ -69,7 +69,7 @@ class UserSerializer(DetailedUserSerializer):
 class MeSerializer(serializers.ModelSerializer):
 
     abakus_groups = AbakusGroupListField()
-    picture = ImageField(required=False, options={'height': 400, 'width': 400})
+    profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
 
     class Meta:
         model = User
@@ -80,12 +80,12 @@ class MeSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'email',
-            'picture',
+            'profile_picture',
             'gender',
             'allergies',
             'is_staff',
             'is_active',
             'abakus_groups',
             'is_abakus_member',
-            'is_abakom_member',
+            'is_abakom_member'
         )

@@ -166,7 +166,7 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def successful_update(self, updater, update_object):
         self.client.force_authenticate(user=updater)
-        response = self.client.put(_get_detail_url(update_object.username), self.modified_user)
+        response = self.client.patch(_get_detail_url(update_object.username), self.modified_user)
         user = User.objects.get(pk=update_object.pk)
 
         self.assertEqual(response.status_code, 200)
@@ -183,7 +183,7 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def test_other_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
-        response = self.client.put(_get_detail_url(self.test_user.username), self.modified_user)
+        response = self.client.patch(_get_detail_url(self.test_user.username), self.modified_user)
         user = User.objects.get(pk=self.test_user.pk)
 
         self.assertEqual(response.status_code, 403)

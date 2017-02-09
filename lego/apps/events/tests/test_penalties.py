@@ -7,6 +7,7 @@ from django.utils import timezone
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, Penalty
 from lego.utils.test_utils import fake_time
+
 from .utils import get_dummy_users
 
 
