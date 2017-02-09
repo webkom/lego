@@ -130,10 +130,6 @@ class PermissionsMixin(models.Model):
 
         return list(own_groups)
 
-class MockFile:
-    def __init__(self, pk):
-        self.pk = pk
-
 class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     """
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
@@ -173,11 +169,11 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     def get_default_picture(self):
         if self.gender == constants.MALE:
-            return MockFile(pk='default_male_avatar.png')
+            return 'default_male_avatar.png'
         elif self.gender == constants.FEMALE:
-            return MockFile(pk='default_female_avatar.png')
+            return 'default_female_avatar.png'
         else:
-            return MockFile(pk='default_other_avatar.png')
+            return 'default_other_avatar.png'
 
     @property
     def full_name(self):
@@ -185,7 +181,7 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
     @property
     def profile_picture(self):
-        return self.get_default_picture()
+        return self.picture_id or self.get_default_picture()
 
     @profile_picture.setter
     def profile_picture(self, value):
