@@ -74,6 +74,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         else:
             raise ValueError('No such pool in this event')
 
+    def get_absolute_url(self):
+        # TODO add proper url handling
+        return f'https://abakus.no/events/{self.id}/'
+
     def can_register(self, user, pool, future=False):
         if not pool.is_activated and not future:
             return False

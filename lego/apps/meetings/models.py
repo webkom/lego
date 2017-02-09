@@ -31,6 +31,9 @@ class Meeting(Content, BasisModel):
         """
         return self._invited_users.filter(invitations__deleted=False)
 
+    def get_absolute_url(self):
+        return f'https://abakus.no/meetings/{self.id}/'
+
     @property
     def participants(self):
         return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
