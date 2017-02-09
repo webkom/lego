@@ -1,12 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 
-from lego.apps.followers.models import FollowEvent, FollowUser, FollowCompany
+from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.followers.permissions import FollowerPermission
-from lego.apps.followers.serializers import FollowEventSerializer, FollowUserSerializer, \
-    FollowCompanySerializer
+from lego.apps.followers.serializers import (FollowCompanySerializer, FollowEventSerializer,
+                                             FollowUserSerializer)
 
-from .filters import FollowEventFilterSet, FollowUserFilterSet, FollowCompanyFilterSet
+from .filters import FollowCompanyFilterSet, FollowEventFilterSet, FollowUserFilterSet
 
 
 class FollowerBaseViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,

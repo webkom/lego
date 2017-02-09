@@ -1,14 +1,15 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from lego.apps.followers.models import FollowEvent, FollowUser, FollowCompany
+from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.users.models import User
 
 
 class FollowEventViewTestCase(APITestCase):
 
     fixtures = [
-        'initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_followevent.yaml'
+        'initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_followevent.yaml'
     ]
     url = '/api/v1/followers/event/'
 

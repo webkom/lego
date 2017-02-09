@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from lego.apps.followers.models import FollowEvent, FollowUser, FollowCompany
+from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.users.fields import PublicUserField
 
 

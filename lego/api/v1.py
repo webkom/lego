@@ -9,7 +9,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
                                   PersonalFeedViewSet, UserFeedViewSet)
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
-from lego.apps.followers.views import FollowEventViewSet, FollowUserViewSet, FollowCompanyViewSet
+from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
 from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet

@@ -1,6 +1,6 @@
 from django_filters.filterset import FilterSet
 
-from .models import FollowEvent, FollowUser, FollowCompany
+from .models import FollowCompany, FollowEvent, FollowUser
 
 
 class FollowUserFilterSet(FilterSet):
