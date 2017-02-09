@@ -49,7 +49,7 @@ class TestEventHandler(FeedTestBase):
     def test_create_with_personal_feed(self):
         follow = FollowCompany.objects.filter(pk=1).first()
 
-        follower_feed = PersonalFeed(follow.follower_id)
+        follower_feed = PersonalFeed(follow.follower.username)
         event = Event.objects.filter(company=follow.target).first()
 
         self.assertIsNotNone(event)

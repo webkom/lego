@@ -31,7 +31,7 @@ class EventHandler(BaseHandler):
         if event.company_id:
             result.append((
                 [PersonalFeed],
-                list(event.company.followers.values_list('follower_id', flat=True))
+                list(event.company.followers.values_list('follower__username', flat=True))
             ))
             result.append(([CompanyFeed], [event.company_id]))
         return result
