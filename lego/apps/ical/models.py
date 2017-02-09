@@ -1,9 +1,16 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 
+from lego.apps.users.models import User
+
+
+def generate_new_token():
+    return get_random_string(length=64)
+
 
 class ICalToken(models.Model):
-    user = models.ForeignKey('users.User')
+    user = models.OneToOneField(User)
+    created = models.DateTimeField(auto_now_add=True)
     token = models.CharField(
-        max_length=64, default=lambda: get_random_string(length=64), db_index=True
+        max_length=64, default=generate_new_token, db_index=True
     )
