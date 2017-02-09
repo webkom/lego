@@ -13,6 +13,7 @@ from mptt.models import MPTTModel
 
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
+from lego.apps.users import constants
 from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
                                       UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
@@ -129,6 +130,9 @@ class PermissionsMixin(models.Model):
 
         return list(own_groups)
 
+class MockFile:
+    def __init__(self, pk):
+        self.pk = pk
 
 class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     """
@@ -146,7 +150,9 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     )
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
+    allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField('email address', blank=True)
+    gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
         default=True,
@@ -165,9 +171,25 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'.strip()
 
+    def get_default_picture(self):
+        if self.gender == constants.MALE:
+            return MockFile(pk='default_male_avatar.png')
+        elif self.gender == constants.FEMALE:
+            return MockFile(pk='default_female_avatar.png')
+        else:
+            return MockFile(pk='default_other_avatar.png')
+
     @property
     def full_name(self):
         return self.get_full_name()
+
+    @property
+    def profile_picture(self):
+        return self.get_default_picture()
+
+    @profile_picture.setter
+    def profile_picture(self, value):
+        self.picture = value
 
     def get_short_name(self):
         return self.first_name
@@ -186,24 +208,12 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
 
 
 class Membership(BasisModel):
-    MEMBER = 'member'
-    LEADER = 'leader'
-    CO_LEADER = 'co-leader'
-    TREASURER = 'treasurer'
-
-    ROLES = (
-        (MEMBER, 'Member'),
-        (LEADER, 'Leader'),
-        (CO_LEADER, 'Co-Leader'),
-        (TREASURER, 'Treasurer')
-    )
-
     objects = MembershipManager()
 
     user = models.ForeignKey(User)
     abakus_group = models.ForeignKey(AbakusGroup)
 
-    role = models.CharField(max_length=20, choices=ROLES, default=MEMBER)
+    role = models.CharField(max_length=20, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True)
 
     start_date = models.DateField(auto_now_add=True, blank=True)

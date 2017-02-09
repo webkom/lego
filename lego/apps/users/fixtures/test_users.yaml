@@ -3,6 +3,7 @@
   fields:
     username: test1
     password: pbkdf2_sha256$24000$zowF0cRkFimt$qzeoY9hZ0X3zDhlG0FP8imaGto8S2N6ed1AMp83xcn4= # test
+    gender: male
     first_name: test
     last_name: user1
     email: test1@user.com
@@ -11,6 +12,7 @@
   pk: 2
   fields:
     username: test2
+    gender: male
     first_name: test
     last_name: user2
     email: test2@user.com
@@ -19,6 +21,7 @@
   pk: 3
   fields:
     username: useradmin_test
+    gender: male
     first_name: user
     last_name: admin
     email: user@admin.com
@@ -27,6 +30,7 @@
   pk: 4
   fields:
     username: abakusgroupadmin_test
+    gender: male
     first_name: abakusgroup
     last_name: admin
     email: abakusgroup@admin.com
@@ -35,6 +39,7 @@
   pk: 5
   fields:
     username: abakule
+    gender: female
     first_name: Aba
     last_name: Kule
     email: abakule@abakus.no
@@ -43,6 +48,7 @@
   pk: 6
   fields:
     username: abakommer
+    gender: male
     first_name: Aba
     last_name: Kommer
     email: abakommer@abakus.no
@@ -51,6 +57,7 @@
   pk: 7
   fields:
     username: pleb
+    gender: female
     first_name: pleb
     last_name: plebbesen
     email: pleb@hotmail.no
@@ -59,6 +66,7 @@
   pk: 8
   fields:
     username: interestgroupadmin_test
+    gender: male
     first_name: interestgroup
     last_name: admin
     email: interestgroup@admin.com
