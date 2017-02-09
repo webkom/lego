@@ -63,6 +63,7 @@ class ImageField(FileField):
     options = {}
 
     def __init__(self, options=None, **kwargs):
+        print('init image field')
         kwargs['allowed_types'] = [IMAGE]
         super().__init__(**kwargs)
 

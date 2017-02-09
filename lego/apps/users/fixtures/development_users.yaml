@@ -3,7 +3,7 @@
     first_name: Per Kristian J
     last_name: Fjellby
     username: perkrifj
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 2
 - fields:
@@ -11,7 +11,7 @@
     first_name: Ståle
     last_name: Pettersen
     username: stalepe
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 3
 - fields:
@@ -19,7 +19,7 @@
     first_name: Anders
     last_name: Nore
     username: andenor
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 4
 - fields:
@@ -27,7 +27,7 @@
     first_name: Fredrik
     last_name: Rydland
     username: fredriry
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 5
 - fields:
@@ -35,7 +35,7 @@
     first_name: Hans Andreas
     last_name: Fay
     username: hansanf
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 6
 - fields:
@@ -43,7 +43,7 @@
     first_name: Ola
     last_name: Høiby
     username: hoiby
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 7
 - fields:
@@ -51,7 +51,7 @@
     first_name: Torborg Skjevdal
     last_name: Hansen
     username: torborgs
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 8
 - fields:
@@ -59,7 +59,7 @@
     first_name: Fredrik Prinsdal
     last_name: Einerkjær
     username: einerkja
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 9
 - fields:
@@ -67,7 +67,7 @@
     first_name: Rune Bleken
     last_name: Kulstad
     username: runeblek
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 10
 - fields:
@@ -75,7 +75,7 @@
     first_name: Karsten Peder
     last_name: Holth
     username: karstenp
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 11
 - fields:
@@ -83,7 +83,7 @@
     first_name: Knut Halvor
     last_name: Skrede
     username: knuthask
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 12
 - fields:
@@ -91,7 +91,7 @@
     first_name: Kristoffer Tveit
     last_name: Strømmen
     username: krstr
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 13
 - fields:
@@ -99,7 +99,7 @@
     first_name: Martin Rudi
     last_name: Holaker
     username: marthola
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 14
 - fields:
@@ -107,7 +107,7 @@
     first_name: Tormund Sandve
     last_name: Haus
     username: tormunds
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 15
 - fields:
@@ -115,7 +115,7 @@
     first_name: Ane Min Hofplass
     last_name: Garnaas
     username: garnaas
-    picture: default_female_avatar.png
+    gender: female
   model: users.User
   pk: 16
 - fields:
@@ -123,14 +123,14 @@
     first_name: Lars Kirkholt
     last_name: Melhus
     username: larskirk
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 17
 - fields:
     email: keoigdmndp@gmail.com
     first_name: Merethe
     last_name: Heggset
-    picture: default_female_avatar.png
+    gender: female
     username: merethhe
   model: users.User
   pk: 18
@@ -139,7 +139,7 @@
     first_name: Hanne
     last_name: Loug
     username: loug
-    picture: default_female_avatar.png
+    gender: female
   model: users.User
   pk: 19
 - fields:
@@ -147,7 +147,7 @@
     first_name: Rune
     last_name: Aamodt
     username: runeaam
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 20
 - fields:
@@ -155,7 +155,7 @@
     first_name: David Andrassy
     last_name: Eilertsen
     username: davidae
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 21
 - fields:
@@ -163,7 +163,7 @@
     first_name: Jonas Granheim
     last_name: Brustad
     username: jonasgra
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 22
 - fields:
@@ -171,7 +171,7 @@
     first_name: Torbjørn Aarlott
     last_name: Aase
     username: torbjaas
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 23
 - fields:
@@ -179,14 +179,14 @@
     first_name: Kjell Gunnar
     last_name: Midtlyng
     username: kjellgm
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 24
 - fields:
     email: gdwqerxieu@gmail.com
     first_name: Eirik Ola
     last_name: Aksnes
-    picture: default_male_avatar.png
+    gender: male
     username: eirikola
   model: users.User
   pk: 25
@@ -195,7 +195,7 @@
     first_name: Tarjei
     last_name: Ormestøyl
     username: ormestoy
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 26
 - fields:
@@ -203,7 +203,7 @@
     first_name: Thomas
     last_name: Østdahl
     username: thomao
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 27
 - fields:
@@ -211,7 +211,7 @@
     first_name: Ken Oscar
     last_name: Grønnbeck
     username: gronnbec
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 28
 - fields:
@@ -219,7 +219,7 @@
     first_name: Pål
     last_name: snakkes-hos-tannlegen Ruud
     username: palru
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 29
 - fields:
@@ -227,7 +227,7 @@
     first_name: Kjetil
     last_name: Valle
     username: kjetilva
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 30
 - fields:
@@ -235,21 +235,21 @@
     first_name: Helge
     last_name: Skrautvol
     username: helgesk
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 31
 - fields:
     email: lkzmvuokjz@gmail.com
     first_name: Mathilde Stamsø
     last_name: Eidem
-    picture: default_female_avatar.png
+    gender: female
     username: mathilde
   model: users.User
   pk: 32
 - fields:
     email: joefftkmki@gmail.com
     first_name: My Hoan Thi
-    picture: default_female_avatar.png
+    gender: female
     last_name: Tran
     username: myhoanth
   model: users.User
@@ -259,7 +259,7 @@
     first_name: Øystein
     last_name: Solberg
     username: oysteiso
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 34
 - fields:
@@ -267,7 +267,7 @@
     first_name: Tore Melangen
     last_name: Havn
     username: toremela
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 35
 - fields:
@@ -275,7 +275,7 @@
     first_name: Hans Olav
     last_name: Norheim
     username: hansolno
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 36
 - fields:
@@ -283,7 +283,7 @@
     first_name: Rune Walsø
     last_name: Nergård
     username: runewals
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 37
 - fields:
@@ -291,7 +291,7 @@
     first_name: Håvard
     last_name: Farberg
     username: farberg
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 38
 - fields:
@@ -299,7 +299,7 @@
     first_name: Ole Kristian Brenne
     last_name: Richstad
     username: olekriri
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 39
 - fields:
@@ -307,7 +307,7 @@
     first_name: Bjarne Sletten
     last_name: Olsen
     username: bjarnesl
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 40
 - fields:
@@ -315,7 +315,7 @@
     first_name: Thorstein
     last_name: Nicolaysen
     username: noname931
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 41
 - fields:
@@ -323,14 +323,14 @@
     first_name: Svein-Magnus Bergan
     last_name: Sørensen
     username: sms
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 42
 - fields:
     email: clbhemsgsx@gmail.com
     first_name: Joachim Hjelmås
     last_name: Andersen
-    picture: default_male_avatar.png
+    gender: male
     username: joachimh
   model: users.User
   pk: 43
@@ -339,7 +339,7 @@
     first_name: Njål
     last_name: Karevoll
     username: karevoll
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 44
 - fields:
@@ -347,13 +347,13 @@
     first_name: Jon Villy Selnes
     last_name: Meidell
     username: jonvilly
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 45
 - fields:
     email: yaafxepren@gmail.com
     first_name: Mia
-    picture: default_female_avatar.png
+    gender: female
     last_name: Bek
     username: bek
   model: users.User
@@ -363,14 +363,14 @@
     first_name: Terje
     last_name: Snarby
     username: snarby
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 47
 - fields:
     email: bydxsgeiwa@gmail.com
     first_name: Øyvind
     last_name: Risan
-    picture: default_male_avatar.png
+    gender: male
     username: risan
   model: users.User
   pk: 48
@@ -379,14 +379,14 @@
     first_name: Esben Andre
     last_name: Føllesdal
     username: esbenaf
-    picture: default_male_avatar.png
+    gender: male
   model: users.User
   pk: 49
 - fields:
     email: owjwwbbycs@gmail.com
     first_name: Håvard Håkon
     last_name: Raaen
-    picture: default_male_avatar.png
+    gender: male
     username: havarraa
   model: users.User
   pk: 50
@@ -395,7 +395,7 @@
     password: pbkdf2_sha256$12000$BwZLLK4uY2QT$sGobGSPIS/lcHGDOV0agcHVHxzzm9mkBtM+2bCLEA7w= # test1
     first_name: test
     last_name: user1
-    picture: default_male_avatar.png
+    gender: male
     email: test1@user.com
   model: users.User
   pk: 51
@@ -404,7 +404,7 @@
     password: pbkdf2_sha256$12000$pY1QWLbBakIA$xsNjE4caw2HB9YJtey88K2ab2yHNlpl/lOkmBIiPi4M= # test2
     first_name: test
     last_name: user2
-    picture: default_male_avatar.png
+    gender: male
     email: test2@user.com
   model: users.User
   pk: 52

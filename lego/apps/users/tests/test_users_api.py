@@ -14,6 +14,7 @@ _test_user_data = {
     'first_name': 'new',
     'last_name': 'test_user',
     'email': 'new@testuser.com',
+    'gender': 'male'
 }
 
 
