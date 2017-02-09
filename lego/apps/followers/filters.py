@@ -1,6 +1,6 @@
 from django_filters.filterset import FilterSet
 
-from .models import FollowEvent, FollowUser
+from .models import FollowEvent, FollowUser, FollowCompany
 
 
 class FollowUserFilterSet(FilterSet):
@@ -14,4 +14,11 @@ class FollowEventFilterSet(FilterSet):
 
     class Meta:
         model = FollowEvent
+        fields = ('target', 'follower')
+
+
+class FollowCompanyFilterSet(FilterSet):
+
+    class Meta:
+        model = FollowCompany
         fields = ('target', 'follower')

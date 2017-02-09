@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from lego.apps.followers.models import FollowEvent, FollowUser
+from lego.apps.followers.models import FollowEvent, FollowUser, FollowCompany
 from lego.apps.users.fields import PublicUserField
 
 
@@ -29,3 +29,8 @@ class FollowUserSerializer(FollowerSerializer):
 class FollowEventSerializer(FollowerSerializer):
     class Meta(FollowerSerializer.Meta):
         model = FollowEvent
+
+
+class FollowCompanySerializer(FollowerSerializer):
+    class Meta(FollowerSerializer.Meta):
+        model = FollowCompany
