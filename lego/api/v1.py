@@ -5,7 +5,8 @@ from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import CompanyContactViewSet, CompanyViewSet, SemesterStatusViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
-from lego.apps.feed.views import NotificationFeedViewSet
+from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet,
+                                  PersonalFeedViewSet, UserFeedViewSet)
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowEventViewSet, FollowUserViewSet
@@ -37,7 +38,6 @@ router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
 router.register(r'memberships', MembershipViewSet)
-router.register(r'notifications', NotificationFeedViewSet, base_name='feed-notifications')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'pages', PageViewSet)
@@ -51,3 +51,8 @@ router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'followers/user', FollowUserViewSet)
 router.register(r'followers/event', FollowEventViewSet)
+router.register(r'feed/user', UserFeedViewSet, base_name='feed-user')
+router.register(r'feed/personal', PersonalFeedViewSet, base_name='feed-personal')
+router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-notifications')
+router.register(r'feed/group', GroupFeedViewSet, base_name='feed-group')
+router.register(r'feed/company', CompanyFeedViewSet, base_name='feed-company')

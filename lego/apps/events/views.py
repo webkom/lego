@@ -108,6 +108,7 @@ class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.CreateModelMixin,
                           mixins.RetrieveModelMixin,
+                          mixins.UpdateModelMixin,
                           mixins.DestroyModelMixin,
                           mixins.ListModelMixin,
                           viewsets.GenericViewSet):
@@ -115,7 +116,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     ordering = 'registration_date'
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action in ['create', 'update']:
             return RegistrationCreateAndUpdateSerializer
         return super().get_serializer_class()
 
@@ -127,12 +128,19 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        if not verify_captcha(serializer.data.get('captcha_response', None)):
+            raise ValidationError({'error': 'Bad captcha'})
+
         event_id = self.kwargs.get('event_pk', None)
         user_id = request.user.id
+
         with transaction.atomic():
-            if not verify_captcha(request.data.get('captcha_response', None)):
-                raise ValidationError({'error': 'Bad captcha'})
             registration = Registration.objects.get_or_create(event_id=event_id, user_id=user_id)[0]
+            feedback = serializer.data.get('feedback', '')
+            if registration.event.feedback_required and not feedback:
+                raise ValidationError({'error': 'Feedback is required'})
+            registration.feedback = feedback
+            registration.save()
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(registration)
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)

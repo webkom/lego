@@ -15,3 +15,14 @@ class PaymentVerb(Verb):
 
 register(PaymentVerb)
 """
+from stream_framework.verbs.base import Comment as CommentVerb  # noqa
+from stream_framework.verbs.base import Verb, register
+
+
+class EventRegister(Verb):
+    id = 5
+    infinitive = 'event_register'
+    past_tense = infinitive
+
+
+register(EventRegister)

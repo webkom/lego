@@ -1,6 +1,7 @@
 import os
 
 import environ
+from cassandra import ConsistencyLevel
 
 from lego.settings import BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES
 
@@ -9,6 +10,7 @@ from .secure import *  # noqa
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, ['api.abakus.no']),
+    CASSANDRA_HOSTS=(list, [])
 )
 environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
@@ -59,6 +61,9 @@ MIDDLEWARE_CLASSES = [
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
 # Stream Framework
+STREAM_CASSANDRA_HOSTS = env('CASSANDRA_HOSTS')
+STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.THREE
+STREAM_DEFAULT_KEYSPACE = env('CASSANDRA_KEYSPACE')
 STREAM_REDIS_CONFIG = {
     'default': {
         'host': env('REDIS_STREAM_HOST'),

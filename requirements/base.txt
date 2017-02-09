@@ -1,4 +1,4 @@
-ipython==5.2.0
+ipython==5.2.2
 django==1.10.5
 
 psycopg2==2.6.2
@@ -16,11 +16,13 @@ whitenoise==3.3.0
 stripe==1.46.0
 structlog==16.1.0
 boto3==1.4.4
+cassandra-driver==3.7.1
+prometheus-client==0.0.19
 
 # channels:
-channels==1.0.2
+channels==1.0.3
 asgi_redis==1.0.0
-daphne==1.0.1
+daphne==1.0.2
 
 djangorestframework==3.5.3
 djangorestframework-jwt==1.9.0
@@ -29,7 +31,7 @@ django-extensions==1.7.6
 django-autoslug==1.9.3
 django-oauth-toolkit==0.11.0
 django-filter==1.0.1
-django-cors-headers==2.0.1
+django-cors-headers==2.0.2
 django-mptt==0.8.7
 django-environ==0.4.1
 django-redis==4.7.0
