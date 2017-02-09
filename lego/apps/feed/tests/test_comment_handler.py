@@ -24,7 +24,7 @@ class TestCommentHandler(FeedTestBase):
 
         self.comment1 = self.comments[0]
         self.comment2 = self.comments[1]
-        self.feed = UserFeed(self.comment1.created_by.id)
+        self.feed = UserFeed(self.comment1.created_by.username)
 
     def test_duplicate_create(self):
         self.handler.handle_create(self.comment1)
@@ -62,8 +62,8 @@ class TestCommentHandler(FeedTestBase):
             object_id=follow.target.id
         ).first()
 
-        follower_feed = PersonalFeed(follow.follower.id)
-        creator_feed = PersonalFeed(comment.created_by.id)
+        follower_feed = PersonalFeed(follow.follower.username)
+        creator_feed = PersonalFeed(comment.created_by.username)
 
         self.assertIsNotNone(comment)
 

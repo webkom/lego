@@ -55,7 +55,11 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
             target=comment2.content_object,
             time=datetime.now()
         )
-        feed_manager.add_activity(self.activity1, [1, 2], [NotificationFeed])
+        feed_manager.add_activity(
+            self.activity1,
+            [self.user.username, self.second_user.username],
+            [NotificationFeed]
+        )
 
     def test_list_notifications(self):
         """Try to list user notifications."""
@@ -79,19 +83,19 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
 
-        feed_manager.add_activity(self.activity2, [1], [NotificationFeed])
+        feed_manager.add_activity(self.activity2, [self.user.username], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
 
-        feed_manager.add_activity(self.activity3, [1], [NotificationFeed])
+        feed_manager.add_activity(self.activity3, [self.user.username], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)
 
     def test_mark(self):
         self.client.force_login(self.user)
-        feed_manager.add_activity(self.activity3, [1], [NotificationFeed])
+        feed_manager.add_activity(self.activity3, [self.user.username], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)
@@ -154,7 +158,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
 
-        feed_manager.add_activity(self.activity3, [1], [NotificationFeed])
+        feed_manager.add_activity(self.activity3, [self.user.username], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)

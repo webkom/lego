@@ -39,10 +39,9 @@ class FeedViewSet(viewsets.GenericViewSet):
         )
 
         try:
-            feed_id = int(self.kwargs[lookup_url_kwarg])
+            feed_id = self.kwargs[lookup_url_kwarg]
         except (ValueError, TypeError):
             raise exceptions.ParseError
-
         return self.feed_class(feed_id)
 
 
@@ -88,7 +87,7 @@ class PersonalFeedViewSet(FeedViewSet, FeedListMixin):
     feed_class = PersonalFeed
 
     def get_queryset(self):
-        return self.feed_class(self.request.user.id)
+        return self.feed_class(self.request.user.username)
 
 
 class GroupFeedViewSet(FeedViewSet, FeedRetrieveMixin):
@@ -116,7 +115,7 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         """
         We select the feed with request.user
         """
-        return self.feed_class(self.request.user.id)
+        return self.feed_class(self.request.user.username)
 
     @decorators.list_route(
         permission_classes=[permissions.IsAuthenticated],
