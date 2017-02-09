@@ -20,7 +20,7 @@ class RegistrationReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'status', 'charge_status')
+        fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status')
         read_only = True
 
 
@@ -72,8 +72,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
-                  'comments', 'comment_target', 'start_time', 'end_time', 'pools',
-                  'company', 'active_capacity', 'is_priced', 'price', 'activation_time', 'tags')
+                  'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'company',
+                  'active_capacity', 'feedback_required', 'is_priced', 'price', 'activation_time',
+                  'tags')
         read_only = True
 
     def get_price(self, obj):
@@ -105,9 +106,11 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
+    captcha_response = serializers.CharField(required=False)
+
     class Meta:
         model = Registration
-        fields = ('id',)
+        fields = ('id', 'feedback', 'captcha_response')
 
 
 class StripeTokenSerializer(serializers.Serializer):
@@ -124,3 +127,4 @@ class StripeObjectSerializer(serializers.Serializer):
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
+    feedback = serializers.CharField(required=False)

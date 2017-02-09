@@ -39,6 +39,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     heed_penalties = models.BooleanField(default=True)
     company = models.ForeignKey(Company, related_name='events', null=True)
 
+    feedback_required = models.BooleanField(default=False)
     is_priced = models.BooleanField(default=False)
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
@@ -46,13 +47,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
-    def admin_register(self, user, pool):
+    def admin_register(self, user, pool, feedback=''):
         """
         Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
 
         :param user: The user who will be registered
         :param pool: What pool the registration will be created for
+        :param feedback: Feedback to organizers
         :return: The registration
         """
         if self.pools.filter(id=pool.id).exists():
@@ -60,6 +62,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 event=self,
                 user=user,
                 defaults={'pool': pool,
+                          'feedback': feedback,
                           'unregistration_date': None,
                           'status': constants.SUCCESS_REGISTER}
             )[0]
@@ -453,6 +456,7 @@ class Registration(BasisModel):
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
     registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
+    feedback = models.CharField(max_length=100, blank=True)
     status = models.CharField(max_length=20,
                               default=constants.PENDING_REGISTER,
                               choices=constants.STATUSES)
