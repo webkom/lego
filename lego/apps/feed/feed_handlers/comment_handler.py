@@ -29,14 +29,12 @@ class CommentHandler(BaseHandler):
     def get_feeds_and_recipients(self, comment):
         result = []
         if hasattr(comment.content_object, 'followers'):
-            result.append(
-                (
-                    [PersonalFeed],
-                    list(comment.content_object.followers.values_list('follower_id', flat=True))
-                )
-            )
+            result.append((
+                [PersonalFeed],
+                list(comment.content_object.followers.values_list('follower__username', flat=True))
+            ))
         if comment.created_by:
-            result.append(([UserFeed], [comment.created_by.id]))
+            result.append(([UserFeed], [comment.created_by.username]))
         return result
 
     def get_activity(self, comment):

@@ -28,23 +28,23 @@ class ManagerTestCase(FeedTestBase):
         )
 
     def test_adding_actitivites_to_notification_feeds(self):
-        feed_manager.add_activity(self.activity, [1, 2], [NotificationFeed])
+        feed_manager.add_activity(self.activity, ['test1', 'test2'], [NotificationFeed])
 
-        self.assertIn(self.activity, self.all_activities(NotificationFeed(1)))
-        self.assertIn(self.activity, self.all_activities(NotificationFeed(2)))
-        self.assertNotIn(self.activity, self.all_activities(NotificationFeed(3)))
+        self.assertIn(self.activity, self.all_activities(NotificationFeed('test1')))
+        self.assertIn(self.activity, self.all_activities(NotificationFeed('test2')))
+        self.assertNotIn(self.activity, self.all_activities(NotificationFeed('useradmin_test')))
 
     def test_adding_actitivites_to_aggregated_feeds(self):
-        feed_manager.add_activity(self.activity, [1, 2], [UserFeed])
-        feed_manager.add_activity(self.activity, [3, 2], [PersonalFeed])
+        feed_manager.add_activity(self.activity, ['test1', 'test2'], [UserFeed])
+        feed_manager.add_activity(self.activity, ['useradmin_test', 'test2'], [PersonalFeed])
 
-        self.assertIn(self.activity, self.all_activities(UserFeed(1)))
-        self.assertIn(self.activity, self.all_activities(UserFeed(2)))
-        self.assertNotIn(self.activity, self.all_activities(UserFeed(3)))
+        self.assertIn(self.activity, self.all_activities(UserFeed('test1')))
+        self.assertIn(self.activity, self.all_activities(UserFeed('test2')))
+        self.assertNotIn(self.activity, self.all_activities(UserFeed('useradmin_test')))
 
-        self.assertNotIn(self.activity, self.all_activities(PersonalFeed(1)))
-        self.assertIn(self.activity, self.all_activities(PersonalFeed(2)))
-        self.assertIn(self.activity, self.all_activities(PersonalFeed(3)))
+        self.assertNotIn(self.activity, self.all_activities(PersonalFeed('test1')))
+        self.assertIn(self.activity, self.all_activities(PersonalFeed('test2')))
+        self.assertIn(self.activity, self.all_activities(PersonalFeed('useradmin_test')))
 
     @mock.patch('lego.apps.feed.feed_manager.feed_manager.create_fanout_tasks')
     def test_add_activity(self, mock_create_fanout_tasks):
@@ -54,11 +54,11 @@ class ManagerTestCase(FeedTestBase):
 
         feed_manager.add_activity(
             activity_mock,
-            [1, 2],
+            ['abc', 'def'],
             [NotificationFeed]
         )
 
-        self.assertIn({1, 2}, mock_create_fanout_tasks.call_args[0])
+        self.assertIn({'abc', 'def'}, mock_create_fanout_tasks.call_args[0])
         self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])
         self.assertIn(add_operation, mock_create_fanout_tasks.call_args[0])
 
@@ -71,10 +71,10 @@ class ManagerTestCase(FeedTestBase):
 
         feed_manager.remove_activity(
             activity_mock,
-            [1, 2],
+            ['abc', 'def'],
             [NotificationFeed]
         )
 
-        self.assertIn({1, 2}, mock_create_fanout_tasks.call_args[0])
+        self.assertIn({'abc', 'def'}, mock_create_fanout_tasks.call_args[0])
         self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])
         self.assertIn(remove_operation, mock_create_fanout_tasks.call_args[0])
