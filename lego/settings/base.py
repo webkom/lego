@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'lego.apps.files',
     'lego.apps.flatpages',
     'lego.apps.followers',
+    'lego.apps.ical',
     'lego.apps.social_groups',
     'lego.apps.meetings',
     'lego.apps.oauth',

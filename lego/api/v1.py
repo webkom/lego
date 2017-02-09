@@ -23,6 +23,7 @@ from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.users import UsersViewSet
+from lego.apps.ical.viewsets import ICalViewset
 
 router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)
@@ -64,3 +65,4 @@ router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-
 router.register(r'feed/group', GroupFeedViewSet, base_name='feed-group')
 router.register(r'feed/company', CompanyFeedViewSet, base_name='feed-company')
 router.register(r'slack/invite', SlackInviteViewSet, base_name='slack-invite')
+router.register(r'calendar/ical', ICalViewset, base_name='calendar-ical')
