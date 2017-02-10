@@ -24,7 +24,7 @@ channels==1.0.3
 asgi_redis==1.0.0
 daphne==1.0.2
 
-djangorestframework==3.5.3
+djangorestframework==3.5.4
 djangorestframework-jwt==1.9.0
 djangorestframework-camel-case==0.2.0
 django-extensions==1.7.6
