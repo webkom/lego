@@ -6,7 +6,7 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.tasks import async_register
+from lego.apps.events.tasks import async_register, check_events_for_bumps
 from lego.apps.events.tests.test_events_api import _get_pools_list_url
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.users.models import AbakusGroup, Penalty, User
@@ -143,6 +143,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
+        check_events_for_bumps.delay()
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
 
@@ -176,6 +177,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
+        check_events_for_bumps.delay()
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
 
@@ -209,10 +211,11 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
+        check_events_for_bumps.delay()
         self.assertIsNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 0)
 
-    number_of_calls = 48
+    number_of_calls = 43
 
     @mock.patch('django.utils.timezone.now',
                 side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
@@ -236,6 +239,8 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
+
+        check_events_for_bumps.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
@@ -267,6 +272,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
+        check_events_for_bumps.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
         self.assertIsNone(Registration.objects.get(user=users[2]).pool)
@@ -298,6 +304,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
+        check_events_for_bumps.delay()
 
         self.assertIsNotNone(Registration.objects.get(user=users[1]).pool)
         self.assertEqual(self.event.number_of_registrations, 2)
