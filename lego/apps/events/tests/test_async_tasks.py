@@ -138,7 +138,7 @@ class PenaltyExpiredTestCase(TestCase):
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(23, 7)
+            created_at=mock_now()-self.expiration_offset(22, 7)
         )
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
@@ -164,7 +164,7 @@ class PenaltyExpiredTestCase(TestCase):
             reason='test',
             weight=2,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(27, 8)
+            created_at=mock_now()-self.expiration_offset(24, 8)
         )
 
         Penalty.objects.create(
@@ -198,7 +198,7 @@ class PenaltyExpiredTestCase(TestCase):
             reason='test',
             weight=1,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(27, 8)
+            created_at=mock_now()-self.expiration_offset(24, 8)
         )
 
         Penalty.objects.create(
@@ -233,7 +233,7 @@ class PenaltyExpiredTestCase(TestCase):
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(42, 12)
+            created_at=mock_now()-self.expiration_offset(35, 12)
         )
 
         for user in users:
@@ -266,7 +266,7 @@ class PenaltyExpiredTestCase(TestCase):
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(56, 14)
+            created_at=mock_now()-self.expiration_offset(48, 14)
         )
 
         for user in users:
@@ -298,7 +298,7 @@ class PenaltyExpiredTestCase(TestCase):
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(44, 12)
+            created_at=mock_now()-self.expiration_offset(40, 12)
         )
 
         for user in users:
