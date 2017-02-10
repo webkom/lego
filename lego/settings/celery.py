@@ -50,7 +50,11 @@ app = celery.Celery('lego')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
-schedule = {}
+schedule = {
+    'check-for-bump-every-5-minute': {
+        'task': 'tasks.'
+    }
+}
 
 app.conf.update(
     beat_schedule=schedule,
