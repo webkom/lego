@@ -14,7 +14,7 @@ from lego.utils.content_types import instance_to_string
 class TestCommentHandler(FeedTestBase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml',
-        'test_events.yaml', 'test_followevent.yaml'
+        'test_companies.yaml', 'test_events.yaml', 'test_followevent.yaml'
     ]
 
     def setUp(self):

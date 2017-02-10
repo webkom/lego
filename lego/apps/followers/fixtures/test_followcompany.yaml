@@ -1,0 +1,5 @@
+- model: followers.FollowCompany
+  pk: 1
+  fields:
+    follower: 1
+    target: 3

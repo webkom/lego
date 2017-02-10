@@ -19,10 +19,19 @@ from stream_framework.verbs.base import Comment as CommentVerb  # noqa
 from stream_framework.verbs.base import Verb, register
 
 
-class EventRegister(Verb):
+class EventRegisterVerb(Verb):
     id = 5
     infinitive = 'event_register'
     past_tense = infinitive
 
 
-register(EventRegister)
+register(EventRegisterVerb)
+
+
+class EventCreateVerb(Verb):
+    id = 6
+    infinitive = 'event_create'
+    past_tense = infinitive
+
+
+register(EventCreateVerb)

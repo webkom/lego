@@ -22,3 +22,10 @@ class FollowEvent(Follower):
 
     class Meta:
         unique_together = ('follower', 'target')
+
+
+class FollowCompany(Follower):
+    target = models.ForeignKey('companies.Company', related_name='followers')
+
+    class Meta:
+        unique_together = ('follower', 'target')
