@@ -10,7 +10,8 @@ from .utils import get_dummy_users
 
 
 class RegistrationMethodTest(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
@@ -40,7 +41,8 @@ class RegistrationMethodTest(TestCase):
 
 
 class RegistrationTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         Event.objects.all().update(

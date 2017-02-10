@@ -8,7 +8,8 @@ from lego.apps.users.models import AbakusGroup
 
 
 class PoolMethodTest(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
@@ -30,7 +31,8 @@ class PoolMethodTest(TestCase):
 
 
 class PoolCapacityTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+                'test_events.yaml']
 
     def create_pools(self, event, capacities_to_add, permission_groups):
         for capacity in capacities_to_add:

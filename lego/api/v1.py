@@ -9,7 +9,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
                                   PersonalFeedViewSet, UserFeedViewSet)
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
-from lego.apps.followers.views import FollowEventViewSet, FollowUserViewSet
+from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
 from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
@@ -51,6 +51,7 @@ router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'followers/user', FollowUserViewSet)
 router.register(r'followers/event', FollowEventViewSet)
+router.register(r'followers/company', FollowCompanyViewSet)
 router.register(r'feed/user', UserFeedViewSet, base_name='feed-user')
 router.register(r'feed/personal', PersonalFeedViewSet, base_name='feed-personal')
 router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-notifications')
