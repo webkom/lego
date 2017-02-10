@@ -21,25 +21,22 @@ from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Event.objects.prefetch_related(
-        'pools__permission_groups', 'pools__registrations', 'pools__registrations__user',
-        'can_view_groups', 'comments', 'tags'
-    )
     filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
     filter_class = EventsFilterSet
     ordering = 'start_time'
 
     def get_queryset(self):
-        if self.action == 'retrieve':
+        if self.action == 'list':
             queryset = Event.objects.prefetch_related(
-                'pools__permission_groups',
-                'pools__registrations',
-                'pools__registrations__user',
-                'can_view_groups',
-                'comments'
+                'pools', 'pools__registrations', 'company', 'tags'
+            )
+        elif self.action == 'retrieve':
+            queryset = Event.objects.prefetch_related(
+                'pools__permission_groups', 'pools__registrations',
+                'pools__registrations__user', 'comments', 'tags'
             )
         else:
-            queryset = Event.objects.all().prefetch_related('pools', 'pools__registrations')
+            queryset = Event.objects.all()
         return queryset
 
     def get_serializer_class(self):
