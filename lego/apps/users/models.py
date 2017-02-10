@@ -151,7 +151,6 @@ class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
     email = models.EmailField('email address', blank=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
-    allergies = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(
         default=True,
         help_text='Designates whether this user should be treated as '
