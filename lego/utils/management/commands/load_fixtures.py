@@ -54,6 +54,15 @@ class Command(BaseCommand):
             # The bucket needs to be created manually.
             log.info(f'Makes sure the {uploads_bucket} bucket exists')
             storage.create_bucket(uploads_bucket)
+            log.info(f'Creating file_uploaded webhook')
+            storage.add_bucket_event(
+                uploads_bucket,
+                'queue',
+                {
+                    'QueueArn': 'arn:minio:sqs:us-east-1:1:webhook',
+                    'Events': ['s3:ObjectCreated:*']
+                }
+            )
             upload_file('abakus.png', 'abakus.png')
             upload_file('test_event_cover.png', 'test_event_cover.png')
             upload_file('test_article_cover.png', 'test_article_cover.png')

@@ -61,3 +61,5 @@ lego/settings/local.py
 lego/db.sqlite
 celerybeat.pid
 lego/files/
+minio/*
+!minio/config.json

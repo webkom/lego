@@ -97,6 +97,30 @@ class Storage:
         except exceptions.ClientError:
             pass
 
+    def add_bucket_event(self, bucket, event_type, event_configuration):
+        """
+        Add a notification type on a given bucket
+        """
+        try:
+            if event_type == 'webhook':
+                bucket_notification = self.resource.BucketNotification(bucket)
+                bucket_notification.put(NotificationConfiguration={
+                    'LambdaFunctionConfigurations': [event_configuration]
+                })
+            elif event_type == 'queue':
+                bucket_notification = self.resource.BucketNotification(bucket)
+                bucket_notification.put(NotificationConfiguration={
+                    'QueueConfigurations': [event_configuration]
+                })
+            elif event_type == 'topic':
+                pass
+            else:
+                raise ValueError(
+                    f'Paramter {event_type} invalid, must be one of: webhook, queue, topic'
+                )
+        except exceptions.ClientError:
+            pass
+
     def upload_file(self, bucket, key, file_name):
         """
         Upload a file to S3 using the filename as the path to the file on the local filesystem
