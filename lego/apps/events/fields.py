@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from lego.apps.events.models import Registration
+
 
 class ChargeStatusField(serializers.Field):
 
@@ -12,7 +14,11 @@ class ChargeStatusField(serializers.Field):
         request = self.context.get('request', None)
         if request:
             if request.user.is_authenticated() and request.user == value.user:
-                return value.charge_status
+                return value.is_charged_or_pending
+        socket_registration = self.context.get('registration', None)
+        if socket_registration:
+            registration = Registration.objects.get(pk=socket_registration)
+            return registration.is_charged_or_pending
             # Add admin permissions
 
 
