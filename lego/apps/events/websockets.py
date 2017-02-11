@@ -34,6 +34,8 @@ def notify_user_registration(type, registration, error_msg=None):
 
 
 def notify_registration(group, type, registration, from_pool=None, error_msg=None, context=None):
+    if not context:
+        context = {}
     payload = RegistrationReadSerializer(registration, context=context).data
     meta = {}
     if from_pool:

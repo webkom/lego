@@ -385,6 +385,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return self.price_member
         return self.price_guest
 
+    def spots_left_for_user(self, user):
+        pools = self.get_possible_pools(user)
+        if not pools:
+            return None
+        return sum([pool.spots_left() for pool in pools])
+
     @property
     def is_merged(self):
         if self.merge_time is None:
@@ -450,6 +456,9 @@ class Pool(BasisModel):
     @property
     def is_full(self):
         return self.registrations.count() >= self.capacity
+
+    def spots_left(self):
+        return self.capacity - self.registrations.count()
 
     @property
     def is_activated(self):
