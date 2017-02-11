@@ -29,21 +29,22 @@ def notify_event_registration(type, registration, from_pool=None):
 
 def notify_user_registration(type, registration, error_msg=None):
     group = group_for_user(registration.user)
-    notify_registration(group, type, registration, error_msg)
+    context = {'registration': registration.id}
+    notify_registration(group, type, registration, error_msg=error_msg, context=context)
 
 
-def notify_registration(group, type, registration, from_pool=None, error_msg=None):
-    payload = RegistrationReadSerializer(registration).data
+def notify_registration(group, type, registration, from_pool=None, error_msg=None, context=None):
+    payload = RegistrationReadSerializer(registration, context=context).data
+    meta = {}
     if from_pool:
         payload['from_pool'] = from_pool
     if error_msg:
-        payload['meta'] = {
-            'error_message': error_msg
-        }
+        meta['error_message'] = error_msg
 
     notify_group(group, {
         'type': type,
-        'payload': payload
+        'payload': payload,
+        'meta': meta
     })
 
 

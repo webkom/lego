@@ -513,3 +513,8 @@ class Registration(BasisModel):
         self.status = status
         self.save()
         return self
+
+    @property
+    def is_charged_or_pending(self):
+        return self.charge_status == 'PENDING' or\
+               (self.charge_id and self.charge_status == 'succeeded')

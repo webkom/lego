@@ -63,11 +63,13 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         if registration.charge_id:
             raise PaymentExists()
+        registration.charge_status = 'PENDING'
+        registration.save()
         chain(
             async_payment.s(registration.id, serializer.data['token']),
             registration_save.s(registration.id)
         ).delay()
-        payment_serializer = RegistrationReadSerializer(registration)
+        payment_serializer = RegistrationReadSerializer(registration, context={'request': request})
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 

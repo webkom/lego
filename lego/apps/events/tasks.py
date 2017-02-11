@@ -25,21 +25,36 @@ class AsyncRegister(celery_app.Task):
         if args[0] == 'FAILURE' and self.request.retries == self.max_retries:
             self.registration.status = constants.FAILURE_REGISTER
             self.registration.save()
-            notify_user_registration('SOCKET_REGISTRATION_FAILED', self.registration)
+            notify_user_registration(constants.SOCKET_PAYMENT_FAILURE, self.registration)
 
 
 class Payment(celery_app.Task):
     serializer = 'json'
-    default_retry_delay = 60
+    default_retry_delay = 5
     registration = None
 
-    def after_return(self, *args, **kwargs):
-        if args[0] == 'FAILURE' and self.request.retries == self.max_retries:
-            body = args[1].json_body['error']
-            self.registration.charge_id = body['charge']
-            self.registration.charge_status = body['code']
-            self.registration.save()
-            notify_user_registration('SOCKET_PAYMENT_FAILED', self.registration, body['message'])
+    def on_retry(self, *args):
+        notify_user_registration(
+            constants.SOCKET_PAYMENT_FAILURE, self.registration,
+            f'Payment failed, retrying #{self.request.retries+1}'
+        )
+
+    def on_failure(self, return_value, *args):
+        if self.request.retries == self.max_retries:
+            if return_value.json_body:
+                error = return_value.json_body['error']
+                self.registration.charge_id = error['charge']
+                self.registration.charge_status = error['code']
+                self.registration.save()
+                notify_user_registration(
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error['message']
+                )
+            else:
+                self.registration.charge_status = 'FAILURE'
+                self.registration.save()
+                notify_user_registration(
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Payment failed'
+                )
             # Notify by mail that payment failed
 
 
@@ -50,7 +65,7 @@ def async_register(self, registration_id):
         with transaction.atomic():
             self.registration.event.register(self.registration)
             transaction.on_commit(
-                lambda: notify_event_registration('SOCKET_REGISTRATION', self.registration)
+                lambda: notify_event_registration(constants.SOCKET_REGISTRATION_SUCCESS, self.registration)
             )
     except LockError as e:
         log.error(
@@ -70,7 +85,7 @@ def async_unregister(self, registration_id):
         with transaction.atomic():
             registration.event.unregister(registration)
             transaction.on_commit(
-                lambda: notify_event_registration('SOCKET_UNREGISTRATION', registration, pool.id)
+                lambda: notify_event_registration(constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool.id)
             )
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
@@ -79,7 +94,7 @@ def async_unregister(self, registration_id):
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
         registration.save()
-        notify_user_registration('SOCKET_REGISTRATION_FAILED', registration)
+        notify_user_registration(constants.SOCKET_UNREGISTRATION_FAILURE, registration)
 
 
 @celery_app.task(base=Payment, bind=True)
@@ -101,12 +116,12 @@ def async_payment(self, registration_id, token):
         return response
         # Notify by mail that payment succeeded
     except stripe.error.CardError as e:
-            raise self.retry(exc=e)
+        raise self.retry(exc=e)
     except stripe.error.InvalidRequestError as e:
         log.error('invalid_request', exception=e, registration_id=self.registration.id)
         self.registration.charge_status = e.json_body['error']['type']
         self.registration.save()
-        notify_user_registration('SOCKET_PAYMENT_FAILED', self.registration, 'Invalid request')
+        notify_user_registration(constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Invalid request')
     except stripe.error.StripeError as e:
         log.error('stripe_error', exception=e, registration_id=self.registration.id)
         raise self.retry(exc=e)
@@ -120,9 +135,9 @@ def registration_save(self, result, registration_id):
         registration.charge_amount = result.amount
         registration.charge_status = result.status
         registration.save()
-        notify_user_registration('SOCKET_PAYMENT', registration)
+        notify_user_registration(constants.SOCKET_PAYMENT_SUCCESS, registration)
     except IntegrityError as e:
-        log.error('registration_save_error', exception=e, registration_id=registration.id)
+        log.error('registration_save_error', exception=e, registration_id=registration_id)
         raise self.retry(exc=e)
 
 
