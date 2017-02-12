@@ -1,3 +1,6 @@
+import bleach
+from bs4 import BeautifulSoup
+from django_thumbor import generate_url
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import ManyToManyField
@@ -6,6 +9,7 @@ from django.utils.text import slugify
 from lego.apps.comments.models import Comment
 from lego.apps.reactions.models import Reaction
 from lego.apps.tags.models import Tag
+from lego.apps.files.models import File
 
 
 class SlugModel(models.Model):
@@ -48,8 +52,36 @@ class Content(SlugModel):
     text = models.TextField(blank=True)
     comments = GenericRelation(Comment)
     reactions = GenericRelation(Reaction)
+    images = ManyToManyField(File, blank=True)
     tags = ManyToManyField(Tag, blank=True)
     slug_field = 'title'
+
+    @property
+    def content(self):
+        text = BeautifulSoup(self.text, 'html.parser')
+        for image in text.find_all('img'):
+            image['src'] = generate_url(image.get('data-file-key'))
+        return str(text)
+
+    @content.setter
+    def content(self, value):
+        self.text = self.parse_content(value)
+
+    def parse_content(self, value):
+        safe_content = bleach.clean(
+            value,
+            tags=[
+                'p', 'b', 'i', 'u', 'h1', 'h2', 'code', 'pre', 'blockquote', 'strong'
+                'strong', 'strike', 'ul', 'cite', 'li', 'em', 'hr', 'img', 'div', 'a'
+            ],
+            attributes=['data-file-key', 'data-username', 'data-blocktype', 'href'],
+            strip=True
+        )
+        text = BeautifulSoup(safe_content, 'html.parser')
+        # for image in text.find_all('img'):
+        #   print(image.get('data-file-key'))
+        return str(text)
+
 
     @property
     def reactions_grouped(self):
