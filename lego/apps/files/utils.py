@@ -16,4 +16,4 @@ def prepare_file_upload(key, user):
     redirect_url = f'{settings.SERVER_URL}{url}'
     signed_post = storage.generate_upload_url(file.bucket, file.key, redirect_url)
 
-    return signed_post['url'], signed_post['fields'], file.get_file_token()
+    return file.key, signed_post['url'], signed_post['fields'], file.get_file_token()

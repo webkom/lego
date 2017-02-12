@@ -28,12 +28,13 @@ class FileViewSet(viewsets.GenericViewSet):
         key = serializer.validated_data['key']
 
         try:
-            url, fields, token = prepare_file_upload(key, request.user)
+            file_key, url, fields, token = prepare_file_upload(key, request.user)
         except UnknownFileType:
             raise exceptions.ParseError
 
         return Response({
             'url': url,
+            'file_key': file_key,
             'file_token': token,
             'fields': fields
         })
