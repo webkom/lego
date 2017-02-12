@@ -63,7 +63,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         if registration.charge_id:
             raise PaymentExists()
-        registration.charge_status = 'PENDING'
+        registration.charge_status = constants.PAYMENT_PENDING
         registration.save()
         chain(
             async_payment.s(registration.id, serializer.data['token']),

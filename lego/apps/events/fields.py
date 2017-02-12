@@ -14,11 +14,11 @@ class ChargeStatusField(serializers.Field):
         request = self.context.get('request', None)
         if request:
             if request.user.is_authenticated() and request.user == value.user:
-                return value.is_charged_or_pending
+                return value.charge_status
         socket_registration = self.context.get('registration', None)
         if socket_registration:
             registration = Registration.objects.get(pk=socket_registration)
-            return registration.is_charged_or_pending
+            return registration.charge_status
             # Add admin permissions
 
 
@@ -33,6 +33,7 @@ class ActivationTimeField(serializers.Field):
         request = self.context.get('request', None)
         if request and request.user.is_authenticated():
             return value.get_earliest_registration_time(request.user)
+
 
 class SpotsLeftField(serializers.Field):
 

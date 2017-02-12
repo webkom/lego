@@ -9,13 +9,13 @@ https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 
 import os
 import threading
+from http.server import HTTPServer
 
 import prometheus_client
 from cassandra.cqlengine import connection
 from cassandra.cqlengine.connection import cluster as cql_cluster
 from cassandra.cqlengine.connection import session as cql_session
 from django.core.wsgi import get_wsgi_application
-from http.server import HTTPServer
 from structlog import get_logger
 
 from lego import settings
