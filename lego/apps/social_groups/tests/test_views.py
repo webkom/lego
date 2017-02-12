@@ -2,7 +2,8 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.social_groups.models import InterestGroup
-from lego.apps.users.models import AbakusGroup, Membership, User
+from lego.apps.users import constants
+from lego.apps.users.models import AbakusGroup, User
 
 _test_group_data = {
     'name': 'testnewinterestgroup',
@@ -196,7 +197,7 @@ class UpdateInterestGroupAPITestCase(APITestCase):
 
         self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
         self.leader = User.objects.create(username='leader')
-        self.test_interest_group.add_user(self.leader, role=Membership.LEADER)
+        self.test_interest_group.add_user(self.leader, role=constants.LEADER)
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='InterestGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
@@ -244,7 +245,7 @@ class DeleteInterestGroupAPITestCase(APITestCase):
 
         self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
         self.leader = User.objects.create(username='leader')
-        self.test_interest_group.add_user(self.leader, role=Membership.LEADER)
+        self.test_interest_group.add_user(self.leader, role=constants.LEADER)
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='InterestGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)

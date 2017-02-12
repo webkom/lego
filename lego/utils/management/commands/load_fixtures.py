@@ -58,6 +58,7 @@ class Command(BaseCommand):
             upload_file('test_event_cover.png', 'test_event_cover.png')
             upload_file('test_article_cover.png', 'test_article_cover.png')
             upload_file('default_male_avatar.png', 'default_male_avatar.png')
+            upload_file('default_male_avatar.png', 'default_other_avatar.png')
             upload_file('default_female_avatar.png', 'default_female_avatar.png')
 
             call_command(

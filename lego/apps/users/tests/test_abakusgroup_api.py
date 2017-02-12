@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.apps.users.models import AbakusGroup, Membership, User
+from lego.apps.users import constants
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerializer,
                                                        PublicAbakusGroupSerializer)
 
@@ -178,7 +179,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
         self.leader = User.objects.create(username='leader')
-        self.test_group.add_user(self.leader, role=Membership.LEADER)
+        self.test_group.add_user(self.leader, role=constants.LEADER)
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
@@ -227,7 +228,7 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
         self.leader = User.objects.create(username='leader')
-        self.test_group.add_user(self.leader, role=Membership.LEADER)
+        self.test_group.add_user(self.leader, role=constants.LEADER)
 
         self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)

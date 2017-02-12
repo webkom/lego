@@ -16,3 +16,9 @@
     state: ready
     file_type: image
     token: token
+- pk: default_other_avatar.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token

@@ -4,7 +4,9 @@ from unittest import mock
 from django.test import TestCase, override_settings
 
 from lego.apps.events.models import Event
+from lego.apps.files.models import File
 from lego.apps.social_groups.models import InterestGroup
+from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.utils.test_utils import fake_time
 
@@ -93,7 +95,12 @@ class AbakusGroupHierarchyTestCase(TestCase):
 
 
 class UserTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = [
+        'initial_abakus_groups.yaml',
+        'test_users.yaml',
+        'development_interest_groups.yaml',
+        'test_files.yaml'
+    ]
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -104,6 +111,21 @@ class UserTestCase(TestCase):
 
     def test_short_name(self):
         self.assertEqual(self.user.get_short_name(), self.user.first_name)
+
+    def test_default_avatar(self):
+        self.assertEqual(self.user.profile_picture, 'default_male_avatar.png')
+        self.user.gender = constants.FEMALE
+        self.user.save()
+        self.assertEqual(self.user.profile_picture, 'default_female_avatar.png')
+
+    def test_set_profile_picture(self):
+        self.assertEqual(self.user.profile_picture, 'default_male_avatar.png')
+        self.user.profile_picture = File.objects.get(key='abakus.png')
+        self.user.save()
+        self.assertEqual(self.user.profile_picture, 'abakus.png')
+        self.user.gender = constants.FEMALE
+        self.user.save()
+        self.assertEqual(self.user.profile_picture, 'abakus.png')
 
     def test_all_groups(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
@@ -183,7 +205,7 @@ class MembershipTestCase(TestCase):
         self.test_membership = Membership(
             user=self.test_user,
             abakus_group=self.test_committee,
-            role=Membership.TREASURER
+            role=constants.TREASURER
         )
         self.test_membership.save()
 
