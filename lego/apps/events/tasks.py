@@ -64,9 +64,9 @@ def async_register(self, registration_id):
     try:
         with transaction.atomic():
             self.registration.event.register(self.registration)
-            transaction.on_commit(
-                lambda: notify_event_registration(constants.SOCKET_REGISTRATION_SUCCESS, self.registration)
-            )
+            transaction.on_commit(lambda: notify_event_registration(
+                constants.SOCKET_REGISTRATION_SUCCESS, self.registration
+            ))
     except LockError as e:
         log.error(
             'registration_cache_lock_error', exception=e, registration_id=self.registration.id
@@ -84,9 +84,9 @@ def async_unregister(self, registration_id):
     try:
         with transaction.atomic():
             registration.event.unregister(registration)
-            transaction.on_commit(
-                lambda: notify_event_registration(constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool.id)
-            )
+            transaction.on_commit(lambda: notify_event_registration(
+                constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool.id
+            ))
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e, max_retries=3)
@@ -121,7 +121,9 @@ def async_payment(self, registration_id, token):
         log.error('invalid_request', exception=e, registration_id=self.registration.id)
         self.registration.charge_status = e.json_body['error']['type']
         self.registration.save()
-        notify_user_registration(constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Invalid request')
+        notify_user_registration(
+            constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Invalid request'
+        )
     except stripe.error.StripeError as e:
         log.error('stripe_error', exception=e, registration_id=self.registration.id)
         raise self.retry(exc=e)

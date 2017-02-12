@@ -414,37 +414,10 @@ class StripePaymentTestCase(APITestCase):
         token = self.create_token('4242424242424242', '123')
         res = self.issue_payment(token)
         self.assertEqual(res.status_code, 202)
-        self.assertIsNone(res.data.get('charge_status'))
+        self.assertEqual(res.data.get('charge_status'), constants.PAYMENT_PENDING)
         registration_id = res.data.get('id')
         get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
         self.assertEqual(get_object.data.get('charge_status'), 'succeeded')
-
-    def test_card_declined(self):
-        token = self.create_token('4000000000000002', '123')
-        res = self.issue_payment(token)
-        self.assertEqual(res.status_code, 202)
-
-        registration_id = res.data.get('id')
-        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
-        self.assertEqual(get_object.data.get('charge_status'), 'card_declined')
-
-    def test_card_incorrect_cvc(self):
-        token = self.create_token('4000000000000127', '123')
-        res = self.issue_payment(token)
-        self.assertEqual(res.status_code, 202)
-
-        registration_id = res.data.get('id')
-        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
-        self.assertEqual(get_object.data.get('charge_status'), 'incorrect_cvc')
-
-    def test_card_invalid_request(self):
-        res = self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': 'invalid'})
-
-        self.assertEqual(res.status_code, 202)
-
-        registration_id = res.data.get('id')
-        get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
-        self.assertEqual(get_object.data.get('charge_status'), 'invalid_request_error')
 
     def test_refund_webhook(self):
         token = self.create_token('4242424242424242', '123')
