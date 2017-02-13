@@ -22,7 +22,7 @@ prometheus-client==0.0.19
 # channels:
 channels==1.0.3
 asgi_redis==1.0.0
-daphne==1.0.2
+daphne==1.0.3
 
 djangorestframework==3.5.4
 djangorestframework-jwt==1.9.0
