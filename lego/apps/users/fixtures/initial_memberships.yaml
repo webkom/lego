@@ -21,3 +21,26 @@
       - webkom
     abakus_group: 11
     start_date: 1994-01-01
+- model: users.Membership
+  pk: 4
+  fields:
+    user:
+      - bedkom
+    abakus_group: 1
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 5
+  fields:
+    user:
+      - bedkom
+    abakus_group: 2
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 6
+  fields:
+    user:
+      - bedkom
+    abakus_group: 6
+    start_date: 1994-01-01

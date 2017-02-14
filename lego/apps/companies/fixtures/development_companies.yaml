@@ -96,45 +96,6 @@
     contacted_status: 1
     company: 1
 
-- model: events.Event
-  pk: 1
-  fields:
-    can_view_groups:
-    - 1
-    event_type: 0
-    title: 'Bedpress med BEKK 1'
-    location: 'F1'
-    text: 'TBA'
-    start_time: '2016-10-25T17:00:00+00:00'
-    end_time: '2016-10-27T20:00:00+00:00'
-    company: 1
-
-- model: events.Event
-  pk: 2
-  fields:
-    can_view_groups:
-    - 1
-    event_type: 0
-    title: 'Bedpress med BEKK 2'
-    location: 'EL5'
-    text: 'Eyy'
-    start_time: '2016-11-25T17:00:00+00:00'
-    end_time: '2016-11-27T20:00:00+00:00'
-    company: 1
-
-- model: events.Event
-  pk: 3
-  fields:
-    can_view_groups:
-    - 1
-    event_type: 0
-    title: 'Bedpress med BEKK 3'
-    location: 'R2'
-    text: 'TBA'
-    start_time: '2016-12-25T17:00:00+00:00'
-    end_time: '2016-12-27T20:00:00+00:00'
-    company: 1
-
   # Company 2
 
 - model: companies.CompanyContact
