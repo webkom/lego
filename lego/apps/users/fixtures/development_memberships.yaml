@@ -1,38 +1,4 @@
 - model: users.Membership
-  pk: 4
-  fields:
-    user:
-      - perkrifj
-    role: leader
-    abakus_group: 12
-    start_date: 1994-01-01
-
-- model: users.Membership
-  pk: 5
-  fields:
-    user:
-      - stalepe
-    abakus_group: 12
-    start_date: 1994-01-01
-
-- model: users.Membership
-  pk: 5
-  fields:
-    user:
-      - andenor
-    abakus_group: 12
-    start_date: 1994-01-01
-
-
-- model: users.Membership
-  pk: 6
-  fields:
-    user:
-      - fredriry
-    abakus_group: 12
-    start_date: 1994-01-01
-
-- model: users.Membership
   pk: 7
   fields:
     user:
@@ -104,4 +70,37 @@
     user:
       - test1
     abakus_group: 2
+    start_date: 1994-01-01
+- model: users.Membership
+  pk: 15
+  fields:
+    user:
+      - perkrifj
+    role: leader
+    abakus_group: 12
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 16
+  fields:
+    user:
+      - stalepe
+    abakus_group: 12
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 17
+  fields:
+    user:
+      - andenor
+    abakus_group: 12
+    start_date: 1994-01-01
+
+
+- model: users.Membership
+  pk: 18
+  fields:
+    user:
+      - fredriry
+    abakus_group: 12
     start_date: 1994-01-01

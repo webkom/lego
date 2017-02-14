@@ -18,7 +18,7 @@ log = get_logger()
 
 class AsyncRegister(celery_app.Task):
     serializer = 'json'
-    default_retry_delay = 30
+    default_retry_delay = 5
     registration = None
 
     def after_return(self, *args, **kwargs):
@@ -50,7 +50,7 @@ class Payment(celery_app.Task):
                     constants.SOCKET_PAYMENT_FAILURE, self.registration, error['message']
                 )
             else:
-                self.registration.charge_status = 'FAILURE'
+                self.registration.charge_status = constants.PAYMENT_FAILURE
                 self.registration.save()
                 notify_user_registration(
                     constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Payment failed'

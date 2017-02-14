@@ -10,6 +10,8 @@ from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, User
 
+from .utils import create_token
+
 _test_event_data = [
     {
         'title': 'Event1',
@@ -397,21 +399,11 @@ class StripePaymentTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
 
-    def create_token(self, number, cvc):
-        return stripe.Token.create(
-            card={
-                'number': number,
-                'exp_month': 12,
-                'exp_year': timezone.now().year + 1,
-                'cvc': cvc
-            },
-        )
-
     def issue_payment(self, token):
         return self.client.post(_get_detail_url(self.event.id) + 'payment/', {'token': token.id})
 
     def test_payment(self):
-        token = self.create_token('4242424242424242', '123')
+        token = create_token('4242424242424242', '123')
         res = self.issue_payment(token)
         self.assertEqual(res.status_code, 202)
         self.assertEqual(res.data.get('charge_status'), constants.PAYMENT_PENDING)
@@ -420,7 +412,7 @@ class StripePaymentTestCase(APITestCase):
         self.assertEqual(get_object.data.get('charge_status'), 'succeeded')
 
     def test_refund_webhook(self):
-        token = self.create_token('4242424242424242', '123')
+        token = create_token('4242424242424242', '123')
         self.issue_payment(token)
         registration = Registration.objects.get(event=self.event, user=self.abakus_user)
 

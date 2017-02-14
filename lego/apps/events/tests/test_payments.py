@@ -2,12 +2,13 @@ from unittest import skipIf
 
 import stripe
 from celery import chain
-from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
 from lego.apps.events.tasks import async_payment, registration_save
 from lego.apps.users.models import AbakusGroup, User
+
+from .utils import create_token
 
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
@@ -25,19 +26,8 @@ class StripePaymentTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
 
-    @staticmethod
-    def create_token(number, cvc):
-        return stripe.Token.create(
-            card={
-                'number': number,
-                'exp_month': 12,
-                'exp_year': timezone.now().year + 1,
-                'cvc': cvc
-            },
-        )
-
     def test_card_declined(self):
-        token = self.create_token('4000000000000002', '123')
+        token = create_token('4000000000000002', '123')
         registration = self.event.get_registration(self.abakus_user)
         with self.assertRaises(stripe.error.StripeError):
             chain(
@@ -49,7 +39,7 @@ class StripePaymentTestCase(APITestCase):
         self.assertEqual(registration.charge_status, 'card_declined')
 
     def test_card_incorrect_cvc(self):
-        token = self.create_token('4000000000000127', '123')
+        token = create_token('4000000000000127', '123')
         registration = self.event.get_registration(self.abakus_user)
         with self.assertRaises(stripe.error.StripeError):
             chain(
