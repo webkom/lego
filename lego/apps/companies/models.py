@@ -13,7 +13,7 @@ class Company(BasisModel, ObjectPermissionsModel):
 
     """ These are the values returned when calling without specific route """
     name = models.CharField(max_length=100)
-    student_contact = models.ForeignKey(User, related_name='companies')
+    student_contact = models.ForeignKey(User, related_name='companies', blank=True)
     admin_comment = models.CharField(max_length=100, blank=True)
     active = models.BooleanField(default=True)
 
