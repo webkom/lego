@@ -35,12 +35,10 @@ class PoolReadSerializer(BasisModelSerializer):
         read_only = True
 
     def create(self, validated_data):
-        from lego.apps.events.tasks import async_bump_on_pool_activation
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
         permission_groups = validated_data.pop('permission_groups')
         pool = Pool.objects.create(event=event, **validated_data)
         pool.permission_groups.set(permission_groups)
-        async_bump_on_pool_activation.apply_async((event.id, pool.id), eta=pool.activation_date)
 
         return pool
 
@@ -93,12 +91,10 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
         fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups')
 
     def create(self, validated_data):
-        from lego.apps.events.tasks import async_bump_on_pool_activation
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
         permission_groups = validated_data.pop('permission_groups')
         pool = Pool.objects.create(event=event, **validated_data)
         pool.permission_groups.set(permission_groups)
-        async_bump_on_pool_activation.apply_async((event.id, pool.id), eta=pool.activation_date)
 
         return pool
 

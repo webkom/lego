@@ -5,16 +5,19 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.tasks import async_register, check_events_for_bumps
-from lego.apps.events.tests.test_events_api import _get_pools_list_url
+from lego.apps.events.models import Event, Registration
+from lego.apps.events.tasks import (async_register, bump_waiting_users_to_new_pool,
+                                    check_events_for_registrations_with_expired_penalties)
 from lego.apps.events.tests.utils import get_dummy_users
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, Penalty
 from lego.utils.test_utils import fake_time
 
 
 class PoolActivationTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml',
+                'test_users.yaml',
+                'test_events.yaml',
+                'test_companies.yaml']
 
     _test_pools_data = [
         {
@@ -26,31 +29,76 @@ class PoolActivationTestCase(APITestCase):
     ]
 
     def setUp(self):
-        self.event = Event.objects.get(title='NO_POOLS_ABAKUS')
-        self.event.start_time = timezone.now() + timedelta(hours=12)
+        self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        self.event.start_time = timezone.now() + timedelta(days=1)
+        self.event.merge_time = timezone.now() + timedelta(hours=12)
         self.event.save()
-        self.pool = Pool.objects.create(
-            name='test', capacity=1, event=self.event,
-            activation_date=(timezone.now() - timedelta(hours=24))
-        )
-        self.pool.permission_groups = [AbakusGroup.objects.get(name='Abakus')]
-        self.pool.save()
+
+        self.pool_one = self.event.pools.get(name='Abakusmember')
+        self.pool_two = self.event.pools.get(name='Webkom')
+
+        self.pool_one.activation_date = timezone.now() - timedelta(days=1)
+        self.pool_one.capacity = 1
+        self.pool_one.save()
+
+        self.pool_two.activation_date = timezone.now() + timedelta(minutes=30)
+        self.pool_two.capacity = 2
+        self.pool_two.save()
 
     def tearDown(self):
         from django_redis import get_redis_connection
         get_redis_connection("default").flushall()
 
-    def create_pool_through_api(self, test_pool_index):
-        pool_user = User.objects.first()
-        AbakusGroup.objects.get(name='Webkom').add_user(pool_user)
-        self.client.force_authenticate(pool_user)
-        pool_response = self.client.post(_get_pools_list_url(
-            self.event.id), self._test_pools_data[test_pool_index]
-        )
-        return Pool.objects.get(id=pool_response.data.get('id', None))
+    def test_users_are_bumped_before_pool_activation(self):
+        """" Tests that users are bumped right before pool activation """
+        users = get_dummy_users(3)
 
-    def test_user_is_bumped_upon_pool_activation(self):
-        """" Tests that a waiting user is bumped when a new pool is activated """
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event,
+                                                              user=user)[0]
+            self.event.register(registration)
+
+        self.assertEqual(self.pool_two.registrations.count(), 0)
+        bump_waiting_users_to_new_pool()
+        self.assertEqual(self.pool_two.registrations.count(), 2)
+
+    def test_users_are_bumped_after_pool_activation(self):
+        """ Tests that users are bumped right after pool activation. """
+        users = get_dummy_users(3)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event,
+                                                              user=user)[0]
+            self.event.register(registration)
+
+        self.pool_two.activation_date = timezone.now() - timedelta(minutes=30)
+        self.pool_two.save()
+
+        bump_waiting_users_to_new_pool()
+
+        self.assertEqual(self.pool_two.registrations.count(), 2)
+
+    def test_too_many_users_waiting_for_bump(self):
+        """ Tests that only 2 users are bumped to a new pool with capacity = 2. """
+        users = get_dummy_users(4)
+        registrations = []
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event,
+                                                              user=user)[0]
+            self.event.register(registration)
+            registrations.append(Registration.objects.get(id=registration.id))
+
+        bump_waiting_users_to_new_pool()
+
+        self.assertEqual(self.pool_two.registrations.count(), 2)
+        self.assertIsNone(registrations[3].pool)
+
+    def test_isnt_bumped_without_permission(self):
+        """ Tests that a waiting user isnt bumped to a pool it cant access. """
         users = get_dummy_users(2)
 
         for user in users:
@@ -59,12 +107,72 @@ class PoolActivationTestCase(APITestCase):
                                                               user=user)[0]
             self.event.register(registration)
 
-        new_pool = self.create_pool_through_api(0)
-        self.assertEqual(new_pool.registrations.count(), 1)
+        bump_waiting_users_to_new_pool()
 
-    def test_several_users_are_bumped_upon_pool_activation(self):
-        """ Tests that we can bump several users (2) to a new pool. """
-        users = get_dummy_users(3)
+        self.assertEqual(self.pool_two.registrations.count(), 0)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
+
+    number_of_calls = 40
+
+    @mock.patch('django.utils.timezone.now',
+                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
+                             for i in range(number_of_calls)])
+    def test_isnt_bumped_with_penalties(self, mock_now):
+        """ Users should not be bumped if they have 3 penalties. """
+        self.event.start_time = mock_now() + timedelta(days=1)
+        self.event.merge_time = mock_now() + timedelta(hours=12)
+        self.event.save()
+
+        self.pool_one.activation_date = mock_now() - timedelta(days=1)
+        self.pool_one.save()
+
+        self.pool_two.activation_date = mock_now() + timedelta(minutes=30)
+        self.pool_two.save()
+
+        users = get_dummy_users(2)
+
+        Penalty.objects.create(
+            user=users[1],
+            reason='test',
+            weight=3,
+            source_event=self.event,
+            created_at=mock_now()
+        )
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event,
+                                                              user=user)[0]
+            self.event.register(registration)
+
+        bump_waiting_users_to_new_pool()
+
+        self.assertEqual(self.pool_two.registrations.count(), 0)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
+
+    def test_isnt_bumped_if_activation_is_far_into_the_future(self):
+        """ Users should not be bumped if the pool is activated more than
+            35 minutes in the future. """
+        self.pool_two.activation_date = timezone.now() + timedelta(minutes=40)
+        self.pool_two.save()
+
+        users = get_dummy_users(2)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event,
+                                                              user=user)[0]
+            self.event.register(registration)
+
+        bump_waiting_users_to_new_pool()
+
+        self.assertEqual(self.pool_two.registrations.count(), 0)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
+
+    def test_isnt_bumped_if_activation_is_far_into_the_past(self):
+        """ Users should not be bumped if the pool is activated more than
+            35 minutes in the past. """
+        users = get_dummy_users(2)
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
@@ -72,28 +180,21 @@ class PoolActivationTestCase(APITestCase):
                                                               user=user)[0]
             self.event.register(registration)
 
-        new_pool = self.create_pool_through_api(0)
-        self.assertEqual(new_pool.registrations.count(), 2)
+        self.pool_two.activation_date = timezone.now() - timedelta(minutes=40)
+        self.pool_two.save()
+        AbakusGroup.objects.get(name='Webkom').add_user(users[1])
 
-    def test_too_many_users_waiting_for_bump(self):
-        """ Tests that only 2 users are bumped to a new pool with capacity = 2. """
-        users = get_dummy_users(4)
-        registrations = []
+        bump_waiting_users_to_new_pool()
 
-        for user in users:
-            AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
-            self.event.register(registration)
-            registrations.append(Registration.objects.get(id=registration.id))
-
-        new_pool = self.create_pool_through_api(0)
-        self.assertEqual(new_pool.registrations.count(), 2)
-        self.assertIsNone(registrations[3].pool)
+        self.assertEqual(self.pool_two.registrations.count(), 0)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
 
 
 class PenaltyExpiredTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml']
+    fixtures = ['initial_abakus_groups.yaml',
+                'test_users.yaml',
+                'test_events.yaml',
+                'test_companies.yaml']
 
     def setUp(self):
         self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -143,7 +244,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
-        check_events_for_bumps.delay()
+        check_events_for_registrations_with_expired_penalties.delay()
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
 
@@ -177,7 +278,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
-        check_events_for_bumps.delay()
+        check_events_for_registrations_with_expired_penalties.delay()
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
 
@@ -211,7 +312,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
-        check_events_for_bumps.delay()
+        check_events_for_registrations_with_expired_penalties.delay()
         self.assertIsNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 0)
 
@@ -240,7 +341,7 @@ class PenaltyExpiredTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
 
-        check_events_for_bumps.delay()
+        check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
@@ -272,7 +373,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
-        check_events_for_bumps.delay()
+        check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
         self.assertIsNone(Registration.objects.get(user=users[2]).pool)
@@ -304,7 +405,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
-        check_events_for_bumps.delay()
+        check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(user=users[1]).pool)
         self.assertEqual(self.event.number_of_registrations, 2)
