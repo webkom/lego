@@ -2,7 +2,7 @@ import bleach
 from bs4 import BeautifulSoup
 from django_thumbor import generate_url
 from django.contrib.contenttypes.fields import GenericRelation
-from django.db import models
+from django.db import models, transaction
 from django.db.models import ManyToManyField
 from django.utils.text import slugify
 
@@ -65,9 +65,7 @@ class Content(SlugModel):
 
     @content.setter
     def content(self, value):
-        self.text = self.parse_content(value)
-
-    def parse_content(self, value):
+        images = []
         safe_content = bleach.clean(
             value,
             tags=[
@@ -78,9 +76,11 @@ class Content(SlugModel):
             strip=True
         )
         text = BeautifulSoup(safe_content, 'html.parser')
-        # for image in text.find_all('img'):
-        #   print(image.get('data-file-key'))
-        return str(text)
+        for image in text.find_all('img'):
+             images.append(image.get('data-file-key'))
+        if images:
+             self.images = images
+        self.text = str(text)
 
 
     @property
@@ -97,11 +97,24 @@ class Content(SlugModel):
             grouped[reaction.type_id]['users'].append(reaction.created_by)
         return grouped.values()
 
+
     class Meta:
         abstract = True
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            if not self.pk:
+                images = self.images
+                tags = self.tags
+                self.images = None
+                self.tags = None
+                super().save(*args, **kwargs)
+                self.images = images
+                self.tags = tags
+            return super().save(*args, **kwargs)
 
     @property
     def comment_target(self):
