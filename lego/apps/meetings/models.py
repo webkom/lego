@@ -1,3 +1,6 @@
+from django.core import signing, urlresolvers
+from django.core.mail import send_mail
+from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
 from lego.apps.content.models import Content
@@ -33,8 +36,27 @@ class Meeting(Content, BasisModel):
         return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
 
     def invite_user(self, user):
-        return self.invitations.update_or_create(user=user,
-                                                 meeting=self)
+        invitation = self.invitations.update_or_create(user=user,
+                                                       meeting=self)
+
+        # TODO think about "double" invite
+        accept_url = urlresolvers.reverse('api:v1:meeting-token-accept')
+        reject_url = urlresolvers.reverse('api:v1:meeting-token-reject')
+
+        token = invitation[0].generate_invitation_token()
+        send_mail(
+            subject=f'Invitasjon til møte: {self.title}',
+            message=(f'Hei {user.get_short_name()},\n\n'
+                     f'Du ble invitert til møte:\n\n'
+                     f'Dato: {self.start_time}\n\n'
+                     f'{self.report}\n\n'
+                     f'Delta på møte: {accept_url}?token={token}\n'
+                     f'Ikke delta på møte: {reject_url}?token={token}'),
+            recipient_list=[user.email],
+            from_email='webkom@abakus.no'
+        )
+
+        return invitation
 
     def invite_group(self, group):
         for user in group.users.all():
@@ -64,6 +86,35 @@ class MeetingInvitation(BasisModel):
     user = models.ForeignKey(User, related_name='invitations')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES,
                                       default=NO_ANSWER)
+
+    def generate_invitation_token(self):
+        data = signing.dumps({
+            'user_id': self.user.id,
+            'meeting_id': self.meeting.id
+        })
+
+        token = TimestampSigner().sign(data)
+        return token
+
+    @staticmethod
+    def validate_token(token):
+        """
+        Validate token.
+
+        returns MeetingInvitation or None
+        """
+
+        try:
+            # Valid in 7 days
+            valid_in = 60 * 60 * 24 * 7
+            data = signing.loads(TimestampSigner().unsign(token, max_age=valid_in))
+
+            return MeetingInvitation.objects.filter(
+                user=int(data['user_id']),
+                meeting=int(data['meeting_id'])
+            )[0]
+        except (BadSignature, SignatureExpired):
+            return None
 
     def accept(self):
         self.status = self.ATTENDING
