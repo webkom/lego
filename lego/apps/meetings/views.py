@@ -1,7 +1,9 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from lego.apps.meetings.filters import MeetingFilterBackend
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.permissions import (MeetingIntitationTokenPermission,
                                             MeetingInvitationPermissions, MeetingPermissions)
@@ -14,6 +16,7 @@ from lego.apps.permissions.views import AllowedPermissionsMixin
 
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Meeting.objects.prefetch_related('invitations', 'invitations__user')
+    filter_backends = (MeetingFilterBackend, DjangoFilterBackend,)
     permission_classes = (MeetingPermissions,)
     serializer_class = MeetingSerializer
 

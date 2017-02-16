@@ -1,20 +1,22 @@
-from rest_framework import decorators, viewsets
+from datetime import timedelta
+
 from django.http import HttpResponse
+from django.template import Context, loader
+from django.utils import timezone
+from django_ical import feedgenerator
+from rest_framework import decorators, filters, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from lego.apps.events.models import Event
+from lego.apps.ical import constants
+from lego.apps.meetings import filters as meeting_filters
 from lego.apps.meetings.models import Meeting
+from lego.apps.permissions.filters import AbakusObjectPermissionFilter, filter_queryset
 
-
-from django_ical import feedgenerator
-from datetime import datetime, timedelta
-
-
-from .permissions import ICalTokenPermission
 from .models import ICalToken
+from .permissions import ICalTokenPermission
 from .serializers import ICalTokenSerializer
-
-from rest_framework.permissions import IsAuthenticated
 
 
 class ICalTokenViewset(viewsets.ViewSet):
@@ -25,13 +27,6 @@ class ICalTokenViewset(viewsets.ViewSet):
     """
 
     permission_classes = (IsAuthenticated, )
-
-    @decorators.list_route(methods=['GET'])
-    def get(self, request, *args, **kwargs):
-        """Get ICalToken."""
-        token = ICalToken.objects.get_or_create(user=request.user)[0]
-        serializer = ICalTokenSerializer(token)
-        return Response(serializer.data)
 
     @decorators.list_route(methods=['GET', 'POST'])
     def regenerate(self, request, *args, **kwargs):
@@ -57,63 +52,75 @@ class ICalViewset(viewsets.ViewSet):
     usage: [events/?token=yourtoken](events/?token=yourtoken)
     """
 
-    permission_classes = (ICalTokenPermission,)
+    filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
+    queryset = Event.objects.all()
+
+    permission_classes = (ICalTokenPermission, )
 
     def list(self, request):
         """List all the different icals."""
+        token = ICalToken.objects.get_or_create(user=request.token_user)[0]
         path = request.get_full_path()
         data = {
-            'calendars': [
-                {
-                    'name': 'events',
-                    'description': 'All events you can see.',
-                    'path': f'{path}events/'
-                },
-                {
-                    'name': 'meetings',
-                    'description': 'All your meetings.',
-                    'path': f'{path}meetings/'
-                },
-                {
-                    'name': 'favorites',
-                    'description': 'All your favorite events.',
-                    'path': f'{path}events/'
-                },
-                {
-                    'name': 'registration',
-                    'description': 'All event registration times',
-                    'path': f'{path}registrations/'
-                },
-            ]
+            'result': {
+                'calendars': [
+                    {
+                        'name': 'events',
+                        'description': 'Calendar with all events on Abakus.no.',
+                        'path': f'{path}events/'
+                    },
+                    {
+                        'name': 'personal',
+                        'description': 'Calendar with your favorite events & meetings.',
+                        'path': f'{path}personal/'
+                    },
+                    {
+                        'name': 'registration',
+                        'description': 'Calendar with all event registration times.',
+                        'path': f'{path}registrations/'
+                    },
+                ],
+
+                'token': ICalTokenSerializer(token).data
+            }
         }
         return Response(data=data)
 
-    def addEvents(feed, events):
-        """Add events to the given feed."""
-        pass
+    @decorators.list_route(methods=['GET'])
+    def personal(self, request):
+        """Personal ical route."""
+        feed = feedgenerator.ICal20Feed(
+            title=u"ICalendar for user: " + str(request.token_user),
+            link=request.get_full_path,
+            description=u"List of favorite events and meetings from Abakus.no",
+            language=u"nb",
+        )
+        # TODO FIXME add favorite events
 
-    def addMeetings(self, feed, meetings):
-        """Add meetings to the given feed."""
+        meetings = meeting_filters.filter_queryset(
+            request.token_user,
+            Meeting.objects.filter(
+                end_time__gt=timezone.now() - timedelta(
+                    days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+                )
+            )
+        )
+        desc = loader.get_template("ical/meeting_description.txt")
         for meeting in meetings:
+            context = Context({
+                "title": meeting.title,
+                "report": meeting.report,
+                "reportAuthor":
+                meeting.report_author.username if meeting.report_author else 'Ikke valgt',
+                "url": meeting.get_absolute_url()
+            })
             feed.add_item(
                 title=meeting.title,
                 link=meeting.get_absolute_url(),
-                description=f'{meeting.report}\n\n{meeting.get_absolute_url()}',
+                description=desc.render(context),
                 start_datetime=meeting.start_time,
                 end_datetime=meeting.end_time
             )
-
-    @decorators.list_route(methods=['GET'])
-    def meetings(self, request):
-        """Meeting ical route."""
-        feed = feedgenerator.ICal20Feed(
-            title=u"ICalendar for " + str(request.token_user),
-            link=u"https://api.abakus.no/api/v1/calendar/ical/events.ics",
-            description=u"List of events from Abakus.no",
-            language=u"nb",
-        )
-
-        self.addMeetings(feed, Meeting.objects.all())
 
         response = HttpResponse()
         feed.write(response, 'utf-8')
@@ -121,32 +128,41 @@ class ICalViewset(viewsets.ViewSet):
 
     @decorators.list_route(methods=['GET'])
     def registrations(self, request):
-        """Registrations ical route."""
+        """Registration ical route."""
         feed = feedgenerator.ICal20Feed(
             title=u"ICalendar for " + str(request.token_user),
-            link=request.get_full_path(),
+            link=request.get_full_path,
             description=u"List of registration time for events from Abakus.no",
             language=u"nb",
         )
 
-        events = (Event.objects
-                  .all()
-                  .order_by('-start_time')
-                  # Filter removed for testing
-                  # .filter(end_time__gt=datetime.today())
-                  )
+        events = filter_queryset(
+            request.user,
+            Event.objects.all().filter(
+                end_time__gt=timezone.now()
+            )
+        )
 
+        desc = loader.get_template("ical/event_description.txt")
         for event in events:
             reg_time = event.get_earliest_registration_time(request.token_user)
             if not reg_time:
                 continue
 
+            context = Context({
+                "description": event.description,
+                "price": event.get_price(request.token_user),
+                "url": event.get_absolute_url()
+            })
+
             feed.add_item(
                 title=f'Reg: {event.title}',
                 link=event.get_absolute_url(),
-                description=event.description,
+                description=desc.render(context),
                 start_datetime=reg_time,
-                end_datetime=reg_time + timedelta(minutes=15)
+                end_datetime=reg_time + timedelta(
+                    minutes=constants.ICAL_REGISTRATION_EVENT_LENGTH_IN_MINUTES
+                )
             )
         response = HttpResponse()
         feed.write(response, 'utf-8')
@@ -158,28 +174,34 @@ class ICalViewset(viewsets.ViewSet):
         """Event ical route."""
         feed = feedgenerator.ICal20Feed(
             title=u"ICalendar for " + str(request.token_user),
-            link=u"https://api.abakus.no/api/v1/calendar/ical/events.ics",
+            link=request.get_full_path,
             description=u"List of events from Abakus.no",
             language=u"nb",
         )
 
-        events = (Event.objects
-                  .all()
-                  .order_by('-start_time')
-                  .filter(end_time__gt=datetime.today() - timedelta(days=7)))
+        events = filter_queryset(
+            request.user,
+            Event.objects.all().filter(
+                end_time__gt=timezone.now() - timedelta(
+                    days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+                )
+            )
+        )
+
+        desc = loader.get_template("ical/event_description.txt")
         for event in events:
+            context = Context({
+                "description": event.description,
+                "price": event.get_price(request.token_user),
+                "url": event.get_absolute_url()
+            })
             feed.add_item(
                 title=event.title,
                 link=event.get_absolute_url(),
-                description=event.description,
+                description=desc.render(context),
                 start_datetime=event.start_time,
                 end_datetime=event.end_time
             )
         response = HttpResponse()
         feed.write(response, 'utf-8')
         return response
-
-    @decorators.list_route(methods=['GET'])
-    def favorites(self, request):
-        """Event favorites ical route."""
-        return self.events(request)

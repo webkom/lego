@@ -10,6 +10,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
+from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
                                       MeetingViewSet)
@@ -23,7 +24,6 @@ from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.users import UsersViewSet
-from lego.apps.ical.viewsets import ICalViewset, ICalTokenViewset
 
 router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)

@@ -1,5 +1,7 @@
 from rest_framework import permissions
+
 from .models import ICalToken
+
 
 class ICalTokenPermission(permissions.IsAuthenticated):
 

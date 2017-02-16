@@ -56,7 +56,7 @@ class Meeting(Content, BasisModel):
 
     def uninvite_user(self, user):
         invitation = self.invitations.get(user=user)
-        invitation.delete()
+        invitation.delete(force=True)
 
     def can_edit(self, user):
         return self.created_by == user or self.invited_users.filter(id=user.id).exists()

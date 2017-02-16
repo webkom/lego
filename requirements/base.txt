@@ -40,6 +40,6 @@ django-redis==4.7.0
 django-ipware==1.1.6
 django-thumbor==0.5.6
 
-# Ical
-django-ical
-icalendar
+# Ical-export
+django-ical==1.4
+icalendar==3.11.2
