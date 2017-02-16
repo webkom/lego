@@ -39,7 +39,7 @@ router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
 router.register(r'memberships', MembershipViewSet)
-router.register(r'joblistings', JoblistingViewSet)
+router.register(r'joblistings', JoblistingViewSet, base_name='joblisting')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'pages', PageViewSet)

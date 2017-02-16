@@ -33,7 +33,7 @@ class Joblisting(Content, BasisModel):
     company = models.ForeignKey(Company, related_name='joblistings')
     responsible = models.ForeignKey(CompanyContact, related_name='joblistings', null=True)
     deadline = models.DateTimeField(null=True)
-    visible_from = models.DateTimeField()
+    visible_from = models.DateTimeField(auto_now_add=True)
     visible_to = models.DateTimeField()
     job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES)
     workplaces = models.ManyToManyField(Workplace)
