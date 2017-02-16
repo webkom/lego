@@ -4,7 +4,7 @@ from lego.apps.ical.models import ICalToken
 from lego.apps.users.models import User
 
 
-class MeetingTestCase(TestCase):
+class TokenTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 

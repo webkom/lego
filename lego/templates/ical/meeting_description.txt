@@ -1,0 +1,9 @@
+Du er invitert i møte: {{title}}
+
+Referat:
+{{report}}
+
+Referent:
+{{reportAuthor}}
+
+{{url}}

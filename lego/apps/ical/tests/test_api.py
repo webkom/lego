@@ -1,10 +1,12 @@
+from unittest import mock
+
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase
 
+from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting
 from lego.apps.users.models import AbakusGroup, User
-
-from lego.apps.ical.models import ICalToken
 
 
 def _get_token_url():
@@ -15,75 +17,84 @@ def _get_token_regenerate_url():
     return reverse('api:v1:calendar-token-regenerate')
 
 
-def _get_ical_list_url():
+def _get_ical_list_url(token):
     return reverse('api:v1:calendar-ical-list') + f'?token={token}'
-
-
-def _get_ical_meetings_url(token):
-    return reverse('api:v1:calendar-ical-meetings') + f'?token={token}'
 
 
 def _get_ical_events_url(token):
     return reverse('api:v1:calendar-ical-events') + f'?token={token}'
 
 
-def _get_ical_favorites_url(token):
-    return reverse('api:v1:calendar-ical-favorites') + f'?token={token}'
+def _get_ical_personal_url(token):
+    return reverse('api:v1:calendar-ical-personal') + f'?token={token}'
 
 
 def _get_ical_registrations_url(token):
     return reverse('api:v1:calendar-ical-registrations') + f'?token={token}'
 
 
-def _get_all_ical_urls():
+def _get_all_ical_urls(token):
     return [
-        _get_ical_events_url,
-        _get_ical_favorites_url,
-        _get_ical_registrations_url,
-        _get_ical_meetings_url
+        _get_ical_list_url(token),
+        _get_ical_events_url(token),
+        _get_ical_registrations_url(token),
+        _get_ical_personal_url(token)
     ]
 
 
-class RetreiveICalTestCase(APITestCase):
+NOW_FOR_TESTING = timezone.make_aware(
+    timezone.datetime(2009, 1, 1, 1),
+    timezone.get_current_timezone()
+)
+
+
+@mock.patch('django.utils.timezone.now', side_effect=lambda: NOW_FOR_TESTING)
+class RetreiveDateDependentICalTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
-                'test_meetings.yaml', 'test_users.yaml']
+                'test_meetings.yaml', 'test_users.yaml', 'test_companies.yaml']
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)
-        self.meeting2 = Meeting.objects.get(id=2)
         self.abakommer = User.objects.get(username='abakommer')
         AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
-        self.abakule = User.objects.get(username='test1')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
-        self.pleb = User.objects.get(username='pleb')
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakommer)
+        AbakusGroup.objects.get(pk=11).add_user(self.abakommer)
         self.token = ICalToken.objects.get_or_create(user=self.abakommer)[0].token
 
-    def test_get_ical_events_token(self):
+    def test_get_ical_personal_token(self, *args):
+        self.meeting.invite_user(self.abakommer)
+        res = self.client.get(_get_ical_personal_url(self.token))
+        self.assertEqual(res.status_code, 200)
+        self.meeting.uninvite_user(self.abakommer)
+
+    def test_get_with_token(self, *args):
+        for url in _get_all_ical_urls(self.token):
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200)
+
+    def test_get_ical_events_token(self, *args):
         res = self.client.get(_get_ical_events_url(self.token))
         self.assertEqual(res.status_code, 200)
 
-    def test_get_ical_meetings_token(self):
-        res = self.client.get(_get_ical_meetings_url(self.token))
-        self.assertEqual(res.status_code, 200)
-
-    def test_get_ical_favorites_token(self):
-        res = self.client.get(_get_ical_favorites_url(self.token))
-        self.assertEqual(res.status_code, 200)
-
-    def test_get_ical_registrations_token(self):
+    def test_get_ical_registrations_token(self, *args):
         res = self.client.get(_get_ical_registrations_url(self.token))
         self.assertEqual(res.status_code, 200)
 
-    def test_get_without_token(self):
-        for func in _get_all_ical_urls():
-            res = self.client.get(func(''))
+    def test_get_ical_authenticated(self, *args):
+        self.client.force_authenticate(self.abakommer)
+        for url in _get_all_ical_urls(self.token):
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200)
+
+    def test_get_ical_without_authentication(self, *args):
+        for url in _get_all_ical_urls(''):
+            res = self.client.get(url)
             self.assertEqual(res.status_code, 401)
 
-    def test_as_auth_as_user(self):
-        self.client.force_authenticate(self.abakommer)
-        for func in _get_all_ical_urls():
-            res = self.client.get(func(''))
-            self.assertEqual(res.status_code, 200)
+    def test_get_ical_with_invalid_token(self, *args):
+        for url in _get_all_ical_urls('invalid-token-here'):
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 401)
 
 
 class ICalTokenGenerateTestCase(APITestCase):

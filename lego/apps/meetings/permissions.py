@@ -17,7 +17,6 @@ class MeetingPermissions(AbakusPermission):
 
 
 class MeetingInvitationPermissions(AbakusPermission):
-
     def has_permission(self, request, view):
         meeting = Meeting.objects.get(id=view.kwargs['meeting_pk'])
         return meeting.can_edit(request.user)
