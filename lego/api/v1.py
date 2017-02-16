@@ -11,7 +11,8 @@ from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
 from lego.apps.joblistings.views import JoblistingViewSet
-from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
+from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
+                                      MeetingViewSet)
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
@@ -39,6 +40,8 @@ router.register(r'interest-groups', InterestGroupViewSet)
 router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
+router.register(r'meeting-token',
+                MeetingInvitationTokenViewSet, base_name='meeting-token')
 router.register(r'memberships', MembershipViewSet)
 router.register(r'joblistings', JoblistingViewSet, base_name='joblisting')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
