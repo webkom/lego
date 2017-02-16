@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import stripe
 from django.core.cache import cache
 from django.db import IntegrityError, transaction
@@ -7,7 +9,7 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
-from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.models import Event, Registration
 
 from .websockets import notify_event_registration, notify_failed_registration
 
@@ -71,7 +73,7 @@ def stripe_webhook_event(event_id, event_type):
 
 
 @celery_app.task(serializer='json')
-def check_events_for_bumps():
+def check_events_for_registrations_with_expired_penalties():
     events = Event.objects.filter(start_time__gte=timezone.now()).exclude(registrations=None)
     for event in events:
         with cache.lock(f'event_lock-{event.id}'):
@@ -84,73 +86,17 @@ def check_events_for_bumps():
                                 break
 
 
-@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
-def async_bump_after_expired_penalties(self, registration_id):
-    """
-    Tries to bump a user that had 3 penalties at registration, but the penalties
-    expire before the event starts. Only does something if there is a free slot at the time.
-    :param registration_id: id of registration to be bumped.
-    :return:
-    """
-    registration = Registration.objects.get(id=registration_id)
-    user = registration.user
-    event = registration.event
-    try:
-        with transaction.atomic():
-            if not (event.is_full or user.number_of_penalties() >= 3) and not registration.pool:
-                with cache.lock(f'event_lock-{event.id}', timeout=20):
-                    """ This is a simplified version of the register method,
-                    without a lot of unneeded checks """
-                    if event.is_merged:
-                        event.check_for_bump_or_rebalance(event.pools.first())
-                        return
-
-                    possible_pools = event.get_possible_pools(user)
-                    if len(possible_pools) == 1 and event.pools.count() == 1:
-                        event.check_for_bump_or_rebalance(possible_pools[0])
-                        return
-
-                    open_pools = event.calculate_full_pools(possible_pools)[1]
-                    if not open_pools:
-                        return
-                    elif len(open_pools) == 1:
-                        event.check_for_bump_or_rebalance(open_pools[0])
-                    else:
-                        exclusive_pools = event.find_most_exclusive_pools(open_pools)
-                        if len(exclusive_pools) == 1:
-                            event.check_for_bump_or_rebalance(exclusive_pools[0])
-                        else:
-                            chosen_pool = event.select_highest_capacity(exclusive_pools)
-                            event.check_for_bump_or_rebalance(chosen_pool)
-    except LockError as e:
-        log.error(
-            'expired_penalty_bump_cache_lock_error', exception=e, registration_id=registration.id
-        )
-        self.retry(exc=e, max_retries=3)
-    except IntegrityError as e:
-        log.error('expired_penalty_bump_error', exception=e, registration_id=registration.id)
-
-
-@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
-def async_bump_on_pool_activation(self, event_id, pool_id):
-    """
-    Tries to bump users if a new pool opens while there are users in the waiting list.
-    :param event_id: Duh.
-    :param pool_id: Id of the new pool.
-    :return:
-    """
-    event = Event.objects.get(id=event_id)
-    pool = Pool.objects.get(id=pool_id)
-    try:
-        with transaction.atomic():
+@celery_app.task(serializer='json')
+def bump_waiting_users_to_new_pool():
+    events = Event.objects.filter(start_time__gte=timezone.now()).exclude(registrations=None)
+    for event in events:
+        with cache.lock(f'event_lock-{event.id}'):
             if event.waiting_registrations.exists():
-                with cache.lock(f'event_lock-{event_id}', timeout=20):
-                    for i in range(event.waiting_registrations.count()):
-                        event.check_for_bump_or_rebalance(pool)
-    except LockError as e:
-        log.error(
-            'pool_activation_bump_cache_lock_error', exception=e, event_id=event.id, pool_id=pool.id
-        )
-        self.retry(exc=e, max_retries=3)
-    except IntegrityError as e:
-        log.error('pool_activation_bump_error', exception=e, event_id=event.id, pool_id=pool.id)
+                for pool in event.pools.all():
+                    if not pool.is_full:
+                        act = pool.activation_date
+                        now = timezone.now()
+                        if not pool.is_activated and act < now + timedelta(minutes=35):
+                            event.early_bump(pool)
+                        elif pool.is_activated and act > now - timedelta(minutes=35):
+                            event.early_bump(pool)
