@@ -1,5 +1,22 @@
 from lego.apps.meetings.models import Meeting
+from lego.apps.permissions import register
+from lego.apps.permissions.index import PermissionIndex
 from lego.apps.permissions.permissions import AbakusPermission
+
+
+class MeetingPermissionIndex(PermissionIndex):
+
+    queryset = Meeting.objects.all()
+
+    list = (['/sudo/admin/meetings/list/'], 'can_view')
+    retrieve = (['/sudo/admin/meetings/retrieve/'], 'can_view')
+    create = (['/sudo/admin/meetings/create/'], None)
+    update = (['/sudo/admin/meetings/update/'], 'can_edit')
+    partial_update = (['/sudo/admin/meetings/update/'], 'can_edit')
+    destroy = (['/sudo/admin/meetings/destroy/'], 'can_edit')
+
+
+register(MeetingPermissionIndex)
 
 
 class MeetingPermissions(AbakusPermission):

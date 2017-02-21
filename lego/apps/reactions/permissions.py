@@ -1,6 +1,22 @@
+from lego.apps.permissions import register
+from lego.apps.permissions.index import PermissionIndex
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.reactions.models import Reaction
 from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
+
+
+class ReactionPermissionIndex(PermissionIndex):
+
+    queryset = Reaction.objects.all()
+
+    list = ([], None)
+    retrieve = ([], None)
+    create = (['/sudo/admin/reactions/create/'], None)
+    destroy = (['/sudo/admin/reactions/destroy/'], 'can_edit')
+
+
+register(ReactionPermissionIndex)
 
 
 class ReactionPermission(AbakusPermission):

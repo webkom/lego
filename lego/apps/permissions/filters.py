@@ -33,8 +33,8 @@ class AbakusObjectPermissionFilter(filters.BaseFilterBackend):
     """
     def filter_queryset(self, request, queryset, view):
         # If user has keyword permissions, return entire queryset.
-        has_keyword_permissions = getattr(request, 'user_has_keyword_permissions', False)
-        if has_keyword_permissions:
+        has_permissions_tuple = getattr(request, 'user_has_permissions', False)
+        if has_permissions_tuple and has_permissions_tuple[1]:
             return queryset
 
         return filter_queryset(request.user, queryset)

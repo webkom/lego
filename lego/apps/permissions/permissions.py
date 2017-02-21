@@ -2,6 +2,7 @@ from prometheus_client import Summary
 from rest_framework import permissions
 
 from .models import ObjectPermissionsModel
+from .registry import get_permission_string
 
 permissions_has_permission = Summary('permissions_has_permission', 'Track has_permission')
 permissions_has_object_permission = Summary(
@@ -67,10 +68,10 @@ class AbakusPermission(permissions.BasePermission):
             return True
 
         authenticated = self.is_authenticated(user)
-        required_keyword_permissions = self.required_keyword_permissions(action, model)
+        required_permissions = get_permission_string(model, action)
 
         # Check keyword permission (permission_map)
-        has_perms = authenticated and user.has_perms(required_keyword_permissions)
+        has_perms = authenticated and user.has_perm(required_permissions)
         return has_perms
 
     def _has_object_permission(self, action, instance, user, safe_method=True):
