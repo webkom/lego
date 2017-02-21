@@ -3,17 +3,14 @@ from lego.apps.permissions.index import PermissionIndex
 from lego.apps.permissions.permissions import AbakusPermission
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Membership, User
-from lego.utils.content_types import instance_to_content_type_action_string
 
 
 def can_retrieve_user(user, retriever):
-    required_permission = instance_to_content_type_action_string(user, 'retrieve')
-    return user == retriever or retriever.has_perm(required_permission)
+    return user == retriever or retriever.has_perm('users.user.can_retrieve')
 
 
 def can_retrieve_abakusgroup(group, retriever):
-    required_permission = instance_to_content_type_action_string(group, 'retrieve')
-    return group in retriever.all_groups or retriever.has_perm(required_permission)
+    return group in retriever.all_groups or retriever.has_perm('users.abakusgroup.can_retrieve')
 
 
 class UsersPermissionIndex(PermissionIndex):
@@ -24,7 +21,10 @@ class UsersPermissionIndex(PermissionIndex):
     retrieve = ([], None)
     create = (['/sudo/admin/users/create/'], None)
     update = (['/sudo/admin/users/update/'], 'can_edit')
+    partial_update = (['/sudo/admin/users/update/'], 'can_edit')
     destroy = (['/sudo/admin/users/destroy/'], 'can_edit')
+
+    can_retrieve = (['/sudo/admin/users/retrieve/'], 'can_view')
 
 
 class GroupPermissionIndex(PermissionIndex):
@@ -35,7 +35,10 @@ class GroupPermissionIndex(PermissionIndex):
     retrieve = ([], None)
     create = (['/sudo/admin/groups/create/'], None)
     update = (['/sudo/admin/groups/update/'], 'can_edit')
+    partial_update = (['/sudo/admin/groups/update/'], 'can_edit')
     destroy = (['/sudo/admin/groups/destroy/'], 'can_edit')
+
+    can_retrieve = (['/sudo/admin/groups/retrieve/'], 'can_view')
 
 
 register(UsersPermissionIndex)
@@ -43,9 +46,6 @@ register(GroupPermissionIndex)
 
 
 class UsersPermissions(AbakusPermission):
-    permission_map = {
-        'retrieve': [],
-    }
 
     allowed_individual = ['retrieve', 'update', 'partial_update']
 
@@ -65,14 +65,6 @@ class UsersPermissions(AbakusPermission):
 
 
 class AbakusGroupPermissions(AbakusPermission):
-    permission_map = {
-        'list': [],
-        'create': ['/sudo/admin/groups/create/'],
-        'retrieve': [],
-        'update': ['/sudo/admin/groups/update/'],
-        'partial_update': ['/sudo/admin/groups/update/'],
-        'destroy': ['/sudo/admin/groups/destroy/'],
-    }
 
     allowed_leader = ['update', 'partial_update']
 

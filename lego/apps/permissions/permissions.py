@@ -18,7 +18,6 @@ class AbakusPermission(permissions.BasePermission):
     default_permission = '/sudo/admin/{model_name}s/{action}/'
     default_require_auth = True
 
-    permission_map = {}
     authentication_map = {}
     check_object_permission = False
 
@@ -26,7 +25,7 @@ class AbakusPermission(permissions.BasePermission):
     def default_keyword_permission(cls, action, model_cls):
         """
         Create default permission string based on the model class, action and default_permission
-        format. This is used when no permission is provided for a action in the permission_map.
+        format.
         """
         kwargs = {
             'app_label': model_cls._meta.app_label,
@@ -34,19 +33,6 @@ class AbakusPermission(permissions.BasePermission):
             'action': action
         }
         return cls.default_permission.format(**kwargs)
-
-    def required_keyword_permissions(self, action, model_cls):
-        """
-        Get required keyword permissions based on the action and model class.
-        Override the permission_map to create custom permissions, the default_keyword_permission
-        function is used otherwise.
-        """
-        if action == 'partial_update':
-            action = 'update'
-
-        return self.permission_map.get(action, [
-            self.default_keyword_permission(action, model_cls)
-        ])
 
     def require_auth(self, action):
         """
