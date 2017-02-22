@@ -20,6 +20,7 @@ from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.users import UsersViewSet
+from lego.apps.trophies.views import TrophyViewSet
 
 router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)
@@ -47,6 +48,7 @@ router.register(r'search/search', SearchViewSet, base_name='search')
 router.register(r'users', UsersViewSet)
 router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction_types', ReactionTypeViewSet)
+router.register(r'trophies', TrophyViewSet)
 router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'followers/user', FollowUserViewSet)

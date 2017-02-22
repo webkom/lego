@@ -1,0 +1,75 @@
+- model: trophies.Trophy
+  pk: 1
+  fields:
+    title: 'First Comment'
+    description: 'Post a comment on the website to recieve this trophy'
+    points: 1
+    content_type: ['comments', 'Comment']
+    content_count: 1
+
+- model: trophies.Trophy
+  pk: 2
+  fields:
+    title: 'Keep On Going'
+    description: 'You just reached 50 comments, keep on going!'
+    points: 5
+    content_type: ['comments', 'Comment']
+    content_count: 50
+
+- model: trophies.Trophy
+  pk: 3
+  fields:
+    title: 'Crazy Commenter'
+    description: '100 comments? That is crazy!'
+    points: 10
+    content_type: ['comments', 'Comment']
+    content_count: 100
+
+- model: trophies.UserTrophy
+  pk: 1
+  fields:
+    user: 1
+    trophy: 1
+    award_date: '2016-11-07T20:00:00+00:00'
+
+- model: trophies.UserTrophy
+  pk: 2
+  fields:
+    user: 2
+    trophy: 1
+    award_date: '2016-11-07T20:00:00+00:00'
+
+- model: trophies.UserTrophy
+  pk: 3
+  fields:
+    user: 3
+    trophy: 1
+    award_date: '2016-11-07T20:00:00+00:00'
+
+- model: trophies.UserTrophy
+  pk: 4
+  fields:
+    user: 4
+    trophy: 1
+    award_date: '2016-11-07T20:00:00+00:00'
+
+- model: trophies.UserTrophy
+  pk: 5
+  fields:
+    user: 5
+    trophy: 1
+    award_date: '2016-11-07T20:00:00+00:00'
+
+- model: trophies.UserTrophy
+  pk: 6
+  fields:
+    user: 1
+    trophy: 2
+    award_date: '2016-11-14T20:00:00+00:00'
+
+- model: trophies.UserTrophy
+  pk: 7
+  fields:
+    user: 1
+    trophy: 3
+    award_date: '2016-11-21T20:00:00+00:00'
