@@ -10,6 +10,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
+from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
@@ -38,6 +39,7 @@ router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
 router.register(r'memberships', MembershipViewSet)
+router.register(r'joblistings', JoblistingViewSet, base_name='joblisting')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'oauth2/applications', ApplicationViewSet)
 router.register(r'pages', PageViewSet)
