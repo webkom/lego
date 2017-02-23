@@ -13,7 +13,7 @@ class MeetingInvitationSerializer(BasisModelSerializer):
 
     class Meta:
         model = MeetingInvitation
-        fields = ('user', 'status')
+        fields = ('user', 'status', 'meeting')
 
     def create(self, validated_data):
         meeting = Meeting.objects.get(id=self.context['view'].kwargs['meeting_pk'])
