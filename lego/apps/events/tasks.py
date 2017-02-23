@@ -133,9 +133,9 @@ def async_payment(self, registration_id, token):
 def registration_save(self, result, registration_id):
     try:
         registration = Registration.objects.get(id=registration_id)
-        registration.charge_id = result.id
-        registration.charge_amount = result.amount
-        registration.charge_status = result.status
+        registration.charge_id = result['id']
+        registration.charge_amount = result['amount']
+        registration.charge_status = result['status']
         registration.save()
         notify_user_registration(constants.SOCKET_PAYMENT_SUCCESS, registration)
     except IntegrityError as e:
