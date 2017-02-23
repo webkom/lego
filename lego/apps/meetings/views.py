@@ -1,4 +1,4 @@
-from rest_framework import decorators, permissions, status, viewsets
+from rest_framework import decorators, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
@@ -73,7 +73,8 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
     Reject or accept invitation to meeting. It is genereated when
     user is invited to a meeting, and sendt in the invitation email.
 
-    To accept: [accept/?token=yourtoken](accept/)  
+    To accept: [accept/?token=yourtoken](accept/)
+
     To reject: [reject/?token=yourtoken](reject/)
     """
     permission_classes = (MeetingIntitationTokenPermission, )
