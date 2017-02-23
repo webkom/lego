@@ -21,8 +21,8 @@ class AsyncRegister(celery_app.Task):
     default_retry_delay = 5
     registration = None
 
-    def after_return(self, *args, **kwargs):
-        if args[0] == 'FAILURE' and self.request.retries == self.max_retries:
+    def on_failure(self, *args):
+        if self.request.retries == self.max_retries:
             self.registration.status = constants.FAILURE_REGISTER
             self.registration.save()
             notify_user_registration(constants.SOCKET_PAYMENT_FAILURE, self.registration)
