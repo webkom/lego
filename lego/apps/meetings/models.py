@@ -1,9 +1,9 @@
-from django.core import signing, urlresolvers
-from django.core.mail import send_mail
+from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
 from lego.apps.content.models import Content
+from lego.apps.meetings.tasks import async_notify_user_about_invitation
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -36,27 +36,16 @@ class Meeting(Content, BasisModel):
         return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
 
     def invite_user(self, user):
-        invitation = self.invitations.update_or_create(user=user,
-                                                       meeting=self)
-
-        # TODO think about "double" invite
-        accept_url = urlresolvers.reverse('api:v1:meeting-token-accept')
-        reject_url = urlresolvers.reverse('api:v1:meeting-token-reject')
-
-        token = invitation[0].generate_invitation_token()
-        send_mail(
-            subject=f'Invitasjon til møte: {self.title}',
-            message=(f'Hei {user.get_short_name()},\n\n'
-                     f'Du ble invitert til møte:\n\n'
-                     f'Dato: {self.start_time}\n\n'
-                     f'{self.report}\n\n'
-                     f'Delta på møte: {accept_url}?token={token}\n'
-                     f'Ikke delta på møte: {reject_url}?token={token}'),
-            recipient_list=[user.email],
-            from_email='webkom@abakus.no'
+        invitation, created = self.invitations.update_or_create(
+            user=user,
+            meeting=self
         )
-
-        return invitation
+        if created:
+            async_notify_user_about_invitation.delay(
+                user_id=user.id,
+                meeting_id=self.id
+            )
+        return invitation, created
 
     def invite_group(self, group):
         for user in group.users.all():
