@@ -1,12 +1,15 @@
+from datetime import timedelta
+
 import stripe
+from django.core.cache import cache
 from django.db import IntegrityError, transaction
+from django.utils import timezone
 from redis.exceptions import LockError
 from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
-from lego.apps.events.models import Registration
-from lego.apps.events.serializers import StripeObjectSerializer
+from lego.apps.events.models import Event, Registration
 
 from .websockets import notify_event_registration, notify_failed_registration
 
@@ -54,6 +57,7 @@ def async_unregister(self, registration_id):
 
 @celery_app.task(serializer='json')
 def stripe_webhook_event(event_id, event_type):
+    from lego.apps.events.serializers import StripeObjectSerializer
     if event_type in ['charge.failed', 'charge.refunded', 'charge.succeeded']:
         event = stripe.Event.retrieve(event_id)
         serializer = StripeObjectSerializer(data=event.data['object'])
@@ -66,3 +70,33 @@ def stripe_webhook_event(event_id, event_type):
         registration.save()
 
         # Notify websockets based on event.type
+
+
+@celery_app.task(serializer='json')
+def check_events_for_registrations_with_expired_penalties():
+    events = Event.objects.filter(start_time__gte=timezone.now()).exclude(registrations=None)
+    for event in events:
+        with cache.lock(f'event_lock-{event.id}'):
+            if event.waiting_registrations.exists():
+                for pool in event.pools.all():
+                    if pool.is_activated and not pool.is_full:
+                        for i in range(event.waiting_registrations.count()):
+                            event.check_for_bump_or_rebalance(pool)
+                            if pool.is_full:
+                                break
+
+
+@celery_app.task(serializer='json')
+def bump_waiting_users_to_new_pool():
+    events = Event.objects.filter(start_time__gte=timezone.now()).exclude(registrations=None)
+    for event in events:
+        with cache.lock(f'event_lock-{event.id}'):
+            if event.waiting_registrations.exists():
+                for pool in event.pools.all():
+                    if not pool.is_full:
+                        act = pool.activation_date
+                        now = timezone.now()
+                        if not pool.is_activated and act < now + timedelta(minutes=35):
+                            event.early_bump(pool)
+                        elif pool.is_activated and act > now - timedelta(minutes=35):
+                            event.early_bump(pool)
