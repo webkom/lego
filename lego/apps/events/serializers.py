@@ -39,6 +39,7 @@ class PoolReadSerializer(BasisModelSerializer):
         permission_groups = validated_data.pop('permission_groups')
         pool = Pool.objects.create(event=event, **validated_data)
         pool.permission_groups.set(permission_groups)
+
         return pool
 
 

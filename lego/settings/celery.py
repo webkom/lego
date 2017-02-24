@@ -6,6 +6,7 @@ import celery  # noqa
 from cassandra.cqlengine import connection
 from cassandra.cqlengine.connection import cluster as cql_cluster
 from cassandra.cqlengine.connection import session as cql_session
+from celery.schedules import crontab
 from celery.signals import beat_init, eventlet_pool_started, worker_process_init
 from django.conf import settings
 
@@ -50,7 +51,16 @@ app = celery.Celery('lego')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
-schedule = {}
+schedule = {
+    'check-for-bump-after-penalty-expiration': {
+        'task': 'lego.apps.events.tasks.check_events_for_registrations_with_expired_penalties',
+        'schedule': crontab(minute='*/5')
+    },
+    'bump-users-to-new-pools-before-activation': {
+        'task': 'lego.apps.events.tasks.bump_waiting_users_to_new_pool',
+        'schedule': crontab(minute='*/30')
+    }
+}
 
 app.conf.update(
     beat_schedule=schedule,
