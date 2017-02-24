@@ -215,11 +215,9 @@ class PenaltyExpiredTestCase(TestCase):
             pool.capacity = 1
             pool.save()
 
-    def expiration_offset(self, mock_calls_at_expiration, mock_calls_at_penalty_creation):
-        twenty_days = timedelta(days=20)
-        expiration = timedelta(milliseconds=mock_calls_at_expiration)
-        penalty_creation = timedelta(milliseconds=mock_calls_at_penalty_creation)
-        return twenty_days - expiration + penalty_creation
+    def make_penalty_expire(self, penalty, mock_now):
+        penalty.created_at = mock_now() - timedelta(days=21)
+        penalty.save()
 
     number_of_calls = 43
 
@@ -234,16 +232,17 @@ class PenaltyExpiredTestCase(TestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        Penalty.objects.create(
+        p1 = Penalty.objects.create(
             user=user,
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(22, 7)
+            created_at=mock_now()
         )
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
+        self.make_penalty_expire(p1, mock_now)
         check_events_for_registrations_with_expired_penalties.delay()
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
@@ -260,12 +259,12 @@ class PenaltyExpiredTestCase(TestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        Penalty.objects.create(
+        p1 = Penalty.objects.create(
             user=user,
             reason='test',
             weight=2,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(24, 8)
+            created_at=mock_now()
         )
 
         Penalty.objects.create(
@@ -278,6 +277,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
+        self.make_penalty_expire(p1, mock_now)
         check_events_for_registrations_with_expired_penalties.delay()
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
@@ -294,12 +294,12 @@ class PenaltyExpiredTestCase(TestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        Penalty.objects.create(
+        p1 = Penalty.objects.create(
             user=user,
             reason='test',
             weight=1,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(24, 8)
+            created_at=mock_now()
         )
 
         Penalty.objects.create(
@@ -312,6 +312,7 @@ class PenaltyExpiredTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
+        self.make_penalty_expire(p1, mock_now)
         check_events_for_registrations_with_expired_penalties.delay()
         self.assertIsNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 0)
@@ -329,18 +330,19 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        Penalty.objects.create(
+        p1 = Penalty.objects.create(
             user=users[1],
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(35, 12)
+            created_at=mock_now()
         )
 
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
 
+        self.make_penalty_expire(p1, mock_now)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -362,17 +364,19 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        Penalty.objects.create(
+        p1 = Penalty.objects.create(
             user=users[2],
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(48, 14)
+            created_at=mock_now()
         )
 
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
+
+        self.make_penalty_expire(p1, mock_now)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -394,17 +398,19 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        Penalty.objects.create(
+        p1 = Penalty.objects.create(
             user=users[1],
             reason='test',
             weight=3,
             source_event=self.event,
-            created_at=mock_now()-self.expiration_offset(40, 12)
+            created_at=mock_now()
         )
 
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
+
+        self.make_penalty_expire(p1, mock_now)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(user=users[1]).pool)
