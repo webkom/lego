@@ -1,12 +1,4 @@
 - fields:
-    email: tnmxpclxrn@gmail.com
-    first_name: Per Kristian J
-    last_name: Fjellby
-    username: perkrifj
-    gender: male
-  model: users.User
-  pk: 2
-- fields:
     email: lyoxhvnkuc@gmail.com
     first_name: Ståle
     last_name: Pettersen
@@ -391,6 +383,14 @@
   model: users.User
   pk: 50
 - fields:
+    email: tnmxpclxrn@gmail.com
+    first_name: Per Kristian J
+    last_name: Fjellby
+    username: perkrifj
+    picture: default_male_avatar.png
+  model: users.User
+  pk: 51
+- fields:
     username: test1
     password: pbkdf2_sha256$12000$BwZLLK4uY2QT$sGobGSPIS/lcHGDOV0agcHVHxzzm9mkBtM+2bCLEA7w= # test1
     first_name: test
@@ -398,7 +398,7 @@
     gender: male
     email: test1@user.com
   model: users.User
-  pk: 51
+  pk: 52
 - fields:
     username: test2
     password: pbkdf2_sha256$12000$pY1QWLbBakIA$xsNjE4caw2HB9YJtey88K2ab2yHNlpl/lOkmBIiPi4M= # test2
@@ -407,4 +407,4 @@
     gender: male
     email: test2@user.com
   model: users.User
-  pk: 52
+  pk: 53
