@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from djangorestframework_camel_case.render import camelize
-
 from lego.apps.events.models import Event
 from lego.apps.events.serializers import EventReadDetailedSerializer, RegistrationReadSerializer
 from lego.apps.permissions.filters import filter_queryset
@@ -29,19 +27,26 @@ def notify_event_registration(type, registration, from_pool=None):
     notify_registration(group, type, registration, from_pool)
 
 
-def notify_failed_registration(type, registration):
+def notify_user_registration(type, registration, error_msg=None):
     group = group_for_user(registration.user)
-    notify_registration(group, type, registration)
+    context = {'registration': registration.id}
+    notify_registration(group, type, registration, error_msg=error_msg, context=context)
 
 
-def notify_registration(group, type, registration, from_pool=None):
-    payload = RegistrationReadSerializer(registration).data
+def notify_registration(group, type, registration, from_pool=None, error_msg=None, context=None):
+    if not context:
+        context = {}
+    payload = RegistrationReadSerializer(registration, context=context).data
+    meta = {}
     if from_pool:
         payload['from_pool'] = from_pool
+    if error_msg:
+        meta['error_message'] = error_msg
 
     notify_group(group, {
         'type': type,
-        'payload': camelize(payload)
+        'payload': payload,
+        'meta': meta
     })
 
 
