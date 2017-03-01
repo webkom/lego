@@ -2,6 +2,7 @@ import datetime
 import os
 
 import environ
+from cassandra.policies import ConstantReconnectionPolicy
 
 root = environ.Path(__file__) - 2
 BASE_DIR = root()
@@ -153,5 +154,11 @@ CHANNEL_LAYERS = {
 STREAM_METRIC_CLASS = 'lego.apps.feed.feed_metrics.PrometheusFeedMetrics'
 CASSANDRA_DRIVER_KWARGS = {
     'protocol_version': 4,
-    'lazy_connect': True
+    'lazy_connect': True,
+    'retry_connect': True,
+    'cluster_options': {
+        'reconnection_policy': ConstantReconnectionPolicy(1, max_attempts=60),
+        
+        'connect_timeout': 10
+    }
 }
