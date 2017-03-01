@@ -1,3 +1,5 @@
+import stripe
+from django.utils import timezone
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -12,3 +14,16 @@ def get_dummy_users(n):
         users.append(user)
 
     return users
+
+
+def create_token(number, cvc, year=None):
+    if not year:
+        year = timezone.now().year + 1
+    return stripe.Token.create(
+        card={
+            'number': number,
+            'exp_month': 12,
+            'exp_year': year,
+            'cvc': cvc
+        },
+    )
