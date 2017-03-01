@@ -11,28 +11,70 @@ from lego import celery_app
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 
-from .websockets import notify_event_registration, notify_failed_registration
+from .websockets import notify_event_registration, notify_user_registration
 
 log = get_logger()
 
 
-@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
+class AsyncRegister(celery_app.Task):
+    serializer = 'json'
+    default_retry_delay = 5
+    registration = None
+
+    def on_failure(self, *args):
+        if self.request.retries == self.max_retries:
+            self.registration.status = constants.FAILURE_REGISTER
+            self.registration.save()
+            notify_user_registration(constants.SOCKET_PAYMENT_FAILURE, self.registration)
+
+
+class Payment(celery_app.Task):
+    serializer = 'json'
+    default_retry_delay = 5
+    registration = None
+
+    def on_retry(self, *args):
+        notify_user_registration(
+            constants.SOCKET_PAYMENT_FAILURE, self.registration,
+            f'Payment failed, retrying #{self.request.retries+1}'
+        )
+
+    def on_failure(self, return_value, *args):
+        if self.request.retries == self.max_retries:
+            if return_value.json_body:
+                error = return_value.json_body['error']
+                self.registration.charge_id = error['charge']
+                self.registration.charge_status = error['code']
+                self.registration.save()
+                notify_user_registration(
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error['message']
+                )
+            else:
+                self.registration.charge_status = constants.PAYMENT_FAILURE
+                self.registration.save()
+                notify_user_registration(
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Payment failed'
+                )
+            # Notify by mail that payment failed
+
+
+@celery_app.task(base=AsyncRegister, bind=True)
 def async_register(self, registration_id):
-    registration = Registration.objects.get(id=registration_id)
+    self.registration = Registration.objects.get(id=registration_id)
     try:
         with transaction.atomic():
-            registration.event.register(registration)
-            transaction.on_commit(
-                lambda: notify_event_registration('SOCKET_REGISTRATION', registration)
-            )
+            self.registration.event.register(self.registration)
+            transaction.on_commit(lambda: notify_event_registration(
+                constants.SOCKET_REGISTRATION_SUCCESS, self.registration
+            ))
     except LockError as e:
-        log.error('registration_cache_lock_error', exception=e, registration_id=registration.id)
+        log.error(
+            'registration_cache_lock_error', exception=e, registration_id=self.registration.id
+        )
         raise self.retry(exc=e, max_retries=3)
     except (ValueError, IntegrityError) as e:
-        log.error('registration_error', exception=e, registration_id=registration.id)
-        registration.status = constants.FAILURE_REGISTER
-        registration.save()
-        notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
+        log.error('registration_error', exception=e, registration_id=self.registration.id)
+        raise self.retry(exc=e, max_retries=3)
 
 
 @celery_app.task(serializer='json', bind=True, default_retry_delay=30)
@@ -42,17 +84,63 @@ def async_unregister(self, registration_id):
     try:
         with transaction.atomic():
             registration.event.unregister(registration)
-            transaction.on_commit(
-                lambda: notify_event_registration('SOCKET_UNREGISTRATION', registration, pool.id)
-            )
+            transaction.on_commit(lambda: notify_event_registration(
+                constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool.id
+            ))
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
-        self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3)
     except IntegrityError as e:
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
         registration.save()
-        notify_failed_registration('SOCKET_REGISTRATION_FAILED', registration)
+        notify_user_registration(constants.SOCKET_UNREGISTRATION_FAILURE, registration)
+
+
+@celery_app.task(base=Payment, bind=True)
+def async_payment(self, registration_id, token):
+    self.registration = Registration.objects.get(id=registration_id)
+    event = self.registration.event
+    try:
+        response = stripe.Charge.create(
+            amount=event.get_price(self.registration.user),
+            currency='NOK',
+            source=token,
+            description=event.slug,
+            metadata={
+                'EVENT_ID': event.id,
+                'USER': self.registration.user.full_name,
+                'EMAIL': self.registration.user.email
+            }
+        )
+        return response
+        # Notify by mail that payment succeeded
+    except stripe.error.CardError as e:
+        raise self.retry(exc=e)
+    except stripe.error.InvalidRequestError as e:
+        log.error('invalid_request', exception=e, registration_id=self.registration.id)
+        self.registration.charge_status = e.json_body['error']['type']
+        self.registration.save()
+        notify_user_registration(
+            constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Invalid request'
+        )
+    except stripe.error.StripeError as e:
+        log.error('stripe_error', exception=e, registration_id=self.registration.id)
+        raise self.retry(exc=e)
+
+
+@celery_app.task(serializer='json', bind=True)
+def registration_save(self, result, registration_id):
+    try:
+        registration = Registration.objects.get(id=registration_id)
+        registration.charge_id = result['id']
+        registration.charge_amount = result['amount']
+        registration.charge_status = result['status']
+        registration.save()
+        notify_user_registration(constants.SOCKET_PAYMENT_SUCCESS, registration)
+    except IntegrityError as e:
+        log.error('registration_save_error', exception=e, registration_id=registration_id)
+        raise self.retry(exc=e)
 
 
 @celery_app.task(serializer='json')

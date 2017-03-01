@@ -377,14 +377,19 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def is_registered(self, user):
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
-    def get_registration_id(self, user):
-        registration = self.registrations.filter(user=user).exclude(pool=None).first()
-        return registration.id if registration else None
+    def get_registration(self, user):
+        return self.registrations.filter(user=user).exclude(pool=None).first()
 
     def get_price(self, user):
         if user.is_abakus_member:
             return self.price_member
         return self.price_guest
+
+    def spots_left_for_user(self, user):
+        pools = self.get_possible_pools(user)
+        if not pools:
+            return None
+        return sum([pool.spots_left() for pool in pools])
 
     @property
     def is_merged(self):
@@ -451,6 +456,9 @@ class Pool(BasisModel):
     @property
     def is_full(self):
         return self.registrations.count() >= self.capacity
+
+    def spots_left(self):
+        return self.capacity - self.registrations.count()
 
     @property
     def is_activated(self):
