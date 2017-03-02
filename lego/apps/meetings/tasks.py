@@ -29,7 +29,9 @@ def async_notify_user_about_invitation(self, meeting_id, user_id):
         "owner": meeting.created_by.get_short_name(),
         "title": meeting.title,
         "report": meeting.report,
-        "report_author": meeting.report_author.get_short_name(),
+        "report_author": (
+            meeting.report_author.get_short_name() if meeting.report_author else 'Ikke valgt'
+        ),
         "token": token,
         "meeting_id": meeting.id
     })
