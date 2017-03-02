@@ -1,12 +1,10 @@
 from datetime import timedelta
-from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, Penalty
-from lego.utils.test_utils import fake_time
 
 from .utils import get_dummy_users
 
@@ -235,17 +233,12 @@ class PenaltyTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    number_of_calls = 81
-
-    @mock.patch('django.utils.timezone.now',
-                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
-                             for i in range(number_of_calls)])
-    def test_bumped_if_penalties_expire_while_waiting(self, mock_now):
+    def test_bumped_if_penalties_expire_while_waiting(self):
         """Test that user gets bumped when penalties expire while on waiting list"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
 
         for pool in event.pools.all():
-            pool.activation_date = mock_now() - timedelta(hours=12)
+            pool.activation_date = timezone.now() - timedelta(hours=12)
             pool.save()
 
         users = get_dummy_users(5)
@@ -265,7 +258,7 @@ class PenaltyTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
-        penalty_one.created_at = mock_now() - timedelta(days=20)
+        penalty_one.created_at = timezone.now() - timedelta(days=365)
         penalty_one.save()
         registration_to_unregister = Registration.objects.get(event=event, user=users[1])
         event.unregister(registration_to_unregister)
@@ -273,15 +266,10 @@ class PenaltyTestCase(TestCase):
         self.assertIsNotNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    number_of_calls = 86
-
-    @mock.patch('django.utils.timezone.now',
-                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
-                             for i in range(number_of_calls)])
-    def test_isnt_bumped_if_third_penalty_expires_but_reg_delay_is_still_active(self, mock_now):
+    def test_isnt_bumped_if_third_penalty_expires_but_reg_delay_is_still_active(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         for pool in event.pools.all():
-            pool.activation_date = mock_now() - timedelta(hours=6)
+            pool.activation_date = timezone.now() - timedelta(hours=6)
             pool.save()
 
         users = get_dummy_users(5)
@@ -301,7 +289,7 @@ class PenaltyTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNone(event.registrations.get(user=waiting_users[1]).pool)
 
-        penalty_one.created_at = mock_now() - timedelta(days=20)
+        penalty_one.created_at = timezone.now() - timedelta(days=365)
         penalty_one.save()
         registration_to_unregister = Registration.objects.get(event=event, user=users[1])
         event.unregister(registration_to_unregister)
@@ -309,16 +297,11 @@ class PenaltyTestCase(TestCase):
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
         self.assertIsNotNone(event.registrations.get(user=waiting_users[1]).pool)
 
-    number_of_calls = 82
-
-    @mock.patch('django.utils.timezone.now',
-                side_effect=[fake_time(2016, 10, 1) + timedelta(milliseconds=i)
-                             for i in range(number_of_calls)])
-    def test_no_legal_bump(self, mock_now):
+    def test_no_legal_bump(self):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         users = get_dummy_users(5)
         for pool in event.pools.all():
-            pool.activation_date = mock_now()
+            pool.activation_date = timezone.now()
             pool.save()
 
         for user in users:
