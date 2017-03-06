@@ -16,7 +16,7 @@ whitenoise==3.3.0
 stripe==1.48.1
 structlog==16.1.0
 boto3==1.4.4
-cassandra-driver==3.7.1
+cassandra-driver==3.8.0
 prometheus-client==0.0.19
 
 # channels:
