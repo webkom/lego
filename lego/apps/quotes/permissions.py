@@ -5,7 +5,7 @@ from lego.apps.quotes.models import Quote
 
 class QuotePermissionIndex(PermissionIndex):
 
-    queryset = Quote.objects.all()
+    model = Quote
 
     list = ['/sudo/admin/quotes/list/']
     retrieve = []

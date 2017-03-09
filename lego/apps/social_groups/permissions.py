@@ -6,7 +6,7 @@ from lego.apps.users.permissions import AbakusGroupPermissions
 
 class InterestGroupPermissionIndex(PermissionIndex):
 
-    queryset = InterestGroup.objects.all()
+    model = InterestGroup
 
     list = []
     retrieve = []

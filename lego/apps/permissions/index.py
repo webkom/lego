@@ -9,7 +9,7 @@ class PermissionIndex:
     register function to register the index.
     """
 
-    queryset = None
+    model = None
 
     list = None
     retrieve = None
@@ -19,27 +19,3 @@ class PermissionIndex:
     destroy = None
 
     safe_methods = ['list', 'retrieve']
-
-    def get_queryset(self):
-        """
-        Get the queryset that should be indexed. Override this method or set a queryset attribute
-        on this class.
-        """
-        queryset = getattr(self, 'queryset')
-
-        if queryset is None:
-            raise NotImplementedError(
-                f'You must provide a \'get_qyeryset\' method or queryset attribute for the {self} '
-                f'index.'
-            )
-        return queryset
-
-    def get_model(self):
-        """
-        Get the model this index is bound to.
-        """
-        queryset = self.get_queryset()
-        return queryset.model
-
-    def check_can_register(self):
-        pass

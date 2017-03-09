@@ -15,7 +15,7 @@ def can_retrieve_abakusgroup(group, retriever):
 
 class UsersPermissionIndex(PermissionIndex):
 
-    queryset = User.objects.all()
+    model = User
 
     list = ['/sudo/admin/users/list/']
     retrieve = []
@@ -31,7 +31,7 @@ class UsersPermissionIndex(PermissionIndex):
 
 class GroupPermissionIndex(PermissionIndex):
 
-    queryset = AbakusGroup.objects.all()
+    model = AbakusGroup
 
     list = []
     retrieve = []

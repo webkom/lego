@@ -6,7 +6,7 @@ from lego.apps.permissions.permissions import AbakusPermission
 
 class PagePermissionIndex(PermissionIndex):
 
-    queryset = Page.objects.all()
+    model = Page
 
     list = []
     retrieve = []

@@ -8,7 +8,7 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 class ReactionPermissionIndex(PermissionIndex):
 
-    queryset = Reaction.objects.all()
+    model = Reaction
 
     list = []
     retrieve = []

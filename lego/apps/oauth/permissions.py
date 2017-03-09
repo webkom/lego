@@ -5,7 +5,7 @@ from lego.apps.permissions.index import PermissionIndex
 
 class OAuthPermissionIndex(PermissionIndex):
 
-    queryset = APIApplication.objects.all()
+    model = APIApplication
 
     list = ['/sudo/admin/apiapplications/list/']
     create = ['/sudo/admin/apiapplications/create/']

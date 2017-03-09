@@ -7,7 +7,7 @@ def register_permission_index(permission_index_cls):
     from lego.utils.content_types import instance_to_content_type_string
 
     permission_index = permission_index_cls()
-    model = permission_index.get_model()
+    model = permission_index.model
     permission_registry[instance_to_content_type_string(model)] = permission_index
 
 
@@ -21,7 +21,7 @@ def parse_permission_string(perm):
     content_type, action = perm.rsplit('.', 1)
     permission_content = permission_registry.get(content_type)
     keyword = getattr(permission_content, action, None)
-    safe_method = action in getattr(permission_content, 'safe_methods', False)
+    safe_method = action in getattr(permission_content, 'safe_methods', [])
     if keyword is None:
         return None
     return keyword, safe_method

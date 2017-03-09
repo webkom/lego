@@ -8,7 +8,7 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 class CommentPermissionIndex(PermissionIndex):
 
-    queryset = Comment.objects.all()
+    model = Comment
 
     create = ['/sudo/admin/comments/create/']
     update = ['/sudo/admin/comments/update/']

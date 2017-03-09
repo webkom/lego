@@ -10,7 +10,7 @@ log = get_logger()
 
 class EventPermissionIndex(PermissionIndex):
 
-    queryset = Event.objects.all()
+    model = Event
 
     list = ['/sudo/admin/events/list/']
     retrieve = ['/sudo/admin/events/retrieve/']

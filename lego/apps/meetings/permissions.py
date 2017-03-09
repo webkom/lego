@@ -6,7 +6,7 @@ from lego.apps.permissions.permissions import AbakusPermission
 
 class MeetingPermissionIndex(PermissionIndex):
 
-    queryset = Meeting.objects.all()
+    model = Meeting
 
     list = ['/sudo/admin/meetings/list/']
     retrieve = ['/sudo/admin/meetings/retrieve/']
