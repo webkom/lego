@@ -8,7 +8,7 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool, PaymentExists
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.permissions import NestedEventPermissions, verify_captcha
+from lego.apps.events.permissions import NestedEventPermissions
 from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
@@ -19,6 +19,7 @@ from lego.apps.events.tasks import (async_payment, async_register, async_unregis
                                     registration_save)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.utils.functions import verify_captcha
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
