@@ -30,13 +30,6 @@ pipeline:
     repo: registry.abakus.no/webkom/lego/lego
     tag: latest
 
-  slack:
-    image: plugins/slack
-    when:
-      status: [ success, failure ]
-      event: push
-    channel: lego
-
 services:
   database:
     image: postgres:9.5
