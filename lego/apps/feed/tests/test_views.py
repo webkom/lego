@@ -1,4 +1,6 @@
+import os
 from datetime import datetime, timedelta
+from unittest import skipIf
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -14,6 +16,7 @@ from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import User
 
 
+@skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class NotificationViewsTestCase(APITestCase, FeedTestBase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
