@@ -14,7 +14,6 @@ pipeline:
 
       - python manage.py migrate
       - python manage.py missing_migrations
-      - python manage.py migrate_feeds
 
       - tox -e tests
       - tox -e isort
@@ -31,13 +30,6 @@ pipeline:
     repo: registry.abakus.no/webkom/lego/lego
     tag: latest
 
-  slack:
-    image: plugins/slack
-    when:
-      status: [ success, failure ]
-      event: push
-    channel: lego
-
 services:
   database:
     image: postgres:9.5
@@ -45,5 +37,3 @@ services:
       - POSTGRES_USER=lego
   cache:
     image: redis
-  cassandra:
-    image: cassandra:3

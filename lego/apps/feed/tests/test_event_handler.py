@@ -1,3 +1,6 @@
+import os
+from unittest import skipIf
+
 from lego.apps.events.models import Event
 from lego.apps.feed.feed_handlers import EventHandler
 from lego.apps.feed.feeds.company_feed import CompanyFeed
@@ -8,6 +11,7 @@ from lego.apps.users.models import User
 from lego.utils.content_types import instance_to_string
 
 
+@skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class TestEventHandler(FeedTestBase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',

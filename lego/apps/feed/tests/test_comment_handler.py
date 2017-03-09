@@ -1,3 +1,6 @@
+import os
+from unittest import skipIf
+
 from django.contrib.contenttypes.models import ContentType
 
 from lego.apps.comments.models import Comment
@@ -11,6 +14,7 @@ from lego.apps.users.models import User
 from lego.utils.content_types import instance_to_string
 
 
+@skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class TestCommentHandler(FeedTestBase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml',

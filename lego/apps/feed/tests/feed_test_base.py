@@ -4,6 +4,14 @@ from lego.apps.feed.management.commands.migrate_feeds import Command as MigrateC
 
 
 class FeedTestBase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(FeedTestBase, cls).setUpClass()
+        try:
+            MigrateCommand().teardown()
+        except:
+            pass
+
     def _pre_setup(self):
         super(FeedTestBase, self)._pre_setup()
         MigrateCommand().setup()
