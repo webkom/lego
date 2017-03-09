@@ -1,5 +1,6 @@
 import stripe
 from django.utils import timezone
+
 from lego.apps.users.models import AbakusGroup, User
 
 
