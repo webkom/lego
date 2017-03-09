@@ -10,10 +10,10 @@ class ReactionPermissionIndex(PermissionIndex):
 
     queryset = Reaction.objects.all()
 
-    list = ([], None)
-    retrieve = ([], None)
-    create = (['/sudo/admin/reactions/create/'], None)
-    destroy = (['/sudo/admin/reactions/destroy/'], 'can_edit')
+    list = []
+    retrieve = []
+    create = ['/sudo/admin/reactions/create/']
+    destroy = ['/sudo/admin/reactions/destroy/']
 
 
 register(ReactionPermissionIndex)

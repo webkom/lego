@@ -10,12 +10,15 @@ class PermissionIndex:
     """
 
     queryset = None
+
     list = None
     retrieve = None
     create = None
     update = None
     partial_update = None
     destroy = None
+
+    safe_methods = ['list', 'retrieve']
 
     def get_queryset(self):
         """

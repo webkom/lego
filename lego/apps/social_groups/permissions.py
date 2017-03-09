@@ -8,12 +8,12 @@ class InterestGroupPermissionIndex(PermissionIndex):
 
     queryset = InterestGroup.objects.all()
 
-    list = ([], None)
-    retrieve = ([], None)
-    create = (['/sudo/admin/interestgroups/create/'], None)
-    update = (['/sudo/admin/interestgroups/update/'], 'can_edit')
-    partial_update = (['/sudo/admin/interestgroups/update/'], 'can_edit')
-    destroy = (['/sudo/admin/interestgroups/destroy/'], 'can_edit')
+    list = []
+    retrieve = []
+    create = ['/sudo/admin/interestgroups/create/']
+    update = ['/sudo/admin/interestgroups/update/']
+    partial_update = ['/sudo/admin/interestgroups/update/']
+    destroy = ['/sudo/admin/interestgroups/destroy/']
 
 
 register(InterestGroupPermissionIndex)

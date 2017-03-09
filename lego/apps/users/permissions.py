@@ -17,28 +17,32 @@ class UsersPermissionIndex(PermissionIndex):
 
     queryset = User.objects.all()
 
-    list = (['/sudo/admin/users/list/'], 'can_view')
-    retrieve = ([], None)
-    create = (['/sudo/admin/users/create/'], None)
-    update = (['/sudo/admin/users/update/'], 'can_edit')
-    partial_update = (['/sudo/admin/users/update/'], 'can_edit')
-    destroy = (['/sudo/admin/users/destroy/'], 'can_edit')
+    list = ['/sudo/admin/users/list/']
+    retrieve = []
+    create = ['/sudo/admin/users/create/']
+    update = ['/sudo/admin/users/update/']
+    partial_update = ['/sudo/admin/users/update/']
+    destroy = ['/sudo/admin/users/destroy/']
 
-    can_retrieve = (['/sudo/admin/users/retrieve/'], 'can_view')
+    can_retrieve = ['/sudo/admin/users/retrieve/']
+
+    safe_methods = ['list', 'retrieve', 'can_retrieve']
 
 
 class GroupPermissionIndex(PermissionIndex):
 
     queryset = AbakusGroup.objects.all()
 
-    list = ([], None)
-    retrieve = ([], None)
-    create = (['/sudo/admin/groups/create/'], None)
-    update = (['/sudo/admin/groups/update/'], 'can_edit')
-    partial_update = (['/sudo/admin/groups/update/'], 'can_edit')
-    destroy = (['/sudo/admin/groups/destroy/'], 'can_edit')
+    list = []
+    retrieve = []
+    create = ['/sudo/admin/groups/create/']
+    update = ['/sudo/admin/groups/update/']
+    partial_update = ['/sudo/admin/groups/update/']
+    destroy = ['/sudo/admin/groups/destroy/']
 
-    can_retrieve = (['/sudo/admin/groups/retrieve/'], 'can_view')
+    can_retrieve = ['/sudo/admin/groups/retrieve/']
+
+    safe_methods = ['list', 'retrieve', 'can_retrieve']
 
 
 register(UsersPermissionIndex)

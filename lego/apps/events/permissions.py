@@ -12,12 +12,14 @@ class EventPermissionIndex(PermissionIndex):
 
     queryset = Event.objects.all()
 
-    list = (['/sudo/admin/events/list/'], 'can_view')
-    retrieve = (['/sudo/admin/events/retrieve/'], 'can_view')
-    create = (['/sudo/admin/events/create/'], None)
-    update = (['/sudo/admin/events/update/'], 'can_edit')
-    destroy = (['/sudo/admin/events/destroy/'], 'can_edit')
-    payment = (['/sudo/admin/events/payment/'], 'can_view')
+    list = ['/sudo/admin/events/list/']
+    retrieve = ['/sudo/admin/events/retrieve/']
+    create = ['/sudo/admin/events/create/']
+    update = ['/sudo/admin/events/update/']
+    destroy = ['/sudo/admin/events/destroy/']
+    payment = ['/sudo/admin/events/payment/']
+
+    safe_methods = ['list', 'retrieve', 'payment']
 
 
 register(EventPermissionIndex)

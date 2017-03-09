@@ -8,12 +8,12 @@ class PagePermissionIndex(PermissionIndex):
 
     queryset = Page.objects.all()
 
-    list = ([], None)
-    retrieve = ([], None)
-    create = (['/sudo/admin/pages/create/'], None)
-    update = (['/sudo/admin/pages/update/'], 'can_edit')
-    partial_update = (['/sudo/admin/pages/update/'], 'can_edit')
-    destroy = (['/sudo/admin/pages/destroy/'], 'can_edit')
+    list = []
+    retrieve = []
+    create = ['/sudo/admin/pages/create/']
+    update = ['/sudo/admin/pages/update/']
+    partial_update = ['/sudo/admin/pages/update/']
+    destroy = ['/sudo/admin/pages/destroy/']
 
 
 register(PagePermissionIndex)

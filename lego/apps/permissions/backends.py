@@ -31,7 +31,7 @@ class AbakusPermissionBackend:
     def has_perm(self, user_obj, perm, obj=None):
         perm_tuple = parse_permission_string(perm)
         if perm_tuple:
-            keyword_perms, object_perm = perm_tuple
+            keyword_perms, safe_method = perm_tuple
             perms = self.get_all_permissions(user_obj)
             has_keyword_permission = True
             for keyword_perm in keyword_perms:
@@ -41,10 +41,9 @@ class AbakusPermissionBackend:
                 return True
 
             if obj and isinstance(obj, ObjectPermissionsModel):
-                if object_perm == 'can_view':
+                if safe_method:
                     return obj.can_view(user_obj)
-                elif object_perm == 'can_edit':
-                    return obj.can_edit(user_obj)
+                return obj.can_edit(user_obj)
         return False
 
     def has_keyword_perm(self, keyword_perm, perms):

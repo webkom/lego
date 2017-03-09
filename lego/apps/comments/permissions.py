@@ -10,10 +10,10 @@ class CommentPermissionIndex(PermissionIndex):
 
     queryset = Comment.objects.all()
 
-    create = (['/sudo/admin/comments/create/'], None)
-    update = (['/sudo/admin/comments/update/'], 'can_edit')
-    partial_update = (['/sudo/admin/comments/update/'], 'can_edit')
-    destroy = (['/sudo/admin/comments/destroy/'], 'can_edit')
+    create = ['/sudo/admin/comments/create/']
+    update = ['/sudo/admin/comments/update/']
+    partial_update = ['/sudo/admin/comments/update/']
+    destroy = ['/sudo/admin/comments/destroy/']
 
 
 register(CommentPermissionIndex)

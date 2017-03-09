@@ -8,12 +8,12 @@ class MeetingPermissionIndex(PermissionIndex):
 
     queryset = Meeting.objects.all()
 
-    list = (['/sudo/admin/meetings/list/'], 'can_view')
-    retrieve = (['/sudo/admin/meetings/retrieve/'], 'can_view')
-    create = (['/sudo/admin/meetings/create/'], None)
-    update = (['/sudo/admin/meetings/update/'], 'can_edit')
-    partial_update = (['/sudo/admin/meetings/update/'], 'can_edit')
-    destroy = (['/sudo/admin/meetings/destroy/'], 'can_edit')
+    list = ['/sudo/admin/meetings/list/']
+    retrieve = ['/sudo/admin/meetings/retrieve/']
+    create = ['/sudo/admin/meetings/create/']
+    update = ['/sudo/admin/meetings/update/']
+    partial_update = ['/sudo/admin/meetings/update/']
+    destroy = ['/sudo/admin/meetings/destroy/']
 
 
 register(MeetingPermissionIndex)

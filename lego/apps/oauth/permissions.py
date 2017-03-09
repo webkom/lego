@@ -7,8 +7,8 @@ class OAuthPermissionIndex(PermissionIndex):
 
     queryset = APIApplication.objects.all()
 
-    list = (['/sudo/admin/apiapplications/list/'], None)
-    create = (['/sudo/admin/apiapplications/create/'], None)
+    list = ['/sudo/admin/apiapplications/list/']
+    create = ['/sudo/admin/apiapplications/create/']
 
 
 register(OAuthPermissionIndex)
