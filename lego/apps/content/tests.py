@@ -1,10 +1,11 @@
 from django.db import models
 from django.test import testcases
 from django.utils.text import slugify
+from rest_framework.exceptions import ValidationError
 
-from lego.apps.users.models import User
 from lego.apps.articles.models import Article
 from lego.apps.content.models import SlugModel
+from lego.apps.users.models import User
 
 
 class ExampleSlugContent(SlugModel):
@@ -44,6 +45,7 @@ class SlugModelTestCase(testcases.TestCase):
         self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id),
                          item.slug)
 
+
 class ContentModelTestCase(testcases.TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'initial_files.yaml',
                 'initial_users.yaml', 'test_articles.yaml']
@@ -62,7 +64,6 @@ class ContentModelTestCase(testcases.TestCase):
         article.save()
         self.assertEqual(article.content, content)
 
-
     def test_parse_content_strip_unsafe_values(self):
         content = (
             '<p>some <b>cool</b> text telling you to come to this party</p>'
@@ -80,7 +81,7 @@ class ContentModelTestCase(testcases.TestCase):
     def test_parse_content_strip_css_values(self):
         content = (
             '<p>some <b>cool</b> text telling you to come to this party</p>'
-                '<p style="color: red;">psst.. We got free <strike>dranks!</strike>drinks</p>'
+            '<p style="color: red;">psst.. We got free <strike>dranks!</strike>drinks</p>'
         )
         article = Article(
             title='test content',
@@ -92,7 +93,7 @@ class ContentModelTestCase(testcases.TestCase):
         self.assertTrue('style="color: red;"' not in article.content)
 
     def test_parse_content_handle_images(self):
-        content=(
+        content = (
             '<p>some <b>cool</b> text telling you to come to this party</p>',
             '<p><img data-file-key="default_male_avatar.png" src="dont_store_this_url.png" /></p>',
             '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
@@ -107,3 +108,34 @@ class ContentModelTestCase(testcases.TestCase):
         article.save()
         self.assertTrue('src="http://localhost:8888/' in article.content)
 
+    def test_parse_content_handle_private_files(self):
+        content = (
+            '<p>some <b>cool</b> text telling you to come to this party</p>',
+            '<p><img data-file-key="not_public.png" src="dont_store_this_url.png" /></p>',
+            '<p><img data-file-key="default_female_avatar.png" src="img.png" /></p>',
+            '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
+        )
+
+        with self.assertRaises(ValidationError):
+            Article(
+                title='test content',
+                description='test description',
+                content=content,
+                author=User.objects.get(username='webkom')
+            )
+
+    def test_parse_content_handle_missing_files(self):
+        content = (
+            '<p>some <b>cool</b> text telling you to come to this party</p>',
+            '<p><img data-file-key="2234521.png" src="1.png" /></p>',
+            '<p><img data-file-key="22345551.png" src="2.png" /></p>',
+            '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
+        )
+
+        with self.assertRaises(ValidationError):
+            Article(
+                title='test content',
+                description='test description',
+                content=content,
+                author=User.objects.get(username='webkom')
+            )

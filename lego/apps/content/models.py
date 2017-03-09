@@ -1,15 +1,16 @@
 import bleach
 from bs4 import BeautifulSoup
-from django_thumbor import generate_url
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models, transaction
 from django.db.models import ManyToManyField
 from django.utils.text import slugify
+from django_thumbor import generate_url
+from rest_framework.exceptions import ValidationError
 
 from lego.apps.comments.models import Comment
+from lego.apps.files.models import File
 from lego.apps.reactions.models import Reaction
 from lego.apps.tags.models import Tag
-from lego.apps.files.models import File
 
 
 class SlugModel(models.Model):
@@ -56,6 +57,8 @@ class Content(SlugModel):
     tags = ManyToManyField(Tag, blank=True)
     slug_field = 'title'
 
+    _images = None
+
     @property
     def content(self):
         text = BeautifulSoup(self.text, 'html.parser')
@@ -75,13 +78,18 @@ class Content(SlugModel):
             attributes=['data-file-key', 'data-username', 'data-block-type', 'href'],
             strip=True
         )
-        text = BeautifulSoup(safe_content, 'html.parser')
-        for image in text.find_all('img'):
-             images.append(image.get('data-file-key'))
+        html = BeautifulSoup(safe_content, 'html.parser')
+        for image in html.find_all('img'):
+            images.append(image.get('data-file-key'))
         if images:
-             self.images = images
-        self.text = str(text)
-
+            self._images = File.objects.filter(key__in=images).all()
+            diff = set(images) - set(map(lambda f: f.key, self._images))
+            if len(diff):
+                raise ValidationError(detail=f'Images {diff} not found')
+            for im in self._images:
+                if im.public is False:
+                    raise ValidationError(detail=f'Image {im.key} not found')
+        self.text = safe_content
 
     @property
     def reactions_grouped(self):
@@ -97,7 +105,6 @@ class Content(SlugModel):
             grouped[reaction.type_id]['users'].append(reaction.created_by)
         return grouped.values()
 
-
     class Meta:
         abstract = True
 
@@ -105,15 +112,13 @@ class Content(SlugModel):
         return self.title
 
     def save(self, *args, **kwargs):
+        if self._images is None:
+            return super().save(*args, **kwargs)
+        _images = self._images
         with transaction.atomic():
-            if not self.pk:
-                images = self.images
-                tags = self.tags
-                self.images = None
-                self.tags = None
-                super().save(*args, **kwargs)
-                self.images = images
-                self.tags = tags
+            super().save(*args, **kwargs)
+            self.images = _images
+            self._images = None
             return super().save(*args, **kwargs)
 
     @property

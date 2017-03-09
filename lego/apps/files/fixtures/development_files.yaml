@@ -5,6 +5,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: test_event_cover.png
   model: files.File
   fields:
@@ -12,3 +13,4 @@
     file_type: image
     token: token
     user: 1
+    public: true

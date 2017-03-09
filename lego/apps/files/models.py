@@ -24,6 +24,7 @@ class File(TimeStampModel):
     token = models.CharField(max_length=32)
     user = models.ForeignKey('users.User', related_name='uploaded_files', null=True)
     bucket = getattr(settings, 'AWS_S3_BUCKET', None)
+    public = models.BooleanField(default=False, null=False)
 
     def upload_done(self):
         with threadlocal.tmp_bind(log, file=self.key) as tmp_log:
@@ -38,7 +39,7 @@ class File(TimeStampModel):
         return storage.key_exists(self.bucket, self.key)
 
     @classmethod
-    def create_file(cls, key, user):
+    def create_file(cls, key, user, public):
         with transaction.atomic():
             key_exists = cls.objects.filter(key=key).exists()
             key_storage_name = storage.get_available_name(
@@ -49,7 +50,8 @@ class File(TimeStampModel):
                 key=key_storage_name,
                 file_type=cls.get_file_type(key_storage_name),
                 token=file_token,
-                user=user
+                user=user,
+                public=public
             )
             log.info('file_upload_new', user_key=key, file=key_storage_name)
             return file

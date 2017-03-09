@@ -1,4 +1,4 @@
-from rest_framework import decorators, exceptions, permissions, renderers, viewsets
+from rest_framework import decorators, exceptions, permissions, renderers, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.files.exceptions import UnknownFileType
@@ -26,9 +26,10 @@ class FileViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         key = serializer.validated_data['key']
+        public = serializer.validated_data.get('public', None)
 
         try:
-            file_key, url, fields, token = prepare_file_upload(key, request.user)
+            file_key, url, fields, token = prepare_file_upload(key, request.user, public)
         except UnknownFileType:
             raise exceptions.ParseError
 
@@ -37,7 +38,7 @@ class FileViewSet(viewsets.GenericViewSet):
             'file_key': file_key,
             'file_token': token,
             'fields': fields
-        })
+        }, status=status.HTTP_201_CREATED)
 
     @decorators.detail_route(
         methods=['GET'],
