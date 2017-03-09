@@ -1,4 +1,5 @@
 from rest_framework.fields import CharField
+from rest_framework import serializers
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
@@ -85,5 +86,11 @@ class CompanyReadDetailedSerializer(BasisModelSerializer):
 class CompanyCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Company
-        fields = ('id', 'name', 'student_contact', 'admin_comment', 'description',
-                  'website', 'phone', 'company_type', 'address', 'payment_mail', 'active')
+        fields = ('id', 'name', 'description', 'student_contact', 'admin_comment', 'website',
+                  'phone', 'address', 'active')
+
+
+class CompanySearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ('name', )
