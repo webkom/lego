@@ -77,9 +77,10 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
 
     To reject: [reject/?token=yourtoken](reject/)
     """
+
     permission_classes = (MeetingIntitationTokenPermission, )
 
-    @decorators.list_route(methods=['GET'])
+    @decorators.list_route(methods=['POST'])
     def accept(self, request):
         invitation = request.token_invitation
         invitation.accept()
@@ -89,7 +90,7 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
         invitation = request.token_invitation
         return Response(data=MeetingInvitationSerializer(invitation).data)
 
-    @decorators.list_route(methods=['GET'])
+    @decorators.list_route(methods=['POST'])
     def reject(self, request):
         invitation = request.token_invitation
         invitation.reject()
