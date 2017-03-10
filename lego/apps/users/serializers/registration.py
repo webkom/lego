@@ -9,3 +9,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'captcha_response')
+
+
+class RegistrationConfirmationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'full_name',
+            'gender',
+            'email',
+            'password'
+        )
