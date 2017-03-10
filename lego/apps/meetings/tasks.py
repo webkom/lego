@@ -1,5 +1,6 @@
 from smtplib import SMTPException
 
+from django.conf import settings
 from django.template import Context, loader
 from structlog import get_logger
 
@@ -33,7 +34,8 @@ def async_notify_user_about_invitation(self, meeting_id, user_id):
             meeting.report_author.get_short_name() if meeting.report_author else 'Ikke valgt'
         ),
         "token": token,
-        "meeting_id": meeting.id
+        "meeting_id": meeting.id,
+        "settings": settings
     })
 
     try:
