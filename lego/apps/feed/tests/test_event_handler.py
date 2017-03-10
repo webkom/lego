@@ -30,7 +30,7 @@ class TestEventHandler(FeedTestBase):
         self.handler.handle_create(self.events[0])
         self.assertEqual(self.activity_count(CompanyFeed(self.events[0].company_id)), 1)
 
-    def test_comment_delete(self):
+    def test_event_delete(self):
         self.handler.handle_create(self.events[0])
         self.assertEqual(self.activity_count(CompanyFeed(self.events[0].company_id)), 1)
         self.handler.handle_create(self.events[1])

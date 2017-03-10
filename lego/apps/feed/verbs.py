@@ -36,18 +36,20 @@ class EventCreateVerb(Verb):
 
 register(EventCreateVerb)
 
+
 class RegistrationBumpVerb(Verb):
     id = 7
     infinitive = 'registration_bump'
     past_tense = infinitive
 
+
 register(RegistrationBumpVerb)
+
 
 class PenaltyCreateVerb(Verb):
     id = 8
     infinitive = 'penalty_create'
     past_tense = infinitive
 
+
 register(PenaltyCreateVerb)
-
-
