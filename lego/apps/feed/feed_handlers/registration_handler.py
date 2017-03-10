@@ -6,7 +6,7 @@ from lego.apps.feed.feed_handlers.base_handler import BaseHandler
 from lego.apps.feed.feed_manager import feed_manager
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import RegistrationBumpVerb
+from lego.apps.feed.verbs import AdminRegistrationVerb, RegistrationBumpVerb
 
 
 class RegistrationHandler(BaseHandler):
@@ -19,6 +19,10 @@ class RegistrationHandler(BaseHandler):
 
     def handle_bump(self, registration):
         activity = self.get_activity(registration, 'bump')
+        self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
+
+    def handle_admin_reg(self, registration):
+        activity = self.get_activity(registration, 'admin_reg')
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
     def handle_update(self, registration):
@@ -34,6 +38,7 @@ class RegistrationHandler(BaseHandler):
     def get_activity(self, registration, verb_key):
         verbs = {
             'bump': RegistrationBumpVerb,
+            'admin_reg': AdminRegistrationVerb,
         }
 
         return Activity(
