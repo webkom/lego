@@ -53,3 +53,12 @@ class PenaltyCreateVerb(Verb):
 
 
 register(PenaltyCreateVerb)
+
+
+class AdminRegistrationVerb(Verb):
+    id = 9
+    infinitive = 'admin_registration'
+    past_tense = infinitive
+
+
+register(AdminRegistrationVerb)

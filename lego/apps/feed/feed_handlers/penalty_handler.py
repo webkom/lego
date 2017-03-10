@@ -24,7 +24,7 @@ class PenaltyHandler(BaseHandler):
         pass
 
     def get_feeds_and_recipient(self, penalty):
-        result = ([NotificationFeed], [penalty.user_id])
+        result = ([NotificationFeed], [penalty.user.id])
         return result
 
     def get_activity(self, penalty):

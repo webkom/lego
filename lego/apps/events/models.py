@@ -59,7 +59,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The registration
         """
         if self.pools.filter(id=pool.id).exists():
-            return self.registrations.update_or_create(
+            reg = self.registrations.update_or_create(
                 event=self,
                 user=user,
                 defaults={'pool': pool,
@@ -68,6 +68,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                           'status': constants.SUCCESS_REGISTER,
                           'admin_reason': admin_reason}
             )[0]
+            get_handler(Registration).handle_admin_reg(reg)
+            return reg
+
         else:
             raise ValueError('No such pool in this event')
 
