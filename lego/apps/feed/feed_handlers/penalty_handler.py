@@ -1,7 +1,7 @@
 from lego.apps.feed.activities import Activity
+from lego.apps.feed.feed import NotificationFeed
 from lego.apps.feed.feed_handlers.base_handler import BaseHandler
 from lego.apps.feed.feed_manager import feed_manager
-from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.registry import register_handler
 from lego.apps.feed.verbs import PenaltyCreateVerb
 from lego.apps.users.models import Penalty
@@ -13,7 +13,6 @@ class PenaltyHandler(BaseHandler):
     manager = feed_manager
 
     def handle_create(self, penalty):
-        print('hei3')
         activity = self.get_activity(penalty)
         feed, recipient = self.get_feeds_and_recipient(penalty)
         self.manager.add_activity(activity, recipient, feed)
