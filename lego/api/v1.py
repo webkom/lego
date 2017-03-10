@@ -24,7 +24,11 @@ from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
+<<<<<<< 71d650db8b0b828d4e39d94d5e62f60eca81fa29
 from lego.apps.users.views.student_confirmation import StudentConfirmationViewSet
+=======
+from lego.apps.users.views.registration import UserRegistrationViewSet
+>>>>>>> Initial work on user registrations
 from lego.apps.users.views.users import UsersViewSet
 
 router = routers.DefaultRouter()
@@ -58,6 +62,7 @@ router.register(r'pages', PageViewSet)
 router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomplete')
 router.register(r'quotes', QuoteViewSet)
 router.register(r'search/search', SearchViewSet, base_name='search')
+router.register(r'users/registration', UserRegistrationViewSet)
 router.register(r'users/student-confirmation',
                 StudentConfirmationViewSet, base_name='student-confirmation')
 router.register(r'users', UsersViewSet)

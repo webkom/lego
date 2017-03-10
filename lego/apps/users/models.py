@@ -5,7 +5,7 @@ from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
 from django.core import signing
-from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -197,6 +197,23 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         count = Penalty.objects.valid().filter(user=self)\
             .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
+
+    @staticmethod
+    def generate_registration_token(username):
+        return TimestampSigner().sign(signing.dumps({
+            'username': username,
+            'secret': settings.SECRET_KEY
+        }))
+
+    @staticmethod
+    def validate_registration_token(token):
+        try:
+            return signing.loads(TimestampSigner().unsign(
+                token,
+                max_age=settings.REGISTRATION_CONFIRMATION_TIMEOUT
+            ))['username']
+        except (BadSignature, SignatureExpired):
+            return None
 
     @staticmethod
     def generate_student_confirmation_token(student_username, course, member):
