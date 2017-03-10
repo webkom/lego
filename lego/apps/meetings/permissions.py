@@ -44,12 +44,5 @@ class MeetingIntitationTokenPermission(permissions.BasePermission):
         if not invitation:
             return False
 
-        # status = invitation.status
-        # if status != 0:
-        #     return False
-        #
-        # Return False (or do something else) if user has accepted/rejected
-        # before.
-
         request.token_invitation = invitation
         return True
