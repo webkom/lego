@@ -21,12 +21,12 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
     def get(self, request, pk=None, format=None):
         if not request.GET.get('token', False):
             # Raise a validation error if the token is not set.
-            raise ValidationError({'error': 'Registration token is required.'})
+            raise ValidationError(detail='Registration token is required.')
         # Validating the token returns the username of the user that registered.
-        token_username = User.validate_registration_token(request.GET['token'])
+        token_username = User.validate_registration_token(request.GET.get('token', False))
         if token_username is None:
             # Raise error if the token has expired or is invalid.
-            raise ValidationError({'error': 'Token expired or invalid.'})
+            raise ValidationError(detail='Token expired or invalid.')
         # Return an object with the username.
         return Response({'username': token_username}, status=status.HTTP_200_OK)
 
@@ -43,9 +43,9 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
         # User does not exist and the username is valid, continue the registration.
 
         """
-        if not verify_captcha(serializer.data.get('captcha_response', None)):
+        if not verify_captcha(serializer.validated_data.get('captcha_response', None)):
             # The captcha response from the user is invalid, return a validation error.
-            raise ValidationError({'error': 'Bad captcha'})
+            raise ValidationError(detail='Bad captcha')
         """
 
         # Generate a token for the registration confirmation

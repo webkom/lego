@@ -13,6 +13,17 @@ class UserManager(PersistentModelManager):
     def get_by_natural_key(self, username):
         return self.get(username__iexact=username.lower())
 
+    def create_user(self, *args, **kwargs):
+        # Initialize the User object.
+        new_user = self.model(**kwargs)
+
+        # The password is in plaintext, we need to encode it.
+        new_user.set_password(kwargs['password'])
+
+        # Save the User object and return it.
+        new_user.save()
+        return new_user
+
 
 class MembershipManager(PersistentModelManager):
     def get_by_natural_key(self, username, abakus_group_name):
