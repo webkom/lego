@@ -335,7 +335,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': self.pool.id}
+            {'user': self.user.id, 'pool': self.pool.id, 'admin_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 201)
@@ -350,7 +350,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': self.pool.id}
+            {'user': self.user.id, 'pool': self.pool.id, 'admin_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 403)
@@ -366,7 +366,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': nonexistant_pool_id}
+            {'user': self.user.id, 'pool': nonexistant_pool_id, 'admin_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 403)
@@ -377,7 +377,11 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.client.force_authenticate(self.request_user)
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': self.pool.id, 'feedback': 'TEST'}
+            {'user': self.user.id,
+             'pool': self.pool.id,
+             'feedback': 'TEST',
+             'admin_reason': 'test'
+             }
         )
 
         self.assertEqual(registration_response.status_code, 201)
