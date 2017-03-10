@@ -16,6 +16,7 @@ from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
+from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
@@ -59,3 +60,4 @@ router.register(r'feed/personal', PersonalFeedViewSet, base_name='feed-personal'
 router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-notifications')
 router.register(r'feed/group', GroupFeedViewSet, base_name='feed-group')
 router.register(r'feed/company', CompanyFeedViewSet, base_name='feed-company')
+router.register(r'slack/invite', SlackInviteViewSet, base_name='slack-invite')

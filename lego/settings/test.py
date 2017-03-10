@@ -52,3 +52,6 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 STREAM_DEFAULT_KEYSPACE = 'test_stream_framework'
+
+SLACK_TEAM = ''
+SLACK_TOKEN = ''
