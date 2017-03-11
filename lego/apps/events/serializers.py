@@ -130,3 +130,4 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
     feedback = serializers.CharField(required=False)
+    admin_reason = serializers.CharField(required=True)
