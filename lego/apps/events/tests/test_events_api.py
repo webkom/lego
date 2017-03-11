@@ -387,6 +387,20 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(registration_response.data.get('feedback'), 'TEST')
 
+    def test_without_admin_reason(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.request_user)
+        self.client.force_authenticate(self.request_user)
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_register/',
+            {'user': self.user.id,
+             'pool': self.pool.id,
+             'feedback': 'TEST',
+             'admin_reason': ''
+             }
+        )
+
+        self.assertEqual(registration_response.status_code, 400)
+
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
 class StripePaymentTestCase(APITestCase):
