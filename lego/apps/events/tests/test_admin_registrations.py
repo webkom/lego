@@ -32,7 +32,7 @@ class AdminRegistrationTestCase(TestCase):
         no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool)
+        event.admin_register(user, pool, admin_reason='test')
         self.assertEqual(event.number_of_registrations, no_of_regs_before + 1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
@@ -48,7 +48,7 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = wrong_pool.registrations.count()
 
         with self.assertRaises(ValueError):
-            event_one.admin_register(user, wrong_pool)
+            event_one.admin_register(user, wrong_pool, admin_reason='test')
         self.assertEqual(event_one.number_of_registrations, e1_no_of_regs_before)
         self.assertEqual(event_two.number_of_registrations, e2_no_of_regs_before)
         self.assertEqual(wrong_pool.registrations.count(), pool_no_of_regs_before)
@@ -63,7 +63,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool)
+        event.admin_register(user, pool, admin_reason='test')
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -77,7 +77,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool)
+        event.admin_register(user, pool, admin_reason='test')
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -95,7 +95,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool)
+        event.admin_register(user, pool, admin_reason='test')
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -113,7 +113,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool)
+        event.admin_register(user, pool, admin_reason='test')
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -126,6 +126,6 @@ class AdminRegistrationTestCase(TestCase):
 
         e1_no_of_regs_before = event.number_of_registrations
 
-        event.admin_register(user, pool)
-        event.admin_register(user, pool)
+        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, pool, admin_reason='test')
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)

@@ -47,7 +47,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
-    def admin_register(self, user, pool, feedback=''):
+    def admin_register(self, user, pool, admin_reason, feedback=''):
         """
         Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
@@ -64,7 +64,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 defaults={'pool': pool,
                           'feedback': feedback,
                           'unregistration_date': None,
-                          'status': constants.SUCCESS_REGISTER}
+                          'status': constants.SUCCESS_REGISTER,
+                          'admin_reason': admin_reason}
             )[0]
         else:
             raise ValueError('No such pool in this event')
@@ -483,6 +484,7 @@ class Registration(BasisModel):
     registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=100, blank=True)
+    admin_reason = models.CharField(max_length=100, blank=True)
     status = models.CharField(max_length=20,
                               default=constants.PENDING_REGISTER,
                               choices=constants.STATUSES)
