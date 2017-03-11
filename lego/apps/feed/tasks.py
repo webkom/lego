@@ -33,11 +33,15 @@ def mail_penalty_create(self, activity, recipients):
     user = User.objects.get(id=recipients[0])
     message = loader.get_template('email/penalty_email.html')
     reason = activity.extra_context.get('reason')
+    weight = activity.extra_context.get('reason')
+    total_weight = activity.extra_context.get('reason')
 
     context = Context({
         'name': user.get_short_name(),
         'event': event.title,
         'reason': reason,
+        'weight': weight,
+        'total': total_weight,
         'settings': settings
     })
 
