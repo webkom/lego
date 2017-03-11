@@ -1,6 +1,7 @@
 import os
 
 import environ
+import stripe
 from cassandra import ConsistencyLevel
 
 from lego.settings import BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES
@@ -81,3 +82,9 @@ CHANNEL_LAYERS['default']['CONFIG'] = {
 ELASTICSEARCH = [
     {'host': env('ELASTICSEARCH_HOST')},
 ]
+
+# Stripe
+stripe.api_key = env('STRIPE_API_KEY')
+
+# Captcha
+CAPTCHA_KEY = env('CAPTCHA_KEY')
