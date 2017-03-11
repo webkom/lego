@@ -24,11 +24,12 @@ pipeline:
   docker:
     image: plugins/docker
     when:
-      branch: master
-      event: push
+      event: tag
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/lego/lego
-    tag: latest
+    tags:
+      - latest
+      - ${DRONE_TAG##v}
 
 services:
   database:
