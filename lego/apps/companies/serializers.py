@@ -85,5 +85,5 @@ class CompanyReadDetailedSerializer(BasisModelSerializer):
 class CompanyCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'student_contact', 'admin_comment', 'website',
-                  'phone', 'address', 'active')
+        fields = ('id', 'name', 'student_contact', 'admin_comment', 'description',
+                  'website', 'phone', 'company_type', 'address', 'payment_mail', 'active')
