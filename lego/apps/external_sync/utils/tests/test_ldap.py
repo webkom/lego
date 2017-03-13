@@ -1,7 +1,7 @@
 from django.test import TestCase
 from passlib.hash import sha512_crypt
 
-from lego.apps.external_sync.utils.ldap import create_ldap_password_hash
+from lego.apps.external_sync.utils.ldap import LDAPLib, create_ldap_password_hash
 
 
 class LDAPUtilsTestCase(TestCase):
