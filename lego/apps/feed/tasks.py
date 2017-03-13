@@ -5,9 +5,9 @@ from django.template import Context, loader
 from structlog import get_logger
 
 from lego import celery_app
-from lego.apps.events.models import Event
 from lego.apps.feed.registry import get_handler
 from lego.apps.users.models import User
+from lego.utils.content_types import string_to_instance
 
 log = get_logger()
 
@@ -28,8 +28,7 @@ def add_to_feeds(instance, action='update'):
 
 @celery_app.task(serializer='pickle', bind=True)
 def mail_penalty_create(self, activity, recipients):
-    event_id = activity.actor.split('-')[1]
-    event = Event.objects.get(id=event_id)
+    event = string_to_instance(activity.actor)
     user = User.objects.get(id=recipients[0])
     message = loader.get_template('email/penalty_email.html')
     reason = activity.extra_context.get('reason')
@@ -62,8 +61,7 @@ def mail_penalty_create(self, activity, recipients):
 
 @celery_app.task(serializer='pickle', bind=True)
 def mail_registration_bump(self, activity, recipients):
-    event_id = activity.actor.split('-')[1]
-    event = Event.objects.get(id=event_id)
+    event = string_to_instance(activity.actor)
     user = User.objects.get(id=recipients[0])
     message = loader.get_template('email/bump_email.html')
 
@@ -91,8 +89,7 @@ def mail_registration_bump(self, activity, recipients):
 
 @celery_app.task(serializer='pickle', bind=True)
 def mail_admin_registration(self, activity, recipients):
-    event_id = activity.actor.split('-')[1]
-    event = Event.objects.get(id=event_id)
+    event = string_to_instance(activity.actor)
     user = User.objects.get(id=recipients[0])
     message = loader.get_template('email/admin_reg_email.html')
     reason = event.registrations.get(user=user).reason
