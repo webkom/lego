@@ -33,8 +33,14 @@ class FeedManager:
         Simple fanout a task to a set of recipients.
         """
         if NotificationFeed in feed_classes and activity:
-            mailer_task = getattr(tasks, f'mail_{activity.verb.infinitive}', lambda: "not found")
-            if not mailer_task == "not found":
+            mailers = {
+                'penalty_create': tasks.mail_penalty_create,
+                'registration_bump': tasks.mail_registration_bump,
+                'admin_registration': tasks.mail_admin_registration,
+            }
+
+            mailer_task = mailers.get(activity.verb.infinitive)
+            if mailer_task:
                 mailer_task.delay(activity, recipients)
 
         operation_kwargs = dict(activities=[activity], trim=True)
