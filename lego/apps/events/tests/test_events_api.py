@@ -318,19 +318,22 @@ class RegistrationsTestCase(APITransactionTestCase):
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(registration_response.data.get('status'), constants.PENDING_REGISTER)
-        res = self.client.get(_get_registrations_list_url(event.id))
-        for user in res.data['results']:
-            self.assertEqual(user.get('status', None), constants.FAILURE_REGISTER)
+        res = self.client.get(
+            _get_registrations_detail_url(event.id, registration_response.data['id'])
+        )
+        self.assertEqual(res.data['status'], constants.FAILURE_REGISTER)
 
     def test_unregister(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
         registration = Registration.objects.get(user=self.abakus_user, event=event)
-        registration_response = self.client.delete(_get_registrations_detail_url(event.id,
-                                                                                 registration.id))
+        registration_response = self.client.delete(
+            _get_registrations_detail_url(event.id, registration.id)
+        )
 
         get_unregistered = self.client.get(_get_registrations_detail_url(event.id, registration.id))
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(get_unregistered.status_code, 404)
+        self.assertEqual(get_unregistered.status_code, 200)
+        self.assertIsNone(get_unregistered.data.get('pool'))
 
     def test_can_not_unregister_other_user(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
@@ -369,24 +372,20 @@ class ListRegistrationsTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.get(pk=1)
+        self.event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
 
     def test_with_group_permission(self):
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_detail_url(1))
+        event_response = self.client.get(_get_registrations_list_url(self.event.id))
         self.assertEqual(event_response.status_code, 200)
-
-        registrations_exist = False
-        for pool in event_response.data.get('pools', None):
-            if pool.get('registrations', None):
-                registrations_exist = True
-        self.assertTrue(registrations_exist)
+        self.assertEqual(len(event_response.data.get('results')), 2)
 
     def test_without_group_permission(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_detail_url(1))
-
-        self.assertEqual(event_response.status_code, 404)
+        event_response = self.client.get(_get_registrations_list_url(self.event.id))
+        self.assertEqual(event_response.status_code, 403)
 
 
 class CreateAdminRegistrationTestCase(APITestCase):

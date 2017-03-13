@@ -15,6 +15,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
+                                          RegistrationReadDetailedSerializer,
                                           RegistrationReadSerializer, StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
                                     registration_save)
@@ -103,14 +104,19 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     ordering = 'registration_date'
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update']:
+        if self.action in ['create', 'update', 'partial_update']:
             return RegistrationCreateAndUpdateSerializer
+        if self.action == 'list':
+            return RegistrationReadDetailedSerializer
         return super().get_serializer_class()
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        return Registration.objects.filter(event=event_id,
-                                           unregistration_date=None).prefetch_related('user')
+        if self.action == 'list':
+            return Registration.objects.filter(event=event_id).prefetch_related(
+                'user__abakus_groups'
+            )
+        return Registration.objects.filter(event=event_id).prefetch_related('user')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
