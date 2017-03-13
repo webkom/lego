@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 
 from lego.apps.comments.models import Comment
@@ -48,6 +49,11 @@ class SemesterStatus(BasisModel):
         unique_together = ('year', 'semester', 'company')
 
 
+class Semester(BasisModel):
+    year = models.PositiveIntegerField()
+    spring = models.BooleanField()
+
+
 class CompanyContact(BasisModel):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100, blank=True)
@@ -55,3 +61,25 @@ class CompanyContact(BasisModel):
     phone = models.CharField(max_length=100, blank=True)
     mobile = models.CharField(max_length=100, blank=True)
     company = models.ForeignKey(Company, related_name='company_contacts')
+
+
+class CompanyInterest(BasisModel):
+    EVENT = (
+        (0, 'Company presentation'),
+        (1, 'Course'),
+        (3, 'Lunch presentation'),
+        (5, 'Bedex'),
+        (4, 'Jubileum'),
+        (2, 'Other'),
+    )
+
+    company_name = models.CharField(max_length=255)
+    contact_person = models.CharField(max_length=255)
+    mail = models.EmailField(max_length=255)
+    semesters = models.ManyToManyField(Semester, blank=True)
+    events = models.CharField(validators=[validate_comma_separated_integer_list], max_length=30,
+                              blank=True)
+    readMe = models.BooleanField(default=False)
+    collaboration = models.BooleanField(default=False)
+    itdagene = models.BooleanField(default=False)
+    comment = models.CharField(max_length=1000, blank=True)
