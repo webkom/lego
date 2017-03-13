@@ -25,7 +25,6 @@
       - /sudo/admin/meetings/create
       - /sudo/admin/meetinginvitations/create
       - /sudo/admin/registrations/create/
-      - /sudo/admin/registrations/destroy/
       - /sudo/admin/events/payment/
 
 - model: users.AbakusGroup
@@ -39,6 +38,10 @@
     parent: 2
     rght: 21
     tree_id: 2
+    permissions:
+    - /sudo/admin/events/
+    - /sudo/admin/pools/
+    - /sudo/admin/registrations/
 
 - model: users.AbakusGroup
   pk: 4

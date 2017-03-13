@@ -8,7 +8,8 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool, PaymentExists
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.permissions import NestedEventPermissions
+from lego.apps.events.permissions import (AdminRegistrationPermissions, PoolPermissions,
+                                          RegistrationPermissions)
 from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
@@ -76,7 +77,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Pool.objects.all()
-    permission_classes = (NestedEventPermissions,)
+    permission_classes = (PoolPermissions,)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -98,6 +99,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.ListModelMixin,
                           viewsets.GenericViewSet):
     serializer_class = RegistrationReadSerializer
+    permission_classes = (RegistrationPermissions,)
     ordering = 'registration_date'
 
     def get_serializer_class(self):
@@ -140,7 +142,8 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.list_route(methods=['POST'],
-                           serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+                           serializer_class=AdminRegistrationCreateAndUpdateSerializer,
+                           permission_classes=(AdminRegistrationPermissions,))
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get('event_pk', None)
         event = Event.objects.get(id=event_id)
