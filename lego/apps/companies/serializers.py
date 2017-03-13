@@ -2,7 +2,8 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
-from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
+from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest, Semester,
+                                        SemesterStatus)
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
@@ -91,4 +92,44 @@ class CompanyCreateAndUpdateSerializer(BasisModelSerializer):
 class CompanySearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ('name', )
+        fields = ('id', 'name', 'student_contact', 'admin_comment', 'description',
+                  'website', 'phone', 'company_type', 'address', 'payment_mail', 'active')
+
+# Semester
+
+
+class SemesterCreateSerializer(BasisModelSerializer):
+    class Meta:
+        model = Semester
+        fields = ('id', 'year', 'spring')
+        """
+        def create(self, validated_data):
+            semester = Semester.objects.get(pk=self.context['view'].kwargs['semester_pk'])
+            semester = Semester.objects.create(semester=semester, **validated_data)
+            return semester
+        """
+
+
+# CompanyInterest
+
+
+class CompanyInterestCreateSerializer(BasisModelSerializer):
+    class Meta:
+        model = CompanyInterest
+        fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
+                  'readMe', 'collaboration', 'itdagene', 'comment')
+
+
+class CompanyInterestReadDetailedSerializer(BasisModelSerializer):
+    semesters = SemesterCreateSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = CompanyInterest
+        fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
+                  'readMe', 'collaboration', 'itdagene', 'comment')
+
+
+class CompanyInterestListSerializer(BasisModelSerializer):
+    class Meta:
+        model = CompanyInterest
+        fields = ('id', 'company_name', 'contact_person', 'mail')

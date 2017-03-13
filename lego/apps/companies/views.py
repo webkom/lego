@@ -1,12 +1,17 @@
 from rest_framework import mixins, viewsets
 from rest_framework.viewsets import GenericViewSet
 
-from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
+from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest,
+                                        SemesterStatus)
 from lego.apps.companies.permissions import CompanyPermissions
 from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerializer,
                                              CompanyContactReadSerializer,
                                              CompanyCreateAndUpdateSerializer,
+                                             CompanyInterestCreateSerializer,
+                                             CompanyInterestListSerializer,
+                                             CompanyInterestReadDetailedSerializer,
                                              CompanyReadDetailedSerializer, CompanyReadSerializer,
+                                             SemesterCreateSerializer,
                                              SemesterStatusCreateAndUpdateSerializer,
                                              SemesterStatusReadDetailedSerializer,
                                              SemesterStatusReadSerializer)
@@ -64,3 +69,28 @@ class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         company_id = self.kwargs.get('company_pk')
         if company_id:
             return CompanyContact.objects.filter(company=company_id)
+
+
+class CompanyInterestViewSet(viewsets.ModelViewSet):
+    queryset = CompanyInterest.objects.all()
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CompanyInterestCreateSerializer
+        elif self.action in ['retrieve', 'destroy']:
+            return CompanyInterestReadDetailedSerializer
+
+        return CompanyInterestListSerializer
+
+
+class SemesterViewSet(viewsets.ModelViewSet):
+    queryset = CompanyInterest.objects.all()
+
+    def get_serializer_class(self):
+        return SemesterCreateSerializer
+
+    def get_queryset(self):
+        if self.action in ['retrieve', 'destroy']:
+            semester_id = self.kwargs.get('semester_pk', None)
+            return CompanyInterest.objects.filter(semester=semester_id)
+        return self.queryset
