@@ -12,7 +12,7 @@ from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
-from lego.apps.external_sync.models import LDAPUser
+from lego.apps.external_sync.models import GSyncUserMail, LDAPUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
@@ -120,7 +120,7 @@ class PermissionsMixin(models.Model):
         return list(own_groups)
 
 
-class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
+class User(LDAPUser, GSyncUserMail, AbstractBaseUser, PersistentModel, PermissionsMixin):
     """
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """

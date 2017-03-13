@@ -8,7 +8,7 @@
     last_name: webkom
     email: webkom@abakus.no
     password: pbkdf2_sha256$12000$H0aWD4yl0CVd$b0S/vVYcRRGqXygh1390tc9eyKBMyIgcp3SAbkxIBb0= # webkom
-    ldap_password_hash: '{CRYPT}$6$rounds=656000$aet9Foy4cuCQ0EN9$5Tk/L4R3NfOWG84OLCZo5JTkgyDkx8RuIf9cabYq3M23kKTwv4uEkDxSz/jOYqUMPfTZZ0bf9F24b/cRNkY/G/'
+    ldap_password_hash: {CRYPT}$6$rounds=656000$aet9Foy4cuCQ0EN9$5Tk/L4R3NfOWG84OLCZo5JTkgyDkx8RuIf9cabYq3M23kKTwv4uEkDxSz/jOYqUMPfTZZ0bf9F24b/cRNkY/G/ # webkom
 
 - model: users.User
   pk: 2
