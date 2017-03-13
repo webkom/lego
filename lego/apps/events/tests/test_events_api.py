@@ -126,14 +126,24 @@ class RetrieveEventsTestCase(APITestCase):
         self.abakus_user = User.objects.all().first()
 
     def test_with_group_permission(self):
+        """Test that abakus user can retrieve event"""
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(2))
         self.assertEqual(event_response.status_code, 200)
 
     def test_without_group_permission(self):
+        """Test that plain user cannot retrieve event"""
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(2))
+        self.assertEqual(event_response.status_code, 404)
+
+    def test_without_group_permission_webkom_only(self):
+        """Test that abakus user cannot retrieve webkom only event"""
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 404)
 
 
@@ -205,6 +215,12 @@ class PoolsTestCase(APITestCase):
         pool_response = self.client.get(_get_pools_detail_url(1, 1))
         self.assertEqual(pool_response.status_code, 200)
 
+    def test_with_bedkom_group_permission(self):
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        pool_response = self.client.get(_get_pools_detail_url(1, 1))
+        self.assertEqual(pool_response.status_code, 200)
+
     def test_without_group_permission(self):
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.get(_get_pools_detail_url(1, 1))
@@ -216,6 +232,18 @@ class PoolsTestCase(APITestCase):
         pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
         self.assertEqual(pool_response.status_code, 201)
 
+    def test_create_pool_as_bedkom(self):
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
+        self.assertEqual(pool_response.status_code, 201)
+
+    def test_create_failing_pool_as_abakus(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
+        self.assertEqual(pool_response.status_code, 403)
+
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
 class RegistrationsTestCase(APITransactionTestCase):
@@ -225,7 +253,7 @@ class RegistrationsTestCase(APITransactionTestCase):
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
         self.abakus_user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
     def test_create(self, mock_verify_captcha):
@@ -239,16 +267,51 @@ class RegistrationsTestCase(APITransactionTestCase):
         self.assertEqual(res.data['user']['id'], 1)
         self.assertEqual(res.data['status'], constants.SUCCESS_REGISTER)
 
+    def test_unable_to_create(self, mock_verify_captcha):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        self.non_abakus_user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name='Users').add_user(self.non_abakus_user)
+        self.client.force_authenticate(self.non_abakus_user)
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        self.assertEqual(registration_response.status_code, 403)
+
     def test_update(self, mock_verify_captcha):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 202)
-        res = self.client.put(
+        res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.data['id']),
             {'feedback': 'UPDATED'}
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['feedback'], 'UPDATED')
+
+    def test_user_cannot_update_other_registration(self, mock_verify_captcha):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+
+        self.other_user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.other_user)
+        self.client.force_authenticate(self.other_user)
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'feedback': 'UPDATED'}
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_admin_update_registration(self, mock_verify_captcha):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+
+        self.webkom_user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'feedback': 'UPDATED_BY_ADMIN'}
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['feedback'], 'UPDATED_BY_ADMIN')
 
     def test_register_no_pools(self, mock_verify_captcha):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')
@@ -268,6 +331,18 @@ class RegistrationsTestCase(APITransactionTestCase):
         get_unregistered = self.client.get(_get_registrations_detail_url(event.id, registration.id))
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(get_unregistered.status_code, 404)
+
+    def test_can_not_unregister_other_user(self, mock_verify_captcha):
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        registration = Registration.objects.get(user=self.abakus_user, event=event)
+
+        self.other_user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.other_user)
+        self.client.force_authenticate(self.other_user)
+        registration_response = self.client.delete(_get_registrations_detail_url(event.id,
+                                                                                 registration.id))
+
+        self.assertEqual(registration_response.status_code, 403)
 
     def test_required_feedback_failing(self, mock_verify_captcha):
         """Test that register returns 400 when not providing feedback when required"""
