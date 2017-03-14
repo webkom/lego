@@ -9,6 +9,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
+from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
@@ -58,7 +59,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The registration
         """
         if self.pools.filter(id=pool.id).exists():
-            return self.registrations.update_or_create(
+            reg = self.registrations.update_or_create(
                 event=self,
                 user=user,
                 defaults={'pool': pool,
@@ -67,6 +68,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                           'status': constants.SUCCESS_REGISTER,
                           'admin_reason': admin_reason}
             )[0]
+            get_handler(Registration).handle_admin_reg(reg)
+            return reg
+
         else:
             raise ValueError('No such pool in this event')
 
@@ -181,10 +185,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
-                    Penalty.objects.create(user=registration.user,
-                                           reason='Unregistering from event too late',
-                                           weight=1,
-                                           source_object=self)
+                    if not registration.user.penalties.filter(source_object=self).exists():
+                        Penalty.objects.create(user=registration.user,
+                                               reason='Unregistered from event too late',
+                                               weight=1,
+                                               source_object=self)
                 self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
@@ -225,6 +230,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                             top.pool = pool
                             break
                 top.save()
+                get_handler(Registration).handle_bump(top)
 
     def early_bump(self, opening_pool):
         """
@@ -242,6 +248,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if self.can_register(reg.user, opening_pool, future=True):
                 reg.pool = opening_pool
                 reg.save()
+                get_handler(Registration).handle_bump(reg)
         self.check_for_bump_or_rebalance(opening_pool)
 
     def try_to_rebalance(self, open_pool):

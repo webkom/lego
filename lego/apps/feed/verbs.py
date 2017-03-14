@@ -35,3 +35,30 @@ class EventCreateVerb(Verb):
 
 
 register(EventCreateVerb)
+
+
+class RegistrationBumpVerb(Verb):
+    id = 7
+    infinitive = 'registration_bump'
+    past_tense = infinitive
+
+
+register(RegistrationBumpVerb)
+
+
+class PenaltyCreateVerb(Verb):
+    id = 8
+    infinitive = 'penalty_create'
+    past_tense = infinitive
+
+
+register(PenaltyCreateVerb)
+
+
+class AdminRegistrationVerb(Verb):
+    id = 9
+    infinitive = 'admin_registration'
+    past_tense = infinitive
+
+
+register(AdminRegistrationVerb)
