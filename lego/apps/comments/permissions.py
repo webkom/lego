@@ -1,6 +1,22 @@
+from lego.apps.comments.models import Comment
+from lego.apps.permissions import register
+from lego.apps.permissions.index import PermissionIndex
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import AbakusPermission
 from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
+
+
+class CommentPermissionIndex(PermissionIndex):
+
+    model = Comment
+
+    create = ['/sudo/admin/comments/create/']
+    update = ['/sudo/admin/comments/update/']
+    partial_update = ['/sudo/admin/comments/update/']
+    destroy = ['/sudo/admin/comments/destroy/']
+
+
+register(CommentPermissionIndex)
 
 
 class CommentPermission(AbakusPermission):

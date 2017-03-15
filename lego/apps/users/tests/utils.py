@@ -10,3 +10,10 @@ def create_super_user():
     group = AbakusGroup.objects.create(name='super_group', permissions=['/sudo/'])
     group.add_user(user)
     return user
+
+
+def create_user_with_permission(perm):
+    user = User.objects.create(username='user_with_perm')
+    group = AbakusGroup.objects.create(name='perm_group', permissions=[perm])
+    group.add_user(user)
+    return user

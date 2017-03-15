@@ -56,3 +56,11 @@ def instance_to_string(instance):
     """
     content_type = instance_to_content_type_string(instance)
     return f'{content_type}-{instance.pk}'
+
+
+def instance_to_content_type_action_string(instance, action):
+    return f'{instance_to_content_type_string(instance)}.{action}'
+
+
+def action_string_to_content_type_and_action(instance_string):
+    return instance_string.rsplit('.', 1)

@@ -1,5 +1,22 @@
 from lego.apps.meetings.models import Meeting
+from lego.apps.permissions import register
+from lego.apps.permissions.index import PermissionIndex
 from lego.apps.permissions.permissions import AbakusPermission
+
+
+class MeetingPermissionIndex(PermissionIndex):
+
+    model = Meeting
+
+    list = ['/sudo/admin/meetings/list/']
+    retrieve = ['/sudo/admin/meetings/retrieve/']
+    create = ['/sudo/admin/meetings/create/']
+    update = ['/sudo/admin/meetings/update/']
+    partial_update = ['/sudo/admin/meetings/update/']
+    destroy = ['/sudo/admin/meetings/destroy/']
+
+
+register(MeetingPermissionIndex)
 
 
 class MeetingPermissions(AbakusPermission):

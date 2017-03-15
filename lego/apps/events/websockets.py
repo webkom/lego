@@ -13,7 +13,7 @@ def find_event_groups(user):
     of being signed up to future events.
     """
     queryset = Event.objects.filter(start_time__gt=datetime.now())
-    if not user.has_perm('/sudo/admin/events/list/'):
+    if not user.has_perm('events.event.list'):
         queryset = filter_queryset(user, queryset)
     groups = []
     for event in queryset.all():

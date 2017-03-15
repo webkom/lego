@@ -1,9 +1,20 @@
-from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.permissions import register
+from lego.apps.permissions.index import PermissionIndex
+from lego.apps.quotes.models import Quote
 
 
-class QuotePermissions(AbakusPermission):
+class QuotePermissionIndex(PermissionIndex):
 
-    permission_map = {
-        'approve': ['/sudo/admin/quotes/change-approval/'],
-        'unapprove': ['/sudo/admin/quotes/change-approval/'],
-    }
+    model = Quote
+
+    list = ['/sudo/admin/quotes/list/']
+    retrieve = []
+    create = ['/sudo/admin/quotes/create/']
+    update = ['/sudo/admin/quotes/update/']
+    destroy = ['/sudo/admin/quotes/destroy/']
+
+    approve = ['/sudo/admin/quotes/change-approval/']
+    unapprove = ['/sudo/admin/quotes/change-approval/']
+
+
+register(QuotePermissionIndex)

@@ -12,8 +12,8 @@ from .filters import FollowCompanyFilterSet, FollowEventFilterSet, FollowUserFil
 class FollowerBaseViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                           mixins.DestroyModelMixin, viewsets.GenericViewSet):
 
-    filter_backends = [DjangoFilterBackend]
-    permission_classes = [FollowerPermission]
+    filter_backends = (DjangoFilterBackend,)
+    permission_classes = (FollowerPermission,)
 
 
 class FollowUserViewSet(FollowerBaseViewSet):

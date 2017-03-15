@@ -3,7 +3,6 @@ from django_filters import FilterSet
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 
 from .models import Quote
-from .permissions import QuotePermissions
 
 
 class QuotesFilterSet(FilterSet):
@@ -19,10 +18,8 @@ class QuoteModelFilter(AbakusObjectPermissionFilter):
         access_unapproved = False
         queryset = super().filter_queryset(request, queryset, view)
 
-        if request.user and request.user.is_authenticated():
-            access_unapproved = request.user.has_perms(
-                QuotePermissions.permission_map['approve']
-            )
+        if request.user and request.user.is_authenticated:
+            access_unapproved = request.user.has_perm('quotes.quote.approve')
 
         if not access_unapproved:
             return queryset.filter(approved=True)

@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 
 from lego.apps.flatpages.models import Page
-from lego.apps.users.tests.utils import create_normal_user, create_super_user
+from lego.apps.users.tests.utils import create_normal_user, create_user_with_permission
 
 
 class PageAPITestCase(APITestCase):
@@ -56,7 +56,7 @@ class PageAPITestCase(APITestCase):
             'content': 'hei'
         }
 
-        user = create_super_user()
+        user = create_user_with_permission('/sudo/admin/')
         self.client.force_login(user)
         response = self.client.post('/api/v1/pages/', data=page)
         self.assertEqual(response.status_code, 201)
