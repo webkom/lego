@@ -15,8 +15,9 @@ class ICalTokenPermission(permissions.IsAuthenticated):
         if not raw_token:
             return False
 
-        token = ICalToken.objects.filter(token=raw_token)
-        if not token.exists():
+        try:
+            token = ICalToken.objects.get(token=raw_token)
+            request.token_user = token.user
+            return True
+        except (ICalToken.DoesNotExist):
             return False
-        request.token_user = token[0].user
-        return True

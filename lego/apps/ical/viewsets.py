@@ -97,7 +97,7 @@ class ICalViewset(viewsets.ViewSet):
         )
 
         following_events = Event.objects.filter(
-            followers__target_id=request.token_user.id,
+            followers__follower_id=request.token_user.id,
             end_time__gt=timezone.now() - timedelta(
                 days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
             )
