@@ -26,3 +26,9 @@
     admin_comment: ''
     phone: ''
     active: true
+
+- model: companies.SemesterStatus
+  pk: 1
+  fields:
+    year: 2017
+    company: 1

@@ -27,8 +27,10 @@ router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)
 router.register(r'comments', CommentViewSet)
 router.register(r'companies', CompanyViewSet)
-router.register(r'companies/(?P<company_pk>[^/]+)/company-contacts', CompanyContactViewSet)
-router.register(r'companies/(?P<company_pk>[^/]+)/semester-statuses', SemesterStatusViewSet)
+router.register(r'companies/(?P<company_pk>[^/]+)/company-contacts',
+                CompanyContactViewSet, base_name='company-contact')
+router.register(r'companies/(?P<company_pk>[^/]+)/semester-statuses',
+                SemesterStatusViewSet, base_name='semester-status')
 router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
