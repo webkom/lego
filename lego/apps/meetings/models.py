@@ -1,3 +1,5 @@
+
+from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
@@ -32,7 +34,7 @@ class Meeting(Content, BasisModel):
         return self._invited_users.filter(invitations__deleted=False)
 
     def get_absolute_url(self):
-        return f'https://abakus.no/meetings/{self.id}/'
+        return f'{settings.FRONTEND_URL}/meetings/{self.id}/'
 
     @property
     def participants(self):
