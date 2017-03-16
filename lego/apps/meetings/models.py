@@ -1,6 +1,9 @@
+from django.core import signing
+from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
 from lego.apps.content.models import Content
+from lego.apps.meetings.tasks import async_notify_user_about_invitation
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -33,8 +36,16 @@ class Meeting(Content, BasisModel):
         return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
 
     def invite_user(self, user):
-        return self.invitations.update_or_create(user=user,
-                                                 meeting=self)
+        invitation, created = self.invitations.update_or_create(
+            user=user,
+            meeting=self
+        )
+        if created:
+            async_notify_user_about_invitation.delay(
+                user_id=user.id,
+                meeting_id=self.id
+            )
+        return invitation, created
 
     def invite_group(self, group):
         for user in group.users.all():
@@ -64,6 +75,35 @@ class MeetingInvitation(BasisModel):
     user = models.ForeignKey(User, related_name='invitations')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES,
                                       default=NO_ANSWER)
+
+    def generate_invitation_token(self):
+        data = signing.dumps({
+            'user_id': self.user.id,
+            'meeting_id': self.meeting.id
+        })
+
+        token = TimestampSigner().sign(data)
+        return token
+
+    @staticmethod
+    def validate_token(token):
+        """
+        Validate token.
+
+        returns MeetingInvitation or None
+        """
+
+        try:
+            # Valid in 7 days
+            valid_in = 60 * 60 * 24 * 7
+            data = signing.loads(TimestampSigner().unsign(token, max_age=valid_in))
+
+            return MeetingInvitation.objects.filter(
+                user=int(data['user_id']),
+                meeting=int(data['meeting_id'])
+            )[0]
+        except (BadSignature, SignatureExpired):
+            return None
 
     def accept(self):
         self.status = self.ATTENDING
