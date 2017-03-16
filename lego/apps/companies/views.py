@@ -9,7 +9,6 @@ from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerial
                                              SemesterStatusCreateAndUpdateSerializer,
                                              SemesterStatusReadDetailedSerializer,
                                              SemesterStatusReadSerializer)
-from lego.apps.permissions.permissions import AbakusPermission
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -28,7 +27,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
 class SemesterStatusViewSet(viewsets.ModelViewSet):
     queryset = SemesterStatus.objects.all()
-    permission_classes = (AbakusPermission,)
+    permission_classes = (CompanyPermissions,)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -42,7 +41,7 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
 
 class CompanyContactViewSet(viewsets.ModelViewSet):
     queryset = CompanyContact.objects.all()
-    permission_classes = (AbakusPermission,)
+    permission_classes = (CompanyPermissions,)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
