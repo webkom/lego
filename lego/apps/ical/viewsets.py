@@ -95,7 +95,13 @@ class ICalViewset(viewsets.ViewSet):
             description=u"List of favorite events and meetings from Abakus.no",
             language=u"nb",
         )
-        # TODO FIXME add favorite events
+
+        following_events = Event.objects.filter(
+            followers__target_id=request.token_user.id,
+            end_time__gt=timezone.now() - timedelta(
+                days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+            )
+        ).all()
 
         meetings = meeting_filters.filter_queryset(
             request.token_user,
@@ -105,6 +111,22 @@ class ICalViewset(viewsets.ViewSet):
                 )
             )
         )
+        desc_event = loader.get_template("ical/event_description.txt")
+        for event in following_events:
+            context = Context({
+                "description": event.description,
+                "url": event.get_absolute_url()
+            })
+            feed.add_item(
+                title=event.title,
+                unique_id=f'event-{event.id}@abakus.no',
+                link=event.get_absolute_url(),
+                description=desc_event.render(context),
+                start_datetime=event.start_time,
+                end_datetime=event.end_time,
+                location=event.location
+            )
+
         desc = loader.get_template("ical/meeting_description.txt")
         for meeting in meetings:
             context = Context({
@@ -118,6 +140,8 @@ class ICalViewset(viewsets.ViewSet):
                 title=meeting.title,
                 link=meeting.get_absolute_url(),
                 description=desc.render(context),
+                location=meeting.location,
+                unique_id=f'meeting-{meeting.id}@abakus.no',
                 start_datetime=meeting.start_time,
                 end_datetime=meeting.end_time
             )
@@ -159,7 +183,9 @@ class ICalViewset(viewsets.ViewSet):
                 title=f'Reg: {event.title}',
                 link=event.get_absolute_url(),
                 description=desc.render(context),
+                unique_id=f'event-{event.id}@abakus.no',
                 start_datetime=reg_time,
+                location=event.location,
                 end_datetime=reg_time + timedelta(
                     minutes=constants.ICAL_REGISTRATION_EVENT_LENGTH_IN_MINUTES
                 )
@@ -199,6 +225,8 @@ class ICalViewset(viewsets.ViewSet):
                 title=event.title,
                 link=event.get_absolute_url(),
                 description=desc.render(context),
+                unique_id=f'event-{event.id}@abakus.no',
+                location=event.location,
                 start_datetime=event.start_time,
                 end_datetime=event.end_time
             )
