@@ -13,7 +13,7 @@ from lego.apps.permissions.permissions import AbakusPermission
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
-    queryset = Company.objects.all().prefetch_related('semester_statuses')
+    queryset = Company.objects.all().prefetch_related('semester_statuses', 'student_contact')
     permission_classes = (CompanyPermissions,)
 
     def get_serializer_class(self):
@@ -39,13 +39,6 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
 
         return SemesterStatusReadSerializer
 
-    def get_queryset(self):
-
-        if self.action in ['retrieve', 'destroy']:
-            company_id = self.kwargs.get('company_pk', None)
-            return SemesterStatus.objects.filter(company=company_id)
-        return self.queryset
-
 
 class CompanyContactViewSet(viewsets.ModelViewSet):
     queryset = CompanyContact.objects.all()
@@ -56,10 +49,3 @@ class CompanyContactViewSet(viewsets.ModelViewSet):
             return CompanyContactCreateAndUpdateSerializer
 
         return CompanyContactReadSerializer
-
-    def get_queryset(self):
-
-        if self.action in ['retrieve', 'destroy']:
-            company_id = self.kwargs.get('company_pk', None)
-            return CompanyContact.objects.filter(company=company_id)
-        return self.queryset
