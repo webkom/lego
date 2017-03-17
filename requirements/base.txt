@@ -13,7 +13,7 @@ certifi==2017.1.23
 elasticsearch==5.2.0
 celery==4.0.2
 whitenoise==3.3.0
-stripe==1.49.0
+stripe==1.50.0
 structlog==16.1.0
 boto3==1.4.4
 cassandra-driver==3.8.0
