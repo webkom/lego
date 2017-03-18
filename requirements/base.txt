@@ -23,7 +23,7 @@ slackclient==1.0.5
 
 # channels:
 channels==1.0.3
-asgi_redis==1.0.0
+asgi_redis==1.1.0
 daphne==1.0.3
 
 djangorestframework==3.6.2
