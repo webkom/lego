@@ -1,7 +1,7 @@
 Du er invitert i møte: {{title}}
 
 Referat:
-{{report}}
+{{report|striptags}}
 
 Referent:
 {{reportAuthor}}
