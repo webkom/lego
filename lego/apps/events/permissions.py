@@ -23,10 +23,11 @@ class RegistrationPermissions(AbakusPermission):
 
     def is_self(self, request, view, obj=None):
         if view.action in self.allowed_individual:
-            registration_id = view.kwargs.get('pk', None)
-            reg = Registration.objects.get(pk=registration_id)
             if obj and obj.user == request.user:
                 return True
+
+            registration_id = view.kwargs.get('pk', None)
+            reg = Registration.objects.get(pk=registration_id)
             if reg and request.user.id == reg.user_id:
                 return True
 
