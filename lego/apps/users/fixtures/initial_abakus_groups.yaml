@@ -78,6 +78,7 @@
     permissions:
     - /sudo/admin/events/
     - /sudo/admin/registrations/
+    - /sudo/admin/companies/
 
 - model: users.AbakusGroup
   pk: 7
@@ -90,6 +91,8 @@
     parent: 3
     rght: 10
     tree_id: 2
+    permissions:
+      - /sudo/admin/companies/
 
 - model: users.AbakusGroup
   pk: 8
