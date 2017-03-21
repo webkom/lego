@@ -1,8 +1,12 @@
 from datetime import timedelta
+from smtplib import SMTPException
 
 import stripe
+from celery import chain, group, subtask
+from django.conf import settings
 from django.core.cache import cache
 from django.db import IntegrityError, transaction
+from django.template import Context, loader
 from django.utils import timezone
 from redis.exceptions import LockError
 from structlog import get_logger
@@ -11,6 +15,7 @@ from lego import celery_app
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.feed.registry import get_handler
+from lego.apps.users.models import User
 
 from .websockets import notify_event_registration, notify_user_registration
 
@@ -195,10 +200,87 @@ def bump_waiting_users_to_new_pool():
 def notify_user_when_payment_overdue():
     time = timezone.now()
     events = Event.objects.filter(
-        start_time__gte=time - timedelta(days=7), is_priced=True
+        payment_due_date__range=(time - timedelta(days=7), time), is_priced=True
     ).exclude(registrations=None)
     for event in events:
-        if event.payment_due_date < time:
-            for reg in event.registrations.all():
-                if reg.should_notify(time):
-                    get_handler(Registration).handle_payment_overdue(reg)
+        for reg in event.registrations.all():
+            if reg.should_notify(time):
+                get_handler(Registration).handle_payment_overdue_user(reg)
+
+
+@celery_app.task(serializer='json')
+def run_notify_creator_chain():
+    chain(
+        notify_creator_for_old_events_with_payment_overdue.s(),
+        dmap.s(mail_payment_overdue_creator.s(), save_payment_overdue_notified.s())
+    ).delay()
+
+
+@celery_app.task()
+def dmap(it, callback, callback2):
+    callback = subtask(callback)
+    return group(
+        chain(callback.clone([arg, ]), callback2) for arg in it
+    ).delay()
+
+
+@celery_app.task(serializer='json')
+def notify_creator_for_old_events_with_payment_overdue():
+    time = timezone.now()
+    events = Event.objects.filter(
+        payment_due_date__range=(time - timedelta(days=14), time - timedelta(days=7)),
+        is_priced=True,
+        payment_overdue_notified=False
+    ).exclude(registrations=None)
+    mailing_list = []
+    for event in events:
+        list_of_users_overdue = []
+        for reg in event.registrations.all():
+            if not reg.has_paid():
+                list_of_users_overdue.append(reg.user.id)
+        if list_of_users_overdue:
+            mailing_list.append([event.id, list_of_users_overdue])
+    return mailing_list
+
+
+@celery_app.task(serializer='json', bind=True)
+def mail_payment_overdue_creator(self, result):
+    if not result:
+        return
+    event = Event.objects.get(id=result[0])
+    userlist = User.objects.filter(id__in=result[1])
+    user = User.objects.get(id=event.created_by.id)
+    message = loader.get_template('email/payment_overdue_creator_email.html')
+
+    context = Context({
+        'name': event.created_by.get_short_name(),
+        'event': event.title,
+        'userlist': userlist,
+        'slug': event.slug,
+        'settings': settings
+    })
+
+    try:
+        user.email_user(
+            subject='Abakus.no - Brukere har manglende betalinger',
+            message=message.render(context),
+        )
+        return event.id
+    except SMTPException as e:
+        log.error(
+            'payment_overdue_creator_send_mail_error',
+            exception=e,
+            creator_id=user.id
+        )
+        raise self.retry(exc=e, max_retries=3)
+
+
+@celery_app.task(serializer='json', bind=True)
+def save_payment_overdue_notified(self, event_id):
+    try:
+        event = Event.objects.get(id=event_id)
+        event.payment_overdue_notified = True
+        event.save()
+    except IntegrityError as e:
+        log.error('payment_overdue_saving_error', exception=e, event_id=event_id)
+        raise self.retry(exc=e, max_retries=3)

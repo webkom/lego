@@ -37,6 +37,7 @@ class FeedManager:
                 'penalty_create': tasks.mail_penalty_create,
                 'registration_bump': tasks.mail_registration_bump,
                 'admin_registration': tasks.mail_admin_registration,
+                'payment_overdue': tasks.mail_payment_overdue
             }
 
             mailer_task = mailers.get(activity.verb.infinitive)

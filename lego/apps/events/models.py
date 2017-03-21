@@ -46,6 +46,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
+    payment_overdue_notified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
