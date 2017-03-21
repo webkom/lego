@@ -1,3 +1,5 @@
+
+from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
@@ -31,6 +33,9 @@ class Meeting(Content, BasisModel):
         """
         return self._invited_users.filter(invitations__deleted=False)
 
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/meetings/{self.id}/'
+
     @property
     def participants(self):
         return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
@@ -53,7 +58,7 @@ class Meeting(Content, BasisModel):
 
     def uninvite_user(self, user):
         invitation = self.invitations.get(user=user)
-        invitation.delete()
+        invitation.delete(force=True)
 
     def can_edit(self, user):
         return self.created_by == user or self.invited_users.filter(id=user.id).exists()

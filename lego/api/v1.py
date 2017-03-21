@@ -10,6 +10,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
+from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
                                       MeetingViewSet)
@@ -66,3 +67,5 @@ router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-
 router.register(r'feed/group', GroupFeedViewSet, base_name='feed-group')
 router.register(r'feed/company', CompanyFeedViewSet, base_name='feed-company')
 router.register(r'slack/invite', SlackInviteViewSet, base_name='slack-invite')
+router.register(r'calendar/ical', ICalViewset, base_name='calendar-ical')
+router.register(r'calendar/token', ICalTokenViewset, base_name='calendar-token')
