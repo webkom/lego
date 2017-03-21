@@ -9,7 +9,7 @@ from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
-from lego.apps.users.serializers.users import PublicUserSerializer
+from lego.apps.users.serializers.users import MeSerializer, PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
@@ -21,6 +21,17 @@ class RegistrationReadSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status')
+        read_only = True
+
+
+class RegistrationReadDetailedSerializer(BasisModelSerializer):
+    user = MeSerializer()
+
+    class Meta:
+        model = Registration
+        fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status',
+                  'registration_date', 'unregistration_date', 'admin_reason',
+                  'charge_amount', 'charge_amount_refunded')
         read_only = True
 
 
@@ -65,9 +76,10 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     company = PublicCompanyReadSerializer(read_only=True)
-    pools = PoolReadSerializer(read_only=True, many=True)
+    pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     price = serializers.SerializerMethodField()
+    waiting_registrations = RegistrationReadSerializer(many=True)
     activation_time = ActivationTimeField()
     spots_left = SpotsLeftField()
 
@@ -75,8 +87,8 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'company',
-                  'active_capacity', 'feedback_required', 'is_priced', 'price', 'activation_time',
-                  'spots_left', 'tags')
+                  'active_capacity', 'feedback_required', 'is_priced', 'price',
+                  'waiting_registrations', 'activation_time', 'spots_left', 'tags')
         read_only = True
 
     def get_price(self, obj):
