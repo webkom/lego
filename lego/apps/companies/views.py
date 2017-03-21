@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
+from rest_framework.viewsets import GenericViewSet
 
 from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
 from lego.apps.companies.permissions import CompanyPermissions
@@ -25,7 +26,10 @@ class CompanyViewSet(viewsets.ModelViewSet):
         return CompanyReadSerializer
 
 
-class SemesterStatusViewSet(viewsets.ModelViewSet):
+class SemesterStatusViewSet(mixins.CreateModelMixin,
+                            mixins.UpdateModelMixin,
+                            mixins.DestroyModelMixin,
+                            GenericViewSet):
     queryset = SemesterStatus.objects.all()
     permission_classes = (CompanyPermissions,)
 
@@ -38,6 +42,11 @@ class SemesterStatusViewSet(viewsets.ModelViewSet):
 
         return SemesterStatusReadSerializer
 
+    def get_queryset(self):
+        company_id = self.kwargs.get('company_pk')
+        if company_id:
+            return SemesterStatus.objects.filter(company=company_id)
+
 
 class CompanyContactViewSet(viewsets.ModelViewSet):
     queryset = CompanyContact.objects.all()
@@ -48,3 +57,8 @@ class CompanyContactViewSet(viewsets.ModelViewSet):
             return CompanyContactCreateAndUpdateSerializer
 
         return CompanyContactReadSerializer
+
+    def get_queryset(self):
+        company_id = self.kwargs.get('company_pk')
+        if company_id:
+            return CompanyContact.objects.filter(company=company_id)
