@@ -2,14 +2,13 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from lego.apps.comments.models import Comment
-from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
 from .constants import CONTACT_STATUSES, SEMESTERS
 
 
-class Company(BasisModel, ObjectPermissionsModel):
+class Company(BasisModel):
 
     """ These are the values returned when calling without specific route """
     name = models.CharField(max_length=100)
