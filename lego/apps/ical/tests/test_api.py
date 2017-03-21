@@ -104,7 +104,6 @@ class RetreiveDateDependentICalTestCase(APITestCase):
             res = self.client.get(url)
             self.assertEqual(res.status_code, 200)
             self.help_test_ical_content_permission(res.content, self.user)
-        self.client.force_authenticate(user=None)
 
     def test_get_ical_without_authentication(self, *args):
         for url in _get_all_ical_urls(''):
@@ -160,14 +159,13 @@ class ICalTokenRegenerateTestCase(APITestCase):
         self.client.force_authenticate(self.abakommer)
 
         old_token = ICalToken.objects.get(user=self.abakommer).token
-        res = self.client.get(_get_token_regenerate_url())
+        res = self.client.patch(_get_token_regenerate_url())
         new_token = ICalToken.objects.get(user=self.abakommer).token
 
         self.assertNotEqual(old_token, new_token)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['token'], new_token)
         self.assertNotEqual(res.data['token'], old_token)
-        self.client.force_authenticate(user=None)
 
     def test_not_regenerate_token(self):
         self.client.force_authenticate(self.abakommer)
@@ -180,4 +178,3 @@ class ICalTokenRegenerateTestCase(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['token'], new_token)
         self.assertEqual(res.data['token'], old_token)
-        self.client.force_authenticate(user=None)

@@ -1,4 +1,4 @@
-{{description}}
+{{description|striptags}}
 
 {% if price %}
 Pris: {{price}}
