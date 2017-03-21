@@ -6,7 +6,7 @@ from lego.apps.feed.feed_handlers.base_handler import BaseHandler
 from lego.apps.feed.feed_manager import feed_manager
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import AdminRegistrationVerb, RegistrationBumpVerb
+from lego.apps.feed.verbs import AdminRegistrationVerb, PaymentOverdueVerb, RegistrationBumpVerb
 
 
 class RegistrationHandler(BaseHandler):
@@ -26,11 +26,14 @@ class RegistrationHandler(BaseHandler):
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
     def handle_update(self, registration):
-
         pass
 
     def handle_delete(self, registration):
         pass
+
+    def handle_payment_overdue(self, registration):
+        activity = self.get_activity(registration, 'payment_overdue')
+        self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
     def get_feeds_and_recipients(self, registration):
         pass
@@ -39,6 +42,7 @@ class RegistrationHandler(BaseHandler):
         verbs = {
             'bump': RegistrationBumpVerb,
             'admin_reg': AdminRegistrationVerb,
+            'payment_overdue': PaymentOverdueVerb
         }
 
         return Activity(

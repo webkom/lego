@@ -45,6 +45,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     is_priced = models.BooleanField(default=False)
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
+    payment_due_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.title
@@ -504,6 +505,7 @@ class Registration(BasisModel):
     charge_amount = models.IntegerField(default=0)
     charge_amount_refunded = models.IntegerField(default=0)
     charge_status = models.CharField(null=True, max_length=50)
+    last_notified_overdue_payment = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user', 'event')
@@ -519,6 +521,22 @@ class Registration(BasisModel):
     def validate(self):
         if self.pool and self.unregistration_date:
             raise ValidationError('Pool and unregistration_date should not both be set')
+
+    def has_paid(self):
+        return self.charge_status == constants.PAYMENT_SUCCESS
+
+    def should_notify(self, time=None):
+        if not time:
+            time = timezone.now()
+        if not self.has_paid():
+            return not self.last_notified_overdue_payment or\
+                   (time - self.last_notified_overdue_payment).days >= 1
+        return False
+
+    def set_payment_success(self):
+        self.charge_status = constants.PAYMENT_SUCCESS
+        self.save()
+        return self
 
     def add_to_pool(self, pool):
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)

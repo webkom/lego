@@ -10,6 +10,7 @@ from structlog import get_logger
 from lego import celery_app
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
+from lego.apps.feed.registry import get_handler
 
 from .websockets import notify_event_registration, notify_user_registration
 
@@ -188,3 +189,16 @@ def bump_waiting_users_to_new_pool():
                             event.early_bump(pool)
                         elif pool.is_activated and act > now - timedelta(minutes=35):
                             event.early_bump(pool)
+
+
+@celery_app.task(serializer='json')
+def notify_user_when_payment_overdue():
+    time = timezone.now()
+    events = Event.objects.filter(
+        start_time__gte=time - timedelta(days=7), is_priced=True
+    ).exclude(registrations=None)
+    for event in events:
+        if event.payment_due_date < time:
+            for reg in event.registrations.all():
+                if reg.should_notify(time):
+                    get_handler(Registration).handle_payment_overdue(reg)

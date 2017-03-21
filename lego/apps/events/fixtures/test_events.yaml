@@ -66,6 +66,7 @@
     is_priced: True
     price_member: 10000
     price_guest: 15000
+    payment_due_date: '2011-09-01T13:20:30+03:00'
     can_view_groups:
       - 2
 
