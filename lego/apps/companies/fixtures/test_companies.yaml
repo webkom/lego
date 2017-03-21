@@ -32,3 +32,12 @@
   fields:
     year: 2017
     company: 1
+
+- model: companies.CompanyContact
+  pk: 1
+  fields:
+    name: 'Sylliaas Eiriksen'
+    role: 'sjef'
+    mail: 'rekt@chill.no'
+    phone: '12121212'
+    company: 1
