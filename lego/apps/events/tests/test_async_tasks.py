@@ -1,13 +1,16 @@
 from datetime import timedelta
+from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
+from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (async_register, bump_waiting_users_to_new_pool,
-                                    check_events_for_registrations_with_expired_penalties)
-from lego.apps.events.tests.utils import get_dummy_users
+                                    check_events_for_registrations_with_expired_penalties,
+                                    notify_user_when_payment_overdue)
+from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
 
 
@@ -200,10 +203,6 @@ class PenaltyExpiredTestCase(TestCase):
         from django_redis import get_redis_connection
         get_redis_connection("default").flushall()
 
-    def make_penalty_expire(self, penalty):
-        penalty.created_at = timezone.now() - timedelta(days=365)
-        penalty.save()
-
     def test_is_automatically_bumped_after_penalty_expiration(self):
         """ Tests that the user that registered with penalties is bumped
             by the task after penalty expiration"""
@@ -216,7 +215,7 @@ class PenaltyExpiredTestCase(TestCase):
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
 
-        self.make_penalty_expire(p1)
+        make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
@@ -234,7 +233,7 @@ class PenaltyExpiredTestCase(TestCase):
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
 
-        self.make_penalty_expire(p1)
+        make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
@@ -252,7 +251,7 @@ class PenaltyExpiredTestCase(TestCase):
         registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
         async_register(registration.id)
 
-        self.make_penalty_expire(p1)
+        make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(id=registration.id).pool)
@@ -273,7 +272,7 @@ class PenaltyExpiredTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
 
-        self.make_penalty_expire(p1)
+        make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -297,7 +296,7 @@ class PenaltyExpiredTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
 
-        self.make_penalty_expire(p1)
+        make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -321,8 +320,75 @@ class PenaltyExpiredTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             async_register(registration.id)
 
-        self.make_penalty_expire(p1)
+        make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(user=users[1]).pool)
         self.assertEqual(self.event.number_of_registrations, 2)
+
+
+class PaymentDueTestCase(TestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml',
+                'test_events.yaml', 'test_companies.yaml']
+
+    def setUp(self):
+        self.event = Event.objects.get(title='POOLS_AND_PRICED')
+        self.event.start_time = timezone.now() + timedelta(days=1)
+        self.event.merge_time = timezone.now() + timedelta(hours=12)
+        self.event.payment_due_date = timezone.now() - timedelta(days=2)
+        self.event.save()
+        self.registration = self.event.registrations.first()
+
+    def tearDown(self):
+        from django_redis import get_redis_connection
+        get_redis_connection("default").flushall()
+
+    @mock.patch('lego.apps.events.tasks.get_handler')
+    def test_notification_when_overdue_payment(self, mock_get_handler):
+        """Tests that notification is added when registration has not paid"""
+
+        notify_user_when_payment_overdue.delay()
+        mock_get_handler(
+            Registration
+        ).handle_payment_overdue.assert_called_once_with(self.registration)
+
+    @mock.patch('lego.apps.events.tasks.get_handler')
+    def test_new_notification_when_time_limit_passed(self, mock_get_handler):
+        """Test that notification is added a second time when time limit (1 day) has passed"""
+        self.registration.last_notified_overdue_payment = timezone.now() - timedelta(days=1)
+        self.registration.save()
+
+        notify_user_when_payment_overdue.delay()
+        mock_get_handler(
+            Registration
+        ).handle_payment_overdue.assert_called_once_with(self.registration)
+
+    @mock.patch('lego.apps.events.tasks.get_handler')
+    def test_no_notification_when_recently_notified(self, mock_get_handler):
+        """Test that notification is not added when registration is within time limit"""
+
+        self.registration.last_notified_overdue_payment = timezone.now()
+        self.registration.save()
+
+        notify_user_when_payment_overdue.delay()
+        mock_get_handler.assert_not_called()
+
+    @mock.patch('lego.apps.events.tasks.get_handler')
+    def test_no_notification_when_user_has_paid(self, mock_get_handler):
+        """Test that notification is not added when user has paid"""
+
+        self.registration.charge_status = constants.PAYMENT_SUCCESS
+        self.registration.save()
+
+        notify_user_when_payment_overdue.delay()
+        mock_get_handler.assert_not_called()
+
+    @mock.patch('lego.apps.events.tasks.get_handler')
+    def test_no_notification_when_event_is_not_due(self, mock_get_handler):
+        """Test that notification is not added when event is not overdue"""
+
+        self.event.payment_due_date = timezone.now() + timedelta(days=1)
+        self.event.save()
+
+        notify_user_when_payment_overdue.delay()
+        mock_get_handler.assert_not_called()
