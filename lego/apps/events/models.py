@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -73,6 +74,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         else:
             raise ValueError('No such pool in this event')
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/events/{self.id}/'
 
     def can_register(self, user, pool, future=False):
         if not pool.is_activated and not future:
