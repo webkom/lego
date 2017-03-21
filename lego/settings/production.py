@@ -88,4 +88,5 @@ ELASTICSEARCH = [
 stripe.api_key = env('STRIPE_API_KEY')
 
 # Captcha
+CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 CAPTCHA_KEY = env('CAPTCHA_KEY')
