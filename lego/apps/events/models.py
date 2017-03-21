@@ -530,7 +530,7 @@ class Registration(BasisModel):
             time = timezone.now()
         if not self.has_paid():
             return not self.last_notified_overdue_payment or\
-                   (time - self.last_notified_overdue_payment).days >= 1
+               (time - self.last_notified_overdue_payment).days >= constants.DAYS_BETWEEN_NOTIFY
         return False
 
     def set_payment_success(self):
