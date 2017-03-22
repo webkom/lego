@@ -17,14 +17,3 @@ class LDAPUser(models.Model):
     def set_password(self, password):
         super().set_password(password)
         self.ldap_password_hash = create_ldap_password_hash(password)
-
-
-class GSyncUserMail(models.Model):
-    """
-    This class the prefix used when creating a @abakus.no address
-    """
-
-    abakus_address = models.CharField(max_length=128)
-
-    class Meta:
-        abstract = True
