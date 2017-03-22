@@ -35,5 +35,6 @@ HEALTH_CHECK_REMOTE_IPS = [
 
 # Additional groups to sync with LDAP. Committees is synced automatically. Add group names.
 LDAP_GROUPS = [
-
+    'Webkom',
+    'Fagkom'
 ]

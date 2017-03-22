@@ -95,3 +95,17 @@ class LDAPLib:
             self.connection.add(
                 dn, ['organizationalUnit', 'top'], {'ou': name}
             )
+
+    def delete_user(self, uid):
+        dn = ','.join((f'uid={uid}', self.user_base))
+        return self.connection.delete(dn)
+
+    def delete_group(self, cn):
+        dn = ','.join((f'cn={cn}', self.group_base))
+        return self.connection.delete(dn)
+
+    def check_password(self, uid, password_hash):
+        return False
+
+    def change_password(self, uid, password_hash):
+        pass
