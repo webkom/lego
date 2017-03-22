@@ -10,7 +10,7 @@ log = get_logger()
 class Sync:
     """
     Export users and groups to external systems.
-    We split this into multiple celery tasks at a later point.
+    We should split this into multiple celery tasks and add a lock at a later point.
     """
 
     def __init__(self):
@@ -20,6 +20,7 @@ class Sync:
         ]
 
     def sync(self):
+
         users = User.objects.all()
         groups = AbakusGroup.objects.all()
 
@@ -27,10 +28,19 @@ class Sync:
             log.info('sync_migrate', system=system.name)
             system.migrate()
 
-            log.info('sync_users', system=system.name, users=users.count())
-            system.sync_users(filter(system.should_sync_user, users))
+            sync_users = system.filter_users(users)
+            sync_groups = system.filter_groups(groups)
 
-            log.info('sync_groups', system=system.name, groups=groups.count())
-            system.sync_groups(filter(system.should_sync_group, groups))
+            log.info('sync_users', system=system.name, users=sync_users.count())
+            system.sync_users(sync_users)
+
+            log.info('sync_groups', system=system.name, groups=sync_groups.count())
+            system.sync_groups(sync_groups)
+
+            log.info('delete_excess_groups', system=system.name)
+            system.delete_excess_groups(sync_groups)
+
+            log.info('delete_excess_users', system=system.name)
+            system.delete_excess_users(sync_users)
 
             log.info('sync_done', system=system.name)

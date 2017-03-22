@@ -46,9 +46,9 @@ class ExternalSystem:
         """
         raise NotImplementedError
 
-    def delete_user(self, user):
+    def delete_excess_users(self, valid_users):
         """
-        Delete a user from the external system.
+        Delete excess users from the remote system.
         """
         raise NotImplementedError
 
@@ -70,9 +70,9 @@ class ExternalSystem:
         """
         raise NotImplementedError
 
-    def delete_group(self, group):
+    def delete_excess_groups(self, valid_groups):
         """
-        Delete a group in the external system.
+        Delete excess groups from the remote system.
         """
         raise NotImplementedError
 
@@ -82,14 +82,14 @@ class ExternalSystem:
         """
         raise NotImplementedError
 
-    def should_sync_user(self, user):
+    def filter_users(self, queryset):
         """
-        Return True if this is a user that should be synced with the external system.
+        Add a filter to the queryset if you don't want to sync all users.
         """
-        return True
+        return queryset
 
-    def should_sync_group(self, group):
+    def filter_groups(self, queryset):
         """
-        Return True if this is a group that should be synced with the external system.
+        Add a filter to the queryset if you don't want to sync all groups.
         """
-        return True
+        return queryset
