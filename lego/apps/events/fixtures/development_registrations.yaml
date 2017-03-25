@@ -6710,8 +6710,7 @@
   pk: 745
 - fields:
     event: 50
-    pool: 80
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-20T17:00:00+00:00'
     unregistration_date: null
     user: 15
     status: 'SUCCESS_REGISTER'
@@ -6719,8 +6718,7 @@
   pk: 746
 - fields:
     event: 50
-    pool: 80
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-21T17:00:00+00:00'
     unregistration_date: null
     user: 16
     status: 'SUCCESS_REGISTER'
@@ -6728,8 +6726,7 @@
   pk: 747
 - fields:
     event: 50
-    pool: 80
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-22T17:00:00+00:00'
     unregistration_date: null
     user: 17
     status: 'SUCCESS_REGISTER'
@@ -6737,8 +6734,7 @@
   pk: 748
 - fields:
     event: 50
-    pool: 80
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-23T17:00:00+00:00'
     unregistration_date: null
     user: 18
     status: 'SUCCESS_REGISTER'
@@ -6746,8 +6742,7 @@
   pk: 749
 - fields:
     event: 50
-    pool: 80
-    registration_date: '2016-02-18T17:00:00+00:00'
+    registration_date: '2016-02-24T17:00:00+00:00'
     unregistration_date: null
     user: 19
     status: 'SUCCESS_REGISTER'
