@@ -63,6 +63,10 @@ schedule = {
     'notify_user_when_payment_overdue': {
         'task': 'lego.apps.events.tasks.notify_user_when_payment_overdue',
         'schedule': crontab(hour='0')
+    },
+    'notify_creator_when_payment_overdue': {
+        'task': 'lego.apps.events.tasks.run_notify_creator_chain',
+        'schedule': crontab(hour='0')
     }
 }
 
