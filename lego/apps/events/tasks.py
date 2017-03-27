@@ -201,7 +201,7 @@ def notify_user_when_payment_overdue():
     time = timezone.now()
     events = Event.objects.filter(
         payment_due_date__range=(time - timedelta(days=7), time), is_priced=True
-    ).exclude(registrations=None)
+    ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
         for reg in event.registrations.all():
             if reg.should_notify(time):
@@ -225,7 +225,7 @@ def get_old_events_with_payment_overdue():
         payment_due_date__range=(time - timedelta(days=14), time - timedelta(days=7)),
         is_priced=True,
         payment_overdue_notified=False
-    ).exclude(registrations=None)
+    ).exclude(registrations=None).prefetch_related('registrations')
     mailing_list = []
     for event in events:
         list_of_users_overdue = []
