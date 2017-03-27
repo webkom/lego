@@ -2,7 +2,7 @@ from datetime import timedelta
 from smtplib import SMTPException
 
 import stripe
-from celery import chain, group, subtask
+from celery import chain, group
 from django.conf import settings
 from django.core.cache import cache
 from django.db import IntegrityError, transaction
@@ -210,22 +210,16 @@ def notify_user_when_payment_overdue():
 
 @celery_app.task(serializer='json')
 def run_notify_creator_chain():
-    chain(
-        notify_creator_for_old_events_with_payment_overdue.s(),
-        dmap.s(mail_payment_overdue_creator.s(), save_payment_overdue_notified.s())
-    ).delay()
+    mailing_list = get_old_events_with_payment_overdue()
+    tasks = [
+        chain(
+            mail_payment_overdue_creator.s(arg), save_payment_overdue_notified.s()
+        ) for arg in mailing_list
+    ]
+    group(tasks)()
 
 
-@celery_app.task()
-def dmap(it, callback, callback2):
-    callback = subtask(callback)
-    return group(
-        chain(callback.clone([arg, ]), callback2) for arg in it
-    ).delay()
-
-
-@celery_app.task(serializer='json')
-def notify_creator_for_old_events_with_payment_overdue():
+def get_old_events_with_payment_overdue():
     time = timezone.now()
     events = Event.objects.filter(
         payment_due_date__range=(time - timedelta(days=14), time - timedelta(days=7)),
