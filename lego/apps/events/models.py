@@ -524,7 +524,7 @@ class Registration(BasisModel):
             raise ValidationError('Pool and unregistration_date should not both be set')
 
     def has_paid(self):
-        return self.charge_status == constants.PAYMENT_SUCCESS
+        return self.charge_status in [constants.PAYMENT_SUCCESS, constants.PAYMENT_MANUAL]
 
     def should_notify(self, time=None):
         if not time:
@@ -535,7 +535,7 @@ class Registration(BasisModel):
         return False
 
     def set_payment_success(self):
-        self.charge_status = constants.PAYMENT_SUCCESS
+        self.charge_status = constants.PAYMENT_MANUAL
         self.save()
         return self
 
