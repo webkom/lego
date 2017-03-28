@@ -19,12 +19,18 @@ from lego.utils.serializers import BasisModelSerializer
 class RegistrationReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
     feedback = FeedbackField()
-    charge_status = ChargeStatusField()
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status')
+        fields = ('id', 'user', 'pool', 'feedback', 'status')
         read_only = True
+
+
+class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
+    charge_status = ChargeStatusField()
+
+    class Meta(RegistrationReadSerializer.Meta):
+        fields = RegistrationReadSerializer.Meta.fields + ('charge_status', )
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
@@ -32,14 +38,14 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status', 'charge_status',
+        fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status',
                   'registration_date', 'unregistration_date', 'admin_reason',
-                  'charge_amount', 'charge_amount_refunded')
+                  'charge_id', 'charge_status', 'charge_amount', 'charge_amount_refunded')
         read_only = True
 
 
 class PoolReadSerializer(BasisModelSerializer):
-    registrations = RegistrationReadSerializer(many=True)
+    registrations = serializers.SerializerMethodField()
     permission_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta:
@@ -55,6 +61,14 @@ class PoolReadSerializer(BasisModelSerializer):
         pool.permission_groups.set(permission_groups)
 
         return pool
+
+    def get_registrations(self, obj):
+        queryset = obj.registrations.all()
+        if obj.event.is_priced:
+            return RegistrationPaymentReadSerializer(
+                queryset, context=self.context, many=True
+            ).data
+        return RegistrationReadSerializer(queryset, context=self.context, many=True).data
 
 
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):

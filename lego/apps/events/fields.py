@@ -9,10 +9,8 @@ class FeedbackField(serializers.Field):
 
     def to_representation(self, value):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and \
-                (request.user == value.user or
-                 request.user.has_perm('/sudo/admin/events/update/')):
-                return value.feedback
+        if request and request.user.is_authenticated and request.user == value.user:
+            return value.feedback
 
         user = self.context.get('user', None)
         if user and user == value.user:
@@ -27,10 +25,8 @@ class ChargeStatusField(serializers.Field):
 
     def to_representation(self, value):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and \
-            (request.user == value.user or
-             request.user.has_perm('/sudo/admin/events/update/')):
-                return value.charge_status
+        if request and request.user.is_authenticated and request.user == value.user:
+            return value.charge_status
 
         user = self.context.get('user', None)
         if user and user == value.user:

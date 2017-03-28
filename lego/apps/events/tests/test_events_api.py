@@ -146,20 +146,20 @@ class RetrieveEventsTestCase(APITestCase):
         event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 404)
 
-    def test_fields_with_keyword_permission(self):
-        """Test that a user with keyword permissions can view fields of others"""
+    def test_charge_status_hidden_when_not_priced(self):
+        """Test that chargeStatus is hidden when getting nonpriced event"""
         AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_detail_url(5))
+        event_response = self.client.get(_get_detail_url(1))
 
         for pool in event_response.data['pools']:
             for reg in pool['registrations']:
-                self.assertIsNotNone(reg['feedback'])
-                self.assertIsNotNone(reg['chargeStatus'])
+                with self.assertRaises(KeyError):
+                    reg['chargeStatus']
 
-    def test_fields_without_keyword_permission(self):
-        """Test that a user without keyword permissions can not view fields of others"""
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+    def test_only_own_fields_visible(self):
+        """Test that a user can only view own fields"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(5))
 
@@ -585,7 +585,7 @@ class StripePaymentTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
 
