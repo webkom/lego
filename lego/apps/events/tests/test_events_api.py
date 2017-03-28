@@ -284,16 +284,38 @@ class RegistrationsTestCase(APITransactionTestCase):
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 403)
 
-    def test_update(self, *args):
+    def test_update_feedback(self, *args):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 202)
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.data['id']),
             {'feedback': 'UPDATED'}
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['feedback'], 'UPDATED')
+
+    def test_update_presence_without_permission(self, *args):
+        """ Test that abakus user cannot update presence """
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'presence': 1}
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_update_presence_with_permission(self, *args):
+        """ Test that admin can update presence """
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'presence': 1}
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['presence'], 1)
 
     def test_user_cannot_update_other_registration(self, *args):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')

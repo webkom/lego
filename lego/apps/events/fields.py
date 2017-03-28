@@ -66,3 +66,22 @@ class SetChargeStatusField(serializers.ChoiceField):
                 request.user.has_perm('/sudo/admin/events/update/'):
             return super().to_internal_value(data)
         raise PermissionDenied()
+
+
+class PresenceField(serializers.ChoiceField):
+
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated and \
+                request.user.has_perm('/sudo/admin/events/update/'):
+            return getattr(value, 'presence', None)
+
+    def to_internal_value(self, data):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated and \
+                request.user.has_perm('/sudo/admin/events/update/'):
+            return super().to_internal_value(data)
+        raise PermissionDenied()

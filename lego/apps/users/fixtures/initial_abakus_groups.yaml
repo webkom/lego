@@ -22,8 +22,8 @@
     rght: 30
     tree_id: 2
     permissions:
-      - /sudo/admin/meetings/create
-      - /sudo/admin/meetinginvitations/create
+      - /sudo/admin/meetings/create/
+      - /sudo/admin/meetinginvitations/create/
       - /sudo/admin/registrations/create/
       - /sudo/admin/events/payment/
 
