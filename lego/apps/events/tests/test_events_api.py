@@ -146,6 +146,32 @@ class RetrieveEventsTestCase(APITestCase):
         event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 404)
 
+    def test_fields_with_keyword_permission(self):
+        """Test that a user with keyword permissions can view fields of others"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(5))
+
+        for pool in event_response.data['pools']:
+            for reg in pool['registrations']:
+                self.assertIsNotNone(reg['feedback'])
+                self.assertIsNotNone(reg['chargeStatus'])
+
+    def test_fields_without_keyword_permission(self):
+        """Test that a user without keyword permissions can not view fields of others"""
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(5))
+
+        for pool in event_response.data['pools']:
+            for reg in pool['registrations']:
+                if reg['user']['id'] == self.abakus_user.id:
+                    self.assertIsNotNone(reg['feedback'])
+                    self.assertIsNotNone(reg['chargeStatus'])
+                else:
+                    self.assertIsNone(reg['feedback'])
+                    self.assertIsNone(reg['chargeStatus'])
+
 
 class CreateEventsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
@@ -165,6 +191,12 @@ class CreateEventsTestCase(APITestCase):
     def test_event_creation(self):
         self.assertIsNotNone(self.event_id)
         self.assertEqual(self.event_response.status_code, 201)
+
+    def test_event_creation_without_perm(self):
+        user = User.objects.get(username='abakule')
+        self.client.force_authenticate(user)
+        response = self.client.post(_get_list_url(), _test_event_data[1])
+        self.assertEqual(response.status_code, 403)
 
     def test_event_update(self):
         event_update_response = self.client.put(_get_detail_url(self.event_id), _test_event_data[1])

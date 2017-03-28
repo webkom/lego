@@ -5,8 +5,8 @@ from rest_framework_jwt.serializers import User
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.serializers import PublicCompanyReadSerializer
 from lego.apps.events import constants
-from lego.apps.events.fields import (ActivationTimeField, ChargeStatusField, PresenceField,
-                                     SetChargeStatusField, SpotsLeftField)
+from lego.apps.events.fields import (ActivationTimeField, ChargeStatusField, FeedbackField,
+                                     PresenceField, SetChargeStatusField, SpotsLeftField)
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
@@ -18,6 +18,7 @@ from lego.utils.serializers import BasisModelSerializer
 
 class RegistrationReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
+    feedback = FeedbackField()
     charge_status = ChargeStatusField()
 
     class Meta:

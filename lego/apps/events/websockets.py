@@ -29,15 +29,15 @@ def notify_event_registration(type, registration, from_pool=None):
 
 def notify_user_registration(type, registration, error_msg=None):
     group = group_for_user(registration.user)
-    context = {'registration': registration.id}
+    context = {'user': registration.user}
     notify_registration(group, type, registration, error_msg=error_msg, context=context)
 
 
 def notify_registration(group, type, registration, from_pool=None, error_msg=None, context=None):
-    if not context:
-        context = {}
-    payload = RegistrationReadSerializer(registration, context=context).data
-    meta = {}
+    payload = RegistrationReadSerializer(registration, context=context or {}).data
+    meta = {
+        'event_id': registration.event.id
+    }
     if from_pool:
         payload['from_pool'] = from_pool
     if error_msg:
@@ -50,10 +50,14 @@ def notify_registration(group, type, registration, from_pool=None, error_msg=Non
     })
 
 
-def event_updated_notifier(event):
+def event_updated_notifier(event, error_msg=None):
     group = group_for_event(event)
-    serializer = EventReadDetailedSerializer(event)
+    payload = EventReadDetailedSerializer(event).data
+    meta = {}
+    if error_msg:
+        meta['error_message'] = error_msg
     notify_group(group, {
         'type': 'EVENT_UPDATED',
-        'payload': serializer.data
+        'payload': payload,
+        'meta': meta
     })
