@@ -4,7 +4,9 @@ from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.serializers import PublicCompanyReadSerializer
-from lego.apps.events.fields import ActivationTimeField, ChargeStatusField, SpotsLeftField
+from lego.apps.events import constants
+from lego.apps.events.fields import (ActivationTimeField, ChargeStatusField, SetChargeStatusField,
+                                     SpotsLeftField)
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
@@ -121,10 +123,13 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     captcha_response = serializers.CharField(required=False)
+    charge_status = SetChargeStatusField(
+        required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
+    )
 
     class Meta:
         model = Registration
-        fields = ('id', 'feedback', 'captcha_response')
+        fields = ('id', 'feedback', 'captcha_response', 'charge_status')
 
 
 class StripeTokenSerializer(serializers.Serializer):
