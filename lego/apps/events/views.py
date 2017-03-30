@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import NoSuchPool, PaymentExists
+from lego.apps.events.exceptions import NoSuchPool, PaymentExists, RegistrationsExistsInPool
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import (AdminRegistrationPermissions, PoolPermissions,
@@ -76,7 +76,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+class PoolViewSet(mixins.CreateModelMixin,
+                  mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin,
+                  viewsets.GenericViewSet):
     queryset = Pool.objects.all()
     permission_classes = (PoolPermissions,)
 
@@ -90,6 +93,12 @@ class PoolViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if event_id:
             return Pool.objects.filter(event=event_id).prefetch_related('permission_groups',
                                                                         'registrations')
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ValueError:
+            raise RegistrationsExistsInPool
 
 
 class RegistrationViewSet(AllowedPermissionsMixin,
@@ -114,6 +123,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         event_id = self.kwargs.get('event_pk', None)
         if self.action == 'list':
             return Registration.objects.filter(event=event_id).prefetch_related(
+                'user',
                 'user__abakus_groups'
             )
         return Registration.objects.filter(event=event_id).prefetch_related('user')
