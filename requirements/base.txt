@@ -42,4 +42,4 @@ django-thumbor==0.5.6
 
 # Ical-export
 django-ical==1.4
-icalendar==3.11.2
+icalendar==3.11.3
