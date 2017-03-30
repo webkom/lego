@@ -9,7 +9,7 @@ from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
-from lego.apps.users.serializers.users import MeSerializer, PublicUserSerializer
+from lego.apps.users.serializers.users import DetailedUserSerializer, PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
@@ -25,11 +25,11 @@ class RegistrationReadSerializer(BasisModelSerializer):
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
-    user = MeSerializer()
+    user = DetailedUserSerializer()
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status',
+        fields = ('id', 'user', 'pool', 'event', 'feedback', 'status', 'charge_status',
                   'registration_date', 'unregistration_date', 'admin_reason',
                   'charge_amount', 'charge_amount_refunded')
         read_only = True
