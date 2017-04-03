@@ -22,6 +22,10 @@ ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 SERVER_URL = env('SERVER_URL')
 FRONTEND_URL = env('FRONTEND_URL')
 
+# Captcha
+CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
+CAPTCHA_KEY = env('CAPTCHA_KEY')
+
 # Database
 DATABASES = {
     'default': env.db()

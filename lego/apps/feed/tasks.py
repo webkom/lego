@@ -115,3 +115,31 @@ def mail_admin_registration(self, activity, recipients):
             user_id=user.id
         )
         raise self.retry(exc=e, max_retries=3)
+
+
+@celery_app.task(serializer='pickle', bind=True)
+def mail_payment_overdue(self, activity, recipients):
+    event = string_to_instance(activity.actor)
+    user = User.objects.get(id=recipients[0])
+    message = loader.get_template('email/payment_overdue_user_email.html')
+
+    context = Context({
+        'name': user.get_short_name(),
+        'event': event.title,
+        'slug': event.slug,
+        'settings': settings
+    })
+
+    try:
+        user.email_user(
+            subject='Abakus.no - Manglende betaling for arrangement',
+            message=message.render(context),
+        )
+    except SMTPException as e:
+        log.error(
+            'payment_overdue_user_send_mail_error',
+            exception=e,
+            reg=event.registrations.get(user=user),
+            user_id=user.id
+        )
+        raise self.retry(exc=e, max_retries=3)
