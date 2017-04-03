@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import stripe
 from django.utils import timezone
 
@@ -28,3 +30,8 @@ def create_token(number, cvc, year=None):
             'cvc': cvc
         },
     )
+
+
+def make_penalty_expire(penalty):
+    penalty.created_at = timezone.now() - timedelta(days=365)
+    penalty.save()
