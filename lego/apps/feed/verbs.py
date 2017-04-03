@@ -62,3 +62,12 @@ class AdminRegistrationVerb(Verb):
 
 
 register(AdminRegistrationVerb)
+
+
+class PaymentOverdueVerb(Verb):
+    id = 10
+    infinitive = 'payment_overdue'
+    past_tense = infinitive
+
+
+register(PaymentOverdueVerb)

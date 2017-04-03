@@ -374,6 +374,41 @@ class RegistrationsTestCase(APITransactionTestCase):
         )
         self.assertEqual(registration_response.status_code, 202)
 
+    def test_update_charge_status_with_permissions(self, mock_verify_captcha):
+        """Test user with permission can update charge_status"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'charge_status': 'manual'}
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_update_charge_status_wrongly_with_permissions(self, mock_verify_captcha):
+        """Test user with permission fails in updating charge_status when giving wrong choice"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'charge_status': 'feil-data'}
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_update_charge_status_without_permissions(self, mock_verify_captcha):
+        """Test that user without permission cannot update charge_status"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'charge_status': 'manual'}
+        )
+        self.assertEqual(res.status_code, 403)
+
 
 class ListRegistrationsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
