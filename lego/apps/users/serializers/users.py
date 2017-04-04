@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
-from lego.apps.users.fields import AbakusGroupListField
+from lego.apps.users.fields import AbakusGroupField, AbakusGroupListField
 from lego.apps.users.models import Penalty, User
 from lego.apps.users.permissions import can_retrieve_user
 from lego.apps.users.serializers.penalties import PenaltySerializer
@@ -38,6 +38,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 class PublicUserSerializer(serializers.ModelSerializer):
 
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
+    grade = AbakusGroupField()
 
     class Meta:
         model = User
@@ -48,7 +49,8 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'gender',
-            'profile_picture'
+            'profile_picture',
+            'grade'
         )
 
 

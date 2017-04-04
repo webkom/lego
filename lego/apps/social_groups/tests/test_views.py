@@ -41,7 +41,7 @@ def _get_detail_url(pk):
 
 class ListInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -68,7 +68,7 @@ class ListInterestGroupAPITestCase(APITestCase):
 
 class RetrieveInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -79,7 +79,7 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
         self.groupadmin_test_group = AbakusGroup.objects.get(name='InterestGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
 
-        self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
+        self.test_interest_group = InterestGroup.objects.get(name='AbaBrygg')
         self.test_interest_group.add_user(self.without_permission)
 
     def successful_retrieve(self, user, pk):
@@ -122,7 +122,7 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
 
 class CreateInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -133,7 +133,7 @@ class CreateInterestGroupAPITestCase(APITestCase):
         self.groupadmin_test_group = AbakusGroup.objects.get(name='InterestGroupAdminTest')
         self.groupadmin_test_group.add_user(self.with_permission)
 
-        self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
+        self.test_interest_group = InterestGroup.objects.get(name='AbaBrygg')
         self.test_interest_group.add_user(self.without_permission)
 
     def successful_create(self, user):
@@ -180,7 +180,7 @@ class CreateInterestGroupAPITestCase(APITestCase):
 
 class UpdateInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -195,7 +195,7 @@ class UpdateInterestGroupAPITestCase(APITestCase):
         self.with_permission = User.objects.get(username='interestgroupadmin_test')
         self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
 
-        self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
+        self.test_interest_group = InterestGroup.objects.get(name='AbaBrygg')
         self.leader = User.objects.create(username='leader')
         self.test_interest_group.add_user(self.leader, role=constants.LEADER)
 
@@ -235,7 +235,7 @@ class UpdateInterestGroupAPITestCase(APITestCase):
 
 class DeleteInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -243,7 +243,7 @@ class DeleteInterestGroupAPITestCase(APITestCase):
         self.with_permission = User.objects.get(username='interestgroupadmin_test')
         self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
 
-        self.test_interest_group = InterestGroup.objects.get(name='TestInterestGroup')
+        self.test_interest_group = InterestGroup.objects.get(name='AbaBrygg')
         self.leader = User.objects.create(username='leader')
         self.test_interest_group.add_user(self.leader, role=constants.LEADER)
 
@@ -255,7 +255,7 @@ class DeleteInterestGroupAPITestCase(APITestCase):
         response = self.client.delete(_get_detail_url(self.test_interest_group.pk))
 
         self.assertEqual(response.status_code, 204)
-        self.assertRaises(InterestGroup.DoesNotExist, InterestGroup.group_objects.get,
+        self.assertRaises(InterestGroup.DoesNotExist, InterestGroup.objects.get,
                           pk=self.test_interest_group.pk)
 
     def test_without_auth(self):
