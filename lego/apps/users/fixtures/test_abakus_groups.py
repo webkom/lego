@@ -1,4 +1,5 @@
 from lego.apps.users.models import AbakusGroup
+from lego.utils.functions import insert_abakus_groups
 
 test_tree = {
     'UserAdminTest': [{
@@ -78,14 +79,5 @@ test_tree = {
 
 
 def load_test_abakus_groups():
-    insert_groups(test_tree)
+    insert_abakus_groups(test_tree)
     AbakusGroup.objects.rebuild()
-
-
-def insert_groups(tree, parent=None):
-    for key, value in tree.items():
-        kwargs = value[0]
-        node = AbakusGroup.objects.update_or_create(
-            name=key, defaults={**kwargs, 'parent': parent}
-        )[0]
-        insert_groups(value[1], node)

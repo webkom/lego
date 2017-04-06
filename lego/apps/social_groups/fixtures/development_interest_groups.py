@@ -41,14 +41,15 @@ forslag til tur eller lurer på om dette er noe du kan være med på, ikke nøl 
 
 def load_dev_interest_groups():
     parent = AbakusGroup.objects.get(name='Interessegrupper')
-    insert_groups(interest_group_tree, parent)
+    insert_interest_groups(interest_group_tree, parent)
     AbakusGroup.objects.rebuild()
 
 
-def insert_groups(tree, parent=None):
+def insert_interest_groups(tree, parent=None):
+    """This inserts interest groups, not regular AbakusGroups"""
     for key, value in tree.items():
         kwargs = value[0]
         node = InterestGroup.objects.update_or_create(
             name=key, defaults={**kwargs, 'parent': parent}
         )[0]
-        insert_groups(value[1], node)
+        insert_interest_groups(value[1], node)

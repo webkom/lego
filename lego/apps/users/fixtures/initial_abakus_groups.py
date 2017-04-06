@@ -1,4 +1,5 @@
 from lego.apps.users.models import AbakusGroup
+from lego.utils.functions import insert_abakus_groups
 
 """
 The structure of the tree is key and a list of two dicts.
@@ -81,14 +82,5 @@ initial_tree = {
 
 
 def load_abakus_groups():
-    insert_groups(initial_tree)
+    insert_abakus_groups(initial_tree)
     AbakusGroup.objects.rebuild()
-
-
-def insert_groups(tree, parent=None):
-    for key, value in tree.items():
-        kwargs = value[0]
-        node = AbakusGroup.objects.update_or_create(
-            name=key, defaults={**kwargs, 'parent': parent}
-        )[0]
-        insert_groups(value[1], node)

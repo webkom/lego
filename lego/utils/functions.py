@@ -2,6 +2,8 @@ import requests
 from django.conf import settings
 from structlog import get_logger
 
+from lego.apps.users.models import AbakusGroup
+
 log = get_logger()
 
 
@@ -16,3 +18,12 @@ def verify_captcha(captcha_response):
         log.error('captcha_validation_error', exception=e,
                   captcha_url=settings.CAPTCHA_URL, captcha_response=captcha_response)
         return False
+
+
+def insert_abakus_groups(tree, parent=None):
+    for key, value in tree.items():
+        kwargs = value[0]
+        node = AbakusGroup.objects.update_or_create(
+            name=key, defaults={**kwargs, 'parent': parent}
+        )[0]
+        insert_abakus_groups(value[1], node)
