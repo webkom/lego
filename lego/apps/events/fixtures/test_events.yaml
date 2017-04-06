@@ -170,3 +170,12 @@
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
     charge_status: 'succeeded'
+
+- model: events.Registration
+  pk: 5
+  fields:
+    user: 3
+    event: 5
+    pool: 5
+    registration_date: '2011-09-01T13:20:30+03:00'
+    status: 'SUCCESS_REGISTER'

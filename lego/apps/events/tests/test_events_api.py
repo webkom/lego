@@ -332,7 +332,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.data['id']),
-            {'presence': 1}
+            {'presence': 'PRESENT'}
         )
         self.assertEqual(res.status_code, 403)
 
@@ -344,10 +344,10 @@ class RegistrationsTestCase(APITransactionTestCase):
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.data['id']),
-            {'presence': 1}
+            {'presence': 'PRESENT'}
         )
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['presence'], 1)
+        self.assertEqual(res.data['presence'], 'PRESENT')
 
     def test_user_cannot_update_other_registration(self, *args):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
