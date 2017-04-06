@@ -40,7 +40,6 @@ class QuoteViewSetTestCase(APITestCase):
         self.unauthenticated_user = User.objects.get(username='test2')
 
         self.quote_data = {
-            'title': 'QuoteTest',
             'text': 'TestText',
             'source': 'TestSource',
         }
@@ -68,6 +67,19 @@ class QuoteViewSetTestCase(APITestCase):
         """Users with no permissions should not be able to list quotes"""
         self.client.force_authenticate(user=self.unauthenticated_user)
         response = self.client.get(_get_list_approved_url())
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_detail_authenticated(self):
+        """Users with permissions should be able to see detailed quotes"""
+        self.client.force_authenticate(self.authenticated_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data)
+
+    def test_detail_unauthenticated(self):
+        """Users with no permissions should not be able see detailed quotes"""
+        self.client.force_authenticate(user=self.unauthenticated_user)
+        response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_approve_authenticated(self):
