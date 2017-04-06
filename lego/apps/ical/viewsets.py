@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.http import HttpResponse
-from django.template import Context, loader
+from django.template import loader
 from django.utils import timezone
 from django_ical import feedgenerator
 from rest_framework import decorators, filters, viewsets
@@ -114,10 +114,10 @@ class ICalViewset(viewsets.ViewSet):
         )
         desc_event = loader.get_template('ical/event_description.txt')
         for event in following_events:
-            context = Context({
+            context = {
                 'description': event.description,
                 'url': event.get_absolute_url()
-            })
+            }
             feed.add_item(
                 title=event.title,
                 unique_id=f'event-{event.id}@abakus.no',
@@ -130,13 +130,13 @@ class ICalViewset(viewsets.ViewSet):
 
         desc = loader.get_template('ical/meeting_description.txt')
         for meeting in meetings:
-            context = Context({
+            context = {
                 'title': meeting.title,
                 'report': meeting.report,
                 'reportAuthor':
                 meeting.report_author.username if meeting.report_author else 'Ikke valgt',
                 'url': meeting.get_absolute_url()
-            })
+            }
             feed.add_item(
                 title=meeting.title,
                 link=meeting.get_absolute_url(),
@@ -174,11 +174,11 @@ class ICalViewset(viewsets.ViewSet):
             if not reg_time:
                 continue
 
-            context = Context({
+            context = {
                 'description': event.description,
                 'price': event.get_price(request.token_user),
                 'url': event.get_absolute_url()
-            })
+            }
 
             feed.add_item(
                 title=f'Reg: {event.title}',
@@ -217,11 +217,11 @@ class ICalViewset(viewsets.ViewSet):
 
         desc = loader.get_template('ical/event_description.txt')
         for event in events:
-            context = Context({
+            context = {
                 'description': event.description,
                 'price': event.get_price(request.token_user),
                 'url': event.get_absolute_url()
-            })
+            }
             feed.add_item(
                 title=event.title,
                 link=event.get_absolute_url(),
