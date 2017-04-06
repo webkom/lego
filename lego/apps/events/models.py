@@ -501,8 +501,8 @@ class Registration(BasisModel):
     status = models.CharField(
         max_length=20, default=constants.PENDING_REGISTER, choices=constants.STATUSES
     )
-    presence = models.PositiveSmallIntegerField(
-        default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
+    presence = models.CharField(
+        max_length=20, default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
     )
 
     charge_id = models.CharField(null=True, max_length=50)
