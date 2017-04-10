@@ -1,7 +1,7 @@
 from smtplib import SMTPException
 
 from django.conf import settings
-from django.template import Context, loader
+from django.template import loader
 from structlog import get_logger
 
 from lego import celery_app
@@ -25,7 +25,7 @@ def async_notify_user_about_invitation(self, meeting_id, user_id):
     token = invitation.generate_invitation_token()
     message = loader.get_template("email/meeting_invitation.html")
 
-    context = Context({
+    context = {
         "name": user.get_short_name(),
         "owner": meeting.created_by.get_short_name(),
         "title": meeting.title,
@@ -36,7 +36,7 @@ def async_notify_user_about_invitation(self, meeting_id, user_id):
         "token": token,
         "meeting_id": meeting.id,
         "settings": settings
-    })
+    }
 
     try:
         user.email_user(
