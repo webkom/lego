@@ -6,7 +6,7 @@ from celery import chain, group
 from django.conf import settings
 from django.core.cache import cache
 from django.db import IntegrityError, transaction
-from django.template import Context, loader
+from django.template import loader
 from django.utils import timezone
 from redis.exceptions import LockError
 from structlog import get_logger
@@ -246,13 +246,13 @@ def mail_payment_overdue_creator(self, result):
     user = User.objects.get(id=event.created_by.id)
     message = loader.get_template('email/payment_overdue_creator_email.html')
 
-    context = Context({
+    context = {
         'name': event.created_by.get_short_name(),
         'event': event.title,
         'userlist': userlist,
         'slug': event.slug,
         'settings': settings
-    })
+    }
 
     try:
         user.email_user(
