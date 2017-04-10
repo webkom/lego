@@ -1,7 +1,7 @@
 from smtplib import SMTPException
 
 from django.conf import settings
-from django.template import Context, loader
+from django.template import loader
 from structlog import get_logger
 
 from lego import celery_app
@@ -35,14 +35,14 @@ def mail_penalty_create(self, activity, recipients):
     weight = activity.extra_context.get('reason')
     total_weight = activity.extra_context.get('reason')
 
-    context = Context({
+    context = {
         'name': user.get_short_name(),
         'event': event.title,
         'reason': reason,
         'weight': weight,
         'total': total_weight,
         'settings': settings
-    })
+    }
 
     try:
         user.email_user(
@@ -65,12 +65,12 @@ def mail_registration_bump(self, activity, recipients):
     user = User.objects.get(id=recipients[0])
     message = loader.get_template('email/bump_email.html')
 
-    context = Context({
+    context = {
         'name': user.get_short_name(),
         'event': event.title,
         'slug': event.slug,
         'settings': settings
-    })
+    }
 
     try:
         user.email_user(
@@ -94,13 +94,13 @@ def mail_admin_registration(self, activity, recipients):
     message = loader.get_template('email/admin_reg_email.html')
     reason = event.registrations.get(user=user).reason
 
-    context = Context({
+    context = {
         'name': user.get_short_name(),
         'event': event.title,
         'reason': reason,
         'slug': event.slug,
         'settings': settings
-    })
+    }
 
     try:
         user.email_user(
@@ -123,12 +123,12 @@ def mail_payment_overdue(self, activity, recipients):
     user = User.objects.get(id=recipients[0])
     message = loader.get_template('email/payment_overdue_user_email.html')
 
-    context = Context({
+    context = {
         'name': user.get_short_name(),
         'event': event.title,
         'slug': event.slug,
         'settings': settings
-    })
+    }
 
     try:
         user.email_user(
