@@ -464,7 +464,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         self.assertEqual(res.status_code, 403)
 
 
-class ListRegistrationsTestCase(APITestCase):
+class EventAdministrateTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -475,14 +475,15 @@ class ListRegistrationsTestCase(APITestCase):
     def test_with_group_permission(self):
         AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_registrations_list_url(self.event.id))
+        event_response = self.client.get(f'{_get_detail_url(self.event.id)}administrate/')
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data.get('results')), 2)
+        self.assertEqual(event_response.data.get('id'), self.event.id)
+        self.assertEqual(len(event_response.data.get('pools')), 2)
 
     def test_without_group_permission(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_registrations_list_url(self.event.id))
+        event_response = self.client.get(f'{_get_detail_url(self.event.id)}administrate/')
         self.assertEqual(event_response.status_code, 403)
 
 
