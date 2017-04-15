@@ -67,6 +67,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 user=user,
                 defaults={'pool': pool,
                           'feedback': feedback,
+                          'registration_date': timezone.now(),
                           'unregistration_date': None,
                           'status': constants.SUCCESS_REGISTER,
                           'admin_reason': admin_reason}
