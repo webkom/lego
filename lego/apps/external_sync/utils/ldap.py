@@ -1,5 +1,5 @@
 from django.conf import settings
-from ldap3 import Connection
+from ldap3 import MODIFY_DELETE, MODIFY_REPLACE, Connection
 from passlib.hash import sha512_crypt
 
 
@@ -105,7 +105,27 @@ class LDAPLib:
         return self.connection.delete(dn)
 
     def check_password(self, uid, password_hash):
-        return False
+        dn = ','.join((f'uid={uid}', self.user_base))
+        return self.connection.compare(dn, 'userPassword', password_hash)
 
     def change_password(self, uid, password_hash):
-        pass
+        dn = ','.join((f'uid={uid}', self.user_base))
+
+        changes = {
+            'userPassword': [(MODIFY_REPLACE, [password_hash])]
+        }
+        self.connection.modify(dn, changes)
+
+    def update_group_members(self, cn, members):
+        dn = ','.join((f'cn={cn}', self.group_base))
+
+        if members:
+            changes = {
+                'memberUid': [(MODIFY_REPLACE, members)]
+            }
+        else:
+            changes = {
+                'memberUid': [(MODIFY_DELETE, [])]
+            }
+
+        self.connection.modify(dn, changes)
