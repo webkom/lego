@@ -1,154 +1,177 @@
-- model: users.AbakusGroup
+#
+# THIS FILE IS HANDLED BY `load_fixtures` and `development_interest_groups.py`
+#
+- model: users.abakusgroup
   pk: 1
-  fields:
-    name: UserAdminTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 100
-    permissions:
-      - /sudo/admin/users/list/
-      - /sudo/admin/users/retrieve/
-      - /sudo/admin/users/create/
-      - /sudo/admin/users/update/
-      - /sudo/admin/users/destroy/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Users, description: "Brukere p\xE5 Abakus.no", parent: null,
+    permissions: '[]', lft: 1, rght: 2, tree_id: 1, level: 0}
+- model: users.abakusgroup
   pk: 2
-  fields:
-    name: AbakusGroupAdminTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 101
-    permissions:
-      - /sudo/admin/groups/list/
-      - /sudo/admin/groups/retrieve/
-      - /sudo/admin/groups/create/
-      - /sudo/admin/groups/update/
-      - /sudo/admin/groups/destroy/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Abakus, description: Medlemmer av Abakus, parent: null,
+    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]', lft: 1,
+    rght: 22, tree_id: 2, level: 0}
+- model: users.abakusgroup
   pk: 3
-  fields:
-    name: TestGroup
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 102
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Abakom, description: Medlemmer av Abakom, parent: 2,
+    permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
+      "/sudo/admin/companies/"]', lft: 2, rght: 21, tree_id: 2, level: 1}
+- model: users.abakusgroup
   pk: 4
-  fields:
-    name: EventAdminTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 103
-    permissions:
-      - /sudo/admin/events/list/
-      - /sudo/admin/events/retrieve/
-      - /sudo/admin/events/create/
-      - /sudo/admin/events/update/
-      - /sudo/admin/events/destroy/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Arrkom, description: '', parent: 3, permissions: '[]',
+    lft: 3, rght: 4, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 5
-  fields:
-    name: CommentTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 104
-    permissions:
-      - /sudo/admin/comments/list/
-      - /sudo/admin/comments/retrieve/
-      - /sudo/admin/comments/create/
-      - /sudo/admin/comments/update/
-      - /sudo/admin/comments/destroy/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: backup, description: '', parent: 3, permissions: '[]',
+    lft: 5, rght: 6, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 6
-  fields:
-    name: APIApplicationTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 105
-    permissions:
-      - /sudo/admin/apiapplications/list/
-      - /sudo/admin/apiapplications/create/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Bedkom, description: '', parent: 3, permissions: '[]',
+    lft: 7, rght: 8, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 7
-  fields:
-    name: QuoteAdminTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 106
-    permissions:
-      - /sudo/admin/quotes/like/
-      - /sudo/admin/quotes/change-approval/
-      - /sudo/admin/quotes/list-unapproved/
-      - /sudo/admin/quotes/list/
-      - /sudo/admin/quotes/retrieve/
-      - /sudo/admin/quotes/create/
-      - /sudo/admin/quotes/update/
-      - /sudo/admin/quotes/destroy/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Fagkom, description: '', parent: 3, permissions: '[]',
+    lft: 9, rght: 10, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 8
-  fields:
-    name: ReactionTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 107
-    permissions:
-      - /sudo/admin/reactions/create/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: LaBamba, description: '', parent: 3, permissions: '[]',
+    lft: 11, rght: 12, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 9
-  fields:
-    name: ReactionAdminTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 108
-    permissions:
-      - /sudo/admin/reactions/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: PR, description: '', parent: 3, permissions: '[]',
+    lft: 13, rght: 14, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 10
-  fields:
-    name: InterestGroupAdminTest
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 109
-    permissions:
-      - /sudo/admin/interestgroups/list/
-      - /sudo/admin/interestgroups/retrieve/
-      - /sudo/admin/interestgroups/create/
-      - /sudo/admin/interestgroups/update/
-      - /sudo/admin/interestgroups/destroy/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: readme, description: '', parent: 3, permissions: '[]',
+    lft: 15, rght: 16, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 11
-  fields:
-    name: Interessegrupper
-    level: 0
-    lft: 1
-    rght: 2
-    tree_id: 110
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Webkom, description: '', parent: 3, permissions: '["/sudo/"]',
+    lft: 17, rght: 18, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 12
-  fields:
-    name: TestInterestGroup
-    level: 1
-    lft: 3
-    rght: 4
-    tree_id: 110
-    parent: 11
+  fields: {deleted: false, name: Hovedstyret, description: '', parent: 3, permissions: '["/sudo/admin/"]',
+    lft: 19, rght: 20, tree_id: 2, level: 2}
+- model: users.abakusgroup
+  pk: 13
+  fields: {deleted: false, name: Interessegrupper, description: '', parent: null,
+    permissions: '[]', lft: 1, rght: 10, tree_id: 14, level: 0}
+- model: users.abakusgroup
+  pk: 14
+  fields: {deleted: false, name: Students, description: '', parent: null, permissions: '[]',
+    lft: 1, rght: 26, tree_id: 3, level: 0}
+- model: users.abakusgroup
+  pk: 15
+  fields: {deleted: false, name: Datateknologi, description: '', parent: 14, permissions: '[]',
+    lft: 2, rght: 13, tree_id: 3, level: 1}
+- model: users.abakusgroup
+  pk: 16
+  fields: {deleted: false, name: 1. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 3, rght: 4, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 17
+  fields: {deleted: false, name: 2. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 5, rght: 6, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 18
+  fields: {deleted: false, name: 3. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 7, rght: 8, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 19
+  fields: {deleted: false, name: 4. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 9, rght: 10, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 20
+  fields: {deleted: false, name: 5. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 11, rght: 12, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 21
+  fields: {deleted: false, name: Kommunikasjonsteknologi, description: '', parent: 14,
+    permissions: '[]', lft: 14, rght: 25, tree_id: 3, level: 1}
+- model: users.abakusgroup
+  pk: 22
+  fields: {deleted: false, name: 1. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 15, rght: 16, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 23
+  fields: {deleted: false, name: 2. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 17, rght: 18, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 24
+  fields: {deleted: false, name: 3. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 19, rght: 20, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 25
+  fields: {deleted: false, name: 4. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 21, rght: 22, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 26
+  fields: {deleted: false, name: 5. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 23, rght: 24, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 27
+  fields: {deleted: false, name: AbaBrygg, description: Interessegruppe for AbaBrygg,
+    parent: 13, permissions: '[]', lft: 2, rght: 3, tree_id: 14, level: 1}
+- model: users.abakusgroup
+  pk: 28
+  fields: {deleted: false, name: abaGolf, description: Interessegruppe for abaGolf,
+    parent: 13, permissions: '[]', lft: 4, rght: 5, tree_id: 14, level: 1}
+- model: users.abakusgroup
+  pk: 29
+  fields: {deleted: false, name: Turgruppa, description: Interessegruppe for Turgruppa,
+    parent: 13, permissions: '[]', lft: 6, rght: 7, tree_id: 14, level: 1}
+- model: users.abakusgroup
+  pk: 30
+  fields: {deleted: false, name: UserAdminTest, description: '', parent: null, permissions: '["/sudo/admin/users/list/",
+      "/sudo/admin/users/retrieve/", "/sudo/admin/users/create/", "/sudo/admin/users/update/",
+      "/sudo/admin/users/destroy/"]', lft: 1, rght: 2, tree_id: 4, level: 0}
+- model: users.abakusgroup
+  pk: 31
+  fields: {deleted: false, name: AbakusGroupAdminTest, description: '', parent: null,
+    permissions: '["/sudo/admin/groups/list/", "/sudo/admin/groups/retrieve/", "/sudo/admin/groups/create/",
+      "/sudo/admin/groups/update/", "/sudo/admin/groups/destroy/"]', lft: 1, rght: 2,
+    tree_id: 5, level: 0}
+- model: users.abakusgroup
+  pk: 32
+  fields: {deleted: false, name: TestGroup, description: '', parent: null, permissions: '[]',
+    lft: 1, rght: 2, tree_id: 6, level: 0}
+- model: users.abakusgroup
+  pk: 33
+  fields: {deleted: false, name: EventAdminTest, description: '', parent: null, permissions: '["/sudo/admin/events/list/",
+      "/sudo/admin/events/retrieve/", "/sudo/admin/events/create/", "/sudo/admin/events/update/",
+      "/sudo/admin/events/destroy/"]', lft: 1, rght: 2, tree_id: 7, level: 0}
+- model: users.abakusgroup
+  pk: 34
+  fields: {deleted: false, name: CommentTest, description: '', parent: null, permissions: '["/sudo/admin/comments/list/",
+      "/sudo/admin/comments/retrieve/", "/sudo/admin/comments/create/", "/sudo/admin/comments/update/",
+      "/sudo/admin/comments/destroy/"]', lft: 1, rght: 2, tree_id: 8, level: 0}
+- model: users.abakusgroup
+  pk: 35
+  fields: {deleted: false, name: APIApplicationTest, description: '', parent: null,
+    permissions: '["/sudo/admin/apiapplications/list/", "/sudo/admin/apiapplications/create/"]',
+    lft: 1, rght: 2, tree_id: 9, level: 0}
+- model: users.abakusgroup
+  pk: 36
+  fields: {deleted: false, name: QuoteAdminTest, description: '', parent: null, permissions: '["/sudo/admin/quotes/like/",
+      "/sudo/admin/quotes/change-approval/", "/sudo/admin/quotes/list-unapproved/",
+      "/sudo/admin/quotes/list/", "/sudo/admin/quotes/retrieve/", "/sudo/admin/quotes/create/",
+      "/sudo/admin/quotes/update/", "/sudo/admin/quotes/destroy/"]', lft: 1, rght: 2,
+    tree_id: 10, level: 0}
+- model: users.abakusgroup
+  pk: 37
+  fields: {deleted: false, name: ReactionTest, description: '', parent: null, permissions: '["/sudo/admin/reactions/create/"]',
+    lft: 1, rght: 2, tree_id: 11, level: 0}
+- model: users.abakusgroup
+  pk: 38
+  fields: {deleted: false, name: ReactionAdminTest, description: '', parent: null,
+    permissions: '["/sudo/admin/reactions/"]', lft: 1, rght: 2, tree_id: 12, level: 0}
+- model: users.abakusgroup
+  pk: 39
+  fields: {deleted: false, name: InterestGroupAdminTest, description: '', parent: null,
+    permissions: '["/sudo/admin/interestgroups/list/", "/sudo/admin/interestgroups/retrieve/",
+      "/sudo/admin/interestgroups/create/", "/sudo/admin/interestgroups/update/",
+      "/sudo/admin/interestgroups/destroy/"]', lft: 1, rght: 2, tree_id: 13, level: 0}
+- model: users.abakusgroup
+  pk: 40
+  fields: {deleted: false, name: TestInterestGroup, description: '', parent: 13, permissions: '[]',
+    lft: 8, rght: 9, tree_id: 14, level: 1}

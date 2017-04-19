@@ -3,7 +3,8 @@
   fields:
     user:
       - webkom
-    abakus_group: 1
+    abakus_group:
+      - Users
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -11,7 +12,8 @@
   fields:
     user:
       - webkom
-    abakus_group: 2
+    abakus_group:
+      - Abakus
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -19,14 +21,16 @@
   fields:
     user:
       - webkom
-    abakus_group: 11
+    abakus_group:
+      - Webkom
     start_date: 1994-01-01
 - model: users.Membership
   pk: 4
   fields:
     user:
       - bedkom
-    abakus_group: 1
+    abakus_group:
+      - Users
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -34,7 +38,8 @@
   fields:
     user:
       - bedkom
-    abakus_group: 2
+    abakus_group:
+      - Abakus
     start_date: 1994-01-01
 
 - model: users.Membership
@@ -42,5 +47,6 @@
   fields:
     user:
       - bedkom
-    abakus_group: 6
+    abakus_group:
+      - Bedkom
     start_date: 1994-01-01

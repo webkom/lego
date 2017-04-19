@@ -10,7 +10,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Event
   pk: 2
@@ -24,7 +24,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Event
   pk: 3
@@ -38,7 +38,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 11
+      - - Webkom
 
 - model: events.Event
   pk: 4
@@ -51,7 +51,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Event
   pk: 5
@@ -69,7 +69,7 @@
     payment_due_date: '2011-09-01T13:20:30+03:00'
     created_by: 1
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Pool
   pk: 1
@@ -79,7 +79,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 2
+      - - Abakus
 
 - model: events.Pool
   pk: 2
@@ -89,7 +89,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 11
+      - - Webkom 
 
 - model: events.Pool
   pk: 3
@@ -99,7 +99,7 @@
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 2
+      - - Abakus
 
 - model: events.Pool
   pk: 4
@@ -109,7 +109,7 @@
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 11
+      - - Webkom
 
 - model: events.Pool
   pk: 5
@@ -119,7 +119,7 @@
     event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 1
+      - - Users
 
 - model: events.Pool
   pk: 6
@@ -129,7 +129,7 @@
     event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 2
+      - - Abakus
 
 - model: events.Registration
   pk: 1
