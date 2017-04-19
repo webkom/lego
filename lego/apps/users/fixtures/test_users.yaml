@@ -7,6 +7,7 @@
     first_name: test
     last_name: user1
     email: test1@user.com
+    ldap_password_hash: '{CRYPT}$6$rounds=656000$aet9Foy4cuCQ0EN9$5Tk/L4R3NfOWG84OLCZo5JTkgyDkx8RuIf9cabYq3M23kKTwv4uEkDxSz/jOYqUMPfTZZ0bf9F24b/cRNkY/G/'
 
 - model: users.User
   pk: 2
