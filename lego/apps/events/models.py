@@ -498,9 +498,12 @@ class Registration(BasisModel):
     unregistration_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=100, blank=True)
     admin_reason = models.CharField(max_length=100, blank=True)
-    status = models.CharField(max_length=20,
-                              default=constants.PENDING_REGISTER,
-                              choices=constants.STATUSES)
+    status = models.CharField(
+        max_length=20, default=constants.PENDING_REGISTER, choices=constants.STATUSES
+    )
+    presence = models.CharField(
+        max_length=20, default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
+    )
 
     charge_id = models.CharField(null=True, max_length=50)
     charge_amount = models.IntegerField(default=0)

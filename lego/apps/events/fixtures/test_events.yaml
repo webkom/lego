@@ -139,6 +139,7 @@
     pool: 1
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
+    feedback: 'LIKER IKKE PIZZA'
 
 - model: events.Registration
   pk: 2
@@ -148,11 +149,32 @@
     pool: 1
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
+    feedback: 'LIKER IKKE PIZZA'
 
 - model: events.Registration
   pk: 3
   fields:
     user: 1
+    event: 5
+    pool: 5
+    registration_date: '2011-09-01T13:20:30+03:00'
+    status: 'SUCCESS_REGISTER'
+    charge_status: 'succeeded'
+
+- model: events.Registration
+  pk: 4
+  fields:
+    user: 2
+    event: 5
+    pool: 5
+    registration_date: '2011-09-01T13:20:30+03:00'
+    status: 'SUCCESS_REGISTER'
+    charge_status: 'succeeded'
+
+- model: events.Registration
+  pk: 5
+  fields:
+    user: 3
     event: 5
     pool: 5
     registration_date: '2011-09-01T13:20:30+03:00'
