@@ -11,7 +11,7 @@ from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
-from lego.apps.users.serializers.users import DetailedUserSerializer, PublicUserSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
@@ -34,7 +34,7 @@ class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
-    user = DetailedUserSerializer()
+    user = PublicUserSerializer()
 
     class Meta:
         model = Registration
@@ -69,6 +69,10 @@ class PoolReadSerializer(BasisModelSerializer):
                 queryset, context=self.context, many=True
             ).data
         return RegistrationReadSerializer(queryset, context=self.context, many=True).data
+
+
+class PoolAdministrateSerializer(PoolReadSerializer):
+    registrations = RegistrationReadDetailedSerializer(many=True)
 
 
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -112,6 +116,14 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         request = self.context.get('request', None)
         if request:
             return obj.get_price(user=request.user)
+
+
+class EventAdministrateSerializer(EventReadSerializer):
+    pools = PoolAdministrateSerializer(many=True)
+    waiting_registrations = RegistrationReadDetailedSerializer(many=True)
+
+    class Meta(EventReadSerializer.Meta):
+        fields = EventReadSerializer.Meta.fields + ('pools', 'waiting_registrations')
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
