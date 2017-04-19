@@ -4,7 +4,7 @@
     event: 1
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 1
 - fields:
@@ -13,7 +13,7 @@
     event: 2
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 2
 - fields:
@@ -22,7 +22,7 @@
     event: 3
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 3
 - fields:
@@ -31,7 +31,7 @@
     event: 4
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 4
 - fields:
@@ -40,7 +40,7 @@
     event: 4
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 5
 - fields:
@@ -49,7 +49,7 @@
     event: 5
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 6
 - fields:
@@ -58,7 +58,7 @@
     event: 5
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 7
 - fields:
@@ -67,7 +67,7 @@
     event: 6
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 8
 - fields:
@@ -76,7 +76,7 @@
     event: 7
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 9
 - fields:
@@ -85,7 +85,7 @@
     event: 7
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 10
 - fields:
@@ -94,7 +94,7 @@
     event: 8
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 11
 - fields:
@@ -103,7 +103,7 @@
     event: 9
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 12
 - fields:
@@ -112,7 +112,7 @@
     event: 10
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 13
 - fields:
@@ -121,7 +121,7 @@
     event: 11
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 14
 - fields:
@@ -130,7 +130,7 @@
     event: 11
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 15
 - fields:
@@ -139,7 +139,7 @@
     event: 12
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 16
 - fields:
@@ -148,7 +148,7 @@
     event: 12
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 17
 - fields:
@@ -157,7 +157,7 @@
     event: 13
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 18
 - fields:
@@ -166,7 +166,7 @@
     event: 13
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 19
 - fields:
@@ -175,7 +175,7 @@
     event: 14
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 20
 - fields:
@@ -184,7 +184,7 @@
     event: 14
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 21
 - fields:
@@ -193,7 +193,7 @@
     event: 15
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 22
 - fields:
@@ -202,7 +202,7 @@
     event: 15
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 23
 - fields:
@@ -211,7 +211,7 @@
     event: 16
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 24
 - fields:
@@ -220,7 +220,7 @@
     event: 16
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 25
 - fields:
@@ -229,7 +229,7 @@
     event: 17
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 26
 - fields:
@@ -238,7 +238,7 @@
     event: 17
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 27
 - fields:
@@ -247,7 +247,7 @@
     event: 18
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 28
 - fields:
@@ -256,7 +256,7 @@
     event: 19
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 29
 - fields:
@@ -265,7 +265,7 @@
     event: 20
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 30
 - fields:
@@ -274,7 +274,7 @@
     event: 21
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 31
 - fields:
@@ -283,7 +283,7 @@
     event: 21
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 32
 - fields:
@@ -292,7 +292,7 @@
     event: 22
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 33
 - fields:
@@ -301,7 +301,7 @@
     event: 22
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 34
 - fields:
@@ -310,7 +310,7 @@
     event: 23
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 35
 - fields:
@@ -319,7 +319,7 @@
     event: 24
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 36
 - fields:
@@ -328,7 +328,7 @@
     event: 25
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 37
 - fields:
@@ -337,7 +337,7 @@
     event: 25
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 38
 - fields:
@@ -346,7 +346,7 @@
     event: 26
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 39
 - fields:
@@ -355,7 +355,7 @@
     event: 26
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 40
 - fields:
@@ -364,7 +364,7 @@
     event: 27
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 41
 - fields:
@@ -373,7 +373,7 @@
     event: 28
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 42
 - fields:
@@ -382,7 +382,7 @@
     event: 28
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 43
 - fields:
@@ -391,7 +391,7 @@
     event: 29
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 44
 - fields:
@@ -400,7 +400,7 @@
     event: 29
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 45
 - fields:
@@ -409,7 +409,7 @@
     event: 30
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 46
 - fields:
@@ -418,7 +418,7 @@
     event: 31
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 47
 - fields:
@@ -427,7 +427,7 @@
     event: 31
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 48
 - fields:
@@ -436,7 +436,7 @@
     event: 32
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 49
 - fields:
@@ -445,7 +445,7 @@
     event: 33
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 50
 - fields:
@@ -454,7 +454,7 @@
     event: 33
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 51
 - fields:
@@ -463,7 +463,7 @@
     event: 34
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 52
 - fields:
@@ -472,7 +472,7 @@
     event: 34
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 53
 - fields:
@@ -481,7 +481,7 @@
     event: 35
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 54
 - fields:
@@ -490,7 +490,7 @@
     event: 35
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 55
 - fields:
@@ -499,7 +499,7 @@
     event: 36
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 56
 - fields:
@@ -508,7 +508,7 @@
     event: 36
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 57
 - fields:
@@ -517,7 +517,7 @@
     event: 37
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 58
 - fields:
@@ -526,7 +526,7 @@
     event: 37
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 59
 - fields:
@@ -535,7 +535,7 @@
     event: 38
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 60
 - fields:
@@ -544,7 +544,7 @@
     event: 38
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 61
 - fields:
@@ -553,7 +553,7 @@
     event: 39
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 62
 - fields:
@@ -562,7 +562,7 @@
     event: 40
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 63
 - fields:
@@ -571,7 +571,7 @@
     event: 40
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 64
 - fields:
@@ -580,7 +580,7 @@
     event: 41
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 65
 - fields:
@@ -589,7 +589,7 @@
     event: 42
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 66
 - fields:
@@ -598,7 +598,7 @@
     event: 43
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 67
 - fields:
@@ -607,7 +607,7 @@
     event: 43
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 68
 - fields:
@@ -616,7 +616,7 @@
     event: 44
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 69
 - fields:
@@ -625,7 +625,7 @@
     event: 44
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 70
 - fields:
@@ -634,7 +634,7 @@
     event: 45
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 71
 - fields:
@@ -643,7 +643,7 @@
     event: 45
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 72
 - fields:
@@ -652,7 +652,7 @@
     event: 46
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 73
 - fields:
@@ -661,7 +661,7 @@
     event: 47
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 74
 - fields:
@@ -670,7 +670,7 @@
     event: 47
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 75
 - fields:
@@ -679,7 +679,7 @@
     event: 48
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 76
 - fields:
@@ -688,7 +688,7 @@
     event: 49
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 77
 - fields:
@@ -697,7 +697,7 @@
     event: 49
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 78
 - fields:
@@ -706,7 +706,7 @@
     event: 50
     name: Abakus
     permission_groups:
-    - 2
+    - - Abakus
   model: events.Pool
   pk: 79
 - fields:
@@ -715,6 +715,6 @@
     event: 50
     name: Webkom
     permission_groups:
-    - 11
+    - - Webkom
   model: events.Pool
   pk: 80

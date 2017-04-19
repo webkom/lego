@@ -67,7 +67,7 @@ class OauthApplicationViewsTestCase(APITestCase):
         self.client.force_login(self.user)
         Membership.objects.create(
             user=self.user,
-            abakus_group=AbakusGroup.objects.get(id=6)
+            abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
         )
 
         response = self.client.get(self.url)
@@ -78,7 +78,7 @@ class OauthApplicationViewsTestCase(APITestCase):
         self.client.force_login(self.user)
         Membership.objects.create(
             user=self.user,
-            abakus_group=AbakusGroup.objects.get(id=6)
+            abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
         )
 
         application = {
@@ -98,7 +98,7 @@ class OauthApplicationViewsTestCase(APITestCase):
         self.client.force_login(self.user)
         Membership.objects.create(
             user=self.user,
-            abakus_group=AbakusGroup.objects.get(id=6)
+            abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
         )
         response = self.client.delete('{base_url}{object_id}/'.format(
             base_url=self.url, object_id=1

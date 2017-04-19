@@ -169,7 +169,7 @@
   pk: 4
   fields:
     can_view_groups:
-    - 1
+      - - Users
     event_type: 0
     title: 'Bedpress med Facebook 1'
     location: 'F1'
@@ -182,7 +182,7 @@
   pk: 5
   fields:
     can_view_groups:
-    - 1
+      - - Users
     event_type: 0
     title: 'Bedpress med Facebook 2'
     location: 'EL5'
@@ -195,7 +195,7 @@
   pk: 6
   fields:
     can_view_groups:
-    - 1
+      - - Users
     event_type: 0
     title: 'Bedpress med Facebook 3'
     location: 'R2'
