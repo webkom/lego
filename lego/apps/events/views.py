@@ -15,6 +15,7 @@ from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerial
                                           EventReadDetailedSerializer, EventReadSerializer,
                                           PoolCreateAndUpdateSerializer, PoolReadSerializer,
                                           RegistrationCreateAndUpdateSerializer,
+                                          RegistrationPaymentReadSerializer,
                                           RegistrationReadDetailedSerializer,
                                           RegistrationReadSerializer, StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
@@ -72,7 +73,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             async_payment.s(registration.id, serializer.data['token']),
             registration_save.s(registration.id)
         ).delay()
-        payment_serializer = RegistrationReadSerializer(registration, context={'request': request})
+        payment_serializer = RegistrationPaymentReadSerializer(
+            registration, context={'request': request}
+        )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
@@ -115,7 +118,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return RegistrationCreateAndUpdateSerializer
-        if self.action == 'list':
+        if self.action in ['list', 'retrieve']:
             return RegistrationReadDetailedSerializer
         return super().get_serializer_class()
 

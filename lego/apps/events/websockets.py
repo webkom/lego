@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from lego.apps.events.models import Event
-from lego.apps.events.serializers import EventReadDetailedSerializer, RegistrationReadSerializer
+from lego.apps.events.serializers import (EventReadDetailedSerializer,
+                                          RegistrationPaymentReadSerializer,
+                                          RegistrationReadSerializer)
 from lego.apps.permissions.filters import filter_queryset
 from lego.apps.websockets.groups import group_for_event, group_for_user
 from lego.apps.websockets.notifiers import notify_group
@@ -24,22 +26,29 @@ def find_event_groups(user):
 
 def notify_event_registration(type, registration, from_pool=None):
     group = group_for_event(registration.event)
-    notify_registration(group, type, registration, from_pool)
+    payload = RegistrationReadSerializer(registration).data
+    if from_pool:
+        payload['from_pool'] = from_pool
+    notify_registration(group, type, payload, registration)
 
 
 def notify_user_registration(type, registration, error_msg=None):
     group = group_for_user(registration.user)
-    context = {'registration': registration.id}
-    notify_registration(group, type, registration, error_msg=error_msg, context=context)
+    if registration.event.is_priced:
+        payload = RegistrationPaymentReadSerializer(
+            registration, context={'user': registration.user}
+        ).data
+    else:
+        payload = RegistrationReadSerializer(
+            registration, context={'user': registration.user}
+        ).data
+    notify_registration(group, type, payload, registration, error_msg)
 
 
-def notify_registration(group, type, registration, from_pool=None, error_msg=None, context=None):
-    if not context:
-        context = {}
-    payload = RegistrationReadSerializer(registration, context=context).data
-    meta = {}
-    if from_pool:
-        payload['from_pool'] = from_pool
+def notify_registration(group, type, payload, registration, error_msg=None):
+    meta = {
+        'event_id': registration.event.id
+    }
     if error_msg:
         meta['error_message'] = error_msg
 
@@ -50,10 +59,14 @@ def notify_registration(group, type, registration, from_pool=None, error_msg=Non
     })
 
 
-def event_updated_notifier(event):
+def event_updated_notifier(event, error_msg=None):
     group = group_for_event(event)
-    serializer = EventReadDetailedSerializer(event)
+    payload = EventReadDetailedSerializer(event).data
+    meta = {}
+    if error_msg:
+        meta['error_message'] = error_msg
     notify_group(group, {
         'type': 'EVENT_UPDATED',
-        'payload': serializer.data
+        'payload': payload,
+        'meta': meta
     })
