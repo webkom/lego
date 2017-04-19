@@ -19,10 +19,14 @@ class Sync:
             # GSuiteSystem(),
         ]
 
-    def sync(self):
-
+    def lookup_querysets(self):
         users = User.objects.all()
         groups = AbakusGroup.objects.all()
+        return users, groups
+
+    def sync(self):
+
+        users, groups = self.lookup_querysets()
 
         for system in self.systems:
             log.info('sync_migrate', system=system.name)
