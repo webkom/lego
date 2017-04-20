@@ -5,40 +5,47 @@ from rest_framework_jwt.serializers import User
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.serializers import PublicCompanyReadSerializer
 from lego.apps.events import constants
-from lego.apps.events.fields import (ActivationTimeField, ChargeStatusField, SetChargeStatusField,
-                                     SpotsLeftField)
+from lego.apps.events.fields import (ActivationTimeField, ChargeStatusField, FeedbackField,
+                                     PresenceField, SetChargeStatusField, SpotsLeftField)
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
-from lego.apps.users.serializers.users import DetailedUserSerializer, PublicUserSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
 
 class RegistrationReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
-    charge_status = ChargeStatusField()
+    feedback = FeedbackField()
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status')
+        fields = ('id', 'user', 'pool', 'feedback', 'status')
         read_only = True
 
 
+class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
+    charge_status = ChargeStatusField()
+
+    class Meta(RegistrationReadSerializer.Meta):
+        fields = RegistrationReadSerializer.Meta.fields + ('charge_status', )
+
+
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
-    user = DetailedUserSerializer()
+    user = PublicUserSerializer()
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'event', 'feedback', 'status', 'charge_status',
+        fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status',
                   'registration_date', 'unregistration_date', 'admin_reason',
-                  'charge_amount', 'charge_amount_refunded')
+                  'charge_id', 'charge_status', 'charge_amount', 'charge_amount_refunded')
         read_only = True
 
 
 class PoolReadSerializer(BasisModelSerializer):
-    registrations = RegistrationReadSerializer(many=True)
+    registrations = serializers.SerializerMethodField()
     permission_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta:
@@ -54,6 +61,18 @@ class PoolReadSerializer(BasisModelSerializer):
         pool.permission_groups.set(permission_groups)
 
         return pool
+
+    def get_registrations(self, obj):
+        queryset = obj.registrations.all()
+        if obj.event.is_priced:
+            return RegistrationPaymentReadSerializer(
+                queryset, context=self.context, many=True
+            ).data
+        return RegistrationReadSerializer(queryset, context=self.context, many=True).data
+
+
+class PoolAdministrateSerializer(PoolReadSerializer):
+    registrations = RegistrationReadDetailedSerializer(many=True)
 
 
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -99,6 +118,14 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             return obj.get_price(user=request.user)
 
 
+class EventAdministrateSerializer(EventReadSerializer):
+    pools = PoolAdministrateSerializer(many=True)
+    waiting_registrations = RegistrationReadDetailedSerializer(many=True)
+
+    class Meta(EventReadSerializer.Meta):
+        fields = EventReadSerializer.Meta.fields + ('pools', 'waiting_registrations')
+
+
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
@@ -126,10 +153,11 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     charge_status = SetChargeStatusField(
         required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
     )
+    presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
 
     class Meta:
         model = Registration
-        fields = ('id', 'feedback', 'captcha_response', 'charge_status')
+        fields = ('id', 'feedback', 'presence', 'captcha_response', 'charge_status')
 
 
 class StripeTokenSerializer(serializers.Serializer):

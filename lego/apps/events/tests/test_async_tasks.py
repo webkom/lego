@@ -402,7 +402,7 @@ class PaymentDueTestCase(TestCase):
         self.event.save()
 
         result = get_old_events_with_payment_overdue()
-        self.assertEqual(result, [[5, [1]]])
+        self.assertEqual(result, [[5, [3]]])
 
     def test_creator_not_notified_before_7_days_passed(self):
         """Test that method result returns correct event and user"""

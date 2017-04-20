@@ -15,7 +15,6 @@ FRONTEND_URL = 'http://127.0.0.1:3000'
 SECRET_KEY = 'secret'
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
 
-CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 CAPTCHA_KEY = os.environ.get('CAPTCHA_KEY')
 
 WEBHOOK_USERNAME = 'stripe'

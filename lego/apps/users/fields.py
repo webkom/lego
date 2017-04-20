@@ -11,6 +11,12 @@ class AbakusGroupListField(serializers.RelatedField):
         return [{'id': group.id, 'name': group.name} for group in iterable.all()]
 
 
+class AbakusGroupField(serializers.Field):
+
+    def to_representation(self, value):
+        return {'id': value.id, 'name': value.name}
+
+
 class PublicUserField(serializers.PrimaryKeyRelatedField):
 
     def use_pk_only_optimization(self):

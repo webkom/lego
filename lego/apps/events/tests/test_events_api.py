@@ -146,6 +146,32 @@ class RetrieveEventsTestCase(APITestCase):
         event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 404)
 
+    def test_charge_status_hidden_when_not_priced(self):
+        """Test that chargeStatus is hidden when getting nonpriced event"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(1))
+
+        for pool in event_response.data['pools']:
+            for reg in pool['registrations']:
+                with self.assertRaises(KeyError):
+                    reg['chargeStatus']
+
+    def test_only_own_fields_visible(self):
+        """Test that a user can only view own fields"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(5))
+
+        for pool in event_response.data['pools']:
+            for reg in pool['registrations']:
+                if reg['user']['id'] == self.abakus_user.id:
+                    self.assertIsNotNone(reg['feedback'])
+                    self.assertIsNotNone(reg['chargeStatus'])
+                else:
+                    self.assertIsNone(reg['feedback'])
+                    self.assertIsNone(reg['chargeStatus'])
+
 
 class CreateEventsTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
@@ -165,6 +191,12 @@ class CreateEventsTestCase(APITestCase):
     def test_event_creation(self):
         self.assertIsNotNone(self.event_id)
         self.assertEqual(self.event_response.status_code, 201)
+
+    def test_event_creation_without_perm(self):
+        user = User.objects.get(username='abakule')
+        self.client.force_authenticate(user)
+        response = self.client.post(_get_list_url(), _test_event_data[1])
+        self.assertEqual(response.status_code, 403)
 
     def test_event_update(self):
         event_update_response = self.client.put(_get_detail_url(self.event_id), _test_event_data[1])
@@ -284,16 +316,38 @@ class RegistrationsTestCase(APITransactionTestCase):
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(registration_response.status_code, 403)
 
-    def test_update(self, *args):
+    def test_update_feedback(self, *args):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 202)
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.data['id']),
             {'feedback': 'UPDATED'}
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['feedback'], 'UPDATED')
+
+    def test_update_presence_without_permission(self, *args):
+        """ Test that abakus user cannot update presence """
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'presence': 'PRESENT'}
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_update_presence_with_permission(self, *args):
+        """ Test that admin can update presence """
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        res = self.client.patch(
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'presence': 'PRESENT'}
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['presence'], 'PRESENT')
 
     def test_user_cannot_update_other_registration(self, *args):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -410,7 +464,7 @@ class RegistrationsTestCase(APITransactionTestCase):
         self.assertEqual(res.status_code, 403)
 
 
-class ListRegistrationsTestCase(APITestCase):
+class EventAdministrateTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -421,14 +475,15 @@ class ListRegistrationsTestCase(APITestCase):
     def test_with_group_permission(self):
         AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_registrations_list_url(self.event.id))
+        event_response = self.client.get(f'{_get_detail_url(self.event.id)}administrate/')
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data.get('results')), 2)
+        self.assertEqual(event_response.data.get('id'), self.event.id)
+        self.assertEqual(len(event_response.data.get('pools')), 2)
 
     def test_without_group_permission(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_registrations_list_url(self.event.id))
+        event_response = self.client.get(f'{_get_detail_url(self.event.id)}administrate/')
         self.assertEqual(event_response.status_code, 403)
 
 
@@ -531,7 +586,7 @@ class StripePaymentTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
 

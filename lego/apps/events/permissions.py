@@ -42,5 +42,9 @@ class RegistrationPermissions(AbakusPermission):
         return super().has_object_permission(request, view, obj)
 
 
+class AdministratePermissions(AbakusPermission):
+    skip_object_permission = True
+
+
 class AdminRegistrationPermissions(AbakusPermission):
     pass

@@ -20,6 +20,7 @@ class AbakusPermission(permissions.BasePermission):
     permission_map = {}
     authentication_map = {}
     check_object_permission = False
+    skip_object_permission = False
 
     @classmethod
     def default_keyword_permission(cls, action, model_cls):
@@ -103,9 +104,9 @@ class AbakusPermission(permissions.BasePermission):
 
         # If the queryset is based on the ObjectPermissionsModel model, return True and check
         # permissions in the filter backend and per object.
-        object_permissions = issubclass(
+        object_permissions = (issubclass(
             model, ObjectPermissionsModel
-        ) or self.check_object_permission
+        ) or self.check_object_permission) and not self.skip_object_permission
 
         if object_permissions and not view.action == 'create':
             return True

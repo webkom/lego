@@ -74,6 +74,11 @@ LOGGING = {
             'propagate': True,
             'filters': ['require_debug_true'],
         },
+        'django.template': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
         'elasticsearch': {
             'level': 'WARNING',
             'propagate': True
