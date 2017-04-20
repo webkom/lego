@@ -36,7 +36,7 @@ class AbakusGroupTestCase(TestCase):
         self.assertFalse(self.non_committee.is_social_group)
 
     def test_natural_key(self):
-        found_group = AbakusGroup.group_objects.get_by_natural_key(self.non_committee.name)
+        found_group = AbakusGroup.objects.get_by_natural_key(self.non_committee.name)
         self.assertEqual(self.non_committee, found_group)
 
 
@@ -89,8 +89,10 @@ class AbakusGroupHierarchyTestCase(TestCase):
     def test_get_descendants_include_self(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
         users = AbakusGroup.objects.get(name='Users')
+        students = AbakusGroup.objects.get(name='Students')
         union = set(list(abakus.get_descendants(include_self=True)) +
-                    list(users.get_descendants(include_self=True)))
+                    list(users.get_descendants(include_self=True)) +
+                    list(students.get_descendants(include_self=True)))
         self.assertEqual(set(AbakusGroup.objects.all()), union)
 
 

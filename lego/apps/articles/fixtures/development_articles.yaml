@@ -29,7 +29,7 @@
       senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp
       Lorem Ipsum for dummytekst.
     can_view_groups:
-      - 1
+      - - Users
     tags:
       - lorem
       - ipsum
@@ -54,7 +54,7 @@
       senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp
       Lorem Ipsum for dummytekst.
     can_view_groups:
-      - 1
+      - - Users
     tags:
       - lorem
       - ipsum

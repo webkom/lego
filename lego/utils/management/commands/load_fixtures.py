@@ -8,6 +8,9 @@ from django.utils import timezone
 
 from lego.apps.events.models import Event
 from lego.apps.files.storage import storage
+from lego.apps.social_groups.fixtures.development_interest_groups import load_dev_interest_groups
+from lego.apps.users.fixtures.initial_abakus_groups import load_abakus_groups
+from lego.apps.users.fixtures.test_abakus_groups import load_test_abakus_groups
 from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -24,6 +27,12 @@ class Command(BaseCommand):
             default=False,
             help='Load development fixtures.',
         )
+        parser.add_argument(
+            '--generate',
+            action='store_true',
+            default=False,
+            help='Generate fixtures',
+        )
 
     def run(self, *args, **options):
         log.info('Loading regular fixtures:')
@@ -39,6 +48,10 @@ class Command(BaseCommand):
             local_file = os.path.join(assets_folder, file)
             log.info(f'Uploading {key} file to bucket')
             storage.upload_file(uploads_bucket, key, local_file)
+
+        if options['generate']:
+            self.generate_groups()
+
         call_command('loaddata', 'lego/apps/files/fixtures/initial_files.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_abakus_groups.yaml')
         call_command('loaddata', 'lego/apps/users/fixtures/initial_users.yaml')
@@ -77,7 +90,6 @@ class Command(BaseCommand):
             call_command('loaddata', 'lego/apps/reactions/fixtures/emojione_reaction_types.yaml')
             call_command('loaddata', 'lego/apps/joblistings/fixtures/development_joblistings.yaml')
             self.update_event_dates()
-
         log.info('Done!')
 
     @staticmethod
@@ -90,3 +102,28 @@ class Command(BaseCommand):
             for j, pool in enumerate(event.pools.all()):
                 pool.activation_date = date.replace(hour=12, minute=0) + timedelta(days=i-j-16)
                 pool.save()
+
+    @staticmethod
+    def generate_groups():
+        call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
+        call_command('migrate')
+        load_abakus_groups()
+        with open('lego/apps/users/fixtures/initial_abakus_groups.yaml', 'w') as f:
+            f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
+                    " and `initial_abakus_groups.py`\n#\n")
+            call_command('dumpdata', '--format=yaml', 'users.AbakusGroup', stdout=f)
+
+        load_dev_interest_groups()
+
+        with open('lego/apps/social_groups/fixtures/development_interest_groups.yaml', 'w') as f:
+            f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
+                    " and `development_interest_groups.py`\n#\n")
+            call_command('dumpdata', '--format=yaml', 'users.AbakusGroup', stdout=f)
+            call_command('dumpdata', '--format=yaml', 'social_groups.InterestGroup', stdout=f)
+
+        load_test_abakus_groups()
+
+        with open('lego/apps/users/fixtures/test_abakus_groups.yaml', 'w') as f:
+            f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
+                    " and `development_interest_groups.py`\n#\n")
+            call_command('dumpdata', '--format=yaml', 'users.AbakusGroup', stdout=f)

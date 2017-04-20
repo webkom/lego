@@ -1,174 +1,110 @@
-- model: users.AbakusGroup
+#
+# THIS FILE IS HANDLED BY `load_fixtures` and `initial_abakus_groups.py`
+#
+- model: users.abakusgroup
   pk: 1
-  fields:
-    deleted: false
-    description: ''
-    level: 0
-    lft: 0
-    name: Users
-    parent: null
-    rght: 0
-    tree_id: 1
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Users, description: "Brukere p\xE5 Abakus.no", parent: null,
+    permissions: '[]', lft: 1, rght: 2, tree_id: 1, level: 0}
+- model: users.abakusgroup
   pk: 2
-  fields:
-    deleted: false
-    description: ''
-    level: 0
-    lft: 1
-    name: Abakus
-    parent: null
-    rght: 30
-    tree_id: 2
-    permissions:
-      - /sudo/admin/meetings/create
-      - /sudo/admin/meetinginvitations/create
-      - /sudo/admin/registrations/create/
-      - /sudo/admin/events/payment/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Abakus, description: Medlemmer av Abakus, parent: null,
+    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]', lft: 1,
+    rght: 24, tree_id: 2, level: 0}
+- model: users.abakusgroup
   pk: 3
-  fields:
-    deleted: false
-    description: ''
-    level: 1
-    lft: 2
-    name: Abakom
-    parent: 2
-    rght: 21
-    tree_id: 2
-    permissions:
-    - /sudo/admin/events/
-    - /sudo/admin/pools/
-    - /sudo/admin/registrations/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Abakom, description: Medlemmer av Abakom, parent: 2,
+    permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
+      "/sudo/admin/companies/"]', lft: 2, rght: 21, tree_id: 2, level: 1}
+- model: users.abakusgroup
   pk: 4
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 3
-    name: Arrkom
-    parent: 3
-    rght: 4
-    tree_id: 2
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Arrkom, description: '', parent: 3, permissions: '[]',
+    lft: 3, rght: 4, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 5
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 5
-    name: backup
-    parent: 3
-    rght: 6
-    tree_id: 2
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: backup, description: '', parent: 3, permissions: '[]',
+    lft: 5, rght: 6, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 6
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 7
-    name: Bedkom
-    parent: 3
-    rght: 8
-    tree_id: 2
-    permissions:
-    - /sudo/admin/events/
-    - /sudo/admin/registrations/
-    - /sudo/admin/companies/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Bedkom, description: '', parent: 3, permissions: '[]',
+    lft: 7, rght: 8, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 7
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 9
-    name: Fagkom
-    parent: 3
-    rght: 10
-    tree_id: 2
-    permissions:
-      - /sudo/admin/companies/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Fagkom, description: '', parent: 3, permissions: '[]',
+    lft: 9, rght: 10, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 8
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 11
-    name: LaBamba
-    parent: 3
-    rght: 12
-    tree_id: 2
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: LaBamba, description: '', parent: 3, permissions: '[]',
+    lft: 11, rght: 12, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 9
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 13
-    name: PR
-    parent: 3
-    rght: 14
-    tree_id: 2
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: PR, description: '', parent: 3, permissions: '[]',
+    lft: 13, rght: 14, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 10
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 15
-    name: readme
-    parent: 3
-    rght: 16
-    tree_id: 2
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: readme, description: '', parent: 3, permissions: '[]',
+    lft: 15, rght: 16, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 11
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 17
-    name: Webkom
-    parent: 3
-    rght: 18
-    tree_id: 2
-    permissions:
-      - /sudo/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Webkom, description: '', parent: 3, permissions: '["/sudo/"]',
+    lft: 17, rght: 18, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 12
-  fields:
-    deleted: false
-    description: ''
-    level: 2
-    lft: 19
-    name: Hovedstyret
-    parent: 3
-    rght: 20
-    tree_id: 2
-    permissions:
-      - /sudo/admin/
-
-- model: users.AbakusGroup
+  fields: {deleted: false, name: Hovedstyret, description: '', parent: 3, permissions: '["/sudo/admin/"]',
+    lft: 19, rght: 20, tree_id: 2, level: 2}
+- model: users.abakusgroup
   pk: 13
-  fields:
-    deleted: false
-    name: Interessegrupper
-    description: ''
-    level: 1
-    lft: 22
-    parent: 1
-    rght: 29
-    tree_id: 2
+  fields: {deleted: false, name: Interessegrupper, description: '', parent: 2, permissions: '[]',
+    lft: 22, rght: 23, tree_id: 2, level: 1}
+- model: users.abakusgroup
+  pk: 14
+  fields: {deleted: false, name: Students, description: '', parent: null, permissions: '[]',
+    lft: 1, rght: 26, tree_id: 3, level: 0}
+- model: users.abakusgroup
+  pk: 15
+  fields: {deleted: false, name: Datateknologi, description: '', parent: 14, permissions: '[]',
+    lft: 2, rght: 13, tree_id: 3, level: 1}
+- model: users.abakusgroup
+  pk: 16
+  fields: {deleted: false, name: 1. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 3, rght: 4, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 17
+  fields: {deleted: false, name: 2. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 5, rght: 6, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 18
+  fields: {deleted: false, name: 3. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 7, rght: 8, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 19
+  fields: {deleted: false, name: 4. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 9, rght: 10, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 20
+  fields: {deleted: false, name: 5. klasse Datateknologi, description: '', parent: 15,
+    permissions: '[]', lft: 11, rght: 12, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 21
+  fields: {deleted: false, name: Kommunikasjonsteknologi, description: '', parent: 14,
+    permissions: '[]', lft: 14, rght: 25, tree_id: 3, level: 1}
+- model: users.abakusgroup
+  pk: 22
+  fields: {deleted: false, name: 1. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 15, rght: 16, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 23
+  fields: {deleted: false, name: 2. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 17, rght: 18, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 24
+  fields: {deleted: false, name: 3. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 19, rght: 20, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 25
+  fields: {deleted: false, name: 4. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 21, rght: 22, tree_id: 3, level: 2}
+- model: users.abakusgroup
+  pk: 26
+  fields: {deleted: false, name: 5. klasse Kommunikasjonsteknologi, description: '',
+    parent: 21, permissions: '[]', lft: 23, rght: 24, tree_id: 3, level: 2}

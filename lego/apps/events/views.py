@@ -1,5 +1,6 @@
 from celery import chain
 from django.db import transaction
+from django.db.models import Prefetch
 from rest_framework import decorators, filters, mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -8,13 +9,15 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import NoSuchPool, PaymentExists, RegistrationsExistsInPool
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.permissions import (AdminRegistrationPermissions, PoolPermissions,
-                                          RegistrationPermissions)
+from lego.apps.events.permissions import (AdministratePermissions, AdminRegistrationPermissions,
+                                          PoolPermissions, RegistrationPermissions)
 from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
+                                          EventAdministrateSerializer,
                                           EventCreateAndUpdateSerializer,
                                           EventReadDetailedSerializer, EventReadSerializer,
-                                          PoolCreateAndUpdateSerializer, PoolReadSerializer,
+                                          PoolCreateAndUpdateSerializer,
                                           RegistrationCreateAndUpdateSerializer,
+                                          RegistrationPaymentReadSerializer,
                                           RegistrationReadDetailedSerializer,
                                           RegistrationReadSerializer, StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
@@ -36,8 +39,12 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         elif self.action == 'retrieve':
             queryset = Event.objects.prefetch_related(
-                'pools__permission_groups', 'pools__registrations',
-                'pools__registrations__user', 'comments', 'tags'
+                'pools',
+                Prefetch(
+                    'pools__registrations', queryset=Registration.objects.select_related('user')
+                ),
+                Prefetch('registrations', queryset=Registration.objects.select_related('user')),
+                'tags'
             )
         else:
             queryset = Event.objects.all()
@@ -52,6 +59,20 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return EventReadDetailedSerializer
 
         return super().get_serializer_class()
+
+    @decorators.detail_route(
+        methods=['GET'], serializer_class=EventAdministrateSerializer,
+        permission_classes=(AdministratePermissions,)
+    )
+    def administrate(self, request, *args, **kwargs):
+        event_id = self.kwargs.get('pk', None)
+        queryset = Event.objects.filter(pk=event_id).prefetch_related(
+            'pools', 'pools__permission_groups',
+            Prefetch('pools__registrations', queryset=Registration.objects.select_related('user')),
+            Prefetch('registrations', queryset=Registration.objects.select_related('user')),
+        )
+        serializer = self.get_serializer(queryset.first())
+        return Response(serializer.data)
 
     @decorators.detail_route(methods=['POST'], serializer_class=StripeTokenSerializer)
     def payment(self, request, *args, **kwargs):
@@ -72,7 +93,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             async_payment.s(registration.id, serializer.data['token']),
             registration_save.s(registration.id)
         ).delay()
-        payment_serializer = RegistrationReadSerializer(registration, context={'request': request})
+        payment_serializer = RegistrationPaymentReadSerializer(
+            registration, context={'request': request}
+        )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
@@ -82,17 +105,13 @@ class PoolViewSet(mixins.CreateModelMixin,
                   viewsets.GenericViewSet):
     queryset = Pool.objects.all()
     permission_classes = (PoolPermissions,)
-
-    def get_serializer_class(self):
-        if self.action in ['create', 'update']:
-            return PoolCreateAndUpdateSerializer
-        return PoolReadSerializer
+    serializer_class = PoolCreateAndUpdateSerializer
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        if event_id:
-            return Pool.objects.filter(event=event_id).prefetch_related('permission_groups',
-                                                                        'registrations')
+        return Pool.objects.filter(event=event_id).prefetch_related(
+            'permission_groups', 'registrations'
+        )
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -106,7 +125,6 @@ class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.RetrieveModelMixin,
                           mixins.UpdateModelMixin,
                           mixins.DestroyModelMixin,
-                          mixins.ListModelMixin,
                           viewsets.GenericViewSet):
     serializer_class = RegistrationReadSerializer
     permission_classes = (RegistrationPermissions,)
@@ -115,17 +133,12 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return RegistrationCreateAndUpdateSerializer
-        if self.action == 'list':
+        if self.action == 'retrieve':
             return RegistrationReadDetailedSerializer
         return super().get_serializer_class()
 
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        if self.action == 'list':
-            return Registration.objects.filter(event=event_id).prefetch_related(
-                'user',
-                'user__abakus_groups'
-            )
         return Registration.objects.filter(event=event_id).prefetch_related('user')
 
     def create(self, request, *args, **kwargs):

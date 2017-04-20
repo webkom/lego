@@ -7,7 +7,7 @@ from lego.apps.users.serializers.abakus_groups import AbakusGroupSerializer
 
 
 class AbakusGroupViewSet(viewsets.ModelViewSet):
-    queryset = AbakusGroup.group_objects.all()
+    queryset = AbakusGroup.objects.all()
     serializer_class = AbakusGroupSerializer
     permission_classes = (IsAuthenticated, AbakusGroupPermissions)
     ordering = 'id'
