@@ -1,12 +1,10 @@
 from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
 
 from lego.apps.joblistings.models import Joblisting
 from lego.apps.joblistings.permissions import JoblistingsPermissions
 from lego.apps.joblistings.serializer import (JoblistingCreateAndUpdateSerializer,
                                               JoblistingDetailedSerializer, JoblistingSerializer)
-from lego.apps.permissions.permissions import AbakusPermission
 from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
