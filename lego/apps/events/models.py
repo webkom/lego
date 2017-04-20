@@ -186,6 +186,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         If the user was in a pool, and not in the waiting list,
         notifies the waiting list that there might be a bump available.
         """
+        if self.start_time < timezone.now():
+            raise ValueError('Event has already started')
+
         # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
         with cache.lock(f'event_lock-{self.id}', timeout=20):
