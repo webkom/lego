@@ -56,7 +56,6 @@ _test_companycontact_data = [
 ]
 
 
-
 def _get_list_url():
     return reverse('api:v1:joblisting-list')
 

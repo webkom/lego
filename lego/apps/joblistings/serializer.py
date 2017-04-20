@@ -1,9 +1,10 @@
+from rest_framework.compat import set_many
+from rest_framework.utils import model_meta
+
 from lego.apps.companies.serializers import (CompanyContactReadSerializer,
                                              PublicCompanyReadSerializer)
 from lego.apps.joblistings.models import Joblisting, Workplace
 from lego.utils.serializers import BasisModelSerializer
-from rest_framework.utils import model_meta
-from rest_framework.compat import set_many
 
 
 class WorkplaceSerializer(BasisModelSerializer):
