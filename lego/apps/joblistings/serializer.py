@@ -30,7 +30,8 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Joblisting
         fields = ('id', 'title', 'text', 'company', 'responsible', 'description', 'deadline',
-                  'job_type', 'workplaces', 'from_year', 'to_year', 'application_url')
+                  'job_type', 'workplaces', 'visible_from', 'visible_to', 'from_year', 'to_year',
+                  'application_url')
 
 
 class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
