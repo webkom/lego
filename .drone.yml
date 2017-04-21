@@ -35,12 +35,15 @@ pipeline:
     image: quay.io/ipedrazas/drone-helm
     when:
       event: tag
+    skip_tls_verify: true
     chart: ./charts/lego
     release: lego-prod
     namespace: lego-prod
     prefix: PROD
-    values:
-    - backend.image.tag: ${DRONE_TAG##v}
+    values: backend.image.tag=${DRONE_TAG##v}
+    debug: true
+    wait: true
+
 
 services:
   database:
