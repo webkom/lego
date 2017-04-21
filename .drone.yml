@@ -31,6 +31,17 @@ pipeline:
       - latest
       - ${DRONE_TAG##v}
 
+  deploy:
+    image: quay.io/ipedrazas/drone-helm
+    when:
+      event: tag
+    chart: ./charts/lego
+    release: lego-prod
+    namespace: lego-prod
+    prefix: PROD
+    values:
+    - backend.image.tag: ${DRONE_TAG##v}
+
 services:
   database:
     image: postgres:9.5

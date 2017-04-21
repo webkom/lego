@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 
 import os
 import threading
+from http.server import HTTPServer
 
 import prometheus_client
 from cassandra.cqlengine import connection
