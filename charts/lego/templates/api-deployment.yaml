@@ -1,0 +1,96 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-api
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.backend.api.replica_count }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-api
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: Always
+        command:
+        - 'uwsgi'
+        - '--ini'
+        - 'lego.ini'
+        env:
+        - name: PORT
+          value: '8000'
+        - name: DEBUG
+          value: 'false'
+        - name: ALLOWED_HOSTS
+          value: "{{ .Values.backend.config.allowed_hosts }}"
+        - name: SECRET_KEY
+          value: {{ .Values.backend.config.secret_key }}
+        - name: DATABASE_URL
+          value: {{ .Values.backend.config.database_url }}
+        - name: CACHE_URL
+          value: {{ .Values.backend.config.cache_url }}
+        - name: EMAIL_URL
+          value: {{ .Values.backend.config.email_url }}
+        - name: SENTRY
+          value: {{ .Values.backend.config.sentry }}
+        - name: CELERY_BROKER_URL
+          value: {{ .Values.backend.config.celery_broker_url }}
+        - name: CHANNELS_REDIS_URL
+          value: {{ .Values.backend.config.channels_redis_url }}
+        - name: REDIS_STREAM_HOST
+          value: {{ .Values.backend.config.stream_redis_host }}
+        - name: REDIS_STREAM_DB
+          value: "{{ .Values.backend.config.stream_redis_db }}"
+        - name: ELASTICSEARCH_HOST
+          value: {{ .Values.backend.config.elasticsearch_host }}
+        - name: AWS_ACCESS_KEY_ID
+          value: {{ .Values.backend.config.aws_access_key_id }}
+        - name: AWS_SECRET_ACCESS_KEY
+          value: {{ .Values.backend.config.aws_secret_access_key }}
+        - name: AWS_REGION
+          value: {{ .Values.backend.config.aws_region }}
+        - name: AWS_S3_BUCKET
+          value: {{ .Values.backend.config.aws_s3_bucket }}
+        - name: THUMBOR_SERVER
+          value: {{ .Values.backend.config.thumbor_server }}
+        - name: THUMBOR_SECURITY_KEY
+          value: {{ .Values.backend.config.thumbor_security_key }}
+        - name: SERVER_URL
+          value: {{ .Values.backend.config.server_url }}
+        - name: FRONTEND_URL
+          value: {{ .Values.backend.config.frontend_url }}
+        - name: CASSANDRA_HOSTS
+          value: {{ .Values.backend.config.cassandra_hosts }}
+        - name: CASSANDRA_KEYSPACE
+          value: {{ .Values.backend.config.cassandra_keyspace }}
+        - name: STRIPE_API_KEY
+          value: {{ .Values.backend.config.stripe_api_key }}
+        - name: CAPTCHA_KEY
+          value: {{ .Values.backend.config.captcha_key }}
+        ports:
+        - name: http
+          containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health/
+            port: http
+          initialDelaySeconds: 60
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /health/
+            port: http
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        resources:
+          requests:
+            memory: 1000Mi
+            cpu: 300m
+          limits:
+            memory: 1000Mi
+            cpu: 800m
+      imagePullSecrets:
+      - name: registry.abakus.no
