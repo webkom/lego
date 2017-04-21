@@ -24,23 +24,27 @@ pipeline:
   docker:
     image: plugins/docker
     when:
-      event: tag
+      branch:
+        - prod
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/lego
     tags:
       - latest
-      - ${DRONE_TAG##v}
+      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
   deploy:
     image: quay.io/ipedrazas/drone-helm
     when:
-      event: tag
+      branch:
+        - prod
+    skip_tls_verify: true
     chart: ./charts/lego
     release: lego-prod
     namespace: lego-prod
     prefix: PROD
-    values:
-    - backend.image.tag: ${DRONE_TAG##v}
+    values: backend.image.tag=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    wait: true
+
 
 services:
   database:
