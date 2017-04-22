@@ -19,8 +19,10 @@ RUN set -e \
     && apt-get autoremove -y \
     && apt-get clean \
     && pip install --no-cache -r requirements/prod.txt \
+    && pip install --no-cache -r requirements/docs.txt \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN set -e \
     && echo 'SECRET_KEY="secret"' > lego/settings/local.py \
-    && ENV_CONFIG=0 python manage.py collectstatic --noinput
+    && ENV_CONFIG=0 python manage.py collectstatic --noinput \
+    && ENV_CONFIG=0 make -C docs html
