@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'lego.apps.comments',
     'lego.apps.content',
     'lego.apps.events',
+    'lego.apps.external_sync',
     'lego.apps.companies',
     'lego.apps.feed',
     'lego.apps.files',
@@ -156,5 +157,8 @@ CASSANDRA_DRIVER_KWARGS = {
     'protocol_version': 4,
     'lazy_connect': True
 }
+
+
+LDAP_BASE_DN = 'dc=abakus,dc=no'
 
 CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'

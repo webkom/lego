@@ -19,6 +19,9 @@ cassandra-driver==3.9.0
 prometheus-client==0.0.19
 requests==2.13.0
 slackclient==1.0.5
+ldap3==2.2.1
+google-api-python-client==1.6.2
+passlib==1.7.1
 
 # channels:
 channels==1.1.3
