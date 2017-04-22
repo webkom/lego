@@ -4,7 +4,7 @@ SITE = {
     'name': 'Lego',
     'slogan': 'LEGO Er Ganske Oppdelt',
     'contact_email': 'webkom@abakus.no',
-    'documentation_url': 'http://lego.readthedocs.io/'
+    'documentation_url': '/docs/'
 }
 
 API_VERSION = 'v1'
