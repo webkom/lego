@@ -1,25 +1,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-ws-worker
+  name: {{ template "fullname" . }}-beat
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
-  replicas: {{ .Values.backend.ws_worker.replica_count }}
+  replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-ws-worker
+        app: {{ template "fullname" . }}-beat
     spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
         imagePullPolicy: Always
         command:
-        - 'python'
-        - 'manage.py'
-        - 'runworker'
+        - 'celery'
+        - '-A'
+        - 'lego'
+        - 'beat'
         env:
+        - name: C_FORCE_ROOT
+          value: 'True'
         - name: DEBUG
           value: 'false'
         - name: ALLOWED_HOSTS
@@ -76,7 +79,7 @@ spec:
           value: {{ .Values.backend.config.ldap_password }}
         resources:
           requests:
-            memory: 1000Mi
+            memory: 500Mi
             cpu: 300m
           limits:
             memory: 1000Mi
