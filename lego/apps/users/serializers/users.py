@@ -53,6 +53,22 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'grade'
         )
 
+class SearchUserSerializer(serializers.ModelSerializer):
+
+    profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'full_name',
+            'gender',
+            'profile_picture',
+        )
+
 
 class UserSerializer(DetailedUserSerializer):
     def to_representation(self, instance):

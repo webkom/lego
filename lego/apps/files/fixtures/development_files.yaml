@@ -12,3 +12,45 @@
     file_type: image
     token: token
     user: 1
+- pk: abakus_logo.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+- pk: abakus_koskom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+- pk: abakus_labamba.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+- pk: abakus_bedkom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+- pk: abakus_readme.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+- pk: abakus_webkom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1

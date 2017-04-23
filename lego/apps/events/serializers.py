@@ -176,3 +176,18 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
     feedback = serializers.CharField(required=False)
     admin_reason = serializers.CharField(required=True)
+
+class EventSearchSerializer(serializers.ModelSerializer):
+    cover = ImageField(required=False, options={'height': 500})
+    thumbnail = ImageField(
+        source='cover',
+        required=False,
+        options={'height': 500, 'width': 500, 'smart': True}
+    )
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
+                  'location', 'start_time', 'thumbnail', 'end_time',
+                  'total_capacity', 'company', 'registration_count', 'tags')
+        read_only = True
