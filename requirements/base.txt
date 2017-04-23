@@ -17,6 +17,8 @@ structlog==16.1.0
 boto3==1.4.4
 cassandra-driver==3.9.0
 prometheus-client==0.0.19
+bs4==0.0.1
+bleach==1.5.0
 requests==2.13.0
 slackclient==1.0.5
 ldap3==2.2.1

@@ -5,3 +5,4 @@
     file_type: image
     token: token
     user: 1
+    public: true
