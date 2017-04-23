@@ -5,6 +5,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: test_event_cover.png
   model: files.File
   fields:
@@ -12,6 +13,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: abakus_logo.png
   model: files.File
   fields:
@@ -19,6 +21,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: abakus_koskom.png
   model: files.File
   fields:
@@ -26,6 +29,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: abakus_labamba.png
   model: files.File
   fields:
@@ -33,6 +37,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: abakus_bedkom.png
   model: files.File
   fields:
@@ -40,6 +45,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: abakus_readme.png
   model: files.File
   fields:
@@ -47,6 +53,7 @@
     file_type: image
     token: token
     user: 1
+    public: true
 - pk: abakus_webkom.png
   model: files.File
   fields:
@@ -54,3 +61,4 @@
     file_type: image
     token: token
     user: 1
+    public: true

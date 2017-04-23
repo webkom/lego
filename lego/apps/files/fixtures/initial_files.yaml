@@ -4,12 +4,14 @@
     state: ready
     file_type: image
     token: token
+    public: true
 - pk: default_male_avatar.png
   model: files.File
   fields:
     state: ready
     file_type: image
     token: token
+    public: true
 - pk: default_female_avatar.png
   model: files.File
   fields:
@@ -22,3 +24,11 @@
     state: ready
     file_type: image
     token: token
+    public: true
+- pk: not_public.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: false

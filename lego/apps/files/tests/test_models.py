@@ -24,7 +24,7 @@ class FileModelTestCase(TestCase):
     @mock.patch('lego.apps.files.models.storage.get_available_name', return_value='abakus-1.png')
     @mock.patch('lego.apps.files.models.get_random_string', return_value='random_string')
     def test_create_file(self, mock_get_random_string, mock_get_available_name):
-        file = File.create_file('abakus.png', User.objects.get(id=1))
+        file = File.create_file('abakus.png', User.objects.get(id=1), True)
 
         self.assertEqual(file.key, mock_get_available_name.return_value)
         self.assertEqual(file.token, mock_get_random_string.return_value)

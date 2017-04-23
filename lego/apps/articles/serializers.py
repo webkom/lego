@@ -14,6 +14,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     reactions_grouped = GroupedReactionSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
+    content = CharField()
 
     class Meta:
         model = Article
@@ -23,12 +24,12 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             'cover',
             'author',
             'description',
-            'text',
             'comments',
             'comment_target',
             'reactions',
             'reactions_grouped',
-            'tags'
+            'tags',
+            'content'
         )
 
 

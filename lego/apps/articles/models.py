@@ -9,7 +9,7 @@ from lego.utils.models import BasisModel
 class Article(Content, BasisModel, ObjectPermissionsModel):
 
     author = models.ForeignKey('users.User')
-    cover = FileField()
+    cover = FileField(related_name='article_covers')
 
     class Meta:
         abstract = False
