@@ -1,5 +1,5 @@
-from lego.apps.flatpages.models import Page
 from lego.apps.files.fields import ImageField
+from lego.apps.flatpages.models import Page
 from lego.utils.serializers import BasisModelSerializer
 
 

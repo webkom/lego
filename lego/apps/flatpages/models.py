@@ -3,8 +3,8 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
 from lego.apps.content.models import SlugModel
-from lego.utils.managers import TreeBasisManager
 from lego.apps.files.models import FileField
+from lego.utils.managers import TreeBasisManager
 from lego.utils.models import BasisModel
 
 

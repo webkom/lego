@@ -53,6 +53,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'grade'
         )
 
+
 class SearchUserSerializer(serializers.ModelSerializer):
 
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})

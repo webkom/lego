@@ -177,6 +177,7 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     feedback = serializers.CharField(required=False)
     admin_reason = serializers.CharField(required=True)
 
+
 class EventSearchSerializer(serializers.ModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
