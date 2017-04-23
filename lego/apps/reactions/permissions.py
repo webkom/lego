@@ -4,7 +4,8 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
 class ReactionPermission(AbakusPermission):
-    check_object_permission = True
+
+    force_object_permission_check = True
 
     def has_object_permission(self, request, view, reaction):
         if super().has_object_permission(request, view, reaction):

@@ -6,7 +6,7 @@ from lego.apps.permissions.permissions import AbakusPermission
 
 class MeetingPermissions(AbakusPermission):
 
-    check_object_permission = True
+    force_object_permission_check = True
 
     def has_object_permission(self, request, view, meeting):
         if super().has_object_permission(request, view, meeting):
