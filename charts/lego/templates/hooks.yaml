@@ -75,5 +75,11 @@ spec:
           value: {{ .Values.backend.config.stripe_api_key }}
         - name: CAPTCHA_KEY
           value: {{ .Values.backend.config.captcha_key }}
+        - name: LDAP_SERVER
+          value: {{ .Values.backend.config.ldap_server }}
+        - name: LDAP_USER
+          value: "{{ .Values.backend.config.ldap_user }}"
+        - name: LDAP_PASSWORD
+          value: {{ .Values.backend.config.ldap_password }}
       imagePullSecrets:
       - name: registry.abakus.no

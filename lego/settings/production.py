@@ -89,3 +89,8 @@ stripe.api_key = env('STRIPE_API_KEY')
 
 # Captcha
 CAPTCHA_KEY = env('CAPTCHA_KEY')
+
+# LDAP
+LDAP_SERVER = env('LDAP_SERVER')
+LDAP_USER = env('LDAP_USER')
+LDAP_PASSWORD = env('LDAP_PASSWORD')
