@@ -4,7 +4,7 @@ SITE = {
     'name': 'Lego',
     'slogan': 'LEGO Er Ganske Oppdelt',
     'contact_email': 'webkom@abakus.no',
-    'documentation_url': 'http://lego.readthedocs.io/'
+    'documentation_url': '/docs/'
 }
 
 API_VERSION = 'v1'
@@ -31,4 +31,10 @@ PENALTY_IGNORE_WINTER = (
 HEALTH_CHECK_REMOTE_IPS = [
     '10.',
     '127.0.0.'
+]
+
+# Additional groups to sync with LDAP. Committees is synced automatically. Add group names.
+LDAP_GROUPS = [
+    'Webkom',
+    'Fagkom'
 ]

@@ -4,7 +4,9 @@ from rest_framework_jwt.serializers import User
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.serializers import PublicCompanyReadSerializer
-from lego.apps.events.fields import ActivationTimeField, ChargeStatusField, SpotsLeftField
+from lego.apps.events import constants
+from lego.apps.events.fields import (ActivationTimeField, ChargeStatusField, FeedbackField,
+                                     PresenceField, SetChargeStatusField, SpotsLeftField)
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
@@ -16,16 +18,34 @@ from lego.utils.serializers import BasisModelSerializer
 
 class RegistrationReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
-    charge_status = ChargeStatusField()
+    feedback = FeedbackField()
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'feedback', 'status', 'charge_status')
+        fields = ('id', 'user', 'pool', 'feedback', 'status')
+        read_only = True
+
+
+class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
+    charge_status = ChargeStatusField()
+
+    class Meta(RegistrationReadSerializer.Meta):
+        fields = RegistrationReadSerializer.Meta.fields + ('charge_status', )
+
+
+class RegistrationReadDetailedSerializer(BasisModelSerializer):
+    user = PublicUserSerializer()
+
+    class Meta:
+        model = Registration
+        fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status',
+                  'registration_date', 'unregistration_date', 'admin_reason',
+                  'charge_id', 'charge_status', 'charge_amount', 'charge_amount_refunded')
         read_only = True
 
 
 class PoolReadSerializer(BasisModelSerializer):
-    registrations = RegistrationReadSerializer(many=True)
+    registrations = serializers.SerializerMethodField()
     permission_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta:
@@ -41,6 +61,18 @@ class PoolReadSerializer(BasisModelSerializer):
         pool.permission_groups.set(permission_groups)
 
         return pool
+
+    def get_registrations(self, obj):
+        queryset = obj.registrations.all()
+        if obj.event.is_priced:
+            return RegistrationPaymentReadSerializer(
+                queryset, context=self.context, many=True
+            ).data
+        return RegistrationReadSerializer(queryset, context=self.context, many=True).data
+
+
+class PoolAdministrateSerializer(PoolReadSerializer):
+    registrations = RegistrationReadDetailedSerializer(many=True)
 
 
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -65,9 +97,10 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     company = PublicCompanyReadSerializer(read_only=True)
-    pools = PoolReadSerializer(read_only=True, many=True)
+    pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     price = serializers.SerializerMethodField()
+    waiting_registrations = RegistrationReadSerializer(many=True)
     activation_time = ActivationTimeField()
     spots_left = SpotsLeftField()
 
@@ -75,14 +108,22 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'company',
-                  'active_capacity', 'feedback_required', 'is_priced', 'price', 'activation_time',
-                  'spots_left', 'tags')
+                  'active_capacity', 'feedback_required', 'is_priced', 'price',
+                  'waiting_registrations', 'activation_time', 'spots_left', 'tags')
         read_only = True
 
     def get_price(self, obj):
         request = self.context.get('request', None)
         if request:
             return obj.get_price(user=request.user)
+
+
+class EventAdministrateSerializer(EventReadSerializer):
+    pools = PoolAdministrateSerializer(many=True)
+    waiting_registrations = RegistrationReadDetailedSerializer(many=True)
+
+    class Meta(EventReadSerializer.Meta):
+        fields = EventReadSerializer.Meta.fields + ('pools', 'waiting_registrations')
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
@@ -109,10 +150,14 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     captcha_response = serializers.CharField(required=False)
+    charge_status = SetChargeStatusField(
+        required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
+    )
+    presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
 
     class Meta:
         model = Registration
-        fields = ('id', 'feedback', 'captcha_response')
+        fields = ('id', 'feedback', 'presence', 'captcha_response', 'charge_status')
 
 
 class StripeTokenSerializer(serializers.Serializer):
@@ -130,3 +175,4 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
     feedback = serializers.CharField(required=False)
+    admin_reason = serializers.CharField(required=True)

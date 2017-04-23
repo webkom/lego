@@ -1,0 +1,15 @@
+backend:
+  image:
+    repository: registry.abakus.no/webkom/lego
+    tag: latest
+  api:
+    replica_count: 2
+  worker:
+    replica_count: 2
+  ws_worker:
+    replica_count: 2
+  ws_server:
+    replica_count: 2
+  config:
+    allowed_hosts: "*,"
+

@@ -30,15 +30,18 @@ INSTALLED_APPS = [
     'lego.apps.comments',
     'lego.apps.content',
     'lego.apps.events',
+    'lego.apps.external_sync',
     'lego.apps.companies',
     'lego.apps.feed',
     'lego.apps.files',
     'lego.apps.flatpages',
     'lego.apps.followers',
+    'lego.apps.ical',
     'lego.apps.social_groups',
     'lego.apps.meetings',
     'lego.apps.oauth',
     'lego.apps.search',
+    'lego.apps.slack',
     'lego.apps.tags',
     'lego.apps.quotes',
     'lego.apps.reactions',
@@ -70,7 +73,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,7 +129,7 @@ USE_I18N = False
 USE_L10N = False
 USE_TZ = True
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -155,3 +157,8 @@ CASSANDRA_DRIVER_KWARGS = {
     'protocol_version': 4,
     'lazy_connect': True
 }
+
+
+LDAP_BASE_DN = 'dc=abakus,dc=no'
+
+CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'

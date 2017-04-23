@@ -2,22 +2,21 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from lego.apps.comments.models import Comment
-from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
 from .constants import CONTACT_STATUSES, SEMESTERS
 
 
-class Company(BasisModel, ObjectPermissionsModel):
+class Company(BasisModel):
 
     """ These are the values returned when calling without specific route """
     name = models.CharField(max_length=100)
-    student_contact = models.ForeignKey(User, related_name='companies')
+    student_contact = models.ForeignKey(User, related_name='companies', blank=True, null=True)
     admin_comment = models.CharField(max_length=100, blank=True)
     active = models.BooleanField(default=True)
 
-    """ These are the detail route-only fields """
+    """ These are the detail route only fields """
     description = models.CharField(max_length=500, blank=True)
     phone = models.CharField(max_length=100, blank=True)
     company_type = models.CharField(max_length=200, blank=True)

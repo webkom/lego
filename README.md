@@ -56,6 +56,20 @@ No. Just don't. Please.
 
 - Kenneth Reitz - Creator of the Requests project
 
+## Deployment
+
+Lego runs in Kubernetes and deploys is managed by Helm and Drone. The Helm Chart is located is `charts/lego`.
+  
+How to deploy:
+1. Make sure the changes is pushed to master and the test passes.
+2. Have you added some new settings in `settings/`? If so make sure the Helm chart reflects this.
+3. Add new config variables to `.drone.yaml` and create secrets using the drone cli.
+4. We run migrations automatically, make sure they work! 
+5. Push to the `prod` branch. From master: `git push origin master:prod`
+
+Drone now starts the deployment. This takes some time, tests must pass and we have to build a 
+docker image.
+
 ## Tools
 
 We recommend Pycharm for development, use your @stud.ntnu.no email to register a free professional

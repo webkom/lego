@@ -6,6 +6,7 @@ from .base import INSTALLED_APPS
 
 DEBUG = False
 SERVER_URL = 'http://127.0.0.1:8000'
+FRONTEND_URL = 'http://127.0.0.1:8000'
 
 SECRET_KEY = 'secret'
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
@@ -52,3 +53,10 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 STREAM_DEFAULT_KEYSPACE = 'test_stream_framework'
+
+SLACK_TEAM = ''
+SLACK_TOKEN = ''
+
+LDAP_SERVER = '127.0.0.1:389'
+LDAP_USER = 'cn=admin,dc=abakus,dc=no'
+LDAP_PASSWORD = 'admin'

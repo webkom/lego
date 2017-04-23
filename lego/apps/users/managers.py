@@ -1,11 +1,12 @@
 from django.utils import timezone
+from mptt.managers import TreeManager
 
 from lego.utils.managers import PersistentModelManager
 
 
-class AbakusGroupManager(PersistentModelManager):
+class AbakusGroupManager(TreeManager, PersistentModelManager):
     def get_by_natural_key(self, name):
-        return self.get(name__iexact=name.lower())
+        return self.get(name=name)
 
 
 class UserManager(PersistentModelManager):

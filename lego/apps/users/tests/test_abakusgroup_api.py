@@ -21,7 +21,7 @@ def _get_detail_url(pk):
 
 
 class ListAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()
@@ -238,7 +238,7 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
         response = self.client.delete(_get_detail_url(self.test_group.pk))
 
         self.assertEqual(response.status_code, 204)
-        self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.group_objects.get,
+        self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get,
                           pk=self.test_group.pk)
 
     def test_without_auth(self):

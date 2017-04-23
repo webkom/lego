@@ -11,6 +11,7 @@ from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+from lego.apps.external_sync.models import LDAPUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
@@ -31,7 +32,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         verbose_name='permissions', default=list
     )
 
-    group_objects = AbakusGroupManager()
+    objects = AbakusGroupManager()
 
     def __str__(self):
         return self.name
@@ -52,6 +53,10 @@ class AbakusGroup(MPTTModel, PersistentModel):
     def is_social_group(self):
         return self.is_committee or self.is_interest_group
 
+    @property
+    def is_grade(self):
+        return self.parent and self.parent.name in ['Datateknologi', 'Kommunikasjonsteknologi']
+
     @cached_property
     def memberships(self):
         return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True)) \
@@ -70,7 +75,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         membership.delete()
 
     def natural_key(self):
-        return self.name
+        return self.name,
 
 
 class PermissionsMixin(models.Model):
@@ -110,6 +115,13 @@ class PermissionsMixin(models.Model):
     def social_groups(self):
         return [group for group in self.all_groups if group.is_social_group]
 
+    @property
+    def grade(self):
+        for group in self.all_groups:
+            if group.is_grade:
+                return group
+        return None
+
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
     has_module_perms = DjangoPermissionMixin.has_module_perms
@@ -131,7 +143,7 @@ class PermissionsMixin(models.Model):
         return list(own_groups)
 
 
-class User(AbstractBaseUser, PersistentModel, PermissionsMixin):
+class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     """
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """

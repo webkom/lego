@@ -1,4 +1,6 @@
-from lego.apps.meetings.models import Meeting
+from rest_framework import permissions
+
+from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.permissions.permissions import AbakusPermission
 
 
@@ -15,7 +17,6 @@ class MeetingPermissions(AbakusPermission):
 
 
 class MeetingInvitationPermissions(AbakusPermission):
-
     def has_permission(self, request, view):
         meeting = Meeting.objects.get(id=view.kwargs['meeting_pk'])
         return meeting.can_edit(request.user)
@@ -29,3 +30,18 @@ class MeetingInvitationPermissions(AbakusPermission):
         if view.action == 'destroy':
             return meeting.created_by == user
         return meeting.created_by == user or invitation.user == user
+
+
+class MeetingIntitationTokenPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        raw_token = request.GET.get('token')
+        if not raw_token:
+            return False
+
+        invitation = MeetingInvitation.validate_token(raw_token)
+        if not invitation:
+            return False
+
+        request.token_invitation = invitation
+        return True

@@ -8,8 +8,8 @@
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
       sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
     can_view_groups:
-      - 1
-      - 5
+      - - UserAdminTest
+      - - CommentTest
 
 - model: articles.Article
   pk: 2
@@ -19,7 +19,7 @@
     description: Om du e Tore?
     text: Tore Tang, en gammal mann. Hele webkom kjenner han.
     can_view_groups:
-      - 5
+      - - CommentTest
 
 - model: articles.Article
   pk: 3

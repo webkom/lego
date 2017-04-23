@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -9,6 +10,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
+from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
@@ -43,11 +45,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     is_priced = models.BooleanField(default=False)
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
+    payment_due_date = models.DateTimeField(null=True)
+    payment_overdue_notified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
-    def admin_register(self, user, pool, feedback=''):
+    def admin_register(self, user, pool, admin_reason, feedback=''):
         """
         Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
@@ -58,16 +62,24 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The registration
         """
         if self.pools.filter(id=pool.id).exists():
-            return self.registrations.update_or_create(
+            reg = self.registrations.update_or_create(
                 event=self,
                 user=user,
                 defaults={'pool': pool,
                           'feedback': feedback,
+                          'registration_date': timezone.now(),
                           'unregistration_date': None,
-                          'status': constants.SUCCESS_REGISTER}
+                          'status': constants.SUCCESS_REGISTER,
+                          'admin_reason': admin_reason}
             )[0]
+            get_handler(Registration).handle_admin_reg(reg)
+            return reg
+
         else:
             raise ValueError('No such pool in this event')
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/events/{self.id}/'
 
     def can_register(self, user, pool, future=False):
         if not pool.is_activated and not future:
@@ -174,16 +186,20 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         If the user was in a pool, and not in the waiting list,
         notifies the waiting list that there might be a bump available.
         """
+        if self.start_time < timezone.now():
+            raise ValueError('Event has already started')
+
         # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
         with cache.lock(f'event_lock-{self.id}', timeout=20):
             registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
-                    Penalty.objects.create(user=registration.user,
-                                           reason='Unregistering from event too late',
-                                           weight=1,
-                                           source_object=self)
+                    if not registration.user.penalties.filter(source_object=self).exists():
+                        Penalty.objects.create(user=registration.user,
+                                               reason='Unregistered from event too late',
+                                               weight=1,
+                                               source_object=self)
                 self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
@@ -224,6 +240,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                             top.pool = pool
                             break
                 top.save()
+                get_handler(Registration).handle_bump(top)
 
     def early_bump(self, opening_pool):
         """
@@ -241,6 +258,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if self.can_register(reg.user, opening_pool, future=True):
                 reg.pool = opening_pool
                 reg.save()
+                get_handler(Registration).handle_bump(reg)
         self.check_for_bump_or_rebalance(opening_pool)
 
     def try_to_rebalance(self, open_pool):
@@ -483,14 +501,19 @@ class Registration(BasisModel):
     registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
     unregistration_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=100, blank=True)
-    status = models.CharField(max_length=20,
-                              default=constants.PENDING_REGISTER,
-                              choices=constants.STATUSES)
+    admin_reason = models.CharField(max_length=100, blank=True)
+    status = models.CharField(
+        max_length=20, default=constants.PENDING_REGISTER, choices=constants.STATUSES
+    )
+    presence = models.CharField(
+        max_length=20, default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
+    )
 
     charge_id = models.CharField(null=True, max_length=50)
     charge_amount = models.IntegerField(default=0)
     charge_amount_refunded = models.IntegerField(default=0)
     charge_status = models.CharField(null=True, max_length=50)
+    last_notified_overdue_payment = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user', 'event')
@@ -506,6 +529,22 @@ class Registration(BasisModel):
     def validate(self):
         if self.pool and self.unregistration_date:
             raise ValidationError('Pool and unregistration_date should not both be set')
+
+    def has_paid(self):
+        return self.charge_status in [constants.PAYMENT_SUCCESS, constants.PAYMENT_MANUAL]
+
+    def should_notify(self, time=None):
+        if not time:
+            time = timezone.now()
+        if not self.has_paid():
+            return not self.last_notified_overdue_payment or\
+               (time - self.last_notified_overdue_payment).days >= constants.DAYS_BETWEEN_NOTIFY
+        return False
+
+    def set_payment_success(self):
+        self.charge_status = constants.PAYMENT_MANUAL
+        self.save()
+        return self
 
     def add_to_pool(self, pool):
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)

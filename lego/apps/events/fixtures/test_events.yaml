@@ -10,7 +10,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Event
   pk: 2
@@ -24,7 +24,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Event
   pk: 3
@@ -38,7 +38,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 11
+      - - Webkom
 
 - model: events.Event
   pk: 4
@@ -51,7 +51,7 @@
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Event
   pk: 5
@@ -66,8 +66,10 @@
     is_priced: True
     price_member: 10000
     price_guest: 15000
+    payment_due_date: '2011-09-01T13:20:30+03:00'
+    created_by: 1
     can_view_groups:
-      - 2
+      - - Abakus
 
 - model: events.Pool
   pk: 1
@@ -77,7 +79,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 2
+      - - Abakus
 
 - model: events.Pool
   pk: 2
@@ -87,7 +89,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 11
+      - - Webkom 
 
 - model: events.Pool
   pk: 3
@@ -97,7 +99,7 @@
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 2
+      - - Abakus
 
 - model: events.Pool
   pk: 4
@@ -107,7 +109,7 @@
     event: 4
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 11
+      - - Webkom
 
 - model: events.Pool
   pk: 5
@@ -117,7 +119,7 @@
     event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 1
+      - - Users
 
 - model: events.Pool
   pk: 6
@@ -127,7 +129,7 @@
     event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - 2
+      - - Abakus
 
 - model: events.Registration
   pk: 1
@@ -137,6 +139,7 @@
     pool: 1
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
+    feedback: 'LIKER IKKE PIZZA'
 
 - model: events.Registration
   pk: 2
@@ -146,11 +149,32 @@
     pool: 1
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
+    feedback: 'LIKER IKKE PIZZA'
 
 - model: events.Registration
   pk: 3
   fields:
     user: 1
+    event: 5
+    pool: 5
+    registration_date: '2011-09-01T13:20:30+03:00'
+    status: 'SUCCESS_REGISTER'
+    charge_status: 'succeeded'
+
+- model: events.Registration
+  pk: 4
+  fields:
+    user: 2
+    event: 5
+    pool: 5
+    registration_date: '2011-09-01T13:20:30+03:00'
+    status: 'SUCCESS_REGISTER'
+    charge_status: 'succeeded'
+
+- model: events.Registration
+  pk: 5
+  fields:
+    user: 3
     event: 5
     pool: 5
     registration_date: '2011-09-01T13:20:30+03:00'

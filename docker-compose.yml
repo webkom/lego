@@ -58,3 +58,20 @@ services:
     image: cassandra:3
     ports:
       - "127.0.0.1:9042:9042"
+
+  ldap:
+    image: osixia/openldap:1.1.8
+    ports:
+      - "127.0.0.1:389:389"
+      - "127.0.0.1:636:636"
+    environment:
+      LDAP_ORGANISATION: "Abakus Linjeforening"
+      LDAP_DOMAIN: "abakus.no"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_READONLY_USER: "false"
+      LDAP_TLS: "true"
+      LDAP_TLS_CRT_FILENAME: "ldap.crt"
+      LDAP_TLS_KEY_FILENAME: "ldap.key"
+      LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+      LDAP_TLS_ENFORCE: "false"

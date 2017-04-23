@@ -80,7 +80,7 @@ class RetrieveMeetingTestCase(APITestCase):
     def test_pleb_cannot_retrieve(self):
         self.client.force_authenticate(self.pleb)
         res = self.client.get(_get_detail_url(self.meeting.id))
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, 404)
 
     def test_can_see_invitations(self):
         self.meeting.created_by = self.abakule
@@ -133,7 +133,7 @@ class DeleteMeetingTestCase(APITestCase):
     def test_cannot_delete_random_meeting(self):
         self.client.force_authenticate(self.abakommer)
         res = self.client.delete(_get_detail_url(self.meeting.pk))
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, 404)
 
 
 class InviteToMeetingTestCase(APITestCase):
@@ -210,7 +210,7 @@ class InviteToMeetingTestCase(APITestCase):
             'groups': [self.AbaBrygg.name],
             'users': [self.pleb.username]
         })
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, 404)
         for user in self.AbaBrygg.users.all():
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertFalse(present)

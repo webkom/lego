@@ -10,12 +10,15 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
+from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
-from lego.apps.meetings.views import MeetingInvitationViewSet, MeetingViewSet
+from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
+                                      MeetingViewSet)
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
+from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
@@ -26,8 +29,10 @@ router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)
 router.register(r'comments', CommentViewSet)
 router.register(r'companies', CompanyViewSet)
-router.register(r'companies/(?P<company_pk>[^/]+)/company-contact', CompanyContactViewSet)
-router.register(r'companies/(?P<company_pk>[^/]+)/semester-statuses', SemesterStatusViewSet)
+router.register(r'companies/(?P<company_pk>[^/]+)/company-contacts',
+                CompanyContactViewSet, base_name='company-contact')
+router.register(r'companies/(?P<company_pk>[^/]+)/semester-statuses',
+                SemesterStatusViewSet, base_name='semester-status')
 router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
@@ -38,6 +43,8 @@ router.register(r'interest-groups', InterestGroupViewSet)
 router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
+router.register(r'meeting-token',
+                MeetingInvitationTokenViewSet, base_name='meeting-token')
 router.register(r'memberships', MembershipViewSet)
 router.register(r'joblistings', JoblistingViewSet, base_name='joblisting')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
@@ -59,3 +66,6 @@ router.register(r'feed/personal', PersonalFeedViewSet, base_name='feed-personal'
 router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-notifications')
 router.register(r'feed/group', GroupFeedViewSet, base_name='feed-group')
 router.register(r'feed/company', CompanyFeedViewSet, base_name='feed-company')
+router.register(r'slack/invite', SlackInviteViewSet, base_name='slack-invite')
+router.register(r'calendar/ical', ICalViewset, base_name='calendar-ical')
+router.register(r'calendar/token', ICalTokenViewset, base_name='calendar-token')
