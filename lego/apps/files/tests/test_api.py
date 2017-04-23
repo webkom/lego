@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from unittest import mock
 
 from rest_framework import status
@@ -23,27 +22,6 @@ class ListArticlesTestCase(APITestCase):
         self.client.force_login(self.user)
         res = self.client.post(f'{self.url}', data={})
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @mock.patch('lego.apps.files.utils.prepare_file_upload')
-    def test_post_file(self, mock_prepare_file_upload):
-        file_upload = OrderedDict(
-            file_key='testing.png',
-            url='upload here',
-            fields='',
-            file_token='sometoken'
-        )
-        mock_prepare_file_upload.return_value = file_upload.values()
-
-        self.client.force_login(self.user)
-        res = self.client.post(f'{self.url}',
-                               data={'key': file_upload['file_key'], 'public': False})
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-        mock_prepare_file_upload.assert_called_once()
-
-        for attr in ['url', 'file_key', 'file_token', 'fields']:
-            self.assertIn(attr, res.data)
-            self.assertEqual(res.data[attr], file_upload[attr])
 
     @mock.patch('lego.apps.files.models.File.create_file')
     def test_post_create_file_call(self, mock_create_file):
