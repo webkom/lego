@@ -9,8 +9,8 @@ class PageModelIndex(SearchIndex):
 
     queryset = Page.objects.all()
     serializer_class = PageDetailSerializer
-    result_fields = ('title', 'content', 'slug_field')
-    autocomplete_result_fields = ('title', 'slug_field')
+    result_fields = ('title', 'content', 'slug', 'picture')
+    autocomplete_result_fields = ('title', 'slug', 'picture')
 
     def get_autocomplete(self, instance):
         return [instance.title, instance.slug_field]

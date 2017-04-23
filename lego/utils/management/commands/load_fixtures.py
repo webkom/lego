@@ -73,6 +73,12 @@ class Command(BaseCommand):
             upload_file('default_male_avatar.png', 'default_male_avatar.png')
             upload_file('default_male_avatar.png', 'default_other_avatar.png')
             upload_file('default_female_avatar.png', 'default_female_avatar.png')
+            upload_file('abakus_logo.png', 'abakus_logo.png')
+            upload_file('abakus_bedkom.png', 'abakus_bedkom.png')
+            upload_file('abakus_koskom.png', 'abakus_koskom.png')
+            upload_file('abakus_labamba.png', 'abakus_labamba.png')
+            upload_file('abakus_readme.png', 'abakus_readme.png')
+            upload_file('abakus_webkom.png', 'abakus_webkom.png')
 
             call_command(
                 'loaddata',
