@@ -19,7 +19,12 @@ class AbakusPermission(permissions.BasePermission):
 
     permission_map = {}
     authentication_map = {}
-    check_object_permission = False
+
+    # Sometimes we need to call the has_object_permission if the model isn't based on the
+    # ObjectPermissionsModel
+    force_object_permission_check = False
+    # We may also be able to skip the has_object_permission it the model is based on the
+    # ObjectPermissionsModel
     skip_object_permission = False
 
     @classmethod
@@ -104,9 +109,12 @@ class AbakusPermission(permissions.BasePermission):
 
         # If the queryset is based on the ObjectPermissionsModel model, return True and check
         # permissions in the filter backend and per object.
+        if self.force_object_permission_check and self.skip_object_permission:
+            raise ValueError('You cannot force and skip the permission checks at the same time!')
+
         object_permissions = (issubclass(
             model, ObjectPermissionsModel
-        ) or self.check_object_permission) and not self.skip_object_permission
+        ) or self.force_object_permission_check) and not self.skip_object_permission
 
         if object_permissions and not view.action == 'create':
             return True
