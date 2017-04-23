@@ -82,13 +82,10 @@ class Content(SlugModel):
         for image in html.find_all('img'):
             images.append(image.get('data-file-key'))
         if images:
-            self._images = File.objects.filter(key__in=images).all()
+            self._images = File.objects.filter(key__in=images, public=True)
             diff = set(images) - set(map(lambda f: f.key, self._images))
             if len(diff):
                 raise ValidationError(detail=f'Images {diff} not found')
-            for im in self._images:
-                if im.public is False:
-                    raise ValidationError(detail=f'Image {im.key} not found')
         self.text = safe_content
 
     @property
