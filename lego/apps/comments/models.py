@@ -22,5 +22,8 @@ class Comment(BasisModel, ObjectPermissionsModel):
 
     objects = CommentManager()
 
+    class Meta:
+        ordering = ('created_at', )
+
     def __str__(self):
         return self.text
