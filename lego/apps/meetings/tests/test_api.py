@@ -288,3 +288,19 @@ class UpdateInviteTestCase(APITestCase):
         })
         invite.refresh_from_db()
         self.assertEqual(invite.user, me)
+
+
+class UnauthorizedTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        self.meeting = Meeting.objects.get(id=3)
+
+    def test_can_not_retrieve_list(self):
+        res = self.client.get(_get_list_url())
+        self.assertEqual(res.status_code, 401)
+
+    def test_can_not_retrieve_meeting(self):
+        res = self.client.get(_get_detail_url(self.meeting.id))
+        self.assertEqual(res.status_code, 401)
