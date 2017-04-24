@@ -1,3 +1,5 @@
+from rest_framework import exceptions
+
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import AbakusPermission
 from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
@@ -18,19 +20,20 @@ class CommentPermission(AbakusPermission):
         return True
 
     def check_target_permissions(self, request):
-        comment_target = None
-        try:
-            if request.data.get('comment_target') is not None:
-                comment_target = string_to_instance(request.data.get('comment_target'))
+        comment_target = request.data.get('comment_target')
 
+        if not comment_target:
+            raise exceptions.ValidationError('comment_target are invalid')
+
+        try:
+            instance = string_to_instance(comment_target)
+            # We only support permissions checks on ObjectPermissionsModels at this time!
+            # We allow comments creation on other models because we don't have any way to verify it.
+            if isinstance(instance, ObjectPermissionsModel):
+                return instance.can_view(request.user)
+            else:
+                return True
         except VALIDATION_EXCEPTIONS:
-            # Comment_target was not found. This will be raised in serializer at a later point.
-            # Validation does not belong in permissions
             pass
 
-        if comment_target:
-            if isinstance(comment_target, ObjectPermissionsModel) \
-                    and not comment_target.can_view(request.user):
-                return False
-
-        return True
+        raise exceptions.ValidationError('comment_target could not be verified')

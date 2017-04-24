@@ -19,7 +19,15 @@ class AllowedPermissionsMixin:
     Append a `permission` value on list and retrieve methods. This makes it possible for a
     frontend to decide which actions a user can perform.
     """
-    def list(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        if hasattr(super(), 'list'):
+            self.list = self._list
+        if hasattr(super(), 'retrieve'):
+            self.retrieve = self._retrieve
+
+        super().__init__(*args, **kwargs)
+
+    def _list(self, request, *args, **kwargs):
         response = super().list(request, args, kwargs)
         response.data = wrap_results(response)
         response.data['action_grant'] = get_viewset_permissions(
@@ -27,7 +35,7 @@ class AllowedPermissionsMixin:
         )
         return response
 
-    def retrieve(self, request, *args, **kwargs):
+    def _retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, args, kwargs)
         response.data = wrap_results(response)
         response.data['action_grant'] = get_viewset_permissions(
