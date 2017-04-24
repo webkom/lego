@@ -111,12 +111,12 @@ class Content(SlugModel):
     def save(self, *args, **kwargs):
         if self._images is None:
             return super().save(*args, **kwargs)
-        _images = self._images
+
+        images = self._images
         with transaction.atomic():
             super().save(*args, **kwargs)
-            self.images = _images
-            self._images = None
-            return super().save(*args, **kwargs)
+            self.images = images
+            super().save()
 
     @property
     def comment_target(self):
