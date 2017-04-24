@@ -13,6 +13,7 @@ class CommentViewSet(AllowedPermissionsMixin,
                      viewsets.GenericViewSet):
     queryset = Comment.objects.all()
     permission_classes = (CommentPermission,)
+    ordering = 'created_at'
 
     def get_serializer_class(self):
         if self.action in ('update', 'partial_update'):

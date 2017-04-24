@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from lego.apps.articles.models import Article
@@ -40,7 +41,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_without_view_permissions(self):
         self.client.force_authenticate(user=self.without_permission)
@@ -53,7 +54,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_view_permissions(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -68,7 +69,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         comment = Comment.objects.get(pk=response.data['id'])
 
@@ -83,9 +84,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertIn('comment_target', response.data.keys())
-        self.assertIn('text', response.data.keys())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_contenttype(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -100,8 +99,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertIn('comment_target', response.data.keys())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_objectid(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -114,8 +112,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertIn('comment_target', response.data.keys())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_parent(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -130,7 +127,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'comment_target': comment_target,
             'text': 'first comment'
         })
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pk = response.data['id']
 
         response2 = self.client.post(_get_list_url(), {
@@ -138,7 +135,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'text': 'second comment',
             'parent': pk
         })
-        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
 
     def test_with_invalid_parent(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -158,7 +155,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'comment_target': comment_target,
             'text': 'first comment'
         })
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pk = response.data['id']
 
         response2 = self.client.post(_get_list_url(), {
@@ -166,7 +163,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'text': 'second comment',
             'parent': pk
         })
-        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('parent', response2.data)
 
     def test_with_nonexistent_parent(self):
@@ -182,7 +179,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'comment_target': comment_target,
             'text': 'first comment'
         })
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pk = response.data['id']
 
         response2 = self.client.post(_get_list_url(), {
@@ -190,7 +187,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'text': 'second comment',
             'parent': pk+1000
         })
-        self.assertEqual(response2.status_code, 400)
+        self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('parent', response2.data)
 
     def test_with_user_who_cannot_see_parent(self):
@@ -224,7 +221,7 @@ class CreateCommentsAPITestCase(APITestCase):
             'text': 'first comment'
         })
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class UpdateCommentsAPITestCase(APITestCase):
@@ -256,7 +253,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         self.client.force_authenticate(user=updater)
         response = self.client.patch(_get_detail_url(update_object.pk), self.modified_comment)
         comment = Comment.objects.get(pk=update_object.pk)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         for key, value in self.modified_comment.items():
             self.assertEqual(getattr(comment, key), value)
@@ -281,7 +278,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         response = self.client.put(_get_detail_url(self.test_comment.pk), comment_update)
         comment = Comment.objects.get(pk=self.test_comment.pk)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(comment.content_object, self.test_comment.content_object)
 
     def test_other_with_normal_user(self):
@@ -289,7 +286,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         response = self.client.put(_get_detail_url(self.test_comment.pk), self.modified_comment)
         comment = Comment.objects.get(pk=self.test_comment.pk)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(comment, self.test_comment)
 
 
@@ -317,13 +314,13 @@ class DeleteUsersAPITestCase(APITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.delete(_get_detail_url(self.test_comment.pk))
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertRaises(Comment.DoesNotExist, Comment.objects.get, pk=self.test_comment.pk)
 
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.delete(_get_detail_url(self.test_comment_2.pk))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_owner(self):
         self.successful_delete(self.test_comment.created_by)
