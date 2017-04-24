@@ -10,9 +10,10 @@ from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerial
                                              SemesterStatusCreateAndUpdateSerializer,
                                              SemesterStatusReadDetailedSerializer,
                                              SemesterStatusReadSerializer)
+from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
-class CompanyViewSet(viewsets.ModelViewSet):
+class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related('semester_statuses', 'student_contact')
     permission_classes = (CompanyPermissions,)
 
@@ -26,7 +27,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
         return CompanyReadSerializer
 
 
-class SemesterStatusViewSet(mixins.CreateModelMixin,
+class SemesterStatusViewSet(AllowedPermissionsMixin,
+                            mixins.CreateModelMixin,
                             mixins.UpdateModelMixin,
                             mixins.DestroyModelMixin,
                             GenericViewSet):
@@ -48,7 +50,7 @@ class SemesterStatusViewSet(mixins.CreateModelMixin,
             return SemesterStatus.objects.filter(company=company_id)
 
 
-class CompanyContactViewSet(viewsets.ModelViewSet):
+class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = CompanyContact.objects.all()
     permission_classes = (CompanyPermissions,)
 
