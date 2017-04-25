@@ -25,6 +25,9 @@ from .validators import username_validator
 class AbakusGroup(MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
+    is_grade = models.BooleanField(default=False)
+    is_committee = models.BooleanField(default=False)
+    is_interest_group = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
 
     permissions = ArrayField(
@@ -36,26 +39,6 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     def __str__(self):
         return self.name
-
-    @property
-    def is_committee(self):
-        if self.parent:
-            return self.parent.name == 'Abakom'
-        return False
-
-    @property
-    def is_interest_group(self):
-        if self.parent:
-            return self.parent.name == 'Interessegrupper'
-        return False
-
-    @property
-    def is_social_group(self):
-        return self.is_committee or self.is_interest_group
-
-    @property
-    def is_grade(self):
-        return self.parent and self.parent.name in ['Datateknologi', 'Kommunikasjonsteknologi']
 
     @cached_property
     def memberships(self):
@@ -102,25 +85,6 @@ class PermissionsMixin(models.Model):
     @property
     def is_abakom_member(self):
         return bool(filter(lambda group: group.is_committee, self.all_groups))
-
-    @property
-    def committees(self):
-        return [group for group in self.all_groups if group.is_committee]
-
-    @property
-    def interest_groups(self):
-        return [group for group in self.all_groups if group.is_interest_group]
-
-    @property
-    def social_groups(self):
-        return [group for group in self.all_groups if group.is_social_group]
-
-    @property
-    def grade(self):
-        for group in self.all_groups:
-            if group.is_grade:
-                return group
-        return None
 
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
@@ -191,6 +155,10 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     @property
     def full_name(self):
         return self.get_full_name()
+
+    @property
+    def grade(self):
+        return self.abakus_groups.filter(is_grade=True).first()
 
     @property
     def profile_picture(self):
