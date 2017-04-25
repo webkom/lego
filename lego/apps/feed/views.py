@@ -1,3 +1,4 @@
+from prometheus_client import Summary
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
@@ -7,7 +8,10 @@ from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
 
+from .attr_cache import AttrCache
 from .serializers import AggregatedFeedSerializer, MarkSerializer, NotificationFeedSerializer
+
+feed_attr_cache_timer = Summary('feed_attr_cache', 'Track feed AttrCache lookups')
 
 
 class FeedViewSet(viewsets.GenericViewSet):
@@ -21,10 +25,47 @@ class FeedViewSet(viewsets.GenericViewSet):
     serializer_class = AggregatedFeedSerializer
     ordering = '-activity_id'
 
+    @feed_attr_cache_timer.time()
     def attach_metadata(self, data):
         """
         Map over the feed here to attach more information to each element.
         """
+        content_strings = set()
+
+        for item in data:
+            activities = item.get('activities')
+            if activities:
+                # Aggregated Activity
+                for activity in activities:
+                    target = activity.get('target')
+                    object = activity.get('object')
+                    actor = activity.get('actor')
+                    content_strings.add(target) if target else None
+                    content_strings.add(object) if object else None
+                    content_strings.add(actor) if actor else None
+
+        if content_strings:
+            cache = AttrCache()
+            lookup = cache.bulk_lookup(content_strings)
+
+        for item in data:
+            context = {}
+
+            activities = item.get('activities')
+            if activities:
+                # Aggregated Activity
+                for activity in activities:
+                    target = activity.get('target')
+                    object = activity.get('object')
+                    actor = activity.get('actor')
+                    if target in lookup.keys():
+                        context[target] = lookup[target]
+                    if object in lookup.keys():
+                        context[object] = lookup[object]
+                    if actor in lookup.keys():
+                        context[actor] = lookup[actor]
+            item['context'] = context
+
         return data
 
     def get_queryset(self):
