@@ -62,9 +62,13 @@ router.register(r'pages', PageViewSet)
 router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomplete')
 router.register(r'quotes', QuoteViewSet)
 router.register(r'search/search', SearchViewSet, base_name='search')
+<<<<<<< 5306f9c167708555e765e2b408211b3158c0cbec
 router.register(r'users/registration', UserRegistrationViewSet)
 router.register(r'users/student-confirmation',
                 StudentConfirmationViewSet, base_name='student-confirmation')
+=======
+router.register(r'users/registration', UserRegistrationViewSet, base_name='user-registration')
+>>>>>>> Add finished implementation of user registration
 router.register(r'users', UsersViewSet)
 router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction_types', ReactionTypeViewSet)

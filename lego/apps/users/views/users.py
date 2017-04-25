@@ -5,9 +5,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from lego.apps.permissions.views import AllowedPermissionsMixin
-from lego.apps.users.models import User
+from lego.apps.users import constants
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.permissions import UsersPermissions
-from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
+from lego.apps.users.serializers.registration import (RegistrationConfirmationAdditionalSerializer,
+                                                      RegistrationConfirmationSerializer)
 from lego.apps.users.serializers.users import DetailedUserSerializer, MeSerializer, UserSerializer
 
 
@@ -25,9 +27,6 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.request.method == 'POST':
             # Allow anyone to POST (i.e. visitors that are not registered)
             self.permission_classes = [AllowAny, ]
-        else:
-            # Rest of the methods require the visitor / user to be authenticated.
-            self.permission_classes = [IsAuthenticated, UsersPermissions]
 
         return super(UsersViewSet, self).get_permissions()
 
@@ -60,21 +59,57 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             # Raise error if the token has expired or is invalid.
             raise ValidationError(detail='Token expired or invalid.')
 
+        # Create a copy of the request data and remove the course & member information.
+        request_data_user = request.data.copy()
+        request_data_user.pop('course', None)
+        request_data_user.pop('member', None)
+
+        # Create a new dictionary for the additional data (course & member).
+        request_data_additional = {
+            'course': request.data.get('course', None),
+            'member': request.data.get('member', None)
+        }
+
         # Initialize the registration confirmation serializer.
-        serializer = RegistrationConfirmationSerializer(data={**{
+        user_serializer = RegistrationConfirmationSerializer(data={**{
             # The username that is saved within the token.
             'username': token_username,
             # Prefix the NTNU student mail with the username.
-            'email': '%s@stud.ntnu.no' % token_username,
-        }, **request.data})
+            'email': f'{token_username}@stud.ntnu.no',
+        }, **request_data_user})
 
-        # Check if the data is valid.
-        serializer.is_valid(raise_exception=True)
+        # Check if the user data is valid.
+        user_serializer.is_valid(raise_exception=True)
+
+        # Initialize the additional serializer for member & course.
+        additional_serializer = RegistrationConfirmationAdditionalSerializer(
+            data=request_data_additional
+        )
+
+        # Check if the additional data is valid.
+        additional_serializer.is_valid(raise_exception=True)
 
         # Initialize the new User object.
-        new_user = User.objects.create_user(**serializer.validated_data)
+        new_user = User.objects.create_user(**user_serializer.validated_data)
 
-        # TODO: Set roles, etc.
+        # Add the user to the correct groups
+        course = additional_serializer.validated_data.get('course')
+        member = additional_serializer.validated_data.get('member')
+
+        if course == constants.DATA:
+            course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
+            course_group.add_user(new_user)
+            grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
+            grade_group.add_user(new_user)
+        else:
+            course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
+            course_group.add_user(new_user)
+            grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
+            grade_group.add_user(new_user)
+
+        if member:
+            member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+            member_group.add_user(new_user)
 
         # Return the user object.
         return Response(DetailedUserSerializer(new_user).data, status=status.HTTP_201_CREATED)

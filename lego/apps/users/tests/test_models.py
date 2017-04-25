@@ -159,6 +159,14 @@ class UserTestCase(TestCase):
     def test_natural_key(self):
         found_user = User.objects.get_by_natural_key(self.user.username)
         self.assertEqual(self.user, found_user)
+    def test_validate_registration_token(self):
+        registration_token = User.generate_registration_token('TestUsername')
+        token_username = User.validate_registration_token(registration_token)
+        self.assertEqual(token_username, 'TestUsername')
+
+        registration_token = User.generate_registration_token('TestUsername')
+        token_username = User.validate_registration_token(registration_token)
+        self.assertNotEqual(token_username, 'WrongTestUsername')
 
     def test_validate_student_confirmation_token(self):
         student_confirmation_token = User.generate_student_confirmation_token(

@@ -2,9 +2,14 @@ from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from structlog import get_logger
 
 from lego.apps.users.models import User
 from lego.apps.users.serializers.registration import RegistrationSerializer
+from lego.apps.users.tasks import async_send_registration_confirmation
+from lego.utils.functions import verify_captcha
+
+log = get_logger()
 
 
 class UserRegistrationViewSet(viewsets.GenericViewSet):
@@ -34,24 +39,24 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
     Attempts to create a registration token and email it to the user.
     """
     def create(self, request, *args, **kwargs):
-        if request.data['username']:
-            # Lowercase the username before sending it to the serializer
-            request.data['username'] = request.data['username'].lower()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         # User does not exist and the username is valid, continue the registration.
-
-        """
         if not verify_captcha(serializer.validated_data.get('captcha_response', None)):
             # The captcha response from the user is invalid, return a validation error.
             raise ValidationError(detail='Bad captcha')
-        """
 
-        # Generate a token for the registration confirmation
-        # registration_token = User.generate_registration_token(serializer.data.get('username'))
+        # Get the username from the serializer.
+        username = serializer.data.get('username')
 
-        # TODO: send an email to the user with the token.
-        # print('Token:', registration_token)
+        # Send the registration confirmation email.
+        async_send_registration_confirmation.delay(
+            username,
+            f'{username}@stud.ntnu.no'
+        )
 
+        # TODO: Check if email was sent or bounced?
+
+        # Return a response that the registration was successful.
         return Response(status=status.HTTP_202_ACCEPTED)
