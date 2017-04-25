@@ -38,7 +38,6 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 class PublicUserSerializer(serializers.ModelSerializer):
 
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
-    grade = AbakusGroupField()
 
     class Meta:
         model = User
@@ -49,9 +48,15 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'gender',
-            'profile_picture',
-            'grade'
+            'profile_picture'
         )
+
+
+class AdministrateUserSerializer(PublicUserSerializer):
+    grade = AbakusGroupField()
+
+    class Meta(PublicUserSerializer.Meta):
+        fields = PublicUserSerializer.Meta.fields + ('grade',)
 
 
 class SearchUserSerializer(serializers.ModelSerializer):

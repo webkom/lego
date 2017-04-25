@@ -4,6 +4,7 @@ from lego.apps.users.models import AbakusGroup
 interest_group_tree = {
     'AbaBrygg': [{
         'permissions': [],
+        'is_interest_group': True,
         'description': 'Interessegruppe for AbaBrygg',
         'description_long': """
 Hender det seg at du tar en pils? Er lommeboken ofte tom, kanskje på grunn av pils?\n
@@ -16,6 +17,7 @@ lyst til å prøve noe nytt, eller bare trenger litt starthjelp med brygginga.\n
     }, {}],
     'abaGolf': [{
         'permissions': [],
+        'is_interest_group': True,
         'description': 'Interessegruppe for abaGolf',
         'description_long': """
 Hei, er du en person som liker å klaske baller på grønne baner?
@@ -27,6 +29,7 @@ i samarbeid med NTNUI Golf.\n
     }, {}],
     'Turgruppa': [{
         'permissions': [],
+        'is_interest_group': True,
         'description': 'Interessegruppe for Turgruppa',
         'description_long': """
 Abakus sin turgruppe er for alle som elsker, liker eller har sett norsk natur. Denne turgruppen
