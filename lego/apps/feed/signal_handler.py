@@ -18,10 +18,10 @@ class AsyncSignalHandler(BaseSignalHandler):
     """
 
     def on_create(self, instance):
-        add_to_feeds(instance, action='create')
+        add_to_feeds.delay(instance, action='create')
 
     def on_update(self, instance):
-        add_to_feeds(instance, action='update')
+        add_to_feeds.delay(instance, action='update')
 
     def on_delete(self, instance):
-        add_to_feeds(instance, action='delete')
+        add_to_feeds.delay(instance, action='delete')

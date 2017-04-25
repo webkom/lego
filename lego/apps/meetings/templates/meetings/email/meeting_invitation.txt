@@ -1,0 +1,16 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+{{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
+
+Referent: {{ report_author }}
+
+Delta på møtet: {{frontend_url}}/meetings/answer/accept?token={{token}}
+Ikke delta på møtet: {{frontend_url}}/meetings/answer/reject?token={{token}}
+
+Les mer på {{ frontend_url }}/meetings/{{meeting_id}}/
+
+{% endblock %}

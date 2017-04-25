@@ -128,7 +128,7 @@ class PersonalFeedViewSet(FeedViewSet, FeedListMixin):
     feed_class = PersonalFeed
 
     def get_queryset(self):
-        return self.feed_class(self.request.user.username)
+        return self.feed_class(self.request.user.pk)
 
 
 class GroupFeedViewSet(FeedViewSet, FeedRetrieveMixin):
@@ -156,7 +156,7 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         """
         We select the feed with request.user
         """
-        return self.feed_class(self.request.user.username)
+        return self.feed_class(self.request.user.pk)
 
     @decorators.list_route(
         permission_classes=[permissions.IsAuthenticated],
