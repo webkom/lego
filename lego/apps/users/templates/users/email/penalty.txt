@@ -1,0 +1,16 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+Du har fått en prikk med vekt {{ weight }} fra {{ event }} på grunn av:
+
+{{ reason }}
+
+
+Du har nå {{ total }} prikker totalt.
+
+Les mer på {{ frontend_url }}/users/me/penalties
+
+{% endblock %}

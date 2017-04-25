@@ -10,7 +10,6 @@ from lego.apps.feed.verbs import EventCreateVerb
 
 class EventHandler(BaseHandler):
     model = Event
-
     manager = feed_manager
 
     def handle_create(self, event):

@@ -1,0 +1,45 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-info">
+            INFO: Invitert til nytt møte
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            {{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <b>Referent:</b> {{ report_author }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+          <a href="{{frontend_url}}/meetings/answer/accept?token={{token}}" class="btn-primary" itemprop="url">Aksepter invitasjon</a>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Les mer på <a href="{{ frontend_url }}/meetings/{{meeting_id}}/">{{ frontend_url }}/meetings/{{meeting_id}}/</a>.
+        </td>
+    </tr>
+
+{% endblock %}

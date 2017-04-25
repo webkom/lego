@@ -9,9 +9,7 @@ from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (async_register, bump_waiting_users_to_new_pool,
                                     check_events_for_registrations_with_expired_penalties,
-                                    get_old_events_with_payment_overdue,
-                                    mail_payment_overdue_creator, notify_user_when_payment_overdue,
-                                    run_notify_creator_chain, save_payment_overdue_notified)
+                                    notify_user_when_payment_overdue)
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
 
@@ -352,7 +350,7 @@ class PaymentDueTestCase(TestCase):
         notify_user_when_payment_overdue.delay()
         mock_get_handler(
             Registration
-        ).handle_payment_overdue_user.assert_called_once_with(self.registration)
+        ).handle_payment_overdue.assert_called_once_with(self.registration)
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_user_notification_when_time_limit_passed(self, mock_get_handler):
@@ -363,7 +361,7 @@ class PaymentDueTestCase(TestCase):
         notify_user_when_payment_overdue.delay()
         mock_get_handler(
             Registration
-        ).handle_payment_overdue_user.assert_called_once_with(self.registration)
+        ).handle_payment_overdue.assert_called_once_with(self.registration)
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_no_notification_when_recently_notified(self, mock_get_handler):
@@ -394,94 +392,3 @@ class PaymentDueTestCase(TestCase):
 
         notify_user_when_payment_overdue.delay()
         mock_get_handler.assert_not_called()
-
-    def test_notify_creator_for_old_events_with_payment_overdue(self):
-        """Test that method result returns correct event and user"""
-
-        self.event.payment_due_date = timezone.now() - timedelta(days=10)
-        self.event.save()
-
-        result = get_old_events_with_payment_overdue()
-        self.assertEqual(result, [[5, [3]]])
-
-    def test_creator_not_notified_before_7_days_passed(self):
-        """Test that method result returns correct event and user"""
-
-        self.event.payment_due_date = timezone.now() - timedelta(days=5)
-        self.event.save()
-
-        result = get_old_events_with_payment_overdue()
-        self.assertEqual(result, [])
-
-    def test_creator_not_notified_when_already_notfied(self):
-        """Test that method result returns correct event and user"""
-
-        self.event.payment_due_date = timezone.now() - timedelta(days=10)
-        self.event.payment_overdue_notified = True
-        self.event.save()
-
-        result = get_old_events_with_payment_overdue()
-        self.assertEqual(result, [])
-
-    def test_creator_not_notified_when_all_have_paid(self):
-        """Test that creator is not notified when users have paid"""
-        for reg in self.event.registrations.all():
-            reg.set_payment_success()
-
-        result = get_old_events_with_payment_overdue()
-        self.assertEqual(result, [])
-
-    @mock.patch('lego.apps.users.models.User.email_user')
-    def test_creator_mailing_task(self, mock_mail):
-        """Test that mailing task succeeds with correct return value"""
-        for reg in self.event.registrations.all():
-            reg.set_payment_success()
-
-        result = mail_payment_overdue_creator.delay([self.event.id, [1]])
-        self.assertEqual(result.get(), self.event.id)
-        mock_mail.assert_called_once()
-
-    @mock.patch('lego.apps.users.models.User.email_user')
-    def test_creator_mailing_task_no_mail(self, mock_mail):
-        """Test that mailing task succeeds with correct return value"""
-        for reg in self.event.registrations.all():
-            reg.set_payment_success()
-
-        result = mail_payment_overdue_creator.delay([])
-        self.assertEqual(result.get(), None)
-        mock_mail.assert_not_called()
-
-    def test_save_payment_overdue_notified(self):
-        """Test saving task"""
-        save_payment_overdue_notified.delay(self.event.id)
-        self.event.refresh_from_db()
-        self.assertEqual(self.event.payment_overdue_notified, True)
-
-    @mock.patch('lego.apps.users.models.User.email_user')
-    def test_notify_creator_chain(self, mock_mail):
-        """Test full notification of creators chain with single event"""
-        self.event.payment_due_date = timezone.now() - timedelta(days=7)
-        self.event.save()
-
-        run_notify_creator_chain.delay()
-        self.assertEqual(mock_mail.call_count, 1)
-        self.event.refresh_from_db()
-        self.assertTrue(self.event.payment_overdue_notified)
-
-    @mock.patch('lego.apps.users.models.User.email_user')
-    def test_notify_creator_chain_multiple_events(self, mock_mail):
-        """Test full notification of creators chain with multiple events"""
-        event2 = Event.objects.create(
-            title='test', is_priced=True, payment_due_date=timezone.now() - timedelta(days=13),
-            start_time=timezone.now(), end_time=timezone.now(), created_by_id=2
-        )
-        Registration.objects.create(event_id=event2.id, user_id=2)
-        self.event.payment_due_date = timezone.now() - timedelta(days=7)
-        self.event.save()
-
-        run_notify_creator_chain.delay()
-        self.assertEqual(mock_mail.call_count, 2)
-        self.event.refresh_from_db()
-        event2.refresh_from_db()
-        self.assertTrue(self.event.payment_overdue_notified)
-        self.assertTrue(event2.payment_overdue_notified)

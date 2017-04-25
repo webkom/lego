@@ -1,0 +1,26 @@
+- model: notifications.NotificationSetting
+  pk: 1
+  fields:
+    user: 2
+    notification_type: weekly_mail
+    enabled: false
+
+- model: notifications.NotificationSetting
+  pk: 2
+  fields:
+    user: 3
+    notification_type: weekly_mail
+    enabled: false
+    channels:
+      - email
+      - slack
+
+- model: notifications.NotificationSetting
+  pk: 3
+  fields:
+    user: 4
+    notification_type: weekly_mail
+    enabled: true
+    channels:
+      - email
+      - slack
