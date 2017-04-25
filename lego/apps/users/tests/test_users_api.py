@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
+from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers.users import DetailedUserSerializer
 from lego.utils.test_utils import fake_time
@@ -20,6 +21,10 @@ _test_user_data = {
 
 def _get_list_url():
     return reverse('api:v1:user-list')
+
+
+def _get_registration_token_url(token):
+    return f'{_get_list_url()}?token={token}'
 
 
 def _get_detail_url(username):
@@ -104,44 +109,118 @@ class RetrieveUsersAPITestCase(APITestCase):
 
 
 class CreateUsersAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+
+    _test_registration_data = {
+        'first_name': 'Fornavn',
+        'last_name': 'Etternavn',
+        'gender': constants.OTHER,
+        'password': 'TestPassord',
+        'course': constants.DATA,
+        'member': True
+    }
 
     def setUp(self):
-        self.all_users = User.objects.all()
+        self.existing_user = User.objects.all().first()
+        self.new_username = 'testusername'
+        self.new_username_other = 'testusernameother'
 
-        self.with_perm = self.all_users.get(username='useradmin_test')
-        self.useradmin_test_group = AbakusGroup.objects.get(name='UserAdminTest')
-        self.useradmin_test_group.add_user(self.with_perm)
-        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
+    def create_token(self, username=None):
+        token_username = username if username is not None else self.new_username
+        return User.generate_registration_token(token_username)
 
-    def successful_create(self, user):
-        self.client.force_authenticate(user=user)
-        response = self.client.post(_get_list_url(), _test_user_data)
-
-        self.assertEqual(response.status_code, 201)
-        created_user = User.objects.get(username=_test_user_data['username'])
-
-        for key, value in _test_user_data.items():
-            self.assertEqual(getattr(created_user, key), value)
-
-    def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.without_perm)
-        response = self.client.post(_get_list_url(), _test_user_data)
-
+    def test_with_authenticated_user(self):
+        self.client.force_authenticate(user=self.existing_user)
+        response = self.client.post(_get_registration_token_url('randomToken'))
         self.assertEqual(response.status_code, 403)
 
-    def test_with_useradmin(self):
-        self.successful_create(self.with_perm)
-
-    def test_with_super_user(self):
-        self.successful_create(self.with_perm)
-
-    def test_taken_username(self):
-        get_test_user()
-        self.client.force_authenticate(user=self.with_perm)
-        response = self.client.post(_get_list_url(), _test_user_data)
-
+    def test_without_token(self):
+        response = self.client.post(_get_list_url())
         self.assertEqual(response.status_code, 400)
+
+    def test_with_empty_token(self):
+        response = self.client.post(_get_registration_token_url(''))
+        self.assertEqual(response.status_code, 400)
+
+    def test_with_invalid_token(self):
+        response = self.client.post(_get_registration_token_url('InvalidToken'))
+        self.assertEqual(response.status_code, 400)
+
+    def test_with_no_data(self):
+        token = self.create_token()
+        response = self.client.post(_get_registration_token_url(token), {})
+        self.assertEqual(response.status_code, 400)
+
+    def test_with_existing_username(self):
+        token = self.create_token('test1')
+        response = self.client.post(
+            _get_registration_token_url(token),
+            self._test_registration_data
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_with_invalid_course(self):
+        token = self.create_token('test1')
+        invalid_course_data = self._test_registration_data.copy()
+        invalid_course_data['course'] = 'InvalidCourse'
+        response = self.client.post(_get_registration_token_url(token), invalid_course_data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_without_abakus_member_checked_and_komtek_course(self):
+        token = self.create_token(self.new_username)
+        abakus_member_unchecked_data = self._test_registration_data.copy()
+        abakus_member_unchecked_data['course'] = constants.KOMTEK
+        abakus_member_unchecked_data['member'] = False
+        response = self.client.post(
+            _get_registration_token_url(token),
+            abakus_member_unchecked_data
+        )
+        self.assertEqual(response.status_code, 201)
+
+        new_user = User.objects.get(username=self.new_username)
+        new_user_groups = new_user.all_groups
+        self.assertEqual(new_user.is_staff, False)
+
+        # Test course groups
+        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
+        self.assertEqual(course_group in new_user_groups, True)
+        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
+        self.assertEqual(grade_group in new_user_groups, True)
+
+        # Test member group
+        self.assertEqual(new_user.is_abakus_member, False)
+        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+        self.assertEqual(member_group in new_user_groups, False)
+
+    def test_with_abakus_member_checked(self):
+        token = self.create_token(self.new_username_other)
+        response = self.client.post(
+            _get_registration_token_url(token),
+            self._test_registration_data
+        )
+        self.assertEqual(response.status_code, 201)
+
+        new_user = User.objects.get(username=self.new_username_other)
+        new_user_groups = new_user.all_groups
+
+        # Test user data
+        self.assertEqual(new_user.username, self.new_username_other)
+        self.assertEqual(new_user.first_name, self._test_registration_data['first_name'])
+        self.assertEqual(new_user.last_name, self._test_registration_data['last_name'])
+        self.assertEqual(new_user.gender, self._test_registration_data['gender'])
+        self.assertEqual(new_user.email, f'{self.new_username_other}@stud.ntnu.no')
+        self.assertEqual(new_user.is_staff, False)
+
+        # Test course groups
+        course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
+        self.assertEqual(course_group in new_user_groups, True)
+        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
+        self.assertEqual(grade_group in new_user_groups, True)
+
+        # Test member group
+        self.assertEqual(new_user.is_abakus_member, True)
+        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+        self.assertEqual(member_group in new_user_groups, True)
 
 
 class UpdateUsersAPITestCase(APITestCase):

@@ -61,3 +61,5 @@ SLACK_TOKEN = ''
 LDAP_SERVER = '127.0.0.1:389'
 LDAP_USER = 'cn=admin,dc=abakus,dc=no'
 LDAP_PASSWORD = 'admin'
+
+CAPTCHA_KEY = 'TestCaptchaKey'

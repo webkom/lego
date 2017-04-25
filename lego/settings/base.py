@@ -160,9 +160,9 @@ CASSANDRA_DRIVER_KWARGS = {
     'lazy_connect': True
 }
 
-
 LDAP_BASE_DN = 'dc=abakus,dc=no'
 
 CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 
+REGISTRATION_CONFIRMATION_TIMEOUT = 60 * 60 * 24
 STUDENT_CONFIRMATION_TIMEOUT = 60 * 60 * 24
