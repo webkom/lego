@@ -44,14 +44,15 @@ initial_tree = {
                     '/sudo/admin/companies/'
                 ]},
                 {
-                    'Arrkom': [{}, {}],
-                    'backup': [{}, {}],
-                    'Bedkom': [{}, {}],
-                    'Fagkom': [{}, {}],
-                    'LaBamba': [{}, {}],
-                    'PR': [{}, {}],
-                    'readme': [{}, {}],
+                    'Arrkom': [{'is_committee': True}, {}],
+                    'backup': [{'is_committee': True}, {}],
+                    'Bedkom': [{'is_committee': True}, {}],
+                    'Fagkom': [{'is_committee': True}, {}],
+                    'LaBamba': [{'is_committee': True}, {}],
+                    'PR': [{'is_committee': True}, {}],
+                    'readme': [{'is_committee': True}, {}],
                     'Webkom': [{
+                        'is_committee': True,
                         'permissions': ['/sudo/']
                     }, {}],
                     'Hovedstyret': [{
@@ -64,18 +65,18 @@ initial_tree = {
     ],
     'Students': [{}, {
         'Datateknologi': [{}, {
-            '1. klasse Datateknologi': [{}, {}],
-            '2. klasse Datateknologi': [{}, {}],
-            '3. klasse Datateknologi': [{}, {}],
-            '4. klasse Datateknologi': [{}, {}],
-            '5. klasse Datateknologi': [{}, {}],
+            '1. klasse Datateknologi': [{'is_grade': True}, {}],
+            '2. klasse Datateknologi': [{'is_grade': True}, {}],
+            '3. klasse Datateknologi': [{'is_grade': True}, {}],
+            '4. klasse Datateknologi': [{'is_grade': True}, {}],
+            '5. klasse Datateknologi': [{'is_grade': True}, {}],
         }],
         'Kommunikasjonsteknologi': [{}, {
-            '1. klasse Kommunikasjonsteknologi': [{}, {}],
-            '2. klasse Kommunikasjonsteknologi': [{}, {}],
-            '3. klasse Kommunikasjonsteknologi': [{}, {}],
-            '4. klasse Kommunikasjonsteknologi': [{}, {}],
-            '5. klasse Kommunikasjonsteknologi': [{}, {}],
+            '1. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
+            '2. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
+            '3. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
+            '4. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
+            '5. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
         }]
     }]
 }
