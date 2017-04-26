@@ -120,10 +120,12 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class EventAdministrateSerializer(EventReadSerializer):
     pools = PoolAdministrateSerializer(many=True)
+    unregistered = RegistrationReadDetailedSerializer(many=True)
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
 
     class Meta(EventReadSerializer.Meta):
-        fields = EventReadSerializer.Meta.fields + ('pools', 'waiting_registrations')
+        fields = EventReadSerializer.Meta.fields + ('pools', 'unregistered',
+                                                    'waiting_registrations')
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):

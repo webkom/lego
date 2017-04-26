@@ -445,6 +445,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         ).exclude(pool=None).count()
 
     @property
+    def unregistered(self):
+        return self.registrations.filter(
+            pool=None,
+            unregistration_date__isnull=False,
+            status=constants.SUCCESS_UNREGISTER
+        )
+
+    @property
     def waiting_registrations(self):
         return self.registrations.filter(
             pool=None,
