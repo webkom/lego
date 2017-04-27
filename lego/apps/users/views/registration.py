@@ -39,6 +39,11 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
     Attempts to create a registration token and email it to the user.
     """
     def create(self, request, *args, **kwargs):
+        # Lower case the username if it is set.
+        if request.data.get('username', None) is not None:
+            request.data['username'] = request.data['username'].lower()
+
+        # Serialize the request data and check if it is valid.
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

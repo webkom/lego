@@ -14,7 +14,6 @@ def _get_registration_token_url(token):
     return f'{_get_list_url()}?token={token}'
 
 
-# TODO: test_with_expired_token
 class RetrieveRegistrationAPITestCase(APITestCase):
     def test_without_token(self):
         response = self.client.get(_get_list_url())
@@ -73,6 +72,3 @@ class CreateRegistrationAPITestCase(APITransactionTestCase):
     def test_with_valid_captcha(self, mock_verify_captcha):
         response = self.client.post(_get_list_url(), self._test_registration_data)
         self.assertEqual(response.status_code, 202)
-
-    # TODO: check if email sent
-    # TODO: add test to check that username has been lowercased (need to grab token from email)

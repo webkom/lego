@@ -201,8 +201,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     @staticmethod
     def generate_registration_token(username):
         return TimestampSigner().sign(signing.dumps({
-            'username': username,
-            'secret': settings.SECRET_KEY
+            'username': username
         }))
 
     @staticmethod
