@@ -29,3 +29,10 @@ def render_meeting_invitation(meeting_invitation):
             'location': meeting_invitation.meeting.location
         }
     }
+
+
+def render_article(article):
+    return {
+        'id': article.id,
+        'title': article.title
+    }
