@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.core.validators import EmailValidator
 from django.db import models
 
 from .utils.ldap import create_ldap_password_hash
@@ -17,3 +20,4 @@ class LDAPUser(models.Model):
     def set_password(self, password):
         super().set_password(password)
         self.ldap_password_hash = create_ldap_password_hash(password)
+

@@ -1,5 +1,6 @@
 from structlog import get_logger
 
+from lego.apps.external_sync.external.gsuite import GSuiteSystem
 from lego.apps.users.models import AbakusGroup, User
 
 from .external.ldap import LDAPSystem
@@ -15,8 +16,8 @@ class Sync:
 
     def __init__(self):
         self.systems = [
-            LDAPSystem(),
-            # GSuiteSystem(),
+            # LDAPSystem(),
+            GSuiteSystem(),
         ]
 
     def lookup_querysets(self):
