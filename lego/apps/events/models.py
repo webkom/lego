@@ -57,7 +57,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
-    survey = models.OneToOneField('survey.Survey', null=True, blank=True)
 
     is_ready = models.BooleanField(default=True)
 
