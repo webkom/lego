@@ -26,7 +26,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        meeting.invite_user(user)
+        meeting.invite_user(user, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingBulkInvite)
@@ -40,9 +40,9 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise ValidationError({'error': 'No users or groups given'})
 
         for user in users:
-            meeting.invite_user(user)
+            meeting.invite_user(user, request.user)
         for group in groups:
-            meeting.invite_group(group)
+            meeting.invite_group(group, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingGroupInvite)
@@ -51,7 +51,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         group = serializer.validated_data['group']
-        meeting.invite_group(group)
+        meeting.invite_group(group, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 

@@ -1,0 +1,6 @@
+{% block alert %}{% endblock %}{% block content %}{% endblock %}
+
+- {{ from }}
+
+------
+Denne e-posten ble sendt fra {{ system_name }}, systemet som driver {{ frontend_url }}.

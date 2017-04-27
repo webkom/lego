@@ -1,7 +1,5 @@
 from django.core.cache import cache
 
-from lego.apps.events.models import Event
-from lego.apps.users.models import User
 from lego.utils.content_types import string_to_model_cls
 
 from . import attr_renderers
@@ -17,6 +15,16 @@ class AttrCache:
     """
 
     CACHE_KEY = 'feed_attr_cache_'
+
+    RENDERS = {
+        'users.user': attr_renderers.render_user,
+        'events.event': attr_renderers.render_event,
+        'meetings.meetinginvitation': attr_renderers.render_meeting_invitation
+    }
+
+    RELATED_FIELDS = {
+        'meetings.meetinginvitation': ['meeting']
+    }
 
     def lookup_cache(self, content_strings):
         """
@@ -37,7 +45,9 @@ class AttrCache:
         """
         Cache the items we looked up for a small amount of time.
         """
-        cache.set_many(items, timeout=60*5)
+        cache.set_many(
+            {f'{self.CACHE_KEY}{key}': value for key, value in items.items()}, timeout=60*5
+        )
 
     def extract_properties(self, content_type, ids):
         """
@@ -46,22 +56,18 @@ class AttrCache:
         """
         model = string_to_model_cls(content_type)
 
-        renderers = {
-            User: attr_renderers.render_user,
-            Event: attr_renderers.render_event
-        }
-
-        rendrer = renderers.get(model)
-        if not rendrer:
+        render = self.RENDERS.get(content_type)
+        if not render:
             return []
 
         # We need to use getattr on objects because we need to support custom object properties.
         # .values() would have been much better if this wasn't a requirement...
-        queryset = model.objects.filter(pk__in=list(ids))
+        related_fields = self.RELATED_FIELDS.get(content_type, [])
+        queryset = model.objects.filter(pk__in=list(ids)).select_related(*related_fields)
         result = {}
 
         for instance in queryset:
-            data = rendrer(instance)
+            data = render(instance)
             data['content_type'] = content_type
             result[f'{content_type}-{instance.pk}'] = data
 
@@ -80,9 +86,13 @@ class AttrCache:
             try:
                 content_type, pk = content_string.split('-', maxsplit=1)
                 pk = int(pk)
+
+                if content_type not in self.RENDERS.keys():
+                    continue
+
                 valid.setdefault(content_type, set()).add(pk)
-            except Exception as ex:
-                raise Exception('FIKS EXCEPT HER A')
+            except ValueError:
+                pass
 
         return valid
 

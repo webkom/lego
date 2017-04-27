@@ -72,7 +72,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                           'status': constants.SUCCESS_REGISTER,
                           'admin_reason': admin_reason}
             )[0]
-            get_handler(Registration).handle_admin_reg(reg)
+            get_handler(Registration).handle_admin_registration(reg)
             return reg
 
         else:

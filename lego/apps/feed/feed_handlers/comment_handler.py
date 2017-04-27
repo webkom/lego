@@ -10,8 +10,19 @@ from lego.apps.feed.verbs import CommentVerb
 
 class CommentHandler(BaseHandler):
     model = Comment
-
     manager = feed_manager
+
+    def get_activity(self, comment):
+        return Activity(
+            actor=comment.created_by,
+            verb=CommentVerb,
+            object=comment,
+            target=comment.content_object,
+            time=comment.created_at,
+            extra_context={
+                'content': comment.text
+            }
+        )
 
     def handle_create(self, comment):
         activity = self.get_activity(comment)
@@ -19,6 +30,9 @@ class CommentHandler(BaseHandler):
             self.manager.add_activity(activity, recipients, feeds)
 
     def handle_update(self, comment):
+        """
+        No support for comment updates...
+        """
         pass
 
     def handle_delete(self, comment):
@@ -33,21 +47,10 @@ class CommentHandler(BaseHandler):
                 [PersonalFeed],
                 list(comment.content_object.followers.values_list('follower__username', flat=True))
             ))
-        if comment.created_by:
-            result.append(([UserFeed], [comment.created_by.username]))
-        return result
 
-    def get_activity(self, comment):
-        return Activity(
-            actor=comment.created_by,
-            verb=CommentVerb,
-            object=comment,
-            target=comment.content_object,
-            time=comment.created_at,
-            extra_context={
-                'content': comment.text
-            }
-        )
+        if comment.created_by:
+            result.append(([UserFeed], [comment.created_by.pk]))
+        return result
 
 
 register_handler(CommentHandler)

@@ -1,0 +1,46 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-warning">
+            Advarsel: Du har fått en ny prikk
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Du har fått en prikk med vekt {{ weight  }} fra {{ event }} på grunn av:
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i>{{ reason }}</i>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            Du har nå <b>{{ total }}</b> prikker totalt.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+          <a href="{{ frontend_url }}/users/me/penalties" class="btn-primary" itemprop="url">Vis prikker</a>
+        </td>
+    </tr>
+
+
+{% endblock %}

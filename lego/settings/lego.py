@@ -4,15 +4,18 @@ SITE = {
     'name': 'Lego',
     'slogan': 'LEGO Er Ganske Oppdelt',
     'contact_email': 'webkom@abakus.no',
-    'documentation_url': '/docs/'
+    'documentation_url': '/docs/',
+    'domain': 'abakus.no',
+    'owner': 'Abakus Linjeforening'
 }
 
 API_VERSION = 'v1'
 LOGIN_REDIRECT_URL = f'/api/{API_VERSION}/'
 
+EMAIL_SUBJECT_PREFIX = u'[{}] '.format(SITE['name'])
 
 ADMINS = (
-    ('Webkom', 'djangoerrors@abakus.no'),
+    ('Webkom', 'webkom@abakus.no'),
 )
 
 MANAGERS = ADMINS

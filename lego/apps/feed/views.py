@@ -7,6 +7,7 @@ from lego.apps.feed.feeds.group_feed import GroupFeed
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
+from lego.apps.users.models import User
 
 from .attr_cache import AttrCache
 from .serializers import AggregatedFeedSerializer, MarkSerializer, NotificationFeedSerializer
@@ -122,13 +123,36 @@ class UserFeedViewSet(FeedViewSet, FeedRetrieveMixin):
 
     feed_class = UserFeed
 
+    def get_queryset(self):
+        # Perform the lookup filtering.
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in self.kwargs, (
+            'Expected view %s to be called with a URL keyword argument '
+            'named "%s". Fix your URL conf, or set the `.lookup_field` '
+            'attribute on the view correctly.' %
+            (self.__class__.__name__, lookup_url_kwarg)
+        )
+
+        try:
+            feed_id = self.kwargs[lookup_url_kwarg]
+        except (ValueError, TypeError):
+            raise exceptions.ParseError
+
+        try:
+            feed_id = User.objects.values('id').get(username=feed_id)['id']
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
+            raise exceptions.NotFound
+
+        return self.feed_class(feed_id)
+
 
 class PersonalFeedViewSet(FeedViewSet, FeedListMixin):
 
     feed_class = PersonalFeed
 
     def get_queryset(self):
-        return self.feed_class(self.request.user.username)
+        return self.feed_class(self.request.user.pk)
 
 
 class GroupFeedViewSet(FeedViewSet, FeedRetrieveMixin):
@@ -156,7 +180,7 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         """
         We select the feed with request.user
         """
-        return self.feed_class(self.request.user.username)
+        return self.feed_class(self.request.user.pk)
 
     @decorators.list_route(
         permission_classes=[permissions.IsAuthenticated],
