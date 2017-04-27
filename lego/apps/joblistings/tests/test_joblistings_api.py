@@ -28,33 +28,6 @@ _test_joblistings_data = [
     }
 ]
 
-_test_company_data = [
-    {
-        'id': 1,
-        'name': 'BEKK',
-        'website': 'bekk.no',
-    }
-]
-
-_test_workplaces_data = [
-    {
-        'town': 'Oslo',
-    },
-    {
-        'town': 'Trondheim',
-    },
-    {
-        'town': 'Bergen',
-    }
-]
-
-_test_companycontact_data = [
-    {
-        'name': 'Abraham Finnsen',
-        'mail': 'abraham@finnsen.no',
-    }
-]
-
 
 def _get_list_url():
     return reverse('api:v1:joblisting-list')
