@@ -1,8 +1,11 @@
 from django.core.cache import cache
+from structlog import get_logger
 
 from lego.utils.content_types import string_to_model_cls
 
 from . import attr_renderers
+
+log = get_logger()
 
 
 class AttrCache:
@@ -19,7 +22,8 @@ class AttrCache:
     RENDERS = {
         'users.user': attr_renderers.render_user,
         'events.event': attr_renderers.render_event,
-        'meetings.meetinginvitation': attr_renderers.render_meeting_invitation
+        'meetings.meetinginvitation': attr_renderers.render_meeting_invitation,
+        'articles.article': attr_renderers.render_article
     }
 
     RELATED_FIELDS = {
@@ -58,6 +62,7 @@ class AttrCache:
 
         render = self.RENDERS.get(content_type)
         if not render:
+            log.warn('feed_missing_context_render', context=content_type)
             return []
 
         # We need to use getattr on objects because we need to support custom object properties.
