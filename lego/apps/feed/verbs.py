@@ -76,6 +76,7 @@ register(PaymentOverdueVerb)
 class MeetingInvitationVerb(Verb):
     id = 11
     infinitive = 'meeting_invitation'
+    aggregation_group = '{verb}-{actor_id}-{actor_content_type}-{date}'
 
 
 register(MeetingInvitationVerb)
