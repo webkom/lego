@@ -106,6 +106,34 @@ class CreateJoblistingsTestCase(APITestCase):
         self.assertEqual(res.status_code, 403)
 
 
+class EditJoblistingsTestCase(APITestCase):
+    fixtures = ['development_joblistings.yaml', 'test_users.yaml',
+                'development_companies.yaml', 'initial_abakus_groups.yaml']
+
+    def setUp(self):
+        self.abakom_user = User.objects.get(username='abakommer')
+        AbakusGroup.objects.get(name='Abakom').add_user(self.abakom_user)
+        self.not_abakom_user = User.objects.get(username='pleb')
+
+    def test_joblistings_edit_one_workplace(self):
+        self.client.force_authenticate(user=self.abakom_user)
+        res = self.client.put(_get_detail_url(1),
+                              _test_joblistings_data[1])
+        self.assertEqual(res.status_code, 200)
+
+    def test_joblistings_edit_multiple_workplace(self):
+        self.client.force_authenticate(user=self.abakom_user)
+        res = self.client.put(_get_detail_url(1),
+                              _test_joblistings_data[2])
+        self.assertEqual(res.status_code, 200)
+
+    def test_pleb_cannot_edit(self):
+        self.client.force_authenticate(user=self.not_abakom_user)
+        res = self.client.put(_get_detail_url(1),
+                              _test_joblistings_data[1])
+        self.assertEqual(res.status_code, 403)
+
+
 class DeleteJoblistingsTestCase(APITestCase):
     fixtures = ['development_joblistings.yaml', 'test_users.yaml',
                 'development_companies.yaml', 'initial_abakus_groups.yaml']
