@@ -126,7 +126,7 @@ class CreateUsersAPITestCase(APITestCase):
         self.new_username_other = 'testusernameother'
 
     def create_token(self, username=None):
-        token_username = username if username is not None else self.new_username
+        token_username = username or self.new_username
         return User.generate_registration_token(token_username)
 
     def test_with_authenticated_user(self):

@@ -59,24 +59,24 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             # Raise error if the token has expired or is invalid.
             raise ValidationError(detail='Token expired or invalid.')
 
-        # Create a copy of the request data and remove the course & member information.
+        # Create a copy of the request data.
         request_data_user = request.data.copy()
-        request_data_user.pop('course', None)
-        request_data_user.pop('member', None)
 
         # Create a new dictionary for the additional data (course & member).
         request_data_additional = {
-            'course': request.data.get('course', None),
-            'member': request.data.get('member', None)
+            'course': request_data_user.pop('course', None),
+            'member': request_data_user.pop('member', None)
         }
 
         # Initialize the registration confirmation serializer.
-        user_serializer = RegistrationConfirmationSerializer(data={**{
+        user_serializer = RegistrationConfirmationSerializer(data={
+            # The user request data.
+            **request_data_user,
             # The username that is saved within the token.
             'username': token_username,
             # Prefix the NTNU student mail with the username.
             'email': f'{token_username}@stud.ntnu.no',
-        }, **request_data_user})
+        })
 
         # Check if the user data is valid.
         user_serializer.is_valid(raise_exception=True)
