@@ -23,6 +23,6 @@ RUN set -e \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN set -e \
-    && echo 'SECRET_KEY="secret"' > lego/settings/local.py \
+    && echo 'SECRET_KEY="secret"; SERVER_EMAIL="webkom@abakus.no"' > lego/settings/local.py \
     && ENV_CONFIG=0 python manage.py collectstatic --noinput \
     && ENV_CONFIG=0 make -C docs html
