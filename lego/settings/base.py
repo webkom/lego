@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'lego.apps.ical',
     'lego.apps.social_groups',
     'lego.apps.meetings',
+    'lego.apps.notifications',
     'lego.apps.oauth',
     'lego.apps.search',
     'lego.apps.slack',

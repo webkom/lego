@@ -1,0 +1,40 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-info">
+            INFO: Påmelding på event
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            En administrator har meldt deg på arrangementet {{ event }} på grunn av:
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i>{{ reason }}</i>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+          <a href="{{ frontend_url }}/events/{{ slug }}" class="btn-primary" itemprop="url">Vis Event</a>
+        </td>
+    </tr>
+
+
+{% endblock %}

@@ -6,9 +6,6 @@ from stream_framework.tasks import (fanout_operation, fanout_operation_hi_priori
 from stream_framework.utils import chunks, get_metrics_instance
 from structlog import get_logger
 
-from lego.apps.feed import tasks
-from lego.apps.feed.feed import NotificationFeed
-
 logger = logging.getLogger(__name__)
 log = get_logger()
 
@@ -32,18 +29,6 @@ class FeedManager:
         """
         Simple fanout a task to a set of recipients.
         """
-        if NotificationFeed in feed_classes and activity:
-            mailers = {
-                'penalty_create': tasks.mail_penalty_create,
-                'registration_bump': tasks.mail_registration_bump,
-                'admin_registration': tasks.mail_admin_registration,
-                'payment_overdue': tasks.mail_payment_overdue
-            }
-
-            mailer_task = mailers.get(activity.verb.infinitive)
-            if mailer_task:
-                mailer_task.delay(activity, recipients)
-
         operation_kwargs = dict(activities=[activity], trim=True)
 
         for feed_class in feed_classes:

@@ -14,6 +14,7 @@ from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
                                       MeetingViewSet)
+from lego.apps.notifications.views import NotificationSettingsViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
@@ -46,6 +47,9 @@ router.register(r'meetings/(?P<meeting_pk>[^/]+)/invitations',
 router.register(r'meeting-token',
                 MeetingInvitationTokenViewSet, base_name='meeting-token')
 router.register(r'memberships', MembershipViewSet)
+router.register(
+    r'notifications/settings', NotificationSettingsViewSet, base_name='notifications-settings'
+)
 router.register(r'joblistings', JoblistingViewSet, base_name='joblisting')
 router.register(r'oauth2/access-tokens', AccessTokenViewSet)
 router.register(r'oauth2/applications', ApplicationViewSet)

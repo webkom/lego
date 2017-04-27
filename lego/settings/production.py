@@ -21,6 +21,7 @@ SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 SERVER_URL = env('SERVER_URL')
 FRONTEND_URL = env('FRONTEND_URL')
+SERVER_EMAIL = env('SERVER_EMAIL', default='Abakus Webkom <webkom@abakus.no>')
 
 # Database
 DATABASES = {

@@ -60,7 +60,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         )
         feed_manager.add_activity(
             self.activity1,
-            [self.user.username, self.second_user.username],
+            [self.user.pk, self.second_user.pk],
             [NotificationFeed]
         )
 
@@ -86,19 +86,19 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
 
-        feed_manager.add_activity(self.activity2, [self.user.username], [NotificationFeed])
+        feed_manager.add_activity(self.activity2, [self.user.pk], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
 
-        feed_manager.add_activity(self.activity3, [self.user.username], [NotificationFeed])
+        feed_manager.add_activity(self.activity3, [self.user.pk], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)
 
     def test_mark(self):
         self.client.force_login(self.user)
-        feed_manager.add_activity(self.activity3, [self.user.username], [NotificationFeed])
+        feed_manager.add_activity(self.activity3, [self.user.pk], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)
@@ -161,7 +161,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
 
-        feed_manager.add_activity(self.activity3, [self.user.username], [NotificationFeed])
+        feed_manager.add_activity(self.activity3, [self.user.pk], [NotificationFeed])
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)

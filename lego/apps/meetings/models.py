@@ -1,11 +1,9 @@
-
 from django.conf import settings
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
 from lego.apps.content.models import Content
-from lego.apps.meetings.tasks import async_notify_user_about_invitation
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -40,21 +38,20 @@ class Meeting(Content, BasisModel):
     def participants(self):
         return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
 
-    def invite_user(self, user):
+    def invite_user(self, user, created_by=None):
         invitation, created = self.invitations.update_or_create(
             user=user,
-            meeting=self
+            meeting=self,
+            defaults={
+                'created_by': created_by
+            }
         )
-        if created:
-            async_notify_user_about_invitation.delay(
-                user_id=user.id,
-                meeting_id=self.id
-            )
+
         return invitation, created
 
-    def invite_group(self, group):
+    def invite_group(self, group, created_by=None):
         for user in group.users.all():
-            self.invite_user(user)
+            self.invite_user(user, created_by)
 
     def uninvite_user(self, user):
         invitation = self.invitations.get(user=user)

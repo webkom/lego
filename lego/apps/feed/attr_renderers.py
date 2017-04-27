@@ -17,3 +17,15 @@ def render_event(event):
         'title': event.title,
         'event_type': event.event_type
     }
+
+
+def render_meeting_invitation(meeting_invitation):
+    return {
+        'id': meeting_invitation.id,
+        'meeting': {
+            'id': meeting_invitation.meeting.id,
+            'title': meeting_invitation.meeting.title,
+            'start_time': meeting_invitation.meeting.start_time,
+            'location': meeting_invitation.meeting.location
+        }
+    }

@@ -28,7 +28,7 @@ class TestCommentHandler(FeedTestBase):
 
         self.comment1 = self.comments[0]
         self.comment2 = self.comments[1]
-        self.feed = UserFeed(self.comment1.created_by.username)
+        self.feed = UserFeed(self.comment1.created_by.pk)
 
     def test_duplicate_create(self):
         self.handler.handle_create(self.comment1)
