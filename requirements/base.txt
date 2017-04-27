@@ -22,6 +22,7 @@ slackclient==1.0.7
 requests==2.18.3
 ldap3==2.3
 google-api-python-client==1.6.2
+oauth2client
 passlib==1.7.1
 premailer==3.1.1
 git+https://github.com/eirsyl/analytics-python.git#master

@@ -144,6 +144,9 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
             'unique': 'A user has already verified that student username.',
         }
     )
+    internal_email = models.OneToOneField(
+        'email.EmailAddress', related_name='user', null=True, blank=True
+    )
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
