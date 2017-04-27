@@ -1,0 +1,12 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ username }},
+
+Noen har opprettet en ny bruker til deg på Abakus.no.
+For å bekrefte din nye konto, trykk på lenken under:
+
+{{ frontend_url }}/users/registration/?token={{ token }}
+
+{% endblock %}

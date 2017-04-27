@@ -6,8 +6,8 @@ from structlog import get_logger
 
 from lego.apps.users.models import User
 from lego.apps.users.serializers.registration import RegistrationSerializer
-from lego.apps.users.tasks import async_send_registration_confirmation
 from lego.utils.functions import verify_captcha
+from lego.utils.tasks import send_email
 
 log = get_logger()
 
@@ -50,13 +50,22 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
         # Get the username from the serializer.
         username = serializer.data.get('username')
 
-        # Send the registration confirmation email.
-        async_send_registration_confirmation.delay(
-            username,
-            f'{username}@stud.ntnu.no'
-        )
+        # Generate a token for the registration confirmation
+        token = User.generate_registration_token(username)
 
-        # TODO: Check if email was sent or bounced?
+        # Send the registration confirmation email.
+        send_email(
+            to_email=f'{username}@stud.ntnu.no',
+            context={
+                "username": username,
+                "token": token,
+                "email_title": 'Velkommen til Abakus.no'
+            },
+            subject='Velkommen til Abakus.no',
+            plain_template='users/email/registration.html',
+            html_template='users/email/registration.txt',
+            from_email=None
+        )
 
         # Return a response that the registration was successful.
         return Response(status=status.HTTP_202_ACCEPTED)
