@@ -1,13 +1,11 @@
 from django.db.models import Q
-from prometheus_client import Summary
 from rest_framework import filters
 
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.stats.statsd_client import statsd
 
-permissions_filter = Summary('permissions_filter', 'Track permission filter')
 
-
-@permissions_filter.time()
+@statsd.timer('permissions.filter_queryset')
 def filter_queryset(user, queryset):
     # If the queryset consists og object permissions, filter based on authentication status
     # and group membership.
