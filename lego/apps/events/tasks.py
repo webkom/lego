@@ -13,6 +13,7 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
+from lego.apps.events.exceptions import EventHasStarted
 from lego.apps.events.models import Event, Registration
 from lego.apps.feed.registry import get_handler
 from lego.apps.users.models import User
@@ -78,6 +79,10 @@ def async_register(self, registration_id):
             'registration_cache_lock_error', exception=e, registration_id=self.registration.id
         )
         raise self.retry(exc=e, max_retries=3)
+    except EventHasStarted as e:
+        log.warn(
+            'registration_tried_after_started', exception=e, registration_id=self.registration.id
+        )
     except (ValueError, IntegrityError) as e:
         log.error('registration_error', exception=e, registration_id=self.registration.id)
         raise self.retry(exc=e, max_retries=3)
@@ -96,6 +101,10 @@ def async_unregister(self, registration_id):
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e, max_retries=3)
+    except EventHasStarted as e:
+        log.warn(
+            'unregistration_tried_after_started', exception=e, registration_id=registration.id
+        )
     except IntegrityError as e:
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
