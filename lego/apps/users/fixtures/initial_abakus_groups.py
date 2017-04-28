@@ -43,7 +43,7 @@ initial_tree = {
                     '/sudo/admin/registrations/',
                     '/sudo/admin/companies/',
                     '/sudo/admin/joblistings/create/',
-                    '/sudo/admin/joblistings/edit/',
+                    '/sudo/admin/joblistings/update/',
                     '/sudo/admin/joblistings/destroy/'
                 ]},
                 {

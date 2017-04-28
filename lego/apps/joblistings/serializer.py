@@ -1,5 +1,3 @@
-from rest_framework.compat import set_many
-from rest_framework.utils import model_meta
 
 from lego.apps.companies.serializers import (CompanyContactReadSerializer,
                                              PublicCompanyReadSerializer)
@@ -46,28 +44,22 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
 
     def create(self, validated_data):
         workplaces_data = validated_data.pop('workplaces')
-        joblisting = Joblisting.objects.create(**validated_data)
+        instance = super().create(validated_data)
 
         for workplace_item in workplaces_data:
             workplace, created = Workplace.objects.get_or_create(town=workplace_item['town'])
-            joblisting.workplaces.add(workplace)
-        return joblisting
+            instance.workplaces.add(workplace)
+        return instance
 
     def update(self, instance, validated_data):
         workplaces_data = validated_data.pop('workplaces')
-        info = model_meta.get_field_info(instance)
+        instance = super().update(instance, validated_data)
         new_workplaces = []
-
-        for attr, value in validated_data.items():
-            if attr in info.relations and info.relations[attr].to_many:
-                set_many(instance, attr, value)
-            else:
-                setattr(instance, attr, value)
 
         for workplace_item in workplaces_data:
             workplace, created = Workplace.objects.get_or_create(town=workplace_item['town'])
             new_workplaces.append(workplace)
-        setattr(instance, 'workplaces', new_workplaces)
+        instance.workplaces.set(new_workplaces)
 
         instance.save()
 

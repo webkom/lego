@@ -12,11 +12,7 @@ _test_joblistings_data = [
         'title': 'BEKK - sommerjobb 2017',
         'company': 1,
         'description': 'En bedrift.',
-        'text': 'BEKK er et solid programvarehus i kraftig vekst. \
-                 Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og \
-                 avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å \
-                 effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal \
-                 utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab',
+        'text': 'Text',
         'deadline': '2017-11-03T02:00:00+00:00',
         'visible_from': '2016-09-30T16:15:00+00:00',
         'visible_to': '2017-09-30T16:15:00+00:00',
@@ -25,6 +21,34 @@ _test_joblistings_data = [
         'to_year': 5,
         'application_url': 'http://www.vg.no',
         'workplaces': [{'town': 'Oslo'}]
+    },
+    {
+        'title': 'EY',
+        'company': 2,
+        'description': 'En bedrift.',
+        'text': 'Text2',
+        'deadline': '2017-11-03T02:00:00+00:00',
+        'visible_from': '2016-09-30T16:15:00+00:00',
+        'visible_to': '2017-09-30T16:15:00+00:00',
+        'job_type': 'summer_job',
+        'from_year': 3,
+        'to_year': 5,
+        'application_url': 'http://www.vg.no',
+        'workplaces': [{'town': 'Trondheim'}]
+    },
+    {
+        'title': 'Itera',
+        'company': 1,
+        'description': 'En bedrift.',
+        'text': 'Text3',
+        'deadline': '2017-11-03T02:00:00+00:00',
+        'visible_from': '2016-09-30T16:15:00+00:00',
+        'visible_to': '2017-09-30T16:15:00+00:00',
+        'job_type': 'summer_job',
+        'from_year': 3,
+        'to_year': 5,
+        'application_url': 'http://www.vg.no',
+        'workplaces': [{'town': 'Oslo'}, {'town': 'Trondheim'}]
     }
 ]
 
@@ -120,12 +144,15 @@ class EditJoblistingsTestCase(APITestCase):
         res = self.client.put(_get_detail_url(1),
                               _test_joblistings_data[1])
         self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data.get('workplaces')[0].get('town'), 'Trondheim')
 
     def test_joblistings_edit_multiple_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
         res = self.client.put(_get_detail_url(1),
                               _test_joblistings_data[2])
         self.assertEqual(res.status_code, 200)
+        self.assertEqual('Itera', res.data.get('title'))
+        self.assertEqual(len(res.data.get('workplaces')), 2)
 
     def test_pleb_cannot_edit(self):
         self.client.force_authenticate(user=self.not_abakom_user)
