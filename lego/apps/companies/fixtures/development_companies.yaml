@@ -165,45 +165,6 @@
     contacted_status: 4
     company: 2
 
-- model: events.Event
-  pk: 4
-  fields:
-    can_view_groups:
-      - - Users
-    event_type: 0
-    title: 'Bedpress med Facebook 1'
-    location: 'F1'
-    text: 'TBA'
-    start_time: '2016-10-25T17:00:00+00:00'
-    end_time: '2016-10-27T20:00:00+00:00'
-    company: 2
-
-- model: events.Event
-  pk: 5
-  fields:
-    can_view_groups:
-      - - Users
-    event_type: 0
-    title: 'Bedpress med Facebook 2'
-    location: 'EL5'
-    text: 'Eyy'
-    start_time: '2016-11-25T17:00:00+00:00'
-    end_time: '2016-11-27T20:00:00+00:00'
-    company: 2
-
-- model: events.Event
-  pk: 6
-  fields:
-    can_view_groups:
-      - - Users
-    event_type: 0
-    title: 'Bedpress med Facebook 3'
-    location: 'R2'
-    text: 'TBA'
-    start_time: '2016-12-25T17:00:00+00:00'
-    end_time: '2016-12-27T20:00:00+00:00'
-    company: 2
-
   # Company 3
 
 - model: companies.SemesterStatus
