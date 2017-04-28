@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'lego.apps.followers',
     'lego.apps.ical',
     'lego.apps.social_groups',
+    'lego.apps.stats',
     'lego.apps.meetings',
     'lego.apps.notifications',
     'lego.apps.oauth',
@@ -153,7 +154,7 @@ CHANNEL_LAYERS = {
     }
 }
 
-STREAM_METRIC_CLASS = 'lego.apps.feed.feed_metrics.PrometheusFeedMetrics'
+STREAM_METRIC_CLASS = 'lego.apps.feed.feed_metrics.FeedMetrics'
 CASSANDRA_DRIVER_KWARGS = {
     'protocol_version': 4,
     'lazy_connect': True

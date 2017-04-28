@@ -75,6 +75,10 @@ spec:
           value: "{{ .Values.backend.config.ldap_user }}"
         - name: LDAP_PASSWORD
           value: "{{ .Values.backend.config.ldap_password }}"
+        - name: STATSD_HOST
+          value: "{{ .Values.backend.config.statsd_host }}"
+        - name: STATSD_PORT
+          value: "{{ .Values.backend.config.statsd_port }}"
         resources:
           requests:
             memory: 1000Mi
