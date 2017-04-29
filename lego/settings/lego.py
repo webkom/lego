@@ -41,3 +41,6 @@ LDAP_GROUPS = [
     'Webkom',
     'Fagkom'
 ]
+
+LMTP_HOST = '0.0.0.0'
+LMTP_PORT = 8024
