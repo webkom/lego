@@ -1,0 +1,12 @@
+- model: restricted.RestrictedMail
+  pk: 1
+  fields:
+    from_address: test@abakus.no
+    token: token
+    users:
+      - 1
+      - 2
+    groups:
+      - 1
+    events:
+      - 1
