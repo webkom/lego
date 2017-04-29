@@ -10,6 +10,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
+from lego.apps.events.exceptions import EventHasStarted, NoSuchPool
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
@@ -76,7 +77,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return reg
 
         else:
-            raise ValueError('No such pool in this event')
+            raise NoSuchPool()
 
     def get_absolute_url(self):
         return f'{settings.FRONTEND_URL}/events/{self.id}/'
@@ -145,7 +146,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             penalties = user.number_of_penalties()
         current_time = timezone.now()
         if self.start_time < current_time:
-            raise ValueError('Event has already started')
+            raise EventHasStarted()
 
         with cache.lock(f'event_lock-{self.id}', timeout=20):
             possible_pools = self.get_possible_pools(user)
@@ -187,7 +188,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         notifies the waiting list that there might be a bump available.
         """
         if self.start_time < timezone.now():
-            raise ValueError('Event has already started')
+            raise EventHasStarted()
 
         # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
