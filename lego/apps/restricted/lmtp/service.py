@@ -7,8 +7,10 @@ from structlog import get_logger
 
 from lego.apps.restricted.exceptions import (DefectMessageException, MessageIDNotExistException,
                                              ParseEmailException)
+from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.parser import ParserMessageType
 from lego.apps.restricted.utils import split_address
+from lego.apps.stats.statsd_client import statsd
 from lego.utils.management_command import BaseCommand
 
 from . import channel
@@ -48,6 +50,7 @@ class LMTPService(BaseCommand, smtpd.SMTPServer):
         channel.Channel(self, conn, addr)
         log.debug('lmtp_message_accept', address=addr)
 
+    @statsd.timer('restricted_mail.process_message')
     def process_message(self, peer, mailfrom, recipients, data):
         parser = LMTPEmailParser(data, mailfrom, ParserMessageType.STRING)
 
@@ -72,7 +75,8 @@ class LMTPService(BaseCommand, smtpd.SMTPServer):
                     'received_time': timezone.now()
                 }
 
-                print(local, domain, message_data)
+                message_processor = MessageProcessor(local, domain, message, message_data)
+                message_processor.process_message()
 
                 status.append(channel.OK_250)
 
