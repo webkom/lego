@@ -60,6 +60,12 @@ class Meeting(Content, BasisModel):
     def can_edit(self, user):
         return self.created_by == user or self.invited_users.filter(id=user.id).exists()
 
+    def restricted_lookup(self):
+        """
+        Restricted mail
+        """
+        return self.invited_users, []
+
 
 class MeetingInvitation(BasisModel):
 
