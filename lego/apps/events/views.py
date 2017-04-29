@@ -6,7 +6,8 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import NoSuchPool, PaymentExists, RegistrationsExistsInPool
+from lego.apps.events.exceptions import (APINoSuchPool, APIPaymentExists,
+                                         APIRegistrationsExistsInPool, NoSuchPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import (AdministratePermissions, AdminRegistrationPermissions,
@@ -86,7 +87,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise PermissionDenied()
 
         if registration.charge_id:
-            raise PaymentExists()
+            raise APIPaymentExists()
         registration.charge_status = constants.PAYMENT_PENDING
         registration.save()
         chain(
@@ -117,7 +118,7 @@ class PoolViewSet(mixins.CreateModelMixin,
         try:
             return super().destroy(request, *args, **kwargs)
         except ValueError:
-            raise RegistrationsExistsInPool
+            raise APIRegistrationsExistsInPool
 
 
 class RegistrationViewSet(AllowedPermissionsMixin,
@@ -180,7 +181,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         serializer.is_valid(raise_exception=True)
         try:
             registration = event.admin_register(**serializer.validated_data)
-        except ValueError:
-            raise NoSuchPool()
-        reg_data = RegistrationCreateAndUpdateSerializer(registration).data
+        except NoSuchPool:
+            raise APINoSuchPool()
+        reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
