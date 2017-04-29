@@ -44,3 +44,6 @@ LDAP_GROUPS = [
 
 LMTP_HOST = '0.0.0.0'
 LMTP_PORT = 8024
+
+RESTRICTED_ADDRESS = 'restricted'
+RESTRICTED_DOMAIN = 'abakus.no'
