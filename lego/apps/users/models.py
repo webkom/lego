@@ -125,6 +125,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField('email address', blank=True)
+    student_email = models.EmailField('student email address', blank=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
@@ -168,11 +169,17 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     def profile_picture(self, value):
         self.picture = value
 
+    def is_verified_student(self):
+        return self.student_email is not None
+
     def get_short_name(self):
         return self.first_name
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def email_student(self, subject, message, from_email=None, **kwargs):
+        send_mail(subject, message, from_email, [self.student_email], **kwargs)
 
     def natural_key(self):
         return self.username,
