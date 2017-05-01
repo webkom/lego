@@ -19,7 +19,7 @@ from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, Use
                                       UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
-from .validators import username_validator
+from .validators import student_username_validator, username_validator
 
 
 class AbakusGroup(MPTTModel, PersistentModel):
@@ -121,11 +121,21 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
             'unique': 'A user with that username already exists.',
         }
     )
+    student_username = models.CharField(
+        max_length=30,
+        unique=True,
+        blank=True,
+        null=True,
+        help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
+        validators=[student_username_validator],
+        error_messages={
+            'unique': 'A user has already verified that student username.',
+        }
+    )
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField('email address', blank=True)
-    student_email = models.EmailField('student email address', blank=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
@@ -170,7 +180,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         self.picture = value
 
     def is_verified_student(self):
-        return self.student_email is not None
+        return self.student_username is not None
 
     def get_short_name(self):
         return self.first_name
