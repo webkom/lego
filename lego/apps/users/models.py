@@ -16,7 +16,7 @@ from lego.apps.external_sync.models import LDAPUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
-from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
+from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
                                       UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
@@ -85,7 +85,8 @@ class PermissionsMixin(models.Model):
 
     @property
     def is_abakom_member(self):
-        return bool(filter(lambda group: group.is_committee, self.all_groups))
+        # from first_true @ https://docs.python.org/3/library/itertools.html
+        return bool(next(filter(lambda group: group.is_committee, self.all_groups), False))
 
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
@@ -145,7 +146,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
 
-    objects = UserManager()
+    objects = AbakusUserManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -199,9 +200,9 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         return count or 0
 
     @staticmethod
-    def generate_registration_token(username):
+    def generate_registration_token(email):
         return TimestampSigner().sign(signing.dumps({
-            'username': username
+            'email': email
         }))
 
     @staticmethod
@@ -210,7 +211,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
             return signing.loads(TimestampSigner().unsign(
                 token,
                 max_age=settings.REGISTRATION_CONFIRMATION_TIMEOUT
-            ))['username']
+            ))['email']
         except (BadSignature, SignatureExpired):
             return None
 

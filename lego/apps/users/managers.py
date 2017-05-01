@@ -1,3 +1,4 @@
+from django.contrib.auth.models import UserManager
 from django.utils import timezone
 from mptt.managers import TreeManager
 
@@ -9,20 +10,23 @@ class AbakusGroupManager(TreeManager, PersistentModelManager):
         return self.get(name=name)
 
 
-class UserManager(PersistentModelManager):
+class AbakusUserManager(UserManager, PersistentModelManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        """
+        We do not set is_staff or is_superuser as they are a @cached_property
+        in our User model.
+        """
+        return self._create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username, email, password, **extra_fields):
+        """
+        We do not set is_staff or is_superuser as they are a @cached_property
+        in our User model.
+        """
+        return self._create_user(username, email, password, **extra_fields)
+
     def get_by_natural_key(self, username):
         return self.get(username__iexact=username.lower())
-
-    def create_user(self, *args, **kwargs):
-        # Initialize the User object.
-        new_user = self.model(**kwargs)
-
-        # The password is in plaintext, we need to encode it.
-        new_user.set_password(kwargs['password'])
-
-        # Save the User object and return it.
-        new_user.save()
-        return new_user
 
 
 class MembershipManager(PersistentModelManager):

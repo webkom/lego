@@ -2,10 +2,10 @@
 
 {% block content %}
 
-Hei {{ username }},
+Hei,
 
-Noen har opprettet en ny bruker til deg på Abakus.no.
-For å bekrefte din nye konto, trykk på lenken under:
+Noen har startet registrering av en ny bruker på Abakus.no.
+For å fullføre registreringen, trykk på lenken under:
 
 {{ frontend_url }}/users/registration/?token={{ token }}
 

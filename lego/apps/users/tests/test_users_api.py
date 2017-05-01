@@ -112,22 +112,21 @@ class CreateUsersAPITestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     _test_registration_data = {
+        'username': 'test_username',
         'first_name': 'Fornavn',
         'last_name': 'Etternavn',
         'gender': constants.OTHER,
-        'password': 'TestPassord',
-        'course': constants.DATA,
-        'member': True
+        'password': 'TestPassord'
     }
 
     def setUp(self):
         self.existing_user = User.objects.all().first()
-        self.new_username = 'testusername'
-        self.new_username_other = 'testusernameother'
+        self.new_email = 'testemail@test.com'
+        self.new_email_other = 'testemailother@test.com'
 
-    def create_token(self, username=None):
-        token_username = username or self.new_username
-        return User.generate_registration_token(token_username)
+    def create_token(self, email=None):
+        token_email = email or self.new_email
+        return User.generate_registration_token(token_email)
 
     def test_with_authenticated_user(self):
         self.client.force_authenticate(user=self.existing_user)
@@ -151,76 +150,58 @@ class CreateUsersAPITestCase(APITestCase):
         response = self.client.post(_get_registration_token_url(token), {})
         self.assertEqual(response.status_code, 400)
 
+    def test_with_existing_email(self):
+        token = self.create_token('test1@user.com')
+        response = self.client.post(
+            _get_registration_token_url(token),
+            self._test_registration_data
+        )
+        self.assertEqual(response.status_code, 201)
+
     def test_with_existing_username(self):
-        token = self.create_token('test1')
+        token = self.create_token(self.new_email_other)
+        invalid_data = self._test_registration_data.copy()
+        invalid_data['username'] = 'test1'
         response = self.client.post(
             _get_registration_token_url(token),
-            self._test_registration_data
+            invalid_data
         )
         self.assertEqual(response.status_code, 400)
 
-    def test_with_invalid_course(self):
-        token = self.create_token('test1')
-        invalid_course_data = self._test_registration_data.copy()
-        invalid_course_data['course'] = 'InvalidCourse'
-        response = self.client.post(_get_registration_token_url(token), invalid_course_data)
-        self.assertEqual(response.status_code, 400)
-
-    def test_without_abakus_member_checked_and_komtek_course(self):
-        token = self.create_token(self.new_username)
-        abakus_member_unchecked_data = self._test_registration_data.copy()
-        abakus_member_unchecked_data['course'] = constants.KOMTEK
-        abakus_member_unchecked_data['member'] = False
+    def test_with_invalid_username(self):
+        token = self.create_token(self.new_email_other)
+        invalid_data = self._test_registration_data.copy()
+        invalid_data['username'] = '$@@@@'
         response = self.client.post(
             _get_registration_token_url(token),
-            abakus_member_unchecked_data
+            invalid_data
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 400)
 
-        new_user = User.objects.get(username=self.new_username)
-        new_user_groups = new_user.all_groups
-        self.assertEqual(new_user.is_staff, False)
-
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
-        self.assertEqual(course_group in new_user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
-        self.assertEqual(grade_group in new_user_groups, True)
-
-        # Test member group
-        self.assertEqual(new_user.is_abakus_member, False)
-        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-        self.assertEqual(member_group in new_user_groups, False)
-
-    def test_with_abakus_member_checked(self):
-        token = self.create_token(self.new_username_other)
+    def test_with_valid_data(self):
+        token = self.create_token(self.new_email_other)
         response = self.client.post(
             _get_registration_token_url(token),
             self._test_registration_data
         )
         self.assertEqual(response.status_code, 201)
 
-        new_user = User.objects.get(username=self.new_username_other)
-        new_user_groups = new_user.all_groups
+        new_user = User.objects.get(email=self.new_email_other)
 
         # Test user data
-        self.assertEqual(new_user.username, self.new_username_other)
+        self.assertEqual(new_user.username, self._test_registration_data['username'])
         self.assertEqual(new_user.first_name, self._test_registration_data['first_name'])
         self.assertEqual(new_user.last_name, self._test_registration_data['last_name'])
         self.assertEqual(new_user.gender, self._test_registration_data['gender'])
-        self.assertEqual(new_user.email, f'{self.new_username_other}@stud.ntnu.no')
+        self.assertEqual(new_user.email, self.new_email_other)
         self.assertEqual(new_user.is_staff, False)
+        self.assertEqual(new_user.is_superuser, False)
+        self.assertEqual(new_user.is_abakus_member, False)
+        self.assertEqual(new_user.is_abakom_member, False)
 
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
-        self.assertEqual(course_group in new_user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
-        self.assertEqual(grade_group in new_user_groups, True)
-
-        # Test member group
-        self.assertEqual(new_user.is_abakus_member, True)
-        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-        self.assertEqual(member_group in new_user_groups, True)
+        # Test member groups
+        user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
+        self.assertEqual(user_group in new_user.all_groups, True)
 
 
 class UpdateUsersAPITestCase(APITestCase):
