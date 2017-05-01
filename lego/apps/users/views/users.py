@@ -8,8 +8,7 @@ from lego.apps.permissions.views import AllowedPermissionsMixin
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.permissions import UsersPermissions
-from lego.apps.users.serializers.registration import (RegistrationConfirmationAdditionalSerializer,
-                                                      RegistrationConfirmationSerializer)
+from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import DetailedUserSerializer, MeSerializer, UserSerializer
 
 
@@ -49,67 +48,22 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise PermissionDenied()
 
         if not request.GET.get('token', False):
-            # Raise a validation error if the token is not set.
             raise ValidationError(detail='Registration token is required.')
 
-        # Validating the token returns the username of the user that registered.
-        token_username = User.validate_registration_token(request.GET.get('token', False))
+        token_email = User.validate_registration_token(request.GET.get('token', False))
 
-        if token_username is None:
-            # Raise error if the token has expired or is invalid.
+        if token_email is None:
             raise ValidationError(detail='Token expired or invalid.')
 
-        # Create a copy of the request data.
-        request_data_user = request.data.copy()
-
-        # Create a new dictionary for the additional data (course & member).
-        request_data_additional = {
-            'course': request_data_user.pop('course', None),
-            'member': request_data_user.pop('member', None)
-        }
-
-        # Initialize the registration confirmation serializer.
-        user_serializer = RegistrationConfirmationSerializer(data={
-            # The user request data.
-            **request_data_user,
-            # The username that is saved within the token.
-            'username': token_username,
-            # Prefix the NTNU student mail with the username.
-            'email': f'{token_username}@stud.ntnu.no',
+        serializer = RegistrationConfirmationSerializer(data={
+            **request.data,
+            'email': token_email,
         })
 
-        # Check if the user data is valid.
-        user_serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True)
 
-        # Initialize the additional serializer for member & course.
-        additional_serializer = RegistrationConfirmationAdditionalSerializer(
-            data=request_data_additional
-        )
+        new_user = User.objects.create_user(**serializer.validated_data)
+        user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
+        user_group.add_user(new_user)
 
-        # Check if the additional data is valid.
-        additional_serializer.is_valid(raise_exception=True)
-
-        # Initialize the new User object.
-        new_user = User.objects.create_user(**user_serializer.validated_data)
-
-        # Add the user to the correct groups
-        course = additional_serializer.validated_data.get('course')
-        member = additional_serializer.validated_data.get('member')
-
-        if course == constants.DATA:
-            course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
-            course_group.add_user(new_user)
-            grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
-            grade_group.add_user(new_user)
-        else:
-            course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
-            course_group.add_user(new_user)
-            grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
-            grade_group.add_user(new_user)
-
-        if member:
-            member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-            member_group.add_user(new_user)
-
-        # Return the user object.
         return Response(DetailedUserSerializer(new_user).data, status=status.HTTP_201_CREATED)

@@ -25,44 +25,32 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
     """
     def get(self, request, pk=None, format=None):
         if not request.GET.get('token', False):
-            # Raise a validation error if the token is not set.
             raise ValidationError(detail='Registration token is required.')
-        # Validating the token returns the username of the user that registered.
-        token_username = User.validate_registration_token(request.GET.get('token', False))
-        if token_username is None:
-            # Raise error if the token has expired or is invalid.
+        token_email = User.validate_registration_token(request.GET.get('token', False))
+        if token_email is None:
             raise ValidationError(detail='Token expired or invalid.')
-        # Return an object with the username.
-        return Response({'username': token_username}, status=status.HTTP_200_OK)
+        return Response({'email': token_email}, status=status.HTTP_200_OK)
 
     """
     Attempts to create a registration token and email it to the user.
     """
     def create(self, request, *args, **kwargs):
-        # Lower case the username if it is set.
-        if request.data.get('username', None) is not None:
-            request.data['username'] = request.data['username'].lower()
+        if request.data.get('email', None) is not None:
+            request.data['email'] = request.data['email'].lower()
 
-        # Serialize the request data and check if it is valid.
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # User does not exist and the username is valid, continue the registration.
         if not verify_captcha(serializer.validated_data.get('captcha_response', None)):
-            # The captcha response from the user is invalid, return a validation error.
             raise ValidationError(detail='Bad captcha')
 
-        # Get the username from the serializer.
-        username = serializer.data.get('username')
+        email = serializer.data.get('email')
 
-        # Generate a token for the registration confirmation
-        token = User.generate_registration_token(username)
+        token = User.generate_registration_token(email)
 
-        # Send the registration confirmation email.
-        send_email(
-            to_email=f'{username}@stud.ntnu.no',
+        send_email.delay(
+            to_email=email,
             context={
-                "username": username,
                 "token": token,
                 "email_title": 'Velkommen til Abakus.no'
             },
@@ -72,5 +60,4 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
             from_email=None
         )
 
-        # Return a response that the registration was successful.
         return Response(status=status.HTTP_202_ACCEPTED)

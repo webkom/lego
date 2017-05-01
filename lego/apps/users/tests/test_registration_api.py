@@ -30,35 +30,28 @@ class RetrieveRegistrationAPITestCase(APITestCase):
     def test_with_valid_token(self):
         response = self.client.get(
             _get_registration_token_url(
-                User.generate_registration_token('TestUsername')
+                User.generate_registration_token('test1@user.com')
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get('username'), 'TestUsername')
+        self.assertEqual(response.data.get('email'), 'test1@user.com')
 
 
 class CreateRegistrationAPITestCase(APITransactionTestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     _test_registration_data = {
-        'username': 'new_testuser',
+        'email': 'new_test1@user.com',
         'captcha_response': 'testCaptcha'
     }
 
-    def test_without_username(self, *args):
+    def test_without_email(self, *args):
         response = self.client.post(_get_list_url())
         self.assertEqual(response.status_code, 400)
 
-    def test_with_existing_username(self, *args):
+    def test_with_invalid_email(self, *args):
         response = self.client.post(_get_list_url(), {
-            'username': 'test1',
-            'captcha_response': 'testCaptcha'
-        })
-        self.assertEqual(response.status_code, 400)
-
-    def test_with_invalid_username(self, *args):
-        response = self.client.post(_get_list_url(), {
-            'username': 'test_u$er',
+            'email': 'test1@@user.com',
             'captcha_response': 'testCaptcha'
         })
         self.assertEqual(response.status_code, 400)

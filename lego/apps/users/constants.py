@@ -20,6 +20,7 @@ ROLES = (
     (TREASURER, TREASURER)
 )
 
+<<<<<<< 5ec05bc2ba9da015d893895025871b2962c3d22f
 DATA = 'data'
 KOMTEK = 'komtek'
 
