@@ -156,7 +156,7 @@ class CreateUsersAPITestCase(APITestCase):
             _get_registration_token_url(token),
             self._test_registration_data
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 400)
 
     def test_with_existing_username(self):
         token = self.create_token(self.new_email_other)
