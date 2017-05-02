@@ -159,6 +159,7 @@ class UserTestCase(TestCase):
     def test_natural_key(self):
         found_user = User.objects.get_by_natural_key(self.user.username)
         self.assertEqual(self.user, found_user)
+
     def test_validate_registration_token(self):
         registration_token = User.generate_registration_token('test1@user.com')
         token_email = User.validate_registration_token(registration_token)

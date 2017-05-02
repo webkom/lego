@@ -5,7 +5,7 @@ from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
 from django.core import signing
-from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -136,7 +136,12 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
-    email = models.EmailField('email address', blank=True)
+    email = models.EmailField(
+        unique=True,
+        error_messages={
+            'unique': 'A user with that email already exists.',
+        }
+    )
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
