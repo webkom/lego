@@ -89,16 +89,23 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
             request.GET.get('token', False)
         )
 
+        if student_confirmation is None:
+            raise ValidationError(detail='Token expired or invalid.')
+
         user = request.user
 
         if user.student_username is not None:
             raise ValidationError(detail='Already confirmed a student username')
 
-        serializer = self.get_serializer(data=student_confirmation)
+        # Double check that the data is valid (even if we do this when we create the token)
+        serializer = self.get_serializer(data={
+            **student_confirmation,
+            'captcha_response': 'FakeCaptchaResponse'
+        })
         serializer.is_valid(raise_exception=True)
 
         user.student_username = serializer.validated_data.get('student_username')
-        course = serializer.validated_data.get('course')
+        course = serializer.validated_data.get('course').lower()
 
         if course == constants.DATA:
             course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
@@ -119,4 +126,4 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
 
         user.save()
 
-        return Response(DetailedUserSerializer(user).data, status=status.HTTP_202_ACCEPTED)
+        return Response(DetailedUserSerializer(user).data, status=status.HTTP_204_NO_CONTENT)
