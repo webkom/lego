@@ -61,6 +61,23 @@ class RetrieveStudentConfirmationAPITestCase(APITestCase):
         self.assertEqual(response.data.get('course'), constants.DATA)
         self.assertEqual(response.data.get('member'), True)
 
+    def test_with_valid_token_and_capitalized_student_username(self):
+        AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
+        self.client.force_authenticate(self.user_without_student_confirmation)
+        response = self.client.get(
+            _get_student_confirmation_token_url(
+                User.generate_student_confirmation_token(
+                    'TestStudentUsername',
+                    constants.DATA,
+                    True
+                )
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('student_username'), 'teststudentusername')
+        self.assertEqual(response.data.get('course'), constants.DATA)
+        self.assertEqual(response.data.get('member'), True)
+
 
 class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
@@ -137,7 +154,7 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.user_with_student_confirmation)
         self.client.force_authenticate(self.user_with_student_confirmation)
         response = self.client.post(_get_list_url(), self._test_student_confirmation_data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 400)
 
     @mock.patch('lego.apps.users.views.student_confirmation.verify_captcha', return_value=False)
     def test_with_invalid_captcha(self, *args):
