@@ -5,7 +5,6 @@ from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
 from django.core import signing
-from django.core.mail import send_mail
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 from django.utils import timezone
@@ -126,7 +125,6 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     student_username = models.CharField(
         max_length=30,
         unique=True,
-        blank=True,
         null=True,
         help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
         validators=[student_username_validator],
@@ -153,6 +151,10 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     REQUIRED_FIELDS = ['email']
 
     backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
+
+    def clean(self):
+        self.student_username = self.student_username.lower()
+        super(User, self).clean()
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'.strip()
@@ -187,12 +189,6 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
 
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.email], **kwargs)
-
-    def email_student(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.student_email], **kwargs)
-
     def natural_key(self):
         return self.username,
 
@@ -205,7 +201,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     @staticmethod
     def generate_student_confirmation_token(student_username, course, member):
         data = signing.dumps({
-            'student_username': student_username,
+            'student_username': student_username.lower(),
             'course': course,
             'member': member
         })
