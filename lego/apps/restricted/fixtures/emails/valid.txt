@@ -1,0 +1,29 @@
+MIME-Version: 1.0
+Subject: Restricted Message
+From: Eirik <eirik@sylliaas.no>
+To: restricted@abakus.no
+Content-Type: multipart/mixed; boundary=001a1141b90e89018f054eb72091
+
+--001a1141b90e89018f054eb72091
+Content-Type: multipart/alternative; boundary=001a1141b90e890189054eb7208f
+
+--001a1141b90e890189054eb7208f
+Content-Type: text/plain; charset=UTF-8; format=flowed; delsp=yes
+
+Hi
+
+--001a1141b90e890189054eb7208f
+Content-Type: text/html; charset=UTF-8
+
+<div dir="ltr">Hi</div>
+--001a1141b90e890189054eb7208f--
+--001a1141b90e89018f054eb72091
+Content-Type: text/plain; charset=US-ASCII; name="token.txt"
+Content-Disposition: attachment; filename="token.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: 15bd4c4aad685dc0fb1
+Content-ID: <15bd4c4aad685dc0fb1>
+
+TEVHT1RPS0VOdGVzdF90b2tlbgo=
+--001a1141b90e89018f054eb72091--
+

@@ -9,7 +9,6 @@ from lego.apps.restricted.exceptions import (DefectMessageException, MessageIDNo
                                              ParseEmailException)
 from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.parser import ParserMessageType
-from lego.apps.restricted.utils import split_address
 from lego.apps.stats.statsd_client import statsd
 from lego.utils.management_command import BaseCommand
 
@@ -51,8 +50,8 @@ class LMTPService(BaseCommand, smtpd.SMTPServer):
         log.debug('lmtp_message_accept', address=addr)
 
     @statsd.timer('restricted_mail.process_message')
-    def process_message(self, peer, mailfrom, recipients, data):
-        parser = LMTPEmailParser(data, mailfrom, ParserMessageType.STRING)
+    def process_message(self, peer, mailfrom, recipients, data, **kwargs):
+        parser = LMTPEmailParser(data, mailfrom, ParserMessageType.BYTES)
 
         try:
             message = parser.parse()
@@ -68,22 +67,29 @@ class LMTPService(BaseCommand, smtpd.SMTPServer):
 
         status = []
         for recipient in recipients:
+
+            if recipient not in [
+                settings.RESTRICTED_ADDRESS,
+                f'{settings.RESTRICTED_ADDRESS}@{settings.RESTRICTED_DOMAIN}'
+            ]:
+                log.warn('restricted_incorrect_destination_address', address=recipient)
+                return status.append(channel.ERR_511)
+
             try:
-                local, domain = split_address(recipient)
                 message_data = {
                     'original_size': message.original_size,
                     'received_time': timezone.now()
                 }
 
-                message_processor = MessageProcessor(local, domain, message, message_data)
+                message_processor = MessageProcessor(mailfrom, message, message_data)
                 message_processor.process_message()
 
-                status.append(channel.OK_250)
+                return status.append(channel.OK_250)
 
             except Exception:
                 from raven.contrib.django.raven_compat.models import client
                 client.captureException()
-                log.error('lmtp_lookup_failure')
+                log.exception('lmtp_lookup_failure')
                 status.append(channel.ERR_550)
 
         return channel.CRLF.join(status)

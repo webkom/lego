@@ -23,6 +23,7 @@ class RestrictedMail(BasisModel):
     MANY_TO_MANY_RELATIONS = ['users', 'groups', 'events', 'meetings']
 
     from_address = models.EmailField(db_index=True)
+    hide_sender = models.BooleanField(default=False)
     token = models.CharField(max_length=128, db_index=True)
     used = models.DateTimeField(null=True)
 
@@ -37,7 +38,7 @@ class RestrictedMail(BasisModel):
         try:
             return cls.objects\
                 .prefetch_related(*cls.MANY_TO_MANY_RELATIONS)\
-                .get(used=None, from_address=from_address, token=token)
+                .get(used=None, from_address=from_address.lower(), token=token)
         except cls.DoesNotExist:
             return None
         except cls.MultipleObjectsReturned:

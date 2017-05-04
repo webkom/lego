@@ -1,0 +1,34 @@
+MIME-Version: 1.0
+Subject: Simple message
+From: Eirik <eirik@sylliaas.no>
+To: restricted@abakus.no
+DomainKey-Signature: a=rsa-sha1;s=newyork;d=example.com;c=simple;q=dns;b=dydVyOfAKCdLXdJOc8G2q8LoXSlEniSbav+yuU4zGffruD00lszZVoG4ZHRNiYzR;
+DKIM-Signature: v=1; a=rsa-sha256; d=example.net; s=brisbane;c=relaxed/simple; q=dns/txt; l=1234; t=1117574938; x=1118006938;h=from:to:subject:date:keywords:keywords;bh=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=;b=dzdVyOfAKCdLXdJOc9G2q8LoXSlEniSbav+yuU4zGeeruD00lszZVoG4ZHRNiYzR
+Authentication-Results: receiver.example.org; spf=pass smtp.mailfrom=example.com; dkim=pass header.i=@example.com
+Received-SPF: pass (mybox.example.org: domain of myname@example.com designates 192.0.2.1 as permitted sender) receiver=mybox.example.org; client_ip=192.0.2.1; envelope-from=myname@example.com;
+Received-SPF: fail (mybox.example.org: domain of myname@example.com does not designate 192.0.2.1 as permitted sender)
+Content-Type: multipart/mixed; boundary=001a1141b90e89018f054eb72091
+
+--001a1141b90e89018f054eb72091
+Content-Type: multipart/alternative; boundary=001a1141b90e890189054eb7208f
+
+--001a1141b90e890189054eb7208f
+Content-Type: text/plain; charset=UTF-8; format=flowed; delsp=yes
+
+Hi
+
+--001a1141b90e890189054eb7208f
+Content-Type: text/html; charset=UTF-8
+
+<div dir="ltr">Hi</div>
+--001a1141b90e890189054eb7208f--
+--001a1141b90e89018f054eb72091
+Content-Type: text/plain; charset=US-ASCII; name="token.txt"
+Content-Disposition: attachment; filename="token.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: 15bd4c4aad685dc0fb1
+Content-ID: <15bd4c4aad685dc0fb1>
+
+TEVHT1RPS0VOdGVzdF90b2tlbgo=
+--001a1141b90e89018f054eb72091--
+
