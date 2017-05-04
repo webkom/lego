@@ -92,15 +92,9 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
                 detail='Already confirmed a student username',
                 code=status.HTTP_409_CONFLICT
             )
-        # Double check that the data is valid (even if we do this when we create the token)
-        serializer = self.get_serializer(data={
-            **student_confirmation,
-            'captcha_response': 'FakeCaptchaResponse'
-        })
-        serializer.is_valid(raise_exception=True)
 
-        user.student_username = serializer.validated_data.get('student_username')
-        course = serializer.validated_data.get('course').lower()
+        user.student_username = student_confirmation['student_username']
+        course = student_confirmation['course'].lower()
 
         if course == constants.DATA:
             course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
@@ -115,7 +109,7 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
             grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
             grade_group.add_user(user)
 
-        if serializer.validated_data.get('member'):
+        if student_confirmation['member']:
             member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
             member_group.add_user(user)
 
