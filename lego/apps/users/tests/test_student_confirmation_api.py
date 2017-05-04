@@ -212,34 +212,10 @@ class UpdateStudentConfirmationAPITestCase(APITestCase):
         response = self.client.put(_get_student_confirmation_token_url('InvalidToken'))
         self.assertEqual(response.status_code, 400)
 
-    def test_with_invalid_token_data(self):
-        AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token(
-            student_username='InvalidU$£rn4me',
-            course='InvalidCourse'
-        )
-        response = self.client.put(_get_student_confirmation_token_url(token), {})
-        self.assertEqual(response.status_code, 400)
-
-    def test_with_existing_student_username(self):
-        AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token('test1student')
-        response = self.client.put(_get_student_confirmation_token_url(token))
-        self.assertEqual(response.status_code, 400)
-
     def test_with_already_confirmed_student_username(self):
         AbakusGroup.objects.get(name='Users').add_user(self.user_with_student_confirmation)
         self.client.force_authenticate(self.user_with_student_confirmation)
         token = self.create_token()
-        response = self.client.put(_get_student_confirmation_token_url(token))
-        self.assertEqual(response.status_code, 400)
-
-    def test_with_invalid_course(self):
-        AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token(course='InvalidCourse')
         response = self.client.put(_get_student_confirmation_token_url(token))
         self.assertEqual(response.status_code, 400)
 
