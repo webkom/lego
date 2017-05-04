@@ -1,0 +1,11 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ first_name }},
+
+For å bekrefte NTNU student kontoen din, trykk på lenken under:
+
+{{ frontend_url }}/users/student-confirmation/?token={{ token }}
+
+{% endblock %}
