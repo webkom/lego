@@ -108,8 +108,8 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'company',
-                  'active_capacity', 'feedback_required', 'is_priced', 'price',
-                  'waiting_registrations', 'activation_time', 'spots_left', 'tags')
+                  'active_capacity', 'feedback_required', 'is_priced', 'price', 'use_stripe',
+                  'use_captcha', 'waiting_registrations', 'activation_time', 'spots_left', 'tags')
         read_only = True
 
     def get_price(self, obj):
@@ -146,8 +146,9 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'event_type', 'location',
-                  'start_time', 'end_time', 'merge_time', 'tags')
+        fields = ('id', 'title', 'description', 'text', 'company', 'event_type',
+                  'location', 'is_priced', 'price_member', 'use_stripe', 'start_time',
+                  'end_time', 'merge_time', 'use_captcha', 'tags')
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):

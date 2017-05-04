@@ -83,7 +83,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event = Event.objects.get(id=event_id)
         registration = event.get_registration(request.user)
 
-        if not event.is_priced:
+        if not event.is_priced or not event.use_stripe:
             raise PermissionDenied()
 
         if registration.charge_id:
@@ -145,10 +145,11 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if not verify_captcha(serializer.data.get('captcha_response', None)):
+        event_id = self.kwargs.get('event_pk', None)
+        event = Event.objects.get(id=event_id)
+        if event.use_captcha and not verify_captcha(serializer.data.get('captcha_response', None)):
             raise ValidationError({'error': 'Bad captcha'})
 
-        event_id = self.kwargs.get('event_pk', None)
         user_id = request.user.id
 
         with transaction.atomic():

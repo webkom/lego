@@ -42,8 +42,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     heed_penalties = models.BooleanField(default=True)
     company = models.ForeignKey(Company, related_name='events', null=True)
 
+    use_captcha = models.BooleanField(default=True)
     feedback_required = models.BooleanField(default=False)
     is_priced = models.BooleanField(default=False)
+    use_stripe = models.BooleanField(default=True)
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
