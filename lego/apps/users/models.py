@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
-from django.core.mail import send_mail
+from django.core import signing
+from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -19,7 +20,7 @@ from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, Use
                                       UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
-from .validators import username_validator
+from .validators import student_username_validator, username_validator
 
 
 class AbakusGroup(MPTTModel, PersistentModel):
@@ -121,6 +122,16 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
             'unique': 'A user with that username already exists.',
         }
     )
+    student_username = models.CharField(
+        max_length=30,
+        unique=True,
+        null=True,
+        help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
+        validators=[student_username_validator],
+        error_messages={
+            'unique': 'A user has already verified that student username.',
+        }
+    )
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
@@ -140,6 +151,10 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     REQUIRED_FIELDS = ['email']
 
     backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
+
+    def clean(self):
+        self.student_username = self.student_username.lower()
+        super(User, self).clean()
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'.strip()
@@ -168,11 +183,11 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     def profile_picture(self, value):
         self.picture = value
 
+    def is_verified_student(self):
+        return self.student_username is not None
+
     def get_short_name(self):
         return self.first_name
-
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def natural_key(self):
         return self.username,
@@ -182,6 +197,26 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         count = Penalty.objects.valid().filter(user=self)\
             .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
+
+    @staticmethod
+    def generate_student_confirmation_token(student_username, course, member):
+        data = signing.dumps({
+            'student_username': student_username.lower(),
+            'course': course,
+            'member': member
+        })
+        token = TimestampSigner().sign(data)
+        return token
+
+    @staticmethod
+    def validate_student_confirmation_token(token):
+        try:
+            return signing.loads(TimestampSigner().unsign(
+                token,
+                max_age=settings.STUDENT_CONFIRMATION_TIMEOUT
+            ))
+        except (BadSignature, SignatureExpired):
+            return None
 
 
 class Membership(BasisModel):

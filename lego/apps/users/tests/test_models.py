@@ -160,6 +160,27 @@ class UserTestCase(TestCase):
         found_user = User.objects.get_by_natural_key(self.user.username)
         self.assertEqual(self.user, found_user)
 
+    def test_validate_student_confirmation_token(self):
+        student_confirmation_token = User.generate_student_confirmation_token(
+            'teststudentusername',
+            constants.DATA,
+            True
+        )
+        token = User.validate_student_confirmation_token(student_confirmation_token)
+        self.assertEqual(token['student_username'], 'teststudentusername')
+        self.assertEqual(token['course'], constants.DATA)
+        self.assertEqual(token['member'], True)
+
+        student_confirmation_token = User.generate_student_confirmation_token(
+            'teststudentusername',
+            constants.DATA,
+            True
+        )
+        token = User.validate_student_confirmation_token(student_confirmation_token)
+        self.assertNotEqual(token['student_username'], 'wrongtestusername')
+        self.assertNotEqual(token['course'], constants.KOMTEK)
+        self.assertNotEqual(token['member'], False)
+
 
 class MembershipTestCase(TestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']

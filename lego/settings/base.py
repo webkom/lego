@@ -164,3 +164,5 @@ CASSANDRA_DRIVER_KWARGS = {
 LDAP_BASE_DN = 'dc=abakus,dc=no'
 
 CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
+
+STUDENT_CONFIRMATION_TIMEOUT = 60 * 60 * 24
