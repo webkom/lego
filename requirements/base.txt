@@ -34,7 +34,7 @@ daphne==1.2.0
 djangorestframework==3.6.2
 djangorestframework-jwt==1.10.0
 djangorestframework-camel-case==0.2.0
-django-extensions==1.7.8
+django-extensions==1.7.9
 django-autoslug==1.9.3
 django-oauth-toolkit==0.12.0
 django-filter==1.0.2
