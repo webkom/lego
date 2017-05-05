@@ -63,8 +63,8 @@
       "properties": {
         "autocomplete": {
           "type" : "completion",
-          "analyzer" : "simple",
-          "search_analyzer" : "simple",
+          "analyzer" : "standard",
+          "search_analyzer" : "standard",
           "contexts": [
             {
               "name": "content_type",
