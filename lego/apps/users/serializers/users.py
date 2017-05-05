@@ -3,7 +3,7 @@ from rest_framework import serializers
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
 from lego.apps.users.fields import AbakusGroupField, AbakusGroupListField
-from lego.apps.users.models import Penalty, User, AbakusGroup
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.permissions import can_retrieve_user
 from lego.apps.users.serializers.penalties import PenaltySerializer
 

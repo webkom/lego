@@ -10,7 +10,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
-from lego.apps.events.exceptions import EventHasStarted, NoSuchPool
+from lego.apps.events.exceptions import EventHasStarted, NoSuchPool, RegistrationsExistInPool
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
@@ -480,7 +480,7 @@ class Pool(BasisModel):
         if not self.registrations.exists():
             super().delete(*args, **kwargs)
         else:
-            raise ValueError('Registrations exist in Pool')
+            raise RegistrationsExistInPool('Registrations exist in Pool')
 
     @property
     def is_full(self):

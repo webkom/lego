@@ -1,8 +1,8 @@
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
-from .models import User, AbakusGroup
-from .serializers.users import SearchUserSerializer, SearchGroupSerializer
+from .models import AbakusGroup, User
+from .serializers.users import SearchGroupSerializer, SearchUserSerializer
 
 
 class UserIndex(SearchIndex):

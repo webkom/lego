@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.fields import CharField
 from rest_framework_jwt.serializers import User
@@ -129,6 +130,7 @@ class EventAdministrateSerializer(EventReadSerializer):
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Pool
@@ -144,11 +146,45 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
+    pools = PoolCreateAndUpdateSerializer(many=True)
+
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'text', 'company', 'event_type',
                   'location', 'is_priced', 'price_member', 'use_stripe', 'start_time',
-                  'end_time', 'merge_time', 'use_captcha', 'tags')
+                  'end_time', 'merge_time', 'use_captcha', 'tags', 'pools')
+
+    def create(self, validated_data):
+        pools = validated_data.pop('pools')
+        event = super().create(validated_data)
+        for pool in pools:
+            permission_groups = pool.pop('permission_groups')
+            created_pool = Pool.objects.create(event=event, **pool)
+            created_pool.permission_groups.set(permission_groups)
+
+        return event
+
+    def update(self, instance, validated_data):
+        pools = validated_data.pop('pools')
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+            existing_pools = list(instance.pools.all().values_list('id', flat=True))
+            for pool in pools:
+                id = pool.get('id', None)
+                if id in existing_pools:
+                    existing_pools.remove(id)
+                permission_groups = pool.pop('permission_groups')
+                created_pool = Pool.objects.update_or_create(event=instance, id=id, defaults={
+                    'name': pool.get('name'),
+                    'capacity': pool.get('capacity', 0),
+                    'activation_date': pool.get('activation_date'),
+                    'unregistration_deadline': pool.get('unregistration_deadline', None)
+                })[0]
+                created_pool.permission_groups.set(permission_groups)
+            for id in existing_pools:
+                Pool.objects.get(id=id).delete()
+
+        return instance
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):

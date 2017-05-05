@@ -61,6 +61,12 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         return super().get_serializer_class()
 
+    def update(self, request, *args, **kwargs):
+        try:
+            super().update(request, *args, **kwargs)
+        except ValueError:
+            raise APIRegistrationsExistsInPool()
+
     @decorators.detail_route(
         methods=['GET'], serializer_class=EventAdministrateSerializer,
         permission_classes=(AdministratePermissions,)
