@@ -87,8 +87,8 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
-                  'location', 'start_time', 'thumbnail', 'end_time',
+        fields = ('id', 'title', 'description', 'cover', 'event_type',
+                  'location', 'start_time', 'thumbnail',
                   'total_capacity', 'company', 'registration_count', 'tags')
         read_only = True
 
@@ -130,11 +130,10 @@ class EventAdministrateSerializer(EventReadSerializer):
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
-    id = serializers.IntegerField(required=False)
-
     class Meta:
         model = Pool
         fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups')
+        extra_kwargs = {'id': {'read_only': False, 'required': False}}
 
     def create(self, validated_data):
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
@@ -146,7 +145,7 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
-    pools = PoolCreateAndUpdateSerializer(many=True)
+    pools = PoolCreateAndUpdateSerializer(many=True, required=False)
 
     class Meta:
         model = Event
@@ -155,34 +154,36 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                   'end_time', 'merge_time', 'use_captcha', 'tags', 'pools')
 
     def create(self, validated_data):
-        pools = validated_data.pop('pools')
-        event = super().create(validated_data)
-        for pool in pools:
-            permission_groups = pool.pop('permission_groups')
-            created_pool = Pool.objects.create(event=event, **pool)
-            created_pool.permission_groups.set(permission_groups)
+        pools = validated_data.pop('pools', [])
+        with transaction.atomic():
+            event = super().create(validated_data)
+            for pool in pools:
+                permission_groups = pool.pop('permission_groups')
+                created_pool = Pool.objects.create(event=event, **pool)
+                created_pool.permission_groups.set(permission_groups)
 
-        return event
+            return event
 
     def update(self, instance, validated_data):
-        pools = validated_data.pop('pools')
+        pools = validated_data.pop('pools', [])
         with transaction.atomic():
-            instance = super().update(instance, validated_data)
+
             existing_pools = list(instance.pools.all().values_list('id', flat=True))
             for pool in pools:
-                id = pool.get('id', None)
-                if id in existing_pools:
-                    existing_pools.remove(id)
+                pool_id = pool.get('id', None)
+                if pool_id in existing_pools:
+                    existing_pools.remove(pool_id)
                 permission_groups = pool.pop('permission_groups')
-                created_pool = Pool.objects.update_or_create(event=instance, id=id, defaults={
+                created_pool = Pool.objects.update_or_create(event=instance, id=pool_id, defaults={
                     'name': pool.get('name'),
                     'capacity': pool.get('capacity', 0),
                     'activation_date': pool.get('activation_date'),
                     'unregistration_deadline': pool.get('unregistration_deadline', None)
                 })[0]
                 created_pool.permission_groups.set(permission_groups)
-            for id in existing_pools:
-                Pool.objects.get(id=id).delete()
+            for pool_id in existing_pools:
+                Pool.objects.get(id=pool_id).delete()
+            instance = super().update(instance, validated_data)
 
         return instance
 

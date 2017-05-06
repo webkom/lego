@@ -63,7 +63,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         try:
-            super().update(request, *args, **kwargs)
+            return super().update(request, *args, **kwargs)
         except ValueError:
             raise APIRegistrationsExistsInPool()
 
