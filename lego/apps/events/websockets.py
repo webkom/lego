@@ -66,7 +66,7 @@ def event_updated_notifier(event, error_msg=None):
     if error_msg:
         meta['error_message'] = error_msg
     notify_group(group, {
-        'type': 'EVENT_UPDATED',
+        'type': 'SOCKET_EVENT_UPDATED',
         'payload': payload,
         'meta': meta
     })

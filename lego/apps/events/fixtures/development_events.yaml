@@ -6,7 +6,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-10-27T17:15:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: EINR
     is_priced: True
     price_member: 50
@@ -23,7 +23,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-10-25T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Knowit AS
     cover: test_event_cover.png
   model: events.Event
@@ -38,7 +38,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-10-13T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Accenture
     cover: test_event_cover.png
   model: events.Event
@@ -52,7 +52,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-10-11T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: 'Netlight '
     cover: test_event_cover.png
   model: events.Event
@@ -66,7 +66,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-10-06T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: EY (tidligere Ernst & Young)
     cover: test_event_cover.png
   model: events.Event
@@ -79,7 +79,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-10-04T17:15:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Facebook
     cover: test_event_cover.png
     company: 2
@@ -94,7 +94,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-09-19T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Sopra Steria
     cover: test_event_cover.png
     company: 2
@@ -109,7 +109,7 @@
     event_type: other
     location: Oslo
     start_time: '2016-09-07T07:00:00+00:00'
-    text: "Ekskursjonen går til Oslo og varer i tre dager. Bedriftene vi skal besøke\
+    text: "<p>Ekskursjonen går til Oslo og varer i tre dager. Bedriftene vi skal besøke\
       \ er Visma, Skatteetaten, Sopra Steria, Accenture, BEKK, Finn.no og Knowit.\r\
       \nFlyet går fra Værnes lufthavn 7. september kl 09:20. Vi ønsker at dere møter\
       \ opp kl 08:20 for å få materialet dere trenger. Det er ingen felles hjemreise,\
@@ -121,7 +121,7 @@
       \ etter 17. August klokken 23:59. Alle utgifter ved denne turen er dekket av\
       \ bedriftene.\r\nEr det noe du lurer på angående påmeldingen eller turen generelt\
       \ så send mail til bedex'at'abakus.no. Mer praktisk info kommer etter at påmeldingen\
-      \ er ferdig."
+      \ er ferdig.</p>"
     title: BedEx
     cover: test_event_cover.png
     company: 1
@@ -135,7 +135,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-09-09T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Capra Consulting
     cover: test_event_cover.png
   model: events.Event
@@ -148,7 +148,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-09-06T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: 'DIPS '
     cover: test_event_cover.png
   model: events.Event
@@ -163,12 +163,12 @@
     event_type: event
     location: 'Frimurerlogen '
     start_time: '2016-09-03T18:00:00+00:00'
-    text: "I tradisjon tro ønsker vi å feire opptaket av våre nye medlemmer. Begivenheten\
+    text: "<p>I tradisjon tro ønsker vi å feire opptaket av våre nye medlemmer. Begivenheten\
       \ vil i år, som i fjor, finne sted på Frimurerlogen, så hold av lørdag 2. september.\
       \ \r\n\r\nBallet starter kl. 18:00, og omkring midnattstider beveger vi oss\
       \ til underetasjen hvor tidenes nachspiel vil bli holdt!\r\n\r\nPrisen inkluderer\
       \ velkomstdrink ved inngangen, 2-retters middag samt to drikkeenheter.\r\n\r\
-      \nAntrekk: Studentergalla\r\n\r\nPris per deltaker/pris per gjest: 330/450"
+      \nAntrekk: Studentergalla\r\n\r\nPris per deltaker/pris per gjest: 330/450</p>"
     title: Immatrikuleringsball
     cover: test_event_cover.png
   model: events.Event
@@ -184,7 +184,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-09-01T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Mesan
     cover: test_event_cover.png
   model: events.Event
@@ -198,7 +198,7 @@
     event_type: company_presentation
     location: TBA
     start_time: '2016-08-30T17:00:00+00:00'
-    text: TBA
+    text: "<p>TBA</p>"
     title: Deloitte AS
     cover: test_event_cover.png
   model: events.Event
@@ -212,9 +212,9 @@
     event_type: other
     location: Dattera til Hagen
     start_time: '2016-07-02T19:00:00+00:00'
-    text: "Det hele vil finne sted på Dattera til Hagen, hvor vi har andre etasje\
+    text: "<p>Det hele vil finne sted på Dattera til Hagen, hvor vi har andre etasje\
       \ for oss selv fra klokken 19.00.\r\n\r\nDette har tidligere vært en stor suksess,\
-      \ og vi håper så mange som mulig kommer!\r\n\r\nSe FB-event [her](https://www.facebook.com/events/145740885823144/)."
+      \ og vi håper så mange som mulig kommer!\r\n\r\nSe FB-event [her](https://www.facebook.com/events/145740885823144/).</p>"
     title: Abakus' sommerfest 2016
     cover: test_event_cover.png
   model: events.Event
@@ -229,7 +229,7 @@
     event_type: party
     location: Trondheim
     start_time: '2016-06-11T20:00:00+00:00'
-    text: Mer informasjon kommer.
+    text: "<p>Mer informasjon kommer.</p>"
     title: Eksamensfest
     cover: test_event_cover.png
   model: events.Event
@@ -246,14 +246,14 @@
     event_type: event
     location: '-'
     start_time: '2016-04-20T13:00:00+00:00'
-    text: "Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
+    text: "<p>Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
       \ i år! Har du lyst til å være fadder for de nye førsteklassingene, og sørge\
       \ for at deres første uker i Trondheim blir et minne for livet er det nå du\
       \ må melde deg.\r\n\r\nNår vi har fått nok faddere og påmeldingen stenger, vil\
       \ det være mulig å sende inn ønsker om hvem man har lyst til å være på faddergruppe\
       \ sammen med per mail. Mer info rundt dette kommer fortløpende i Facebookgruppen\
       \ som alle fadderne blir meldt inn i.\r\n\r\nVi håper så mange som mulig har\
-      \ lyst til å være fadder i år!"
+      \ lyst til å være fadder i år!</p>"
     title: Fadderpåmelding Kommunikasjonsteknologi
     cover: test_event_cover.png
   model: events.Event
@@ -270,14 +270,14 @@
     event_type: event
     location: '-'
     start_time: '2016-04-20T17:15:00+00:00'
-    text: "Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
+    text: "<p>Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
       \ i år! Har du lyst til å være fadder for de nye førsteklassingene, og sørge\
       \ for at deres første uker i Trondheim blir et minne for livet er det nå du\
       \ må melde deg.\r\n\r\nNår vi har fått nok faddere og påmeldingen stenger, vil\
       \ det være mulig å sende inn ønsker om hvem man har lyst til å være på faddergruppe\
       \ sammen med per mail. Det er 3-4 faddere per gruppe. Mer info rundt dette kommer\
       \ fortløpende i Facebookgruppen som alle fadderne blir meldt inn i.\r\n\r\n\
-      Vi håper så mange som mulig har lyst til å være fadder i år!"
+      Vi håper så mange som mulig har lyst til å være fadder i år!</p>"
     title: Fadderpåmelding Datateknologi
     cover: test_event_cover.png
   model: events.Event
@@ -291,14 +291,14 @@
     event_type: event
     location: Høyskoleparken
     start_time: '2016-05-20T14:00:00+00:00'
-    text: "Vi ønsker i år som i fjor å samle abakuler til en hyggelig sammenkomst\
+    text: "<p>Vi ønsker i år som i fjor å samle abakuler til en hyggelig sammenkomst\
       \ i eksamensperioden. \r\n\r\nAlle er velkomne til å møte opp på plenen foran\
       \ Hovedbygget for å grille klokken 14.00. Alle kan (og bør) med forhåpentligvis\
       \ god samvittighet hvile hjernecellene etter en økt med krevende lesing!\r\n\
       \r\nAbakus stiller med ketchup, sennep, sprøløk, potetsalat og engangsgriller.\
       \ **Still derfor opp med grillmat selv!**\r\n\r\nHåper så mange som mulig vil\
       \ komme!\r\n\r\nNB: Værforbehold. Regner det denne dagen prøver vi flytte den.\
-      \ Påminnelse vil postes i Abakus-gruppa på Facebook."
+      \ Påminnelse vil postes i Abakus-gruppa på Facebook.</p>"
     title: Eksamensgrilling
     cover: test_event_cover.png
   model: events.Event
@@ -312,7 +312,7 @@
     event_type: event
     location: Kjelhuset
     start_time: '2016-05-17T09:30:00+00:00'
-    text: "Vi dekker til langbord med hvite duker, og kler opp Kjelkantina i rødt,\
+    text: "<p>Vi dekker til langbord med hvite duker, og kler opp Kjelkantina i rødt,\
       \ hvit og blått! På menyen er det en bedre frokost bestående av de deiligste\
       \ pålegg, laks, eggerøre og hva en ellers måtte ønske, samt store mengder kake.\
       \ Når alle er mette og forsynte går vi samlet ned til sentrum for å ta del i\
@@ -324,7 +324,7 @@
       \ for gjester: 50 kr (ta med kontanter!)\r\n\r\n_Tenk at nå er dagen her som\
       \ jeg har lengtet etter! Jeg skal gå i toget, og jeg er så glad! Du kan tro\
       \ jeg skal nok synge ut av alle krefter, svinge flagget mitt og rope høyt HURRA!_\r\
-      \n\r\nVel møtt!"
+      \n\r\nVel møtt!</p>"
     title: 17. mai-frokost
     cover: test_event_cover.png
   model: events.Event
@@ -338,12 +338,12 @@
     event_type: course
     location: TBA
     start_time: '2016-05-14T11:00:00+00:00'
-    text: 'Forelesningene vil være spesielt rettet mot de som har vært borti pensum
+    text: "<p>'Forelesningene vil være spesielt rettet mot de som har vært borti pensum
       og kjenner seg igjen, men trenger en god oppsummering før eksamen. Vi vil gå
       gjennom det meste av pensum: objektorientering (inkl. innkapsling, arv, polymorfi,
       overriding og abstrakte klasser), exceptions, grensesnitt, iterators, comparators,
       objektstrukturer og observatør-observert-teknikken. Det vil også komme en del
-      generelle tips til programmeringsmetodikk, og gå gjennom eksempler og oppgaver. '
+      generelle tips til programmeringsmetodikk, og gå gjennom eksempler og oppgaver. '</p>"
     title: Eksamenskurs i Java
     cover: test_event_cover.png
   model: events.Event
@@ -358,7 +358,7 @@
     event_type: course
     location: R5
     start_time: '2016-05-09T17:15:00+00:00'
-    text: "Den digitale hverdagen er for de fleste å anse som hvilken som helst hverdag.\
+    text: "<p>Den digitale hverdagen er for de fleste å anse som hvilken som helst hverdag.\
       \ Dette er nå normen, og den skal fungere hele tiden, overalt. Disse nye forventningene\
       \ gjør med risikobildet: Sårbarheten i samfunnet øker, tradisjonelle tiltak\
       \ er ikke lenger tilstrekkelig, og brudd på informasjonssikkerhet er nå normalen.\r\
@@ -428,7 +428,7 @@
       \ Europol and other law enforcement agencies globally.\r\n\r\nWith intelligence-driven\
       \ managed security services, 120+ security experts, and partnerships with leading\
       \ security vendors, mnemonic enables businesses to stay secure and compliant\
-      \ while reducing costs."
+      \ while reducing costs.</p>"
     title: Sikkerhet og Sårbarhet
     cover: test_event_cover.png
   model: events.Event
@@ -443,11 +443,11 @@
     event_type: course
     location: EL5
     start_time: '2016-05-07T10:15:00+00:00'
-    text: Nils Barlaug holder lørdag 7. mai en uoffisiell eksamensforelesning i TFE4101
+    text: "<p>Nils Barlaug holder lørdag 7. mai en uoffisiell eksamensforelesning i TFE4101
       Krets- og Digitalteknikk. Det vil bli gått igjennom relevant pensum til eksamen
       og er en sjanse for alle som har faget til å friske opp kunnskapene sine før
       den store dagen nærmer seg. Kurset arrangeres i samarbeid med Abakus, men er
-      åpent for alle.
+      åpent for alle.</p>"
     title: Eksamensforelesning i Krets- og digitalteknikk
     cover: test_event_cover.png
   model: events.Event
@@ -464,12 +464,12 @@
     event_type: other
     location: '-'
     start_time: '2016-04-20T17:15:00+00:00'
-    text: "Å være fadder for 4. klasse er mer fritt enn å være fadder for 1. klasse\
+    text: "<p>Å være fadder for 4. klasse er mer fritt enn å være fadder for 1. klasse\
       \ og du er ikke nødt til å være med alle dager. Vi er på med noe av opplegget\
       \ Arrkom arrangerer og arrangerer noe selv. Etter å ha meldt deg på, er det\
       \ fint om du fyller [denne](http://goo.gl/forms/bMR7oPQMTq) Google Form-en for\
       \ at vi skal vite når du kommer til Trondheim og hvilken fadder t-skjorte størrelse\
-      \ du trenger. \r\n\r\nbackup håper mange har lyst til å være faddere i år!"
+      \ du trenger. \r\n\r\nbackup håper mange har lyst til å være faddere i år!</p>"
     title: Fadderpåmelding for masterstudenter
     cover: test_event_cover.png
   model: events.Event
@@ -484,14 +484,14 @@
     event_type: other
     location: Trondheim
     start_time: '2016-04-29T08:30:00+00:00'
-    text: "Årets temaer er sikkerhet og prosjektledelse. Vi kommer blant annet til\
+    text: "<p>Årets temaer er sikkerhet og prosjektledelse. Vi kommer blant annet til\
       \ å kjøre en tretimers workshop med Metasploit hvor vi øver på penetrasjonstesting\
       \ ved å løse kryptiske oppgaver. I tillegg til det faglige påfyllet så spanderer\
       \ vi også en fin lunsj, og vi lodder ut noen billetter til Trondheim Developer\
       \ Conference blant de studentene som deltar. I tillegg til en god lunsj, så\
       \ serverer vi kaffe, leskedrikk, popcorn og softis underveis.\r\n \r\nI tillegg\
       \ til våre egne konsulenter deltar også flere representanter fra våre kunder\
-      \ og samarbeidspartnere.\r\n \r\nVelkommen!"
+      \ og samarbeidspartnere.\r\n \r\nVelkommen!</p>"
     title: Fundator
     cover: test_event_cover.png
   model: events.Event
@@ -506,7 +506,7 @@
     event_type: company_presentation
     location: KJL 1
     start_time: '2016-04-28T12:00:00+00:00'
-    text: "DNV GL is undergoing a digital transformation encompassing all business\
+    text: "<p>DNV GL is undergoing a digital transformation encompassing all business\
       \ models and work processes applied by the company in its global operations.\
       \ New digital solutions offer new analytics tools and communication methods\
       \ that allows automation of work that previously required manual labour, and\
@@ -514,7 +514,7 @@
       \ for decades. At DNV GL, we need more people who can challenge our status quo,\
       \ and help us build the business models of the future in the maritime, oil&gas,\
       \ and energy industries.\r\n\r\n_Bedkom minner om at oppmøte er kl. 12:00, ventelisten\
-      \ åpner 12:10 og presentasjonen starter 12:15._"
+      \ åpner 12:10 og presentasjonen starter 12:15._</p>"
     title: DNV GL
     cover: test_event_cover.png
   model: events.Event
@@ -533,7 +533,7 @@
     event_type: course
     location: R8
     start_time: '2016-04-27T16:00:00+00:00'
-    text: "Kvelden vil bestå av varierte foredrag og workshop, tilpasset til ulike\
+    text: "<p>Kvelden vil bestå av varierte foredrag og workshop, tilpasset til ulike\
       \ nivåer. Du står selv fritt til å velge hvilket du vil være med på, og det\
       \ er mulig å bytte underveis. Alt opplegg i R8 vil være på et nivå som alle\
       \ kan forstå. \r\n\r\nFor dere som ikke kommer med, er det mulig å være med\
@@ -544,7 +544,7 @@
       \ Bør ha vært borti JavaScript)\r\n- 18:15. \r\n    - R8: Workshop: En gøy intro\
       \ til Android-programmering gjennom spill\r\n    - R9: Workshop: Dynamisk layout\
       \ i native apps\r\n- 20:00->\r\n    Pizza. \r\n\r\n\r\nDet vil bli servert baguette\
-      \ underveis og pizza etter arrangementet. \r\n\r\n\r\n\r\nBilde: http://bizzarecreations.in/mobile-development/"
+      \ underveis og pizza etter arrangementet. \r\n\r\n\r\n\r\nBilde: http://bizzarecreations.in/mobile-development/</p>"
     title: Fagdag i Mobil utvikling
     cover: test_event_cover.png
   model: events.Event
@@ -558,7 +558,7 @@
     event_type: course
     location: Work-Work (Munkegata 58)
     start_time: '2016-04-25T17:15:00+00:00'
-    text: "![Bilde](http://i68.tinypic.com/k3wu2f.jpg \"Abakus/Online/IDI.png\")\r\
+    text: "<p>![Bilde](http://i68.tinypic.com/k3wu2f.jpg \"Abakus/Online/IDI.png\")\r\
       \n\r\nIDIs studenter og ansatte sitter på en enorm mengde kunnskap. Selv om\
       \ vi hver uke har mulighet til å gå på kurs for å få enda mer kunnskap, ønsker\
       \ vi denne kvelden å sette oss selv i fokus. Dette blir en kveld hvor både studenter\
@@ -577,7 +577,7 @@
       Counter Strike i nettleseren?!\"\r\n- 18:30: Pause\r\n- 18:45 - 18:55: Matias\
       \ Christensen - \"@&#!, en symbolsk reise.\"\r\n- 18:55 - 19:05: Kristine Steine\
       \ - “Treat yo self”\r\n- 19:20: Quiz\r\n- 20:00: Mingling m shuffleboard og\
-      \ god stemning!\r\n\r\n\r\n\r\n"
+      \ god stemning!\r\n\r\n\r\n\r\n</p>"
     title: Lightning Talks
     cover: test_event_cover.png
   model: events.Event
@@ -591,8 +591,8 @@
     event_type: other
     location: Drivhuset
     start_time: '2016-04-23T18:00:00+00:00'
-    text: "Detaljert informasjon kommer på [Facebook](https://www.facebook.com/events/718813778259009/).\r\
-      \n\r\n\r\nSted: Drivhuset\r\n\r\nTidspunkt: 18:00"
+    text: "<p>Detaljert informasjon kommer på [Facebook](https://www.facebook.com/events/718813778259009/).\r\
+      \n\r\n\r\nSted: Drivhuset\r\n\r\nTidspunkt: 18:00</p>"
     title: Abellan April 2016
   model: events.Event
   pk: 28
@@ -607,7 +607,7 @@
     event_type: event
     location: Håndverkeren
     start_time: '2016-04-21T19:00:00+00:00'
-    text: "Arrangementet blir i år tilpasset alle, uavhengig om pokerferdighetene\
+    text: "<p>Arrangementet blir i år tilpasset alle, uavhengig om pokerferdighetene\
       \ er på plass eller ei. Det vil si at vi arrangerer et nybegynnerbord, så du\
       \ har nå gode muligheter til å lære deg poker en gang for alle. Dessuten er\
       \ dette en ypperlig anledning å samles en siste gang før eksamensperioden starter\
@@ -619,7 +619,7 @@
       \ som måtte ønske det. \r\n\r\nTil info:\r\n \r\n- Antrekk: Dress/smoking/kjole\r\
       \n\r\n- Premieutdelinger vil avholdes med blandt annet:\r\n- - Beste pokerspiller(flest\
       \ chips)\r\n- - Beste Antrekk (King and Queen)\r\n\r\n\r\n- Medbrakt drikke\
-      \ er tillat. "
+      \ er tillat. </p>"
     title: Casino Royale
     cover: test_event_cover.png
   model: events.Event
@@ -633,7 +633,7 @@
     event_type: other
     location: S2
     start_time: '2016-04-18T10:30:00+00:00'
-    text: "Om bare noen måneder strømmer tusenvis av nye studenter til Trondheim.\
+    text: "<p>Om bare noen måneder strømmer tusenvis av nye studenter til Trondheim.\
       \ Mange kommer rett fra videregående, de fleste har ikke bodd for seg selv før\
       \ og antageligvis alle er fylt med et hav av forventninger. Som fersk student\
       \ kan Studentbyen og -tilværelsen virke både overveldende og skremmende.\r\n\
@@ -646,7 +646,7 @@
       \ man kunne lene seg på, og bli guidet av gjennom to uker med fart, spenning\
       \ og nye impulser.\r\n\r\nHar du lyst til å være en del av fadderperioden 2016?\
       \ \r\n18. april, klokken 10:30 arrangerer Arrkom infomøte for den kommende fadderperioden\
-      \ i S2.\r\n"
+      \ i S2.\r\n</p>"
     title: Infomøte for faddere
     cover: test_event_cover.png
   model: events.Event
@@ -661,7 +661,7 @@
     event_type: party
     location: ' Klostergata 60 '
     start_time: '2016-04-15T19:00:00+00:00'
-    text: "Fredag 15. april er det duket for en fiesta av så godt kaliber at meksikanere\
+    text: "<p>Fredag 15. april er det duket for en fiesta av så godt kaliber at meksikanere\
       \ har åpnet tårekanalene på vidt gap i ren sjalusi. Vi har tømt samtlige Sør-Amerikanske\
       \ land for tequila for nå drikkes det til det er tosifret promille og alle snakker\
       \ flytende spansk! Bart, sombrero og god stemning er obligatorisk - poncho er\
@@ -671,7 +671,7 @@
       \ musikk!\r\n\r\nEttersom vi har nok tequila til å fylle Chihuahua, Durango\
       \ og Jalisco tredve ganger selger vi i kjent meksikansk stil tequila til skampris:\
       \ \r\n19-20: 10 kroner, \r\n20-21: 15 kroner, \r\n21-22: 20 kroner, \r\n22-01:\
-      \ 25 kroner\r\n\r\nViva la fiesta!"
+      \ 25 kroner\r\n\r\nViva la fiesta!</p>"
     title: Fiesta!
     cover: test_event_cover.png
   model: events.Event
@@ -685,13 +685,13 @@
     event_type: other
     location: Radisson Blu Scandinavia, Holbergs plass, Oslo
     start_time: '2016-04-15T08:00:00+00:00'
-    text: "I BEKK er vi opptatt av faglig utvikling og kunnskapsdeling. Hvert år arrangerer\
+    text: "<p>I BEKK er vi opptatt av faglig utvikling og kunnskapsdeling. Hvert år arrangerer\
       \ vi tre fagdager der alle våre ansatte deltar. Vi står selv som foredragsholdere\
       \ og workshop-fasilitatorer – vi har stor tro på å lære av og med hverandre.\r\
       \n\r\nFagdagen er gratis for et begrenset antall studenter. Vil du være med?\
       \ Bare fortell oss hva du studerer og hvorfor du vil delta!\r\n\r\nSend inn\
       \ din søknad på [fagdag.bekk.no](http://fagdag.bekk.no ) \r\n\r\nSøknadsfrist:\
-      \ 15. Mars\r\n"
+      \ 15. Mars\r\n</p>"
     title: BEKK
     cover: test_event_cover.png
     company: 1
@@ -708,7 +708,7 @@
     event_type: course
     location: H3
     start_time: '2016-04-14T17:00:00+00:00'
-    text: "De beste kursene gir deg noe kult som du kan ha etter kurset, derfor vil\
+    text: "<p>De beste kursene gir deg noe kult som du kan ha etter kurset, derfor vil\
       \ du etter vårt sikkerhetskurs sitte igjen med en sikret webserver som du kan\
       \ bruke til personlige websider, CV, prosjekter, APIer eller hva enn du måtte\
       \ ønske.\r\n\r\nVi skal fortelle en kort sikkerhetshistorie, prate om Server\
@@ -719,7 +719,7 @@
       \ Samfundets datalekkasje / Server hosting /      SSH/HTTPS / OWASP / Tor\r\n\
       \r\n- Serveroppsett del 1\r\n\r\n- Pause med underholdning og mat\r\n\r\n- Serveroppsett\
       \ del 2\r\n\r\n- Konkurranse med premier\r\n\r\n- Øl og mingling v/ Work-Work\r\
-      \n\r\n\r\n\r\n\r\n\r\n\r\n"
+      \n\r\n\r\n\r\n\r\n\r\n\r\n</p>"
     title: IT-Sikkerhet med Knowit
     cover: test_event_cover.png
   model: events.Event
@@ -737,7 +737,7 @@
     event_type: company_presentation
     location: KJL1
     start_time: '2016-04-11T17:00:00+00:00'
-    text: "**Program for kvelden**\r\n\r\n17:00 Dørene åpner\r\n\r\n17:15 - 17:20\
+    text: "<p>**Program for kvelden**\r\n\r\n17:00 Dørene åpner\r\n\r\n17:15 - 17:20\
       \ Velkommen ved Torbjørn Eik-Nes\r\n\r\n17:20 – 18:20 Inspirasjonsforedrag ved\
       \ IDI, Accenture, Telenor Research og Simula.\r\n\r\n18:20 - 18:30 Presentasjon\
       \ av gruppeoppgaver/inndeling av grupper\r\n\r\n18:30 – 19:30 Idémyldring og\
@@ -757,7 +757,7 @@
       \ noe som også er kjent som deep learning. Presentasjonen vil vise kort potensialet,\
       \ hva vi gjør i Telenor Research, og oppfordre til tanker om hva denne metodologien\
       \ kan brukes til..» \r\nAxel Tidemann/Telenor Research\r\n \r\n\r\n\r\n\r\n\r\
-      \n"
+      \n</p>"
     title: KiD
     cover: test_event_cover.png
   model: events.Event
@@ -771,7 +771,7 @@
     event_type: event
     location: Banksalen
     start_time: '2016-04-09T15:00:00+00:00'
-    text: "Hva er vel bedre for å feire at våren er her, enn en egen galla for det?\
+    text: "<p>Hva er vel bedre for å feire at våren er her, enn en egen galla for det?\
       \ Vaargallaen blir ærverdig, minnerik og en anledning til å ta på seg finstasen\
       \ for å vise seg fra sin beste side! Arrangementet er for alle, så bli med og\
       \ ta del i Abakus' gamle tradisjoner, og vær med på å skape nye!\r\n\r\nDet\
@@ -791,7 +791,7 @@
       \ baren med Abacash til 03:00)\r\n\r\nAntrekk: Studentergalla med Abakus-utmerkelser\r\
       \n\r\nDato: Lørdag 9. april 2016\r\n\r\nKlokkeslett: 16:30 på Håndverkeren,\
       \ 18:30 på Banksalen.\r\n\r\nMat: 2-retters middag, en bong inkludert\r\n\r\n\
-      Pris: 270"
+      Pris: 270</p>"
     title: Vaargalla
     is_priced: True
     price_member: 27000
@@ -808,14 +808,14 @@
     event_type: company_presentation
     location: KJL1
     start_time: '2016-04-07T17:00:00+00:00'
-    text: "DNB har Norges mest besøkte nett- og mobilbank. Det er vi i IT stolte av.\r\
+    text: "<p>DNB har Norges mest besøkte nett- og mobilbank. Det er vi i IT stolte av.\r\
       \n\r\nMed over 800 IT-kollegaer griper vi fatt i nye utfordringer og muligheter.\
       \ Det er vi som leverer de digitale løsningene i DNB. Da er gode løsninger og\
       \ sikkerhet viktig. \r\n\r\nDen 7. april vil vi dele refleksjoner og eksempler\
       \ rundt hvor viktig IT er for DNB fremover, med ekstra fokus på IT-utvikling\
       \ og informasjonssikkerhet. \r\n\r\nEtter presentasjonen tar vi buss ned til\
       \ byen der det blir bespisning og mingling.\r\n\r\n_Bedkom minner om at oppmøte\
-      \ er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:15._"
+      \ er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:15._</p>"
     title: DnB
     cover: test_event_cover.png
   model: events.Event
@@ -833,7 +833,7 @@
     event_type: course
     location: EL2
     start_time: '2016-04-06T16:00:00+00:00'
-    text: "Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
+    text: "<p>Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
       \ konsepter herfra brukes i stor grad i moderne frontendutvikling. Vi holder\
       \ oss unna rammeverk i første omgang, og ser heller på grunnleggende programmering\
       \ i javascript.\r\n\r\nPå dag to introduserer vi React - dagens ubestridte rammeverkkonge\
@@ -842,7 +842,7 @@
       \ vi snakke om Redux og hvordan vi bygger store, interaktive applikasjoner som\
       \ er enkle å forstå og vedlikeholde.\r\n\r\nEtter kurset vil vi dra ned til\
       \ sentrum hvor vi vil få god mat & drikke!\r\n\r\nVi gjør oppmerksom på at deltakere\
-      \ på del 2 vil få prioritet på del 3"
+      \ på del 2 vil få prioritet på del 3</p>"
     title: Funksjonell programmering i Javascript med React og Redux  3 av 3
     cover: test_event_cover.png
   model: events.Event
@@ -859,7 +859,7 @@
     event_type: course
     location: EL1
     start_time: '2016-04-06T16:00:00+00:00'
-    text: "Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
+    text: "<p>Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
       \ webutvikling:\r\n\r\nFørste runde skal vi lære om de underliggende prinsippene\
       \ i webutvikling. Vi ser på hvordan CSS påvirker HTML og hvordan du kan bruke\
       \ CSS til å forandre hvordan nettleseren presenterer siden både i layout og\
@@ -881,7 +881,7 @@
       \ under Applications/Utilities/Terminal. **For Windows**: klikk windows + r\
       \ for å få opp run dialogen. skriv “cmd” og trykk enter.\r\n\r\n6. Skriv node\
       \  --version i terminalen trykk enter. Hvis alt er i orden skal den svare med\
-      \ versjonsnummer, v5.7.1"
+      \ versjonsnummer, v5.7.1</p>"
     title: Webutvikling101 3 av 3
     cover: test_event_cover.png
   model: events.Event
@@ -895,7 +895,7 @@
     event_type: course
     location: IT-Vest 454
     start_time: '2016-04-05T17:00:00+00:00'
-    text: "Lego Lego Lego. Vi får ikke nok av Lego, forhåpentligvis gjelder det samme\
+    text: "<p>Lego Lego Lego. Vi får ikke nok av Lego, forhåpentligvis gjelder det samme\
       \ for deg. Vi tar med oss roboter til Trondheim nok en gang, men denne gangen\
       \ for å konkurrere om å fange ”flagget” først. Hvert lag får ei sone som skal\
       \ forsvare og en sone som skal angripes. Utfordringa blir å kode og bygge den\
@@ -921,7 +921,7 @@
       \ shuffleboard.\r\n\r\nDet vil bli lagt ut detaljerte regler sammen med kodebase\
       \ noen dager før kurset slik at alle stiller likt på kampadagen! Skulle du være\
       \ 1.klassing og føler du har nok javakunnskaper til å delta er det bare å sende\
-      \ mail til arrangør hvis det er ledige plasser."
+      \ mail til arrangør hvis det er ledige plasser.</p>"
     title: Lego Mindstorms med Itera
     cover: test_event_cover.png
     tags:
@@ -942,13 +942,13 @@
     event_type: event
     location: D12
     start_time: '2016-03-31T19:00:00+00:00'
-    text: "Tiden har kommet for at Mannhullet, Emil, Abakus, Smørekoppen og Janus\
+    text: "<p>Tiden har kommet for at Mannhullet, Emil, Abakus, Smørekoppen og Janus\
       \ forenes! Teknologivennefesten arrangeres 31. mars og er en fest for alle teknologiretningene.\
       \ \r\n\r\nEtter vors med hver respektive linje (teknologiretning for indøkere)\
       \ samles alle på D12 for en uforglemmelig kveld! \r\nVi har liveband som går\
       \ på kl. 23 og DJ utover kvelden. Dette vil dere ikke gå glipp av!\r\n\r\nVi\
       \ kjører felles vors på Håndverker'n.\r\nFor info gå inn på:\r\n[https://www.facebook.com/events/257452054586185/](https://www.facebook.com/events/257452054586185/).\r\
-      \n\r\n\r\nAntrekk:\r\nRødt!"
+      \n\r\n\r\nAntrekk:\r\nRødt!</p>"
     title: Teknologivennefest
     cover: test_event_cover.png
     tags:
@@ -969,14 +969,14 @@
     event_type: course
     location: H3
     start_time: '2016-03-15T17:15:00+00:00'
-    text: "Kurset vil være inndelt i tre deler. Hver del starter med 5-10 minutter\
+    text: "<p>Kurset vil være inndelt i tre deler. Hver del starter med 5-10 minutter\
       \ teori, etterfulgt av ca. 20 minutter der man får prøve selv.\r\n\r\n- Del\
       \ 1: Manuelt oppsett av webserver\r\n- Del 2: Automatisert oppsett av webserver\
       \   \r\n- Del 3: Fremtidens oppsett av webserver\r\n\r\nDet blir servert pizza\
       \ og sushi når kurset starter. Etter kurset tar vi turen til Brygghus 9 for\
       \ mingling. \r\n\r\nTa med deg PC. I forkant av kurset må du gjennomføre noen\
       \ enkle forberedelser, guide finner du [her](http://azurekurs.mastech.no). Gjør\
-      \ kun det som står under \"Forberedelser\". "
+      \ kun det som står under \"Forberedelser\". </p>"
     title: En reise hvor IT-infrastruktur blir kode
     cover: test_event_cover.png
     tags:
@@ -996,14 +996,14 @@
     event_type: course
     location: Dromedar Moxness, Olav Tryggvassonsgate 14
     start_time: '2016-03-13T16:00:00+00:00'
-    text: "Vi starter med en liten søtchilismak og litt kaker, før vi får vite litt\
+    text: "<p>Vi starter med en liten søtchilismak og litt kaker, før vi får vite litt\
       \ om kaffens lange vei fra busk til kopp. Deretter blir det en sammenlignende\
       \ smaking av kaffe fra verdens mest spennende opprinnelser (cupping). Tilslutt\
       \ teori og tips til hjemmekaffen av våre beste bryggemetoder (kalita, aeropress\
       \ og softbrew), og dette er direkte oveførbart til å heve nivået på kaffen man\
       \ lager i ettertid. \r\n\r\nDenne kvelden tar i underkant av tre timer, og kurset\
       \ går i Dromedar sitt kursrom på dromedar moxness. Legg merke til at kurset\
-      \ starter 16.00 (ikke 16.15). "
+      \ starter 16.00 (ikke 16.15). </p>"
     title: Kaffekurs hos Dromedar Kaffebar
     cover: test_event_cover.png
   model: events.Event
@@ -1019,7 +1019,7 @@
     event_type: other
     location: Radisson Blu Royal Garden
     start_time: '2016-03-10T17:00:00+00:00'
-    text: "Merk at arrangementet er eksternt og at påmeldingen foregår på [StartIT\
+    text: "<p>Merk at arrangementet er eksternt og at påmeldingen foregår på [StartIT\
       \ sine sider](https://startntnu.hoopla.no/sales/startit/) **3. mars**\r\n------------------\r\
       \n\r\n[Påmelding skjer ved å følge denne linken.](https://startntnu.hoopla.no/sales/startit/)\r\
       \n\r\nStartIT er et arrangement som har hovedfokus på innovasjon i teknologiverdenen.\
@@ -1033,7 +1033,7 @@
       \ vil du møte mennesker som har en idé eller som har et ønske om å en dag bli\
       \ gründer. Du trenger ikke ha en idé eller et ønske om å bli gründer for å delta,\
       \ men forhåpentligvis vil kvelden tenne en liten flamme. Dette gir alle mulighet\
-      \ til å knytte viktige kontakter for fremtiden."
+      \ til å knytte viktige kontakter for fremtiden.</p>"
     title: StartIT
     cover: test_event_cover.png
   model: events.Event
@@ -1051,7 +1051,7 @@
     event_type: course
     location: EL2
     start_time: '2016-03-09T16:00:00+00:00'
-    text: "Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
+    text: "<p>Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
       \ konsepter herfra brukes i stor grad i moderne frontendutvikling. Vi holder\
       \ oss unna rammeverk i første omgang, og ser heller på grunnleggende programmering\
       \ i javascript.\r\n\r\nPå dag to introduserer vi React - dagens ubestridte rammeverkkonge\
@@ -1061,7 +1061,7 @@
       \ er enkle å forstå og vedlikeholde.\r\n\r\nUnder kurset vil vi ha en pause\
       \ med bespisning og mingling, hvor vi etter pausen vil fortsette med kurset.\r\
       \n\r\nVi gjør oppmerksom på at deltakere på del 1 vil få prioritet på del 2\
-      \ & 3"
+      \ & 3</p>"
     title: Funksjonell programmering i Javascript med React og Redux 2 av 3
     cover: test_event_cover.png
   model: events.Event
@@ -1079,7 +1079,7 @@
     event_type: course
     location: EL1
     start_time: '2016-03-09T16:00:00+00:00'
-    text: "Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
+    text: "<p>Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
       \ webutvikling:\r\n\r\nFørste runde skal vi lære om de underliggende prinsippene\
       \ i webutvikling. Vi ser på hvordan CSS påvirker HTML og hvordan du kan bruke\
       \ CSS til å forandre hvordan nettleseren presenterer siden både i layout og\
@@ -1101,7 +1101,7 @@
       \r\n5. Åpne terminalen\r\n**For OS X**: finnes under Applications/Utilities/Terminal.\
       \ **For Windows**: klikk windows + r for å få opp run dialogen. skriv “cmd”\
       \ og trykk enter.\r\n\r\n6. Skriv node  --version i terminalen trykk enter.\
-      \ Hvis alt er i orden skal den svare med versjonsnummer, v5.7.1"
+      \ Hvis alt er i orden skal den svare med versjonsnummer, v5.7.1</p>"
     title: Webutvikling101 2 av 3
     cover: test_event_cover.png
   model: events.Event
@@ -1117,7 +1117,7 @@
     event_type: company_presentation
     location: Acandos lokaler i Trondheim
     start_time: '2016-03-08T17:00:00+00:00'
-    text: "Hos oss vil du jobbe med mange spennende kunder, prosjekter og problemstillinger.\
+    text: "<p>Hos oss vil du jobbe med mange spennende kunder, prosjekter og problemstillinger.\
       \ Våre kunder etterspør dyktige konsulenter som kan bistå dem med å realisere\
       \ nye løsninger basert på dagens og morgendagens teknologi. Vi forbedrer og\
       \ effektiviserer virksomheter, prosesser og tjenester ved hjelp av IKT. \r\n\
@@ -1128,7 +1128,7 @@
       \ godt sosialt miljø og legger vekt på å skape balanse mellom jobb og fritid.\r\
       \n\r\nBedriftspresentasjonen vil være i Acandos lokaler på Solsiden.\r\n\r\n\
       _Bedkom vil minne om at oppmøte er foran hovedbygget kl. 17:00, ventelisten\
-      \ åpner 17:10 og bussen kjører 17:15._"
+      \ åpner 17:10 og bussen kjører 17:15._</p>"
     title: Acando
     cover: test_event_cover.png
   model: events.Event
@@ -1146,7 +1146,7 @@
     event_type: course
     location: Bassengbakken 4
     start_time: '2016-03-07T17:15:00+00:00'
-    text: "Med litt enkel Javascript-programmering kan du gjøre alt dette. Du kan\
+    text: "<p>Med litt enkel Javascript-programmering kan du gjøre alt dette. Du kan\
       \ også legge på egne effekter, kjenne igjen farger og objekter, gjøre bakgrunner\
       \ gjennomsiktig og spille av musikkvideoer på en Post-It-lapp.\r\n\r\nSelve\
       \ programmeringen er ikke spesielt vanskelig, så her trenger du ikke være ekspert\
@@ -1165,7 +1165,7 @@
       \ og annerledes arbeidsplass. Vi lager IT-løsninger kundene vår ikke greier\
       \ seg uten. Hos oss blir du utfordret faglig i et prisbelønnet arbeidsmiljø.\
       \ Hos Kantega får alle mulighet til å bli likeverdige eiere i selskapet._ \r\
-      \n"
+      \n</p>"
     title: 'HTML5 Pixel-Magic '
     cover: test_event_cover.png
   model: events.Event
@@ -1179,7 +1179,7 @@
     event_type: event
     location: Sundmans Fjällgård, Åre
     start_time: '2016-03-05T09:00:00+00:00'
-    text: "I år arrangeres Helgesamlingen på Sundmans Fjellgård fra 5 - 6 mars. \r\
+    text: "<p>I år arrangeres Helgesamlingen på Sundmans Fjellgård fra 5 - 6 mars. \r\
       \n\r\nDet blir satt opp buss på dagen den 5. og hjem igjen dagen etter, 6. mars.\r\
       \n\r\nPakkeliste:  \r\n- Alkohol! Det blir stopp på Coop på veien, så det går\
       \ an å kjøpe drikke der (om man bestiller i forkant)  \r\n- Dynetrekk, putetrekk\
@@ -1192,7 +1192,7 @@
       \  \r\n18:00\tPause  \r\n18:30\tWorkshop  \r\n21:00\tMiddag  \r\n01:00\tNattmat\
       \  \r\n09:00\tFrokost  \r\n10:00\tRydding  \r\n11:00\tUtsjekk  \r\n11:30   Avreise\
       \   \r\n\r\nDet vil bli festligheter og morsomheter i full Abakusstil så det\
-      \ er bare å glede seg!"
+      \ er bare å glede seg!</p>"
     title: Helgesamling
     cover: test_event_cover.png
   model: events.Event
@@ -1208,7 +1208,7 @@
     event_type: other
     location: EL5
     start_time: '2016-03-04T16:15:00+00:00'
-    text: "Viktige dokumenter å gjøre seg kjent med i forkant:  \r\n---------------------------------------------------\r\
+    text: "<p>Viktige dokumenter å gjøre seg kjent med i forkant:  \r\n---------------------------------------------------\r\
       \n- [Referat fra åpen diskusjonskveld 8. februar](https://abakus.no/uploads/common/diskusjonskveld08022016.pdf)\
       \  \r\n- [Abakus' statutter](http://statutter.abakus.no/abakus-statutter.pdf)\
       \  \r\n- [Abakus' fonds statutter](http://statutter.abakus.no/fond-statutter.pdf)\r\
@@ -1249,7 +1249,7 @@
       \nLes mer om stillingene til Hovedstyret [her](https://abakus.no/announcement/71/)\
       \ og Fondsstyret [her](https://abakus.no/announcement/70/).\r\n\r\nDet vil bli\
       \ servert kake, kaffe, brus og pizza. Mer info kommer. Spørsmål kan sendes til\
-      \ hs@abakus.no Vel møtt!"
+      \ hs@abakus.no Vel møtt!</p>"
     title: Generalforsamling
     cover: test_event_cover.png
   model: events.Event
@@ -1269,7 +1269,7 @@
     event_type: company_presentation
     location: EL6
     start_time: '2016-03-03T17:00:00+00:00'
-    text: "Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter\
+    text: "<p>Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter\
       \ for store private og offentlige virksomheter innen strategisk rådgivning,\
       \ utvikling av IT-systemer og design av digitale tjenester. Vi er i dag over\
       \ 380 fagpersoner.\r\n\r\nVi arbeider innen:\r\n\r\n**MANAGEMENT CONSULTING**\r\
@@ -1286,7 +1286,7 @@
       \ målbare resultater. For oss er estetikk og brukeropplevelse en selvfølge og\
       \ ikke et mål i seg selv, enten vi utvikler for desktop, mobil, nettbrett, infoboards\
       \ eller tv.\r\n\r\n_Vi vil minne om at registreringen åpner 17.00, ventelisten\
-      \ åpner 17.10 og at arrangementet begynner 17.15._  "
+      \ åpner 17.10 og at arrangementet begynner 17.15._  </p>"
     title: BEKK
     cover: test_event_cover.png
     company: 1
