@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.mail import get_connection
 from structlog import get_logger
 
+from lego.apps.feed.registry import get_handler
 from lego.apps.restricted.models import RestrictedMail
 
 from .message import EmailMessage
@@ -22,16 +23,29 @@ class MessageProcessor:
         self.sender = sender
         self.message = message
         self.message_data = message_data
+        self.feed_handler = get_handler(RestrictedMail)
 
     def process_message(self):
         token = self.get_token(self.message)
         if not token:
-            log.critical('restricted_mail_no_token_found')
+            log.critical('restricted_mail_no_token_found', sender=self.sender)
+            # Notify about failure
+            self.feed_handler.handle_failure(
+                restricted_message=None,
+                sender=self.sender,
+                reason='TOKEN_NOT_FOUND'
+            )
             return None
 
         restricted_message = self.lookup_instance(self.sender, token)
         if restricted_message is None:
             log.critical('restricted_mail_token_not_found')
+            # Notify about failure
+            self.feed_handler.handle_failure(
+                restricted_message=None,
+                sender=self.sender,
+                reason='TOKEN_INVALID'
+            )
             return None
 
         recipients = restricted_message.lookup_recipients()
@@ -45,6 +59,9 @@ class MessageProcessor:
 
         self.send(recipients, sender, message)
         restricted_message.mark_used()
+
+        # Send a success message to the creator
+        self.feed_handler.handle_sent(restricted_message)
 
     def get_sender(self, restricted_mail):
         """
