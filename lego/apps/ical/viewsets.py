@@ -91,9 +91,9 @@ class ICalViewset(viewsets.ViewSet):
     def personal(self, request):
         """Personal ical route."""
         feed = feedgenerator.ICal20Feed(
-            title=f'ICalendar for user: {request.token_user.full_name}',
+            title=constants.ICAL_PERSONAL_TITLE,
             link=request.get_full_path,
-            description='List of favorite events and meetings from Abakus.no',
+            description=constants.ICAL_PERSONAL_DESC,
             language='nb',
         )
 
@@ -155,9 +155,9 @@ class ICalViewset(viewsets.ViewSet):
     def registrations(self, request):
         """Registration ical route."""
         feed = feedgenerator.ICal20Feed(
-            title=f'ICalendar for {request.token_user.full_name}',
+            title=constants.ICAL_REGISTRATIONS_TILE,
             link=request.get_full_path,
-            description='List of registration time for events from Abakus.no',
+            description=constants.ICAL_REGISTRATIONS_DESC,
             language='nb',
         )
 
@@ -200,9 +200,9 @@ class ICalViewset(viewsets.ViewSet):
     def events(self, request):
         """Event ical route."""
         feed = feedgenerator.ICal20Feed(
-            title=f'ICalendar for {request.token_user.full_name}',
+            title=constants.ICAL_EVENTS_TITLE,
             link=request.get_full_path,
-            description='List of events from Abakus.no',
+            description=constants.ICAL_EVENTS_DESC,
             language='nb',
         )
 
