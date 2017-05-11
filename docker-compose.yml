@@ -35,7 +35,7 @@ services:
       - '127.0.0.1:6379:6379'
 
   thumbor:
-    build : ./thumbor
+    image: apsl/thumbor:latest
     ports:
       - "127.0.0.1:10000:8000"
     environment:
