@@ -32,6 +32,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             'content'
         )
 
+
 class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     content = CharField()
