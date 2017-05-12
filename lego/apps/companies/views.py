@@ -1,8 +1,7 @@
 from rest_framework import mixins, viewsets
 from rest_framework.viewsets import GenericViewSet
 
-from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest,
-                                        SemesterStatus)
+from lego.apps.companies.models import Company, CompanyContact, CompanyInterest, SemesterStatus
 from lego.apps.companies.permissions import CompanyPermissions
 from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerializer,
                                              CompanyContactReadSerializer,
