@@ -33,6 +33,23 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
         )
 
 
+class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
+    cover = ImageField(required=False, options={'height': 500})
+    content = CharField()
+
+    class Meta:
+        model = Article
+        fields = (
+            'id',
+            'title',
+            'cover',
+            'author',
+            'description',
+            'tags',
+            'content'
+        )
+
+
 class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     cover = ImageField(required=False, options={'height': 300})
