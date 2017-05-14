@@ -86,12 +86,12 @@ def async_register(self, registration_id):
 @celery_app.task(serializer='json', bind=True, default_retry_delay=30)
 def async_unregister(self, registration_id):
     registration = Registration.objects.get(id=registration_id)
-    pool = registration.pool
+    pool_id = registration.pool_id
     try:
         with transaction.atomic():
             registration.event.unregister(registration)
             transaction.on_commit(lambda: notify_event_registration(
-                constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool.id
+                constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool_id
             ))
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
