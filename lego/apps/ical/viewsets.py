@@ -48,8 +48,6 @@ class ICalViewset(viewsets.ViewSet):
     """
     API Endpoint to get ICalendar files for different kinds of events and meetings.
 
-    To get a token, see [token](../token/).
-
     usage: [events/?token=yourtoken](events/?token=yourtoken)
     """
 
