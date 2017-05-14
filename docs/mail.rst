@@ -58,8 +58,7 @@ main.cf
 Relay settings / Transports
 ***************************
 
-We use smtp.stud.ntnu.no for @stud.ntnu.no addresses and SendGrid for all other recipients. We does
-this because SendGrid gets blocked by NTNU.
+We use ``smtp-relay.gmail.com`` for outgoing mail.
 
 main.cf
 ::
@@ -68,27 +67,18 @@ main.cf
     smtp_sasl_security_options = noanonymous
     header_size_limit = 4096000
     smtp_tls_policy_maps = hash:/etc/postfix/tls_policy
-    smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwords
     transport_maps = hash:/etc/postfix/transport
 
 tls_policy
 ::
 
-    smtp.stud.ntnu.no		may
-    [smtp.sendgrid.net]:587		encrypt
-
-sasl_passwords
-::
-
-    [smtp.sendgrid.net]:587	<username>:<password>
+    [smtp-relay.gmail.com]:587	encrypt
 
 transport
 ::
 
     <restricted_address>@<restricted_domain>    lmtp:[<lmtp_host>]:<lmtp_port>
-    stud.ntnu.no	smtp:[smtp.stud.ntnu.no]
-    *		smtp:[smtp.sendgrid.net]:587
-
+    * 		smtp:[smtp-relay.gmail.com]:587
 
 
 Other common settings
