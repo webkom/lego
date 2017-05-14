@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 SITE = {
-    'name': 'Lego',
+    'name': 'LEGO',
     'slogan': 'LEGO Er Ganske Oppdelt',
     'contact_email': 'webkom@abakus.no',
     'documentation_url': '/docs/',

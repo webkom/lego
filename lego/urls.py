@@ -2,8 +2,10 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib.auth.views import login, logout
 from django.views.generic import TemplateView
+from rest_framework.documentation import include_docs_urls
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
+from lego.api.urls import urlpatterns as api
 from lego.apps.health.urls import urlpatterns as health_urlpatterns
 
 jwt_urlpatterns = [
@@ -23,6 +25,10 @@ urlpatterns = [
     url(r'^api/', include('lego.api.urls', namespace='api')),
     url(r'^authorization/', include(authorization_urlpatterns)),
     url(r'^', include(health_urlpatterns, namespace='health')),
+    url(r'^api-docs/', include_docs_urls(
+        title=settings.SITE['name'], description=settings.SITE['slogan'],
+        patterns=api, schema_url='/api'
+    )),
     url(r'^$', TemplateView.as_view(template_name='landing.html'), name='landing_page'),
 ]
 
