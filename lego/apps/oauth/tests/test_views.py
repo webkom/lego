@@ -11,7 +11,7 @@ class OauthViewsTestCase(APITestCase):
 
     def setUp(self):
         self.user = User.objects.get(id=1)
-        self.url = '/api/v1/oauth2/access-tokens/'
+        self.url = '/api/v1/oauth2-access-tokens/'
 
     def test_list_tokens_no_auth(self):
         """Make sure a unauthenticated user not have access to the token view."""
@@ -50,7 +50,7 @@ class OauthApplicationViewsTestCase(APITestCase):
 
     def setUp(self):
         self.user = User.objects.get(id=1)  # Normal user with no permissions
-        self.url = '/api/v1/oauth2/applications/'
+        self.url = '/api/v1/oauth2-applications/'
 
     def test_list_applications_no_auth(self):
         """Make sure permissions and authentication is required to display oauth applications.

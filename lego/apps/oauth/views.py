@@ -18,23 +18,30 @@ class LegoAuthorizationView(AuthorizationView):
 
 class ApplicationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     """
-    Manage applications. This viewset requires keyword permissions, but object permissions can be
-    implemented when we opens up / if we opens up the API.
+    list:
+    List all applications the current user us responsible for.
     """
     serializer_class = ApplicationSerializer
-    queryset = APIApplication.objects.all()
     ordering = 'id'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return APIApplication.objects.filter(user=self.request.user)
+        return APIApplication.objects.none()
 
 
 class AccessTokenViewSet(mixins.ListModelMixin,
                          mixins.DestroyModelMixin,
                          viewsets.GenericViewSet):
     """
-    List access tokens. This list is filtered based on the current user.
+    list:
+    List grants or access-tokens the current user has created.
+
+    destroy:
+    Delete an access token created by the user.
     """
     serializer_class = AccessTokenSerializer
     permission_classes = [permissions.IsAuthenticated]
-    queryset = AccessToken.objects.all()
     ordering = 'id'
 
     def get_queryset(self):

@@ -12,7 +12,7 @@ class SlackInviteTestCase(APITestCase):
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
-        self.url = '/api/v1/slack/invite/'
+        self.url = '/api/v1/slack-invite/'
 
     def test_invite_no_auth(self):
         response = self.client.post(self.url, {'email': 'test@test.com'})

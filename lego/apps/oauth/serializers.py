@@ -9,9 +9,24 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = APIApplication
-        fields = ['id', 'name', 'description', 'user', 'redirect_uris', 'client_type',
-                  'authorization_grant_type', 'client_id', 'client_secret', 'skip_authorization']
-        read_only_fields = ['client_id', 'client_secret']
+        fields = [
+            'id', 'name', 'description', 'redirect_uris', 'client_id', 'client_secret',
+        ]
+        read_only_fields = ['client_id', 'client_secret', 'user']
+
+    def save(self, **kwargs):
+        """
+        Save application with secure parameters.
+
+        """
+        request = self.context['request']
+        kwargs['user'] = request.user
+        kwargs.update({
+            'skip_authorization': False,
+            'client_type': APIApplication.CLIENT_PUBLIC,
+            'authorization_grant_type': APIApplication.GRANT_AUTHORIZATION_CODE,
+        })
+        super().save(**kwargs)
 
 
 class AccessTokenSerializer(serializers.ModelSerializer):
