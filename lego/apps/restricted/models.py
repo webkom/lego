@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from structlog import get_logger
 
 from lego.utils.models import BasisModel
@@ -24,13 +25,13 @@ class RestrictedMail(BasisModel):
 
     from_address = models.EmailField(db_index=True)
     hide_sender = models.BooleanField(default=False)
-    token = models.CharField(max_length=128, db_index=True)
+    token = models.CharField(max_length=128, db_index=True, unique=True)
     used = models.DateTimeField(null=True)
 
-    users = models.ManyToManyField('users.User')
-    groups = models.ManyToManyField('users.AbakusGroup')
-    events = models.ManyToManyField('events.Event')
-    meetings = models.ManyToManyField('meetings.Meeting')
+    users = models.ManyToManyField('users.User', blank=True)
+    groups = models.ManyToManyField('users.AbakusGroup', blank=True)
+    events = models.ManyToManyField('events.Event', blank=True)
+    meetings = models.ManyToManyField('meetings.Meeting', blank=True)
     raw_addresses = ArrayField(models.EmailField(), null=True)
 
     @classmethod
@@ -75,3 +76,8 @@ class RestrictedMail(BasisModel):
         timestamp = timestamp or timezone.now()
         self.used = timestamp
         self.save()
+
+    @staticmethod
+    def create_token():
+        token = get_random_string(128)
+        return token
