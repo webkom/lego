@@ -1,6 +1,9 @@
 Authentication
 ==============
 
+Lego uses CORS to deny requests from other domains than the once we control. OAuth2 authorization
+is required if you want to create an app that consumes information from the Lego API.
+
 JSON Web Tokens
 ---------------
 
@@ -11,13 +14,20 @@ This will return a token, which can later be used with the following header:
 To refresh a token, post to ``/api/token-auth/refresh`` with the token in the body.
 Both these endpoints can be used with JSON and regular forms.
 
+The webapp uses this authentication flow, third party apps should use OAuth2.
+
 OAuth2
 ------
 
 Lego has support for OAuth2 authentication using the ``authorization-code`` method. Everyone with
 a valid user and the right permissions is able to create an OAuth2 application. This works in the
-same way as ``Login with GitHub`` or any other OAuth2 system. The snippet bellow can be used
-together with ``python-social-auth`` to authenticate with Lego as the user directory.
+same way as ``Login with GitHub`` or any other OAuth2 system.
+
+You should newer expose the ``client_secret`` to the public. Never implement the OAuth2
+authorization flow in a browser.
+
+The snippet bellow can be used together with ``python-social-auth`` to authenticate with Lego as
+the user directory.
 
 ::
 
