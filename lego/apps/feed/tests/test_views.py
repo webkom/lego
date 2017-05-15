@@ -22,7 +22,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
-        self.url = '/api/v1/feed/notifications/'
+        self.url = '/api/v1/feed-notifications/'
 
         self.user = User.objects.get(id=1)
         self.second_user = User.objects.get(id=2)

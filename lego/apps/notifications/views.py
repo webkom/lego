@@ -8,6 +8,13 @@ from .serializers import NotificationSettingCreateSerializer, NotificationSettin
 
 
 class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Manage the notification channels to the authenticated users.
+    The default is to send all notifications on all channels.
+
+    list:
+    List all existing settings.
+    """
 
     permission_classes = (permissions.IsAuthenticated, )
     pagination_class = None
