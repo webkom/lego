@@ -20,7 +20,9 @@
                                 <form id="authorizationForm" method="post">
                                     {% csrf_token %}
 
-                                    <h1 class="title">{{ application.name }}</h1>
+                                    <h1 class="title has-text-centered">{{ application.name }}</h1>
+                                    <p class="has-text-centered">by <a href="mailto:{{ application.user.email }}">{{ application.user.full_name }}</a></p>
+                                    <br/>
                                     <h2 class="subtitle">{{ application.description }}</h2>
 
                                     <div class="content">
@@ -38,6 +40,16 @@
                                         {% endif %}
                                     {% endfor %}
 
+
+                                    <div class="content">
+                                        <p class="has-text-centered">
+                                            <strong>
+                                                Never grant access to an application you don't trust.
+                                                Contact <a href="mailto:{{ SITE.contact_email }}">{{ SITE.owner }}</a> for more information.
+                                            </strong>
+                                        </p>
+                                    </div>
+
                                     <div class="control is-grouped is-pulled-right">
                                         <p class="control">
                                             <input type="submit" class="button is-outlined is-danger" value="Cancel" />
@@ -46,6 +58,7 @@
                                             <input type="submit" class="button is-outlined is-pulled-right" name="allow" value="Authorize" />
                                         </p>
                                     </div>
+
                                 </form>
                                 <div class="is-clearfix"></div>
 
