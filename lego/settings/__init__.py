@@ -26,6 +26,6 @@ else:
 DEFAULT_FROM_EMAIL = SERVER_EMAIL  # noqa
 
 CORS_ORIGIN_WHITELIST = list({
-    urlparse(FRONTEND_URL).netloc,
+    urlparse(FRONTEND_URL).netloc,  # noqa
     '127.0.0.1:3000',
 })
