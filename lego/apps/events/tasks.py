@@ -11,9 +11,10 @@ from lego import celery_app
 from lego.apps.events import constants
 from lego.apps.events.exceptions import EventHasStarted
 from lego.apps.events.models import Event, Registration
+from lego.apps.events.serializers.registrations import StripeObjectSerializer
+from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
+                                         notify_user_registration)
 from lego.apps.feed.registry import get_handler
-
-from .websockets import notify_event_registration, notify_user_registration
 
 log = get_logger()
 
@@ -38,7 +39,7 @@ class Payment(celery_app.Task):
     def on_retry(self, *args):
         notify_user_registration(
             constants.SOCKET_PAYMENT_FAILURE, self.registration,
-            f'Payment failed, retrying #{self.request.retries+1}'
+            error_msg=f'Payment failed, retrying #{self.request.retries+1}'
         )
 
     def on_failure(self, return_value, *args):
@@ -49,13 +50,13 @@ class Payment(celery_app.Task):
                 self.registration.charge_status = error['code']
                 self.registration.save()
                 notify_user_registration(
-                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error['message']
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error_msg=error['message']
                 )
             else:
                 self.registration.charge_status = constants.PAYMENT_FAILURE
                 self.registration.save()
                 notify_user_registration(
-                    constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Payment failed'
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error_msg='Payment failed'
                 )
             # TODO: Notify about payment failure!
 
@@ -90,8 +91,10 @@ def async_unregister(self, registration_id):
     try:
         with transaction.atomic():
             registration.event.unregister(registration)
+            activation_time = registration.event.get_earliest_registration_time(registration.user)
             transaction.on_commit(lambda: notify_event_registration(
-                constants.SOCKET_UNREGISTRATION_SUCCESS, registration, pool_id
+                constants.SOCKET_UNREGISTRATION_SUCCESS, registration,
+                from_pool=pool_id, activation_time=activation_time
             ))
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
@@ -131,8 +134,8 @@ def async_payment(self, registration_id, token):
         log.error('invalid_request', exception=e, registration_id=self.registration.id)
         self.registration.charge_status = e.json_body['error']['type']
         self.registration.save()
-        notify_user_registration(
-            constants.SOCKET_PAYMENT_FAILURE, self.registration, 'Invalid request'
+        notify_user_payment(
+            constants.SOCKET_PAYMENT_FAILURE, self.registration, error_msg='Invalid request'
         )
     except stripe.error.StripeError as e:
         log.error('stripe_error', exception=e, registration_id=self.registration.id)
@@ -155,7 +158,6 @@ def registration_save(self, result, registration_id):
 
 @celery_app.task(serializer='json')
 def stripe_webhook_event(event_id, event_type):
-    from lego.apps.events.serializers import StripeObjectSerializer
     if event_type in ['charge.failed', 'charge.refunded', 'charge.succeeded']:
         event = stripe.Event.retrieve(event_id)
         serializer = StripeObjectSerializer(data=event.data['object'])
