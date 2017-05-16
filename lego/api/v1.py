@@ -39,7 +39,7 @@ router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
-router.register(r'webhooks', StripeWebhook, base_name='webhooks')
+router.register(r'webhooks-stripe', StripeWebhook, base_name='webhooks')
 router.register(r'groups', AbakusGroupViewSet)
 router.register(r'interest-groups', InterestGroupViewSet)
 router.register(r'meetings', MeetingViewSet)

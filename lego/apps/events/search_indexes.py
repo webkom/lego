@@ -1,8 +1,7 @@
+from lego.apps.events.models import Event
+from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
-
-from .models import Event
-from .serializers import EventSearchSerializer
 
 
 class EventModelIndex(SearchIndex):
