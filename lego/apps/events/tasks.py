@@ -94,7 +94,7 @@ def async_unregister(self, registration_id):
             activation_time = registration.event.get_earliest_registration_time(registration.user)
             transaction.on_commit(lambda: notify_event_registration(
                 constants.SOCKET_UNREGISTRATION_SUCCESS, registration,
-                from_pool=pool_id, activation_time=activation_time.isoformat()
+                from_pool=pool_id, activation_time=activation_time
             ))
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)

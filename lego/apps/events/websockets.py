@@ -1,23 +1,12 @@
 from datetime import datetime
 
 from lego.apps.events.models import Event
-from lego.apps.events.serializers.events import EventReadDetailedSerializer
-from lego.apps.events.serializers.registrations import RegistrationReadSerializer, RegistrationPaymentReadSerializer
-from lego.apps.events.serializers.sockets import (WebsocketSerializer)
+from lego.apps.events.serializers.sockets import (EventReadDetailedSocketSerializer,
+                                                  RegistrationPaymentReadSocketSerializer,
+                                                  RegistrationReadSocketSerializer)
 from lego.apps.permissions.filters import filter_queryset
 from lego.apps.websockets.groups import group_for_event, group_for_user
 from lego.apps.websockets.notifiers import notify_group
-
-
-def socket_response_creator(action_type, payload, meta, payload_serializer, context=None):
-
-    serializer = WebsocketSerializer(data={
-        'type': action_type,
-        'payload': payload_serializer(payload).data,
-        'meta': meta
-    }, context=context)
-    serializer.is_valid(raise_exception=True)
-    return serializer.validated_data
 
 
 def find_event_groups(user):
@@ -37,36 +26,44 @@ def find_event_groups(user):
 
 def notify_event_registration(action_type, registration, **kwargs):
     group = group_for_event(registration.event)
-    response = socket_response_creator(
-        action_type, registration, kwargs, RegistrationReadSerializer,
-        context={'user': registration.user}
-    )
-    notify_group(group, response)
+    kwargs['event_id'] = registration.event.id
+    serializer = RegistrationReadSocketSerializer({
+        'type': action_type,
+        'payload': registration,
+        'meta': kwargs
+    }, context={'user': registration.user})
+    notify_group(group, serializer.data)
 
 
 def notify_user_payment(action_type, registration, **kwargs):
     group = group_for_user(registration.user)
     kwargs['event_id'] = registration.event.id
-    response = socket_response_creator(
-        action_type, registration, kwargs, RegistrationPaymentReadSerializer,
-        context={'user': registration.user}
-    )
-    notify_group(group, response)
+    serializer = RegistrationPaymentReadSocketSerializer({
+        'type': action_type,
+        'payload': registration,
+        'meta': kwargs
+    }, context={'user': registration.user})
+    notify_group(group, serializer.data)
 
 
 def notify_user_registration(action_type, registration, **kwargs):
     group = group_for_user(registration.user)
     kwargs['event_id'] = registration.event.id
-    response = socket_response_creator(
-        action_type, registration, kwargs, RegistrationReadSerializer,
-        context={'user': registration.user}
-    )
+    serializer = RegistrationReadSocketSerializer({
+        'type': action_type,
+        'payload': registration,
+        'meta': kwargs
+    }, context={'user': registration.user})
 
-    notify_group(group, response)
+    notify_group(group, serializer.data)
 
 
 def notify_event_updated(event, **kwargs):
     group = group_for_event(event)
-    response = socket_response_creator('SOCKET_EVENT_UPDATED', event, kwargs, EventReadDetailedSerializer)
+    serializer = EventReadDetailedSocketSerializer({
+        'type': 'SOCKET_EVENT_UPDATED',
+        'payload': event,
+        'meta': kwargs
+    })
 
-    notify_group(group, response)
+    notify_group(group, serializer.data)
