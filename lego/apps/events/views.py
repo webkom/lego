@@ -12,15 +12,16 @@ from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import (AdministratePermissions, AdminRegistrationPermissions,
                                           PoolPermissions, RegistrationPermissions)
-from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
-                                          EventAdministrateSerializer,
-                                          EventCreateAndUpdateSerializer,
-                                          EventReadDetailedSerializer, EventReadSerializer,
-                                          PoolCreateAndUpdateSerializer,
-                                          RegistrationCreateAndUpdateSerializer,
-                                          RegistrationPaymentReadSerializer,
-                                          RegistrationReadDetailedSerializer,
-                                          RegistrationReadSerializer, StripeTokenSerializer)
+from lego.apps.events.serializers.events import (EventAdministrateSerializer,
+                                                 EventCreateAndUpdateSerializer,
+                                                 EventReadDetailedSerializer, EventReadSerializer)
+from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
+from lego.apps.events.serializers.registrations import (AdminRegistrationCreateAndUpdateSerializer,
+                                                        RegistrationCreateAndUpdateSerializer,
+                                                        RegistrationPaymentReadSerializer,
+                                                        RegistrationReadDetailedSerializer,
+                                                        RegistrationReadSerializer,
+                                                        StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
                                     registration_save)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
