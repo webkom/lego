@@ -36,7 +36,7 @@ djangorestframework-camel-case==0.2.0
 django-extensions==1.7.9
 django-autoslug==1.9.3
 django-oauth-toolkit==0.12.0
-django-filter==1.0.2
+django-filter==1.0.3
 django-cors-headers==2.0.2
 django-mptt==0.8.7
 django-environ==0.4.3
