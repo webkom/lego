@@ -1,6 +1,5 @@
 import os
 import sys
-from urllib.parse import urlparse
 
 TESTING = 'test' in sys.argv[:2]
 WS_SERVER = 'runworker' in sys.argv or 'daphne' in sys.argv
@@ -24,8 +23,3 @@ else:
             raise ImportError('Couldn\'t load local settings lego.settings.local')
 
 DEFAULT_FROM_EMAIL = SERVER_EMAIL  # noqa
-
-CORS_ORIGIN_WHITELIST = list({
-    urlparse(FRONTEND_URL).netloc,  # noqa
-    '127.0.0.1:3000',
-})
