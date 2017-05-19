@@ -1,0 +1,60 @@
+{
+	"version": "13",
+	"credential": {
+		"accessKey": "123456789",
+		"secretKey": "123456789"
+	},
+	"region": "us-east-1",
+	"logger": {
+		"console": {
+			"enable": true,
+			"level": "fatal"
+		},
+		"file": {
+			"enable": false,
+			"fileName": "",
+			"level": "error"
+		}
+	},
+	"notify": {
+		"amqp": {
+			"1": {
+				"enable": false,
+				"url": "",
+				"exchange": "",
+				"routingKey": "",
+				"exchangeType": "",
+				"mandatory": false,
+				"immediate": false,
+				"durable": false,
+				"internal": false,
+				"noWait": false,
+				"autoDeleted": false
+			}
+		},
+		"nats": null,
+		"elasticsearch": {
+			"1": {
+				"enable": false,
+				"url": "",
+				"index": ""
+			}
+		},
+		"redis": {
+			"1": {
+				"enable": false,
+				"address": "",
+				"password": "",
+				"key": ""
+			}
+		},
+		"postgresql": null,
+		"kafka": null,
+		"webhook": {
+			"1": {
+				"enable": true,
+				"endpoint": "http://10.22.72.124:8000/api/v1/files/file_created/"
+			}
+		}
+	}
+}

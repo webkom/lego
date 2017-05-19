@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from lego.apps.files.exceptions import UnknownFileType
 
 from .models import File
+from .constants import READY
 from .serializers import FileUploadSerializer
 from .utils import prepare_file_upload
 from .validators import KEY_REGEX_RAW
@@ -53,3 +54,18 @@ class FileViewSet(viewsets.GenericViewSet):
         instance = self.get_object()
         instance.upload_done()
         return Response({})
+
+    @decorators.list_route(
+        methods=['POST'],
+        permission_classes=[permissions.AllowAny]
+    )
+    def file_created(self, request, *args, **kwargs):
+        """
+        The client is redirected to this view when a upload succeeds. This view will inform the
+        client with necessary data to change a file on a instance.
+        """
+        fileKey = request.data['records'][0]['s3']['object']['key']
+        file = self.queryset.get(pk=fileKey)
+        file.state = READY
+        file.save()
+        return Response()
