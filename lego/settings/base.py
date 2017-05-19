@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'mptt',
     'channels',
     'django_thumbor',
+    'django_filters',
 
     'lego.utils',
     'lego.apps.users',
