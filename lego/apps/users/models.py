@@ -135,7 +135,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
-    email = models.EmailField('email address', blank=True)
+    email = models.EmailField('email address', unique=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
