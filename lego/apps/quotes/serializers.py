@@ -31,4 +31,4 @@ class QuoteCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Quote
-        fields = ('id', 'text', 'source', 'approved', 'tags')
+        fields = ('id', 'text', 'source', 'tags')
