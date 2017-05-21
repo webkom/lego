@@ -1,10 +1,10 @@
 from django.conf import settings
 from rest_framework import permissions, serializers, status, viewsets
-from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
+from stripe import SignatureVerificationError
+from stripe.webhook import WebhookSignature
 
 from lego.apps.events.tasks import stripe_webhook_event
-from lego.apps.users.models import User
 
 
 class StripeWebhookSerializer(serializers.Serializer):
@@ -12,18 +12,29 @@ class StripeWebhookSerializer(serializers.Serializer):
     type = serializers.CharField()
 
 
-class StripeAuthentication(BasicAuthentication):
+class StripeWebhookPermission(permissions.BasePermission):
+    """
+    Check the HTTP_STRIPE_SIGNATURE header and grant access to valid requests.
+    """
 
-    def authenticate_credentials(self, userid, password):
-        if userid == settings.STRIPE_WEBHOOK_USERNAME \
-                and password == settings.STRIPE_WEBHOOK_PASSWORD:
-            return User(), None
-        return None
+    def has_permission(self, request, view):
+        secret = getattr(settings, 'STRIPE_WEBHOOK_SECRET', None)
+        request_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+
+        if not (secret and request_header):
+            return False
+
+        try:
+            WebhookSignature.verify_header(request.data, request_header, secret, 300)
+        except SignatureVerificationError:
+            return False
+
+        return True
 
 
 class StripeWebhook(viewsets.GenericViewSet):
-    authentication_classes = [StripeAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = []
+    permission_classes = [StripeWebhookPermission]
     serializer_class = StripeWebhookSerializer
 
     def create(self, request):
