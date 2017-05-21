@@ -52,4 +52,4 @@ class FileViewSet(viewsets.GenericViewSet):
         """
         instance = self.get_object()
         instance.upload_done()
-        return Response({})
+        return Response({}, headers={'Access-Control-Allow-Origin': '*'})

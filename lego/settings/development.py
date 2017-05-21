@@ -18,8 +18,8 @@ stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
 
 CAPTCHA_KEY = os.environ.get('CAPTCHA_KEY')
 
-WEBHOOK_USERNAME = 'stripe'
-WEBHOOK_PASSWORD = 'webhook'
+STRIPE_WEBHOOK_USERNAME = 'stripe'
+STRIPE_WEBHOOK_PASSWORD = 'webhook'
 
 DATABASES = {
     'default': {

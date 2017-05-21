@@ -66,6 +66,10 @@ spec:
           value: "{{ .Values.backend.config.cassandra_keyspace }}"
         - name: STRIPE_API_KEY
           value: "{{ .Values.backend.config.stripe_api_key }}"
+        - name: STRIPE_WEBHOOK_USERNAME
+          value: "{{ .Values.backend.config.stripe_webhook_username }}"
+        - name: STRIPE_WEBHOOK_PASSWORD
+          value: "{{ .Values.backend.config.stripe_webhook_password }}"
         - name: CAPTCHA_KEY
           value: "{{ .Values.backend.config.captcha_key }}"
         - name: LDAP_SERVER

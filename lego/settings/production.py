@@ -88,6 +88,8 @@ ELASTICSEARCH = [
 
 # Stripe
 stripe.api_key = env('STRIPE_API_KEY')
+STRIPE_WEBHOOK_USERNAME = env('STRIPE_WEBHOOK_USERNAME')
+STRIPE_WEBHOOK_PASSWORD = env('STRIPE_WEBHOOK_PASSWORD')
 
 # Captcha
 CAPTCHA_KEY = env('CAPTCHA_KEY')
@@ -105,5 +107,6 @@ STATSD_PREFIX = env('STATSD_PREFIX', default='lego_prod')
 # CORS
 CORS_ORIGIN_WHITELIST = list({
     urlparse(FRONTEND_URL).netloc,
-    '127.0.0.1:3000'
+    '127.0.0.1:3000',
+    'localhost:3000'
 })

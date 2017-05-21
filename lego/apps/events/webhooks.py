@@ -15,7 +15,8 @@ class StripeWebhookSerializer(serializers.Serializer):
 class StripeAuthentication(BasicAuthentication):
 
     def authenticate_credentials(self, userid, password):
-        if userid == settings.WEBHOOK_USERNAME and password == settings.WEBHOOK_PASSWORD:
+        if userid == settings.STRIPE_WEBHOOK_USERNAME \
+                and password == settings.STRIPE_WEBHOOK_PASSWORD:
             return User(), None
         return None
 
