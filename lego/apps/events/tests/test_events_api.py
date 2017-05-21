@@ -106,7 +106,7 @@ def _get_registrations_detail_url(event_pk, registration_pk):
 
 
 def _get_webhook_url():
-    return reverse('api:v1:webhooks-list')
+    return reverse('api:v1:webhooks-stripe-list')
 
 
 class ListEventsTestCase(APITestCase):
