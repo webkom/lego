@@ -47,15 +47,15 @@ class TagSerializerMixin(serializers.Serializer):
         return instance
 
     def update(self, instance, validated_data):
-        tags = validated_data.pop('tags', [])
+        tags = validated_data.pop('tags', None)
 
         with transaction.atomic():
             instance = super().update(instance, validated_data)
 
-            for tag in tags:
-                Tag.objects.get_or_create(pk=tag)
+            if tags is not None:
+                for tag in tags:
+                    Tag.objects.get_or_create(pk=tag)
 
-            if tags:
                 instance.tags = tags
                 instance.save()
 
