@@ -14,12 +14,9 @@ FRONTEND_URL = 'http://127.0.0.1:3000'
 SERVER_EMAIL = 'Abakus Webkom <webkom@abakus.no>'
 
 SECRET_KEY = 'secret'
+
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
-
 CAPTCHA_KEY = os.environ.get('CAPTCHA_KEY')
-
-STRIPE_WEBHOOK_USERNAME = 'stripe'
-STRIPE_WEBHOOK_PASSWORD = 'webhook'
 
 DATABASES = {
     'default': {

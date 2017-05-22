@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.users.models import AbakusGroup, User
 
 from .utils import create_token
@@ -103,10 +104,6 @@ def _get_registrations_list_url(event_pk):
 def _get_registrations_detail_url(event_pk, registration_pk):
     return reverse('api:v1:registrations-detail', kwargs={'event_pk': event_pk,
                                                           'pk': registration_pk})
-
-
-def _get_webhook_url():
-    return reverse('api:v1:webhooks-stripe-list')
 
 
 class ListEventsTestCase(APITestCase):
@@ -646,7 +643,7 @@ class StripePaymentTestCase(APITestCase):
         get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
         self.assertEqual(get_object.data.get('charge_status'), 'succeeded')
 
-    def test_refund_webhook(self):
+    def test_refund_task(self):
         token = create_token('4242424242424242', '123')
         self.issue_payment(token)
         registration = Registration.objects.get(event=self.event, user=self.abakus_user)
@@ -661,14 +658,10 @@ class StripePaymentTestCase(APITestCase):
                 break
         self.assertIsNotNone(stripe_event)
 
-        webhook = self.client.post(_get_webhook_url(), {
-            'id': stripe_event.id,
-            'type': 'charge.refunded'
-        })
+        stripe_webhook_event.delay(event_id=stripe_event.id, event_type='charge.refunded')
 
         registration.refresh_from_db()
 
-        self.assertEqual(webhook.status_code, 200)
         self.assertEqual(registration.charge_status, 'succeeded')
         self.assertEqual(registration.charge_amount, 10000)
         self.assertEqual(registration.charge_amount_refunded, 10000)
