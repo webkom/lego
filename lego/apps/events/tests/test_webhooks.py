@@ -24,7 +24,9 @@ class StripeWebhookTestCase(APITestCase):
         response = self.client.post(self.url, {}, HTTP_STRIPE_SIGNATURE='invalid')
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        mock_verify_header.assert_called_once_with({}, 'invalid', 'test_secret', 300)
+        mock_verify_header.assert_called_once_with(
+            '{}', 'invalid', 'test_secret', 300
+        )
 
     @mock.patch('lego.apps.events.webhooks.WebhookSignature.verify_header', return_value=None)
     @mock.patch('lego.apps.events.webhooks.stripe_webhook_event.delay', return_value=None)
@@ -39,4 +41,16 @@ class StripeWebhookTestCase(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
         mock_task.assert_called_once_with(event_id='id', event_type='charge.refunded')
-        mock_verify_header.assert_called_once_with(payload, 'valid', 'test_secret', 300)
+        mock_verify_header.assert_called_once_with(
+            '{"id":"id","type":"charge.refunded"}', 'valid', 'test_secret', 300
+        )
+
+    @mock.patch('lego.apps.events.webhooks.stripe_webhook_event.delay', return_value=None)
+    def test_deny_by_stripe_library(self, mock_webhook_event):
+        payload = {
+            'id': 'id',
+            'type': 'charge.refunded'
+        }
+
+        response = self.client.post(self.url, payload, HTTP_STRIPE_SIGNATURE='valid')
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
