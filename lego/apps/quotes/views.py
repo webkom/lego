@@ -14,7 +14,7 @@ from lego.apps.quotes.serializers import (QuoteCreateAndUpdateSerializer, QuoteD
 
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    queryset = Quote.objects.all()
+    queryset = Quote.objects.all().prefetch_related('tags')
     filter_backends = (filters.DjangoFilterBackend, QuoteModelFilter)
     filter_class = QuotesFilterSet
     permission_classes = (QuotePermissions, )
@@ -25,9 +25,6 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return QuoteCreateAndUpdateSerializer
         return QuoteSerializer
-
-    def get_queryset(self):
-        return self.queryset.prefetch_related('tags')
 
     @detail_route(methods=['PUT'])
     def approve(self, *args, **kwargs):
