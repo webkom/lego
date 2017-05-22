@@ -1,3 +1,4 @@
+from django.core.validators import validate_slug
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
@@ -6,6 +7,7 @@ from lego.apps.tags.models import Tag
 
 
 class TagSerializer(ModelSerializer):
+
     class Meta:
         model = Tag
         fields = ('tag',)
@@ -15,6 +17,11 @@ class TagSerializer(ModelSerializer):
 
     def to_internal_value(self, data):
         return data
+
+    def get_validators(self):
+        validators = super().get_validators()
+        validators.append(validate_slug)
+        return validators
 
 
 class TagSerializerMixin(serializers.Serializer):
@@ -27,9 +34,10 @@ class TagSerializerMixin(serializers.Serializer):
 
     def create(self, validated_data):
         tags = [tag for tag in validated_data.pop('tags')]
-        instance = super().create(validated_data)
 
         with transaction.atomic():
+            instance = super().create(validated_data)
+
             for tag in tags:
                 Tag.objects.get_or_create(pk=tag)
             if tags:
@@ -40,9 +48,10 @@ class TagSerializerMixin(serializers.Serializer):
 
     def update(self, instance, validated_data):
         tags = [tag for tag in validated_data.pop('tags')]
-        instance = super().update(instance, validated_data)
 
         with transaction.atomic():
+            instance = super().update(instance, validated_data)
+
             for tag in tags:
                 Tag.objects.get_or_create(pk=tag)
             if tags:

@@ -64,3 +64,12 @@ class TagsTestCase(APITestCase):
         self.assertEquals(res.status_code, 200)
         self.assertTrue(tag in res.data.pop('tags'))
         self.assertIsNotNone(Tag.objects.filter(tag=tag).first())
+
+    def test_add_invalid_tags(self):
+        pk = 1
+        event = self.client.get(event_api._get_detail_url(pk))
+        event_data = event.data
+
+        event_data['tags'] = ['invalid tag with space']
+        response = self.client.patch(event_api._get_detail_url(pk), event_data)
+        self.assertEquals(response.status_code, 400)
