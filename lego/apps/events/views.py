@@ -7,7 +7,8 @@ from rest_framework.response import Response
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (APINoSuchPool, APIPaymentExists,
-                                         APIRegistrationsExistsInPool, NoSuchPool)
+                                         APIRegistrationsExistsInPool, NoSuchPool,
+                                         RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import (AdministratePermissions, AdminRegistrationPermissions,
@@ -65,7 +66,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         try:
             return super().update(request, *args, **kwargs)
-        except ValueError:
+        except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
 
     @decorators.detail_route(

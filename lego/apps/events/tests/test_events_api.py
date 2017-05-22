@@ -233,6 +233,19 @@ class CreateEventsTestCase(APITestCase):
         for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
             self.assertEqual(res_event[key], expect_event[key])
 
+    def test_event_partial_update(self):
+        """Test patching event attributes"""
+        expect_event = _test_event_data[0]
+        event_update_response = self.client.patch(
+            _get_detail_url(self.event_id), {'title': 'PATCHED'}
+        )
+        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(self.event_id, event_update_response.data.pop('id'))
+        res_event = event_update_response.data
+        self.assertEqual(res_event['title'], 'PATCHED')
+        for key in ['description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
+
     def test_event_update_with_pool_creation(self):
         """Test updating event attributes and add a pool"""
         expect_event = _test_event_data[1]
@@ -270,6 +283,18 @@ class CreateEventsTestCase(APITestCase):
             self.assertIsNotNone(res_pools[i].pop('id'))
             for key in ['name', 'capacity', 'activationDate', 'permissionGroups']:
                 self.assertEqual(res_pools[i][key], expect_pools[i][key])
+
+    def test_event_partial_update_pool_deletion(self):
+        """Test that all pools are deleted when patching"""
+        event_update_response = self.client.patch(_get_detail_url(self.event_id), {'pools': []})
+
+        self.assertEqual(event_update_response.status_code, 200)
+        res_event = event_update_response.data
+        expect_event = _test_event_data[0]
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
+
+        self.assertEqual(res_event['pools'], [])
 
 
 class PoolsTestCase(APITestCase):

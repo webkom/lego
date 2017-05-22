@@ -69,11 +69,12 @@ class EventAdministrateSerializer(EventReadSerializer):
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
+    cover = ImageField(required=False, options={'height': 500})
     pools = PoolCreateAndUpdateSerializer(many=True, required=False)
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'text', 'company', 'event_type',
+        fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'event_type',
                   'location', 'is_priced', 'price_member', 'use_stripe', 'start_time',
                   'end_time', 'merge_time', 'use_captcha', 'tags', 'pools')
 
@@ -89,27 +90,27 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             return event
 
     def update(self, instance, validated_data):
-        pools = validated_data.pop('pools', [])
+        pools = validated_data.pop('pools', None)
         with transaction.atomic():
-
-            existing_pools = list(instance.pools.all().values_list('id', flat=True))
-            for pool in pools:
-                pool_id = pool.get('id', None)
-                if pool_id in existing_pools:
-                    existing_pools.remove(pool_id)
-                permission_groups = pool.pop('permission_groups')
-                created_pool = Pool.objects.update_or_create(event=instance, id=pool_id, defaults={
-                    'name': pool.get('name'),
-                    'capacity': pool.get('capacity', 0),
-                    'activation_date': pool.get('activation_date'),
-                    'unregistration_deadline': pool.get('unregistration_deadline', None)
-                })[0]
-                created_pool.permission_groups.set(permission_groups)
-            for pool_id in existing_pools:
-                Pool.objects.get(id=pool_id).delete()
-            instance = super().update(instance, validated_data)
-
-        return instance
+            if pools is not None:
+                existing_pools = list(instance.pools.all().values_list('id', flat=True))
+                for pool in pools:
+                    pool_id = pool.get('id', None)
+                    if pool_id in existing_pools:
+                        existing_pools.remove(pool_id)
+                    permission_groups = pool.pop('permission_groups')
+                    created_pool = Pool.objects.update_or_create(
+                        event=instance, id=pool_id, defaults={
+                            'name': pool.get('name'),
+                            'capacity': pool.get('capacity', 0),
+                            'activation_date': pool.get('activation_date'),
+                            'unregistration_deadline': pool.get('unregistration_deadline', None)
+                        }
+                    )[0]
+                    created_pool.permission_groups.set(permission_groups)
+                for pool_id in existing_pools:
+                    Pool.objects.get(id=pool_id).delete()
+            return super().update(instance, validated_data)
 
 
 class EventSearchSerializer(serializers.ModelSerializer):

@@ -33,7 +33,7 @@ class TagSerializerMixin(serializers.Serializer):
     tags = TagSerializer(many=True, required=False, default=[])
 
     def create(self, validated_data):
-        tags = [tag for tag in validated_data.pop('tags')]
+        tags = validated_data.pop('tags', [])
 
         with transaction.atomic():
             instance = super().create(validated_data)
@@ -47,13 +47,14 @@ class TagSerializerMixin(serializers.Serializer):
         return instance
 
     def update(self, instance, validated_data):
-        tags = [tag for tag in validated_data.pop('tags')]
+        tags = validated_data.pop('tags', [])
 
         with transaction.atomic():
             instance = super().update(instance, validated_data)
 
             for tag in tags:
                 Tag.objects.get_or_create(pk=tag)
+
             if tags:
                 instance.tags = tags
                 instance.save()
