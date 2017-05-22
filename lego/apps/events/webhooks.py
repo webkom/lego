@@ -3,8 +3,11 @@ from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.response import Response
 from stripe import SignatureVerificationError
 from stripe.webhook import WebhookSignature
+from structlog import get_logger
 
 from lego.apps.events.tasks import stripe_webhook_event
+
+log = get_logger()
 
 
 class StripeWebhookSerializer(serializers.Serializer):
@@ -22,11 +25,13 @@ class StripeWebhookPermission(permissions.BasePermission):
         request_header = request.META.get('HTTP_STRIPE_SIGNATURE')
 
         if not (secret and request_header):
+            log.info('webhook_stripe_denied', reason='no_secret_or_header')
             return False
 
         try:
-            WebhookSignature.verify_header(request.data, request_header, secret, 300)
+            WebhookSignature.verify_header(request.body.decode(), request_header, secret, 300)
         except SignatureVerificationError:
+            log.info('webhook_stripe_denied', reason='invalid_signature')
             return False
 
         return True
