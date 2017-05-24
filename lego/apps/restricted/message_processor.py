@@ -111,6 +111,7 @@ class MessageProcessor:
             message[header] = value
 
         message['Sender'] = sender
+        message['From'] = sender
 
         return message
 

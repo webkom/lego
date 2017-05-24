@@ -1,9 +1,8 @@
 MIME-Version: 1.0
 Subject: Simple message
 From: Eirik <eirik@sylliaas.no>
-To: not_restricted@abakus.no
+To: restricted@abakus.no
 Date: Tue, 19 May 2015 14:10:13 +0300
-Message-ID: <ZrDihvWzIIscOerqjbDqKFutoNapxmdb@luke.abakus.no>
 Content-Type: multipart/alternative; boundary=bc8575faef2a082c04b97fb9be7e
 
 --bc8575faef2a082c04b97fb9be7e

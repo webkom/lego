@@ -53,6 +53,8 @@ class Command(BaseCommand):
     def teardown(self):
         log.info('Dropping Cassandra keyspaces and dropping tables...')
 
+        os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
+
         drop_keyspace(
             settings.STREAM_DEFAULT_KEYSPACE
         )

@@ -2,7 +2,23 @@
   pk: 1
   fields:
     from_address: test@abakus.no
+    hide_sender: false
     token: token
+    created_by: 1
+    users:
+      - 1
+      - 2
+    groups:
+      - 1
+    events:
+      - 1
+- model: restricted.RestrictedMail
+  pk: 2
+  fields:
+    from_address: test@abakus.no
+    hide_sender: false
+    token: token2
+    created_by: 2
     users:
       - 1
       - 2
