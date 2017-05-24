@@ -51,4 +51,4 @@ icalendar==3.11.4
 # Docs
 Pygments==2.2.0
 Markdown==2.6.8
-coreapi==2.3.0
+coreapi==2.3.1
