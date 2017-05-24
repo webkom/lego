@@ -43,7 +43,7 @@ class EmailParser:
         if msg.defects:
             raise DefectMessageException
 
-        # Add headers used in by LEGO
+        # Add headers used by LEGO
         msg.original_size = len(self.raw_message)
         msg['X-MailFrom'] = self.mail_from
 

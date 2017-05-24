@@ -2,6 +2,7 @@ MIME-Version: 1.0
 Subject: Simple message
 From: Eirik <eirik@sylliaas.no>
 To: restricted@abakus.no
+Message-ID: <ZrDihvWzIIscOerqjbDqKFutoNapxmdb@luke.abakus.no>
 DomainKey-Signature: a=rsa-sha1;s=newyork;d=example.com;c=simple;q=dns;b=dydVyOfAKCdLXdJOc8G2q8LoXSlEniSbav+yuU4zGffruD00lszZVoG4ZHRNiYzR;
 DKIM-Signature: v=1; a=rsa-sha256; d=example.net; s=brisbane;c=relaxed/simple; q=dns/txt; l=1234; t=1117574938; x=1118006938;h=from:to:subject:date:keywords:keywords;bh=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=;b=dzdVyOfAKCdLXdJOc9G2q8LoXSlEniSbav+yuU4zGeeruD00lszZVoG4ZHRNiYzR
 Authentication-Results: receiver.example.org; spf=pass smtp.mailfrom=example.com; dkim=pass header.i=@example.com
