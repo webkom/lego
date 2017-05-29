@@ -12,6 +12,8 @@ from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
 
+app = celery.Celery('lego')
+
 
 @eventlet_pool_started.connect()
 @worker_process_init.connect()
@@ -32,22 +34,20 @@ def cassandra_init(*args, **kwargs):
     )
 
 
-class Celery(celery.Celery):
-    def on_configure(self):
+@app.on_configure.connect()
+def on_configure(*args, **kwargs):
 
-        import raven
-        from raven.contrib.celery import register_signal, register_logger_signal
+    import raven
+    from raven.contrib.celery import register_signal, register_logger_signal
 
-        client = raven.Client()
+    client = raven.Client()
 
-        # register a custom filter to filter out duplicate logs
-        register_logger_signal(client)
+    # register a custom filter to filter out duplicate logs
+    register_logger_signal(client)
 
-        # hook into the Celery error handler
-        register_signal(client)
+    # hook into the Celery error handler
+    register_signal(client)
 
-
-app = celery.Celery('lego')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
