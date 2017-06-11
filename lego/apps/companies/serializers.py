@@ -6,7 +6,6 @@ from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
-
 # SemesterStatus
 
 class SemesterStatusReadSerializer(BasisModelSerializer):
