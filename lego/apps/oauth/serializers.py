@@ -17,7 +17,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         """
         Save application with secure parameters.
-
         """
         request = self.context['request']
         kwargs['user'] = request.user
@@ -26,7 +25,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             'client_type': APIApplication.CLIENT_PUBLIC,
             'authorization_grant_type': APIApplication.GRANT_AUTHORIZATION_CODE,
         })
-        super().save(**kwargs)
+        return super().save(**kwargs)
 
 
 class AccessTokenSerializer(serializers.ModelSerializer):

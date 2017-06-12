@@ -1,5 +1,5 @@
 ipython==6.1.0
-django==1.11
+django==1.11.2
 
 psycopg2==2.7
 unicode-slugify==0.1.3
