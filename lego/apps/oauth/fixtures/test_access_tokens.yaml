@@ -6,6 +6,8 @@
     token: testtoken
     scope: write read
     expires: 9999-12-12 00:00+00:00
+    created: '2016-01-1T10:00:00+00:00'
+    updated: '2016-01-1T10:00:00+00:00'
 
 - model: oauth2_provider.AccessToken
   pk: 2
@@ -15,3 +17,5 @@
     token: supertesttoken
     scope: write read
     expires: 9999-12-12 00:00+00:00
+    created: '2016-01-1T10:00:00+00:00'
+    updated: '2016-01-1T10:00:00+00:00'

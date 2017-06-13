@@ -1,5 +1,5 @@
 pipeline:
-  tests:
+  test:
     image: python:3.6
     when:
       event: push
@@ -7,6 +7,9 @@ pipeline:
       - CASS_DRIVER_NO_CYTHON=1
       - CASS_DRIVER_NO_EXTENSIONS=1
       - LANG=C.UTF-8
+      - DATABASE=database
+      - CACHE=cache
+      - CASSANDRA=cassandra
     commands:
       - pip install tox
       - pip install -r requirements/test.txt
@@ -29,16 +32,9 @@ pipeline:
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/lego
     tags:
-      - latest
       - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
-
-  deployment:
-    image: appropriate/curl
-    when:
-      branch:
-        - prod
-    commands:
-      - "curl -X POST -u ${ACCESS_KEY_ID}:${ACCESS_KEY_SECRET} -H 'Content-Type: application/json' ${API_URL}/deployments -d '{\"release\": ${RELEASE_ID}, \"value_overrides\": {\"backend.image.tag\": \"${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}\"}}'"
+    build_args:
+      - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
 services:
   database:
@@ -47,3 +43,5 @@ services:
       - POSTGRES_USER=lego
   cache:
     image: redis
+  cassandra:
+    image: cassandra:3
