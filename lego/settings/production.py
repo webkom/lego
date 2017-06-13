@@ -5,7 +5,8 @@ import environ
 import stripe
 from cassandra import ConsistencyLevel
 
-from lego.settings import BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES
+from lego.settings import (BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS,
+                           MIDDLEWARE_CLASSES)
 
 from .secure import *  # noqa
 
@@ -68,6 +69,8 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 STREAM_CASSANDRA_HOSTS = env('CASSANDRA_HOSTS')
 STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.THREE
 STREAM_DEFAULT_KEYSPACE = env('CASSANDRA_KEYSPACE')
+CASSANDRA_DRIVER_KWARGS['lazy_connect'] = False
+
 STREAM_REDIS_CONFIG = {
     'default': {
         'host': env('REDIS_STREAM_HOST'),
