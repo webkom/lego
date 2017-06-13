@@ -31,6 +31,7 @@ pipeline:
         - prod
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/lego
+    secrets: [ docker_username, docker_password ]
     tags:
       - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
     build_args:
