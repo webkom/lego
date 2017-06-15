@@ -31,7 +31,6 @@ class MessageProcessor:
             log.critical('restricted_mail_no_token_found', sender=self.sender)
             # Notify about failure
             self.feed_handler.handle_failure(
-                restricted_message=None,
                 sender=self.sender,
                 reason='TOKEN_NOT_FOUND'
             )
@@ -42,7 +41,6 @@ class MessageProcessor:
             log.critical('restricted_mail_token_not_found')
             # Notify about failure
             self.feed_handler.handle_failure(
-                restricted_message=None,
                 sender=self.sender,
                 reason='TOKEN_INVALID'
             )
