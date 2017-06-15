@@ -1,3 +1,4 @@
+from copy import deepcopy
 from email.message import Message
 from email.mime.text import MIMEText
 
@@ -120,9 +121,10 @@ class MessageProcessor:
         """
         connection = get_connection(fail_silently=False)
         messages = [
-            EmailMessage(recipient, sender, message) for recipient in recipients
+            EmailMessage(recipient, sender, deepcopy(message)) for recipient in recipients
         ]
-        connection.send_messages(messages)
+        log.info('restricted_mail_process_messages', sender=sender, recipients=len(messages))
+        return connection.send_messages(messages)
 
     @staticmethod
     def decorate(message, hide_sender, sender):

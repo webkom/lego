@@ -1,6 +1,5 @@
 from email.message import Message
 
-from django.core.mail.message import MIMEMixin
 from django.test import TestCase
 
 from lego.apps.restricted.message import EmailMessage
@@ -33,4 +32,5 @@ class MessageTestCase(TestCase):
         """
         raw_message = self.message.message()
         self.assertIsInstance(raw_message, Message)
-        self.assertIsInstance(raw_message, MIMEMixin)
+        self.assertIsInstance(raw_message.as_string(), str)
+        self.assertIsInstance(raw_message.as_bytes(), bytes)

@@ -1,6 +1,7 @@
 from unittest import mock
 
 from django.conf import settings
+from django.core import mail
 from django.test import TestCase, override_settings
 
 from lego.apps.restricted.message_processor import MessageProcessor
@@ -77,3 +78,24 @@ class MessageProcessorTestCase(TestCase):
 
         self.processor.decorate(self.message, False, 'test@test.com')
         self.assertTrue(len(self.message.get_payload()) > payloads)
+
+    def test_send(self):
+        """Test the outbox and make sure we have correct headers in the messages."""
+        raw_message = read_file(
+            f'{settings.BASE_DIR}/apps/restricted/fixtures/emails/clean_headers.txt'
+        )
+        parser = EmailParser(raw_message, 'test@test.com', ParserMessageType.STRING)
+        message = parser.parse()
+        new_message = self.processor.rewrite_message(message, 'test@test.com')
+
+        messages = self.processor.send(
+            ['test1@test.com', 'test2@test.com'], 'test@test.com', new_message
+        )
+        self.assertEquals(2, messages)
+
+        outbox = mail.outbox
+        first_message = outbox[0].message()
+        self.assertSequenceEqual(
+            ['Subject', 'Content-Type', 'MIME-Version', 'Sender', 'From', 'To'],
+            first_message.keys()
+        )
