@@ -112,3 +112,8 @@ CORS_ORIGIN_WHITELIST = list({
     '127.0.0.1:3000',
     'localhost:3000'
 })
+
+# Restricted
+RESTRICTED_ADDRESS = env('RESTRICTED_ADDRESS', default='restricted')
+RESTRICTED_DOMAIN = env('RESTRICTED_DOMAIN', default='abakus.no')
+RESTRICTED_FROM = env('RESTRICTED_FROM', default='Abakus Linjeforening <no-reply@abakus.no>')
