@@ -13,7 +13,7 @@ class MeetingInvitationNotification(Notification):
         token = meeting_invitation.generate_invitation_token()
 
         return self._delay_mail(
-            to_email=self.user.email,
+            to_email=self.user.email_address,
             context={
                 'name': self.user.full_name,
                 'owner': meeting.created_by.full_name,

@@ -18,6 +18,7 @@ from lego.apps.notifications.views import NotificationSettingsViewSet
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
+from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
@@ -64,6 +65,7 @@ router.register(
 router.register(r'users', UsersViewSet)
 router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction-types', ReactionTypeViewSet)
+router.register(r'restricted-mail', RestrictedMailViewSet, base_name='restricted-mail')
 router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'followers-user', FollowUserViewSet)

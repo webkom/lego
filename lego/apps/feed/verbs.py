@@ -76,7 +76,18 @@ register(PaymentOverdueVerb)
 class MeetingInvitationVerb(Verb):
     id = 11
     infinitive = 'meeting_invitation'
+    past_tense = infinitive
     aggregation_group = '{verb}-{actor_id}-{actor_content_type}-{date}'
 
 
 register(MeetingInvitationVerb)
+
+
+class RestrictedMailSent(Verb):
+    id = 12
+    infinitive = 'restricted_mail_sent'
+    past_tense = infinitive
+    aggregation_group = '{verb}-{object_content_type}-{object_id}'
+
+
+register(RestrictedMailSent)

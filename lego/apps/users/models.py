@@ -61,6 +61,13 @@ class AbakusGroup(MPTTModel, PersistentModel):
     def natural_key(self):
         return self.name,
 
+    def restricted_lookup(self):
+        """
+        Restricted Mail
+        """
+        memberships = self.memberships
+        return [membership.user for membership in memberships], []
+
 
 class PermissionsMixin(models.Model):
 
@@ -179,6 +186,14 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     def profile_picture(self):
         return self.picture_id or self.get_default_picture()
 
+    @property
+    def email_address(self):
+        """
+        Return the address used to reach the user. Some users have a GSuite address and this
+        function us used to decide the correct address to use.
+        """
+        return self.email
+
     @profile_picture.setter
     def profile_picture(self, value):
         self.picture = value
@@ -217,6 +232,12 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
             ))
         except (BadSignature, SignatureExpired):
             return None
+
+    def restricted_lookup(self):
+        """
+        Restricted mail
+        """
+        return [self], []
 
 
 class Membership(BasisModel):

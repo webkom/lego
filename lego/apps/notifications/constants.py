@@ -19,6 +19,9 @@ MEETING_INVITE = 'meeting_invite'
 # Penalty
 PENALTY_CREATION = 'penalty_creation'
 
+# Restricted Mail
+RESTRICTED_MAIL_SENT = 'restricted_mail_sent'
+
 
 NOTIFICATION_TYPES = [
     WEEKLY_MAIL,
@@ -27,6 +30,7 @@ NOTIFICATION_TYPES = [
     EVENT_PAYMENT_OVERDUE,
     MEETING_INVITE,
     PENALTY_CREATION,
+    RESTRICTED_MAIL_SENT,
 ]
 
 NOTIFICATION_CHOICES = [(notification, notification) for notification in NOTIFICATION_TYPES]
