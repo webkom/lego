@@ -45,7 +45,7 @@ class RestrictedHandler(BaseHandler):
         )
         notification.notify()
 
-    def handle_failure(self, restricted_mail, sender, reason):
+    def handle_failure(self, sender, reason):
         """
         Notify about restricted mail failure. This action is not connected to a specific user.
         We sends a message to the sender instead of a user. We use the send_mail task directly
