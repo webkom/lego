@@ -4,3 +4,4 @@ from .event_handler import *  # noqa
 from .penalty_handler import *  # noqa
 from .registration_handler import *  # noqa
 from .meetings_handler import *  # noqa
+from .restricted_handler import *  # noqa

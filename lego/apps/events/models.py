@@ -463,6 +463,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
+    def restricted_lookup(self):
+        """
+        Restricted Mail
+        """
+        registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
+        return [registration.user for registration in registrations], []
+
 
 class Pool(BasisModel):
     """

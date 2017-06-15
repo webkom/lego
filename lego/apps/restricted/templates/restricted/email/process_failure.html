@@ -1,0 +1,27 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-bad">
+            Kunne ikke sende ut begrenset epost
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Vi kunne ikke sende ut begrenset epost på grunn av:
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i>{{ reason }}</i>
+        </td>
+    </tr>
+
+{% endblock %}

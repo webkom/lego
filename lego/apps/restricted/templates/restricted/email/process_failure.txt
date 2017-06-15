@@ -1,0 +1,9 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Vi kunne ikke sende ut begrenset epost på grunn av:
+
+{{ reason }}
+
+{% endblock %}

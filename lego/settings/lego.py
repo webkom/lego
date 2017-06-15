@@ -41,3 +41,11 @@ LDAP_GROUPS = [
     'Webkom',
     'Fagkom'
 ]
+
+LMTP_HOST = '0.0.0.0'
+LMTP_PORT = 8024
+
+RESTRICTED_ADDRESS = 'restricted'
+RESTRICTED_DOMAIN = 'abakus.no'
+RESTRICTED_FROM = 'Abakus Linjeforening <no-reply@abakus.no>'
+RESTRICTED_ALLOW_ORIGINAL_SENDER = False
