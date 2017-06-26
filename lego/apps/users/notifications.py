@@ -22,3 +22,15 @@ class PenaltyNotification(Notification):
             plain_template='users/email/penalty.txt',
             html_template='users/email/penalty.html',
         )
+
+    def generate_push(self):
+        penalty = self.kwargs['penalty']
+
+        return self._delay_push(
+            template='users/push/penalty.txt',
+            context={
+                'weight': penalty.weight,
+                'event': penalty.source_event.title,
+            },
+            instance=penalty
+        )

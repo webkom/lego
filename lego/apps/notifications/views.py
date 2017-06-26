@@ -1,3 +1,5 @@
+from push_notifications.api.rest_framework import (APNSDeviceAuthorizedViewSet,
+                                                   GCMDeviceAuthorizedViewSet)
 from rest_framework import decorators, permissions, viewsets
 from rest_framework.response import Response
 
@@ -53,3 +55,13 @@ class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.Gener
             'notification_types': constants.NOTIFICATION_TYPES,
             'channels': constants.CHANNELS
         })
+
+
+class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
+
+    ordering = ('date_created', )
+
+
+class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
+
+    ordering = ('date_created', )

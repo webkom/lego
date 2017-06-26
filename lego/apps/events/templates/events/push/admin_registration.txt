@@ -1,0 +1,1 @@
+En administrator har meldt deg på arrangementet {{ event }}.

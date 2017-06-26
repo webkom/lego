@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'channels',
     'django_thumbor',
     'django_filters',
+    'push_notifications',
 
     'lego.utils',
     'lego.apps.users',
@@ -166,3 +167,9 @@ LDAP_BASE_DN = 'dc=abakus,dc=no'
 CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 
 STUDENT_CONFIRMATION_TIMEOUT = 60 * 60 * 24
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+    'APNS_USE_SANDBOX': False,
+    'UPDATE_ON_DUPLICATE_REG_ID': True,
+    'APNS_TOPIC': 'no.abakus.abakus'
+}

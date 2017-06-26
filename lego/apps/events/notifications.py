@@ -24,6 +24,17 @@ class EventBumpNotification(Notification):
             html_template='event/email/bump.html',
         )
 
+    def generate_push(self):
+        event = self.kwargs['event']
+
+        return self._delay_push(
+            template='events/push/bump.txt',
+            context={
+                'event': event.title,
+            },
+            instance=event
+        )
+
 
 class EventPaymentOverdueNotification(Notification):
 
@@ -44,6 +55,17 @@ class EventPaymentOverdueNotification(Notification):
             html_template='event/email/payment_overdue.html',
         )
 
+    def generate_push(self):
+        event = self.kwargs['event']
+
+        return self._delay_push(
+            template='events/push/payment_overdue.txt',
+            context={
+                'event': event.title,
+            },
+            instance=event
+        )
+
 
 class EventAdminRegistrationNotification(Notification):
 
@@ -62,4 +84,15 @@ class EventAdminRegistrationNotification(Notification):
             subject=f'Du har blitt adminpåmeldt på arrangementet {event.title}',
             plain_template='event/email/admin_registration.txt',
             html_template='event/email/admin_registration.html',
+        )
+
+    def generate_push(self):
+        event = self.kwargs['event']
+
+        return self._delay_push(
+            template='events/push/admin_registration.txt',
+            context={
+                'event': event.title,
+            },
+            instance=event
         )
