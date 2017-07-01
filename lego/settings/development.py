@@ -98,5 +98,6 @@ LDAP_USER = 'cn=admin,dc=abakus,dc=no'
 LDAP_PASSWORD = 'admin'
 
 CORS_ORIGIN_WHITELIST = list({
-    '127.0.0.1:3000'
+    '127.0.0.1:3000',
+    'localhost:3000'
 })
