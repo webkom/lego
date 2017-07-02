@@ -42,7 +42,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         elif self.action == 'retrieve':
             queryset = Event.objects.prefetch_related(
-                'pools',
+                'pools', 'pools__permission_groups',
                 Prefetch(
                     'pools__registrations', queryset=Registration.objects.select_related('user')
                 ),
