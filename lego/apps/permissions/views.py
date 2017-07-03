@@ -1,3 +1,5 @@
+from rest_framework.response import Response
+
 from .utils import get_viewset_permissions
 
 
@@ -36,9 +38,11 @@ class AllowedPermissionsMixin:
         return response
 
     def _retrieve(self, request, *args, **kwargs):
-        response = super().retrieve(request, args, kwargs)
+        obj = self.get_object()
+        serializer = self.get_serializer(obj)
+        response = Response(serializer.data)
         response.data = wrap_results(response)
         response.data['action_grant'] = get_viewset_permissions(
-            self, self.get_queryset().model, self.get_object(), request.user
+            self, self.get_queryset().model, obj, request.user
         )
         return response
