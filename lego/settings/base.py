@@ -6,6 +6,7 @@ import environ
 root = environ.Path(__file__) - 2
 BASE_DIR = root()
 
+ALLOWED_HOSTS = ['*']
 SHELL_PLUS = 'ipython'
 
 INSTALLED_APPS = [
