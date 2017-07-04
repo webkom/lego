@@ -52,6 +52,7 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
 
     def update(self, instance, validated_data):
         workplaces_data = validated_data.pop('workplaces')
+        responsible_data = validated_data.pop('responsible')
         instance = super().update(instance, validated_data)
         new_workplaces = []
 
@@ -59,6 +60,8 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
             workplace, created = Workplace.objects.get_or_create(town=workplace_item['town'])
             new_workplaces.append(workplace)
         instance.workplaces.set(new_workplaces)
+
+        instance.responsible.set(None) if responsible_data == None else instance.resposible.set(responsible_data)
 
         instance.save()
 
