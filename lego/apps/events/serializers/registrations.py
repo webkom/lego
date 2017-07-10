@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework_jwt.serializers import User
 
@@ -27,6 +28,12 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = ('id', 'feedback', 'presence', 'captcha_response', 'charge_status')
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            presence = validated_data.pop('presence')
+            super().update(instance, validated_data)
+            instance.set_presence(presence)
 
 
 class RegistrationReadSerializer(BasisModelSerializer):
