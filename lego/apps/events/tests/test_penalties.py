@@ -321,3 +321,19 @@ class PenaltyTestCase(TestCase):
 
         self.assertIsNone(event.registrations.get(user=users[3]).pool)
         self.assertIsNone(event.registrations.get(user=users[4]).pool)
+
+    def test_penalties_created_on_unregister(self):
+        """Test that user gets penalties on unregister after limit"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        for pool in event.pools.all():
+            pool.unregistration_deadline = timezone.now() - timedelta(days=1)
+            pool.save()
+
+        registration = event.registrations.first()
+        penalties_before = len(registration.user.penalties.all())
+
+        event.unregister(registration)
+
+        penalties_after = len(registration.user.penalties.all())
+        self.assertGreater(penalties_after, penalties_before)
+        self.assertEqual(penalties_after, 1)
