@@ -198,11 +198,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
-                    if not registration.user.penalties.filter(source_object=self).exists():
-                        Penalty.objects.create(user=registration.user,
-                                               reason='Unregistered from event too late',
-                                               weight=1,
-                                               source_object=self)
+                    if not registration.user.penalties.filter(source_event=self).exists():
+                        Penalty.objects.create(
+                            user=registration.user,
+                            reason='Unregistered from event too late',
+                            weight=1, source_event=self
+                        )
                 self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
