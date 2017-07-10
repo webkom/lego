@@ -1,0 +1,1 @@
+{{ owner }} inviterte deg til møtet {{ meeting_title }}.

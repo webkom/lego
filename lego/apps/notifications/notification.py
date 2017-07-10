@@ -1,6 +1,10 @@
-from lego.utils.tasks import send_email
+from structlog import get_logger
+
+from lego.utils.tasks import send_email, send_push
 
 from .models import NotificationSetting
+
+log = get_logger()
 
 
 class Notification:
@@ -23,7 +27,8 @@ class Notification:
             raise ValueError('Set a name on the notification class.')
 
         generators = {
-            'email': self.generate_mail
+            'email': self.generate_mail,
+            'push': self.generate_push,
         }
 
         channels = NotificationSetting.active_channels(self.user, self.name)
@@ -38,8 +43,22 @@ class Notification:
         """
         return send_email.delay(*args, **kwargs)
 
+    def _delay_push(self, template, context, instance=None):
+        """
+        Helper for push messages. Does the work in a celery task.
+        """
+        return send_push.delay(
+            user=self.user, template=template, context=context, instance=instance
+        )
+
     def generate_mail(self):
         """
         Create and sent the email message.
         """
         raise NotImplemented
+
+    def generate_push(self):
+        """
+        Send a push message to the user.
+        """
+        log.warn('push_message_not_implemented')
