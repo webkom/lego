@@ -45,7 +45,7 @@ class NotificationSettingsViewSetTestCase(APITestCase):
         self.assertEquals(response.data, {
             'notification_type': 'weekly_mail',
             'enabled': True,
-            'channels': ['email']
+            'channels': ['email', 'push']
         })
 
     def test_change_setting_defaults(self):

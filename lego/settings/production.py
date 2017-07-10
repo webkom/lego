@@ -6,7 +6,7 @@ import stripe
 from cassandra import ConsistencyLevel
 
 from lego.settings import (BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS,
-                           MIDDLEWARE_CLASSES)
+                           MIDDLEWARE_CLASSES, PUSH_NOTIFICATIONS_SETTINGS)
 
 from .secure import *  # noqa
 
@@ -117,3 +117,7 @@ CORS_ORIGIN_WHITELIST = list({
 RESTRICTED_ADDRESS = env('RESTRICTED_ADDRESS', default='restricted')
 RESTRICTED_DOMAIN = env('RESTRICTED_DOMAIN', default='abakus.no')
 RESTRICTED_FROM = env('RESTRICTED_FROM', default='Abakus Linjeforening <no-reply@abakus.no>')
+
+# Push Notifications
+PUSH_NOTIFICATIONS_SETTINGS['APNS_USE_SANDBOX'] = env('APNS_USE_SANDBOX', default=False)
+PUSH_NOTIFICATIONS_SETTINGS['APNS_CERTIFICATE'] = env('APNS_CERTIFICATE')

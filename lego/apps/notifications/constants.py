@@ -1,6 +1,7 @@
 EMAIL = 'email'
+PUSH = 'push'
 
-CHANNELS = [EMAIL]
+CHANNELS = [EMAIL, PUSH]
 
 CHANNEL_CHOICES = [(channel, channel) for channel in CHANNELS]
 
