@@ -572,7 +572,7 @@ class Registration(BasisModel):
         self.save()
 
     def handle_user_penalty(self, presence):
-        if presence == constants.NOT_PRESENT and self.event.penalty_weight:
+        if presence == constants.NOT_PRESENT and self.event.penalty_weight_on_not_present:
             if not self.user.penalties.filter(source_event=self.event).exists():
                 Penalty.objects.create(
                     user=self.user,
