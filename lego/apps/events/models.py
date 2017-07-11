@@ -580,7 +580,8 @@ class Registration(BasisModel):
                     weight=self.event.penalty_weight_on_not_present, source_event=self.event
                 )
         else:
-            self.user.penalties.filter(source_event=self.event).delete()
+            for penalty in self.user.penalties.filter(source_event=self.event):
+                penalty.delete()
 
     def add_to_pool(self, pool):
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)
