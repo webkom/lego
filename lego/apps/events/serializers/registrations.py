@@ -31,9 +31,10 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
 
     def update(self, instance, validated_data):
         with transaction.atomic():
-            presence = validated_data.pop('presence')
+            presence = validated_data.pop('presence', None)
             super().update(instance, validated_data)
-            instance.set_presence(presence)
+            if presence:
+                instance.set_presence(presence)
             return instance
 
 
