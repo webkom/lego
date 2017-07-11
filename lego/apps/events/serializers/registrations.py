@@ -34,6 +34,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             presence = validated_data.pop('presence')
             super().update(instance, validated_data)
             instance.set_presence(presence)
+            return instance
 
 
 class RegistrationReadSerializer(BasisModelSerializer):
