@@ -567,6 +567,8 @@ class Registration(BasisModel):
 
     def set_presence(self, presence):
         """Wrap this method in a transaction"""
+        if presence not in constants.PRESENCE_CHOICES:
+            raise ValueError('Illegal presence choice')
         self.presence = presence
         self.handle_user_penalty(presence)
         self.save()

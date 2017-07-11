@@ -672,3 +672,11 @@ class RegistrationTestCase(TestCase):
         with self.assertRaises(ValueError):
             event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
+
+    def test_presence_method_raises_error_with_illegal_value(self):
+        """Test that presence raises error when given an illegal presence choice"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        registration = event.registrations.first()
+
+        with self.assertRaises(ValueError):
+            registration.set_presence('ripvalue')
