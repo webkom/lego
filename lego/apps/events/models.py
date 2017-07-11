@@ -565,6 +565,26 @@ class Registration(BasisModel):
         self.save()
         return self
 
+    def set_presence(self, presence):
+        """Wrap this method in a transaction"""
+        if presence not in constants.PRESENCE_CHOICES:
+            raise ValueError('Illegal presence choice')
+        self.presence = presence
+        self.handle_user_penalty(presence)
+        self.save()
+
+    def handle_user_penalty(self, presence):
+        if presence == constants.NOT_PRESENT and self.event.penalty_weight_on_not_present:
+            if not self.user.penalties.filter(source_event=self.event).exists():
+                Penalty.objects.create(
+                    user=self.user,
+                    reason=f'was registered to event {self.event.title}, but did not attend it.',
+                    weight=self.event.penalty_weight_on_not_present, source_event=self.event
+                )
+        else:
+            for penalty in self.user.penalties.filter(source_event=self.event):
+                penalty.delete()
+
     def add_to_pool(self, pool):
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)
 
