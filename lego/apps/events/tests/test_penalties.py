@@ -374,19 +374,23 @@ class PenaltyTestCase(TestCase):
 
         registration.set_presence(constants.NOT_PRESENT)
         penalties_before = registration.user.number_of_penalties()
-        penalties_object_before = registration.user.penalties.first()
+        penalties_object_before = list(registration.user.penalties.all())
 
-        Penalty.objects.create(user=registration.user, reason='OTHER EVENT', weight=2, source_event=other_event)
+        Penalty.objects.create(
+            user=registration.user, reason='OTHER EVENT', weight=2, source_event=other_event
+        )
         penalties_during = registration.user.number_of_penalties()
-        penalties_objects_during = registration.user.penalties.all()
-        
+        penalties_objects_during = list(registration.user.penalties.all())
+
         registration.set_presence(constants.UNKNOWN)
         penalties_after = registration.user.number_of_penalties()
-        penalties_object_after = registration.user.penalties.first()
+        penalties_object_after = list(registration.user.penalties.all())
 
-        self.assertEqual(penalties_object_before.source_event, event)
-        self.assertEqual(penalties_object_after.source_event, other_event)
+        self.assertEqual(penalties_object_before[0].source_event, event)
+        self.assertEqual(penalties_object_after[0].source_event, other_event)
+        self.assertEqual(len(penalties_object_before), 1)
         self.assertEqual(len(penalties_objects_during), 2)
+        self.assertEqual(len(penalties_object_after), 1)
         self.assertEqual(penalties_before, 2)
         self.assertEqual(penalties_during, 4)
         self.assertEqual(penalties_after, 2)
