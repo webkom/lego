@@ -1,0 +1,15 @@
+- pk: 1
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus.png
+    active: True
+    description: '1'
+
+- pk: 2
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus1.png
+    active: False
+    description: '2'

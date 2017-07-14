@@ -74,7 +74,13 @@ test_tree = {
     ],
     'Interessegrupper': [{}, {
         'TestInterestGroup': [{}, {}]
-    }]
+    }],
+    'GalleryAdminTest': [{
+        'permissions': ['/sudo/admin/gallerys/']
+    }, {}],
+    'GalleryTest': [{
+        'permissions': ['/sudo/admin/gallerys/list/', '/sudo/admin/gallerys/retrieve/']
+    }, {}],
 }
 
 
