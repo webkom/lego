@@ -471,6 +471,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
         return [registration.user for registration in registrations], []
 
+    def announcement_lookup(self):
+        registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
+        return [registration.user for registration in registrations]
+
 
 class Pool(BasisModel):
     """

@@ -36,3 +36,10 @@ def render_article(article):
         'id': article.id,
         'title': article.title
     }
+
+
+def render_announcement(announcement):
+    return {
+        'id': announcement.id,
+        'message': announcement.message
+    }

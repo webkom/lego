@@ -68,6 +68,10 @@ class AbakusGroup(MPTTModel, PersistentModel):
         memberships = self.memberships
         return [membership.user for membership in memberships], []
 
+    def announcement_lookup(self):
+        memberships = self.memberships
+        return [membership.user for membership in memberships]
+
 
 class PermissionsMixin(models.Model):
 
@@ -260,6 +264,9 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         Restricted mail
         """
         return [self], []
+
+    def announcement_lookup(self):
+        return [self]
 
 
 class Membership(BasisModel):
