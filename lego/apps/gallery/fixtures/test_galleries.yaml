@@ -1,0 +1,9 @@
+- pk: 1
+  model: gallery.Gallery
+  fields:
+    title: 'Raskfest-vors'
+    location: 'Aktivitetshuset på Moholt'
+    description: ''
+    taken_at: '2017-01-01'
+    can_view_groups:
+      - 1

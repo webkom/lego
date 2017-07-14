@@ -50,7 +50,13 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
 
 
 class GalleryDeletePictureSerializer(serializers.Serializer):
-    picture = serializers.PrimaryKeyRelatedField(queryset=GalleryPicture.objects.all())
+    id = serializers.PrimaryKeyRelatedField(queryset=GalleryPicture.objects.all())
+
+
+class GalleryPictureEditSerializer(GalleryDeletePictureSerializer, GalleryPictureSerializer):
+
+    class Meta(GalleryPictureSerializer.Meta):
+        read_only_fields = ('file', 'thumbnail', 'raw_file')
 
 
 class GallerySearchSerializer(serializers.ModelSerializer):

@@ -6,3 +6,21 @@
     token: token
     user: 1
     public: true
+
+- pk: abakus1.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+    public: true
+
+- pk: abakus2.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+    public: true
