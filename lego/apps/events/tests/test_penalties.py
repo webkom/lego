@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
+from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, Penalty
 
@@ -321,3 +322,78 @@ class PenaltyTestCase(TestCase):
 
         self.assertIsNone(event.registrations.get(user=users[3]).pool)
         self.assertIsNone(event.registrations.get(user=users[4]).pool)
+
+    def test_penalties_created_on_unregister(self):
+        """Test that user gets penalties on unregister after limit"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        for pool in event.pools.all():
+            pool.unregistration_deadline = timezone.now() - timedelta(days=1)
+            pool.save()
+
+        registration = event.registrations.first()
+        penalties_before = registration.user.number_of_penalties()
+
+        event.unregister(registration)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertGreater(penalties_after, penalties_before)
+        self.assertEqual(penalties_before, 0)
+        self.assertEqual(penalties_after, event.penalty_weight)
+
+    def test_penalties_created_when_not_present(self):
+        """Test that user gets penalties when not present"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+
+        registration = event.registrations.first()
+        penalties_before = registration.user.number_of_penalties()
+
+        registration.set_presence(constants.NOT_PRESENT)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertEqual(penalties_before, 0)
+        self.assertEqual(penalties_after, event.penalty_weight_on_not_present)
+
+    def test_penalties_removed_when_not_present_changes(self):
+        """Test that penalties for not_present gets removed when resetting presence"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        registration = event.registrations.first()
+        registration.set_presence(constants.NOT_PRESENT)
+
+        penalties_before = registration.user.number_of_penalties()
+        registration.set_presence(constants.UNKNOWN)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertEqual(penalties_before, event.penalty_weight_on_not_present)
+        self.assertEqual(penalties_after, 0)
+
+    def test_only_correct_penalties_are_removed_on_presence_change(self):
+        """Test that only penalties for given event are removed when changing presence"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        other_event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        registration = event.registrations.first()
+
+        registration.set_presence(constants.NOT_PRESENT)
+        penalties_before = registration.user.number_of_penalties()
+        penalties_object_before = list(registration.user.penalties.all())
+
+        Penalty.objects.create(
+            user=registration.user, reason='OTHER EVENT', weight=2, source_event=other_event
+        )
+        penalties_during = registration.user.number_of_penalties()
+        penalties_objects_during = list(registration.user.penalties.all())
+
+        registration.set_presence(constants.UNKNOWN)
+        penalties_after = registration.user.number_of_penalties()
+        penalties_object_after = list(registration.user.penalties.all())
+
+        self.assertEqual(penalties_object_before[0].source_event, event)
+        self.assertEqual(penalties_object_after[0].source_event, other_event)
+        self.assertEqual(len(penalties_object_before), 1)
+        self.assertEqual(len(penalties_objects_during), 2)
+        self.assertEqual(len(penalties_object_after), 1)
+        self.assertEqual(penalties_before, event.penalty_weight_on_not_present)
+        self.assertEqual(
+            penalties_during,
+            event.penalty_weight_on_not_present + other_event.penalty_weight_on_not_present
+        )
+        self.assertEqual(penalties_after, other_event.penalty_weight_on_not_present)

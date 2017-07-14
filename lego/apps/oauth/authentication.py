@@ -1,4 +1,4 @@
-from oauth2_provider.ext.rest_framework import OAuth2Authentication
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from structlog import get_logger
 
 from lego.apps.stats.statsd_client import statsd

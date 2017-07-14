@@ -1,5 +1,7 @@
 import socket
+from logging import getLogger
 
+import cssutils
 import structlog
 from structlog.threadlocal import wrap_dict
 
@@ -90,6 +92,10 @@ LOGGING = {
         'boto3': {
             'level': 'WARNING',
             'propagate': True
+        },
+        'cssutils': {
+            'level': 'CRITICAL',
+            'propagate': True
         }
     },
 }
@@ -114,3 +120,7 @@ structlog.configure(
     wrapper_class=structlog.stdlib.BoundLogger,
     cache_logger_on_first_use=True,
 )
+
+
+cssutils_log = getLogger('cssutils')
+cssutils.log.setLog(cssutils_log)

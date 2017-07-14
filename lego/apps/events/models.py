@@ -10,7 +10,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
-from lego.apps.events.exceptions import EventHasStarted, NoSuchPool
+from lego.apps.events.exceptions import EventHasStarted, NoSuchPool, RegistrationsExistInPool
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
@@ -42,8 +42,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     heed_penalties = models.BooleanField(default=True)
     company = models.ForeignKey(Company, related_name='events', null=True)
 
+    use_captcha = models.BooleanField(default=True)
     feedback_required = models.BooleanField(default=False)
     is_priced = models.BooleanField(default=False)
+    use_stripe = models.BooleanField(default=True)
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
@@ -196,11 +198,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             registration.unregister()
             if pool:
                 if self.heed_penalties and pool.passed_unregistration_deadline():
-                    if not registration.user.penalties.filter(source_object=self).exists():
-                        Penalty.objects.create(user=registration.user,
-                                               reason='Unregistered from event too late',
-                                               weight=1,
-                                               source_object=self)
+                    if not registration.user.penalties.filter(source_event=self).exists():
+                        Penalty.objects.create(
+                            user=registration.user,
+                            reason='Unregistered from event too late',
+                            weight=1, source_event=self
+                        )
                 self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
@@ -461,6 +464,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
+    def restricted_lookup(self):
+        """
+        Restricted Mail
+        """
+        registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
+        return [registration.user for registration in registrations], []
+
 
 class Pool(BasisModel):
     """
@@ -478,7 +488,7 @@ class Pool(BasisModel):
         if not self.registrations.exists():
             super().delete(*args, **kwargs)
         else:
-            raise ValueError('Registrations exist in Pool')
+            raise RegistrationsExistInPool('Registrations exist in Pool')
 
     @property
     def is_full(self):
@@ -554,6 +564,26 @@ class Registration(BasisModel):
         self.charge_status = constants.PAYMENT_MANUAL
         self.save()
         return self
+
+    def set_presence(self, presence):
+        """Wrap this method in a transaction"""
+        if presence not in dict(constants.PRESENCE_CHOICES):
+            raise ValueError('Illegal presence choice')
+        self.presence = presence
+        self.handle_user_penalty(presence)
+        self.save()
+
+    def handle_user_penalty(self, presence):
+        if presence == constants.NOT_PRESENT and self.event.penalty_weight_on_not_present:
+            if not self.user.penalties.filter(source_event=self.event).exists():
+                Penalty.objects.create(
+                    user=self.user,
+                    reason=f'was registered to event {self.event.title}, but did not attend it.',
+                    weight=self.event.penalty_weight_on_not_present, source_event=self.event
+                )
+        else:
+            for penalty in self.user.penalties.filter(source_event=self.event):
+                penalty.delete()
 
     def add_to_pool(self, pool):
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)

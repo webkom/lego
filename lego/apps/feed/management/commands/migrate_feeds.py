@@ -1,4 +1,5 @@
 import logging
+import os
 
 from cassandra.cqlengine.management import create_keyspace_simple, drop_keyspace, sync_table
 from stream_framework import settings
@@ -36,6 +37,8 @@ class Command(BaseCommand):
     def setup(self):
         log.info('Creating Cassandra keyspaces and syncing tables...')
 
+        os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
+
         create_keyspace_simple(
             settings.STREAM_DEFAULT_KEYSPACE,
             settings.STREAM_CASSANDRA_CONSISTENCY_LEVEL
@@ -49,6 +52,8 @@ class Command(BaseCommand):
 
     def teardown(self):
         log.info('Dropping Cassandra keyspaces and dropping tables...')
+
+        os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
         drop_keyspace(
             settings.STREAM_DEFAULT_KEYSPACE

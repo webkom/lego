@@ -1,10 +1,12 @@
 import os
+from urllib.parse import urlparse
 
 import environ
 import stripe
 from cassandra import ConsistencyLevel
 
-from lego.settings import BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES
+from lego.settings import (BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS,
+                           MIDDLEWARE_CLASSES, PUSH_NOTIFICATIONS_SETTINGS)
 
 from .secure import *  # noqa
 
@@ -67,6 +69,8 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 STREAM_CASSANDRA_HOSTS = env('CASSANDRA_HOSTS')
 STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.THREE
 STREAM_DEFAULT_KEYSPACE = env('CASSANDRA_KEYSPACE')
+CASSANDRA_DRIVER_KWARGS['lazy_connect'] = False
+
 STREAM_REDIS_CONFIG = {
     'default': {
         'host': env('REDIS_STREAM_HOST'),
@@ -87,6 +91,7 @@ ELASTICSEARCH = [
 
 # Stripe
 stripe.api_key = env('STRIPE_API_KEY')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
 
 # Captcha
 CAPTCHA_KEY = env('CAPTCHA_KEY')
@@ -100,3 +105,19 @@ LDAP_PASSWORD = env('LDAP_PASSWORD')
 STATSD_HOST = env('STATSD_HOST')
 STATSD_PORT = env('STATSD_PORT')
 STATSD_PREFIX = env('STATSD_PREFIX', default='lego_prod')
+
+# CORS
+CORS_ORIGIN_WHITELIST = list({
+    urlparse(FRONTEND_URL).netloc,
+    '127.0.0.1:3000',
+    'localhost:3000'
+})
+
+# Restricted
+RESTRICTED_ADDRESS = env('RESTRICTED_ADDRESS', default='restricted')
+RESTRICTED_DOMAIN = env('RESTRICTED_DOMAIN', default='abakus.no')
+RESTRICTED_FROM = env('RESTRICTED_FROM', default='Abakus Linjeforening <no-reply@abakus.no>')
+
+# Push Notifications
+PUSH_NOTIFICATIONS_SETTINGS['APNS_USE_SANDBOX'] = env('APNS_USE_SANDBOX', default=False)
+PUSH_NOTIFICATIONS_SETTINGS['APNS_CERTIFICATE'] = env('APNS_CERTIFICATE')

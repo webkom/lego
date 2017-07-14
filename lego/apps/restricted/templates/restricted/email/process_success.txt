@@ -1,0 +1,9 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+Begrenset epost er nå sendt ut til alle mottakere.
+
+{% endblock %}

@@ -14,10 +14,12 @@ from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
                                       MeetingViewSet)
-from lego.apps.notifications.views import NotificationSettingsViewSet
+from lego.apps.notifications.views import (APNSDeviceViewSet, GCMDeviceViewSet,
+                                           NotificationSettingsViewSet)
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
+from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
@@ -40,7 +42,7 @@ router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
-router.register(r'webhooks', StripeWebhook, base_name='webhooks')
+router.register(r'webhooks-stripe', StripeWebhook, base_name='webhooks-stripe')
 router.register(r'groups', AbakusGroupViewSet)
 router.register(r'interest-groups', InterestGroupViewSet)
 router.register(r'meetings', MeetingViewSet)
@@ -50,31 +52,35 @@ router.register(r'meeting-token',
                 MeetingInvitationTokenViewSet, base_name='meeting-token')
 router.register(r'memberships', MembershipViewSet)
 router.register(
-    r'notifications/settings', NotificationSettingsViewSet, base_name='notifications-settings'
+    r'notification-settings', NotificationSettingsViewSet, base_name='notifications-settings'
 )
 router.register(r'joblistings', JoblistingViewSet, base_name='joblisting')
-router.register(r'oauth2/access-tokens', AccessTokenViewSet)
-router.register(r'oauth2/applications', ApplicationViewSet)
+router.register(r'oauth2-access-tokens', AccessTokenViewSet, base_name='oauth2-access-tokens')
+router.register(r'oauth2-applications', ApplicationViewSet, base_name='oauth2-applications')
 router.register(r'pages', PageViewSet)
-router.register(r'search/autocomplete', AutocompleteViewSet, base_name='autocomplete')
+router.register(r'search-autocomplete', AutocompleteViewSet, base_name='autocomplete')
 router.register(r'quotes', QuoteViewSet)
-router.register(r'search/search', SearchViewSet, base_name='search')
-router.register(r'users/registration', UserRegistrationViewSet, base_name='user-registration')
-router.register(r'users/student-confirmation',
-                StudentConfirmationViewSet, base_name='student-confirmation')
+router.register(r'search-search', SearchViewSet, base_name='search')
+router.register(r'users-registration', UserRegistrationViewSet, base_name='user-registration')
+router.register(
+    r'users-student-confirmation', StudentConfirmationViewSet, base_name='student-confirmation'
+)
 router.register(r'users', UsersViewSet)
 router.register(r'reactions', ReactionViewSet)
-router.register(r'reaction_types', ReactionTypeViewSet)
+router.register(r'reaction-types', ReactionTypeViewSet)
+router.register(r'restricted-mail', RestrictedMailViewSet, base_name='restricted-mail')
 router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
-router.register(r'followers/user', FollowUserViewSet)
-router.register(r'followers/event', FollowEventViewSet)
-router.register(r'followers/company', FollowCompanyViewSet)
-router.register(r'feed/user', UserFeedViewSet, base_name='feed-user')
-router.register(r'feed/personal', PersonalFeedViewSet, base_name='feed-personal')
-router.register(r'feed/notifications', NotificationFeedViewSet, base_name='feed-notifications')
-router.register(r'feed/group', GroupFeedViewSet, base_name='feed-group')
-router.register(r'feed/company', CompanyFeedViewSet, base_name='feed-company')
-router.register(r'slack/invite', SlackInviteViewSet, base_name='slack-invite')
-router.register(r'calendar/ical', ICalViewset, base_name='calendar-ical')
-router.register(r'calendar/token', ICalTokenViewset, base_name='calendar-token')
+router.register(r'followers-user', FollowUserViewSet)
+router.register(r'followers-event', FollowEventViewSet)
+router.register(r'followers-company', FollowCompanyViewSet)
+router.register(r'feed-user', UserFeedViewSet, base_name='feed-user')
+router.register(r'feed-personal', PersonalFeedViewSet, base_name='feed-personal')
+router.register(r'feed-notifications', NotificationFeedViewSet, base_name='feed-notifications')
+router.register(r'feed-group', GroupFeedViewSet, base_name='feed-group')
+router.register(r'feed-company', CompanyFeedViewSet, base_name='feed-company')
+router.register(r'slack-invite', SlackInviteViewSet, base_name='slack-invite')
+router.register(r'calendar-ical', ICalViewset, base_name='calendar-ical')
+router.register(r'calendar-token', ICalTokenViewset, base_name='calendar-token')
+router.register(r'device-apns', APNSDeviceViewSet)
+router.register(r'device-gcm', GCMDeviceViewSet)

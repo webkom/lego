@@ -22,3 +22,7 @@ class NoSuchPool(ValueError):
 
 class EventHasStarted(ValueError):
     pass
+
+
+class RegistrationsExistInPool(ValueError):
+    pass

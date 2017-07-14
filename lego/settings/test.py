@@ -1,8 +1,9 @@
 import os
 
 import stripe
+from cassandra import ConsistencyLevel
 
-from .base import INSTALLED_APPS
+from .base import CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS
 
 DEBUG = False
 SERVER_URL = 'http://127.0.0.1:8000'
@@ -17,27 +18,32 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': '127.0.0.1',
+        'HOST': os.environ.get('DATABASE') or '127.0.0.1',
         'NAME': 'lego',
         'USER': 'lego'
     }
 }
 
-INSTALLED_APPS += ('lego.apps.permissions.tests',)
+CACHE = os.environ.get('CACHE') or '127.0.0.1'
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/0",
+        "LOCATION": f'redis://{CACHE}:6379/0',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
+STREAM_CASSANDRA_HOSTS = [os.environ.get('CASSANDRA') or '127.0.0.1']
+STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.ONE
+STREAM_DEFAULT_KEYSPACE = 'test_stream_framework'
+CASSANDRA_DRIVER_KWARGS['lazy_connect'] = bool(os.environ.get('CASS_LAZY'))
+
 STREAM_REDIS_CONFIG = {
     'default': {
-        'host': '127.0.0.1',
+        'host': CACHE,
         'port': 6379,
         'db': 10,
         'password': None
@@ -51,9 +57,13 @@ ELASTICSEARCH = [
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
+CHANNEL_LAYERS['default']['CONFIG'] = {
+    'hosts': [f'redis://{CACHE}/5']
+}
+
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-STREAM_DEFAULT_KEYSPACE = 'test_stream_framework'
+INSTALLED_APPS += ('lego.apps.permissions.tests',)
 
 SLACK_TEAM = ''
 SLACK_TOKEN = ''

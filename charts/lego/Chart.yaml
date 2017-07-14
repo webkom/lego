@@ -1,4 +1,0 @@
-apiVersion: v1
-description: Deploy lego to Kubernetes
-name: lego
-version: 0.0.1

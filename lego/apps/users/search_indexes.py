@@ -1,8 +1,8 @@
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
-from .models import User
-from .serializers.users import SearchUserSerializer
+from .models import AbakusGroup, User
+from .serializers.users import SearchGroupSerializer, SearchUserSerializer
 
 
 class UserIndex(SearchIndex):
@@ -17,3 +17,17 @@ class UserIndex(SearchIndex):
 
 
 register(UserIndex)
+
+
+class GroupIndex(SearchIndex):
+
+    queryset = AbakusGroup.objects.all()
+    serializer_class = SearchGroupSerializer
+    result_fields = ('name',)
+    autocomplete_result_fields = ('name',)
+
+    def get_autocomplete(self, instance):
+        return [instance.name] + instance.name.split(' ')
+
+
+register(GroupIndex)
