@@ -21,7 +21,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         """
-        Override permission classes as @permission_classes on methods do not work with ModelViewSets.
+        Override permission classes as @permission_classes on methods
+        do not work with ModelViewSets.
         """
         if self.request.method == 'POST':
             # Allow anyone to POST (i.e. visitors that are not registered)
