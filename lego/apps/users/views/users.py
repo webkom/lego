@@ -19,10 +19,10 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, UsersPermissions)
     ordering = 'id'
 
-    """
-    Override permission classes as @permission_classes on methods do not work with ModelViewSets.
-    """
     def get_permissions(self):
+        """
+        Override permission classes as @permission_classes on methods do not work with ModelViewSets.
+        """
         if self.request.method == 'POST':
             # Allow anyone to POST (i.e. visitors that are not registered)
             self.permission_classes = [AllowAny, ]
@@ -37,10 +37,10 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    """
-    Attempts to register a new user based on the registration token.
-    """
     def create(self, request, *args, **kwargs):
+        """
+        Attempts to register a new user based on the registration token.
+        """
         if request.user.is_authenticated():
             # Authenticated users are not allowed to
             # create / register new users unless they are an admin.

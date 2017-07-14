@@ -17,13 +17,13 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny, )
 
-    """
-    Validates a registration token.
-
-    The request errors out if the token has expired or is invalid.
-    Request URL: GET /api/v1/users/registration/?token=<token>
-    """
     def get(self, request, pk=None, format=None):
+        """
+        Validates a registration token.
+
+        The request errors out if the token has expired or is invalid.
+        Request URL: GET /api/v1/users/registration/?token=<token>
+        """
         if not request.GET.get('token', False):
             raise ValidationError(detail='Registration token is required.')
         token_email = User.validate_registration_token(request.GET.get('token', False))
@@ -31,10 +31,10 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
             raise ValidationError(detail='Token expired or invalid.')
         return Response({'email': token_email}, status=status.HTTP_200_OK)
 
-    """
-    Attempts to create a registration token and email it to the user.
-    """
     def create(self, request, *args, **kwargs):
+        """
+        Attempts to create a registration token and email it to the user.
+        """
         if request.data.get('email', None) is not None:
             request.data['email'] = request.data['email'].lower()
 
