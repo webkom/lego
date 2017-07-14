@@ -17,6 +17,10 @@ class BaseHandler:
             self.handle_update(instance)
         elif event == 'delete':
             self.handle_delete(instance)
+        else:
+            handler = getattr(self, f'handle_{event}', None)
+            if handler:
+                handler(instance)
 
     def handle_create(self, instance):
         pass

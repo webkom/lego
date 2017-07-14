@@ -1,12 +1,14 @@
 from push_notifications.api.rest_framework import (APNSDeviceAuthorizedViewSet,
                                                    GCMDeviceAuthorizedViewSet)
-from rest_framework import decorators, permissions, viewsets
+from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.notifications import constants
+from lego.apps.permissions.views import AllowedPermissionsMixin
 
-from .models import NotificationSetting
-from .serializers import NotificationSettingCreateSerializer, NotificationSettingSerializer
+from .models import Announcement, NotificationSetting
+from .serializers import (AnnouncementDetailSerializer, AnnouncementListSerializer,
+                          NotificationSettingCreateSerializer, NotificationSettingSerializer)
 
 
 class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -65,3 +67,29 @@ class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
 class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
 
     ordering = ('date_created', )
+
+
+class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+
+    serializer_class = AnnouncementDetailSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Announcement.objects.filter(created_by=self.request.user)
+        return Announcement.objects.none()
+
+    def get_serializer_class(self):
+        if self.action in ['list']:
+            return AnnouncementListSerializer
+        return super().get_serializer_class()
+
+    @decorators.detail_route(methods=['POST'])
+    def send(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if instance.sent:
+            raise exceptions.ValidationError('message already sent')
+
+        instance.send()
+
+        return Response({'status': 'message queued for sending'}, status=status.HTTP_202_ACCEPTED)

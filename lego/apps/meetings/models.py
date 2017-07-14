@@ -66,6 +66,9 @@ class Meeting(Content, BasisModel):
         """
         return self.invited_users, []
 
+    def announcement_lookup(self):
+        return self.invited_users
+
 
 class MeetingInvitation(BasisModel):
 

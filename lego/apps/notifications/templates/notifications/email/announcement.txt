@@ -1,0 +1,13 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+{{created_by}} sendte deg en viktig melding.
+
+{{message}}
+
+Les mer på {{ frontend_url }}/
+
+{% endblock %}
