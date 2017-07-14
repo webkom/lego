@@ -76,5 +76,6 @@ class Submission(BasisModel):
 
 class Answer(BasisModel):
     submission = models.ForeignKey(Submission, related_name='answers')
-    alternative = models.ForeignKey(Alternative, related_name='answers')
+    question = models.ForeignKey(Question, related_name='answers')
+    selected_answers = models.ForeignKey(Alternative, related_name='answers', blank=True)
     answer_text = models.TextField(max_length=255, blank=True)

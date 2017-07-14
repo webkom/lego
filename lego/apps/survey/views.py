@@ -1,11 +1,12 @@
-from rest_framework import viewsets
+from rest_framework import decorators, viewsets
 
-from lego.apps.survey.models import Alternative, Answer, Question, Submission, Survey
-from lego.apps.survey.serializers import (AlternativeSerializer, AnswerSerializer,
-                                          QuestionSerializer, SubmissionCreateAndUpdateSerializer,
+from lego.apps.survey.models import Alternative, Question, Submission, Survey
+from lego.apps.survey.serializers import (
+                                          SubmissionCreateAndUpdateSerializer,
                                           SubmissionReadDetailedSerializer,
                                           SubmissionReadSerializer, SurveyCreateAndUpdateSerializer,
-                                          SurveyReadDetailedSerializer, SurveyReadSerializer)
+                                          SurveyReadDetailedSerializer, SurveyReadSerializer,
+                                          )
 
 
 class SurveyViewSet(viewsets.ModelViewSet):
@@ -18,6 +19,26 @@ class SurveyViewSet(viewsets.ModelViewSet):
             return SurveyReadDetailedSerializer
         return SurveyReadSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        survey = Survey.objects.get(instance.id)
+        survey.delete()
+
+    @decorators.detail_route(methods=['POST'])
+    def submit(self, request, *args, **kwargs):
+        #TODO
+        pass
+
+    @decorators.list_route(methods=['GET'])
+    def all(self, request, *args, **kwargs):
+        #TODO
+        pass
+
+    @decorators.detail_route(methods=['GET'])
+    def statistics(self, request, *args,):
+        #TODO
+        pass
+
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
@@ -29,22 +50,13 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             return SubmissionReadDetailedSerializer
         return SubmissionReadSerializer
 
-    def get_queryset(self):
-        survey_id = self.kwargs.get('survey_pk')
-        if survey_id:
-            return Submission.objects.filter(survey=survey_id)
 
+class SubmissionViewSet(viewsets.ModelViewSet):
+    queryset = Submission.objects.all()
 
-class QuestionViewSet(viewsets.ModelViewSet):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-
-
-class AlternativeViewSet(viewsets.ModelViewSet):
-    queryset = Alternative.objects.all()
-    serializer_class = AlternativeSerializer
-
-
-class AnswerViewSet(viewsets.ModelViewSet):
-    queryset = Answer.objects.all()
-    serializer_class = AnswerSerializer
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return SubmissionCreateAndUpdateSerializer
+        elif self.action in ['retrieve']:
+            return SubmissionReadDetailedSerializer
+        return SubmissionReadSerializer
