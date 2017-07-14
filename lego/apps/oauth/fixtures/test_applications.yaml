@@ -8,3 +8,5 @@
     description: test api application
     client_id: testid
     skip_authorization: true
+    created: '2016-01-1T10:00:00+00:00'
+    updated: '2016-01-1T10:00:00+00:00'

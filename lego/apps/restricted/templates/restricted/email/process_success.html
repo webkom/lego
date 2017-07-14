@@ -1,0 +1,28 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-good">
+            Begrenset epost er sendt ut
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Begrenset epost er nå sendt ut til alle mottakere.
+        </td>
+    </tr>
+
+{% endblock %}
+

@@ -7,20 +7,22 @@ from rest_framework.response import Response
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (APINoSuchPool, APIPaymentExists,
-                                         APIRegistrationsExistsInPool, NoSuchPool)
+                                         APIRegistrationsExistsInPool, NoSuchPool,
+                                         RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import (AdministratePermissions, AdminRegistrationPermissions,
                                           PoolPermissions, RegistrationPermissions)
-from lego.apps.events.serializers import (AdminRegistrationCreateAndUpdateSerializer,
-                                          EventAdministrateSerializer,
-                                          EventCreateAndUpdateSerializer,
-                                          EventReadDetailedSerializer, EventReadSerializer,
-                                          PoolCreateAndUpdateSerializer,
-                                          RegistrationCreateAndUpdateSerializer,
-                                          RegistrationPaymentReadSerializer,
-                                          RegistrationReadDetailedSerializer,
-                                          RegistrationReadSerializer, StripeTokenSerializer)
+from lego.apps.events.serializers.events import (EventAdministrateSerializer,
+                                                 EventCreateAndUpdateSerializer,
+                                                 EventReadDetailedSerializer, EventReadSerializer)
+from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
+from lego.apps.events.serializers.registrations import (AdminRegistrationCreateAndUpdateSerializer,
+                                                        RegistrationCreateAndUpdateSerializer,
+                                                        RegistrationPaymentReadSerializer,
+                                                        RegistrationReadDetailedSerializer,
+                                                        RegistrationReadSerializer,
+                                                        StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
                                     registration_save)
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
@@ -40,7 +42,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         elif self.action == 'retrieve':
             queryset = Event.objects.prefetch_related(
-                'pools',
+                'pools', 'pools__permission_groups',
                 Prefetch(
                     'pools__registrations', queryset=Registration.objects.select_related('user')
                 ),
@@ -60,6 +62,12 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return EventReadDetailedSerializer
 
         return super().get_serializer_class()
+
+    def update(self, request, *args, **kwargs):
+        try:
+            return super().update(request, *args, **kwargs)
+        except RegistrationsExistInPool:
+            raise APIRegistrationsExistsInPool()
 
     @decorators.detail_route(
         methods=['GET'], serializer_class=EventAdministrateSerializer,
@@ -83,7 +91,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event = Event.objects.get(id=event_id)
         registration = event.get_registration(request.user)
 
-        if not event.is_priced:
+        if not event.is_priced or not event.use_stripe:
             raise PermissionDenied()
 
         if registration.charge_id:
@@ -145,10 +153,11 @@ class RegistrationViewSet(AllowedPermissionsMixin,
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if not verify_captcha(serializer.data.get('captcha_response', None)):
+        event_id = self.kwargs.get('event_pk', None)
+        event = Event.objects.get(id=event_id)
+        if event.use_captcha and not verify_captcha(serializer.data.get('captcha_response', None)):
             raise ValidationError({'error': 'Bad captcha'})
 
-        event_id = self.kwargs.get('event_pk', None)
         user_id = request.user.id
 
         with transaction.atomic():

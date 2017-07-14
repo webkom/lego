@@ -11,7 +11,7 @@ class FollowEventViewTestCase(APITestCase):
         'initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
         'test_followevent.yaml'
     ]
-    url = '/api/v1/followers/event/'
+    url = '/api/v1/followers-event/'
 
     def setUp(self):
         self.user = User.objects.get(id=1)
@@ -60,7 +60,7 @@ class FollowUserViewTestCase(APITestCase):
     fixtures = [
         'initial_abakus_groups.yaml', 'test_users.yaml', 'test_followuser.yaml'
     ]
-    url = '/api/v1/followers/user/'
+    url = '/api/v1/followers-user/'
 
     def setUp(self):
         self.user = User.objects.get(id=1)
@@ -110,7 +110,7 @@ class FollowCompanyViewTestCase(APITestCase):
         'initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
         'test_followcompany.yaml'
     ]
-    url = '/api/v1/followers/company/'
+    url = '/api/v1/followers-company/'
 
     def setUp(self):
         self.user = User.objects.get(id=1)

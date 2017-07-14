@@ -4,10 +4,12 @@ from unittest import mock, skipIf
 import stripe
 from django.core.urlresolvers import reverse
 from django.utils import timezone
+from djangorestframework_camel_case.render import camelize
 from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.users.models import AbakusGroup, User
 
 from .utils import create_token
@@ -22,6 +24,12 @@ _test_event_data = [
         'start_time': '2011-09-01T13:20:30Z',
         'end_time': '2012-09-01T13:20:30Z',
         'merge_time': '2012-01-01T13:20:30Z',
+        'pools': [{
+            'name': 'Initial Pool',
+            'capacity': 10,
+            'activation_date': '2012-09-01T10:20:30Z',
+            'permission_groups': [1]
+        }]
     },
     {
         'title': 'Event2',
@@ -32,6 +40,17 @@ _test_event_data = [
         'start_time': '2015-09-01T13:20:30Z',
         'end_time': '2015-09-01T13:20:30Z',
         'merge_time': '2016-01-01T13:20:30Z',
+        'pools': [{
+            'name': 'Initial Pool 1',
+            'capacity': 10,
+            'activation_date': '2012-09-01T10:20:30Z',
+            'permission_groups': [2]
+        }, {
+            'name': 'Initial Pool 2',
+            'capacity': 20,
+            'activation_date': '2012-09-01T10:20:30Z',
+            'permission_groups': [2]
+        }]
     }
 ]
 
@@ -85,10 +104,6 @@ def _get_registrations_list_url(event_pk):
 def _get_registrations_detail_url(event_pk, registration_pk):
     return reverse('api:v1:registrations-detail', kwargs={'event_pk': event_pk,
                                                           'pk': registration_pk})
-
-
-def _get_webhook_url():
-    return reverse('api:v1:webhooks-list')
 
 
 class ListEventsTestCase(APITestCase):
@@ -184,13 +199,22 @@ class CreateEventsTestCase(APITestCase):
         self.event_response = self.client.post(_get_list_url(), _test_event_data[0])
         self.assertEqual(self.event_response.status_code, 201)
         self.event_id = self.event_response.data.pop('id', None)
-        self.pool_response = self.client.post(_get_pools_list_url(self.event_id),
-                                              _test_pools_data[0])
-        self.pool_id = self.pool_response.data.get('id', None)
 
     def test_event_creation(self):
+        """Test event creation with pools"""
         self.assertIsNotNone(self.event_id)
         self.assertEqual(self.event_response.status_code, 201)
+        res_event = self.event_response.data
+        expect_event = _test_event_data[0]
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
+
+        expect_pools = camelize(expect_event['pools'])
+        res_pools = res_event['pools']
+        for i in range(len(expect_pools)):
+            self.assertIsNotNone(res_pools[i].pop('id'))
+            for key in ['name', 'capacity', 'activationDate', 'permissionGroups']:
+                self.assertEqual(res_pools[i][key], expect_pools[i][key])
 
     def test_event_creation_without_perm(self):
         user = User.objects.get(username='abakule')
@@ -199,36 +223,78 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_event_update(self):
+        """Test updating event attributes"""
+        expect_event = _test_event_data[1]
+        expect_event.pop('pools')
+        event_update_response = self.client.put(_get_detail_url(self.event_id), expect_event)
+        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(self.event_id, event_update_response.data.pop('id'))
+        res_event = event_update_response.data
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
+
+    def test_event_partial_update(self):
+        """Test patching event attributes"""
+        expect_event = _test_event_data[0]
+        event_update_response = self.client.patch(
+            _get_detail_url(self.event_id), {'title': 'PATCHED'}
+        )
+        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(self.event_id, event_update_response.data.pop('id'))
+        res_event = event_update_response.data
+        self.assertEqual(res_event['title'], 'PATCHED')
+        for key in ['description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
+
+    def test_event_update_with_pool_creation(self):
+        """Test updating event attributes and add a pool"""
+        expect_event = _test_event_data[1]
+        expect_event['pools'] = self.event_response.data.get('pools') + [_test_pools_data[0]]
+        event_update_response = self.client.put(_get_detail_url(self.event_id), expect_event)
+        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(self.event_id, event_update_response.data.pop('id'))
+        res_event = event_update_response.data
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
+
+        # These are not sorted due to id not present on new pool
+        # camelize() because nested serializer (pool) camelizes output
+        expect_pools = sorted(camelize(expect_event['pools']), key=lambda pool: pool['name'])
+        res_pools = sorted(res_event['pools'], key=lambda pool: pool['name'])
+        for i in range(len(expect_pools)):
+            self.assertIsNotNone(res_pools[i].pop('id'))
+            for key in ['name', 'capacity', 'activationDate', 'permissionGroups']:
+                self.assertEqual(res_pools[i][key], expect_pools[i][key])
+
+    def test_event_update_with_pool_deletion(self):
+        """Test that pool updated through event is deleted"""
+        _test_event_data[1]['pools'] = [_test_pools_data[0]]
         event_update_response = self.client.put(_get_detail_url(self.event_id), _test_event_data[1])
+
+        self.assertEqual(event_update_response.status_code, 200)
         res_event = event_update_response.data
         expect_event = _test_event_data[1]
         for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
             self.assertEqual(res_event[key], expect_event[key])
 
-        self.assertEqual(self.event_id, event_update_response.data.pop('id'))
+        expect_pools = camelize(expect_event['pools'])
+        res_pools = res_event['pools']
+        for i in range(len(expect_pools)):
+            self.assertIsNotNone(res_pools[i].pop('id'))
+            for key in ['name', 'capacity', 'activationDate', 'permissionGroups']:
+                self.assertEqual(res_pools[i][key], expect_pools[i][key])
+
+    def test_event_partial_update_pool_deletion(self):
+        """Test that all pools are deleted when patching"""
+        event_update_response = self.client.patch(_get_detail_url(self.event_id), {'pools': []})
+
         self.assertEqual(event_update_response.status_code, 200)
+        res_event = event_update_response.data
+        expect_event = _test_event_data[0]
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+            self.assertEqual(res_event[key], expect_event[key])
 
-    def test_pool_creation(self):
-        self.assertIsNotNone(self.pool_response.data.pop('id'))
-        self.assertEqual(self.pool_response.status_code, 201)
-        self.assertEqual(_test_pools_data[0], self.pool_response.data)
-
-    def test_pool_update(self):
-        pool_update_response = self.client.put(
-            _get_pools_detail_url(self.event_id, self.pool_id), _test_pools_data[1]
-        )
-
-        self.assertEqual(pool_update_response.status_code, 200)
-        self.assertIsNotNone(pool_update_response.data['id'])
-        self.assertEqual(pool_update_response.data['name'], _test_pools_data[1]['name'])
-        self.assertEqual(pool_update_response.data['capacity'], _test_pools_data[1]['capacity'])
-        self.assertEqual(
-            pool_update_response.data['activation_date'], _test_pools_data[1]['activation_date']
-        )
-        self.assertEqual(
-            pool_update_response.data['permission_groups'][0],
-            _test_pools_data[1]['permission_groups'][0]
-        )
+        self.assertEqual(res_event['pools'], [])
 
 
 class PoolsTestCase(APITestCase):
@@ -602,7 +668,7 @@ class StripePaymentTestCase(APITestCase):
         get_object = self.client.get(_get_registrations_detail_url(self.event.id, registration_id))
         self.assertEqual(get_object.data.get('charge_status'), 'succeeded')
 
-    def test_refund_webhook(self):
+    def test_refund_task(self):
         token = create_token('4242424242424242', '123')
         self.issue_payment(token)
         registration = Registration.objects.get(event=self.event, user=self.abakus_user)
@@ -617,14 +683,10 @@ class StripePaymentTestCase(APITestCase):
                 break
         self.assertIsNotNone(stripe_event)
 
-        webhook = self.client.post(_get_webhook_url(), {
-            'id': stripe_event.id,
-            'type': 'charge.refunded'
-        })
+        stripe_webhook_event.delay(event_id=stripe_event.id, event_type='charge.refunded')
 
         registration.refresh_from_db()
 
-        self.assertEqual(webhook.status_code, 200)
         self.assertEqual(registration.charge_status, 'succeeded')
         self.assertEqual(registration.charge_amount, 10000)
         self.assertEqual(registration.charge_amount_refunded, 10000)

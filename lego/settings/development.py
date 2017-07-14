@@ -14,12 +14,9 @@ FRONTEND_URL = 'http://127.0.0.1:3000'
 SERVER_EMAIL = 'Abakus Webkom <webkom@abakus.no>'
 
 SECRET_KEY = 'secret'
+
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
-
 CAPTCHA_KEY = os.environ.get('CAPTCHA_KEY')
-
-WEBHOOK_USERNAME = 'stripe'
-WEBHOOK_PASSWORD = 'webhook'
 
 DATABASES = {
     'default': {
@@ -99,3 +96,8 @@ ELASTICSEARCH = [
 LDAP_SERVER = '127.0.0.1:389'
 LDAP_USER = 'cn=admin,dc=abakus,dc=no'
 LDAP_PASSWORD = 'admin'
+
+CORS_ORIGIN_WHITELIST = list({
+    '127.0.0.1:3000',
+    'localhost:3000'
+})

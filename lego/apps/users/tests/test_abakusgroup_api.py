@@ -68,6 +68,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         response = self.client.get(_get_detail_url(pk))
         user = response.data
         keys = set(user.keys())
+        keys.remove('action_grant')
 
         self.assertEqual(len(user['users']), 1)
         self.assertEqual(response.status_code, 200)
@@ -85,6 +86,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         response = self.client.get(_get_detail_url(self.test_group.pk))
         group = response.data
         keys = set(group.keys())
+        keys.remove('action_grant')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
@@ -96,6 +98,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         response = self.client.get(_get_detail_url(new_group.pk))
         group = response.data
         keys = set(group.keys())
+        keys.remove('action_grant')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(keys, set(PublicAbakusGroupSerializer.Meta.fields))

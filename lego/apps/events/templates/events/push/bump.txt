@@ -1,0 +1,1 @@
+Du har blitt flyttet opp fra ventelisten på arrangementet {{ event }}.

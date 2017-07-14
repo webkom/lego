@@ -10,7 +10,7 @@ class NotificationSettingsViewSetTestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_notification_settings.yaml']
 
     def setUp(self):
-        self.url = '/api/v1/notifications/settings/'
+        self.url = '/api/v1/notification-settings/'
         self.user = User.objects.get(pk=2)
 
     def test_no_auth(self):
@@ -45,7 +45,7 @@ class NotificationSettingsViewSetTestCase(APITestCase):
         self.assertEquals(response.data, {
             'notification_type': 'weekly_mail',
             'enabled': True,
-            'channels': ['email']
+            'channels': ['email', 'push']
         })
 
     def test_change_setting_defaults(self):

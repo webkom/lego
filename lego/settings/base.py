@@ -6,6 +6,7 @@ import environ
 root = environ.Path(__file__) - 2
 BASE_DIR = root()
 
+ALLOWED_HOSTS = ['*']
 SHELL_PLUS = 'ipython'
 
 INSTALLED_APPS = [
@@ -22,6 +23,8 @@ INSTALLED_APPS = [
     'mptt',
     'channels',
     'django_thumbor',
+    'django_filters',
+    'push_notifications',
 
     'lego.utils',
     'lego.apps.users',
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
     'lego.apps.tags',
     'lego.apps.quotes',
     'lego.apps.reactions',
+    'lego.apps.restricted',
     'lego.apps.websockets',
     'lego.apps.joblistings'
 ]
@@ -145,8 +149,6 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
 MEDIA_URL = '/media/'
 
-CORS_ORIGIN_ALLOW_ALL = True
-
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'asgi_redis.RedisChannelLayer',
@@ -166,3 +168,9 @@ CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 
 REGISTRATION_CONFIRMATION_TIMEOUT = 60 * 60 * 24
 STUDENT_CONFIRMATION_TIMEOUT = 60 * 60 * 24
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+    'APNS_USE_SANDBOX': False,
+    'UPDATE_ON_DUPLICATE_REG_ID': True,
+    'APNS_TOPIC': 'no.abakus.abakus'
+}
