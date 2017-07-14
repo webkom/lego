@@ -213,3 +213,13 @@
   fields: {deleted: false, name: TestInterestGroup, description: '', is_grade: false,
     is_committee: false, is_interest_group: false, parent: 13, permissions: '[]',
     lft: 8, rght: 9, tree_id: 14, level: 1}
+- model: users.abakusgroup
+  pk: 41
+  fields: {deleted: false, name: GalleryAdminTest, description: '', is_grade: false,
+    is_committee: false, is_interest_group: false, parent: null, permissions: '["/sudo/admin/gallerys/"]',
+    lft: 1, rght: 2, tree_id: 15, level: 0}
+- model: users.abakusgroup
+  pk: 42
+  fields: {deleted: false, name: GalleryTest, description: '', is_grade: false, is_committee: false,
+    is_interest_group: false, parent: null, permissions: '["/sudo/admin/gallerys/list/",
+      "/sudo/admin/gallerys/retrieve/"]', lft: 1, rght: 2, tree_id: 16, level: 0}
