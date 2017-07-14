@@ -16,7 +16,7 @@ from lego.apps.external_sync.models import LDAPUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
-from lego.apps.users.managers import (AbakusGroupManager, MembershipManager, UserManager,
+from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
                                       UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
 
@@ -92,7 +92,8 @@ class PermissionsMixin(models.Model):
 
     @property
     def is_abakom_member(self):
-        return bool(filter(lambda group: group.is_committee, self.all_groups))
+        # from first_true @ https://docs.python.org/3/library/itertools.html
+        return bool(next(filter(lambda group: group.is_committee, self.all_groups), False))
 
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
@@ -142,7 +143,12 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
-    email = models.EmailField('email address', blank=True)
+    email = models.EmailField(
+        unique=True,
+        error_messages={
+            'unique': 'A user with that email already exists.',
+        }
+    )
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
@@ -152,7 +158,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
 
-    objects = UserManager()
+    objects = AbakusUserManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -212,6 +218,22 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         count = Penalty.objects.valid().filter(user=self)\
             .aggregate(models.Sum('weight'))['weight__sum']
         return count or 0
+
+    @staticmethod
+    def generate_registration_token(email):
+        return TimestampSigner().sign(signing.dumps({
+            'email': email
+        }))
+
+    @staticmethod
+    def validate_registration_token(token):
+        try:
+            return signing.loads(TimestampSigner().unsign(
+                token,
+                max_age=settings.REGISTRATION_CONFIRMATION_TIMEOUT
+            ))['email']
+        except (BadSignature, SignatureExpired):
+            return None
 
     @staticmethod
     def generate_student_confirmation_token(student_username, course, member):
