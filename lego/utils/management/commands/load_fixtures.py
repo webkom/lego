@@ -29,14 +29,12 @@ class Command(BaseCommand):
             '--development',
             action='store_true',
             default=False,
-            help='Load development fixtures.',
-        )
+            help='Load development fixtures.', )
         parser.add_argument(
             '--generate',
             action='store_true',
             default=False,
-            help='Generate fixtures',
-        )
+            help='Generate fixtures', )
 
     def call_command(self, *args, **options):
         call_command(*args, verbosity=self.verbosity, **options)
@@ -77,7 +75,6 @@ class Command(BaseCommand):
                 'reactions/fixtures/emojione_reaction_types.yaml',
                 'joblistings/fixtures/development_joblistings.yaml',
             ])
-
             self.update_event_dates()
 
         log.info('Done!')
@@ -97,32 +94,39 @@ class Command(BaseCommand):
             log.info(f'Uploading {file} file to bucket')
             file_path = os.path.join(assets_folder, file)
             storage.upload_file(uploads_bucket, file, file_path)
-            File.objects.get_or_create(pk=file, defaults={
-                'state': 'ready',
-                'file_type': 'image',
-                'token': 'token',
-                'user': user,
-                'public': True,
-            })
+            File.objects.get_or_create(
+                pk=file,
+                defaults={
+                    'state': 'ready',
+                    'file_type': 'image',
+                    'token': 'token',
+                    'user': user,
+                    'public': True,
+                })
 
     def update_event_dates(self):
-        date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
+        date = timezone.now().replace(
+            hour=16, minute=15, second=0, microsecond=0)
         for i, event in enumerate(Event.objects.all()):
-            event.start_time = date + timedelta(days=i-10)
-            event.end_time = date + timedelta(days=i-10, hours=4)
+            event.start_time = date + timedelta(days=i - 10)
+            event.end_time = date + timedelta(days=i - 10, hours=4)
             event.save()
             for j, pool in enumerate(event.pools.all()):
-                pool.activation_date = date.replace(hour=12, minute=0) + timedelta(days=i-j-16)
+                pool.activation_date = date.replace(
+                    hour=12, minute=0) + timedelta(days=i - j - 16)
                 pool.save()
 
     def generate_groups(self):
-        self.call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
+        self.call_command(
+            'flush',
+            '--noinput')  # Need to reset the pk counter to start pk on 1
         self.call_command('migrate')
         load_test_abakus_groups()
         load_dev_interest_groups()
         test_abakus_groups = AbakusGroup.objects.all()
         interest_groups = InterestGroup.objects.all()
-        with open('lego/apps/users/fixtures/test_abakus_groups.yaml', 'w') as f:
+        with open('lego/apps/users/fixtures/test_abakus_groups.yaml',
+                  'w') as f:
             f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
                     " and `development_interest_groups.py`\n#\n")
             data = serializers.serialize("yaml", test_abakus_groups)
@@ -130,7 +134,9 @@ class Command(BaseCommand):
             data = serializers.serialize("yaml", interest_groups)
             f.write(data)
 
-        self.call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
+        self.call_command(
+            'flush',
+            '--noinput')  # Need to reset the pk counter to start pk on 1
         self.call_command('migrate')
         self.load_fixtures([
             'files/fixtures/initial_files.yaml',
@@ -140,7 +146,8 @@ class Command(BaseCommand):
 
         load_abakus_groups()
         abakus_groups = AbakusGroup.objects.all()
-        with open('lego/apps/users/fixtures/initial_abakus_groups.yaml', 'w') as f:
+        with open('lego/apps/users/fixtures/initial_abakus_groups.yaml',
+                  'w') as f:
             f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
                     " and `initial_abakus_groups.py`\n#\n")
             data = serializers.serialize("yaml", abakus_groups)
@@ -150,7 +157,9 @@ class Command(BaseCommand):
         dev_interest_social_group = InterestGroup.objects.all()
         dev_interest_groups = AbakusGroup.objects.filter(
             pk__in=dev_interest_social_group.values_list('id', flat=True))
-        with open('lego/apps/social_groups/fixtures/development_interest_groups.yaml', 'w') as f:
+        with open(
+                'lego/apps/social_groups/fixtures/development_interest_groups.yaml',
+                'w') as f:
             f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
                     " and `development_interest_groups.py`\n#\n")
             data = serializers.serialize("yaml", dev_interest_groups)

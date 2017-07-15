@@ -12,7 +12,7 @@ from lego.utils.models import BasisModel
 class Page(MPTTModel, BasisModel, SlugModel):
     title = models.CharField('title', max_length=200)
     content = models.TextField('content')
-    picture = FileField()
+    cover = FileField(related_name='page_covers')
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     slug_field = 'title'
 

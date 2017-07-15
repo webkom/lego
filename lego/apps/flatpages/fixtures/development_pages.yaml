@@ -2,9 +2,9 @@
   pk: 1
   fields:
     title: Om oss
-    picture: abakus_logo.png
+    cover: page_cover.png
     slug: om-oss
-    content: Abakus Linjeforening
+    content: <p>Abakus Linjeforening</p>
     parent: null
     lft: 1
     rght: 8
@@ -14,9 +14,9 @@
   pk: 2
   fields:
     title: Komiteer
-    picture: abakus_logo.png
+    cover: page_cover.png
     slug: komiteer
-    content: Komiteer
+    content: <p>Komiteer</p>
     parent: 1
     lft: 2
     rght: 7
@@ -26,7 +26,7 @@
   pk: 3
   fields:
     title: Webkom
-    picture: abakus_webkom.png
+    cover: page_cover.png
     slug: webkom
     content: |
       <p>
@@ -77,9 +77,9 @@
   pk: 4
   fields:
     title: Bedkom
-    picture: abakus_bedkom.png
+    cover: page_cover.png
     slug: bedkom
-    content: Bedkom
+    content: <p>Bedkom</p>
     parent: 2
     lft: 5
     rght: 6
@@ -89,9 +89,9 @@
   pk: 5
   fields:
     title: LaBamba
-    picture: abakus_labamba.png
+    cover: page_cover.png
     slug: labamba
-    content: LaBamba
+    content: <p>LaBamba</p>
     parent: 2
     lft: 5
     rght: 6
@@ -101,9 +101,9 @@
   pk: 6
   fields:
     title: readme
-    picture: abakus_readme.png
+    cover: page_cover.png
     slug: readme
-    content: readme
+    content: <p>readme</p>
     parent: 2
     lft: 5
     rght: 6
@@ -113,9 +113,9 @@
   pk: 7
   fields:
     title: Koskom
-    picture: abakus_koskom.png
+    cover: page_cover.png
     slug: koskom
-    content: Koskom
+    content: <p>Koskom</p>
     parent: 2
     lft: 5
     rght: 6
