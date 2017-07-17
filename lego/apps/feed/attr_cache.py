@@ -23,7 +23,8 @@ class AttrCache:
         'users.user': attr_renderers.render_user,
         'events.event': attr_renderers.render_event,
         'meetings.meetinginvitation': attr_renderers.render_meeting_invitation,
-        'articles.article': attr_renderers.render_article
+        'articles.article': attr_renderers.render_article,
+        'notifications.announcement': attr_renderers.render_announcement,
     }
 
     RELATED_FIELDS = {

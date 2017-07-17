@@ -1,5 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils import timezone
+
+from lego.apps.feed.tasks import add_to_feeds
+from lego.utils.models import BasisModel
 
 from .constants import CHANNEL_CHOICES, CHANNELS, NOTIFICATION_CHOICES, NOTIFICATION_TYPES
 
@@ -51,3 +55,48 @@ class NotificationSetting(models.Model):
                 'channels': CHANNELS
             }
         )
+
+
+class Announcement(BasisModel):
+    """
+    Send important messages to selected recipients.
+    A notification is created when a message is saved.
+    This works in the same way as restricted mail.
+    The lookup functions on the relations is called announcement_lookup.
+    """
+
+    message = models.TextField()
+    sent = models.DateTimeField(null=True, default=None)
+
+    MANY_TO_MANY_RELATIONS = ['users', 'groups', 'events', 'meetings']
+
+    users = models.ManyToManyField('users.User', blank=True)
+    groups = models.ManyToManyField('users.AbakusGroup', blank=True)
+    events = models.ManyToManyField('events.Event', blank=True)
+    meetings = models.ManyToManyField('meetings.Meeting', blank=True)
+
+    def lookup_recipients(self):
+        """
+        Lookup users that should receive this message.
+        """
+        all_users = []
+
+        for relation_name in self.MANY_TO_MANY_RELATIONS:
+            relation = getattr(self, relation_name)
+            for instance in relation.all():
+                announcement_lookup = getattr(instance, 'announcement_lookup', None)
+                if announcement_lookup:
+                    users = announcement_lookup()
+                    all_users += list(users)
+
+        return all_users
+
+    def send(self):
+        if self.sent:
+            # Message is sent already, nothing todo!
+            return
+
+        add_to_feeds.delay(self, action='send')
+
+        self.sent = timezone.now()
+        self.save()

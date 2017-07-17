@@ -91,3 +91,13 @@ class RestrictedMailSent(Verb):
 
 
 register(RestrictedMailSent)
+
+
+class AnnouncementVerb(Verb):
+    id = 13
+    infinitive = 'announcement'
+    past_tense = infinitive
+    aggregation_group = '{verb}-{object_content_type}-{object_id}'
+
+
+register(AnnouncementVerb)

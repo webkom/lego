@@ -1,0 +1,1 @@
+Du har mottatt en viktig melding fra {{created_by}}.
