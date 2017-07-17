@@ -15,7 +15,7 @@ from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
                                       MeetingViewSet)
-from lego.apps.notifications.views import (APNSDeviceViewSet, GCMDeviceViewSet,
+from lego.apps.notifications.views import (AnnouncementViewSet, APNSDeviceViewSet, GCMDeviceViewSet,
                                            NotificationSettingsViewSet)
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.quotes.views import QuoteViewSet
@@ -86,3 +86,4 @@ router.register(r'calendar-token', ICalTokenViewset, base_name='calendar-token')
 router.register(r'device-apns', APNSDeviceViewSet)
 router.register(r'device-gcm', GCMDeviceViewSet)
 router.register(r'galleries', GalleryViewSet)
+router.register(r'announcements', AnnouncementViewSet, base_name='announcements')

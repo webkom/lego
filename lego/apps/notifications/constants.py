@@ -23,6 +23,8 @@ PENALTY_CREATION = 'penalty_creation'
 # Restricted Mail
 RESTRICTED_MAIL_SENT = 'restricted_mail_sent'
 
+# Notifications
+ANNOUNCEMENT = 'announcement'
 
 NOTIFICATION_TYPES = [
     WEEKLY_MAIL,
@@ -32,6 +34,7 @@ NOTIFICATION_TYPES = [
     MEETING_INVITE,
     PENALTY_CREATION,
     RESTRICTED_MAIL_SENT,
+    ANNOUNCEMENT
 ]
 
 NOTIFICATION_CHOICES = [(notification, notification) for notification in NOTIFICATION_TYPES]
