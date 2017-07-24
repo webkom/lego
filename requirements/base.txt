@@ -10,7 +10,7 @@ hiredis==0.2.0
 stream-framework==1.4.0
 certifi==2017.4.17
 elasticsearch==5.4.0
-celery==4.0.2
+celery==4.1.0
 stripe==1.62.0
 statsd==3.2.1
 structlog==17.2.0
