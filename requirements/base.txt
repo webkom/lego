@@ -23,7 +23,7 @@ slackclient==1.0.6
 ldap3==2.2.4
 google-api-python-client==1.6.2
 passlib==1.7.1
-premailer==3.1.0
+premailer==3.1.1
 
 # channels
 asgi_redis==1.4.2
