@@ -15,7 +15,7 @@ stripe==1.62.0
 statsd==3.2.1
 structlog==17.2.0
 boto3==1.4.4
-cassandra-driver==3.10
+cassandra-driver==3.11
 bs4==0.0.1
 bleach==2.0.0
 requests==2.18.1
