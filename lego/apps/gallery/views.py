@@ -1,15 +1,12 @@
-import copy
-
-from rest_framework import decorators, exceptions, filters, status, viewsets
-from rest_framework.response import Response
+from rest_framework import exceptions, filters, mixins, viewsets
 
 from lego.apps.gallery.filters import GalleryFilterSet
+from lego.apps.gallery.permissions import GalleryPicturePermissions, user_filter_pictures
 from lego.apps.permissions.filters import AbakusObjectPermissionFilter
 from lego.apps.permissions.views import AllowedPermissionsMixin
 
 from .models import Gallery, GalleryPicture
-from .serializers import (GalleryDeletePictureSerializer, GalleryListSerializer,
-                          GalleryPictureEditSerializer, GalleryPictureSerializer, GallerySerializer)
+from .serializers import GalleryListSerializer, GalleryPictureSerializer, GallerySerializer
 
 
 class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -29,44 +26,25 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return GalleryListSerializer
         return super().get_serializer_class()
 
-    @decorators.detail_route(methods=['POST'], serializer_class=GalleryPictureSerializer)
-    def add_picture(self, request, *args, **kwargs):
-        gallery = self.get_object()
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        GalleryPicture.objects.create(gallery=gallery, **serializer.validated_data)
+class GalleryPictureViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+                            mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+                            viewsets.GenericViewSet):
+    """
+    Nested viewset used to manage pictures in a gallery.
+    """
+    queryset = GalleryPicture.objects.all()
+    permission_classes = (GalleryPicturePermissions, )
+    serializer_class = GalleryPictureSerializer
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def get_queryset(self):
+        user = self.request.user
+        gallery_id = self.kwargs.get('gallery_pk', None)
+        if not gallery_id:
+            raise exceptions.NotFound
 
-    @decorators.detail_route(methods=['POST'], serializer_class=GalleryDeletePictureSerializer)
-    def delete_picture(self, request, *args, **kwargs):
-        gallery = self.get_object()
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        picture = serializer.validated_data['id']
-
-        if not picture.gallery == gallery:
-            raise exceptions.ValidationError('Picture isn\'t connected to this gallery.')
-
-        picture.delete()
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
-
-    @decorators.detail_route(methods=['POST'], serializer_class=GalleryPictureEditSerializer)
-    def update_picture(self, request, *args, **kwargs):
-        gallery = self.get_object()
-
-        serializer = self.get_serializer(data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        data = copy.deepcopy(serializer.validated_data)
-
-        picture = data.pop('id')
-        if not picture.gallery == gallery:
-            raise exceptions.ValidationError('Picture isn\'t connected to this gallery.')
-
-        serializer = GalleryPictureSerializer(instance=picture, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            gallery = Gallery.objects.get(id=gallery_id)
+            return user_filter_pictures(user, gallery)
+        except Gallery.DoesNotExist:
+            raise exceptions.NotFound

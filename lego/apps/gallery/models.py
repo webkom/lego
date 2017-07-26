@@ -2,7 +2,7 @@ from django.db import models
 
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
-from lego.utils.models import BasisModel, PersistentModel
+from lego.utils.models import BasisModel
 
 
 class Gallery(BasisModel, ObjectPermissionsModel):
@@ -19,7 +19,7 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     event = models.ForeignKey('events.Event', related_name='galleries', null=True)
 
 
-class GalleryPicture(PersistentModel):
+class GalleryPicture(models.Model):
     """
     Store the relation between the gallery and the file in remote storage.
     Inactive element are only visible for users with can_edit permissions.
