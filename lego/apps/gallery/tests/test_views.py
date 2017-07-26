@@ -57,29 +57,29 @@ class GalleryViewSetTestCase(APITestCase):
         """The permitted user is able to add images"""
         self.client.force_login(self.permitted_user)
 
-        response = self.client.post(f'{self.url}1/add_picture/', self.add_picture_data)
+        response = self.client.post(f'{self.url}1/pictures/', self.add_picture_data)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
     def test_add_picture_read_only_user(self, mock_signer):
         """The read_only_user user is not be able to add images."""
         self.client.force_login(self.read_only_user)
 
-        response = self.client.post(f'{self.url}1/add_picture/', self.add_picture_data)
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        response = self.client.post(f'{self.url}1/pictures/', self.add_picture_data)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_delete_picture_permitted(self, mock_signer):
         """The permitted user is able to delete pictures."""
         self.client.force_login(self.permitted_user)
 
-        response = self.client.post(f'{self.url}1/delete_picture/', {'id': 1})
+        response = self.client.delete(f'{self.url}1/pictures/1/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
     def test_edit_picture_permitted(self, mock_signer):
         """The permitted user is able to update pictures"""
         self.client.force_login(self.permitted_user)
 
-        response = self.client.post(f'{self.url}1/update_picture/', {
-            'id': 2, 'active': True, 'description': 'Test description'
+        response = self.client.patch(f'{self.url}1/pictures/2/', {
+            'active': True, 'description': 'Test description'
         })
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
