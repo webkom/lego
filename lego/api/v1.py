@@ -10,7 +10,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
-from lego.apps.gallery.views import GalleryViewSet
+from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
 from lego.apps.meetings.views import (MeetingInvitationTokenViewSet, MeetingInvitationViewSet,
@@ -86,4 +86,5 @@ router.register(r'calendar-token', ICalTokenViewset, base_name='calendar-token')
 router.register(r'device-apns', APNSDeviceViewSet)
 router.register(r'device-gcm', GCMDeviceViewSet)
 router.register(r'galleries', GalleryViewSet)
+router.register(r'galleries/(?P<gallery_pk>\d+)/pictures', GalleryPictureViewSet)
 router.register(r'announcements', AnnouncementViewSet, base_name='announcements')

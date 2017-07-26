@@ -38,25 +38,20 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
     )
     thumbnail = ImageField(
         source='file',
-        required=False,
+        read_only=True,
         options={'height': 200, 'width': 300, 'smart': True}
     )
-    raw_file = FileField(source='file', required=False)
+    raw_file = FileField(source='file', read_only=True)
 
     class Meta:
         model = GalleryPicture
         fields = ('id', 'description', 'active', 'file', 'thumbnail', 'raw_file')
-        read_only_fields = ('raw_file', )
+        read_only_fields = ('raw_file', 'thumbnail')
 
-
-class GalleryDeletePictureSerializer(serializers.Serializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=GalleryPicture.objects.all())
-
-
-class GalleryPictureEditSerializer(GalleryDeletePictureSerializer, GalleryPictureSerializer):
-
-    class Meta(GalleryPictureSerializer.Meta):
-        read_only_fields = ('file', 'thumbnail', 'raw_file')
+    def create(self, validated_data):
+        gallery = Gallery.objects.get(pk=self.context['view'].kwargs['gallery_pk'])
+        gallery_picture = GalleryPicture.objects.create(gallery=gallery, **validated_data)
+        return gallery_picture
 
 
 class GallerySearchSerializer(serializers.ModelSerializer):
