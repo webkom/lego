@@ -1,0 +1,164 @@
+- pk: 1
+  model: gallery.Gallery
+  fields:
+    title: 'Raskfest-vors'
+    cover: 1
+    location: 'Aktivitetshuset på Moholt'
+    description: ''
+    taken_at: '2017-01-01'
+    can_view_groups:
+      - 1
+- pk: 2
+  model: gallery.Gallery
+  fields:
+    title: 'Fireball fredag'
+    cover: 3
+    location: 'Aktivitetshuset på Moholt'
+    description: ''
+    taken_at: '2017-01-01'
+    can_view_groups:
+      - 1
+- pk: 3
+  model: gallery.Gallery
+  fields:
+    title: 'Mintu mandag'
+    cover: 5
+    location: 'Aktivitetshuset på Moholt'
+    description: 'Alle drikke mintu på mandag, det er bra med mintu mandag for å holde seg i form på mandag.'
+    taken_at: '2017-01-01'
+    can_view_groups:
+      - 1
+- pk: 4
+  model: gallery.Gallery
+  fields:
+    title: 'Immball'
+    cover: 7
+    location: 'Aktivitetshuset på Moholt'
+    description: ''
+    taken_at: '2017-01-01'
+    can_view_groups:
+      - 1
+- pk: 5
+  model: gallery.Gallery
+  fields:
+    title: 'Nach'
+    cover: 9
+    location: 'Aktivitetshuset på Moholt'
+    description: ''
+    taken_at: '2017-01-01'
+    can_view_groups:
+      - 1
+- pk: 1
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: test_event_cover.png
+    active: True
+    description: '1'
+
+- pk: 2
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: test_article_cover.png
+    active: True
+    description: '2'
+- pk: 11
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus.png
+    active: True
+    description: '1'
+
+- pk: 12
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus_logo.png
+    active: True
+    description: '2'
+- pk: 13
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus_labamba.png
+    active: True
+    description: '1'
+
+- pk: 14
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus_readme.png
+    active: True
+    description: '2'
+
+- pk: 15
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 1
+    file: abakus_koskom.png
+    active: True
+    description: '1'
+
+- pk: 3
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 2
+    file: test_event_cover.png
+    active: True
+    description: '1'
+
+- pk: 4
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 2
+    file: test_article_cover.png
+    active: True
+    description: '2'
+- pk: 5
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 3
+    file: test_event_cover.png
+    active: True
+    description: '1'
+
+- pk: 6
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 3
+    file: test_article_cover.png
+    active: True
+    description: '2'
+- pk: 7
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 4
+    file: test_event_cover.png
+    active: True
+    description: '1'
+
+- pk: 8
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 4
+    file: test_article_cover.png
+    active: True
+    description: '2'
+- pk: 9
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 5
+    file: test_event_cover.png
+    active: True
+    description: '1'
+
+- pk: 10
+  model: gallery.GalleryPicture
+  fields:
+    gallery: 5
+    file: test_article_cover.png
+    active: True
+    description: '2'

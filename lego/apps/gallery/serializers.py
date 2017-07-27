@@ -9,11 +9,29 @@ from lego.utils.serializers import BasisModelSerializer
 from .models import Gallery, GalleryPicture
 
 
+class GalleryCoverSerializer(serializers.ModelSerializer):
+
+    file = ImageField(
+        required=True,
+        options={'height': 700, 'smart': True}
+    )
+
+    class Meta:
+        model = GalleryPicture
+        fields = ('file',)
+
+
 class GalleryListSerializer(BasisModelSerializer):
+
+    picture_count = serializers.SerializerMethodField()
+    cover = GalleryCoverSerializer()
 
     class Meta:
         model = Gallery
-        fields = ('id', 'title', 'location', 'taken_at', 'created_at')
+        fields = ('id', 'title', 'cover', 'location', 'taken_at', 'created_at', 'picture_count')
+
+    def get_picture_count(self, gallery):
+        return gallery.pictures.count()
 
 
 class GallerySerializer(BasisModelSerializer):
