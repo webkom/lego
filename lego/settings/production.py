@@ -106,6 +106,9 @@ STATSD_HOST = env('STATSD_HOST')
 STATSD_PORT = env('STATSD_PORT')
 STATSD_PREFIX = env('STATSD_PREFIX', default='lego_prod')
 
+# Analytics
+ANALYTICS_HOST = env('ANALYTICS_HOST')
+
 # CORS
 CORS_ORIGIN_WHITELIST = list({
     urlparse(FRONTEND_URL).netloc,
