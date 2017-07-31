@@ -24,6 +24,7 @@ ldap3==2.2.4
 google-api-python-client==1.6.2
 passlib==1.7.1
 premailer==3.1.1
+git+https://github.com/eirsyl/analytics-python.git#master
 
 # channels
 asgi_redis==1.4.2

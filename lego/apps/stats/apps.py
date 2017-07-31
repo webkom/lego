@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from .analytics_client import setup_analytics
+
 
 class StatsConfig(AppConfig):
     name = 'lego.apps.stats'
@@ -7,4 +9,4 @@ class StatsConfig(AppConfig):
 
     def ready(self):
         super().ready()
-        pass
+        setup_analytics()
