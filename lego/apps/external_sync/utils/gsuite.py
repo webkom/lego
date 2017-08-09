@@ -48,7 +48,6 @@ class GSuiteLib:
             raise
 
     def add_user(self, user_id, user_key, first_name, last_name, email, password_hash):
-        print('se her', email, user_key)
         return self.client.users().insert(body={
             'name': {
                 'givenName': first_name,
