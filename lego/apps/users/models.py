@@ -205,7 +205,8 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         """
         internal_address = self.internal_email_address
 
-        if internal_address:
+        if self.is_active and self.crypt_password_hash and internal_address:
+            # Return the internal address if all requirements for a GSuite account are met.
             return internal_address
         return self.email
 

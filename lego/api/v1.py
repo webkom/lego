@@ -3,7 +3,7 @@ from rest_framework import routers
 from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import CompanyContactViewSet, CompanyViewSet, SemesterStatusViewSet
-from lego.apps.email.views import EmailListViewSet, EmailViewSet
+from lego.apps.email.views import AbakusGroupEmailViewSet, EmailListViewSet, UserEmailViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet,
@@ -89,5 +89,6 @@ router.register(r'device-gcm', GCMDeviceViewSet)
 router.register(r'galleries', GalleryViewSet)
 router.register(r'galleries/(?P<gallery_pk>\d+)/pictures', GalleryPictureViewSet)
 router.register(r'announcements', AnnouncementViewSet, base_name='announcements')
-# router.register(r'email_lists', EmailListViewSet, base_name='email-lists')
-# router.register(r'emails', EmailViewSet, base_name='emails')
+router.register(r'email-lists', EmailListViewSet, base_name='email-lists')
+router.register(r'email-users', UserEmailViewSet, base_name='email-users')
+router.register(r'email-groups', AbakusGroupEmailViewSet, base_name='email-groups')

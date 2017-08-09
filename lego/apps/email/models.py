@@ -20,13 +20,25 @@ class EmailAddress(models.Model):
         ]
     )
 
-    @property
-    def is_assigned(self):
-        try:
-            if self.email_list or self.user or self.abakusgroup:
+    def is_assigned(self, new_owner=None):
+        """
+        Use the new_owner to make the validation pass with the same as the current owner.
+        """
+        fields = ['email_list', 'user', 'abakusgroup']
+
+        def check_reverse(field):
+            try:
+                owner = getattr(self, field, None)
+                if owner and new_owner:
+                    return not owner == new_owner
+                elif owner:
+                    return True
+            except ObjectDoesNotExist:
+                pass
+
+        for field in fields:
+            if check_reverse(field):
                 return True
-        except ObjectDoesNotExist:
-            pass
 
         return False
 
@@ -34,7 +46,7 @@ class EmailAddress(models.Model):
 class EmailList(models.Model):
 
     name = models.CharField(max_length=64)
-    email = models.OneToOneField(EmailAddress, related_name='email_list')
+    email = models.OneToOneField(EmailAddress, related_name='email_list', editable=False)
 
     users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
     groups = models.ManyToManyField('users.AbakusGroup', related_name='email_lists', blank=True)
