@@ -5,10 +5,10 @@ from lego.apps.email.models import EmailAddress, EmailList
 
 
 class EmailAddressSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = EmailAddress
-        fields = ('email', 'user', 'email_list')
-
+        fields = ('email',)
 
 
 class EmailListSerializer(serializers.ModelSerializer):

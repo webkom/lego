@@ -1,18 +1,5 @@
 from django.conf import settings
 from ldap3 import MODIFY_DELETE, MODIFY_REPLACE, Connection
-from passlib.hash import sha512_crypt
-
-
-def create_ldap_password_hash(password):
-    """
-    OpenLDAP only supports simple hashing schemes like MD5 or SHA1
-    We use the OS's crypto handler instead, glibc when running on linux.
-    glibc supports the MCF hash format. sha512_crypt creates a SHA512 hash on the MCF format.
-    We use SHA512 with a secure random salt and 656000 rounds by default.
-    This should be secure enough compared to the default SHA1 hash.
-    REMEMBER: always run LDAP over TLS.
-    """
-    return '{CRYPT}' + sha512_crypt.hash(password)
 
 
 class LDAPLib:
@@ -64,7 +51,7 @@ class LDAPLib:
             'cn': first_name,
             'sn': last_name,
             'mail': email,
-            'userPassword': password_hash
+            'userPassword': '{CRYPT}' + password_hash
         })
 
     def search_group(self, query):
@@ -106,13 +93,13 @@ class LDAPLib:
 
     def check_password(self, uid, password_hash):
         dn = ','.join((f'uid={uid}', self.user_base))
-        return self.connection.compare(dn, 'userPassword', password_hash)
+        return self.connection.compare(dn, 'userPassword', '{CRYPT}' + password_hash)
 
     def change_password(self, uid, password_hash):
         dn = ','.join((f'uid={uid}', self.user_base))
 
         changes = {
-            'userPassword': [(MODIFY_REPLACE, [password_hash])]
+            'userPassword': [(MODIFY_REPLACE, ['{CRYPT}' + password_hash])]
         }
         self.connection.modify(dn, changes)
 
