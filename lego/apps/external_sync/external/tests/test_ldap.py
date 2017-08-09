@@ -45,7 +45,7 @@ class LDAPTestCase(TestCase):
         self.ldap.add_user(user)
 
         self.ldap.ldap.add_user.assert_called_once_with(
-            user.username, user.first_name, user.last_name, user.email, user.ldap_password_hash
+            user.username, user.first_name, user.last_name, user.email, user.crypt_password_hash
         )
 
     def test_update_user_correct_password(self):
@@ -62,7 +62,7 @@ class LDAPTestCase(TestCase):
         self.ldap.ldap.check_password.return_value = False
         self.ldap.update_user(user)
         self.ldap.ldap.change_password.assert_called_once_with(
-            user.username, user.ldap_password_hash
+            user.username, user.crypt_password_hash
         )
 
     def test_search_group(self):

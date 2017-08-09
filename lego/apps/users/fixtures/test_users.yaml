@@ -8,7 +8,7 @@
     first_name: test
     last_name: user1
     email: test1@user.com
-    ldap_password_hash: '{CRYPT}$6$rounds=656000$aet9Foy4cuCQ0EN9$5Tk/L4R3NfOWG84OLCZo5JTkgyDkx8RuIf9cabYq3M23kKTwv4uEkDxSz/jOYqUMPfTZZ0bf9F24b/cRNkY/G/'
+    crypt_password_hash: '$6$akKj2oBqaAp/2T5.$m73QJBWs0TiBMHTX3PSs/xhde0YKkr4PnKocXAo.T6SGz/qwhiPh0Gdo.2DTiYnNhyIifv7Fe.cTaVachdgrm.' #webkom
 
 - model: users.User
   pk: 2

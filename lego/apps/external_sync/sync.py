@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from structlog import get_logger
 
 from lego.apps.external_sync.external.gsuite import GSuiteSystem
@@ -16,9 +17,14 @@ class Sync:
 
     def __init__(self):
         self.systems = [
-            # LDAPSystem(),
-            GSuiteSystem(),
+            LDAPSystem(),
         ]
+
+        try:
+            gsuite = GSuiteSystem()
+            self.systems.append(gsuite)
+        except ImproperlyConfigured:
+            pass
 
     def lookup_querysets(self):
         users = User.objects.all()
@@ -47,5 +53,18 @@ class Sync:
 
             log.info('delete_excess_users', system=system.name)
             system.delete_excess_users(sync_users)
+
+            extra_filter = getattr(system, 'filter_extra', None)
+            if extra_filter:
+                """
+                Sync extras if the system has implemented the 'filter_extra' function.
+                """
+                extras = extra_filter()
+
+                log.info('sync_extra', system=system.name)
+                system.sync_extra(*extras)
+
+                log.info('delete_excess_extra', system=system.name)
+                system.delete_excess_extra(*extras)
 
             log.info('sync_done', system=system.name)

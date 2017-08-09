@@ -1,14 +1,17 @@
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 
-from lego.apps.email.models import EmailList, EmailAddress
-from lego.apps.email.serializers import EmailListSerializer, EmailAddressSerializer
+from lego.apps.email.models import EmailAddress, EmailList
+from lego.apps.email.serializers import EmailAddressSerializer, EmailListSerializer
 
 
-class EmailListViewSet(viewsets.ModelViewSet):
+class EmailListViewSet(mixins.CreateModelMixin,
+                       mixins.RetrieveModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.ListModelMixin,
+                       viewsets.GenericViewSet):
     serializer_class = EmailListSerializer
     queryset = EmailList.objects.all()
-
-    pagination_class = None
+    ordering = 'id'
 
 
 class EmailViewSet(viewsets.ModelViewSet):

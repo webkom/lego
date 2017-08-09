@@ -1,36 +1,60 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import EmailValidator
+from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
+
+from lego.utils.validators import ReservedNameValidator
 
 
 class EmailAddress(models.Model):
-    email = models.CharField(max_length=128, null=False, primary_key=True,
-                             validators=[EmailValidator(whitelist=[settings.GSUITE_DOMAIN])])
+    """
+    Only store the local part, append the domain based on the GSUITE_DOMAIN setting.
+    """
+
+    email = models.CharField(
+        max_length=128,
+        primary_key=True,
+        validators=[
+            RegexValidator(regex=EmailValidator.user_regex),
+            ReservedNameValidator()
+        ]
+    )
 
     @property
     def is_assigned(self):
         try:
-            if self.email_list: return True
+            if self.email_list or self.user or self.abakusgroup:
+                return True
         except ObjectDoesNotExist:
             pass
 
-        try:
-            if self.user: return True
-        except ObjectDoesNotExist:
-            return False
+        return False
 
 
 class EmailList(models.Model):
+
+    name = models.CharField(max_length=64)
+    email = models.OneToOneField(EmailAddress, related_name='email_list')
+
     users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
     groups = models.ManyToManyField('users.AbakusGroup', related_name='email_lists', blank=True)
 
-    email_address = models.OneToOneField(EmailAddress, related_name='email_list')
-
-    # TODO: Remove hack
     @property
-    def name(self):
-        return 'name'
+    def email_address(self):
+        return f'{self.email_id}@{settings.GSUITE_DOMAIN}'
 
-    def __str__(self):
-        return self.email_address.email
+    def members(self):
+        """
+        Return addresses to the members.
+        """
+
+        members = []
+        users = self.users.all()
+        groups = self.groups.all()
+
+        members += [user.email_address for user in users]
+
+        for group in groups:
+            members += [membership.user.email_address for membership in group.memberships]
+
+        return members
