@@ -52,13 +52,5 @@ GSUITE_GROUPS = []
 
 #  External users in GSuite not managed by lego. (Don't suspend these.)
 GSUITE_EXTERNAL_USERS = [
-    'fagkom@abakus.no',
-    'bedkom@abakus.no',
-    'leder@abakus.no',
-    'webkom@abakus.no',
-    'readme@abakus.no',
-    'labamba@abakus.no',
-    'arrkom@abakus.no',
-    'koskom@abakus.no',
-    'pr@abakus.no'
+    'admin@abakus.no',
 ]
