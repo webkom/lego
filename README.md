@@ -66,7 +66,7 @@ How to deploy:
 3. We run migrations automatically, make sure they work! 
 4. Push to the `prod` branch. From master: `git push origin master:prod`
 
-Whale now starts the deployment. This takes some time, tests must pass and we have to build a 
+Spinnaker now starts the deployment. This takes some time, tests must pass and we have to build a 
 docker image.
 
 ## Tools
