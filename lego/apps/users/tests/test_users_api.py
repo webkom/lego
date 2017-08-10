@@ -2,6 +2,7 @@ from datetime import timedelta
 from unittest import mock
 
 from django.core.urlresolvers import reverse
+from rest_framework import status
 from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
@@ -251,6 +252,14 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def test_update_with_super_user(self):
         self.successful_update(self.with_perm, self.test_user)
+
+    def test_update_with_super_user_invalid_email(self):
+        """It is not possible to set an email with our GSuite domain as the address domain."""
+        self.client.force_login(self.with_perm)
+        response = self.client.patch(_get_detail_url(self.test_user), {
+            'email': 'webkom@abakus.no'
+        })
+        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
 
 class DeleteUsersAPITestCase(APITestCase):
