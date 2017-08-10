@@ -1,3 +1,4 @@
+from lego.apps.stats.analytics_client import track
 from lego.apps.stats.statsd_client import statsd
 
 from . import backend
@@ -11,7 +12,15 @@ def autocomplete(query, types, user):
     def permission_check(hit):
         return has_permission(hit['content_type'], hit['id'], user)
 
-    return filter(permission_check, result)
+    result = list(filter(permission_check, result))
+
+    track(
+        user,
+        'search.autocomplete',
+        properties={'query': query, 'result_count': len(result)},
+    )
+
+    return result
 
 
 @statsd.timer('search.search_query')
@@ -21,4 +30,12 @@ def search(query, types, filters, user):
     def permission_check(hit):
         return has_permission(hit['content_type'], hit['id'], user)
 
-    return filter(permission_check, result)
+    result = list(filter(permission_check, result))
+
+    track(
+        user,
+        'search.search',
+        properties={'query': query, 'result_count': len(result)},
+    )
+
+    return result
