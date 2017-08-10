@@ -1,3 +1,4 @@
+import base64
 import datetime
 import json
 import os
@@ -182,7 +183,7 @@ GSUITE_DELEGATED_ACCOUNT = os.environ.get('GSUITE_DELEGATED_ACCOUNT')
 
 if os.environ.get('GSUITE_CREDENTIALS'):
     GSUITE_CREDENTIALS = json.loads(
-        os.environ.get('GSUITE_CREDENTIALS')
+        base64.b64decode(os.environ.get('GSUITE_CREDENTIALS')), strict=False
     )
 else:
     GSUITE_CREDENTIALS = None

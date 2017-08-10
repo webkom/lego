@@ -21,7 +21,7 @@ from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, Mem
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
-from .validators import student_username_validator, username_validator
+from .validators import email_validator, student_username_validator, username_validator
 
 
 class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
@@ -150,6 +150,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField(
         unique=True,
+        validators=[email_validator],
         error_messages={
             'unique': 'A user with that email already exists.',
         }

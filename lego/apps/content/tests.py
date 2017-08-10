@@ -48,7 +48,7 @@ class SlugModelTestCase(testcases.TestCase):
 
 class ContentModelTestCase(testcases.TestCase):
     fixtures = ['test_abakus_groups.yaml', 'initial_files.yaml',
-                'initial_users.yaml', 'test_articles.yaml']
+                'development_users.yaml', 'test_articles.yaml']
 
     def test_parse_content(self):
         content = (
