@@ -132,18 +132,23 @@ class GSuiteLib:
 
     def get_members(self, group_key):
         members = []
-        api = self.client.members()
-        request = api.list(groupKey=group_key)
+        try:
+            api = self.client.members()
+            request = api.list(groupKey=group_key)
 
-        while request is not None:
-            members_response = request.execute()
+            while request is not None:
+                members_response = request.execute()
 
-            remote_members = members_response.get('members', [])
-            members = members + remote_members
+                remote_members = members_response.get('members', [])
+                members = members + remote_members
 
-            request = api.list_next(request, members_response)
+                request = api.list_next(request, members_response)
 
-        return members
+            return members
+        except HttpError as e:
+            if e.resp.status == 404:
+                return members
+            raise
 
     def set_memberships(self, group_key, member_keys):
         remote_members = [member['email'] for member in self.get_members(group_key)]
