@@ -26,7 +26,28 @@ class EmailListCreateSerializer(EmailListSerializer):
     email = EmailAddressField(queryset=EmailAddress.objects.all())
 
 
-class UserEmailSerializer(serializers.ModelSerializer):
+class GSuiteAddressSerializer(serializers.ModelSerializer):
+
+    def validate(self, attrs):
+        internal_email = attrs.get('internal_email')
+
+        # Change a previous assigned internal_email
+        if internal_email and self.instance.internal_email:
+            if not internal_email == self.instance.internal_email:
+                raise ValidationError('Cannot change a previous assigned internal_email')
+
+        # Remove assigned internal_email
+        if 'internal_email' in attrs.keys() and not internal_email:
+            raise ValidationError('Cannot remove an assigned internal_email')
+
+        # internal_email assigned to someone else
+        if internal_email and internal_email.is_assigned(self.instance):
+            raise ValidationError('The address is already assigned')
+
+        return attrs
+
+
+class UserEmailSerializer(GSuiteAddressSerializer):
 
     internal_email = EmailAddressField(queryset=EmailAddress.objects.all(), validators=[])
 
@@ -35,26 +56,8 @@ class UserEmailSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'internal_email', 'internal_email_enabled')
         read_only_fields = ('id', 'username')
 
-    def validate(self, attrs):
-        internal_email = attrs.get('internal_email')
 
-        # Change a previous assigned internal_email
-        if internal_email and self.instance.internal_email:
-            if not internal_email == self.instance.internal_email:
-                raise ValidationError('Cannot change a previous assigned internal_email')
-
-        # Remove assigned internal_email
-        if 'internal_email' in attrs.keys() and not internal_email:
-            raise ValidationError('Cannot remove an assigned internal_email')
-
-        # internal_email assigned to someone else
-        if internal_email and internal_email.is_assigned(self.instance):
-            raise ValidationError('The address is already assigned')
-
-        return attrs
-
-
-class AbakusGroupEmailSerializer(serializers.ModelSerializer):
+class AbakusGroupEmailSerializer(GSuiteAddressSerializer):
 
     internal_email = EmailAddressField(queryset=EmailAddress.objects.all(), validators=[])
 
@@ -62,21 +65,3 @@ class AbakusGroupEmailSerializer(serializers.ModelSerializer):
         model = AbakusGroup
         fields = ('id', 'name', 'internal_email', 'internal_email_enabled')
         read_only_fields = ('id', 'name')
-
-    def validate(self, attrs):
-        internal_email = attrs.get('internal_email')
-
-        # Change a previous assigned internal_email
-        if internal_email and self.instance.internal_email:
-            if not internal_email == self.instance.internal_email:
-                raise ValidationError('Cannot change a previous assigned internal_email')
-
-        # Remove assigned internal_email
-        if 'internal_email' in attrs.keys() and not internal_email:
-            raise ValidationError('Cannot remove an assigned internal_email')
-
-        # internal_email assigned to someone else
-        if internal_email and internal_email.is_assigned(self.instance):
-            raise ValidationError('The address is already assigned')
-
-        return attrs
