@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Q
 from structlog import get_logger
 
 from lego.apps.external_sync.base import ExternalSystem
@@ -17,8 +18,6 @@ class LDAPSystem(ExternalSystem):
     Usernames should not change, this will cause the sync to create a new user.
     We need to make sure the group name is unique because this is a part of the
     group DN. We may consider use the full group path as the group name (Users/Abakus/Webkom)
-
-    TODO: Have a look at group names.
     """
 
     name = 'ldap'
@@ -37,13 +36,13 @@ class LDAPSystem(ExternalSystem):
         """
         Only sync users with a password hash.
         """
-        return queryset.exclude(ldap_password_hash='')
+        return queryset.exclude(crypt_password_hash='').filter(is_active=True)
 
     def filter_groups(self, queryset):
         """
-        Sync groups in LDAP_GROUPS
+        Sync groups in LDAP_GROUPS and committees.
         """
-        return queryset.filter(name__in=settings.LDAP_GROUPS)
+        return queryset.filter(Q(is_committee=True) | Q(name__in=settings.LDAP_GROUPS))
 
     def user_exists(self, user):
         return bool(self.ldap.search_user(user.username))
@@ -54,20 +53,20 @@ class LDAPSystem(ExternalSystem):
             user.first_name,
             user.last_name,
             user.email,
-            user.ldap_password_hash
+            user.crypt_password_hash
         )
 
     def update_user(self, user):
         """
         We only modify the password if it is different from the one stored in our database.
         """
-        if not self.ldap.check_password(user.username, user.ldap_password_hash):
+        if not self.ldap.check_password(user.username, user.crypt_password_hash):
             log.info('external_password_update', system=self.name, uid=user.username)
-            self.ldap.change_password(user.username, user.ldap_password_hash)
+            self.ldap.change_password(user.username, user.crypt_password_hash)
 
     def delete_excess_users(self, users):
         allowed_users = users.values_list('username', flat=True)
-        existing_users = map(lambda user: str(user.uid), self.ldap.get_all_users())
+        existing_users = [str(user.uid) for user in self.ldap.get_all_users()]
         excess_users = set(existing_users) - set(allowed_users)
         for excess_user in excess_users:
             log.warn('delete_excess_user', system=self.name, uid=excess_user)
@@ -89,7 +88,7 @@ class LDAPSystem(ExternalSystem):
 
     def delete_excess_groups(self, groups):
         allowed_groups = groups.values_list('name', flat=True)
-        existing_groups = map(lambda group: str(group.cn), self.ldap.get_all_groups())
+        existing_groups = [str(group.cn) for group in self.ldap.get_all_groups()]
         excess_groups = set(existing_groups) - set(allowed_groups)
         for excess_group in excess_groups:
             log.warn('delete_excess_group', cn=excess_group)
