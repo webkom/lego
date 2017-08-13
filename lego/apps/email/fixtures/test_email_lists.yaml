@@ -1,0 +1,5 @@
+- model: email.EmailList
+  pk: 1
+  fields:
+    name: test
+    email: test

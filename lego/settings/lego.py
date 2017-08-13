@@ -36,11 +36,7 @@ HEALTH_CHECK_REMOTE_IPS = [
     '127.0.0.'
 ]
 
-# Additional groups to sync with LDAP. Committees is synced automatically. Add group names.
-LDAP_GROUPS = [
-    'Webkom',
-    'Fagkom'
-]
+LDAP_GROUPS = []
 
 LMTP_HOST = '0.0.0.0'
 LMTP_PORT = 8024
@@ -49,3 +45,12 @@ RESTRICTED_ADDRESS = 'restricted'
 RESTRICTED_DOMAIN = 'abakus.no'
 RESTRICTED_FROM = 'Abakus Linjeforening <no-reply@abakus.no>'
 RESTRICTED_ALLOW_ORIGINAL_SENDER = False
+
+GSUITE_DOMAIN = 'abakus.no'
+
+GSUITE_GROUPS = []
+
+#  External users in GSuite not managed by lego. (Don't suspend these.)
+GSUITE_EXTERNAL_USERS = [
+    'admin@abakus.no',
+]

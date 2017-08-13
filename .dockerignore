@@ -62,6 +62,7 @@ lego/files
 lego/db.sqlite
 celerybeat.pid
 lego/files/
+google-credentials.json
 
 .git/
 charts/

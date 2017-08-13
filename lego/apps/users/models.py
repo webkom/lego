@@ -12,18 +12,19 @@ from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
-from lego.apps.external_sync.models import LDAPUser
+from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
 from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
                                       UserPenaltyManager)
 from lego.utils.models import BasisModel, PersistentModel
+from lego.utils.validators import ReservedNameValidator
 
-from .validators import student_username_validator, username_validator
+from .validators import email_validator, student_username_validator, username_validator
 
 
-class AbakusGroup(MPTTModel, PersistentModel):
+class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
     is_grade = models.BooleanField(default=False)
@@ -120,7 +121,7 @@ class PermissionsMixin(models.Model):
         return list(own_groups)
 
 
-class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
+class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, PermissionsMixin):
     """
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """
@@ -129,7 +130,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         unique=True,
         db_index=True,
         help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
-        validators=[username_validator],
+        validators=[username_validator, ReservedNameValidator()],
         error_messages={
             'unique': 'A user with that username already exists.',
         }
@@ -139,7 +140,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
         unique=True,
         null=True,
         help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
-        validators=[student_username_validator],
+        validators=[student_username_validator, ReservedNameValidator()],
         error_messages={
             'unique': 'A user has already verified that student username.',
         }
@@ -149,6 +150,7 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField(
         unique=True,
+        validators=[email_validator],
         error_messages={
             'unique': 'A user with that email already exists.',
         }
@@ -200,8 +202,13 @@ class User(LDAPUser, AbstractBaseUser, PersistentModel, PermissionsMixin):
     def email_address(self):
         """
         Return the address used to reach the user. Some users have a GSuite address and this
-        function us used to decide the correct address to use.
+        function is used to decide the correct address to use.
         """
+        internal_address = self.internal_email_address
+
+        if self.is_active and self.crypt_password_hash and internal_address:
+            # Return the internal address if all requirements for a GSuite account are met.
+            return internal_address
         return self.email
 
     @profile_picture.setter

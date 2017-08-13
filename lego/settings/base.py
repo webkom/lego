@@ -1,4 +1,6 @@
+import base64
 import datetime
+import json
 import os
 
 import environ
@@ -53,7 +55,8 @@ INSTALLED_APPS = [
     'lego.apps.reactions',
     'lego.apps.restricted',
     'lego.apps.websockets',
-    'lego.apps.joblistings'
+    'lego.apps.joblistings',
+    'lego.apps.email'
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -175,3 +178,12 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     'UPDATE_ON_DUPLICATE_REG_ID': True,
     'APNS_TOPIC': 'no.abakus.abakus'
 }
+
+GSUITE_DELEGATED_ACCOUNT = os.environ.get('GSUITE_DELEGATED_ACCOUNT')
+
+if os.environ.get('GSUITE_CREDENTIALS'):
+    GSUITE_CREDENTIALS = json.loads(
+        base64.b64decode(os.environ.get('GSUITE_CREDENTIALS')), strict=False
+    )
+else:
+    GSUITE_CREDENTIALS = None

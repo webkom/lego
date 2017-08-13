@@ -1,0 +1,11 @@
+- model: email.EmailAddress
+  pk: test
+  fields: {}
+
+- model: email.EmailAddress
+  pk: test1
+  fields: {}
+
+- model: email.EmailAddress
+  pk: noassigned
+  fields: {}

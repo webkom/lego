@@ -62,3 +62,4 @@ lego/db.sqlite
 celerybeat.pid
 celerybeat-schedule
 lego/files/
+google-credentials.json

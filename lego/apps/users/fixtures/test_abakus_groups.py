@@ -81,6 +81,13 @@ test_tree = {
     'GalleryTest': [{
         'permissions': ['/sudo/admin/gallerys/list/', '/sudo/admin/gallerys/retrieve/']
     }, {}],
+    'EmailAdminTest': [{
+        'permissions': [
+            '/sudo/admin/emaillists/',
+            '/sudo/admin/emailusers/',
+            '/sudo/admin/emailgroups/'
+        ]
+    }, {}],
 }
 
 

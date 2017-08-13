@@ -28,6 +28,7 @@ class SyncTestCase(TestCase):
         """Call sync and make sure correct functions is called."""
         self.system_mock.filter_users.return_value = self.users
         self.system_mock.filter_groups.return_value = self.groups
+        self.system_mock.filter_extra = None
 
         self.sync.sync()
 
