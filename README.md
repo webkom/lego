@@ -58,11 +58,11 @@ No. Just don't. Please.
 
 ## Deployment
 
-Lego runs in Kubernetes and deploys are managed by Helm, Drone and Whale. The Helm Chart is located in the [charts repo](https://github.com/webkom/charts).
+Lego runs in Kubernetes and deploys are managed by Drone and Spinnaker.
   
 How to deploy:
 1. Make sure the changes is pushed to master and the test passes.
-2. Have you added some new settings in `settings/`? If so make sure the Helm chart reflects this and values in Whale are up to date.
+2. Have you added some new settings in `settings/`? If so make sure the Spinnaker deployment reflects these changes.
 3. We run migrations automatically, make sure they work! 
 4. Push to the `prod` branch. From master: `git push origin master:prod`
 
