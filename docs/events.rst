@@ -64,6 +64,6 @@ or the first pool that the user can join.
 
 Models
 ------
-.. automodule:: lego.app.events.models
+.. automodule:: lego.apps.events.models
     :members:
     :show-inheritance:
