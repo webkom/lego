@@ -5,13 +5,15 @@ services:
     image: 'elasticsearch:5'
     ports:
      - '127.0.0.1:9200:9200'
+    environment:
+      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
 
   kibana:
     image: 'kibana:5'
     ports:
      - '127.0.0.1:5601:5601'
     links:
-      - elasticsearch
+     - elasticsearch
 
   postgres:
     image: postgres:9.5
@@ -58,6 +60,9 @@ services:
     image: cassandra:3
     ports:
       - "127.0.0.1:9042:9042"
+    environment:
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=100M
 
   ldap:
     image: osixia/openldap:1.1.8
