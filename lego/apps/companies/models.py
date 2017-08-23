@@ -53,4 +53,5 @@ class CompanyContact(BasisModel):
     role = models.CharField(max_length=100, blank=True)
     mail = models.EmailField(max_length=100, blank=True)
     phone = models.CharField(max_length=100, blank=True)
+    mobile = models.CharField(max_length=100, blank=True)
     company = models.ForeignKey(Company, related_name='company_contacts')
