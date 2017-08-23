@@ -11,5 +11,6 @@ CONTACT_STATUSES = (
     (3, 'Interested, not offered'),
     (4, 'Not interested'),
     (5, 'Contacted'),
-    (6, 'Not Contacted')
+    (6, 'Not Contacted'),
+    (7, 'BedEx')
 )
