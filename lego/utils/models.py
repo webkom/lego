@@ -10,7 +10,7 @@ class TimeStampModel(models.Model):
     """
     Attach created_at and updated_at fields automatically on all model instances.
     """
-    created_at = models.DateTimeField(default=timezone.now, editable=False)
+    created_at = models.DateTimeField(default=timezone.now, editable=False, db_index=True)
     updated_at = models.DateTimeField(default=timezone.now, editable=False)
 
     class Meta:
@@ -26,7 +26,7 @@ class PersistentModel(models.Model):
     Hide 'deleted' models from default queryset. Replaces the manager to accomplish this.
     Remember to inherit from PersistentModelManager when you replaces a manager on a child-class.
     """
-    deleted = models.BooleanField(default=False, editable=False)
+    deleted = models.BooleanField(default=False, editable=False, db_index=True)
 
     objects = PersistentModelManager()
     all_objects = models.Manager()
