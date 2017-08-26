@@ -140,6 +140,9 @@ class SearchIndex:
         """
 
         def batch(queryset, func, chunk=100, start=0):
+            if not queryset.exists():
+                return
+
             while start < queryset.order_by('pk').last().pk:
                 func(queryset.filter(pk__gt=start, pk__lte=start + chunk).iterator())
                 start += chunk

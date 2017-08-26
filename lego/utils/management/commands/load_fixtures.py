@@ -60,8 +60,8 @@ class Command(BaseCommand):
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
             log.info('Loading development fixtures:')
-            call_command('loaddata', 'lego/apps/files/fixtures/development_files.yaml')
             call_command('loaddata', 'lego/apps/users/fixtures/development_users.yaml')
+            call_command('loaddata', 'lego/apps/files/fixtures/development_files.yaml')
 
             # Prepare storage bucket for development. We skips this in production.
             # The bucket needs to be created manually.
