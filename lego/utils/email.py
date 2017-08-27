@@ -2,6 +2,9 @@ from django.conf import settings
 from django.core.mail import send_mail as django_send_mail
 from django.template.loader import render_to_string
 from premailer import transform
+from structlog import get_logger
+
+log = get_logger()
 
 
 def send_email(to_email, context, subject, plain_template, html_template, from_email=None,):
@@ -14,6 +17,8 @@ def send_email(to_email, context, subject, plain_template, html_template, from_e
     html_body = None
     if html_template:
         html_body = render_to_string(html_template, context)
+
+    log.info('send_mail', subject=subject, from_email=from_email, recipient_list=[to_email])
 
     django_send_mail(
         subject=subject,
