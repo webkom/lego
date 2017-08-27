@@ -18,6 +18,7 @@ Contents:
     Notifications <notifications>
     Site Search <site_search>
     Stats <stats>
+    Logging <logging>
 
 Indices and tables
 ==================
