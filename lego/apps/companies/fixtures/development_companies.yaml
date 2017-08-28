@@ -1,12 +1,34 @@
+- model: companies.Semester
+  pk: 1
+  fields:
+    semester: 'spring'
+    year: 2017
+
+- model: companies.Semester
+  pk: 2
+  fields:
+    semester: 'autumn'
+    year: 2017
+
+- model: companies.Semester
+  pk: 3
+  fields:
+    semester: 'spring'
+    year: 2018
+
+- model: companies.Semester
+  pk: 4
+  fields:
+    semester: 'autumn'
+    year: 2018
+
 - model: companies.Company
   pk: 1
   fields:
     name: 'BEKK'
     description: 'Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter for store private og offentlige virksomheter innen strategisk rådgivning, utvikling av IT-systemer og design av digitale tjenester. Vi er i dag over 370 fagpersoner.'
     student_contact: 1
-    admin_comment: 'Heftig partner'
     phone: '+47 90909090'
-    active: true
     website: 'bekk.no'
     payment_mail: faktura@bekk.no
     address: Postboks 134 Sentrum, 0102 Oslo
@@ -17,9 +39,7 @@
   fields:
     name: 'Facebook'
     student_contact: 2
-    admin_comment: 'Heftig partner'
     phone: '123 45 678'
-    active: true
 
 - model: companies.Company
   pk: 3
@@ -27,9 +47,7 @@
     name: 'Itera'
     description: 'Itera er et kommunikasjons- og teknologiselskap. Vi leverer tjenester innen rådgivning og strategi, design og utvikling, drift og forvaltning. Vi er engasjerte fagspesialister som jobber i tverrfaglige team fordi vi vet at vi med ulike faglige ståsteder avdekker helt nye muligheter og løsninger som gir verdi til kundene våre.'
     student_contact: 3
-    admin_comment: ''
     phone: ''
-    active: true
 
   # Company 1
 
@@ -43,57 +61,29 @@
 - model: companies.SemesterStatus
   pk: 1
   fields:
-    year: 2016
-    semester: 0
-    contacted_status: 0
+    semester: 1
+    contacted_status: ['interested']
     company: 1
 
 - model: companies.SemesterStatus
   pk: 2
   fields:
-    year: 2016
-    semester: 1
-    contacted_status: 1
+    semester: 2
+    contacted_status: ['interested']
     company: 1
 
 - model: companies.SemesterStatus
   pk: 3
   fields:
-    year: 2017
-    semester: 0
-    contacted_status: 2
+    semester: 3
+    contacted_status: ['interested']
     company: 1
 
 - model: companies.SemesterStatus
   pk: 4
   fields:
-    year: 2017
-    semester: 1
-    contacted_status: 3
-    company: 1
-
-- model: companies.SemesterStatus
-  pk: 5
-  fields:
-    year: 2018
-    semester: 0
-    contacted_status: 4
-    company: 1
-
-- model: companies.SemesterStatus
-  pk: 6
-  fields:
-    year: 2018
-    semester: 1
-    contacted_status: 5
-    company: 1
-
-- model: companies.SemesterStatus
-  pk: 7
-  fields:
-    year: 2015
-    semester: 1
-    contacted_status: 1
+    semester: 4
+    contacted_status: ['interested']
     company: 1
 
   # Company 2
@@ -110,59 +100,30 @@
 - model: companies.SemesterStatus
   pk: 8
   fields:
-    year: 2016
-    semester: 0
-    contacted_status: 5
+    semester: 2
+    contacted_status: ['interested']
     company: 2
 
 
 - model: companies.SemesterStatus
   pk: 9
   fields:
-    year: 2016
-    semester: 1
-    contacted_status: 4
+    semester: 3
+    contacted_status: ['interested']
     company: 2
 
 - model: companies.SemesterStatus
   pk: 10
   fields:
-    year: 2017
-    semester: 0
-    contacted_status: 3
+    semester: 1
+    contacted_status: ['interested']
     company: 2
 
 - model: companies.SemesterStatus
   pk: 11
   fields:
-    year: 2017
-    semester: 1
-    contacted_status: 2
-    company: 2
-
-
-- model: companies.SemesterStatus
-  pk: 12
-  fields:
-    year: 2018
-    semester: 0
-    contacted_status: 1
-    company: 2
-
-- model: companies.SemesterStatus
-  pk: 13
-  fields:
-    year: 2018
-    semester: 1
-    contacted_status: 0
-    company: 2
-
-- model: companies.SemesterStatus
-  pk: 14
-  fields:
-    year: 2015
-    semester: 1
-    contacted_status: 4
+    semester: 4
+    contacted_status: ['interested']
     company: 2
 
   # Company 3
@@ -170,62 +131,27 @@
 - model: companies.SemesterStatus
   pk: 15
   fields:
-    year: 2016
-    semester: 0
-    contacted_status: 3
+    semester: 1
+    contacted_status: ['interested']
     company: 3
 
 - model: companies.SemesterStatus
   pk: 16
   fields:
-    year: 2016
-    semester: 1
-    contacted_status: 0
+    semester: 2
+    contacted_status: ['interested']
     company: 3
 
 - model: companies.SemesterStatus
   pk: 17
   fields:
-    year: 2017
-    semester: 0
-    contacted_status: 1
+    semester: 3
+    contacted_status: ['interested']
     company: 3
 
 - model: companies.SemesterStatus
   pk: 18
   fields:
-    year: 2017
-    semester: 1
-    contacted_status: 6
-    company: 3
-
-- model: companies.SemesterStatus
-  pk: 19
-  fields:
-    year: 2018
-    semester: 0
-    contacted_status: 5
-    company: 3
-
-- model: companies.SemesterStatus
-  pk: 20
-  fields:
-    year: 2018
-    semester: 1
-    contacted_status: 3
-    company: 3
-
-- model: companies.SemesterStatus
-  pk: 21
-  fields:
-    year: 2015
-    semester: 1
-    contacted_status: 4
-    company: 3
-
-- model: companies.SemesterStatus
-  pk: 22
-  fields:
-    year: 2016
-    semester: 2
+    semester: 4
+    contacted_status: ['interested']
     company: 3

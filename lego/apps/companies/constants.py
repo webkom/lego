@@ -1,16 +1,43 @@
-SEMESTERS = (
-    (0, 'Spring'),
-    (1, 'Fall'),
-    (2, 'Bedex')
+
+SPRING = 'spring'
+AUTUMN = 'autumn'
+
+SEMESTER = (
+    (SPRING, SPRING),
+    (AUTUMN, AUTUMN),
 )
 
-CONTACT_STATUSES = (
-    (0, 'Company presentation'),
-    (1, 'Company presentation & course'),
-    (2, 'Course'),
-    (3, 'Interested, not offered'),
-    (4, 'Not interested'),
-    (5, 'Contacted'),
-    (6, 'Not Contacted'),
-    (7, 'BedEx')
+
+COMPANY_PRESENTATION = 'company_presentation'
+COURSE = 'course'
+LUNCH_PRESENTATION = 'lunch_presentation'
+BEDEX = 'bedex'
+ANNIVERSARY = 'anniversary'
+OTHER = 'other'
+
+COMPANY_EVENTS = (
+    (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
+    (COURSE, COURSE),
+    (LUNCH_PRESENTATION, LUNCH_PRESENTATION),
+    (BEDEX, BEDEX),
+    (ANNIVERSARY, ANNIVERSARY),
+    (OTHER, OTHER),
+)
+
+
+INTERESTED = 'interested'
+NOT_INTERESTED = 'not_interested'
+CONTACTED = 'contacted'
+NOT_CONTACTED = 'not_contacted'
+
+SEMESTER_STATUSES = (
+    (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
+    (COURSE, COURSE),
+    (LUNCH_PRESENTATION, LUNCH_PRESENTATION),
+    (BEDEX, BEDEX),
+    (ANNIVERSARY, ANNIVERSARY),
+    (INTERESTED, INTERESTED),
+    (NOT_INTERESTED, NOT_INTERESTED),
+    (CONTACTED, CONTACTED),
+    (NOT_CONTACTED, NOT_CONTACTED),
 )

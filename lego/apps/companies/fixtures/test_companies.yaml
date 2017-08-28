@@ -1,11 +1,21 @@
+- model: companies.Semester
+  pk: 1
+  fields:
+    semester: 'spring'
+    year: 2017
+
+- model: companies.Semester
+  pk: 2
+  fields:
+    semester: 'autumn'
+    year: 2017
+
 - model: companies.Company
   pk: 1
   fields:
     name: 'Facebook'
     student_contact: 2
-    admin_comment: 'Heftig partner'
     phone: '123 45 678'
-    active: true
 
 - model: companies.Company
   pk: 2
@@ -13,9 +23,7 @@
     name: 'Itera'
     description: 'Itera er et kommunikasjons- og teknologiselskap. Vi leverer tjenester innen rådgivning og strategi, design og utvikling, drift og forvaltning. Vi er engasjerte fagspesialister som jobber i tverrfaglige team fordi vi vet at vi med ulike faglige ståsteder avdekker helt nye muligheter og løsninger som gir verdi til kundene våre.'
     student_contact: 3
-    admin_comment: ''
     phone: ''
-    active: true
 
 - model: companies.Company
   pk: 3
@@ -23,15 +31,14 @@
     name: 'Webkom'
     description: 'Webkom er webkom'
     student_contact: 3
-    admin_comment: ''
     phone: ''
-    active: true
 
 - model: companies.SemesterStatus
   pk: 1
   fields:
-    year: 2017
+    semester: 1
     company: 1
+    contacted_status: ['interested']
 
 - model: companies.CompanyContact
   pk: 1
