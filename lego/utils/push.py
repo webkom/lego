@@ -1,8 +1,11 @@
 from django.template.loader import render_to_string
 from push_notifications.models import APNSDevice, GCMDevice
+from structlog import get_logger
 
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.utils.content_types import instance_to_string
+
+log = get_logger()
 
 
 class PushMessage:
@@ -31,6 +34,13 @@ class PushMessage:
 
         gcm_devices = GCMDevice.objects.filter(user=self.user, active=True)
         apns_devices = APNSDevice.objects.filter(user=self.user, active=True)
+
+        log.info(
+            'send_push',
+            message=message,
+            gcm_devices=gcm_devices.count(),
+            apns_devices=apns_devices.count()
+        )
 
         gcm_devices.send_message(message, extra=extra)
         apns_devices.send_message(message, badge=self._get_unread_count(), extra=extra)
