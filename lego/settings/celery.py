@@ -7,7 +7,7 @@ from cassandra.cqlengine import connection
 from cassandra.cqlengine.connection import cluster as cql_cluster
 from cassandra.cqlengine.connection import session as cql_session
 from celery.schedules import crontab
-from celery.signals import beat_init, eventlet_pool_started, worker_process_init
+from celery.signals import beat_init, eventlet_pool_started, setup_logging, worker_process_init
 from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
@@ -47,6 +47,14 @@ def on_configure(*args, **kwargs):
 
     # hook into the Celery error handler
     register_signal(client)
+
+
+@setup_logging.connect()
+def on_setup_logging(**kwargs):
+    """
+    This prevents celery from tampering with our logging config.
+    """
+    pass
 
 
 app.config_from_object('django.conf:settings', namespace='CELERY')

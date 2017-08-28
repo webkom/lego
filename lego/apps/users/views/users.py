@@ -3,6 +3,7 @@ from rest_framework.decorators import list_route
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from structlog import get_logger
 
 from lego.apps.permissions.views import AllowedPermissionsMixin
 from lego.apps.users import constants
@@ -10,6 +11,8 @@ from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.permissions import UsersPermissions
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import DetailedUserSerializer, MeSerializer, UserSerializer
+
+log = get_logger()
 
 
 class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -46,6 +49,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             # Authenticated users are not allowed to
             # create / register new users unless they are an admin.
             # TODO: add admin user registration.
+            log.warn('admin_registration_not_implemented')
             raise PermissionDenied()
 
         if not request.GET.get('token', False):
