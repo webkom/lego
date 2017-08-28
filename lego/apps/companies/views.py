@@ -1,95 +1,62 @@
-from rest_framework import mixins, viewsets
-from rest_framework.viewsets import GenericViewSet
+from rest_framework import viewsets
 
-from lego.apps.companies.models import Company, CompanyContact, CompanyInterest, SemesterStatus
-from lego.apps.companies.permissions import CompanyPermissions
-from lego.apps.companies.serializers import (CompanyContactCreateAndUpdateSerializer,
-                                             CompanyContactReadSerializer,
-                                             CompanyCreateAndUpdateSerializer,
-                                             CompanyInterestCreateSerializer,
+from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest, Semester,
+                                        SemesterStatus)
+from lego.apps.companies.permissions import CompanyInterestPermissions, CompanyPermissions
+from lego.apps.companies.serializers import (CompanyContactSerializer, CompanyDetailSerializer,
                                              CompanyInterestListSerializer,
-                                             CompanyInterestReadDetailedSerializer,
-                                             CompanyReadDetailedSerializer, CompanyReadSerializer,
-                                             SemesterCreateSerializer,
-                                             SemesterStatusCreateAndUpdateSerializer,
-                                             SemesterStatusReadDetailedSerializer,
-                                             SemesterStatusReadSerializer)
+                                             CompanyInterestSerializer, CompanyListSerializer,
+                                             SemesterSerializer, SemesterStatusSerializer)
 from lego.apps.permissions.views import AllowedPermissionsMixin
 
 
 class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related('semester_statuses', 'student_contact')
-    permission_classes = (CompanyPermissions,)
+    permission_classes = (CompanyPermissions, )
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return CompanyCreateAndUpdateSerializer
+        """
+        TODO: Public detail serializer.
+        """
+        if self.action == 'list':
+            return CompanyListSerializer
+        return CompanyDetailSerializer
 
-        elif self.action in ['retrieve']:
-            return CompanyReadDetailedSerializer
 
-        return CompanyReadSerializer
-
-
-class SemesterStatusViewSet(AllowedPermissionsMixin,
-                            mixins.CreateModelMixin,
-                            mixins.UpdateModelMixin,
-                            mixins.DestroyModelMixin,
-                            GenericViewSet):
+class SemesterStatusViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = SemesterStatus.objects.all()
+    serializer_class = SemesterStatusSerializer
     permission_classes = (CompanyPermissions,)
-
-    def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return SemesterStatusCreateAndUpdateSerializer
-
-        elif self.action in ['retrieve']:
-            return SemesterStatusReadDetailedSerializer
-
-        return SemesterStatusReadSerializer
 
     def get_queryset(self):
-        company_id = self.kwargs.get('company_pk')
-        if company_id:
-            return SemesterStatus.objects.filter(company=company_id)
+        company_id = self.kwargs['company_pk']
+        return SemesterStatus.objects.filter(company=company_id)
 
 
 class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = CompanyContact.objects.all()
+    serializer_class = CompanyContactSerializer
     permission_classes = (CompanyPermissions,)
 
-    def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return CompanyContactCreateAndUpdateSerializer
-
-        return CompanyContactReadSerializer
-
     def get_queryset(self):
-        company_id = self.kwargs.get('company_pk')
-        if company_id:
-            return CompanyContact.objects.filter(company=company_id)
-
-
-class CompanyInterestViewSet(viewsets.ModelViewSet):
-    queryset = CompanyInterest.objects.all()
-
-    def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return CompanyInterestCreateSerializer
-        elif self.action in ['retrieve', 'destroy']:
-            return CompanyInterestReadDetailedSerializer
-
-        return CompanyInterestListSerializer
+        company_id = self.kwargs['company_pk']
+        return CompanyContact.objects.filter(company=company_id)
 
 
 class SemesterViewSet(viewsets.ModelViewSet):
+    queryset = Semester.objects.all()
+    serializer_class = SemesterSerializer
+    permission_classes = (CompanyPermissions,)
+
+
+class CompanyInterestViewSet(viewsets.ModelViewSet):
+    """
+    Used by new companies to register interest in Abakus and our services.
+    """
     queryset = CompanyInterest.objects.all()
+    permission_classes = (CompanyInterestPermissions, )
 
     def get_serializer_class(self):
-        return SemesterCreateSerializer
-
-    def get_queryset(self):
-        if self.action in ['retrieve', 'destroy']:
-            semester_id = self.kwargs.get('semester_pk', None)
-            return CompanyInterest.objects.filter(semester=semester_id)
-        return self.queryset
+        if self.action == 'list':
+            return CompanyInterestListSerializer
+        return CompanyInterestSerializer
