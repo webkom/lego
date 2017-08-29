@@ -3,7 +3,8 @@ from rest_framework import viewsets
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.users.filters import MembershipFilterSet
 from lego.apps.users.models import Membership
-from lego.apps.users.serializers.memberships import MembershipSerializer, MembershipCreateSerializer
+from lego.apps.users.serializers.memberships import MembershipCreateSerializer, \
+    MembershipReadSerializer
 
 
 class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -16,4 +17,4 @@ class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'create':
             return MembershipCreateSerializer
-        return MembershipSerializer
+        return MembershipReadSerializer

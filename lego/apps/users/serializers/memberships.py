@@ -13,9 +13,18 @@ class MembershipCreateSerializer(serializers.ModelSerializer):
             'role',
             'is_active',
             'start_date',
-            'end_date'
+            'end_date',
         )
 
 
-class MembershipSerializer(MembershipCreateSerializer):
-    user = PublicUserSerializer(many=False, read_only=True)
+class MembershipReadSerializer(MembershipCreateSerializer):
+    user = PublicUserSerializer()
+
+    class Meta:
+        model = Membership
+        fields = (
+            'user',
+            'role',
+            'is_active'
+        )
+        read_only = True
