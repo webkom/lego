@@ -8,6 +8,7 @@ class MembershipCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         fields = (
+            'id',
             'user',
             'abakus_group',
             'role',
@@ -23,8 +24,10 @@ class MembershipReadSerializer(MembershipCreateSerializer):
     class Meta:
         model = Membership
         fields = (
+            'id',
             'user',
+            'abakus_group',
             'role',
-            'is_active'
+            'is_active',
         )
         read_only = True
