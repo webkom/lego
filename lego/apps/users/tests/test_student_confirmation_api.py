@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.registrations import Registrations
 
 
 def _get_list_url():
@@ -49,7 +50,7 @@ class RetrieveStudentConfirmationAPITestCase(APITestCase):
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.get(
             _get_student_confirmation_token_url(
-                User.generate_student_confirmation_token(
+                Registrations.generate_student_confirmation_token(
                     'teststudentusername',
                     constants.DATA,
                     True
@@ -66,7 +67,7 @@ class RetrieveStudentConfirmationAPITestCase(APITestCase):
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.get(
             _get_student_confirmation_token_url(
-                User.generate_student_confirmation_token(
+                Registrations.generate_student_confirmation_token(
                     'TestStudentUsername',
                     constants.DATA,
                     True
@@ -197,7 +198,7 @@ class UpdateStudentConfirmationAPITestCase(APITestCase):
             course=constants.DATA,
             member=True
     ):
-        return User.generate_student_confirmation_token(
+        return Registrations.generate_student_confirmation_token(
             student_username,
             course,
             member
