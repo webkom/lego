@@ -6,16 +6,19 @@ from lego.apps.users.models import AbakusGroup, User
 _test_company_data = [
     {
         'name': 'TEST',
+        'studentContact': 1
     },
     {
         'name': 'TEST2',
+        'studentContact': 2
     }
 ]
 
 _test_semester_status_data = [
     {
-        'year': 2018,
+        'semester': 2,
         'company': 1,
+        'contactedStatus': ['interested']
     }
 ]
 
@@ -189,7 +192,9 @@ class CreateSemesterStatusTestCase(APITestCase):
             _get_semester_status_detail_url(1, 1), _test_semester_status_data[0]
         )
         self.assertEqual(company_response.status_code, 200)
-        self.assertEqual(company_response.data['year'], _test_semester_status_data[0]['year'])
+        self.assertEqual(
+            company_response.data['semester']['id'], _test_semester_status_data[0]['semester']
+        )
 
 
 class DeleteSemesterStatusTestCase(APITestCase):

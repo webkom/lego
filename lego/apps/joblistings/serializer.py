@@ -1,6 +1,5 @@
-
-from lego.apps.companies.serializers import (CompanyContactReadSerializer,
-                                             PublicCompanyReadSerializer)
+from lego.apps.companies.fields import CompanyContactField, CompanyField
+from lego.apps.companies.models import Company, CompanyContact
 from lego.apps.joblistings.models import Joblisting, Workplace
 from lego.utils.serializers import BasisModelSerializer
 
@@ -13,7 +12,7 @@ class WorkplaceSerializer(BasisModelSerializer):
 
 class JoblistingSerializer(BasisModelSerializer):
     workplaces = WorkplaceSerializer(many=True)
-    company = PublicCompanyReadSerializer()
+    company = CompanyField(queryset=Company.objects.all())
 
     class Meta:
         model = Joblisting
@@ -23,8 +22,8 @@ class JoblistingSerializer(BasisModelSerializer):
 
 class JoblistingDetailedSerializer(BasisModelSerializer):
     workplaces = WorkplaceSerializer(many=True)
-    company = PublicCompanyReadSerializer()
-    responsible = CompanyContactReadSerializer()
+    company = CompanyField(queryset=Company.objects.all())
+    responsible = CompanyContactField(queryset=CompanyContact.objects.all())
 
     class Meta:
         model = Joblisting

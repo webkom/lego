@@ -3,7 +3,8 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
-from lego.apps.companies.serializers import PublicCompanyReadSerializer
+from lego.apps.companies.fields import CompanyField
+from lego.apps.companies.models import Company
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (PoolAdministrateSerializer,
@@ -16,7 +17,7 @@ from lego.utils.serializers import BasisModelSerializer
 
 
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
-    company = PublicCompanyReadSerializer(read_only=True)
+    company = CompanyField(queryset=Company.objects.all())
     cover = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
         source='cover',
@@ -36,7 +37,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
-    company = PublicCompanyReadSerializer(read_only=True)
+    company = CompanyField(queryset=Company.objects.all())
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     price = serializers.SerializerMethodField()
