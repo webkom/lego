@@ -21,7 +21,7 @@ bleach==2.0.0
 slackclient==1.0.7
 requests==2.18.4
 ldap3==2.3
-google-api-python-client==1.6.2
+google-api-python-client==1.6.3
 oauth2client
 premailer==3.1.1
 git+https://github.com/eirsyl/analytics-python.git#master
