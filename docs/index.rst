@@ -12,6 +12,13 @@ Contents:
     Authentication <authentication>
     Feeds <feeds>
     Events <events>
+    External Sync <external_sync>
+    Files <files>
+    Health Checks <health_checks>
+    Notifications <notifications>
+    Site Search <site_search>
+    Stats <stats>
+    Logging <logging>
 
 Indices and tables
 ==================

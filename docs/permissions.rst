@@ -1,6 +1,14 @@
 Permissions
 ===========
 
+TODO
+----
+
+Write about:
+
+* API permission check
+* The filter backend
+
 Model Permissions
 -----------------
 
