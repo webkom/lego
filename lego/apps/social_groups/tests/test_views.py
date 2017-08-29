@@ -30,7 +30,8 @@ _rendered_serializer_fields = (
     'description',
     'descriptionLong',
     'permissions',
-    'memberships'
+    'memberships',
+    'logo'
 )
 
 
