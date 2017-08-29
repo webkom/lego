@@ -1,19 +1,17 @@
 import six
 from rest_framework.pagination import CursorPagination as RFCursorPagination
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.settings import api_settings
-
-
-class APIPagination(PageNumberPagination):
-    page_size = api_settings.PAGE_SIZE
-    max_page_size = api_settings.PAGE_SIZE
-    page_query_param = 'page'
-    page_size_query_param = 'page_size'
 
 
 class CursorPagination(RFCursorPagination):
     offset_cutoff = 50
+    page_size = 30
+    max_page_size = 60
     ordering = 'created_at'
+
+    def get_page_size(self, request):
+        if 'page_size' in request.query_params:
+            return min(self.max_page_size, int(request.query_params['page_size']))
+        return self.page_size
 
     def get_ordering(self, request, queryset, view):
         """
