@@ -2,93 +2,89 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
-from lego.apps.companies.models import Company, CompanyContact, SemesterStatus
-from lego.apps.users.serializers.users import PublicUserSerializer
+from lego.apps.companies.fields import SemesterField
+from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest, Semester,
+                                        SemesterStatus)
+from lego.apps.users.fields import PublicUserField
+from lego.apps.users.models import User
 from lego.utils.serializers import BasisModelSerializer
 
 
-class SemesterStatusReadSerializer(BasisModelSerializer):
+class SemesterSerializer(BasisModelSerializer):
+    class Meta:
+        model = Semester
+        fields = ('id', 'year', 'semester')
+
+
+class SemesterStatusSerializer(serializers.ModelSerializer):
+
+    semester = SemesterField(queryset=Semester.objects.all())
+
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status')
-
-
-class SemesterStatusReadDetailedSerializer(BasisModelSerializer):
-    class Meta:
-        model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
-
-
-class SemesterStatusCreateAndUpdateSerializer(BasisModelSerializer):
-    class Meta:
-        model = SemesterStatus
-        fields = ('id', 'year', 'semester', 'contacted_status', 'contract')
+        fields = ('id', 'semester', 'contacted_status')
 
     def create(self, validated_data):
         company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
-        semester_status = SemesterStatus.objects.create(company=company, **validated_data)
-        return semester_status
+        validated_data['company'] = company
+        return super().create(validated_data)
 
 
-# CompanyContact
+class CompanyContactSerializer(BasisModelSerializer):
 
-class CompanyContactReadSerializer(BasisModelSerializer):
-    class Meta:
-        model = CompanyContact
-        fields = ('id', 'name', 'role', 'mail', 'phone', 'mobile')
-
-
-class CompanyContactCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = CompanyContact
         fields = ('id', 'name', 'role', 'mail', 'phone', 'mobile')
 
     def create(self, validated_data):
         company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
-        company_contact = CompanyContact.objects.create(company=company, **validated_data)
-        return company_contact
+        validated_data['company'] = company
+        return super().create(validated_data)
 
 
-# Company
-
-class PublicCompanyReadSerializer(BasisModelSerializer):
+class CompanyListSerializer(BasisModelSerializer):
     class Meta:
         model = Company
-        fields = ('id', 'name', 'website')
+        fields = ('id', 'name', 'description', 'website', 'company_type', 'address')
 
 
-class CompanyReadSerializer(BasisModelSerializer):
-    semester_statuses = SemesterStatusReadSerializer(many=True, read_only=True)
-    student_contact = PublicUserSerializer(read_only=True)
-
-    class Meta:
-        model = Company
-        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
-                  'active')
-
-
-class CompanyReadDetailedSerializer(BasisModelSerializer):
+class CompanyDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
-    semester_statuses = SemesterStatusReadDetailedSerializer(many=True, read_only=True)
-    student_contact = PublicUserSerializer(read_only=True)
-    company_contacts = CompanyContactReadSerializer(many=True, read_only=True)
+    student_contact = PublicUserField(queryset=User.objects.all())
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
-                  'description', 'website', 'phone', 'company_type', 'address', 'payment_mail',
-                  'company_contacts', 'active', 'comments', 'comment_target')
+        fields = ('id', 'name', 'student_contact', 'description', 'phone',
+                  'company_type', 'website', 'address', 'payment_mail', 'comments',
+                  'comment_target')
 
 
-class CompanyCreateAndUpdateSerializer(BasisModelSerializer):
+class CompanyEditSerializer(BasisModelSerializer):
+
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'student_contact', 'admin_comment', 'website',
-                  'phone', 'address', 'active')
+        fields = ('id', 'name', 'student_contact', 'previous_contacts', 'description', 'phone',
+                  'company_type', 'website', 'address', 'payment_mail')
+
+
+class CompanyInterestSerializer(BasisModelSerializer):
+    class Meta:
+        model = CompanyInterest
+        fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
+                  'read_me', 'collaboration', 'itdagene', 'comment')
+
+
+class CompanyInterestListSerializer(BasisModelSerializer):
+    class Meta:
+        model = CompanyInterest
+        fields = ('id', 'company_name', 'contact_person', 'mail')
 
 
 class CompanySearchSerializer(serializers.ModelSerializer):
+    """
+    Public company information available on search.
+    """
     class Meta:
         model = Company
-        fields = ('name', )
+        fields = ('id', 'name', 'description', 'website', 'company_type', 'address')
