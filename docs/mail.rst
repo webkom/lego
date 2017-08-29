@@ -3,7 +3,7 @@ Mail
 
 Mailing Lists
 -------------
-@orhanhenrik
+Normal mailing lists are managed by Google GSuite and our external sync system.
 
 
 Restricted Mail

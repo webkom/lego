@@ -4,10 +4,17 @@ from lego.apps.notifications.notification import Notification
 
 
 class AnnouncementNotification(Notification):
+    """
+    Sent a notification to one recipient of an Announcement.
+    The base class verifies the user settings.
+    """
 
     name = ANNOUNCEMENT
 
     def generate_mail(self):
+        """
+        Generate the email message the user should receive.
+        """
         announcement = self.kwargs['announcement']
 
         return self._delay_mail(
@@ -23,6 +30,9 @@ class AnnouncementNotification(Notification):
         )
 
     def generate_push(self):
+        """
+        Generate the push message the user should receive on his/her phone.
+        """
         announcement = self.kwargs['announcement']
 
         return self._delay_push(
