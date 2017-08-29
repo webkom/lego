@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from structlog import get_logger
 
 from lego.apps.users.models import User
+from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationSerializer
 from lego.utils.tasks import send_email
 

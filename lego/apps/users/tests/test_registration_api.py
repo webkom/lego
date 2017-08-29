@@ -3,7 +3,7 @@ from unittest import mock
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase, APITransactionTestCase
 
-from lego.apps.users.models import User
+from lego.apps.users.registrations import Registrations
 
 
 def _get_list_url():
@@ -30,7 +30,7 @@ class RetrieveRegistrationAPITestCase(APITestCase):
     def test_with_valid_token(self):
         response = self.client.get(
             _get_registration_token_url(
-                User.generate_registration_token('test1@user.com')
+                Registrations.generate_registration_token('test1@user.com')
             )
         )
         self.assertEqual(response.status_code, 200)
