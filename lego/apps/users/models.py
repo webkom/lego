@@ -4,8 +4,6 @@ from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
-from django.core import signing
-from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone

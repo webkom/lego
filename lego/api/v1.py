@@ -28,6 +28,8 @@ from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
+from lego.apps.users.views.password_reset import PasswordResetPerformViewSet, \
+    PasswordResetRequestViewSet
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationViewSet
 from lego.apps.users.views.student_confirmation import StudentConfirmationViewSet
@@ -71,6 +73,10 @@ router.register(
     r'users-student-confirmation', StudentConfirmationViewSet, base_name='student-confirmation'
 )
 router.register(r'users', UsersViewSet)
+router.register(r'password-reset-request', PasswordResetRequestViewSet,
+                base_name='password-reset-request')
+router.register(r'password-reset-perform', PasswordResetPerformViewSet,
+                base_name='password-reset-perform')
 router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction-types', ReactionTypeViewSet)
 router.register(r'restricted-mail', RestrictedMailViewSet, base_name='restricted-mail')
