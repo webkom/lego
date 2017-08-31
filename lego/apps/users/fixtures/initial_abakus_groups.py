@@ -42,9 +42,7 @@ initial_tree = {
                     '/sudo/admin/pools/',
                     '/sudo/admin/registrations/',
                     '/sudo/admin/companies/',
-                    '/sudo/admin/joblistings/create/',
-                    '/sudo/admin/joblistings/update/',
-                    '/sudo/admin/joblistings/destroy/'
+                    '/sudo/admin/joblistings/',
                 ]},
                 {
                     'Arrkom': [{'is_committee': True}, {}],

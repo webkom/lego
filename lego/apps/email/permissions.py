@@ -1,11 +1,11 @@
-from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.permissions.permissions import PermissionHandler
 
 
-class UserEmailPermissions(AbakusPermission):
+class UserEmailPermissionHandler(PermissionHandler):
 
-    default_permission = '/sudo/admin/emailusers/{action}/'
+    default_keyword_permission = '/sudo/admin/emailusers/{perm}/'
 
 
-class AbakusGroupEmailPermissions(AbakusPermission):
+class GroupEmailPermissionHandler(PermissionHandler):
 
-    default_permission = '/sudo/admin/emailgroups/{action}/'
+    default_keyword_permission = '/sudo/admin/emailgroups/{perm}/'

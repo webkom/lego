@@ -3,6 +3,10 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from lego.apps.comments.models import Comment
+from lego.apps.companies.permissions import (CompanyContactPermissionHandler,
+                                             CompanyInterestPermissionHandler,
+                                             CompanyPermissionHandler,
+                                             NestedCompanyPermissionHandler)
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, TimeStampModel
 
@@ -15,6 +19,7 @@ class Semester(BasisModel):
 
     class Meta:
         unique_together = ('year', 'semester')
+        permission_handler = CompanyPermissionHandler()
 
 
 class Company(BasisModel):
@@ -29,6 +34,9 @@ class Company(BasisModel):
     address = models.CharField(max_length=100, blank=True)
     payment_mail = models.EmailField(max_length=100, blank=True)
     comments = GenericRelation(Comment)
+
+    class Meta:
+        permission_handler = CompanyPermissionHandler()
 
     @property
     def comment_target(self):
@@ -45,6 +53,7 @@ class SemesterStatus(TimeStampModel):
 
     class Meta:
         unique_together = ('semester', 'company')
+        permission_handler = NestedCompanyPermissionHandler()
 
 
 class CompanyContact(BasisModel):
@@ -54,6 +63,10 @@ class CompanyContact(BasisModel):
     mail = models.EmailField(blank=True)
     phone = models.CharField(max_length=100, blank=True)
     mobile = models.CharField(max_length=100, blank=True)
+    public = models.BooleanField(default=False)
+
+    class Meta:
+        permission_handler = CompanyContactPermissionHandler()
 
 
 class CompanyInterest(BasisModel):
@@ -66,3 +79,6 @@ class CompanyInterest(BasisModel):
     collaboration = models.BooleanField(default=False)
     itdagene = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
+
+    class Meta:
+        permission_handler = CompanyInterestPermissionHandler()

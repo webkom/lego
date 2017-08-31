@@ -1,14 +1,26 @@
-from lego.apps.users.permissions import AbakusGroupPermissions
+from lego.apps.permissions.constants import EDIT, LIST, VIEW
+from lego.apps.permissions.permissions import PermissionHandler
+from lego.apps.users.constants import MEMBER
 
 
-class InterestGroupPermissions(AbakusGroupPermissions):
+class InterestGroupPermissionHandler(PermissionHandler):
     permission_map = {
-        'list': [],
-        'create': ['/sudo/admin/interestgroups/create/'],
-        'retrieve': [],
-        'update': ['/sudo/admin/interestgroups/update/'],
-        'partial_update': ['/sudo/admin/interestgroups/update/'],
-        'destroy': ['/sudo/admin/interestgroups/destroy/'],
+        LIST: [],
+        VIEW: []
     }
 
-    allowed_leader = ['update', 'partial_update']
+    force_object_permission_check = True
+
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+
+        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+
+        if has_perm:
+            return True
+
+        if user.is_authenticated() and perm == EDIT and obj is not None:
+            return obj.memberships.filter(user=user).exclude(role=MEMBER).exists()
+
+        return False

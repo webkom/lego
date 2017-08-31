@@ -5,10 +5,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from structlog import get_logger
 
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.permissions import UsersPermissions
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import DetailedUserSerializer, MeSerializer, UserSerializer
 
@@ -19,7 +18,6 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = User.objects.all()
     lookup_field = 'username'
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticated, UsersPermissions)
     ordering = 'id'
 
     def get_permissions(self):

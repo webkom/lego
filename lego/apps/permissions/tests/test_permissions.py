@@ -61,7 +61,6 @@ class PermissionTestCase(APITestCase):
         view = TestViewSet.as_view({'get': 'retrieve'})
 
         response = view(request, pk=self.test_object.pk)
-
         self.assertEqual(response.status_code, 404)
 
     def test_list_without_auth(self):

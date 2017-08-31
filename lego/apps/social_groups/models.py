@@ -1,5 +1,6 @@
 from django.db import models
 
+from lego.apps.social_groups.permissions import InterestGroupPermissionHandler
 from lego.apps.users.models import AbakusGroup
 
 
@@ -10,6 +11,7 @@ class SocialGroup(AbakusGroup):
 
     class Meta:
         abstract = True
+        permission_handler = InterestGroupPermissionHandler()
 
 
 class Committee(SocialGroup):

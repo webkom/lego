@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
+from lego.apps.events.models import Event
+from lego.apps.permissions.constants import EDIT
+
 
 class FeedbackField(serializers.Field):
 
@@ -63,14 +66,12 @@ class SetChargeStatusField(serializers.ChoiceField):
 
     def to_representation(self, value):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and \
-                request.user.has_perm('/sudo/admin/events/update/'):
+        if request and request.user.is_authenticated and request.user.has_perm(EDIT, Event):
             return getattr(value, 'charge_status', None)
 
     def to_internal_value(self, data):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and \
-                request.user.has_perm('/sudo/admin/events/update/'):
+        if request and request.user.is_authenticated and request.user.has_perm(EDIT, Event):
             return super().to_internal_value(data)
         raise PermissionDenied()
 
@@ -82,13 +83,11 @@ class PresenceField(serializers.ChoiceField):
 
     def to_representation(self, value):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and \
-                request.user.has_perm('/sudo/admin/events/update/'):
+        if request and request.user.is_authenticated and request.user.has_perm(EDIT, Event):
             return getattr(value, 'presence', None)
 
     def to_internal_value(self, data):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and \
-                request.user.has_perm('/sudo/admin/events/update/'):
+        if request and request.user.is_authenticated and request.user.has_perm(EDIT, Event):
             return super().to_internal_value(data)
         raise PermissionDenied()

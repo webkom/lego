@@ -1,7 +1,7 @@
 from celery import chain
 from django.db import transaction
 from django.db.models import Prefetch
-from rest_framework import decorators, filters, mixins, status, viewsets
+from rest_framework import decorators, mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
@@ -11,8 +11,6 @@ from lego.apps.events.exceptions import (APINoSuchPool, APIPaymentExists,
                                          RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.permissions import (AdministratePermissions, AdminRegistrationPermissions,
-                                          PoolPermissions, RegistrationPermissions)
 from lego.apps.events.serializers.events import (EventAdministrateSerializer,
                                                  EventCreateAndUpdateSerializer,
                                                  EventReadDetailedSerializer, EventReadSerializer)
@@ -25,13 +23,12 @@ from lego.apps.events.serializers.registrations import (AdminRegistrationCreateA
                                                         StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
                                     registration_save)
-from lego.apps.permissions.filters import AbakusObjectPermissionFilter
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.utils.functions import verify_captcha
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
+
     filter_class = EventsFilterSet
     ordering = 'start_time'
 
@@ -69,10 +66,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
 
-    @decorators.detail_route(
-        methods=['GET'], serializer_class=EventAdministrateSerializer,
-        permission_classes=(AdministratePermissions,)
-    )
+    @decorators.detail_route(methods=['GET'], serializer_class=EventAdministrateSerializer)
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get('pk', None)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
@@ -113,7 +107,6 @@ class PoolViewSet(mixins.CreateModelMixin,
                   mixins.DestroyModelMixin,
                   viewsets.GenericViewSet):
     queryset = Pool.objects.all()
-    permission_classes = (PoolPermissions,)
     serializer_class = PoolCreateAndUpdateSerializer
 
     def get_queryset(self):
@@ -136,7 +129,6 @@ class RegistrationViewSet(AllowedPermissionsMixin,
                           mixins.DestroyModelMixin,
                           viewsets.GenericViewSet):
     serializer_class = RegistrationReadSerializer
-    permission_classes = (RegistrationPermissions,)
     ordering = 'registration_date'
 
     def get_serializer_class(self):
@@ -181,8 +173,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.list_route(methods=['POST'],
-                           serializer_class=AdminRegistrationCreateAndUpdateSerializer,
-                           permission_classes=(AdminRegistrationPermissions,))
+                           serializer_class=AdminRegistrationCreateAndUpdateSerializer)
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get('event_pk', None)
         event = Event.objects.get(id=event_id)
