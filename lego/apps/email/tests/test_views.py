@@ -66,7 +66,7 @@ class EmailListTestCase(APITestCase):
     def test_delete_endpoint_not_available(self):
         """The delete endpoint is'nt available."""
         response = self.client.delete(f'{self.url}1/')
-        self.assertEquals(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
 
 
 class UserEmailTestCase(APITestCase):

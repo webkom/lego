@@ -7,6 +7,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
@@ -18,10 +19,30 @@ from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
 from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
                                       UserPenaltyManager)
+from lego.apps.users.permissions import AbakusGroupPermissionHandler, UserPermissionHandler
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
 from .validators import email_validator, student_username_validator, username_validator
+
+
+class Membership(BasisModel):
+    objects = MembershipManager()
+
+    user = models.ForeignKey('users.User')
+    abakus_group = models.ForeignKey('users.AbakusGroup')
+
+    role = models.CharField(max_length=20, choices=constants.ROLES, default=constants.MEMBER)
+    is_active = models.BooleanField(default=True, db_index=True)
+
+    start_date = models.DateField(auto_now_add=True, blank=True, db_index=True)
+    end_date = models.DateField(null=True, blank=True, db_index=True)
+
+    class Meta:
+        unique_together = ('user', 'abakus_group')
+
+    def __str__(self):
+        return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
 
 class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
@@ -34,22 +55,32 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
-        verbose_name='permissions', default=list
+        verbose_name='permissions', default=[]
     )
 
     objects = AbakusGroupManager()
+
+    class Meta:
+        permission_handler = AbakusGroupPermissionHandler()
 
     def __str__(self):
         return self.name
 
     @cached_property
     def memberships(self):
-        return Membership.objects.filter(user__abakus_groups__in=self.get_descendants(True)) \
-            .distinct('user')
+        descendants = self.get_descendants(True)
+        return Membership.objects.filter(
+            Q(start_date=None) | Q(start_date__lte=timezone.now()),
+            Q(end_date=None) | Q(end_date__gte=timezone.now(), ),
+            deleted=False,
+            is_active=True,
+            user__abakus_groups__in=descendants,
+            abakus_group__in=descendants,
+        )
 
     @cached_property
     def number_of_users(self):
-        return self.memberships.count()
+        return self.memberships.distinct('user').count()
 
     def add_user(self, user, **kwargs):
         membership = Membership(user=user, abakus_group=self, **kwargs)
@@ -80,8 +111,9 @@ class PermissionsMixin(models.Model):
         AbakusGroup,
         through='Membership',
         through_fields=('user', 'abakus_group'),
-        blank=True, help_text='The groups this user belongs to. A user will '
-                              'get all permissions granted to each of their groups.',
+        blank=True,
+        help_text='The groups this user belongs to. A user will '
+                  'get all permissions granted to each of their groups.',
         related_name='users',
         related_query_name='user'
     )
@@ -110,15 +142,32 @@ class PermissionsMixin(models.Model):
         abstract = True
 
     @cached_property
+    def memberships(self):
+        return Membership.objects.filter(
+            Q(start_date=None) | Q(start_date__lte=timezone.now()),
+            Q(end_date=None) | Q(end_date__gte=timezone.now(), ),
+            deleted=False,
+            is_active=True,
+            user=self,
+        )
+
+    @cached_property
     def all_groups(self):
-        own_groups = set()
+        groups = set()
 
-        for group in self.abakus_groups.all():
-            if group not in own_groups:
-                own_groups.add(group)
-                own_groups = own_groups.union(set(group.get_ancestors()))
+        memberships = self.memberships.filter(
+            Q(start_date=None) | Q(start_date__lte=timezone.now()),
+            Q(end_date=None) | Q(end_date__gte=timezone.now(),),
+            deleted=False,
+            is_active=True,
+        ).select_related('abakus_group')
 
-        return list(own_groups)
+        for membership in memberships:
+            if membership.abakus_group not in groups:
+                groups.add(membership.abakus_group)
+                groups.update(membership.abakus_group.get_ancestors())
+
+        return list(groups)
 
 
 class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, PermissionsMixin):
@@ -170,6 +219,9 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     REQUIRED_FIELDS = ['email']
 
     backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
+
+    class Meta:
+        permission_handler = UserPermissionHandler()
 
     def clean(self):
         self.student_username = self.student_username.lower()
@@ -274,25 +326,6 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
 
     def announcement_lookup(self):
         return [self]
-
-
-class Membership(BasisModel):
-    objects = MembershipManager()
-
-    user = models.ForeignKey(User)
-    abakus_group = models.ForeignKey(AbakusGroup)
-
-    role = models.CharField(max_length=20, choices=constants.ROLES, default=constants.MEMBER)
-    is_active = models.BooleanField(default=True)
-
-    start_date = models.DateField(auto_now_add=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-
-    class Meta:
-        unique_together = ('user', 'abakus_group')
-
-    def __str__(self):
-        return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
 
 class Penalty(BasisModel):

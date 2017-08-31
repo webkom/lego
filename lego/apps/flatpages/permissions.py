@@ -1,14 +1,10 @@
-from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.permissions.constants import LIST, VIEW
+from lego.apps.permissions.permissions import PermissionHandler
 
 
-class PagePermissions(AbakusPermission):
-    # Turn off permission checks for read-only:
-    permission_map = {
-        'list': [],
-        'retrieve': []
-    }
+class PagePermissionHandler(PermissionHandler):
 
     authentication_map = {
-        'list': False,
-        'retrieve': False
+        LIST: False,
+        VIEW: False
     }

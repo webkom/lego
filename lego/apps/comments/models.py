@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from lego.apps.comments.permissions import CommentPermissionHandler
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel
@@ -24,6 +25,7 @@ class Comment(BasisModel, ObjectPermissionsModel):
 
     class Meta:
         ordering = ('created_at', )
+        permission_handler = CommentPermissionHandler()
 
     def __str__(self):
         return self.text

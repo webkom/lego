@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.users import constants
+from lego.apps.users.constants import LEADER
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerializer,
                                                        PublicAbakusGroupSerializer)
@@ -61,7 +62,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         self.groupadmin_test_group.add_user(self.with_permission)
 
         self.test_group = AbakusGroup.objects.get(name='TestGroup')
-        self.test_group.add_user(self.without_permission)
+        self.test_group.add_user(self.without_permission, role=LEADER)
 
     def successful_retrieve(self, user, pk):
         self.client.force_authenticate(user=user)

@@ -84,7 +84,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_invalid_contenttype(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -99,7 +99,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_invalid_objectid(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -112,7 +112,7 @@ class CreateCommentsAPITestCase(APITestCase):
         }
         response = self.client.post(_get_list_url(), post_data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_parent(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -286,7 +286,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         response = self.client.put(_get_detail_url(self.test_comment.pk), self.modified_comment)
         comment = Comment.objects.get(pk=self.test_comment.pk)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(comment, self.test_comment)
 
 
@@ -320,9 +320,12 @@ class DeleteUsersAPITestCase(APITestCase):
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.delete(_get_detail_url(self.test_comment_2.pk))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_with_owner(self):
+        user = User.objects.get(username='pleb')
+        self.test_comment.created_by = user
+        self.test_comment.save()
         self.successful_delete(self.test_comment.created_by)
 
     def test_with_useradmin(self):

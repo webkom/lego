@@ -108,9 +108,7 @@ class QuoteViewSetTestCase(APITestCase):
 
     def test_list_unapproved_unauthenticated(self):
         """Users with no permissions should not be able to see unapproved quotes"""
-        self.client.force_authenticate(self.authenticated_user)
-        self.group.permissions = ['/sudo/admin/quotes/list/']
-        self.group.save()
+        self.client.force_authenticate(self.unauthenticated_user)
 
         response = self.client.get(_get_list_unapproved_url())
-        self.assertFalse(response.data['results'])
+        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)

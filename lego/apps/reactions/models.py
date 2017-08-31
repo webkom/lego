@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from lego.apps.reactions.permissions import ReactionPermissionHandler
 from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel
 
@@ -24,6 +25,9 @@ class Reaction(BasisModel):
     content_object = GenericForeignKey()
 
     objects = ReactionManager()
+
+    class Meta:
+        permission_handler = ReactionPermissionHandler()
 
     def __repr__(self):
         return str(self)

@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from lego.apps.permissions.constants import EDIT
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.tests.models import TestModel
 from lego.apps.users.models import AbakusGroup, User
@@ -29,8 +30,8 @@ class ObjectPermissionsModelTestCase(TestCase):
 
         self.test_object.can_edit_users.add(can_edit_user)
 
-        self.assertTrue(self.test_object.can_edit(can_edit_user))
-        self.assertFalse(self.test_object.can_edit(cant_edit_user))
+        self.assertTrue(can_edit_user.has_perm(EDIT, self.test_object))
+        self.assertFalse(cant_edit_user.has_perm(EDIT, self.test_object))
 
     def test_can_edit_groups_hierarchy(self):
         user = self.regular_users[1]
@@ -40,4 +41,4 @@ class ObjectPermissionsModelTestCase(TestCase):
 
         self.test_object.can_edit_groups.add(abakom)
 
-        self.assertTrue(self.test_object.can_edit(user))
+        self.assertTrue(user.has_perm(EDIT, self.test_object))

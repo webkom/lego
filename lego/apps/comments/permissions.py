@@ -1,39 +1,39 @@
-from rest_framework import exceptions
-
-from lego.apps.permissions.models import ObjectPermissionsModel
-from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.permissions.constants import CREATE, VIEW
+from lego.apps.permissions.permissions import PermissionHandler
 from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
-class CommentPermission(AbakusPermission):
+class CommentPermissionHandler(PermissionHandler):
 
-    def has_permission(self, request, view):
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
 
-        has_permission = super().has_permission(request, view)
+        can_access_target = False
+        if user.is_authenticated() and perm == CREATE:
+            """
+            We need to validate the data tries to create. We have to do this manually because
+            this happens before rest_framework parses the request.
+            """
+            request = kwargs.get('request')
+            if request:
+                can_access_target = self.check_target_permission(user, request)
 
-        if not has_permission:
-            return False
+        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 
-        if view.action == 'create':
-            return self.check_target_permissions(request)
+        if has_perm:
+            if perm == CREATE:
+                return can_access_target
 
-        return True
+        return has_perm
 
-    def check_target_permissions(self, request):
-        comment_target = request.data.get('comment_target')
-
-        if not comment_target:
-            raise exceptions.ValidationError('comment_target are invalid')
-
+    def check_target_permission(self, user, request):
         try:
-            instance = string_to_instance(comment_target)
-            # We only support permissions checks on ObjectPermissionsModels at this time!
-            # We allow comments creation on other models because we don't have any way to verify it.
-            if isinstance(instance, ObjectPermissionsModel):
-                return instance.can_view(request.user)
-            else:
-                return True
+            target = request.data.get('comment_target', None)
+            if target:
+                obj = string_to_instance(target)
+                return user.has_perm(VIEW, obj)
         except VALIDATION_EXCEPTIONS:
             pass
 
-        raise exceptions.ValidationError('comment_target could not be verified')
+        return False

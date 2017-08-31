@@ -19,8 +19,8 @@
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakom,
     description: Medlemmer av Abakom, is_grade: false, is_committee: false, is_interest_group: false,
     parent: 2, permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
-      "/sudo/admin/companies/", "/sudo/admin/joblistings/create/", "/sudo/admin/joblistings/update/",
-      "/sudo/admin/joblistings/destroy/"]', lft: 2, rght: 21, tree_id: 2, level: 1}
+      "/sudo/admin/companies/", "/sudo/admin/joblistings/"]', lft: 2, rght: 21, tree_id: 2,
+    level: 1}
 - model: users.abakusgroup
   pk: 4
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Arrkom,

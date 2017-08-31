@@ -268,11 +268,11 @@ class UpdateInviteTestCase(APITestCase):
         me = self.abakommer
         other = self.pleb
 
-        self.meeting.invite_user(me)
-        invite = self.meeting.invite_user(other)[0]
+        self.meeting.invite_user(other)
+        invite = self.meeting.invite_user(me)[0]
         self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
-        self.client.force_authenticate(me)
-        res = self.client.patch(_get_invitations_list_url(self.meeting.id) + str(other.id) + '/', {
+        self.client.force_authenticate(other)
+        res = self.client.patch(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
             'status': MeetingInvitation.ATTENDING
         })
         self.assertEqual(res.status_code, 403)

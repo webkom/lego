@@ -1,34 +1,39 @@
 from django.contrib.auth.backends import ModelBackend
+from django.db import models
+
+from lego.apps.permissions.keyword import KeywordPermissions
+from lego.apps.permissions.utils import get_permission_handler
 
 
-class AbakusPermissionBackend:
+class LegoPermissionBackend(ModelBackend):
     """
-    This backend makes it possible to check for keyword permissions using the standard django
-    method: user.has_perm('/sudo/').
+    Check permissions on a object using the builtin django user.has_perms() function.
     """
 
-    authenticate = ModelBackend.authenticate
-    get_user = ModelBackend.get_user
-    user_can_authenticate = ModelBackend.user_can_authenticate
-
-    def get_group_permissions(self, user_obj, obj=None):
-        if user_obj.is_anonymous() or obj is not None:
+    def _get_permissions(self, user_obj, obj, from_name):
+        if not user_obj.is_active or user_obj.is_anonymous or obj is not None:
             return set()
+        return set()
 
-        perms = set()
-        for group in user_obj.all_groups:
-            available_perms = group.permissions
-            if available_perms:
-                perms.update(available_perms)
-        return perms
-
-    def get_all_permissions(self, user_obj, obj=None):
-        return self.get_group_permissions(user_obj, obj)
+    def has_module_perms(self, user_obj, app_label):
+        return False
 
     def has_perm(self, user_obj, perm, obj=None):
-        perms = self.get_all_permissions(user_obj, obj)
-        for own_perm in perms:
-            if perm.startswith(own_perm):
-                return True
+        if not user_obj.is_active:
+            return False
+
+        if obj is None:
+            # Take a shortcut and check KeywordPermissions only if no object are defined.
+            return KeywordPermissions.has_perm(user_obj, perm)
+
+        if isinstance(obj, models.Model):
+            permission_handler = get_permission_handler(obj)
+            return permission_handler.has_perm(user_obj, perm, obj=obj)
+        elif isinstance(obj, models.QuerySet):
+            permission_handler = get_permission_handler(obj.model)
+            return permission_handler.has_perm(user_obj, perm, queryset=obj)
+        elif issubclass(obj, models.Model):
+            permission_handler = get_permission_handler(obj)
+            return permission_handler.has_perm(user_obj, perm, queryset=obj.objects.none())
 
         return False

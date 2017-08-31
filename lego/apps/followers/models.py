@@ -1,9 +1,10 @@
 from django.db import models
 
-from lego.utils.models import PersistentModel, TimeStampModel
+from lego.apps.followers.permissions import FollowersPermissionHandler
+from lego.utils.models import TimeStampModel
 
 
-class Follower(PersistentModel, TimeStampModel):
+class Follower(TimeStampModel):
     follower = models.ForeignKey('users.User')
 
     class Meta:
@@ -15,6 +16,7 @@ class FollowUser(Follower):
 
     class Meta:
         unique_together = ('follower', 'target')
+        permission_handler = FollowersPermissionHandler()
 
 
 class FollowEvent(Follower):
@@ -22,6 +24,7 @@ class FollowEvent(Follower):
 
     class Meta:
         unique_together = ('follower', 'target')
+        permission_handler = FollowersPermissionHandler()
 
 
 class FollowCompany(Follower):
@@ -29,3 +32,4 @@ class FollowCompany(Follower):
 
     class Meta:
         unique_together = ('follower', 'target')
+        permission_handler = FollowersPermissionHandler()
