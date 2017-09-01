@@ -18,7 +18,7 @@ boto3==1.4.7
 cassandra-driver==3.11
 bs4==0.0.1
 bleach==2.0.0
-slackclient==1.0.7
+slackclient==1.0.9
 requests==2.18.4
 ldap3==2.3
 google-api-python-client==1.6.3
