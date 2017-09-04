@@ -42,6 +42,9 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def random(self, request):
         queryset = self.get_queryset().filter(approved=True)
         values = queryset.values_list('pk', flat=True)
+        if not values:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         instance = queryset.get(pk=choice(values))
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
