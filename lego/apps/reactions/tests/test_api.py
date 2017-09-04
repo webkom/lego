@@ -61,7 +61,7 @@ class CreateReactionsAPITestCase(APITestCase):
         test_data = self.get_test_data(10000)
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
 
     def test_invalid_reaction_type(self):
         test_data = {
@@ -100,7 +100,7 @@ class DeleteReactionsAPITestCase(APITestCase):
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.delete(_get_detail_url(self.test_reaction.pk))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_with_owner(self):
         self.successful_delete(self.test_reaction.created_by)

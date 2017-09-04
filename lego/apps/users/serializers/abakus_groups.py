@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
+from lego.apps.permissions.constants import EDIT
 from lego.apps.users.models import AbakusGroup
-from lego.apps.users.permissions import can_retrieve_abakusgroup
 
 from .users import PublicUserSerializer
 
@@ -37,8 +37,8 @@ class AbakusGroupSerializer(DetailedAbakusGroupSerializer):
         view = self.context['view']
         request = self.context['request']
 
-        if (view.action == 'list' or view.action == 'retrieve'
-                and not can_retrieve_abakusgroup(instance, request.user)):
+        if (view.action == 'list' or (view.action == 'retrieve'
+                                      and not request.user.has_perm(EDIT, instance))):
 
             serializer = PublicAbakusGroupSerializer(instance, context=self.context)
         else:

@@ -2,6 +2,7 @@ from django.db import models
 
 from lego.apps.companies.models import Company, CompanyContact
 from lego.apps.content.models import Content
+from lego.apps.joblistings.permissions import JoblistingPermissionHandler
 from lego.utils.models import BasisModel
 
 
@@ -40,3 +41,6 @@ class Joblisting(Content, BasisModel):
     from_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default='1')
     to_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default='5')
     application_url = models.URLField(null=True, blank=True)
+
+    class Meta:
+        permission_handler = JoblistingPermissionHandler()

@@ -2,9 +2,9 @@ from rest_framework import serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
+from lego.apps.permissions.constants import EDIT
 from lego.apps.users.fields import AbakusGroupField, AbakusGroupListField
 from lego.apps.users.models import AbakusGroup, Penalty, User
-from lego.apps.users.permissions import can_retrieve_user
 from lego.apps.users.serializers.penalties import PenaltySerializer
 
 
@@ -90,7 +90,7 @@ class UserSerializer(DetailedUserSerializer):
 
         # List and public retrievals use PublicUserSerializer, the rest uses the detailed one:
         if (view.action == 'list' or
-                view.action == 'retrieve' and not can_retrieve_user(instance, request.user)):
+                view.action == 'retrieve' and not request.user.has_perm(EDIT, instance)):
             serializer = PublicUserSerializer(instance, context=self.context)
         else:
             serializer = DetailedUserSerializer(instance, context=self.context)

@@ -4,18 +4,18 @@ from django.http import HttpResponse
 from django.template import loader
 from django.utils import timezone
 from django_ical import feedgenerator
-from rest_framework import decorators, filters, viewsets
+from rest_framework import decorators, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 
 from lego.apps.events.models import Event
 from lego.apps.ical import constants
-from lego.apps.meetings import filters as meeting_filters
+from lego.apps.ical.authentication import ICalTokenAuthentication
 from lego.apps.meetings.models import Meeting
-from lego.apps.permissions.filters import AbakusObjectPermissionFilter, filter_queryset
+from lego.apps.permissions.utils import get_permission_handler
 
 from .models import ICalToken
-from .permissions import ICalTokenPermission
 from .serializers import ICalTokenSerializer
 
 
@@ -51,14 +51,12 @@ class ICalViewset(viewsets.ViewSet):
     usage: [events/?token=yourtoken](events/?token=yourtoken)
     """
 
-    filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
-    queryset = Event.objects.all()
-
-    permission_classes = (ICalTokenPermission, )
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [ICalTokenAuthentication]
 
     def list(self, request):
         """List all the different icals."""
-        token = ICalToken.objects.get_or_create(user=request.token_user)[0]
+        token = ICalToken.objects.get_or_create(user=request.user)[0]
         path = request.get_full_path()
         data = {
             'result': {
@@ -95,21 +93,27 @@ class ICalViewset(viewsets.ViewSet):
             language='nb',
         )
 
-        following_events = Event.objects.filter(
-            followers__follower_id=request.token_user.id,
-            end_time__gt=timezone.now() - timedelta(
-                days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
-            )
-        ).all()
+        permission_handler = get_permission_handler(Event)
+        following_events = permission_handler.filter_queryset(
+            request.user,
+            Event.objects.filter(
+                followers__follower_id=request.user.id,
+                end_time__gt=timezone.now() - timedelta(
+                    days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+                )
+            ).all()
+        )
 
-        meetings = meeting_filters.filter_queryset(
-            request.token_user,
+        permission_handler = get_permission_handler(Meeting)
+        meetings = permission_handler.filter_queryset(
+            request.user,
             Meeting.objects.filter(
                 end_time__gt=timezone.now() - timedelta(
                     days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
                 )
             )
         )
+
         desc_event = loader.get_template('ical/event_description.txt')
         for event in following_events:
             context = {
@@ -159,8 +163,9 @@ class ICalViewset(viewsets.ViewSet):
             language='nb',
         )
 
-        events = filter_queryset(
-            request.token_user,
+        permission_handler = get_permission_handler(Event)
+        events = permission_handler.filter_queryset(
+            request.user,
             Event.objects.all().filter(
                 end_time__gt=timezone.now()
             )
@@ -168,13 +173,13 @@ class ICalViewset(viewsets.ViewSet):
 
         desc = loader.get_template('ical/event_description.txt')
         for event in events:
-            reg_time = event.get_earliest_registration_time(request.token_user)
+            reg_time = event.get_earliest_registration_time(request.user)
             if not reg_time:
                 continue
 
             context = {
                 'description': event.description,
-                'price': event.get_price(request.token_user),
+                'price': event.get_price(request.user),
                 'url': event.get_absolute_url()
             }
 
@@ -204,8 +209,9 @@ class ICalViewset(viewsets.ViewSet):
             language='nb',
         )
 
-        events = filter_queryset(
-            request.token_user,
+        permission_handler = get_permission_handler(Event)
+        events = permission_handler.filter_queryset(
+            request.user,
             Event.objects.all().filter(
                 end_time__gt=timezone.now() - timedelta(
                     days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
@@ -217,7 +223,7 @@ class ICalViewset(viewsets.ViewSet):
         for event in events:
             context = {
                 'description': event.description,
-                'price': event.get_price(request.token_user),
+                'price': event.get_price(request.user),
                 'url': event.get_absolute_url()
             }
             feed.add_item(

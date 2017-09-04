@@ -48,7 +48,7 @@ class FollowEventViewTestCase(APITestCase):
         denied_user = User.objects.get(id=2)
         self.client.force_login(denied_user)
         response = self.client.delete(f'{self.url}1/')
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_login(self.user)
         response = self.client.delete(f'{self.url}1/')
@@ -97,7 +97,7 @@ class FollowUserViewTestCase(APITestCase):
         denied_user = User.objects.get(id=2)
         self.client.force_login(denied_user)
         response = self.client.delete(f'{self.url}1/')
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_login(self.user)
         response = self.client.delete(f'{self.url}1/')
@@ -147,7 +147,7 @@ class FollowCompanyViewTestCase(APITestCase):
         denied_user = User.objects.get(id=2)
         self.client.force_login(denied_user)
         response = self.client.delete(f'{self.url}1/')
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_login(self.user)
         response = self.client.delete(f'{self.url}1/')

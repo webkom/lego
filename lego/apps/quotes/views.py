@@ -1,13 +1,12 @@
 from random import choice
 
-from rest_framework import filters, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 
-from lego.apps.permissions.views import AllowedPermissionsMixin
-from lego.apps.quotes.filters import QuoteModelFilter, QuotesFilterSet
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.quotes.filters import QuotesFilterSet
 from lego.apps.quotes.models import Quote
-from lego.apps.quotes.permissions import QuotePermissions
 from lego.apps.quotes.serializers import (QuoteCreateAndUpdateSerializer, QuoteDetailSerializer,
                                           QuoteSerializer)
 
@@ -15,9 +14,7 @@ from lego.apps.quotes.serializers import (QuoteCreateAndUpdateSerializer, QuoteD
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Quote.objects.all().prefetch_related('tags')
-    filter_backends = (filters.DjangoFilterBackend, QuoteModelFilter)
     filter_class = QuotesFilterSet
-    permission_classes = (QuotePermissions, )
 
     def get_serializer_class(self):
         if self.action in ['retrieve']:

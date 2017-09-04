@@ -1,5 +1,10 @@
-from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.permissions.constants import LIST, VIEW
+from lego.apps.permissions.permissions import PermissionHandler
 
 
-class JoblistingsPermissions(AbakusPermission):
-        authentication_map = {'list': False, 'retrieve': False}
+class JoblistingPermissionHandler(PermissionHandler):
+
+    authentication_map = {
+        LIST: False,
+        VIEW: False
+    }

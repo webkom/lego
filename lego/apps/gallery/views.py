@@ -1,9 +1,7 @@
-from rest_framework import exceptions, filters, mixins, viewsets
+from rest_framework import mixins, viewsets
 
 from lego.apps.gallery.filters import GalleryFilterSet
-from lego.apps.gallery.permissions import GalleryPicturePermissions, user_filter_pictures
-from lego.apps.permissions.filters import AbakusObjectPermissionFilter
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 from .models import Gallery, GalleryPicture
 from .serializers import GalleryListSerializer, GalleryPictureSerializer, GallerySerializer
@@ -12,7 +10,6 @@ from .serializers import GalleryListSerializer, GalleryPictureSerializer, Galler
 class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Gallery.objects.all()
-    filter_backends = (AbakusObjectPermissionFilter, filters.DjangoFilterBackend,)
     filter_class = GalleryFilterSet
     serializer_class = GallerySerializer
 
@@ -33,18 +30,12 @@ class GalleryPictureViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
     """
     Nested viewset used to manage pictures in a gallery.
     """
-    queryset = GalleryPicture.objects.all()
-    permission_classes = (GalleryPicturePermissions, )
+    queryset = GalleryPicture.objects.all().select_related('file')
     serializer_class = GalleryPictureSerializer
 
     def get_queryset(self):
-        user = self.request.user
+        queryset = super().get_queryset()
         gallery_id = self.kwargs.get('gallery_pk', None)
-        if not gallery_id:
-            raise exceptions.NotFound
-
-        try:
-            gallery = Gallery.objects.get(id=gallery_id)
-            return user_filter_pictures(user, gallery)
-        except Gallery.DoesNotExist:
-            raise exceptions.NotFound
+        if gallery_id:
+            return queryset.filter(gallery_id=gallery_id)
+        return GalleryPicture.objects.none()

@@ -1,6 +1,6 @@
 from rest_framework import fields
 
-from .permissions import user_filter_pictures
+from lego.apps.permissions.constants import EDIT
 
 
 class PictureListField(fields.Field):
@@ -16,6 +16,9 @@ class PictureListField(fields.Field):
         from .serializers import GalleryPictureSerializer
         user = self.context['request'].user
 
-        images = user_filter_pictures(user, gallery)
+        images = gallery.pictures.all().select_related('file')
+        if not user.has_perm(EDIT, gallery):
+            images = images.filter(active=True)
+
         serializer = GalleryPictureSerializer(images, many=True)
         return serializer.data

@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 from lego.apps.events.models import Event
 from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting
+from lego.apps.permissions.constants import EDIT, VIEW
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -79,9 +80,9 @@ class RetreiveDateDependentICalTestCase(APITestCase):
         for event in icalendar.subcomponents:
             hits = re.split("-|@", event['UID'])
             if hits[0] == "event":
-                self.assertTrue(Event.objects.get(id=hits[1]).can_view(user))
+                self.assertTrue(user.has_perm(VIEW, Event.objects.get(id=hits[1])))
             elif hits[0] == "meeting":
-                self.assertTrue(Meeting.objects.get(id=hits[1]).can_edit(user))
+                self.assertTrue(user.has_perm(EDIT, Meeting.objects.get(id=hits[1])))
 
     def test_get_list(self, *args):
         res = self.client.get(_get_ical_list_url(self.token))

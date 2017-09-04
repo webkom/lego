@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from rest_framework import decorators, exceptions, mixins, viewsets
 
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.restricted.constants import RESTRICTED_TOKEN_PREFIX
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.restricted.serializers import (RestrictedMailDetailSerializer,
