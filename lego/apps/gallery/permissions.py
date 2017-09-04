@@ -1,25 +1,31 @@
-from lego.apps.permissions.permissions import AbakusPermission
+from lego.apps.permissions.constants import EDIT
+from lego.apps.permissions.permissions import PermissionHandler
 
 
-def user_filter_pictures(user, gallery):
+class GalleryPicturePermissionHandler(PermissionHandler):
     """
-    Only users with update permissions should be able to view deactivated pictures.
+    Custom permission for nested view and filter GalleryPictures based on Gallery edit permission.
     """
-    admin_permission = '/sudo/admin/gallerys/update/'
 
-    if user.is_authenticated() and (gallery.can_edit(user) or user.has_perm(admin_permission)):
-        images = gallery.pictures.all().select_related('file')
-    else:
-        images = gallery.pictures.filter(active=True).select_related('file')
+    default_keyword_permission = '/sudo/admin/gallerys/{perm}/'
 
-    return images
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+        if obj:
+            obj = obj.gallery
 
+        return super().has_perm(user, perm, obj, queryset, check_keyword_permissions)
 
-class GalleryPicturePermissions(AbakusPermission):
+    def filter_queryset(self, user, queryset, **kwargs):
+        from lego.apps.gallery.models import Gallery
 
-    default_permission = '/sudo/admin/gallerys/{action}/'
+        queryset = super().filter_queryset(user, queryset)
+        view = kwargs.get('view')
+        gallery_id = view.kwargs.get('gallery_pk', None)
 
-    def has_object_permission(self, request, view, obj):
-        gallery = obj.gallery
+        # Edit permission on the gallery is required to see deactivated images.
+        if gallery_id and not user.has_perm(EDIT, Gallery.objects.get(id=gallery_id)):
+            return queryset.filter(active=True)
 
-        return super().has_object_permission(request, view, gallery)
+        return queryset

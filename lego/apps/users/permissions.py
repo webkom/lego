@@ -1,64 +1,53 @@
-from lego.apps.permissions.permissions import AbakusPermission
-from lego.apps.users import constants
-from lego.apps.users.models import Membership
+from lego.apps.permissions.constants import EDIT, LIST, VIEW
+from lego.apps.permissions.permissions import PermissionHandler
+from lego.apps.users.constants import MEMBER
 
 
-def can_retrieve_user(user, retriever):
-    required_permission = '/sudo/admin/users/retrieve/'
-    return user == retriever or retriever.has_perm(required_permission)
+class UserPermissionHandler(PermissionHandler):
 
-
-def can_retrieve_abakusgroup(group, retriever):
-    required_permission = '/sudo/admin/groups/retrieve/'
-    return group in retriever.all_groups or retriever.has_perm(required_permission)
-
-
-class UsersPermissions(AbakusPermission):
     permission_map = {
-        'retrieve': [],
+        VIEW: []
     }
 
-    allowed_individual = ['retrieve', 'update', 'partial_update']
+    allowed_individual = [VIEW, EDIT]
+    force_object_permission_check = True
 
-    def is_self(self, request, view, obj):
-        if view.action in self.allowed_individual and obj == request.user:
+    def is_self(self, perm, user, obj):
+        if user.is_authenticated() and obj is not None:
+            return perm in self.allowed_individual and obj == user
+        return False
+
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+
+        is_self = self.is_self(perm, user, obj)
+        if is_self:
             return True
 
-    def has_permission(self, request, view):
-        if view.action in self.OBJECT_METHODS:
-            return True
-        return super().has_permission(request, view)
-
-    def has_object_permission(self, request, view, obj):
-        if self.is_self(request, view, obj):
-            return True
-        return super().has_object_permission(request, view, obj)
+        return super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 
 
-class AbakusGroupPermissions(AbakusPermission):
+class AbakusGroupPermissionHandler(PermissionHandler):
+
     permission_map = {
-        'list': [],
-        'create': ['/sudo/admin/groups/create/'],
-        'retrieve': [],
-        'update': ['/sudo/admin/groups/update/'],
-        'partial_update': ['/sudo/admin/groups/update/'],
-        'destroy': ['/sudo/admin/groups/destroy/'],
+        LIST: [],
+        VIEW: []
     }
 
-    allowed_leader = ['update', 'partial_update']
+    default_keyword_permission = '/sudo/admin/groups/{perm}/'
+    force_object_permission_check = True
 
-    def has_permission(self, request, view):
-        if view.action in self.allowed_leader:
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+
+        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+
+        if has_perm:
             return True
 
-        return super().has_permission(request, view)
+        if user.is_authenticated() and perm == EDIT and obj is not None:
+            return obj.memberships.filter(user=user).exclude(role=MEMBER).exists()
 
-    def has_object_permission(self, request, view, obj):
-        if view.action in self.allowed_leader and request.user.is_authenticated():
-            user = request.user
-            is_owner = Membership.objects.filter(
-                abakus_group=obj, user=user, role=constants.LEADER
-            ).exists()
-            return is_owner or super().has_object_permission(request, view, obj)
-
-        return super().has_object_permission(request, view, obj)
+        return False

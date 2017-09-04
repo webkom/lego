@@ -1,23 +1,19 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import decorators, status, viewsets
+from rest_framework import decorators, permissions, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from lego.apps.meetings.filters import MeetingFilterBackend
+from lego.apps.meetings.authentication import MeetingInvitationTokenAuthentication
 from lego.apps.meetings.models import Meeting, MeetingInvitation
-from lego.apps.meetings.permissions import (MeetingIntitationTokenPermission,
-                                            MeetingInvitationPermissions, MeetingPermissions)
 from lego.apps.meetings.serializers import (MeetingBulkInvite, MeetingGroupInvite,
                                             MeetingInvitationSerializer,
                                             MeetingInvitationUpdateSerializer, MeetingSerializer,
                                             MeetingUserInvite)
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+
     queryset = Meeting.objects.prefetch_related('invitations', 'invitations__user')
-    filter_backends = (MeetingFilterBackend, DjangoFilterBackend,)
-    permission_classes = (MeetingPermissions,)
     serializer_class = MeetingSerializer
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
@@ -56,8 +52,8 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 
 class MeetingInvitationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+
     queryset = MeetingInvitation.objects.select_related('user')
-    permission_classes = (MeetingInvitationPermissions,)
     lookup_field = 'user__id'
 
     def get_serializer_class(self):
@@ -80,8 +76,8 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
 
     To reject: [reject/?token=yourtoken](reject/)
     """
-
-    permission_classes = (MeetingIntitationTokenPermission, )
+    authentication_classes = (MeetingInvitationTokenAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
 
     @decorators.list_route(methods=['POST'])
     def accept(self, request):

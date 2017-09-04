@@ -2,7 +2,7 @@ from rest_framework import viewsets
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import DetailedArticleSerializer, PublicArticleSerializer
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
 class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

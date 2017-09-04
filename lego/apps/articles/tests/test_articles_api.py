@@ -23,6 +23,7 @@ class ListArticlesTestCase(APITestCase):
 
     def test_unauthorized_user(self):
         response = self.client.get(_get_list_url())
+        self.assertEquals(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 1)
 
     def test_fields(self):
@@ -42,6 +43,7 @@ class ListArticlesTestCase(APITestCase):
 
         self.client.force_authenticate(user=user)
         response = self.client.get(_get_list_url())
+        self.assertEquals(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 2)
 
 

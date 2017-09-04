@@ -11,6 +11,7 @@ from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import EventHasStarted, NoSuchPool, RegistrationsExistInPool
+from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
@@ -50,6 +51,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
+
+    class Meta:
+        permission_handler = EventPermissionHandler()
 
     def __str__(self):
         return self.title
@@ -541,6 +545,7 @@ class Registration(BasisModel):
     class Meta:
         unique_together = ('user', 'event')
         ordering = ['registration_date']
+        permission_handler = RegistrationPermissionHandler()
 
     def __str__(self):
         return str({"user": self.user, "pool": self.pool})

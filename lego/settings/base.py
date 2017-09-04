@@ -62,7 +62,7 @@ INSTALLED_APPS = [
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = (
-    'lego.apps.permissions.backends.AbakusPermissionBackend',
+    'lego.apps.permissions.backends.LegoPermissionBackend',
 )
 LOGIN_URL = '/authorization/login/'
 LOGOUT_URL = '/authorization/logout/'

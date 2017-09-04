@@ -19,8 +19,8 @@
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakom,
     description: Medlemmer av Abakom, is_grade: false, is_committee: false, is_interest_group: false,
     parent: 2, permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
-      "/sudo/admin/companies/", "/sudo/admin/joblistings/create/", "/sudo/admin/joblistings/update/",
-      "/sudo/admin/joblistings/destroy/"]', lft: 2, rght: 21, tree_id: 2, level: 1}
+      "/sudo/admin/companies/", "/sudo/admin/joblistings/"]', lft: 2, rght: 21, tree_id: 2,
+    level: 1}
 - model: users.abakusgroup
   pk: 4
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Arrkom,
@@ -168,15 +168,15 @@
   pk: 30
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: UserAdminTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/users/list/", "/sudo/admin/users/retrieve/",
-      "/sudo/admin/users/create/", "/sudo/admin/users/update/", "/sudo/admin/users/destroy/"]',
+    parent: null, permissions: '["/sudo/admin/users/list/", "/sudo/admin/users/view/",
+      "/sudo/admin/users/create/", "/sudo/admin/users/edit/", "/sudo/admin/users/delete/"]',
     lft: 1, rght: 2, tree_id: 4, level: 0}
 - model: users.abakusgroup
   pk: 31
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: AbakusGroupAdminTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/groups/list/", "/sudo/admin/groups/retrieve/",
-      "/sudo/admin/groups/create/", "/sudo/admin/groups/update/", "/sudo/admin/groups/destroy/"]',
+    parent: null, permissions: '["/sudo/admin/groups/list/", "/sudo/admin/groups/view/",
+      "/sudo/admin/groups/create/", "/sudo/admin/groups/edit/", "/sudo/admin/groups/delete/"]',
     lft: 1, rght: 2, tree_id: 5, level: 0}
 - model: users.abakusgroup
   pk: 32
@@ -187,15 +187,15 @@
   pk: 33
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: EventAdminTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/events/list/", "/sudo/admin/events/retrieve/",
-      "/sudo/admin/events/create/", "/sudo/admin/events/update/", "/sudo/admin/events/destroy/"]',
+    parent: null, permissions: '["/sudo/admin/events/list/", "/sudo/admin/events/view/",
+      "/sudo/admin/events/create/", "/sudo/admin/events/edit/", "/sudo/admin/events/delete/"]',
     lft: 1, rght: 2, tree_id: 7, level: 0}
 - model: users.abakusgroup
   pk: 34
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: CommentTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/comments/list/", "/sudo/admin/comments/retrieve/",
-      "/sudo/admin/comments/create/", "/sudo/admin/comments/update/", "/sudo/admin/comments/destroy/"]',
+    parent: null, permissions: '["/sudo/admin/comments/list/", "/sudo/admin/comments/view/",
+      "/sudo/admin/comments/create/", "/sudo/admin/comments/edit/", "/sudo/admin/comments/delete/"]',
     lft: 1, rght: 2, tree_id: 8, level: 0}
 - model: users.abakusgroup
   pk: 35
@@ -208,8 +208,8 @@
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: QuoteAdminTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
     parent: null, permissions: '["/sudo/admin/quotes/like/", "/sudo/admin/quotes/change-approval/",
-      "/sudo/admin/quotes/list-unapproved/", "/sudo/admin/quotes/list/", "/sudo/admin/quotes/retrieve/",
-      "/sudo/admin/quotes/create/", "/sudo/admin/quotes/update/", "/sudo/admin/quotes/destroy/"]',
+      "/sudo/admin/quotes/list-unapproved/", "/sudo/admin/quotes/list/", "/sudo/admin/quotes/view/",
+      "/sudo/admin/quotes/create/", "/sudo/admin/quotes/edit/", "/sudo/admin/quotes/delete/"]',
     lft: 1, rght: 2, tree_id: 10, level: 0}
 - model: users.abakusgroup
   pk: 37
@@ -227,9 +227,9 @@
   pk: 39
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: InterestGroupAdminTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/interestgroups/list/", "/sudo/admin/interestgroups/retrieve/",
-      "/sudo/admin/interestgroups/create/", "/sudo/admin/interestgroups/update/",
-      "/sudo/admin/interestgroups/destroy/"]', lft: 1, rght: 2, tree_id: 13, level: 0}
+    parent: null, permissions: '["/sudo/admin/interestgroups/list/", "/sudo/admin/interestgroups/view/",
+      "/sudo/admin/interestgroups/create/", "/sudo/admin/interestgroups/edit/", "/sudo/admin/interestgroups/delete/"]',
+    lft: 1, rght: 2, tree_id: 13, level: 0}
 - model: users.abakusgroup
   pk: 40
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: TestInterestGroup,
@@ -245,11 +245,11 @@
   pk: 42
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: GalleryTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/gallerys/list/", "/sudo/admin/gallerys/retrieve/"]',
+    parent: null, permissions: '["/sudo/admin/gallerys/list/", "/sudo/admin/gallerys/view/"]',
     lft: 1, rght: 2, tree_id: 16, level: 0}
 - model: users.abakusgroup
   pk: 43
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: EmailAdminTest,
     description: '', is_grade: false, is_committee: false, is_interest_group: false,
-    parent: null, permissions: '["/sudo/admin/emaillists/", "/sudo/admin/emailusers/",
-      "/sudo/admin/emailgroups/"]', lft: 1, rght: 2, tree_id: 17, level: 0}
+    parent: null, permissions: '["/sudo/admin/emailusers/", "/sudo/admin/emailgroups/",
+      "/sudo/admin/emaillists/"]', lft: 1, rght: 2, tree_id: 17, level: 0}

@@ -4,6 +4,8 @@ from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
 from lego.apps.content.models import Content
+from lego.apps.meetings.permissions import (MeetingInvitationPermissionHandler,
+                                            MeetingPermissionHandler)
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -20,6 +22,9 @@ class Meeting(Content, BasisModel):
     _invited_users = models.ManyToManyField(User, through='MeetingInvitation',
                                             related_name='meeting_invitation',
                                             through_fields=('meeting', 'user'))
+
+    class Meta:
+        permission_handler = MeetingPermissionHandler()
 
     @property
     def invited_users(self):
@@ -57,9 +62,6 @@ class Meeting(Content, BasisModel):
         invitation = self.invitations.get(user=user)
         invitation.delete(force=True)
 
-    def can_edit(self, user):
-        return self.created_by == user or self.invited_users.filter(id=user.id).exists()
-
     def restricted_lookup(self):
         """
         Restricted mail
@@ -86,6 +88,10 @@ class MeetingInvitation(BasisModel):
     user = models.ForeignKey(User, related_name='invitations')
     status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES,
                                       default=NO_ANSWER)
+
+    class Meta:
+        unique_together = ('meeting', 'user')
+        permission_handler = MeetingInvitationPermissionHandler()
 
     def generate_invitation_token(self):
         data = signing.dumps({
@@ -123,6 +129,3 @@ class MeetingInvitation(BasisModel):
     def reject(self):
         self.status = self.NOT_ATTENDING
         self.save()
-
-    class Meta:
-        unique_together = ('meeting', 'user')

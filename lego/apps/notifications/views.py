@@ -4,7 +4,7 @@ from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.notifications import constants
-from lego.apps.permissions.views import AllowedPermissionsMixin
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 from .models import Announcement, NotificationSetting
 from .serializers import (AnnouncementDetailSerializer, AnnouncementListSerializer,

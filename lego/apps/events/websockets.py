@@ -4,7 +4,8 @@ from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (EventReadDetailedSocketSerializer,
                                                   RegistrationPaymentReadSocketSerializer,
                                                   RegistrationReadSocketSerializer)
-from lego.apps.permissions.filters import filter_queryset
+from lego.apps.permissions.constants import LIST
+from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.websockets.groups import group_for_event, group_for_user
 from lego.apps.websockets.notifiers import notify_group
 
@@ -15,8 +16,9 @@ def find_event_groups(user):
     of being signed up to future events.
     """
     queryset = Event.objects.filter(start_time__gt=datetime.now())
-    if not user.has_perm('/sudo/admin/events/list/'):
-        queryset = filter_queryset(user, queryset)
+    if not user.has_perm(LIST, queryset):
+        permission_handler = get_permission_handler(queryset.model)
+        queryset = permission_handler.filter_queryset(user, queryset)
     groups = []
     for event in queryset.all():
         groups.append(group_for_event(event))

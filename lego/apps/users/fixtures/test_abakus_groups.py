@@ -5,38 +5,38 @@ test_tree = {
     'UserAdminTest': [{
         'permissions': [
             '/sudo/admin/users/list/',
-            '/sudo/admin/users/retrieve/',
+            '/sudo/admin/users/view/',
             '/sudo/admin/users/create/',
-            '/sudo/admin/users/update/',
-            '/sudo/admin/users/destroy/'
+            '/sudo/admin/users/edit/',
+            '/sudo/admin/users/delete/'
         ]}, {}
     ],
     'AbakusGroupAdminTest': [{
         'permissions': [
             '/sudo/admin/groups/list/',
-            '/sudo/admin/groups/retrieve/',
+            '/sudo/admin/groups/view/',
             '/sudo/admin/groups/create/',
-            '/sudo/admin/groups/update/',
-            '/sudo/admin/groups/destroy/'
+            '/sudo/admin/groups/edit/',
+            '/sudo/admin/groups/delete/'
         ]}, {}
     ],
     'TestGroup': [{}, {}],
     'EventAdminTest': [{
         'permissions': [
             '/sudo/admin/events/list/',
-            '/sudo/admin/events/retrieve/',
+            '/sudo/admin/events/view/',
             '/sudo/admin/events/create/',
-            '/sudo/admin/events/update/',
-            '/sudo/admin/events/destroy/'
+            '/sudo/admin/events/edit/',
+            '/sudo/admin/events/delete/'
         ]}, {}
     ],
     'CommentTest': [{
         'permissions': [
             '/sudo/admin/comments/list/',
-            '/sudo/admin/comments/retrieve/',
+            '/sudo/admin/comments/view/',
             '/sudo/admin/comments/create/',
-            '/sudo/admin/comments/update/',
-            '/sudo/admin/comments/destroy/',
+            '/sudo/admin/comments/edit/',
+            '/sudo/admin/comments/delete/',
         ]}, {}
     ],
     'APIApplicationTest': [{
@@ -51,10 +51,10 @@ test_tree = {
             '/sudo/admin/quotes/change-approval/',
             '/sudo/admin/quotes/list-unapproved/',
             '/sudo/admin/quotes/list/',
-            '/sudo/admin/quotes/retrieve/',
+            '/sudo/admin/quotes/view/',
             '/sudo/admin/quotes/create/',
-            '/sudo/admin/quotes/update/',
-            '/sudo/admin/quotes/destroy/'
+            '/sudo/admin/quotes/edit/',
+            '/sudo/admin/quotes/delete/'
         ]}, {}
     ],
     'ReactionTest': [{
@@ -66,10 +66,10 @@ test_tree = {
     'InterestGroupAdminTest': [
         {'permissions': [
             '/sudo/admin/interestgroups/list/',
-            '/sudo/admin/interestgroups/retrieve/',
+            '/sudo/admin/interestgroups/view/',
             '/sudo/admin/interestgroups/create/',
-            '/sudo/admin/interestgroups/update/',
-            '/sudo/admin/interestgroups/destroy/'
+            '/sudo/admin/interestgroups/edit/',
+            '/sudo/admin/interestgroups/delete/'
         ]}, {}
     ],
     'Interessegrupper': [{}, {
@@ -79,13 +79,13 @@ test_tree = {
         'permissions': ['/sudo/admin/gallerys/']
     }, {}],
     'GalleryTest': [{
-        'permissions': ['/sudo/admin/gallerys/list/', '/sudo/admin/gallerys/retrieve/']
+        'permissions': ['/sudo/admin/gallerys/list/', '/sudo/admin/gallerys/view/']
     }, {}],
     'EmailAdminTest': [{
         'permissions': [
-            '/sudo/admin/emaillists/',
             '/sudo/admin/emailusers/',
-            '/sudo/admin/emailgroups/'
+            '/sudo/admin/emailgroups/',
+            '/sudo/admin/emaillists/'
         ]
     }, {}],
 }
