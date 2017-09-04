@@ -40,7 +40,7 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @list_route(methods=['GET'])
     def random(self, request):
-        queryset = self.get_queryset()
+        queryset = self.get_queryset().filter(approved=True)
         values = queryset.values_list('pk', flat=True)
         instance = queryset.get(pk=choice(values))
         serializer = self.get_serializer(instance)
