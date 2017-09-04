@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.apps.meetings import constants
+from lego.apps.meetings.models import Meeting
 from lego.apps.users.models import AbakusGroup, User
 
 test_meeting_data = [
@@ -98,9 +99,9 @@ class RetrieveMeetingTestCase(APITestCase):
             res = self.client.get(_get_invitations_list_url(self.meeting.id))
             self.assertEqual(res.status_code, 200)
             invitations = list(res.data['results'])
-            attending = [inv for inv in invitations if inv['status'] == MeetingInvitation.ATTENDING]
+            attending = [inv for inv in invitations if inv['status'] == constants.ATTENDING]
             self.assertEqual(len(attending), 2)
-            no_answer = [inv for inv in invitations if inv['status'] == MeetingInvitation.NO_ANSWER]
+            no_answer = [inv for inv in invitations if inv['status'] == constants.NO_ANSWER]
             self.assertEqual(len(no_answer), 1)
 
 
@@ -255,14 +256,14 @@ class UpdateInviteTestCase(APITestCase):
         me = self.abakommer
 
         invite = self.meeting.invite_user(me)[0]
-        self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
+        self.assertEqual(invite.status, constants.NO_ANSWER)
         self.client.force_authenticate(me)
         res = self.client.patch(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
-            'status': MeetingInvitation.ATTENDING
+            'status': constants.ATTENDING
         })
         self.assertEqual(res.status_code, 200)
         invite.refresh_from_db()
-        self.assertEqual(invite.status, MeetingInvitation.ATTENDING)
+        self.assertEqual(invite.status, constants.ATTENDING)
 
     def test_cannot_update_other_status(self):
         me = self.abakommer
@@ -270,14 +271,14 @@ class UpdateInviteTestCase(APITestCase):
 
         self.meeting.invite_user(other)
         invite = self.meeting.invite_user(me)[0]
-        self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
+        self.assertEqual(invite.status, constants.NO_ANSWER)
         self.client.force_authenticate(other)
         res = self.client.patch(_get_invitations_list_url(self.meeting.id) + str(me.id) + '/', {
-            'status': MeetingInvitation.ATTENDING
+            'status': constants.ATTENDING
         })
         self.assertEqual(res.status_code, 403)
         invite.refresh_from_db()
-        self.assertEqual(invite.status, MeetingInvitation.NO_ANSWER)
+        self.assertEqual(invite.status, constants.NO_ANSWER)
 
     def test_cannot_update_to_other_user(self):
         me = self.abakule

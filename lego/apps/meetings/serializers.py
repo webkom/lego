@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_jwt.serializers import User
 
+from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -10,6 +11,7 @@ from lego.utils.serializers import BasisModelSerializer
 
 class MeetingInvitationSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
+    status = serializers.ChoiceField(choices=(constants.ATTENDING, constants.NOT_ATTENDING))
 
     class Meta:
         model = MeetingInvitation

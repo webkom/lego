@@ -4,6 +4,7 @@ from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
 from lego.apps.content.models import Content
+from lego.apps.meetings import constants
 from lego.apps.meetings.permissions import (MeetingInvitationPermissionHandler,
                                             MeetingPermissionHandler)
 from lego.apps.users.models import User
@@ -41,7 +42,7 @@ class Meeting(Content, BasisModel):
 
     @property
     def participants(self):
-        return self.invited_users.filter(invitations__status=MeetingInvitation.ATTENDING)
+        return self.invited_users.filter(invitations__status=constants.ATTENDING)
 
     def invite_user(self, user, created_by=None):
         invitation, created = self.invitations.update_or_create(
@@ -74,20 +75,11 @@ class Meeting(Content, BasisModel):
 
 class MeetingInvitation(BasisModel):
 
-    NO_ANSWER = 0
-    ATTENDING = 1
-    NOT_ATTENDING = 2
-
-    INVITATION_STATUS_TYPES = (
-        (NO_ANSWER, 'No answer'),
-        (ATTENDING, 'Attending'),
-        (NOT_ATTENDING, 'Not attending')
-    )
-
     meeting = models.ForeignKey(Meeting, related_name='invitations')
     user = models.ForeignKey(User, related_name='invitations')
-    status = models.SmallIntegerField(choices=INVITATION_STATUS_TYPES,
-                                      default=NO_ANSWER)
+    status = models.CharField(
+        max_length=50, choices=constants.INVITATION_STATUS_TYPES, default=constants.NO_ANSWER
+    )
 
     class Meta:
         unique_together = ('meeting', 'user')
@@ -123,9 +115,9 @@ class MeetingInvitation(BasisModel):
             return None
 
     def accept(self):
-        self.status = self.ATTENDING
+        self.status = constants.ATTENDING
         self.save()
 
     def reject(self):
-        self.status = self.NOT_ATTENDING
+        self.status = constants.NOT_ATTENDING
         self.save()

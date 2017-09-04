@@ -8,8 +8,8 @@ Hei {{ name }}!
 
 Referent: {{ report_author }}
 
-Delta på møtet: {{frontend_url}}/meetings/answer/accept?token={{token}}
-Ikke delta på møtet: {{frontend_url}}/meetings/answer/reject?token={{token}}
+Delta på møtet: {{frontend_url}}/meetings/{{meeting_id}}?action=accept&token={{token}}
+Ikke delta på møtet: {{frontend_url}}/meetings/{{meeting_id}}?action=reject&token={{token}}
 
 Les mer på {{ frontend_url }}/meetings/{{meeting_id}}/
 
