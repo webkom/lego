@@ -1,12 +1,14 @@
 from django.db import models
 
+from lego.apps.files.models import FileField
 from lego.apps.social_groups.permissions import InterestGroupPermissionHandler
 from lego.apps.users.models import AbakusGroup
 
 
 class SocialGroup(AbakusGroup):
     # TODO: add feed
-    # TODO: add picture
+
+    logo = FileField(related_name='%(class)s_logos')
     description_long = models.TextField(blank=True)
 
     class Meta:

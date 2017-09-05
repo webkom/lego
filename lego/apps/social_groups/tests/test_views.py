@@ -18,7 +18,8 @@ _serializer_fields = (
     'description',
     'description_long',
     'permissions',
-    'action_grant'
+    'action_grant',
+    'logo'
 )
 
 _rendered_serializer_fields = (
@@ -27,7 +28,8 @@ _rendered_serializer_fields = (
     'numberOfUsers',
     'description',
     'descriptionLong',
-    'permissions'
+    'permissions',
+    'logo'
 )
 
 
