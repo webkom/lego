@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
-from lego.apps.permissions.constants import EDIT
 from lego.apps.users.fields import AbakusGroupField, AbakusGroupListField
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers.penalties import PenaltySerializer
@@ -34,6 +33,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'is_active',
             'penalties'
         )
+        read_only_fields = ('username', )
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
@@ -51,9 +51,14 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'gender',
             'profile_picture'
         )
+        read_only_fields = ('username',)
 
 
 class AdministrateUserSerializer(PublicUserSerializer):
+    """
+    Used by the events app when listing user registrations.
+    """
+
     grade = AbakusGroupField()
 
     class Meta(PublicUserSerializer.Meta):
@@ -83,22 +88,11 @@ class SearchGroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class UserSerializer(DetailedUserSerializer):
-    def to_representation(self, instance):
-        view = self.context['view']
-        request = self.context['request']
-
-        # List and public retrievals use PublicUserSerializer, the rest uses the detailed one:
-        if (view.action == 'list' or
-                view.action == 'retrieve' and not request.user.has_perm(EDIT, instance)):
-            serializer = PublicUserSerializer(instance, context=self.context)
-        else:
-            serializer = DetailedUserSerializer(instance, context=self.context)
-
-        return serializer.data
-
-
 class MeSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the read-only /me endpoint.
+    Also used by our JWT handler and returned to the user when a user obtains a JWT token.
+    """
 
     abakus_groups = AbakusGroupListField()
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
@@ -134,3 +128,4 @@ class MeSerializer(serializers.ModelSerializer):
             'penalties',
             'ical_token'
         )
+        read_only_fields = ('username',)

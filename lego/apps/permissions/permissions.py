@@ -164,7 +164,7 @@ class PermissionHandler:
         if obj and isinstance(obj, ObjectPermissionsModel):
             return obj.require_auth
 
-        if queryset and hasattr(queryset.model, 'require_auth'):
+        if queryset is not None and hasattr(queryset.model, 'require_auth'):
             return False
 
         return True

@@ -38,6 +38,7 @@ class RetrieveRegistrationAPITestCase(APITestCase):
 
 
 class CreateRegistrationAPITestCase(APITransactionTestCase):
+
     fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
 
     _test_registration_data = {
@@ -49,6 +50,7 @@ class CreateRegistrationAPITestCase(APITransactionTestCase):
         response = self.client.post(_get_list_url())
         self.assertEqual(response.status_code, 400)
 
+    @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=True)
     def test_with_invalid_email(self, *args):
         response = self.client.post(_get_list_url(), {
             'email': 'test1@@user.com',
@@ -56,12 +58,12 @@ class CreateRegistrationAPITestCase(APITransactionTestCase):
         })
         self.assertEqual(response.status_code, 400)
 
-    @mock.patch('lego.apps.users.views.registration.verify_captcha', return_value=False)
+    @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=False)
     def test_with_invalid_captcha(self, *args):
         response = self.client.post(_get_list_url(), self._test_registration_data)
         self.assertEqual(response.status_code, 400)
 
-    @mock.patch('lego.apps.users.views.registration.verify_captcha', return_value=True)
+    @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=True)
     def test_with_valid_captcha(self, mock_verify_captcha):
         response = self.client.post(_get_list_url(), self._test_registration_data)
         self.assertEqual(response.status_code, 202)

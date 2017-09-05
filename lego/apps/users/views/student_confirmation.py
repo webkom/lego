@@ -8,7 +8,6 @@ from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.student_confirmation import StudentConfirmationSerializer
 from lego.apps.users.serializers.users import DetailedUserSerializer
-from lego.utils.functions import verify_captcha
 from lego.utils.tasks import send_email
 
 log = get_logger()
@@ -19,13 +18,13 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
     serializer_class = StudentConfirmationSerializer
     permission_classes = (IsAuthenticated, )
 
-    """
-    Validates a student confirmation token.
+    def list(self, request):
+        """
+        Validates a student confirmation token.
 
-    The request errors out if the token has expired or is invalid.
-    Request URL: GET /api/v1/users/student-confirmation/?token=<token>
-    """
-    def get(self, request, pk=None, format=None):
+        The request errors out if the token has expired or is invalid.
+        Request URL: GET /api/v1/users/student-confirmation/?token=<token>
+        """
         token = request.GET.get('token')
         if not token:
             raise ValidationError(detail='Student confirmation token is required.')
@@ -34,16 +33,12 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
             raise ValidationError(detail='Token expired or invalid.')
         return Response(student_confirmation, status=status.HTTP_200_OK)
 
-    """
-    Attempts to create a student confirmation token and email it to the user.
-    """
     def create(self, request, *args, **kwargs):
+        """
+        Attempts to create a student confirmation token and email it to the user.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        if not verify_captcha(serializer.validated_data.get('captcha_response')):
-            raise ValidationError(detail='Bad captcha')
-
         user = request.user
 
         if user.is_verified_student():
@@ -62,7 +57,6 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
             context={
                 "token": token,
                 "full_name": user.get_full_name(),
-                "email_title": 'Bekreft student kontoen din på Abakus.no'
             },
             subject='Bekreft student kontoen din på Abakus.no',
             plain_template='users/email/student_confirmation.html',
@@ -70,12 +64,12 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
             from_email=None
         )
 
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    """
-    Attempts to confirm the student based on the student confirmation token.
-    """
     def put(self, request, *args, **kwargs):
+        """
+        Attempts to confirm the student based on the student confirmation token.
+        """
         token = request.GET.get('token')
         if not token:
             raise ValidationError(detail='Student confirmation token is required.')
@@ -90,7 +84,6 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
         if user.is_verified_student():
             raise ValidationError(
                 detail='Already confirmed a student username',
-                code=status.HTTP_409_CONFLICT
             )
 
         user.student_username = student_confirmation['student_username']
@@ -115,4 +108,4 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
 
         user.save()
 
-        return Response(DetailedUserSerializer(user).data, status=status.HTTP_204_NO_CONTENT)
+        return Response(DetailedUserSerializer(user).data, status=status.HTTP_200_OK)
