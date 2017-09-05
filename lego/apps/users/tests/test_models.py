@@ -7,6 +7,7 @@ from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
+from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import fake_time
 
 
@@ -161,31 +162,31 @@ class UserTestCase(TestCase):
         self.assertEqual(self.user, found_user)
 
     def test_validate_registration_token(self):
-        registration_token = User.generate_registration_token('test1@user.com')
-        token_email = User.validate_registration_token(registration_token)
+        registration_token = Registrations.generate_registration_token('test1@user.com')
+        token_email = Registrations.validate_registration_token(registration_token)
         self.assertEqual(token_email, 'test1@user.com')
 
-        registration_token = User.generate_registration_token('test1@user.com')
-        token_email = User.validate_registration_token(registration_token)
+        registration_token = Registrations.generate_registration_token('test1@user.com')
+        token_email = Registrations.validate_registration_token(registration_token)
         self.assertNotEqual(token_email, 'wrongtest1@user.com')
 
     def test_validate_student_confirmation_token(self):
-        student_confirmation_token = User.generate_student_confirmation_token(
+        student_confirmation_token = Registrations.generate_student_confirmation_token(
             'teststudentusername',
             constants.DATA,
             True
         )
-        token = User.validate_student_confirmation_token(student_confirmation_token)
+        token = Registrations.validate_student_confirmation_token(student_confirmation_token)
         self.assertEqual(token['student_username'], 'teststudentusername')
         self.assertEqual(token['course'], constants.DATA)
         self.assertEqual(token['member'], True)
 
-        student_confirmation_token = User.generate_student_confirmation_token(
+        student_confirmation_token = Registrations.generate_student_confirmation_token(
             'teststudentusername',
             constants.DATA,
             True
         )
-        token = User.validate_student_confirmation_token(student_confirmation_token)
+        token = Registrations.validate_student_confirmation_token(student_confirmation_token)
         self.assertNotEqual(token['student_username'], 'wrongtestusername')
         self.assertNotEqual(token['course'], constants.KOMTEK)
         self.assertNotEqual(token['member'], False)

@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from structlog import get_logger
 
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup
+from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.student_confirmation import StudentConfirmationSerializer
 from lego.apps.users.serializers.users import DetailedUserSerializer
 from lego.utils.tasks import send_email
@@ -13,8 +14,8 @@ from lego.utils.tasks import send_email
 log = get_logger()
 
 
-class StudentConfirmationViewSet(viewsets.GenericViewSet):
-    queryset = User.objects.all()
+class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
+
     serializer_class = StudentConfirmationSerializer
     permission_classes = (IsAuthenticated, )
 
@@ -28,7 +29,7 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
         token = request.GET.get('token')
         if not token:
             raise ValidationError(detail='Student confirmation token is required.')
-        student_confirmation = User.validate_student_confirmation_token(token)
+        student_confirmation = Registrations.validate_student_confirmation_token(token)
         if student_confirmation is None:
             raise ValidationError(detail='Token expired or invalid.')
         return Response(student_confirmation, status=status.HTTP_200_OK)
@@ -46,7 +47,7 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
 
         student_username = serializer.validated_data.get('student_username')
 
-        token = User.generate_student_confirmation_token(
+        token = Registrations.generate_student_confirmation_token(
             student_username,
             serializer.validated_data.get('course'),
             serializer.validated_data.get('member')
@@ -66,7 +67,13 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def put(self, request, *args, **kwargs):
+
+class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
+
+    serializer_class = StudentConfirmationSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def create(self, request, *args, **kwargs):
         """
         Attempts to confirm the student based on the student confirmation token.
         """
@@ -74,7 +81,7 @@ class StudentConfirmationViewSet(viewsets.GenericViewSet):
         if not token:
             raise ValidationError(detail='Student confirmation token is required.')
 
-        student_confirmation = User.validate_student_confirmation_token(token)
+        student_confirmation = Registrations.validate_student_confirmation_token(token)
 
         if student_confirmation is None:
             raise ValidationError(detail='Token expired or invalid.')

@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 from lego.apps.events.models import Event
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.users import DetailedUserSerializer
 from lego.utils.test_utils import fake_time
 
@@ -127,7 +128,7 @@ class CreateUsersAPITestCase(APITestCase):
 
     def create_token(self, email=None):
         token_email = email or self.new_email
-        return User.generate_registration_token(token_email)
+        return Registrations.generate_registration_token(token_email)
 
     def test_with_authenticated_user(self):
         self.client.force_authenticate(user=self.existing_user)

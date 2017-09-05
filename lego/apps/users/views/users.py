@@ -9,6 +9,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import (DetailedUserSerializer, MeSerializer,
                                                PublicUserSerializer)
@@ -66,7 +67,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if not request.GET.get('token', False):
             raise ValidationError(detail='Registration token is required.')
 
-        token_email = User.validate_registration_token(request.GET.get('token', False))
+        token_email = Registrations.validate_registration_token(request.GET.get('token', False))
 
         if token_email is None:
             raise ValidationError(detail='Token expired or invalid.')

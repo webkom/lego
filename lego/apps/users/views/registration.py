@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from structlog import get_logger
 
 from lego.apps.users.models import User
+from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationSerializer
 from lego.utils.tasks import send_email
 
 log = get_logger()
 
 
-class UserRegistrationViewSet(viewsets.GenericViewSet):
+class UserRegistrationRequestViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny, )
@@ -25,7 +26,7 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
         """
         if not request.GET.get('token', False):
             raise ValidationError(detail='Registration token is required.')
-        token_email = User.validate_registration_token(request.GET.get('token', False))
+        token_email = Registrations.validate_registration_token(request.GET.get('token', False))
         if token_email is None:
             raise ValidationError(detail='Token expired or invalid.')
         return Response({'email': token_email}, status=status.HTTP_200_OK)
@@ -38,7 +39,7 @@ class UserRegistrationViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data.get('email')
-        token = User.generate_registration_token(email)
+        token = Registrations.generate_registration_token(email)
 
         send_email.delay(
             to_email=email,
