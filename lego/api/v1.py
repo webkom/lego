@@ -28,11 +28,12 @@ from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
-from lego.apps.users.views.password_reset import PasswordResetPerformViewSet, \
-    PasswordResetRequestViewSet
+from lego.apps.users.views.password_reset import (PasswordResetPerformViewSet,
+                                                  PasswordResetRequestViewSet)
 from lego.apps.users.views.penalties import PenaltyViewSet
-from lego.apps.users.views.registration import UserRegistrationViewSet
-from lego.apps.users.views.student_confirmation import StudentConfirmationViewSet
+from lego.apps.users.views.registration import UserRegistrationRequestViewSet
+from lego.apps.users.views.student_confirmation import (StudentConfirmationPerformViewSet,
+                                                        StudentConfirmationRequestViewSet)
 from lego.apps.users.views.users import UsersViewSet
 
 router = routers.DefaultRouter()
@@ -68,9 +69,20 @@ router.register(r'pages', PageViewSet)
 router.register(r'search-autocomplete', AutocompleteViewSet, base_name='autocomplete')
 router.register(r'quotes', QuoteViewSet)
 router.register(r'search-search', SearchViewSet, base_name='search')
-router.register(r'users-registration', UserRegistrationViewSet, base_name='user-registration')
 router.register(
-    r'users-student-confirmation', StudentConfirmationViewSet, base_name='student-confirmation'
+    r'users-registration-request',
+    UserRegistrationRequestViewSet,
+    base_name='user-registration'
+)
+router.register(
+    r'users-student-confirmation-request',
+    StudentConfirmationRequestViewSet,
+    base_name='student-confirmation-request'
+)
+router.register(
+    r'users-student-confirmation-perform',
+    StudentConfirmationPerformViewSet,
+    base_name='student-confirmation-perform'
 )
 router.register(r'users', UsersViewSet)
 router.register(r'password-reset-request', PasswordResetRequestViewSet,

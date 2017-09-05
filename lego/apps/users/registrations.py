@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core import signing
-from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 
 
 class Registrations:
