@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.core import signing
-from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 
 
 class PasswordReset:
 
-    @classmethod
-    def generate_reset_token(cls, email):
+    @staticmethod
+    def generate_reset_token(email):
         return TimestampSigner().sign(signing.dumps({
             'email': email
         }))
