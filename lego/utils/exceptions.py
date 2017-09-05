@@ -1,5 +1,4 @@
 from django.db.utils import IntegrityError
-from raven.contrib.django.raven_compat.models import client
 from rest_framework import status
 from rest_framework.compat import set_rollback
 from rest_framework.response import Response
@@ -17,7 +16,6 @@ def exception_handler(exc, context):
 
     # Check for IntegrityError, use a custom status code for this.
     if not response and isinstance(exc, IntegrityError):
-        client.captureException(exc)
         set_rollback()
         response = Response(
             {'detail': 'Some values are supposed to be unique but are not.'},

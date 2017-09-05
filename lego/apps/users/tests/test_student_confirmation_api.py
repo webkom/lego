@@ -103,7 +103,9 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         response = self.client.post(_get_list_url())
         self.assertEqual(response.status_code, 400)
 
-    def test_with_existing_data(self):
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
+    def test_with_existing_data(self, *args):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_url(), {
@@ -114,7 +116,9 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         })
         self.assertEqual(response.status_code, 400)
 
-    def test_with_invalid_data_keys(self):
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
+    def test_with_invalid_data_keys(self, *args):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_url(), {
@@ -125,7 +129,9 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         })
         self.assertEqual(response.status_code, 400)
 
-    def test_with_invalid_student_username(self):
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
+    def test_with_invalid_student_username(self, *args):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         invalid_data = self._test_student_confirmation_data.copy()
@@ -133,7 +139,9 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         response = self.client.post(_get_list_url(), invalid_data)
         self.assertEqual(response.status_code, 400)
 
-    def test_with_invalid_course(self):
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
+    def test_with_invalid_course(self, *args):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         invalid_data = self._test_student_confirmation_data.copy()
@@ -141,7 +149,9 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         response = self.client.post(_get_list_url(), invalid_data)
         self.assertEqual(response.status_code, 400)
 
-    def test_with_invalid_member_boolean(self):
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
+    def test_with_invalid_member_boolean(self, *args):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         invalid_data = self._test_student_confirmation_data.copy()
@@ -149,26 +159,29 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
         response = self.client.post(_get_list_url(), invalid_data)
         self.assertEqual(response.status_code, 400)
 
-    @mock.patch('lego.apps.users.views.student_confirmation.verify_captcha', return_value=True)
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
     def test_with_already_confirmed_student_username(self, mock_verify_captcha):
         AbakusGroup.objects.get(name='Abakus').add_user(self.user_with_student_confirmation)
         self.client.force_authenticate(self.user_with_student_confirmation)
         response = self.client.post(_get_list_url(), self._test_student_confirmation_data)
         self.assertEqual(response.status_code, 400)
 
-    @mock.patch('lego.apps.users.views.student_confirmation.verify_captcha', return_value=False)
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=False)
     def test_with_invalid_captcha(self, *args):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_url(), self._test_student_confirmation_data)
         self.assertEqual(response.status_code, 400)
 
-    @mock.patch('lego.apps.users.views.student_confirmation.verify_captcha', return_value=True)
+    @mock.patch('lego.apps.users.serializers.student_confirmation.verify_captcha',
+                return_value=True)
     def test_with_valid_captcha(self, mock_verify_captcha):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_url(), self._test_student_confirmation_data)
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 204)
 
 
 class UpdateStudentConfirmationAPITestCase(APITestCase):
@@ -224,7 +237,7 @@ class UpdateStudentConfirmationAPITestCase(APITestCase):
         self.client.force_authenticate(self.user_without_student_confirmation)
         token = self.create_token(course=constants.KOMTEK, member=False)
         response = self.client.put(_get_student_confirmation_token_url(token))
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
 
         user = self.user_without_student_confirmation
         user_groups = user.all_groups
@@ -247,7 +260,7 @@ class UpdateStudentConfirmationAPITestCase(APITestCase):
         self.client.force_authenticate(self.user_without_student_confirmation)
         token = self.create_token()
         response = self.client.put(_get_student_confirmation_token_url(token))
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
 
         user = self.user_without_student_confirmation
         user_groups = user.all_groups
