@@ -132,7 +132,7 @@ class CreateUsersAPITestCase(APITestCase):
     def test_with_authenticated_user(self):
         self.client.force_authenticate(user=self.existing_user)
         response = self.client.post(_get_registration_token_url('randomToken'))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 400)
 
     def test_without_token(self):
         response = self.client.post(_get_list_url())
@@ -157,7 +157,7 @@ class CreateUsersAPITestCase(APITestCase):
             _get_registration_token_url(token),
             self._test_registration_data
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 409)
 
     def test_with_existing_username(self):
         token = self.create_token(self.new_email_other)
@@ -209,7 +209,6 @@ class UpdateUsersAPITestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     modified_user = {
-        'username': 'modified_user',
         'first_name': 'modified',
         'last_name': 'user',
         'email': 'modified@testuser.com',
