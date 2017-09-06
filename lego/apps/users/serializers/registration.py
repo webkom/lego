@@ -19,6 +19,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class RegistrationConfirmationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(required=True, write_only=True)
 
     def validate_password(self, password):
         password_validation.validate_password(password)
@@ -31,5 +32,6 @@ class RegistrationConfirmationSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'gender',
-            'password'
+            'password',
+            'allergies'
         )
