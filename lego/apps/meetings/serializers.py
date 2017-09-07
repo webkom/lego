@@ -39,12 +39,8 @@ class MeetingUserInvite(serializers.Serializer):
 
 
 class MeetingBulkInvite(serializers.Serializer):
-    users = serializers.SlugRelatedField(queryset=User.objects.all(),
-                                         slug_field='username',
-                                         many=True, required=False)
-    groups = serializers.SlugRelatedField(queryset=AbakusGroup.objects.all(),
-                                          slug_field='name',
-                                          many=True, required=False)
+    users = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all(), many=True, required=False)
+    groups = PrimaryKeyRelatedFieldNoPKOpt(queryset=AbakusGroup.objects.all(), many=True, required=False)
 
 
 class MeetingSerializer(BasisModelSerializer):
