@@ -33,6 +33,7 @@
     payment_mail: faktura@bekk.no
     address: Postboks 134 Sentrum, 0102 Oslo
     company_type: 'Konsulent, Data&Komtek'
+    admin_comment: 'Husk logo på alle sider'
 
 - model: companies.Company
   pk: 2
@@ -62,7 +63,7 @@
   pk: 1
   fields:
     semester: 1
-    contacted_status: ['interested']
+    contacted_status: ['interested', 'bedpress']
     company: 1
 
 - model: companies.SemesterStatus
