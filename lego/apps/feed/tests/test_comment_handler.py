@@ -66,8 +66,8 @@ class TestCommentHandler(FeedTestBase):
             object_id=follow.target.id
         ).first()
 
-        follower_feed = PersonalFeed(follow.follower.username)
-        creator_feed = PersonalFeed(comment.created_by.username)
+        follower_feed = PersonalFeed(follow.follower.id)
+        creator_feed = PersonalFeed(comment.created_by.id)
 
         self.assertIsNotNone(comment)
 

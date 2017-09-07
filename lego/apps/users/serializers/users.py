@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
@@ -17,6 +17,21 @@ class DetailedUserSerializer(serializers.ModelSerializer):
         serializer = PenaltySerializer(instance=qs, many=True)
         return serializer.data
 
+    def validate_username(self, username):
+        """
+        It is not possible to change username tom something that exists.
+        Used to remove case-sensitivity.
+        """
+        username_exists = User.objects\
+            .filter(username__iexact=username)\
+            .exclude(id=self.instance.id)\
+            .exists()
+
+        if username_exists:
+            raise exceptions.ValidationError('Username exists')
+
+        return username
+
     class Meta:
         model = User
         fields = (
@@ -33,7 +48,6 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'is_active',
             'penalties'
         )
-        read_only_fields = ('username', )
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
