@@ -28,6 +28,7 @@ from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
+from lego.apps.users.views.password_change import ChangePasswordViewSet
 from lego.apps.users.views.password_reset import (PasswordResetPerformViewSet,
                                                   PasswordResetRequestViewSet)
 from lego.apps.users.views.penalties import PenaltyViewSet
@@ -89,6 +90,7 @@ router.register(r'password-reset-request', PasswordResetRequestViewSet,
                 base_name='password-reset-request')
 router.register(r'password-reset-perform', PasswordResetPerformViewSet,
                 base_name='password-reset-perform')
+router.register(r'password-change', ChangePasswordViewSet, base_name='password-change')
 router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction-types', ReactionTypeViewSet)
 router.register(r'restricted-mail', RestrictedMailViewSet, base_name='restricted-mail')
