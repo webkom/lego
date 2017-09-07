@@ -39,6 +39,9 @@ class Membership(BasisModel):
     class Meta:
         unique_together = ('user', 'abakus_group')
 
+    def delete(self, using=None, force=False):
+        super(Membership, self).delete(using, force=True)
+
     def __str__(self):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
