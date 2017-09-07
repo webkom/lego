@@ -20,6 +20,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class RegistrationConfirmationSerializer(serializers.ModelSerializer):
 
+    password = serializers.CharField(required=True, write_only=True)
+
+    def validate_username(self, username):
+        username_exists = User.objects.filter(username__iexact=username).exists()
+        if username_exists:
+            raise exceptions.ValidationError('Username exists')
+        return username
+
     def validate_password(self, password):
         password_validation.validate_password(password)
         return password
@@ -31,5 +39,6 @@ class RegistrationConfirmationSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'gender',
-            'password'
+            'password',
+            'allergies'
         )

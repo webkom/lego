@@ -1,6 +1,7 @@
 from datetime import timedelta
 from unittest import mock
 
+from django.contrib.auth import authenticate
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -180,6 +181,26 @@ class CreateUsersAPITestCase(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_with_blank_username(self):
+        token = self.create_token(self.new_email_other)
+        invalid_data = self._test_registration_data.copy()
+        invalid_data['username'] = ''
+        response = self.client.post(
+            _get_registration_token_url(token),
+            invalid_data
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_with_blank_password(self):
+        token = self.create_token(self.new_email_other)
+        invalid_data = self._test_registration_data.copy()
+        invalid_data['password'] = ''
+        response = self.client.post(
+            _get_registration_token_url(token),
+            invalid_data
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_with_valid_data(self):
         token = self.create_token(self.new_email_other)
         response = self.client.post(
@@ -205,11 +226,15 @@ class CreateUsersAPITestCase(APITestCase):
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
         self.assertEqual(user_group in new_user.all_groups, True)
 
+        # Try to login with the user.
+        self.assertTrue(authenticate(username='test_username', password='TestPassord'))
+
 
 class UpdateUsersAPITestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     modified_user = {
+        'username': 'Modified_User',
         'first_name': 'modified',
         'last_name': 'user',
         'email': 'modified@testuser.com',
@@ -260,6 +285,22 @@ class UpdateUsersAPITestCase(APITestCase):
             'email': 'webkom@abakus.no'
         })
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_update_username_used_by_other(self):
+        """Try to change username to something used by another user with different casing"""
+        self.client.force_login(self.without_perm)
+        response = self.client.patch(_get_detail_url(self.without_perm.username), {
+            'username': 'usEradmin_TeSt'  # Existing username with other casing
+        })
+        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_update_username_to_self(self):
+        """Try to change casing on the current username"""
+        self.client.force_login(self.without_perm)
+        response = self.client.patch(_get_detail_url(self.without_perm.username), {
+            'username': self.without_perm.username.upper()
+        })
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
 
 
 class DeleteUsersAPITestCase(APITestCase):

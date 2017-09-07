@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
@@ -17,6 +17,21 @@ class DetailedUserSerializer(serializers.ModelSerializer):
         serializer = PenaltySerializer(instance=qs, many=True)
         return serializer.data
 
+    def validate_username(self, username):
+        """
+        It is not possible to change username tom something that exists.
+        Used to remove case-sensitivity.
+        """
+        username_exists = User.objects\
+            .filter(username__iexact=username)\
+            .exclude(id=self.instance.id)\
+            .exists()
+
+        if username_exists:
+            raise exceptions.ValidationError('Username exists')
+
+        return username
+
     class Meta:
         model = User
         fields = (
@@ -33,7 +48,6 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'is_active',
             'penalties'
         )
-        read_only_fields = ('username', )
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
@@ -98,6 +112,7 @@ class MeSerializer(serializers.ModelSerializer):
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
     ical_token = serializers.SerializerMethodField('get_user_ical_token')
     penalties = serializers.SerializerMethodField('get_valid_penalties')
+    is_student = serializers.SerializerMethodField()
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -107,6 +122,9 @@ class MeSerializer(serializers.ModelSerializer):
         qs = Penalty.objects.valid().filter(user=user)
         serializer = PenaltySerializer(instance=qs, many=True)
         return serializer.data
+
+    def get_is_student(self, user):
+        return user.is_verified_student()
 
     class Meta:
         model = User
@@ -122,6 +140,7 @@ class MeSerializer(serializers.ModelSerializer):
             'allergies',
             'is_staff',
             'is_active',
+            'is_student',
             'abakus_groups',
             'is_abakus_member',
             'is_abakom_member',

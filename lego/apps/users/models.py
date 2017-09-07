@@ -81,8 +81,10 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
         return self.memberships.distinct('user').count()
 
     def add_user(self, user, **kwargs):
-        membership = Membership(user=user, abakus_group=self, **kwargs)
-        membership.save()
+        membership, _ = Membership.objects.update_or_create(
+            user=user, abakus_group=self, defaults={"deleted": False, **kwargs}
+        )
+        return membership
 
     def remove_user(self, user):
         membership = Membership.objects.get(user=user, abakus_group=self)
