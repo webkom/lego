@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from structlog import get_logger
 
+from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users import constants
@@ -74,10 +75,13 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = User.objects.create(**{
-            **serializer.validated_data,
-            'email': token_email
-        })
+
+        user = User.objects.create_user(
+            email=token_email, **serializer.validated_data
+        )
+
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
         user_group.add_user(user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        payload = get_jwt_token(user)
+        return Response(payload, status=status.HTTP_201_CREATED)
