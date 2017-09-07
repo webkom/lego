@@ -8,7 +8,7 @@ from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.student_confirmation import StudentConfirmationSerializer
-from lego.apps.users.serializers.users import DetailedUserSerializer
+from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.tasks import send_email
 
 log = get_logger()
@@ -115,4 +115,4 @@ class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
 
         user.save()
 
-        return Response(DetailedUserSerializer(user).data, status=status.HTTP_200_OK)
+        return Response(MeSerializer(user).data, status=status.HTTP_200_OK)
