@@ -47,8 +47,8 @@ class UserRegistrationRequestViewSet(viewsets.GenericViewSet):
                 "token": token,
             },
             subject='Velkommen til Abakus.no',
-            plain_template='users/email/registration.html',
-            html_template='users/email/registration.txt',
+            plain_template='users/email/registration.txt',
+            html_template='users/email/registration.html',
             from_email=None
         )
 
