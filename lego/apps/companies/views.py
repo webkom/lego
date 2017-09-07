@@ -2,23 +2,29 @@ from rest_framework import viewsets
 
 from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest, Semester,
                                         SemesterStatus)
-from lego.apps.companies.serializers import (CompanyContactSerializer, CompanyDetailSerializer,
-                                             CompanyInterestListSerializer,
+from lego.apps.companies.serializers import (CompanyAdminDetailSerializer,
+                                             CompanyAdminListSerializer, CompanyContactSerializer,
+                                             CompanyDetailSerializer, CompanyInterestListSerializer,
                                              CompanyInterestSerializer, CompanyListSerializer,
                                              SemesterSerializer, SemesterStatusSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.constants import EDIT
 
 
 class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Company.objects.all().prefetch_related('semester_statuses', 'student_contact')
+    queryset = Company.objects.all().prefetch_related('semester_statuses').select_related('student_contact')
 
     def get_serializer_class(self):
         """
         TODO: Public detail serializer.
         """
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, self.get_queryset())
+
         if self.action == 'list':
-            return CompanyListSerializer
-        return CompanyDetailSerializer
+            return CompanyAdminListSerializer if is_admin else CompanyListSerializer
+
+        return CompanyAdminDetailSerializer if is_admin else CompanyDetailSerializer
 
 
 class SemesterStatusViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

@@ -193,7 +193,7 @@ class CreateSemesterStatusTestCase(APITestCase):
         )
         self.assertEqual(company_response.status_code, 200)
         self.assertEqual(
-            company_response.data['semester']['id'], _test_semester_status_data[0]['semester']
+            company_response.data['semester'], _test_semester_status_data[0]['semester']
         )
 
 

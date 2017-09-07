@@ -7,6 +7,7 @@ from lego.apps.companies.models import (Company, CompanyContact, CompanyInterest
                                         SemesterStatus)
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -17,8 +18,6 @@ class SemesterSerializer(BasisModelSerializer):
 
 
 class SemesterStatusSerializer(serializers.ModelSerializer):
-
-    semester = SemesterField(queryset=Semester.objects.all())
 
     class Meta:
         model = SemesterStatus
@@ -48,6 +47,16 @@ class CompanyListSerializer(BasisModelSerializer):
         fields = ('id', 'name', 'description', 'website', 'company_type', 'address')
 
 
+class CompanyAdminListSerializer(BasisModelSerializer):
+    semester_statuses = SemesterStatusSerializer(many=True, read_only=True)
+    student_contact = PublicUserSerializer(read_only=True)
+
+    class Meta:
+        model = Company
+        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
+                  'active')
+
+
 class CompanyDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
@@ -58,6 +67,12 @@ class CompanyDetailSerializer(BasisModelSerializer):
         fields = ('id', 'name', 'student_contact', 'description', 'phone',
                   'company_type', 'website', 'address', 'payment_mail', 'comments',
                   'comment_target')
+
+
+class CompanyAdminDetailSerializer(BasisModelSerializer):
+    class Meta:
+        model = Company
+        fields = ('id', 'name', 'description', 'website', 'company_type', 'address')
 
 
 class CompanyEditSerializer(BasisModelSerializer):
