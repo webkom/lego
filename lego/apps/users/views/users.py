@@ -75,14 +75,12 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        username = serializer.validated_data.pop('username', None)
         password = serializer.validated_data.pop('password', None)
-        if not username or not password:
-            raise ValidationError(detail='Username or password is not set')
 
         user = User.objects.create_user(
-            username, token_email, password, **serializer.validated_data
+            email=token_email, password=password, **serializer.validated_data
         )
+
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
         user_group.add_user(user)
 

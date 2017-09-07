@@ -45,7 +45,7 @@ class CommentHandler(BaseHandler):
         if hasattr(comment.content_object, 'followers'):
             result.append((
                 [PersonalFeed],
-                list(comment.content_object.followers.values_list('follower__username', flat=True))
+                list(comment.content_object.followers.values_list('follower__id', flat=True))
             ))
 
         if comment.created_by:
