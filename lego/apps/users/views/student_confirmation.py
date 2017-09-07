@@ -60,8 +60,8 @@ class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
                 "full_name": user.get_full_name(),
             },
             subject='Bekreft student kontoen din på Abakus.no',
-            plain_template='users/email/student_confirmation.html',
-            html_template='users/email/student_confirmation.txt',
+            plain_template='users/email/student_confirmation.txt',
+            html_template='users/email/student_confirmation.html',
             from_email=None
         )
 
