@@ -12,7 +12,8 @@ from lego.apps.permissions.constants import EDIT
 
 
 class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Company.objects.all().prefetch_related('semester_statuses').select_related('student_contact')
+    queryset = Company.objects.all().prefetch_related('semester_statuses')\
+        .select_related('student_contact')
 
     def get_serializer_class(self):
         """
