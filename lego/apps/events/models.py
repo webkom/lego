@@ -255,7 +255,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         Used when bumping users from waiting list to a pool that is about to be activated,
         using an async task. This is done to make sure these existing registrations are given
         the spot ahead of users that register at activation time.
-        :param opening_pool:
+        :param opening_pool: The pool about to be activated.
         :return:
         """
         for reg in self.waiting_registrations:
@@ -268,6 +268,29 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 reg.save()
                 get_handler(Registration).handle_bump(reg)
         self.check_for_bump_or_rebalance(opening_pool)
+
+    def bump_on_pool_creation_or_expansion(self):
+        """
+        Used when a pool's capacity is expanded or a new pool is created,
+        so that waiting registrations are bumped before anyone else can fill
+        the open spots. This is done on event update.
+
+        This method does the same as `early_bump`, but only accepts people that can be bumped now,
+        not people that can be bumped in the future.
+        :return:
+        """
+        open_pools = [pool for pool in self.pools.all() if not pool.is_full]
+        for pool in open_pools:
+            for reg in self.waiting_registrations:
+                if pool.is_full:
+                    break
+                if self.heed_penalties and reg.user.number_of_penalties() >= 3:
+                    continue
+                if self.can_register(reg.user, pool, future=True):
+                    reg.pool = pool
+                    reg.save()
+                    get_handler(Registration).handle_bump(reg)
+        self.check_for_bump_or_rebalance(pool)
 
     def try_to_rebalance(self, open_pool):
         """
