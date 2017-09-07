@@ -11,23 +11,25 @@ from lego.utils.serializers import BasisModelSerializer
 
 class MeetingInvitationSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
-    status = serializers.ChoiceField(choices=(constants.ATTENDING, constants.NOT_ATTENDING))
+    status = serializers.ChoiceField(choices=(constants.ATTENDING,
+                                              constants.NOT_ATTENDING))
 
     class Meta:
         model = MeetingInvitation
         fields = ('user', 'status', 'meeting')
 
     def create(self, validated_data):
-        meeting = Meeting.objects.get(id=self.context['view'].kwargs['meeting_pk'])
-        meeting_invitation = MeetingInvitation.objects.create(meeting=meeting,
-                                                              **validated_data)
+        meeting = Meeting.objects.get(
+            id=self.context['view'].kwargs['meeting_pk'])
+        meeting_invitation = MeetingInvitation.objects.create(
+            meeting=meeting, **validated_data)
         return meeting_invitation
 
 
 class MeetingInvitationUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = MeetingInvitation
-        fields = ('status',)
+        fields = ('status', )
 
 
 class MeetingGroupInvite(serializers.Serializer):
@@ -39,8 +41,10 @@ class MeetingUserInvite(serializers.Serializer):
 
 
 class MeetingBulkInvite(serializers.Serializer):
-    users = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all(), many=True, required=False)
-    groups = PrimaryKeyRelatedFieldNoPKOpt(queryset=AbakusGroup.objects.all(), many=True, required=False)
+    users = PrimaryKeyRelatedFieldNoPKOpt(
+        queryset=User.objects.all(), many=True, required=False)
+    groups = PrimaryKeyRelatedFieldNoPKOpt(
+        queryset=AbakusGroup.objects.all(), many=True, required=False)
 
 
 class MeetingSerializer(BasisModelSerializer):
@@ -48,8 +52,8 @@ class MeetingSerializer(BasisModelSerializer):
 
     class Meta:
         model = Meeting
-        fields = ('id', 'created_by', 'title', 'location', 'start_time', 'end_time', 'report',
-                  'report_author', 'invitations')
+        fields = ('id', 'created_by', 'title', 'location', 'start_time',
+                  'end_time', 'report', 'report_author', 'invitations')
 
     def create(self, validated_data):
         meeting = Meeting.objects.create(**validated_data)
