@@ -75,10 +75,9 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        password = serializer.validated_data.pop('password', None)
 
         user = User.objects.create_user(
-            email=token_email, password=password, **serializer.validated_data
+            email=token_email, **serializer.validated_data
         )
 
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
