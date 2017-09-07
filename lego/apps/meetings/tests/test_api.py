@@ -195,8 +195,8 @@ class InviteToMeetingTestCase(APITestCase):
 
         self.client.force_authenticate(me)
         res = self.client.post(_get_detail_url(self.meeting.id) + 'bulk_invite/', {
-            'groups': [self.AbaBrygg.name],
-            'users': [self.pleb.username]
+            'groups': [self.AbaBrygg.id],
+            'users': [self.pleb.id]
         })
         self.assertEqual(res.status_code, 200)
         for user in self.AbaBrygg.users.all():
@@ -208,8 +208,8 @@ class InviteToMeetingTestCase(APITestCase):
         me = self.abakommer
         self.client.force_authenticate(me)
         res = self.client.post(_get_detail_url(self.meeting.id) + 'bulk_invite/', {
-            'groups': [self.AbaBrygg.name],
-            'users': [self.pleb.username]
+            'groups': [self.AbaBrygg.id],
+            'users': [self.pleb.id]
         })
         self.assertEqual(res.status_code, 404)
         for user in self.AbaBrygg.users.all():
