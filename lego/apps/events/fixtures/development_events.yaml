@@ -925,9 +925,9 @@
     title: Lego Mindstorms med Itera
     cover: test_event_cover.png
     tags:
-    - Øl
-    - Java
-    - GameDev
+    - øl
+    - java
+    - gamedev
   model: events.Event
   pk: 39
 - fields:
@@ -952,9 +952,9 @@
     title: Teknologivennefest
     cover: test_event_cover.png
     tags:
-    - Øl
-    - Brus
-    - Damer
+    - øl
+    - brus
+    - damer
   model: events.Event
   pk: 40
 - fields:
@@ -980,9 +980,9 @@
     title: En reise hvor IT-infrastruktur blir kode
     cover: test_event_cover.png
     tags:
-    - Web
-    - Microsoft
-    - Azure
+    - web
+    - microsoft
+    - azure
   model: events.Event
   pk: 41
 - fields:
@@ -1259,10 +1259,10 @@
     - - Abakus
     - - Webkom
     tags:
-    - Java
-    - JavaScript
-    - Abakus
-    - Bedpres
+    - java
+    - javaScript
+    - abakus
+    - bedpres
     description: Vår kjære hovedsamarbeidspartner BEKK inviterer til bedriftspresentasjon.
       Meld deg på og bli bedre kjent med selskapet!
     end_time: '2016-03-03T23:00:00+00:00'
