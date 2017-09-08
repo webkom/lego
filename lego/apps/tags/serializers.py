@@ -60,3 +60,10 @@ class TagSerializerMixin(serializers.Serializer):
                 instance.save()
 
         return instance
+
+
+class TagSearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = ('tag', )

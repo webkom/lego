@@ -143,9 +143,12 @@ class SearchIndex:
             if not queryset.exists():
                 return
 
-            while start < queryset.order_by('pk').last().pk:
-                func(queryset.filter(pk__gt=start, pk__lte=start + chunk).iterator())
-                start += chunk
+            try:
+                while start < queryset.order_by('pk').last().pk:
+                    func(queryset.filter(pk__gt=start, pk__lte=start + chunk).iterator())
+                    start += chunk
+            except TypeError:
+                func(queryset.all().iterator())
 
         def prepare(result):
             prepared = self.prepare(result)
