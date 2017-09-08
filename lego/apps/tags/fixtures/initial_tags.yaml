@@ -1,22 +1,22 @@
 - model: tags.Tag
   fields:
-    tag: JavaScript
+    tag: javascript
 
 - model: tags.Tag
   fields:
-    tag: Java
+    tag: java
 
 - model: tags.Tag
   fields:
-    tag: Abakus
+    tag: abakus
 
 - model: tags.Tag
   fields:
-    tag: Arrkom
+    tag: arrkom
 
 - model: tags.Tag
   fields:
-    tag: Bedkom
+    tag: bedkom
 
 - model: tags.Tag
   fields:
@@ -24,148 +24,148 @@
 
 - model: tags.Tag
   fields:
-    tag: Fagkom
+    tag: fagkom
 
 - model: tags.Tag
   fields:
-    tag: LaBamba
+    tag: labamba
 
 - model: tags.Tag
   fields:
-    tag: PR
+    tag: pr
 
 - model: tags.Tag
   fields:
-    tag: Webkom
+    tag: webkom
 
 - model: tags.Tag
   fields:
-    tag: Backup
+    tag: backup
 
 - model: tags.Tag
   fields:
-    tag: Koskom
+    tag: koskom
 
 - model: tags.Tag
   fields:
-    tag: AbaBrygg
+    tag: ababrygg
 
 - model: tags.Tag
   fields:
-    tag: C#
+    tag: c#
 
 - model: tags.Tag
   fields:
-    tag: Isbading
+    tag: isbading
 
 - model: tags.Tag
   fields:
-    tag: Turgruppa
+    tag: turgruppa
 
 - model: tags.Tag
   fields:
-    tag: abaGolf
+    tag: abagolf
 
 - model: tags.Tag
   fields:
-    tag: Seniornett
+    tag: seniornett
 
 - model: tags.Tag
   fields:
-    tag: Abarun
+    tag: abarun
 
 - model: tags.Tag
   fields:
-    tag: Stipend-Sushi
+    tag: stipend-sushi
 
 - model: tags.Tag
   fields:
-    tag: Abakos
+    tag: abakos
 
 - model: tags.Tag
   fields:
-    tag: Strikk & Drikk
+    tag: strikk&drikk
 
 - model: tags.Tag
   fields:
-    tag: Abaline
+    tag: abaline
 
 - model: tags.Tag
   fields:
-    tag: ALKISER
+    tag: alkiser
 
 - model: tags.Tag
   fields:
-    tag: Abakus pokerklubb
+    tag: abakuspokerklubb
 
 - model: tags.Tag
   fields:
-    tag: Abamat
+    tag: abamat
 
 - model: tags.Tag
   fields:
-    tag: GameDev
+    tag: gamedev
 
 - model: tags.Tag
   fields:
-    tag: Abaspin
+    tag: abaspin
 
 - model: tags.Tag
   fields:
-    tag: Foppal
+    tag: foppal
 
 - model: tags.Tag
   fields:
-    tag: PPP
+    tag: ppp
 
 - model: tags.Tag
   fields:
-    tag: AbaGo
+    tag: abago
 
 - model: tags.Tag
   fields:
-    tag: AbaSmash
+    tag: abasmash
 
 - model: tags.Tag
   fields:
-    tag: Sikkerhetsgruppa
+    tag: sikkerhetsgruppa
 
 - model: tags.Tag
   fields:
-    tag: Bedpres
+    tag: bedpres
 
 - model: tags.Tag
   fields:
-    tag: NTNU
+    tag: ntnu
 
 - model: tags.Tag
   fields:
-    tag: Gløs
+    tag: gløs
 
 - model: tags.Tag
   fields:
-    tag: Trondheim
+    tag: trondheim
 
 - model: tags.Tag
   fields:
-    tag: Øl
+    tag: øl
 
 - model: tags.Tag
   fields:
-    tag: Brus
+    tag: brus
 
 - model: tags.Tag
   fields:
-    tag: Damer
+    tag: damer
 
 - model: tags.Tag
   fields:
-    tag: Web
+    tag: web
 
 - model: tags.Tag
   fields:
-    tag: Microsoft
+    tag: microsoft
 
 - model: tags.Tag
   fields:
-    tag: Azure
+    tag: azure
