@@ -4,8 +4,6 @@ from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.models import BasisModel
 
-from .permissions import GalleryPicturePermissionHandler
-
 
 class Gallery(BasisModel, ObjectPermissionsModel):
     """
@@ -35,4 +33,3 @@ class GalleryPicture(models.Model):
 
     class Meta:
         unique_together = ('gallery', 'file')
-        permission_handler = GalleryPicturePermissionHandler()
