@@ -6,6 +6,6 @@ Hei {{ first_name }},
 
 For å bekrefte NTNU student kontoen din, trykk på lenken under:
 
-{{ frontend_url }}/users/student-confirmation/?token={{ token }}
+{{ frontend_url }}/users/me/settings/student-confirmation/?token={{ token }}
 
 {% endblock %}
