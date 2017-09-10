@@ -1,3 +1,4 @@
+from copy import deepcopy
 from datetime import timedelta
 from unittest import mock, skipIf
 
@@ -10,6 +11,7 @@ from rest_framework.test import APITestCase, APITransactionTestCase
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import stripe_webhook_event
+from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.users.models import AbakusGroup, User
 
 from .utils import create_token
@@ -690,3 +692,46 @@ class StripePaymentTestCase(APITestCase):
         self.assertEqual(registration.charge_status, 'succeeded')
         self.assertEqual(registration.charge_amount, 10000)
         self.assertEqual(registration.charge_amount_refunded, 10000)
+
+
+class CapacityExpansionTestCase(APITestCase):
+    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+                'test_users.yaml', 'test_companies.yaml']
+
+    def setUp(self):
+        self.webkom_user = User.objects.get(pk=1)
+        AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
+        self.client.force_authenticate(self.webkom_user)
+
+        self.event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        self.event = Event.objects.get(id=self.event_response.data.pop('id', None))
+        self.event.start_time = timezone.now() + timedelta(hours=3)
+        users = get_dummy_users(11)
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
+            self.event.register(registration)
+        self.assertEquals(self.event.waiting_registrations.count(), 1)
+        self.updated_event = deepcopy(_test_event_data[0])
+        self.updated_event['pools'][0]['id'] = self.event_response.data['pools'][0]['id']
+
+    def test_bump_on_pool_expansion(self):
+        self.updated_event['pools'][0]['capacity'] = 11
+        response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(self.event.waiting_registrations.count(), 0)
+
+    def test_bump_on_pool_creation(self):
+        self.updated_event['pools'].append(_test_pools_data[0])
+        response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(self.event.waiting_registrations.count(), 0)
+
+    def test_no_bump_on_reduced_pool_size(self):
+        self.updated_event['pools'][0]['capacity'] = 9
+        response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(self.event.waiting_registrations.count(), 1)
