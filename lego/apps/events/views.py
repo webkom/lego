@@ -1,4 +1,5 @@
 from celery import chain
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models import Prefetch
 from rest_framework import decorators, mixins, status, viewsets
@@ -22,7 +23,7 @@ from lego.apps.events.serializers.registrations import (AdminRegistrationCreateA
                                                         RegistrationReadSerializer,
                                                         StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
-                                    registration_save)
+                                    check_for_bump_on_pool_creation_or_expansion, registration_save)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.utils.functions import verify_captcha
 
@@ -61,8 +62,20 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return super().get_serializer_class()
 
     def update(self, request, *args, **kwargs):
+        """
+        If the capacity of the event increases we have to bump waiting users.
+        To ensure that no new users register while waiting for the bump to occur,
+        we set the same cache that registrations need to complete. The cache is deleted
+        at the end of the Celery-task.
+        """
         try:
-            return super().update(request, *args, **kwargs)
+            event = Event.objects.get(pk=self.kwargs.get('pk', None))
+            capacity_before = event.total_capacity
+            instance = super().update(request, *args, **kwargs)
+            if capacity_before < event.total_capacity:
+                cache.set(f'event_lock-{event.id}', 'expansion-bump', timeout=60)
+                check_for_bump_on_pool_creation_or_expansion.delay(event)
+            return instance
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
 

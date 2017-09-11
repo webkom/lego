@@ -93,7 +93,6 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     def update(self, instance, validated_data):
         pools = validated_data.pop('pools', None)
         with transaction.atomic():
-            capacity_before = instance.total_capacity
             if pools is not None:
                 existing_pools = list(instance.pools.all().values_list('id', flat=True))
                 for pool in pools:
@@ -112,9 +111,6 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     created_pool.permission_groups.set(permission_groups)
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
-            capacity_after = instance.total_capacity
-            if capacity_after > capacity_before:
-                instance.bump_on_pool_creation_or_expansion()
 
             return super().update(instance, validated_data)
 
