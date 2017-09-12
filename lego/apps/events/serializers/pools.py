@@ -40,6 +40,7 @@ class PoolAdministrateSerializer(PoolReadSerializer):
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):
+
     class Meta:
         model = Pool
         fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups')
