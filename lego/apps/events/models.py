@@ -425,7 +425,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def is_full(self):
-        return self.active_capacity <= self.number_of_registrations
+        capacity = self.active_capacity
+        if capacity == 0:
+            return False
+        return capacity <= self.number_of_registrations
 
     @property
     def active_capacity(self):
@@ -500,6 +503,8 @@ class Pool(BasisModel):
 
     @property
     def is_full(self):
+        if self.capacity == 0:
+            return False
         return self.registrations.count() >= self.capacity
 
     def spots_left(self):

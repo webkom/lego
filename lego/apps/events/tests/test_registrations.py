@@ -55,6 +55,19 @@ class RegistrationTestCase(TestCase):
         from django_redis import get_redis_connection
         get_redis_connection("default").flushall()
 
+    def test_can_register_single_unlimited_pool(self):
+        """Test registering user to event with a single unlimited pool"""
+        user = get_dummy_users(1)[0]
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool = event.pools.first()
+        pool.capacity = 0
+        pool.save()
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+        self.assertEqual(pool.registrations.count(), event.number_of_registrations)
+
     def test_can_register_single_pool(self):
         """Test registering user to event with only a single pool"""
         user = get_dummy_users(1)[0]
