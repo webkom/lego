@@ -3,9 +3,11 @@ from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.files.fields import FileField, ImageField
-from lego.apps.gallery.fields import PictureListField
+from lego.apps.gallery.fields import PictureListField, GalleryCoverField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
+from lego.apps.events.models import Event
+from lego.apps.events.fields import PublicEventField
 from lego.utils.serializers import BasisModelSerializer
 
 from .models import Gallery, GalleryPicture
@@ -18,9 +20,15 @@ class GalleryCoverSerializer(serializers.ModelSerializer):
         options={'height': 700, 'smart': True}
     )
 
+    thumbnail = ImageField(
+        source='file',
+        read_only=True,
+        options={'height': 300, 'width': 300, 'smart': True}
+    )
+
     class Meta:
         model = GalleryPicture
-        fields = ('file',)
+        fields = ('file', 'thumbnail', 'id')
 
 
 class GalleryListSerializer(BasisModelSerializer):
@@ -49,23 +57,24 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
     raw_file = FileField(source='file', read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
+    taggees = PublicUserField(many=True, queryset=User.objects.all(), required=False)
 
     class Meta:
         model = GalleryPicture
-        fields = ('id', 'description', 'active', 'file', 'thumbnail', 'raw_file', 'comments', 'comment_target')
+        fields = ('id', 'description', 'taggees', 'active', 'file', 'thumbnail', 'raw_file', 'comments', 'comment_target')
         read_only_fields = ('raw_file', 'thumbnail')
 
-    def create(self, validated_data):
+    def validate(self, attrs):
         gallery = Gallery.objects.get(pk=self.context['view'].kwargs['gallery_pk'])
-        gallery_picture = GalleryPicture.objects.create(gallery=gallery, **validated_data)
-        return gallery_picture
+        return {'gallery': gallery, **attrs}
 
 
 class GallerySerializer(BasisModelSerializer):
 
     pictures = PictureListField()
-    cover = GalleryPictureSerializer(required=False)
+    cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
     photographers = PublicUserField(many=True, queryset=User.objects.all())
+    event = PublicEventField(queryset=Event.objects.all())
 
     class Meta:
         model = Gallery

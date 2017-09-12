@@ -9,13 +9,13 @@ from .serializers import GalleryListSerializer, GalleryPictureSerializer, Galler
 
 class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    queryset = Gallery.objects.all()
+    queryset = Gallery.objects.all().select_related('event', 'cover')
     filter_class = GalleryFilterSet
     serializer_class = GallerySerializer
 
     def get_queryset(self):
         if self.action != 'list':
-            return Gallery.objects.all().prefetch_related('photographers')
+            return super().get_queryset().prefetch_related('photographers')
         return super().get_queryset()
 
     def get_serializer_class(self):

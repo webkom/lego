@@ -16,6 +16,20 @@ from lego.apps.tags.serializers import TagSerializerMixin
 from lego.utils.serializers import BasisModelSerializer
 
 
+class EventPublicSerializer(BasisModelSerializer):
+    thumbnail = ImageField(
+        source='cover',
+        required=False,
+        options={'height': 500, 'width': 500, 'smart': True}
+    )
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'event_type',
+                  'location', 'thumbnail')
+        read_only = True
+
+
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     cover = ImageField(required=False, options={'height': 500})
