@@ -88,6 +88,11 @@ test_tree = {
             '/sudo/admin/emaillists/'
         ]
     }, {}],
+    'Webkom': [{
+        'permissions': [
+            '/sudo/'
+        ]
+    }]
 }
 
 
