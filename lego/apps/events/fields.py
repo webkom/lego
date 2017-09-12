@@ -91,3 +91,14 @@ class PresenceField(serializers.ChoiceField):
         if request and request.user.is_authenticated and request.user.has_perm(EDIT, Event):
             return super().to_internal_value(data)
         raise PermissionDenied()
+
+
+class PublicEventField(serializers.PrimaryKeyRelatedField):
+
+    def use_pk_only_optimization(self):
+        return False
+
+    def to_representation(self, value):
+        from lego.apps.events.serializers.events import EventPublicSerializer
+        serializer = EventPublicSerializer(instance=value)
+        return serializer.data

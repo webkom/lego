@@ -1,10 +1,11 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
+from lego.apps.comments.models import Comment
 from lego.apps.files.models import FileField
+from lego.apps.gallery.permissions import GalleryPicturePermissionHandler
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.models import BasisModel
-
-from .permissions import GalleryPicturePermissionHandler
 
 
 class Gallery(BasisModel, ObjectPermissionsModel):
@@ -14,6 +15,8 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     """
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True)
+    cover = models.ForeignKey('gallery.GalleryPicture', related_name='gallery_covers',
+                              null=True, on_delete=models.SET_NULL)
     location = models.CharField(max_length=64)
     taken_at = models.DateField(null=True)
     photographers = models.ManyToManyField('users.User')
@@ -28,10 +31,16 @@ class GalleryPicture(models.Model):
     """
     gallery = models.ForeignKey(Gallery, related_name='pictures')
     file = FileField(related_name='gallery_pictures')
+    taggees = models.ManyToManyField('users.User', blank=True)
 
     description = models.TextField(blank=True)
     active = models.BooleanField(default=True)
+    comments = GenericRelation(Comment)
 
     class Meta:
         unique_together = ('gallery', 'file')
         permission_handler = GalleryPicturePermissionHandler()
+
+    @property
+    def comment_target(self):
+        return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
