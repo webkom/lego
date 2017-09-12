@@ -1,8 +1,8 @@
-from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
+from django.db import models
 
-from lego.apps.files.models import FileField
 from lego.apps.comments.models import Comment
+from lego.apps.files.models import FileField
 from lego.apps.gallery.permissions import GalleryPicturePermissionHandler
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.models import BasisModel
@@ -15,7 +15,8 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     """
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-    cover = models.ForeignKey('gallery.GalleryPicture', related_name='gallery_covers', null=True, on_delete=models.SET_NULL)
+    cover = models.ForeignKey('gallery.GalleryPicture', related_name='gallery_covers',
+                              null=True, on_delete=models.SET_NULL)
     location = models.CharField(max_length=64)
     taken_at = models.DateField(null=True)
     photographers = models.ManyToManyField('users.User')

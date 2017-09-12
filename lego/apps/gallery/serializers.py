@@ -2,12 +2,12 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.events.fields import PublicEventField
+from lego.apps.events.models import Event
 from lego.apps.files.fields import FileField, ImageField
-from lego.apps.gallery.fields import PictureListField, GalleryCoverField
+from lego.apps.gallery.fields import GalleryCoverField, PictureListField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
-from lego.apps.events.models import Event
-from lego.apps.events.fields import PublicEventField
 from lego.utils.serializers import BasisModelSerializer
 
 from .models import Gallery, GalleryPicture
@@ -43,6 +43,7 @@ class GalleryListSerializer(BasisModelSerializer):
     def get_picture_count(self, gallery):
         return gallery.pictures.count()
 
+
 class GalleryPictureSerializer(serializers.ModelSerializer):
 
     file = ImageField(
@@ -61,7 +62,8 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GalleryPicture
-        fields = ('id', 'description', 'taggees', 'active', 'file', 'thumbnail', 'raw_file', 'comments', 'comment_target')
+        fields = ('id', 'description', 'taggees', 'active', 'file', 'thumbnail',
+                  'raw_file', 'comments', 'comment_target')
         read_only_fields = ('raw_file', 'thumbnail')
 
     def validate(self, attrs):
