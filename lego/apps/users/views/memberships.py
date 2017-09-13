@@ -3,9 +3,8 @@ from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.users.filters import MembershipFilterSet
-from lego.apps.users.models import AbakusGroup, Membership, User
-from lego.apps.users.serializers.memberships import (MembershipSerializer,
-                                                     MembershipSetMembershipSerializer)
+from lego.apps.users.models import AbakusGroup, Membership
+from lego.apps.users.serializers.memberships import MembershipGroupSerializer, MembershipSerializer
 
 
 class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -21,7 +20,6 @@ class MembershipSetViewSet(AllowedPermissionsMixin, mixins.CreateModelMixin,
     If one want to remove a membership or add a single membership, use
     the `/memberships/` endpoint."""
     queryset = Membership.objects.all().select_related('user')
-    serializer_class = MembershipSetMembershipSerializer
     filter_class = MembershipFilterSet
     ordering = 'id'
 
@@ -33,6 +31,9 @@ class MembershipSetViewSet(AllowedPermissionsMixin, mixins.CreateModelMixin,
         return Membership.objects.none()
 
     def create(self, request, *args, **kwargs):
+        serializer = MembershipGroupSerializer(
+                data=request.data.get('memberships', None), many=True)
+        serializer.is_valid(raise_exception=True)
         group_pk = kwargs.get('group_pk', None)
         group = AbakusGroup.objects.get(pk=group_pk)
         if not group:
@@ -40,12 +41,15 @@ class MembershipSetViewSet(AllowedPermissionsMixin, mixins.CreateModelMixin,
         # delete all meberships
         group.memberships.delete(force=True)
         # and make new ones
-        for membership in request.data['memberships']:
+        new_memberships = []
+        for membership in serializer.validated_data:
             obj = {
-                'user': User.objects.get(pk=membership['user']),
+                'user': membership['user'],
                 'abakus_group': group,
                 'role': membership.get('role', 'member')
             }
-            Membership.objects.get_or_create(**obj)
-        # TODO: what to return here?
-        return Response(status=status.HTTP_201_CREATED)
+            (membership, did_create) = Membership.objects.get_or_create(**obj)
+            new_memberships.append(membership)
+
+        membership_data = MembershipSerializer(new_memberships, many=True).data
+        return Response(data=membership_data, status=status.HTTP_201_CREATED)
