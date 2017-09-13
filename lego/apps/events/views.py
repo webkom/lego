@@ -70,11 +70,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         try:
             event = Event.objects.get(pk=self.kwargs.get('pk', None))
-            capacity_before = event.total_capacity
             instance = super().update(request, *args, **kwargs)
-            if capacity_before < event.total_capacity:
-                cache.set(f'event_lock-{event.id}', 'expansion-bump', timeout=60)
-                check_for_bump_on_pool_creation_or_expansion.delay(event)
+            cache.set(f'event_lock-{event.id}', 'expansion-bump', timeout=60)
+            check_for_bump_on_pool_creation_or_expansion.delay(event)
             return instance
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
