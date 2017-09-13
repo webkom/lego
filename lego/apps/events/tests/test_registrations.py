@@ -693,3 +693,87 @@ class RegistrationTestCase(TestCase):
 
         with self.assertRaises(ValueError):
             registration.set_presence('ripvalue')
+
+    def test_bump_on_pool_update(self):
+        """Test that waiting registrations are bumped when a pool is expanded"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool = event.pools.first()
+        users = get_dummy_users(6)
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        no_of_waiting_registrations_before = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_before, 3)
+
+        pool.capacity = 5
+        pool.save()
+        event.bump_on_pool_creation_or_expansion()
+
+        no_of_waiting_registrations_after = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_after, 1)
+
+    def test_no_bump_to_illegal_pool_on_expansion(self):
+        """Test that waiting regs aren't bumped if they don't have perm to join the expanded pool"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool = event.pools.get(name="Webkom")
+        users = get_dummy_users(6)
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        no_of_waiting_registrations_before = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_before, 3)
+
+        pool.capacity = 5
+        pool.save()
+        event.bump_on_pool_creation_or_expansion()
+
+        no_of_waiting_registrations_after = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_after, 3)
+
+    def test_bump_on_pool_creation(self):
+        """Test that waiting registrations are bumped when a new pool is created"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(6)
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        no_of_waiting_registrations_before = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_before, 3)
+
+        new_pool = Pool.objects.create(name='test', capacity=3, event=event,
+                                       activation_date=(timezone.now() - timedelta(hours=24)))
+        new_pool.permission_groups = [AbakusGroup.objects.get(name='Abakus')]
+        event.bump_on_pool_creation_or_expansion()
+
+        no_of_waiting_registrations_after = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_after, 0)
+        self.assertEqual(new_pool.registrations.count(), 3)
+
+    def test_bump_on_several_pools_updated(self):
+        """Test that waiting regs are bumped to several pools when several pools are updated"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool_one = event.pools.get(name='Abakusmember')
+        pool_two = event.pools.get(name='Webkom')
+        users = get_dummy_users(7)
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        no_of_waiting_registrations_before = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_before, 2)
+
+        pool_one.capacity = pool_one.capacity + 1
+        pool_two.capacity = pool_two.capacity + 1
+        pool_one.save()
+        pool_two.save()
+        event.bump_on_pool_creation_or_expansion()
+
+        no_of_waiting_registrations_after = event.waiting_registrations.count()
+        self.assertEqual(no_of_waiting_registrations_after, 0)

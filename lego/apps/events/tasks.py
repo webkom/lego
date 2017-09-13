@@ -156,6 +156,12 @@ def registration_save(self, result, registration_id):
         raise self.retry(exc=e)
 
 
+@celery_app.task(serializer='json', bind=True)
+def check_for_bump_on_pool_creation_or_expansion(self, event):
+        event.bump_on_pool_creation_or_expansion()
+        cache.delete(f'event_lock-{event.id}')
+
+
 @celery_app.task(serializer='json')
 def stripe_webhook_event(event_id, event_type):
     if event_type in ['charge.failed', 'charge.refunded', 'charge.succeeded']:

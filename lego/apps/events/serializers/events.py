@@ -125,6 +125,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     created_pool.permission_groups.set(permission_groups)
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
+
             return super().update(instance, validated_data)
 
 
