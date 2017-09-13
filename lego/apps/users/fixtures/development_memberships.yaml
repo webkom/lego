@@ -108,6 +108,24 @@
     start_date: 1994-01-01
 
 - model: users.Membership
+  pk: 12
+  fields:
+    user: 1
+    role: member
+    abakus_group:
+      - AbaBrygg
+    start_date: 1994-01-01
+
+- model: users.Membership
+  pk: 12
+  fields:
+    user: 2
+    role: member
+    abakus_group:
+      - AbaBrygg
+    start_date: 1994-01-01
+
+- model: users.Membership
   pk: 13
   fields:
     user:
