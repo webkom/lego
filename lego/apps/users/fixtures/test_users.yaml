@@ -72,3 +72,12 @@
     first_name: interestgroup
     last_name: admin
     email: interestgroup@admin.com
+
+- model: users.User
+  pk: 9
+  fields:
+    username: webkommer
+    gender: female
+    first_name: Web
+    last_name: Commer
+    email: webk@m.no
