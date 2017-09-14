@@ -28,7 +28,7 @@ git+https://github.com/eirsyl/analytics-python.git#master
 
 # channels
 asgi_redis==1.4.2
-channels==1.1.6
+channels==1.1.7
 daphne==1.3.0
 
 djangorestframework==3.6.4
