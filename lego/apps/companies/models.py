@@ -32,6 +32,8 @@ class Company(BasisModel):
     company_type = models.CharField(max_length=200, blank=True)
     website = models.URLField(blank=True)
     address = models.CharField(max_length=100, blank=True)
+    admin_comment = models.CharField(max_length=100, blank=True)
+    active = models.BooleanField(default=True)
     payment_mail = models.EmailField(max_length=100, blank=True)
     comments = GenericRelation(Comment)
 
