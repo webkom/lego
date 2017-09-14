@@ -16,9 +16,9 @@ class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         .select_related('student_contact')
 
     def get_serializer_class(self):
-        """
-        TODO: Public detail serializer.
-        """
+        if not self.request:
+            return CompanyDetailSerializer
+
         user = self.request.user
         is_admin = user.has_perm(EDIT, self.get_queryset())
 
