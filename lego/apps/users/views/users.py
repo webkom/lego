@@ -31,7 +31,12 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         EDIT permission.
         """
         if self.action in ['retrieve', 'update', 'partial_update']:
-            instance = self.get_object()
+
+            try:
+                instance = self.get_object()
+            except AssertionError:
+                return super().get_serializer_class()
+
             if self.request.user.has_perm(EDIT, instance) or self.request.user == instance:
                 return DetailedUserSerializer
 

@@ -36,5 +36,5 @@ class MembershipSetMembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = AbakusGroup
         fields = (
-            'memberships'
+            'memberships',
         )
