@@ -33,6 +33,7 @@
     payment_mail: faktura@bekk.no
     address: Postboks 134 Sentrum, 0102 Oslo
     company_type: 'Konsulent, Data&Komtek'
+    admin_comment: 'Husk logo på alle sider'
 
 - model: companies.Company
   pk: 2
@@ -62,28 +63,28 @@
   pk: 1
   fields:
     semester: 1
-    contacted_status: ['interested']
+    contacted_status: ['interested', 'company_presentation']
     company: 1
 
 - model: companies.SemesterStatus
   pk: 2
   fields:
     semester: 2
-    contacted_status: ['interested']
+    contacted_status: ['course']
     company: 1
 
 - model: companies.SemesterStatus
   pk: 3
   fields:
     semester: 3
-    contacted_status: ['interested']
+    contacted_status: ['not_interested']
     company: 1
 
 - model: companies.SemesterStatus
   pk: 4
   fields:
     semester: 4
-    contacted_status: ['interested']
+    contacted_status: ['other']
     company: 1
 
   # Company 2
@@ -101,7 +102,7 @@
   pk: 8
   fields:
     semester: 2
-    contacted_status: ['interested']
+    contacted_status: ['company_presentation']
     company: 2
 
 
@@ -109,21 +110,21 @@
   pk: 9
   fields:
     semester: 3
-    contacted_status: ['interested']
+    contacted_status: ['not_contacted']
     company: 2
 
 - model: companies.SemesterStatus
   pk: 10
   fields:
     semester: 1
-    contacted_status: ['interested']
+    contacted_status: ['contacted']
     company: 2
 
 - model: companies.SemesterStatus
   pk: 11
   fields:
     semester: 4
-    contacted_status: ['interested']
+    contacted_status: ['not_interested']
     company: 2
 
   # Company 3
@@ -139,19 +140,19 @@
   pk: 16
   fields:
     semester: 2
-    contacted_status: ['interested']
+    contacted_status: ['course']
     company: 3
 
 - model: companies.SemesterStatus
   pk: 17
   fields:
     semester: 3
-    contacted_status: ['interested']
+    contacted_status: ['lunch_presentation']
     company: 3
 
 - model: companies.SemesterStatus
   pk: 18
   fields:
     semester: 4
-    contacted_status: ['interested']
+    contacted_status: ['company_presentation']
     company: 3
