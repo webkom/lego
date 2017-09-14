@@ -23,6 +23,9 @@ class LegoPermissionFilter(filters.BaseFilterBackend):
         if has_keyword_permissions:
             return queryset
 
+        if not request:
+            return queryset
+
         permission_handler = self.permission_handler(view, queryset)
 
         return permission_handler.filter_queryset(request.user, queryset, view=view)
