@@ -75,7 +75,9 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Announcement.objects.filter(created_by=self.request.user)
+            return Announcement.objects\
+                .filter(created_by=self.request.user)\
+                .prefetch_related('users', 'groups', 'events', 'meetings')
         return Announcement.objects.none()
 
     def get_serializer_class(self):
