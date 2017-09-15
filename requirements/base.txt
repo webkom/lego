@@ -27,8 +27,8 @@ premailer==3.1.1
 git+https://github.com/eirsyl/analytics-python.git#master
 
 # channels
+channels==1.1.8
 asgi_redis==1.4.3
-channels==1.1.7
 daphne==1.3.0
 
 djangorestframework==3.6.4
