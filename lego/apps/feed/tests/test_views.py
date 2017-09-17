@@ -186,10 +186,3 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         notification = self.client.get(f'{self.url}').json()['results'][0]
         self.assertTrue(notification['read'])
         self.assertTrue(notification['seen'])
-
-
-class GroupFeedViewsTestCase(APITestCase, FeedTestBase):
-    '''
-    TODO: Test permissions for group feeds before granting users access
-    '''
-    pass
