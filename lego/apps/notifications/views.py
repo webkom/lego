@@ -85,6 +85,13 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return AnnouncementListSerializer
         return super().get_serializer_class()
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(AnnouncementListSerializer(serializer.instance).data,
+                        status=status.HTTP_201_CREATED)
+
     @decorators.detail_route(methods=['POST'])
     def send(self, request, *args, **kwargs):
         instance = self.get_object()
