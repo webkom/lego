@@ -21,7 +21,7 @@ from lego.apps.users.permissions import AbakusGroupPermissionHandler, UserPermis
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
-from .validators import email_validator, student_username_validator, username_validator
+from .validators import email_blacklist_validator, student_username_validator, username_validator
 
 
 class Membership(BasisModel):
@@ -202,7 +202,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField(
         unique=True,
-        validators=[email_validator],
+        validators=[email_blacklist_validator],
         error_messages={
             'unique': 'A user with that email already exists.',
         }
