@@ -19,9 +19,9 @@ class BaseCommand(DjangoBaseCommand):
         -v 1 INFO
         -v 2 DEBUG
         """
-        verbosity = options['verbosity']
+        self.verbosity = getattr(self, 'verbosity', options['verbosity'])
         log_levels = {
-            0: logging.CRITICAL,
+            0: logging.WARNING,
             1: logging.INFO,
             2: logging.DEBUG,
             3: logging.DEBUG
@@ -29,7 +29,7 @@ class BaseCommand(DjangoBaseCommand):
 
         root_log = logging.getLogger('')
         for handler in root_log.handlers:
-            handler.setLevel(log_levels[verbosity])
+            handler.setLevel(log_levels[self.verbosity])
 
         try:
             # Gracefully exit on sigterm.
