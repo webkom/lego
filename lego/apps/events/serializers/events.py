@@ -65,7 +65,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
                   'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
                   'pools', 'company', 'active_capacity', 'feedback_required', 'is_priced',
                   'price', 'price_member', 'price_guest', 'use_stripe', 'use_captcha',
-                  'waiting_registrations', 'activation_time', 'spots_left', 'tags')
+                  'waiting_registrations', 'activation_time', 'spots_left', 'tags', 'is_merged')
         read_only = True
 
     def get_price(self, obj):

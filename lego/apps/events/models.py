@@ -435,6 +435,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.price_guest
 
     def spots_left_for_user(self, user):
+        if self.is_merged:
+            return self.active_capacity
         pools = self.get_possible_pools(user)
         if not pools:
             return None
