@@ -7,6 +7,7 @@ from lego.apps.companies.permissions import (CompanyContactPermissionHandler,
                                              CompanyInterestPermissionHandler,
                                              CompanyPermissionHandler,
                                              NestedCompanyPermissionHandler)
+from lego.apps.files.models import FileField
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, TimeStampModel
 
@@ -24,7 +25,7 @@ class Semester(BasisModel):
 
 class Company(BasisModel):
     name = models.CharField(max_length=100)
-    student_contact = models.ForeignKey(User, related_name='companies', blank=True, null=True)
+    student_contact = models.ForeignKey(User, related_name='companies', null=True)
     previous_contacts = models.ManyToManyField(User)
 
     description = models.CharField(max_length=500, blank=True)
@@ -37,6 +38,8 @@ class Company(BasisModel):
     payment_mail = models.EmailField(max_length=100, blank=True)
     comments = GenericRelation(Comment)
 
+    logo = FileField(related_name='company_logos')
+
     class Meta:
         permission_handler = CompanyPermissionHandler()
 
@@ -48,10 +51,16 @@ class Company(BasisModel):
         return self.name
 
 
+class CompanyFile(models.Model):
+    company = models.ForeignKey(Company, related_name='files')
+    file = FileField()
+
+
 class SemesterStatus(TimeStampModel):
     company = models.ForeignKey(Company, related_name='semester_statuses')
     semester = models.ForeignKey(Semester)
     contacted_status = ArrayField(models.CharField(choices=SEMESTER_STATUSES, max_length=64))
+    contract = FileField()
 
     class Meta:
         unique_together = ('semester', 'company')
