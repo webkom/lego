@@ -9,19 +9,18 @@ Documentation is located inside the docs/ folder in this repository. We also hav
 ## Getting started
 
 LEGO requires python3.6, virtualenv, docker and docker-compose. Services like Postgres, Redis,
-Elasticsearch, Thumbor and Minio runs inside docker.
+Elasticsearch, Thumbor and Minio run inside docker.
 
 
 ```bash
-    git clone git@github.com:webkom/lego.git && cd lego/
-    python3 -m venv venv
-    source venv/bin/activate
-    echo "from .development import *" > lego/settings/local.py
-    pip install -r requirements/dev.txt
-    docker-compose up -d
-    python manage.py migrate
-    python manage.py load_fixtures
-    python manage.py runserver
+$ git clone git@github.com:webkom/lego.git && cd lego/
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ echo "from .development import *" > lego/settings/local.py
+$ pip install -r requirements/dev.txt
+$ docker-compose up -d
+$ python manage.py initialize_development
+$ python manage.py runserver
 ```
 
 ## Code Style
