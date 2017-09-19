@@ -40,7 +40,8 @@ class EmailValidatorWithBlacklist(EmailValidator):
         _, domain_part = value.rsplit('@', 1)
 
         if domain_part.lower() in self.domain_blacklist:
-            raise ValidationError(self.message, code=self.code)
+            message = 'You can\'t use a {} email for your personal account.'.format(domain_part)
+            raise ValidationError(message, code=self.code)
 
     def __eq__(self, other):
         return self.domain_blacklist == other.domain_blacklist and super().__eq__(other)
