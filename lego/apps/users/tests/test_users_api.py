@@ -278,13 +278,24 @@ class UpdateUsersAPITestCase(APITestCase):
     def test_update_with_super_user(self):
         self.successful_update(self.with_perm, self.test_user)
 
+    def test_update_with_invalid_email(self):
+        self.client.force_login(self.with_perm)
+        response = self.client.patch(_get_detail_url(self.test_user), {
+            'email': 'cat@gmail'
+        })
+
+        self.assertEqual(['Enter a valid email address'], response.data['email'])
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
     def test_update_with_super_user_invalid_email(self):
         """It is not possible to set an email with our GSuite domain as the address domain."""
         self.client.force_login(self.with_perm)
         response = self.client.patch(_get_detail_url(self.test_user), {
             'email': 'webkom@abakus.no'
         })
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+        self.assertEqual(['You can\'t use a abakus.no email for your personal account.'], response.data['email'])
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_username_used_by_other(self):
         """Try to change username to something used by another user with different casing"""
