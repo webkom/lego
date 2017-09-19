@@ -1,0 +1,10 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Bedrift: {{ company_name }}
+
+
+Interessemeldingene finnes også på {{ frontend_url }}/companyInterest/
+
+{% endblock %}

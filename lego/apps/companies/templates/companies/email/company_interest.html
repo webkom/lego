@@ -1,0 +1,28 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-info">
+            Nytt interesseskjema
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Bedrift: {{ company }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+            <a href="{{ frontend_url }}/companyInterest/" class="btn-primary" itemprop="url">Vis interessemeldinger</a>
+        </td>
+    </tr>
+
+
+{% endblock %}

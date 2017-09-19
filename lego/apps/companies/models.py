@@ -10,6 +10,7 @@ from lego.apps.companies.permissions import (CompanyContactPermissionHandler,
 from lego.apps.files.models import FileField
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, TimeStampModel
+from lego.utils.tasks import send_email
 
 from .constants import COMPANY_EVENTS, SEMESTER, SEMESTER_STATUSES
 
@@ -93,3 +94,16 @@ class CompanyInterest(BasisModel):
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        send_email.delay(
+            to_email='bedriftskontakt@abakus.no',
+            context={
+                'company_name': self.company_name
+
+            },
+            subject='En ny bedrift har meldt sin interesse',
+            plain_template='companies/email/company_interest.txt',
+            html_template='companies/email/company_interest.html',
+        )
