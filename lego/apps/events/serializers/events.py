@@ -63,8 +63,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'pools', 'company',
-                  'active_capacity', 'feedback_required', 'is_priced', 'price', 'use_stripe',
-                  'use_captcha', 'waiting_registrations', 'activation_time', 'spots_left', 'tags')
+                  'active_capacity', 'feedback_required', 'is_priced', 'price', 'price_member',
+                  'price_guest', 'use_stripe', 'use_captcha', 'waiting_registrations',
+                  'activation_time', 'spots_left', 'tags')
         read_only = True
 
     def get_price(self, obj):
@@ -90,8 +91,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'event_type',
-                  'location', 'is_priced', 'price_member', 'use_stripe', 'start_time',
-                  'end_time', 'merge_time', 'use_captcha', 'tags', 'pools')
+                  'location', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
+                  'start_time', 'end_time', 'merge_time', 'use_captcha', 'tags', 'pools')
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
