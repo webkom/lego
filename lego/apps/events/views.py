@@ -70,10 +70,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         try:
             event_id = self.kwargs.get('pk', None)
-            instance = super().update(request, *args, **kwargs)
+            response = super().update(request, *args, **kwargs)
             cache.set(f'event_lock-{event_id}', 'expansion-bump', timeout=60)
             check_for_bump_on_pool_creation_or_expansion.delay(event_id)
-            return instance
+            return response
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
 

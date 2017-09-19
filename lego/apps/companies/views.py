@@ -11,6 +11,7 @@ from lego.apps.companies.serializers import (CompanyAdminDetailSerializer,
                                              SemesterStatusSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
+from lego.utils.tasks import send_email
 
 
 class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -79,3 +80,15 @@ class CompanyInterestViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return CompanyInterestListSerializer
         return CompanyInterestSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        interest = CompanyInterest.objects.get(id=response.data['id'])
+        send_email.delay(
+            to_email='bedriftskontakt@abakus.no',
+            context=interest.generate_mail_context(),
+            subject='En ny bedrift har meldt sin interesse',
+            plain_template='companies/email/company_interest.txt',
+            html_template='companies/email/company_interest.html',
+        )
+        return response
