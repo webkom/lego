@@ -3,6 +3,7 @@ from rest_framework.routers import SimpleRouter
 
 from lego.apps.permissions.actions import action_to_permission
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.stats.statsd_client import statsd
 
 permission_cache = {}
 
@@ -17,6 +18,7 @@ def permission_handler(view, model):
     return handler
 
 
+@statsd.timer('permissions.action_grant')
 def get_viewset_permissions(viewset, model, user, obj, queryset):
     """
     Return a list of actions a user can perform on a viewset. We use the SimpleRouter to extract

@@ -5,6 +5,7 @@ from push_notifications import NotificationError
 from structlog import get_logger
 
 from lego import celery_app
+from lego.apps.stats.statsd_client import statsd
 
 from .email import EmailMessage
 from .push import PushMessage
@@ -40,6 +41,7 @@ class AbakusTask(celery.Task):
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
+@statsd.timer('task.send_email')
 def send_email(self, logger_context=None, **kwargs):
     """
     Generic task to send emails with retries.
@@ -56,6 +58,7 @@ def send_email(self, logger_context=None, **kwargs):
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
+@statsd.timer('task.send_push')
 def send_push(self, logger_context=None, **kwargs):
     """
     Generic task to send push messages.

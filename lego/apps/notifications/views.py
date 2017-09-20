@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from lego.apps.notifications import constants
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.stats.utils import track
 
 from .models import Announcement, NotificationSetting
 from .serializers import (AnnouncementDetailSerializer, AnnouncementListSerializer,
@@ -100,5 +101,7 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise exceptions.ValidationError('message already sent')
 
         instance.send()
+
+        track(request.user, 'announcement.send', properties={'announcement_id': instance.id})
 
         return Response({'status': 'message queued for sending'}, status=status.HTTP_202_ACCEPTED)
