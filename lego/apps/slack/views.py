@@ -2,6 +2,8 @@ import structlog
 from rest_framework import exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
+from lego.apps.stats.utils import track
+
 from .serializers import SlackInviteSerializer
 from .utils import SlackException, SlackInvite
 
@@ -27,6 +29,7 @@ class SlackInviteViewSet(viewsets.ViewSet):
         try:
             slack_invite = SlackInvite()
             slack_invite.invite(email)
+            track(self.request.user, 'slack.invite', properties={'email': email})
         except SlackException as ex:
             log.warn('slack_invite_failed', email=email, exception=str(ex))
             raise exceptions.ValidationError({'detail': str(ex)})

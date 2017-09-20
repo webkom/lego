@@ -33,7 +33,7 @@ def _proxy(method, user, *args, **kwargs):
     }
 
     if user.is_authenticated:
-        kwargs['user_id'] = user.username
+        kwargs['user_id'] = user.id
     else:
         kwargs['anonymous_id'] = 'unknown'
 
@@ -49,10 +49,12 @@ def identify(user):
 
     if user.is_authenticated:
         traits.update({
+            'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'full_name': user.full_name,
-            'email': user.email
+            'email': user.email,
+            'gender': user.gender,
         })
     else:
         log.warn('analytics_identify_unknown_user')
