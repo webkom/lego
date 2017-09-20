@@ -11,7 +11,6 @@ from lego.apps.companies.serializers import (CompanyAdminDetailSerializer,
                                              SemesterStatusSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
-from lego.utils.tasks import send_email
 
 
 class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
