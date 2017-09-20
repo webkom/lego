@@ -160,3 +160,38 @@ class EventMethodTest(TestCase):
         self.assertEqual(
             event.waiting_registrations.count(), people_to_place_in_waiting_list
         )
+
+    def test_spots_left_for_user_before_merge(self):
+        """Test that spots_left_for_user returns correct number of spots"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+
+        pool = event.pools.get(name='Abakusmember')
+        pool.capacity = 10
+        pool.save()
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        self.assertEqual(event.spots_left_for_user(user), 8)
+
+    def test_spots_left_for_user_before_merge_multiple_pools(self):
+        """Test that spots_left_for_user returns correct number of spots with multiple pools"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+
+        pool = event.pools.get(name='Abakusmember')
+        pool.capacity = 10
+        pool.save()
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+
+        self.assertEqual(event.spots_left_for_user(user), 11)
+
+    def test_spots_left_for_user_after_merge(self):
+        """Test that spots_left_for_user returns correct number of spots after merge"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+
+        event.merge_time = timezone.now() - timedelta(days=1)
+        event.save()
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        self.assertEqual(event.spots_left_for_user(user), 3)

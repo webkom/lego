@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Count, Sum
 from django.utils import timezone
 
 from lego.apps.companies.models import Company
@@ -88,11 +88,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def get_absolute_url(self):
         return f'{settings.FRONTEND_URL}/events/{self.id}/'
 
-    def can_register(self, user, pool, future=False):
+    def can_register(self, user, pool, future=False, is_registered=None):
         if not pool.is_activated and not future:
             return False
 
-        if self.is_registered(user):
+        if is_registered is None:
+            is_registered = self.is_registered(user)
+
+        if is_registered:
             return False
 
         for group in pool.permission_groups.all():
@@ -116,8 +119,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 return reg_time + timedelta(hours=3)
         return reg_time
 
-    def get_possible_pools(self, user, future=False):
-        return [pool for pool in self.pools.all() if self.can_register(user, pool, future)]
+    def get_possible_pools(self, user, future=False, all_pools=None):
+        if not all_pools:
+            all_pools = self.pools.all()
+        is_registered = self.is_registered(user)
+        if is_registered:
+            return []
+        return [pool for pool in all_pools if self.can_register(user, pool, future, is_registered)]
 
     def register(self, registration):
         """
@@ -435,11 +443,16 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.price_guest
 
     def spots_left_for_user(self, user):
-        if self.is_merged:
-            return self.active_capacity
-        pools = self.get_possible_pools(user)
+
+        all_pools = self.pools.all()
+        pools = self.get_possible_pools(user, all_pools=all_pools)
         if not pools:
             return None
+
+        if self.is_merged:
+            return all_pools.annotate(Count('registrations'))\
+                .aggregate(spots_left=Sum('capacity') - Sum('registrations__count'))['spots_left']
+
         return sum([pool.spots_left() for pool in pools])
 
     @property
