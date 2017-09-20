@@ -69,10 +69,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         at the end of the Celery-task.
         """
         try:
-            event = Event.objects.get(pk=self.kwargs.get('pk', None))
+            event_id = self.kwargs.get('pk', None)
             instance = super().update(request, *args, **kwargs)
-            cache.set(f'event_lock-{event.id}', 'expansion-bump', timeout=60)
-            check_for_bump_on_pool_creation_or_expansion.delay(event)
+            cache.set(f'event_lock-{event_id}', 'expansion-bump', timeout=60)
+            check_for_bump_on_pool_creation_or_expansion.delay(event_id)
             return instance
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
