@@ -23,6 +23,9 @@ PENALTY_CREATION = 'penalty_creation'
 # Restricted Mail
 RESTRICTED_MAIL_SENT = 'restricted_mail_sent'
 
+# Company
+COMPANY_INTEREST_CREATED = 'company_interest_created'
+
 # Notifications
 ANNOUNCEMENT = 'announcement'
 
@@ -34,6 +37,7 @@ NOTIFICATION_TYPES = [
     MEETING_INVITE,
     PENALTY_CREATION,
     RESTRICTED_MAIL_SENT,
+    COMPANY_INTEREST_CREATED,
     ANNOUNCEMENT
 ]
 
