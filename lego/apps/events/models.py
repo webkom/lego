@@ -119,12 +119,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 return reg_time + timedelta(hours=3)
         return reg_time
 
-    def get_possible_pools(self, user, future=False, all_pools=None):
+    def get_possible_pools(self, user, future=False, all_pools=None, is_registered=None):
         if not all_pools:
             all_pools = self.pools.all()
-        is_registered = self.is_registered(user)
-        if is_registered:
-            return []
+        if is_registered is None:
+            is_registered = self.is_registered(user)
+            if is_registered:
+                return []
         return [pool for pool in all_pools if self.can_register(user, pool, future, is_registered)]
 
     def register(self, registration):
@@ -163,7 +164,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             raise EventHasStarted()
 
         with cache.lock(f'event_lock-{self.id}', timeout=20):
-            possible_pools = self.get_possible_pools(user)
+            possible_pools = self.get_possible_pools(user, is_registered=registration.is_registered)
             if not possible_pools:
                 raise ValueError('No available pools')
             if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
@@ -596,6 +597,10 @@ class Registration(BasisModel):
     def save(self, *args, **kwargs):
         self.validate()
         super().save(*args, **kwargs)
+
+    @property
+    def is_registered(self):
+        return self.pool is not None
 
     def validate(self):
         if self.pool and self.unregistration_date:
