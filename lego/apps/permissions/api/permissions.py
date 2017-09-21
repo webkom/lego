@@ -2,6 +2,7 @@ from rest_framework import permissions
 
 from lego.apps.permissions.actions import action_to_permission
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.stats.statsd_client import statsd
 
 
 class LegoPermissions(permissions.BasePermission):
@@ -18,6 +19,7 @@ class LegoPermissions(permissions.BasePermission):
 
         return handler
 
+    @statsd.timer('permissions.api_has_permission')
     def has_permission(self, request, view):
         # Workaround to ensure DjangoModelPermissions are not applied
         # to the root view when using DefaultRouter.
@@ -49,6 +51,7 @@ class LegoPermissions(permissions.BasePermission):
 
         return has_perm
 
+    @statsd.timer('permissions.api_has_object_permission')
     def has_object_permission(self, request, view, obj):
         if getattr(request, 'user_has_perm', False):
             return True

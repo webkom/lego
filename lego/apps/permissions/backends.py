@@ -3,6 +3,7 @@ from django.db import models
 
 from lego.apps.permissions.keyword import KeywordPermissions
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.stats.statsd_client import statsd
 
 
 class LegoPermissionBackend(ModelBackend):
@@ -18,6 +19,7 @@ class LegoPermissionBackend(ModelBackend):
     def has_module_perms(self, user_obj, app_label):
         return False
 
+    @statsd.timer('permissions.has_perm')
     def has_perm(self, user_obj, perm, obj=None):
         if not user_obj.is_active:
             return False

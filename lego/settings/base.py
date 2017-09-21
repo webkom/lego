@@ -82,6 +82,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'lego.utils.middleware.StatsDBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -90,7 +91,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'lego.utils.middleware.LoggingMiddleware'
+    'lego.utils.middleware.LoggingMiddleware',
+    'lego.utils.middleware.StatsDAfterMiddleware',
 ]
 
 TEMPLATES = [
