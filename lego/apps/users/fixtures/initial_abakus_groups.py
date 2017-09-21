@@ -45,19 +45,22 @@ initial_tree = {
                     '/sudo/admin/joblistings/',
                 ]},
                 {
-                    'Arrkom': [{'is_committee': True}, {}],
-                    'backup': [{'is_committee': True}, {}],
-                    'Bedkom': [{'is_committee': True}, {}],
-                    'Fagkom': [{'is_committee': True}, {}],
-                    'LaBamba': [{'is_committee': True}, {}],
-                    'PR': [{'is_committee': True}, {}],
-                    'readme': [{'is_committee': True}, {}],
+                    'Arrkom': [{'is_committee': True, 'logo': 'abakus_arrkom.png'}, {}],
+                    'backup': [{'is_committee': True, 'logo': 'abakus_backup.png'}, {}],
+                    'Bedkom': [{'is_committee': True, 'logo': 'abakus_bedkom.png'}, {}],
+                    'Fagkom': [{'is_committee': True, 'logo': 'abakus_fagkom.png'}, {}],
+                    'Koskom': [{'is_committee': True, 'logo': 'abakus_koskom.png'}, {}],
+                    'LaBamba': [{'is_committee': True, 'logo': 'abakus_labamba.png'}, {}],
+                    'PR': [{'is_committee': True, 'logo': 'abakus_pr.png'}, {}],
+                    'readme': [{'is_committee': True, 'logo': 'abakus_readme.png'}, {}],
                     'Webkom': [{
                         'is_committee': True,
-                        'permissions': ['/sudo/']
+                        'logo': 'abakus_webkom.png',
+                        'permissions': ['/sudo/'],
                     }, {}],
                     'Hovedstyret': [{
-                        'permissions': ['/sudo/admin/']
+                        'permissions': ['/sudo/admin/'],
+                        'logo': 'abakus_hs.png',
                     }, {}]
                 }
             ],
