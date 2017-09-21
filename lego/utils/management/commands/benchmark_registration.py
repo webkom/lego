@@ -1,13 +1,13 @@
+import cProfile
 from datetime import timedelta
 
-from lego.utils.management_command import BaseCommand
 from django.utils import timezone
 
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import async_register
-from lego.apps.users.models import User, AbakusGroup
-import cProfile
+from lego.apps.users.models import AbakusGroup, User
+from lego.utils.management_command import BaseCommand
 
 
 class Command(BaseCommand):
@@ -84,18 +84,12 @@ class Command(BaseCommand):
                 reg = Registration.objects.get_or_create(event=event, user=user)[0]
                 regs.append(reg)
 
-            # async_register.delay(reg.id)
-            diffs = []
             pr = cProfile.Profile()
             pr.enable()
             for reg in regs:
-                #    time = timezone.now()
                 reg.event.register(reg)
-                #    diffs.append(timezone.now() - time)
             pr.disable()
             pr.dump_stats(f'profile_avg{event.id}.pstat')
-            #avg = sum(diffs, timedelta()) / len(diffs)
-            #print('TIME: ', avg)
 
         def benchmark(event, users):
 
