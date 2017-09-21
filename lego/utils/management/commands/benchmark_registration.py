@@ -37,6 +37,7 @@ class Command(BaseCommand):
     def run(self, *args, **options):
 
         user_group = AbakusGroup.objects.get_or_create(name='Users')[0]
+        abakus_group = AbakusGroup.objects.get_or_create(name='Abakus')[0]
         users = []
 
         for i in range(200):
@@ -58,12 +59,12 @@ class Command(BaseCommand):
             event=event, name="Users", capacity=100,
             activation_date=(timezone.now() - timedelta(days=1))
         )
-        pool1.permission_groups.set([1])
+        pool1.permission_groups.set([user_group.id])
         pool2 = Pool.objects.create(
             event=event, name="Abakus", capacity=10,
             activation_date=(timezone.now() - timedelta(days=1))
         )
-        pool2.permission_groups.set([2])
+        pool2.permission_groups.set([abakus_group.id])
 
         def single_benchmark(event, user):
 
@@ -75,7 +76,7 @@ class Command(BaseCommand):
 
             reg.event.register(reg)
             pr.disable()
-            pr.dump_stats('profile.pstat')
+            pr.dump_stats(f'single{event.id}.pstat')
 
         def single_benchmark_avg(event, users):
 
@@ -89,7 +90,7 @@ class Command(BaseCommand):
             for reg in regs:
                 reg.event.register(reg)
             pr.disable()
-            pr.dump_stats(f'profile_avg{event.id}.pstat')
+            pr.dump_stats(f'single_avg{event.id}.pstat')
 
         def benchmark(event, users):
 
@@ -104,24 +105,20 @@ class Command(BaseCommand):
             input('Start the celery workers: DONE?')
 
             registrations = Registration.objects.filter(event=event).order_by('registration_date')
-            for reg in registrations:
-                print(reg.id, reg.registration_date)
+
             first = registrations.first()
             last = registrations.last()
-
-            print(first.id, first.registration_date)
-            print(last.id, last.registration_date)
 
             diff = last.registration_date - first.registration_date
             print(f'Number of registrations: {registrations.count()}')
             print(f'Number pool1 {pool1.registrations.count()} / 100')
             print(f'Number pool2 {pool2.registrations.count()} / 10')
-            print(f'Time per regstration {diff.total_seconds() / registrations.count()}')
-            print('Total time', diff.total_seconds())
+            print(f'Time per registration {diff.total_seconds() * 1000 / registrations.count()}')
+            print(f'Total time: {diff.total_seconds() * 1000}')
 
         if options['single']:
             single_benchmark(event, users[0])
         elif options['singleavg']:
             single_benchmark_avg(event, users)
-        elif options['benchmark']:
+        elif options['multi']:
             benchmark(event, users)
