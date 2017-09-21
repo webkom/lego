@@ -16,4 +16,4 @@ def track(user, event, properties=None):
     analytics_track(user, event, properties)
 
     # Output the event as a log message.
-    log.info(event, {'user_id': user_id, **properties})
+    log.info(event, user_id=user_id, **properties)
