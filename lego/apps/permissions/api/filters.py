@@ -1,6 +1,7 @@
 from rest_framework import filters
 
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.stats.statsd_client import statsd
 
 
 class LegoPermissionFilter(filters.BaseFilterBackend):
@@ -17,6 +18,7 @@ class LegoPermissionFilter(filters.BaseFilterBackend):
 
         return handler
 
+    @statsd.timer('permissions.api_filter_queryset')
     def filter_queryset(self, request, queryset, view):
 
         has_keyword_permissions = getattr(request, 'user_has_perm', False)

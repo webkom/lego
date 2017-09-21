@@ -1,5 +1,5 @@
-from lego.apps.stats.analytics_client import track
 from lego.apps.stats.statsd_client import statsd
+from lego.apps.stats.utils import track
 
 from . import backend
 from .permissions import has_permission
