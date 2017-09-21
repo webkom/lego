@@ -124,9 +124,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             all_pools = self.pools.all()
         if is_registered is None:
             is_registered = self.is_registered(user)
-            if is_registered:
-                return []
-        return [pool for pool in all_pools if self.can_register(user, pool, future, is_registered)]
+        if is_registered:
+            return []
+        queryset = all_pools.filter(permission_groups__in=user.all_groups)
+        if future:
+            return queryset
+        return queryset.filter(activation_date__lte=timezone.now())
 
     def register(self, registration):
         """
