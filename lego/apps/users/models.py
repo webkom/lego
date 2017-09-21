@@ -53,6 +53,7 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     is_committee = models.BooleanField(default=False)
     is_interest_group = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
+    logo = FileField(related_name='group_pictures')
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
