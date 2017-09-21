@@ -71,7 +71,8 @@ class CompanyListSerializer(BasisModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'website', 'company_type', 'address', 'logo', 'thumbnail')
+        fields = ('id', 'name', 'description', 'website', 'company_type', 'address', 'logo',
+                  'thumbnail')
 
 
 class CompanyAdminListSerializer(BasisModelSerializer):
@@ -104,6 +105,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
 
     student_contact = PublicUserField(required=False, allow_null=True, queryset=User.objects.all())
     semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
+    company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
     logo = ImageField(required=False, options={'height': 500})
     files = CompanyFileSerializer(many=True, read_only=True)
@@ -113,7 +115,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
         fields = ('id', 'name', 'student_contact', 'description', 'phone',
                   'company_type', 'website', 'address', 'payment_mail', 'comments',
                   'comment_target', 'semester_statuses', 'active', 'admin_comment',
-                  'logo', 'files')
+                  'logo', 'files', 'company_contacts')
 
 
 class CompanyInterestSerializer(BasisModelSerializer):

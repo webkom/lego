@@ -5,12 +5,10 @@ from lego.apps.users.models import AbakusGroup, User
 
 _test_company_data = [
     {
-        'name': 'TEST',
-        'studentContact': 1
+        'name': 'TEST'
     },
     {
-        'name': 'TEST2',
-        'studentContact': 2
+        'name': 'TEST2'
     }
 ]
 
