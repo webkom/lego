@@ -157,7 +157,8 @@ def registration_save(self, result, registration_id):
 
 
 @celery_app.task(serializer='json', bind=True)
-def check_for_bump_on_pool_creation_or_expansion(self, event):
+def check_for_bump_on_pool_creation_or_expansion(self, event_id):
+        event = Event.objects.get(pk=event_id)
         event.bump_on_pool_creation_or_expansion()
         cache.delete(f'event_lock-{event.id}')
 
