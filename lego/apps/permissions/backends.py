@@ -19,7 +19,7 @@ class LegoPermissionBackend(ModelBackend):
     def has_module_perms(self, user_obj, app_label):
         return False
 
-    @statsd.timer('permission.has_perm')
+    @statsd.timer('permissions.has_perm')
     def has_perm(self, user_obj, perm, obj=None):
         if not user_obj.is_active:
             return False

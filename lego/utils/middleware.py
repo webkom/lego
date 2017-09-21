@@ -12,6 +12,20 @@ log = get_logger()
 development = getattr(settings, 'DEVELOPMENT', False)
 
 
+def method(request):
+    method = request.method
+    if method not in (
+            'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'OPTIONS', 'CONNECT', 'PATCH'
+    ):
+        return 'INVALID'
+    return method
+
+
+def url(request):
+    url = request.path
+    return url
+
+
 class LoggingMiddleware(MiddlewareMixin):
     """
     Attach request information to the log context
@@ -49,31 +63,24 @@ class LoggingMiddleware(MiddlewareMixin):
 class StatsDBeforeMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        statsd.incr('requests.total')
+        statsd.incr(f'request.total.{method(request)}.{url(request)}')
         request.statsd_before_middleware_event = timeit.default_timer()
 
     def process_response(self, request, response):
-        statsd.incr('responses.total')
+        statsd.incr(f'response.total.{method(request)}.{url(request)}')
 
         if hasattr(request, 'statsd_before_middleware_event'):
             statsd.timing(
-                'request.latency', timeit.default_timer() - request.statsd_before_middleware_event
+                f'request.latency.{method(request)}.{url(request)}',
+                timeit.default_timer() - request.statsd_before_middleware_event
             )
         else:
-            statsd.incr('requests.unknown_latency')
+            statsd.incr(f'request.unknown_latency.{method(request)}.{url(request)}')
 
         return response
 
 
 class StatsDAfterMiddleware(MiddlewareMixin):
-
-    def method(self, request):
-        method = request.method
-        if method not in (
-                'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'OPTIONS', 'CONNECT', 'PATCH'
-        ):
-            return 'INVALID'
-        return method
 
     def process_request(self, request):
         request.statsd_after_middleware_event = timeit.default_timer()
@@ -81,12 +88,10 @@ class StatsDAfterMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
         if hasattr(request, 'statsd_after_middleware_event'):
             statsd.timing(
-                'response.latency', timeit.default_timer() - request.statsd_after_middleware_event
+                f'response.latency.{method(request)}.{url(request)}',
+                timeit.default_timer() - request.statsd_after_middleware_event
             )
         else:
-            statsd.incr('response.unknown_latency')
-
-        method = self.method(request)
-        statsd.incr(f'request.method.{method}')
+            statsd.incr(f'response.unknown_latency.{method(request)}.{url(request)}')
 
         return response
