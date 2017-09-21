@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.users.fields import PublicUserField
-from lego.apps.users.models import AbakusGroup, Membership, User
+from lego.apps.users.models import Membership, User
 
 
 class MembershipSerializer(serializers.ModelSerializer):
@@ -17,24 +17,4 @@ class MembershipSerializer(serializers.ModelSerializer):
             'is_active',
             'start_date',
             'end_date',
-        )
-
-
-class MembershipGroupSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Membership
-        fields = (
-            'user',
-            'role',
-        )
-
-
-class MembershipSetMembershipSerializer(serializers.ModelSerializer):
-    memberships = MembershipGroupSerializer(many=True)
-
-    class Meta:
-        model = AbakusGroup
-        fields = (
-            'memberships',
         )
