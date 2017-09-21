@@ -43,8 +43,9 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Pool
-        fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups')
-        extra_kwargs = {'id': {'read_only': False, 'required': False}}
+        fields = ('id', 'name', 'capacity', 'activation_date', 'registrations', 'permission_groups')
+        extra_kwargs = {'id': {'read_only': False, 'required': False},
+                        'registrations': {'read_only': True}}
 
     def create(self, validated_data):
         event = Event.objects.get(pk=self.context['view'].kwargs['event_pk'])
