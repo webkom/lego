@@ -45,18 +45,6 @@ class Command(BaseCommand):
     def run(self, *args, **options):
         log.info('Loading regular fixtures:')
 
-        # Helpers
-        uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
-
-        def upload_file(file, key):
-            """
-            Helper function for file uploads to S3
-            """
-            assets_folder = os.path.join(settings.BASE_DIR, '../assets')
-            local_file = os.path.join(assets_folder, file)
-            log.info(f'Uploading {key} file to bucket')
-            storage.upload_file(uploads_bucket, key, local_file)
-
         if options['generate']:
             self.generate_groups()
 
@@ -67,23 +55,7 @@ class Command(BaseCommand):
         ])
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
-            # Prepare storage bucket for development. We skips this in production.
-            # The bucket needs to be created manually.
-            log.info(f'Makes sure the {uploads_bucket} bucket exists')
-            storage.create_bucket(uploads_bucket)
-            upload_file('abakus.png', 'abakus.png')
-            upload_file('test_event_cover.png', 'test_event_cover.png')
-            upload_file('test_article_cover.png', 'test_article_cover.png')
-            upload_file('default_male_avatar.png', 'default_male_avatar.png')
-            upload_file('default_male_avatar.png', 'default_other_avatar.png')
-            upload_file('default_female_avatar.png', 'default_female_avatar.png')
-            upload_file('abakus_logo.png', 'abakus_logo.png')
-            upload_file('abakus_bedkom.png', 'abakus_bedkom.png')
-            upload_file('abakus_koskom.png', 'abakus_koskom.png')
-            upload_file('abakus_labamba.png', 'abakus_labamba.png')
-            upload_file('abakus_readme.png', 'abakus_readme.png')
-            upload_file('abakus_webkom.png', 'abakus_webkom.png')
-
+            self.upload_files()
             log.info('Loading development fixtures:')
             self.load_fixtures([
                 'users/fixtures/development_users.yaml',
@@ -106,6 +78,21 @@ class Command(BaseCommand):
             self.update_event_dates()
 
         log.info('Done!')
+
+    def upload_files(self):
+        """
+        Helper function for file uploads to S3
+        """
+        # Prepare storage bucket for development.
+        # We skip this in production, where the bucket needs to be created manually.
+        uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
+        log.info(f'Makes sure the {uploads_bucket} bucket exists')
+        storage.create_bucket(uploads_bucket)
+        assets_folder = os.path.join(settings.BASE_DIR, '../assets')
+        for file in os.listdir(assets_folder):
+            log.info(f'Uploading {file} file to bucket')
+            file_path = os.path.join(assets_folder, file)
+            storage.upload_file(uploads_bucket, file, file_path)
 
     def update_event_dates(self):
         date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
