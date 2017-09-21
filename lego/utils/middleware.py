@@ -53,7 +53,8 @@ class LoggingMiddleware(MiddlewareMixin):
 
         context['version'] = environ.get('RELEASE', 'latest')
         context['system'] = 'lego'
-        context['environment'] = 'development' if development else 'production'
+        context['environment'] = \
+            'development' if development else getattr(settings, 'ENVIRONMENT_NAME', 'unknown')
         context['request_path'] = request.path
         context['request_method'] = request.method
 
