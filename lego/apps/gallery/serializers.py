@@ -76,7 +76,7 @@ class GallerySerializer(BasisModelSerializer):
     pictures = PictureListField()
     cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
     photographers = PublicUserField(many=True, queryset=User.objects.all())
-    event = PublicEventField(queryset=Event.objects.all())
+    event = PublicEventField(queryset=Event.objects.all(), required=False)
 
     class Meta:
         model = Gallery
