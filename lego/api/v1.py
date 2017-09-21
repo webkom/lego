@@ -27,7 +27,7 @@ from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
-from lego.apps.users.views.memberships import MembershipSetViewSet, MembershipViewSet
+from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.password_change import ChangePasswordViewSet
 from lego.apps.users.views.password_reset import (PasswordResetPerformViewSet,
                                                   PasswordResetRequestViewSet)
@@ -60,8 +60,6 @@ router.register(r'meetings/(?P<meeting_pk>\d+)/invitations',
 router.register(r'meeting-token',
                 MeetingInvitationTokenViewSet, base_name='meeting-token')
 router.register(r'memberships', MembershipViewSet)
-router.register(r'memberships/(?P<group_pk>\d+)/set-all',
-                MembershipSetViewSet, base_name='membership-set-all')
 router.register(
     r'notification-settings', NotificationSettingsViewSet, base_name='notifications-settings'
 )
