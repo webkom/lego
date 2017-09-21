@@ -79,7 +79,6 @@ class Command(BaseCommand):
 
         log.info('Done!')
 
-
     def upload_files(self):
         """
         Helper function for file uploads to S3
