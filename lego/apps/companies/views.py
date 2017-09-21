@@ -7,8 +7,8 @@ from lego.apps.companies.serializers import (CompanyAdminDetailSerializer,
                                              CompanyDetailSerializer, CompanyFileSerializer,
                                              CompanyInterestListSerializer,
                                              CompanyInterestSerializer, CompanyListSerializer,
-                                             SemesterSerializer, SemesterStatusSerializer,
-                                             SemesterStatusDetailSerializer)
+                                             SemesterSerializer, SemesterStatusDetailSerializer,
+                                             SemesterStatusSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 
@@ -42,19 +42,17 @@ class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 class SemesterStatusViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = SemesterStatus.objects.all()
+    serializer_class = SemesterStatusDetailSerializer
 
     def get_queryset(self):
         company_id = self.kwargs['company_pk']
         return SemesterStatus.objects.filter(company=company_id)
 
     def get_serializer_class(self):
-        if not self.request:
-            return SemesterStatusDetailSerializer
-
         if self.action == 'list':
             return SemesterStatusSerializer
 
-        return SemesterStatusDetailSerializer
+        return super().get_serializer_class()
 
 
 class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
