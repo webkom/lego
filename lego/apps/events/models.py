@@ -165,8 +165,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         with cache.lock(f'event_lock-{self.id}', timeout=20):
             all_pools = self.pools.all()
-            possible_pools = self.get_possible_pools(user, all_pools=all_pools,
-                                                     is_registered=registration.is_registered)
+            possible_pools = self.get_possible_pools(
+                user, all_pools=all_pools, is_registered=registration.is_registered
+            )
             if not possible_pools:
                 raise ValueError('No available pools')
             if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
@@ -571,7 +572,7 @@ class Registration(BasisModel):
     user = models.ForeignKey(User, related_name='registrations')
     event = models.ForeignKey(Event, related_name='registrations')
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
-    registration_date = models.DateTimeField(db_index=True, auto_now_add=True)
+    registration_date = models.DateTimeField(db_index=True, null=True)
     unregistration_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=100, blank=True)
     admin_reason = models.CharField(max_length=100, blank=True)
@@ -645,9 +646,11 @@ class Registration(BasisModel):
                 penalty.delete()
 
     def add_to_pool(self, pool):
+        self.registration_date = timezone.now()
         return self.set_values(pool, None, constants.SUCCESS_REGISTER)
 
     def add_to_waiting_list(self):
+        self.registration_date = timezone.now()
         return self.set_values(None, None, constants.SUCCESS_REGISTER)
 
     def unregister(self):
