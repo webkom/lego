@@ -177,7 +177,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 raise ValueError('Not open yet')
 
             # If the event is merged or has only one pool we can skip a lot of logic
-            if self.is_merged or (len(possible_pools) == 1 and all_pools.count() == 1):
+            if self.is_merged or all_pools.count() == 1:
                 if self.is_full or penalties >= 3:
                     return registration.add_to_waiting_list()
 
@@ -663,5 +663,5 @@ class Registration(BasisModel):
         self.pool = pool
         self.unregistration_date = unregistration_date
         self.status = status
-        self.save()
+        self.save(update_fields=['registration_date', 'pool', 'unregistration_date', 'status'])
         return self
