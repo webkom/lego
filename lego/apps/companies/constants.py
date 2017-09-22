@@ -22,6 +22,13 @@ COMPANY_EVENTS = (
     (OTHER, OTHER),
 )
 
+TRANSLATED_EVENTS = {
+    COMPANY_PRESENTATION: 'Bedriftspresentasjon',
+    COURSE: 'Kurs',
+    LUNCH_PRESENTATION: 'Lunsjpresentasjon',
+    BEDEX: 'Bedex',
+    OTHER: 'Annet',
+}
 
 INTERESTED = 'interested'
 NOT_INTERESTED = 'not_interested'

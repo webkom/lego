@@ -1,0 +1,34 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-info">
+            Nytt interesseskjema
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr class="content-block">
+        <p>Bedrift: {{ company_name }}</p>
+        <p>Kontaktperson: {{ contact_person }}</p>
+        <p>E-post: {{ mail }}</p>
+        <p>Semestere: {{ semesters }}</p>
+        <p>Arrangementer: {{ events }}</p>
+        <p>Annonsere i readme: {{ readme }}</p>
+        <p>Samarbeid med andre foreninger: {{ collaboration }}</p>
+        <p>Stand på itDAGENE: {{ itdagene }}</p>
+        <p>Kommentar: {{ comment }}</p>
+    </tr>
+    
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+            <a href="{{ frontend_url }}/companyInterest/" class="btn-primary" itemprop="url">Vis interessemeldinger</a>
+        </td>
+    </tr>
+
+
+{% endblock %}

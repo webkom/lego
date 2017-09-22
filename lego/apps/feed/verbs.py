@@ -101,3 +101,12 @@ class AnnouncementVerb(Verb):
 
 
 register(AnnouncementVerb)
+
+
+class CompanyInterestVerb(Verb):
+    id = 14
+    infinitive = 'company_interest'
+    past_tense = infinitive
+
+
+register(CompanyInterestVerb)

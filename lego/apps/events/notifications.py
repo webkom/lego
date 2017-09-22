@@ -9,7 +9,6 @@ class EventBumpNotification(Notification):
 
     def generate_mail(self):
         event = self.kwargs['event']
-        reason = self.kwargs['reason']
 
         return self._delay_mail(
             to_email=self.user.email,
@@ -17,11 +16,10 @@ class EventBumpNotification(Notification):
                 'event': event.title,
                 'name': self.user.full_name,
                 'slug': event.slug,
-                'reason': reason
             },
             subject=f'Du er flyttet opp fra ventelisten på arrangementet {event.title}',
-            plain_template='event/email/bump.txt',
-            html_template='event/email/bump.html',
+            plain_template='events/email/bump.txt',
+            html_template='events/email/bump.html',
         )
 
     def generate_push(self):
@@ -51,8 +49,8 @@ class EventPaymentOverdueNotification(Notification):
                 'slug': event.slug,
             },
             subject=f'Du har ikke betalt påmeldingen på arrangementet {event.title}',
-            plain_template='event/email/payment_overdue.txt',
-            html_template='event/email/payment_overdue.html',
+            plain_template='events/email/payment_overdue.txt',
+            html_template='events/email/payment_overdue.html',
         )
 
     def generate_push(self):
@@ -73,6 +71,7 @@ class EventAdminRegistrationNotification(Notification):
 
     def generate_mail(self):
         event = self.kwargs['event']
+        reason = self.kwargs['reason']
 
         return self._delay_mail(
             to_email=self.user.email,
@@ -80,10 +79,11 @@ class EventAdminRegistrationNotification(Notification):
                 'event': event.title,
                 'name': self.user.full_name,
                 'slug': event.slug,
+                'reason': reason
             },
             subject=f'Du har blitt adminpåmeldt på arrangementet {event.title}',
-            plain_template='event/email/admin_registration.txt',
-            html_template='event/email/admin_registration.html',
+            plain_template='events/email/admin_registration.txt',
+            html_template='events/email/admin_registration.html',
         )
 
     def generate_push(self):

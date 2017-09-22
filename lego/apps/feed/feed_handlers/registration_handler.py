@@ -49,7 +49,7 @@ class RegistrationHandler(BaseHandler):
 
         # Send Notification
         notification = EventBumpNotification(
-            registration.user, event=registration.event, reason='Det har blitt ledig plass til deg.'
+            registration.user, event=registration.event
         )
         notification.notify()
 
@@ -64,7 +64,7 @@ class RegistrationHandler(BaseHandler):
 
         # Send Notification
         notification = EventAdminRegistrationNotification(
-            registration.user, event=registration.event
+            registration.user, event=registration.event, reason=registration.admin_reason
         )
         notification.notify()
 

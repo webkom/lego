@@ -11,7 +11,8 @@ from lego.apps.files.models import FileField
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, TimeStampModel
 
-from .constants import COMPANY_EVENTS, SEMESTER, SEMESTER_STATUSES
+from .constants import (AUTUMN, COMPANY_EVENTS, SEMESTER, SEMESTER_STATUSES, SPRING,
+                        TRANSLATED_EVENTS)
 
 
 class Semester(BasisModel):
@@ -86,10 +87,38 @@ class CompanyInterest(BasisModel):
     mail = models.EmailField()
     semesters = models.ManyToManyField(Semester, blank=True)
     events = ArrayField(models.CharField(max_length=64, choices=COMPANY_EVENTS))
-    read_me = models.BooleanField(default=False)
+    readme = models.BooleanField(default=False)
     collaboration = models.BooleanField(default=False)
     itdagene = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
+
+    def generate_mail_context(self):
+        readme = 'Ja' if self.readme else 'Nei'
+        collaboration = 'Ja' if self.collaboration else 'Nei'
+        itdagene = 'Ja' if self.itdagene else 'Nei'
+
+        semesters = []
+        for semester in self.semesters.all():
+            if semester.semester == SPRING:
+                semesters.append(f'Vår {semester.year}')
+            elif semester.semester == AUTUMN:
+                semesters.append(f'Høst {semester.year}')
+
+        events = []
+        for event in self.events:
+            events.append(TRANSLATED_EVENTS[event])
+
+        return {
+            'company_name': self.company_name,
+            'contact_person': self.contact_person,
+            'mail': self.mail,
+            'semesters': ', '.join(semesters),
+            'events': ', '. join(events),
+            'readme': readme,
+            'collaboration': collaboration,
+            'itdagene': itdagene,
+            'comment': self.comment
+        }
