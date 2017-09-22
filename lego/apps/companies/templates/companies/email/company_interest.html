@@ -12,20 +12,18 @@
 
 {% block content %}
 
-    <tr>
-        <td class="content-block">
-            Bedrift: {{ company_name }}
-            Kontaktperson: {{ contact_person }}
-            E-post: {{ mail }}
-            Semestere: {{ semesters }}
-            Arrangementer: {{ events }}
-            Annonsere i readme: {{ readme }}
-            Samarbeid med andre foreninger: {{ collaboration }}
-            Stand på itDAGENE: {{ itdagene }}
-            Kommentar: {{ comment }}
-        </td>
+    <tr class="content-block">
+        <p>Bedrift: {{ company_name }}</p>
+        <p>Kontaktperson: {{ contact_person }}</p>
+        <p>E-post: {{ mail }}</p>
+        <p>Semestere: {{ semesters }}</p>
+        <p>Arrangementer: {{ events }}</p>
+        <p>Annonsere i readme: {{ readme }}</p>
+        <p>Samarbeid med andre foreninger: {{ collaboration }}</p>
+        <p>Stand på itDAGENE: {{ itdagene }}</p>
+        <p>Kommentar: {{ comment }}</p>
     </tr>
-
+    
     <tr>
         <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
             <a href="{{ frontend_url }}/companyInterest/" class="btn-primary" itemprop="url">Vis interessemeldinger</a>
