@@ -777,3 +777,23 @@ class RegistrationTestCase(TestCase):
 
         no_of_waiting_registrations_after = event.waiting_registrations.count()
         self.assertEqual(no_of_waiting_registrations_after, 0)
+
+    def test_register_when_unregister_when_event_is_full(self):
+        """Test that counter works when registering after an event is full"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(6)
+        user_one = users[0]
+        user_two = users[-1]
+
+        for user in users[:5]:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        AbakusGroup.objects.get(name='Webkom').add_user(user_two)
+        registration_one = Registration.objects.get(event=event, user=user_one)
+        registration_two = Registration.objects.create(event=event, user=user_two)
+        event.unregister(registration_one)
+
+        event.register(registration_two)
+        self.assertTrue(registration_two.is_registered)
