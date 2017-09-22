@@ -77,6 +77,7 @@ class File(TimeStampModel):
         known_mime_types = {
             'image/jpeg': IMAGE,
             'image/png': IMAGE,
+            'image/gif': IMAGE,
             'application/pdf': DOCUMENT
         }
 
