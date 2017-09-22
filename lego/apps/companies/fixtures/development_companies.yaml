@@ -84,7 +84,7 @@
   pk: 4
   fields:
     semester: 4
-    contacted_status: ['anniversary']
+    contacted_status: ['contacted']
     company: 1
 
   # Company 2

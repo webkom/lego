@@ -2,8 +2,9 @@ from rest_framework import routers
 
 from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
-from lego.apps.companies.views import (CompanyContactViewSet, CompanyInterestViewSet,
-                                       CompanyViewSet, SemesterStatusViewSet, SemesterViewSet)
+from lego.apps.companies.views import (CompanyContactViewSet, CompanyFilesViewSet,
+                                       CompanyInterestViewSet, CompanyViewSet,
+                                       SemesterStatusViewSet, SemesterViewSet)
 from lego.apps.email.views import AbakusGroupEmailViewSet, EmailListViewSet, UserEmailViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
@@ -45,6 +46,8 @@ router.register(r'companies/(?P<company_pk>\d+)/company-contacts',
                 CompanyContactViewSet, base_name='company-contact')
 router.register(r'companies/(?P<company_pk>\d+)/semester-statuses',
                 SemesterStatusViewSet, base_name='semester-status')
+router.register(r'companies/(?P<company_pk>\d+)/files',
+                CompanyFilesViewSet, base_name='company-files')
 router.register(r'company-interests', CompanyInterestViewSet, base_name='company-interest')
 router.register(r'company-semesters', SemesterViewSet)
 router.register(r'events', EventViewSet, base_name='event')
