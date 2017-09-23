@@ -8,7 +8,9 @@ from lego.apps.users.models import User
 class FollowEventViewTestCase(APITestCase):
 
     fixtures = [
-        'initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_abakus_groups.yaml', 'test_users.yaml',
+        'test_companies.yaml',
+        'test_events.yaml',
         'test_followevent.yaml'
     ]
     url = '/api/v1/followers-event/'
@@ -58,7 +60,8 @@ class FollowEventViewTestCase(APITestCase):
 class FollowUserViewTestCase(APITestCase):
 
     fixtures = [
-        'initial_abakus_groups.yaml', 'test_users.yaml', 'test_followuser.yaml'
+        'test_abakus_groups.yaml',
+        'test_users.yaml', 'test_followuser.yaml'
     ]
     url = '/api/v1/followers-user/'
 
@@ -107,8 +110,8 @@ class FollowUserViewTestCase(APITestCase):
 class FollowCompanyViewTestCase(APITestCase):
 
     fixtures = [
-        'initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-        'test_followcompany.yaml'
+        'test_abakus_groups.yaml', 'test_users.yaml',
+        'test_companies.yaml', 'test_followcompany.yaml'
     ]
     url = '/api/v1/followers-company/'
 

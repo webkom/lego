@@ -13,8 +13,8 @@ from lego.apps.users.models import AbakusGroup, User
 
 @skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class TestRegistrationHandler(FeedTestBase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml'
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
+                'test_companies.yaml', 'test_events.yaml'
                 ]
 
     def setUp(self):

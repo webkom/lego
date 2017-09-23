@@ -112,7 +112,7 @@ class RetrieveUsersAPITestCase(APITestCase):
 
 
 class CreateUsersAPITestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_registration_data = {
         'username': 'test_username',
@@ -357,7 +357,7 @@ class DeleteUsersAPITestCase(APITestCase):
 
 
 class RetrieveSelfTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
                 'test_events.yaml']
 
     def setUp(self):

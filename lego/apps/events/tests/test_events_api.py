@@ -109,7 +109,7 @@ def _get_registrations_detail_url(event_pk, registration_pk):
 
 
 class ListEventsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -136,7 +136,7 @@ class ListEventsTestCase(APITestCase):
 
 
 class RetrieveEventsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -191,7 +191,7 @@ class RetrieveEventsTestCase(APITestCase):
 
 
 class CreateEventsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -300,7 +300,7 @@ class CreateEventsTestCase(APITestCase):
 
 
 class PoolsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -356,7 +356,7 @@ class PoolsTestCase(APITestCase):
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
 class RegistrationsTestCase(APITransactionTestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -533,7 +533,7 @@ class RegistrationsTestCase(APITransactionTestCase):
 
 
 class EventAdministrateTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -556,7 +556,7 @@ class EventAdministrateTestCase(APITestCase):
 
 
 class CreateAdminRegistrationTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -649,7 +649,7 @@ class StripePaymentTestCase(APITestCase):
     Testing cards used:
     https://stripe.com/docs/testing#cards
     """
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -695,24 +695,29 @@ class StripePaymentTestCase(APITestCase):
 
 
 class CapacityExpansionTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_events.yaml',
                 'test_users.yaml', 'test_companies.yaml']
 
     def setUp(self):
         self.webkom_user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
-        self.client.force_authenticate(self.webkom_user)
 
-        self.event_response = self.client.post(_get_list_url(), _test_event_data[0])
+        abakus_group = AbakusGroup.objects.get(name='Abakus')
+        webkom_group = AbakusGroup.objects.get(name='Webkom')
+        webkom_group.add_user(self.webkom_user)
+        self.client.force_authenticate(self.webkom_user)
+        event_data = _test_event_data[0]
+        event_data['pools'][0]['permission_groups'] = [abakus_group.id]
+
+        self.event_response = self.client.post(_get_list_url(), event_data)
         self.event = Event.objects.get(id=self.event_response.data.pop('id', None))
         self.event.start_time = timezone.now() + timedelta(hours=3)
         users = get_dummy_users(11)
         for user in users:
-            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            abakus_group.add_user(user)
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
         self.assertEquals(self.event.waiting_registrations.count(), 1)
-        self.updated_event = deepcopy(_test_event_data[0])
+        self.updated_event = deepcopy(event_data)
         self.updated_event['pools'][0]['id'] = self.event_response.data['pools'][0]['id']
 
     def test_bump_on_pool_expansion(self):

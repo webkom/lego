@@ -9,7 +9,7 @@ from lego.apps.users.models import User
 
 class SlackInviteTestCase(APITestCase):
 
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.url = '/api/v1/slack-invite/'
