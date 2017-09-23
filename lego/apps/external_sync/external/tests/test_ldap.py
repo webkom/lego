@@ -29,10 +29,11 @@ class LDAPTestCase(TestCase):
     def test_filter_groups(self):
         """Return groups with a name in the LDAP_GROUPS setting plus committees"""
         filtered = self.ldap.filter_groups(AbakusGroup.objects.all()).values_list('name', flat=True)
-        self.assertListEqual(
-            list(filtered),
-            list(AbakusGroup.objects.filter(is_committee=True).values_list('name', flat=True)) +
-            ['UserAdminTest']
+        self.assertSetEqual(
+            set(filtered),
+            set(AbakusGroup.objects.filter(
+                is_committee=True
+            ).values_list('name', flat=True)).union(['UserAdminTest'])
         )
 
     def test_search_user(self):

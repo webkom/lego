@@ -5,7 +5,85 @@
     file_type: image
     token: token
     public: true
-- pk: default_male_avatar.png
+- pk: not_public.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: false
+- pk: abakus_arrkom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_backup.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_bedkom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_fagkom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+
+- pk: abakus_hs.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_koskom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_labamba.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_logo.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_pr.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_readme.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
+- pk: abakus_webkom.png
   model: files.File
   fields:
     state: ready
@@ -18,6 +96,13 @@
     state: ready
     file_type: image
     token: token
+- pk: default_male_avatar.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
 - pk: default_other_avatar.png
   model: files.File
   fields:
@@ -25,10 +110,17 @@
     file_type: image
     token: token
     public: true
-- pk: not_public.png
+- pk: test_article_cover.png
   model: files.File
   fields:
     state: ready
     file_type: image
     token: token
-    public: false
+    public: true
+- pk: test_event_cover.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true

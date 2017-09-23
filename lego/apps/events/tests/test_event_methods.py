@@ -10,7 +10,7 @@ from .utils import get_dummy_users
 
 
 class EventMethodTest(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
                 'test_events.yaml']
 
     def setUp(self):
