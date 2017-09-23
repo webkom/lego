@@ -1,0 +1,33 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-info">
+            Kontaktskjema
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Tittel: {{title}}
+        </td>
+    </tr>
+
+    <tr>
+        <td> class="content-block">
+            Avsender: {{from_name}} {{from_email}}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            {{message}}
+        </td>
+    </tr>
+
+{% endblock %}
