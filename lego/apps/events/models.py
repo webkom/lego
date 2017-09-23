@@ -232,7 +232,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                         reason='Unregistered from event too late',
                         weight=1, source_event=self
                     )
-            self.check_for_bump_or_rebalance(pool)
+            with transaction.atomic():
+                locked_event = Event.objects.select_for_update().get(pk=self.id)
+                locked_event.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
         """
@@ -243,9 +245,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         If no one is waiting for `open_pool`, check if anyone is waiting for
         any of the other pools and attempt to rebalance.
 
+        NOTE: Remember to lock the event using select_for_update!
+
         :param open_pool: The pool where the unregistration happened.
         """
-        if self.number_of_registrations < self.active_capacity:
+        if not self.is_full:
             if self.is_merged:
                 self.bump()
             elif not open_pool.is_full:
@@ -681,7 +685,8 @@ class Registration(BasisModel):
         return self.set_values(None, None, constants.SUCCESS_REGISTER)
 
     def unregister(self, is_merged=None):
-        if not is_merged:
+        # We do not care about the counter if the event is merged or pool is None
+        if not is_merged and self.pool:
             with transaction.atomic():
                 locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
                 locked_pool.counter -= 1
