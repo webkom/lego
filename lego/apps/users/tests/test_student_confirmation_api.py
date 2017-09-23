@@ -25,7 +25,7 @@ def _get_student_confirmation_token_perform_url(token):
 
 
 class RetrieveStudentConfirmationAPITestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.user_with_student_confirmation = User.objects.get(username='test1')
@@ -89,7 +89,7 @@ class RetrieveStudentConfirmationAPITestCase(APITestCase):
 
 
 class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_student_confirmation_data = {
         'student_username': 'newteststudentusername',
@@ -194,7 +194,7 @@ class CreateStudentConfirmationAPITestCase(APITransactionTestCase):
 
 
 class UpdateStudentConfirmationAPITestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.user_with_student_confirmation = User.objects.get(username='test1')

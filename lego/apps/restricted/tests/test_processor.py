@@ -12,7 +12,7 @@ from lego.apps.restricted.tests.utils import read_file
 
 class MessageProcessorTestCase(TestCase):
 
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
                 'test_events.yaml', 'test_restricted_mails.yaml']
 
     def setUp(self):

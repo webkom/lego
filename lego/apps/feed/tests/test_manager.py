@@ -16,9 +16,8 @@ from lego.apps.feed.verbs import CommentVerb
 @skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class ManagerTestCase(FeedTestBase):
 
-    fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
-    ]
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
+                'test_comments.yaml']
 
     def setUp(self):
         self.comment = Comment.objects.first()

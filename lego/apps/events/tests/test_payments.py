@@ -17,7 +17,7 @@ class StripePaymentTestCase(APITestCase):
     Testing cards used:
     https://stripe.com/docs/testing#cards
     """
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
     def setUp(self):

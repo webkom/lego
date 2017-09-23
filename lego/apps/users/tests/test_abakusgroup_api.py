@@ -22,7 +22,7 @@ def _get_detail_url(pk):
 
 
 class ListAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.all_groups = AbakusGroup.objects.all()

@@ -56,7 +56,7 @@ def _get_company_contacts_detail_url(company_pk, pk):
 
 
 class ListCompaniesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -77,7 +77,7 @@ class ListCompaniesTestCase(APITestCase):
 
 
 class RetrieveCompaniesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -97,7 +97,7 @@ class RetrieveCompaniesTestCase(APITestCase):
 
 
 class CreateCompaniesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -130,7 +130,7 @@ class CreateCompaniesTestCase(APITestCase):
 
 
 class DeleteCompaniesTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -153,7 +153,7 @@ class DeleteCompaniesTestCase(APITestCase):
 
 
 class CreateSemesterStatusTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -196,7 +196,7 @@ class CreateSemesterStatusTestCase(APITestCase):
 
 
 class DeleteSemesterStatusTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -216,7 +216,7 @@ class DeleteSemesterStatusTestCase(APITestCase):
 
 
 class CreateCompanyContactsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -257,7 +257,7 @@ class CreateCompanyContactsTestCase(APITestCase):
 
 
 class DeleteCompanyContacsTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_users.yaml']
 
     def setUp(self):

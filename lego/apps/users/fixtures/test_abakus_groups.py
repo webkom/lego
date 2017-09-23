@@ -88,11 +88,35 @@ test_tree = {
             '/sudo/admin/emaillists/'
         ]
     }, {}],
-    'Webkom': [{
+    'Users': [{
+        'description': 'Brukere på Abakus.no'
+    }, {}],
+    'Abakus': [{
+        'description': 'Medlemmer av Abakus',
         'permissions': [
-            '/sudo/'
-        ]
-    }, {}]
+            '/sudo/admin/meetings/create',
+            '/sudo/admin/meetinginvitations/create',
+            '/sudo/admin/registrations/create/',
+            '/sudo/admin/events/payment/'
+        ]},
+        {
+            'Abakom': [{
+                'description': 'Medlemmer av Abakom',
+                'permissions': [
+                    '/sudo/admin/events/',
+                    '/sudo/admin/pools/',
+                    '/sudo/admin/registrations/',
+                    '/sudo/admin/companies/',
+                    '/sudo/admin/joblistings/',
+                ]},
+                {
+                    'Bedkom': [{'is_committee': True}, {}],
+                    'Fagkom': [{'is_committee': True}, {}],
+                    'Webkom': [{'is_committee': True, 'permissions': ['/sudo/'], }, {}],
+                }
+            ],
+        }
+    ],
 }
 
 

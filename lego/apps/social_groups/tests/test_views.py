@@ -45,7 +45,7 @@ def _get_detail_url(pk):
 
 class ListInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -72,7 +72,7 @@ class ListInterestGroupAPITestCase(APITestCase):
 
 class RetrieveInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -126,7 +126,7 @@ class RetrieveInterestGroupAPITestCase(APITestCase):
 
 class CreateInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -184,7 +184,7 @@ class CreateInterestGroupAPITestCase(APITestCase):
 
 class UpdateInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()
@@ -239,7 +239,7 @@ class UpdateInterestGroupAPITestCase(APITestCase):
 
 class DeleteInterestGroupAPITestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.interest_groups = InterestGroup.objects.all()

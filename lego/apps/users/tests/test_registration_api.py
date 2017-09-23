@@ -39,7 +39,7 @@ class RetrieveRegistrationAPITestCase(APITestCase):
 
 class CreateRegistrationAPITestCase(APITransactionTestCase):
 
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_registration_data = {
         'email': 'new_test1@user.com',
