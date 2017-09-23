@@ -7,10 +7,12 @@ from django.core.management import call_command
 from django.utils import timezone
 
 from lego.apps.events.models import Event
+from lego.apps.files.models import File
 from lego.apps.files.storage import storage
 from lego.apps.social_groups.fixtures.development_interest_groups import load_dev_interest_groups
 from lego.apps.users.fixtures.initial_abakus_groups import load_abakus_groups
 from lego.apps.users.fixtures.test_abakus_groups import load_test_abakus_groups
+from lego.apps.users.models import User
 from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -55,11 +57,10 @@ class Command(BaseCommand):
         ])
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
-            self.upload_files()
+            self.upload_development_files()
             log.info('Loading development fixtures:')
             self.load_fixtures([
                 'users/fixtures/development_users.yaml',
-                'files/fixtures/development_files.yaml',
                 'social_groups/fixtures/development_interest_groups.yaml',
                 'gallery/fixtures/development_galleries.yaml',
                 'users/fixtures/development_memberships.yaml',
@@ -79,7 +80,7 @@ class Command(BaseCommand):
 
         log.info('Done!')
 
-    def upload_files(self):
+    def upload_development_files(self):
         """
         Helper function for file uploads to S3
         """
@@ -89,10 +90,18 @@ class Command(BaseCommand):
         log.info(f'Makes sure the {uploads_bucket} bucket exists')
         storage.create_bucket(uploads_bucket)
         assets_folder = os.path.join(settings.BASE_DIR, '../assets')
+        user = User.objects.get(pk=1)
         for file in os.listdir(assets_folder):
             log.info(f'Uploading {file} file to bucket')
             file_path = os.path.join(assets_folder, file)
             storage.upload_file(uploads_bucket, file, file_path)
+            File.objects.get_or_create(pk=file, defaults={
+                'state': 'ready',
+                'file_type': 'image',
+                'token': 'token',
+                'user': user,
+                'public': True,
+            })
 
     def update_event_dates(self):
         date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
