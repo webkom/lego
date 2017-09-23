@@ -2,10 +2,21 @@ from rest_framework import serializers
 
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.memberships import MembershipSerializer
+from lego.apps.users.models import GroupText
+
+
+class GroupTextSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GroupText
+        fields = (
+            'text'
+        )
 
 
 class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
     memberships = MembershipSerializer(many=True, read_only=True)
+    group_text = GroupTextSerializer(read_only=True)
 
     class Meta:
         model = AbakusGroup
@@ -15,7 +26,9 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             'description',
             'parent',
             'permissions',
-            'memberships'
+            'users',
+            'group_type',
+            'group_text',
         )
 
 

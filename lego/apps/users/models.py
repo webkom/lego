@@ -46,6 +46,13 @@ class Membership(BasisModel):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
 
+class GroupText(PersistentModel):
+    text = models.TextField(blank=True)
+    # comments = GenericRelation(Comment)
+    # reactions = GenericRelation(Reaction)
+    # tags = ManyToManyField(Tag, blank=True)
+
+
 class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
@@ -54,6 +61,8 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     is_interest_group = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
     logo = FileField(related_name='group_pictures')
+    group_type = models.CharField(max_length=10, choices=constants.GROUP_TYPES, default=constants.GROUP_OTHER)
+    group_text = models.ForeignKey(GroupText, related_name='group', blank=True, null=True)
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),

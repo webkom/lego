@@ -58,6 +58,7 @@ initial_tree = {
                         'is_committee': True,
                         'logo_id': 'abakus_webkom.png',
                         'permissions': ['/sudo/'],
+                        'group_text': 'Hei hallo hva skjer? \n\n Vi progger LEGO xd'
                     }, {}],
                     'Hovedstyret': [{
                         'logo_id': 'abakus_hs.png',
