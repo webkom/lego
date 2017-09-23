@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'lego.apps.permissions',
     'lego.apps.articles',
     'lego.apps.comments',
+    'lego.apps.contact',
     'lego.apps.content',
     'lego.apps.events',
     'lego.apps.external_sync',

@@ -1,0 +1,13 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Det er sendt inn en ny henvendelse fra kontaktskjemaet.
+
+Tittel: {{title}}
+
+Avsender: {{from_name}} {{from_email}}
+
+{{message}}
+
+{% endblock %}
