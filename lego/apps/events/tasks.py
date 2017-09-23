@@ -36,12 +36,6 @@ class Payment(celery_app.Task):
     default_retry_delay = 5
     registration = None
 
-    def on_retry(self, *args):
-        notify_user_registration(
-            constants.SOCKET_PAYMENT_FAILURE, self.registration,
-            error_msg=f'Payment failed, retrying #{self.request.retries+1}'
-        )
-
     def on_failure(self, return_value, *args):
         if self.request.retries == self.max_retries:
             if return_value.json_body:
@@ -160,7 +154,8 @@ def registration_save(self, result, registration_id):
 def check_for_bump_on_pool_creation_or_expansion(self, event_id):
         event = Event.objects.get(pk=event_id)
         event.bump_on_pool_creation_or_expansion()
-        cache.delete(f'event_lock-{event.id}')
+        event.is_ready = True
+        event.save(update_fields=['is_ready'])
 
 
 @celery_app.task(serializer='json')

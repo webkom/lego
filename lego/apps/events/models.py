@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.db.models import Count, Sum
@@ -51,6 +50,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
+
+    is_ready = models.BooleanField(default=True)
 
     class Meta:
         permission_handler = EventPermissionHandler()
@@ -170,6 +171,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         possible_pools = self.get_possible_pools(
             user, all_pools=all_pools, is_registered=registration.is_registered
         )
+        if not self.is_ready:
+            raise ValueError('Event is not ready')
         if not possible_pools:
             raise ValueError('No available pools')
         if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
@@ -220,17 +223,16 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
-        with cache.lock(f'event_lock-{self.id}', timeout=20):
-            registration.unregister()
-            if pool:
-                if self.heed_penalties and pool.passed_unregistration_deadline():
-                    if not registration.user.penalties.filter(source_event=self).exists():
-                        Penalty.objects.create(
-                            user=registration.user,
-                            reason='Unregistered from event too late',
-                            weight=1, source_event=self
-                        )
-                self.check_for_bump_or_rebalance(pool)
+        registration.unregister(is_merged=self.is_merged)
+        if pool:
+            if self.heed_penalties and pool.passed_unregistration_deadline():
+                if not registration.user.penalties.filter(source_event=self).exists():
+                    Penalty.objects.create(
+                        user=registration.user,
+                        reason='Unregistered from event too late',
+                        weight=1, source_event=self
+                    )
+            self.check_for_bump_or_rebalance(pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
         """
@@ -678,11 +680,12 @@ class Registration(BasisModel):
         self.registration_date = timezone.now()
         return self.set_values(None, None, constants.SUCCESS_REGISTER)
 
-    def unregister(self):
-        with transaction.atomic():
-            locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
-            locked_pool.counter -= 1
-            locked_pool.save(update_fields=['counter'])
+    def unregister(self, is_merged=None):
+        if not is_merged:
+            with transaction.atomic():
+                locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
+                locked_pool.counter -= 1
+                locked_pool.save(update_fields=['counter'])
         return self.set_values(None, timezone.now(), constants.SUCCESS_UNREGISTER)
 
     def set_values(self, pool, unregistration_date, status):
