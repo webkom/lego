@@ -28,7 +28,7 @@ def _get_invitations_list_url(pk):
 
 
 class CreateMeetingTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -51,7 +51,7 @@ class CreateMeetingTestCase(APITestCase):
 
 
 class RetrieveMeetingTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -106,7 +106,7 @@ class RetrieveMeetingTestCase(APITestCase):
 
 
 class DeleteMeetingTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -138,8 +138,7 @@ class DeleteMeetingTestCase(APITestCase):
 
 
 class InviteToMeetingTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
-                'test_users.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=3)
@@ -241,7 +240,7 @@ class InviteToMeetingTestCase(APITestCase):
 
 
 class UpdateInviteTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 
     def setUp(self):
@@ -292,7 +291,7 @@ class UpdateInviteTestCase(APITestCase):
 
 
 class UnauthorizedTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_meetings.yaml',
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
                 'test_users.yaml']
 
     def setUp(self):

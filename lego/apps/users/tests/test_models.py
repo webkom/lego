@@ -12,7 +12,7 @@ from lego.utils.test_utils import fake_time
 
 
 class AbakusGroupTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'development_interest_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml']
 
     def setUp(self):
         self.non_committee = AbakusGroup(name='testgroup')
@@ -24,7 +24,7 @@ class AbakusGroupTestCase(TestCase):
 
 
 class AbakusGroupHierarchyTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml']
+    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml']
 
     def setUp(self):
         self.abakom = AbakusGroup.objects.get(name='Abakom')
@@ -80,12 +80,7 @@ class AbakusGroupHierarchyTestCase(TestCase):
 
 
 class UserTestCase(TestCase):
-    fixtures = [
-        'initial_abakus_groups.yaml',
-        'test_users.yaml',
-        'development_interest_groups.yaml',
-        'test_files.yaml'
-    ]
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_files.yaml']
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -193,7 +188,7 @@ class UserTestCase(TestCase):
 
 
 class MembershipTestCase(TestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.test_committee = AbakusGroup.objects.get(name='Webkom')
@@ -222,7 +217,7 @@ class MembershipTestCase(TestCase):
 
 
 class PenaltyTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'initial_abakus_groups.yaml', 'test_companies.yaml',
+    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_companies.yaml',
                 'test_events.yaml']
 
     def setUp(self):

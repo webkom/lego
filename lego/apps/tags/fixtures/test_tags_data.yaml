@@ -11,7 +11,8 @@
   fields:
     user:
       - admin
-    abakus_group: 11
+    abakus_group:
+      - Webkom
     start_date: 1990-01-01
 
 - model: users.User
@@ -27,7 +28,8 @@
   fields:
     user:
       - admin
-    abakus_group: 2
+    abakus_group:
+      - Abakus
     start_date: 1990-01-01
 
 - model: users.User

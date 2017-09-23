@@ -63,7 +63,7 @@ def _get_detail_url(pk):
 
 class ListJoblistingsTestCase(APITestCase):
     fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'initial_abakus_groups.yaml']
+                'development_companies.yaml', 'test_abakus_groups.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -91,7 +91,7 @@ class ListJoblistingsTestCase(APITestCase):
 
 class RetrieveJoblistingsTestCase(APITestCase):
     fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'initial_abakus_groups.yaml']
+                'development_companies.yaml', 'test_abakus_groups.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -112,7 +112,7 @@ class RetrieveJoblistingsTestCase(APITestCase):
 
 class CreateJoblistingsTestCase(APITestCase):
     fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'initial_abakus_groups.yaml']
+                'development_companies.yaml', 'test_abakus_groups.yaml']
 
     def setUp(self):
         self.abakom_user = User.objects.get(username='abakommer')
@@ -132,7 +132,7 @@ class CreateJoblistingsTestCase(APITestCase):
 
 class EditJoblistingsTestCase(APITestCase):
     fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'initial_abakus_groups.yaml']
+                'development_companies.yaml', 'test_abakus_groups.yaml']
 
     def setUp(self):
         self.abakom_user = User.objects.get(username='abakommer')
@@ -163,7 +163,7 @@ class EditJoblistingsTestCase(APITestCase):
 
 class DeleteJoblistingsTestCase(APITestCase):
     fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'initial_abakus_groups.yaml']
+                'development_companies.yaml', 'test_abakus_groups.yaml']
 
     def setUp(self):
         self.joblisting = Joblisting.objects.get(id=1)
