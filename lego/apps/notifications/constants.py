@@ -26,6 +26,10 @@ RESTRICTED_MAIL_SENT = 'restricted_mail_sent'
 # Company
 COMPANY_INTEREST_CREATED = 'company_interest_created'
 
+# Comment
+COMMENT = 'comment'
+COMMENT_REPLY = 'comment_reply'
+
 # Notifications
 ANNOUNCEMENT = 'announcement'
 
@@ -38,6 +42,8 @@ NOTIFICATION_TYPES = [
     PENALTY_CREATION,
     RESTRICTED_MAIL_SENT,
     COMPANY_INTEREST_CREATED,
+    COMMENT,
+    COMMENT_REPLY,
     ANNOUNCEMENT
 ]
 
