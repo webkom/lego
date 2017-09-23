@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 import stripe
-from django.core.cache import cache
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from redis.exceptions import LockError
@@ -152,10 +151,12 @@ def registration_save(self, result, registration_id):
 
 @celery_app.task(serializer='json', bind=True)
 def check_for_bump_on_pool_creation_or_expansion(self, event_id):
-        event = Event.objects.get(pk=event_id)
-        event.bump_on_pool_creation_or_expansion()
-        event.is_ready = True
-        event.save(update_fields=['is_ready'])
+    """Task checking for bumps when event and pools are updated"""
+    # Event is locked using the instance field "is_ready"
+    event = Event.objects.get(pk=event_id)
+    event.bump_on_pool_creation_or_expansion()
+    event.is_ready = True
+    event.save(update_fields=['is_ready'])
 
 
 @celery_app.task(serializer='json')
@@ -175,32 +176,37 @@ def stripe_webhook_event(event_id, event_type):
 
 @celery_app.task(serializer='json')
 def check_events_for_registrations_with_expired_penalties():
-    events = Event.objects.filter(start_time__gte=timezone.now()).exclude(registrations=None)
-    for event in events:
-        with cache.lock(f'event_lock-{event.id}'):
-            if event.waiting_registrations.exists():
-                for pool in event.pools.all():
+    events_ids = Event.objects.filter(
+        start_time__gte=timezone.now()
+    ).exclude(registrations=None).values_list(flat=True)
+    for event_id in events_ids:
+        with transaction.atomic():
+            locked_event = Event.objects.select_for_update().get(pk=event_id)
+            if locked_event.waiting_registrations.exists():
+                for pool in locked_event.pools.all():
                     if pool.is_activated and not pool.is_full:
-                        for i in range(event.waiting_registrations.count()):
-                            event.check_for_bump_or_rebalance(pool)
+                        for i in range(locked_event.waiting_registrations.count()):
+                            locked_event.check_for_bump_or_rebalance(pool)
                             if pool.is_full:
                                 break
 
 
 @celery_app.task(serializer='json')
 def bump_waiting_users_to_new_pool():
-    events = Event.objects.filter(start_time__gte=timezone.now()).exclude(registrations=None)
-    for event in events:
-        with cache.lock(f'event_lock-{event.id}'):
-            if event.waiting_registrations.exists():
-                for pool in event.pools.all():
+    events_ids = Event.objects.filter(start_time__gte=timezone.now()).exclude(
+        registrations=None).values_list(flat=True)
+    for event_id in events_ids:
+        with transaction.atomic():
+            locked_event = Event.objects.select_for_update().get(pk=event_id)
+            if locked_event.waiting_registrations.exists():
+                for pool in locked_event.pools.all():
                     if not pool.is_full:
                         act = pool.activation_date
                         now = timezone.now()
                         if not pool.is_activated and act < now + timedelta(minutes=35):
-                            event.early_bump(pool)
+                            locked_event.early_bump(pool)
                         elif pool.is_activated and act > now - timedelta(minutes=35):
-                            event.early_bump(pool)
+                            locked_event.early_bump(pool)
 
 
 @celery_app.task(serializer='json')
