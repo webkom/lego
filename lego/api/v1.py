@@ -38,6 +38,7 @@ from lego.apps.users.views.registration import UserRegistrationRequestViewSet
 from lego.apps.users.views.student_confirmation import (StudentConfirmationPerformViewSet,
                                                         StudentConfirmationRequestViewSet)
 from lego.apps.users.views.users import UsersViewSet
+from lego.utils.views import SiteMetaViewSet
 
 router = routers.DefaultRouter()
 router.register(r'articles', ArticlesViewSet)
@@ -120,3 +121,4 @@ router.register(r'email-lists', EmailListViewSet, base_name='email-lists')
 router.register(r'email-users', UserEmailViewSet, base_name='email-users')
 router.register(r'email-groups', AbakusGroupEmailViewSet, base_name='email-groups')
 router.register(r'contact-form', ContactFormViewSet, base_name='contact-form')
+router.register(r'site-meta', SiteMetaViewSet, base_name='site-meta')
