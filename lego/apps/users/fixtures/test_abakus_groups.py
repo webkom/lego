@@ -92,7 +92,7 @@ test_tree = {
         'permissions': [
             '/sudo/'
         ]
-    }]
+    }, {}]
 }
 
 
