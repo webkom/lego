@@ -57,10 +57,10 @@ class Command(BaseCommand):
         ])
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
+            self.load_fixtures(['users/fixtures/development_users.yaml'])
             self.upload_development_files()
             log.info('Loading development fixtures:')
             self.load_fixtures([
-                'users/fixtures/development_users.yaml',
                 'social_groups/fixtures/development_interest_groups.yaml',
                 'gallery/fixtures/development_galleries.yaml',
                 'users/fixtures/development_memberships.yaml',
@@ -116,6 +116,11 @@ class Command(BaseCommand):
     def generate_groups(self):
         self.call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
         self.call_command('migrate')
+        self.load_fixtures([
+            'files/fixtures/initial_files.yaml',
+            'users/fixtures/development_users.yaml',
+        ])
+        self.upload_development_files()
         load_abakus_groups()
         with open('lego/apps/users/fixtures/initial_abakus_groups.yaml', 'w') as f:
             f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
