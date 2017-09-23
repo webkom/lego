@@ -1,5 +1,4 @@
 from celery import chain
-from django.core.cache import cache
 from django.db import transaction
 from django.db.models import Prefetch
 from rest_framework import decorators, mixins, status, viewsets
@@ -69,11 +68,13 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         at the end of the Celery-task.
         """
         try:
-            event_id = self.kwargs.get('pk', None)
-            response = super().update(request, *args, **kwargs)
-            cache.set(f'event_lock-{event_id}', 'expansion-bump', timeout=60)
-            check_for_bump_on_pool_creation_or_expansion.delay(event_id)
-            return response
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(is_ready=False)
+
+            check_for_bump_on_pool_creation_or_expansion.delay(instance.id)
+            return Response(serializer.data)
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
 
