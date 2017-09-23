@@ -10,8 +10,6 @@ from django.utils import timezone
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
-from lego.apps.social_groups.fixtures.development_interest_groups import load_dev_interest_groups
-from lego.apps.social_groups.models import InterestGroup
 from lego.apps.users.fixtures.initial_abakus_groups import load_abakus_groups
 from lego.apps.users.fixtures.test_abakus_groups import load_test_abakus_groups
 from lego.apps.users.models import AbakusGroup, User
@@ -63,7 +61,8 @@ class Command(BaseCommand):
             self.upload_development_files()
             log.info('Loading development fixtures:')
             self.load_fixtures([
-                'social_groups/fixtures/development_interest_groups.yaml',
+                'users/fixtures/development_users.yaml',
+                'files/fixtures/development_files.yaml',
                 'gallery/fixtures/development_galleries.yaml',
                 'users/fixtures/development_memberships.yaml',
                 'companies/fixtures/development_companies.yaml',
@@ -119,15 +118,11 @@ class Command(BaseCommand):
         self.call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
         self.call_command('migrate')
         load_test_abakus_groups()
-        load_dev_interest_groups()
         test_abakus_groups = AbakusGroup.objects.all()
-        interest_groups = InterestGroup.objects.all()
         with open('lego/apps/users/fixtures/test_abakus_groups.yaml', 'w') as f:
             f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
                     " and `development_interest_groups.py`\n#\n")
             data = serializers.serialize("yaml", test_abakus_groups)
-            f.write(data)
-            data = serializers.serialize("yaml", interest_groups)
             f.write(data)
 
         self.call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
@@ -144,16 +139,4 @@ class Command(BaseCommand):
             f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
                     " and `initial_abakus_groups.py`\n#\n")
             data = serializers.serialize("yaml", abakus_groups)
-            f.write(data)
-
-        load_dev_interest_groups()
-        dev_interest_social_group = InterestGroup.objects.all()
-        dev_interest_groups = AbakusGroup.objects.filter(
-            pk__in=dev_interest_social_group.values_list('id', flat=True))
-        with open('lego/apps/social_groups/fixtures/development_interest_groups.yaml', 'w') as f:
-            f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
-                    " and `development_interest_groups.py`\n#\n")
-            data = serializers.serialize("yaml", dev_interest_groups)
-            f.write(data)
-            data = serializers.serialize("yaml", dev_interest_social_group)
             f.write(data)
