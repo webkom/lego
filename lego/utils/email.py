@@ -18,13 +18,15 @@ def send_email(to_email, context, subject, plain_template, html_template, from_e
     if html_template:
         html_body = render_to_string(html_template, context)
 
-    log.info('send_mail', subject=subject, from_email=from_email, recipient_list=[to_email])
+    recipient_list = to_email if isinstance(to_email, list) else [to_email]
+
+    log.info('send_mail', subject=subject, from_email=from_email, recipient_list=recipient_list)
 
     django_send_mail(
         subject=subject,
         message=plain_body,
         from_email=from_email,
-        recipient_list=[to_email],
+        recipient_list=recipient_list,
         html_message=transform(html_body),
         fail_silently=False
     )
