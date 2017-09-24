@@ -4,7 +4,7 @@
 
 Hei, {{ name }}!
 
-{author_name} har kommentert på {target_title}
+{{ author_name }} har kommentert på {{ target }}
 
 Les mer på {{ frontend_url }}/
 

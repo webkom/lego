@@ -4,7 +4,7 @@
 
 Hei, {{ name }}!
 
-{author_name} har svart på din kommentar på {target_title}
+{{ author_name }} har svart på din kommentar på {{ target }}
 
 Les mer på {{ frontend_url }}/
 

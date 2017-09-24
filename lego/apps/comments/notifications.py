@@ -15,10 +15,10 @@ class CommentNotification(Notification):
             to_email=self.user.email,
             context={
                 'name': self.user.full_name,
-                'target_title': target.title,
+                'target': target,
                 'author_name': author.full_name
             },
-            subject=f'{author.full_name} har kommentert på {target.title}',
+            subject=f'{author.full_name} har kommentert på {target}',
             plain_template='comments/email/comment.txt',
             html_template='comments/email/comment.html',
         )
@@ -37,10 +37,10 @@ class CommentReplyNotification(Notification):
             to_email=self.user.email,
             context={
                 'name': self.user.full_name,
-                'target_title': target.title,
+                'target': target,
                 'author_name': author.full_name
             },
-            subject=f'{author.full_name} har svart på kommentaren din på {target.title}',
+            subject=f'{author.full_name} har svart på kommentaren din på {target}',
             plain_template='comments/email/comment_reply.txt',
             html_template='comments/email/comment_reply.html',
         )
