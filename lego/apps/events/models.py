@@ -32,7 +32,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     """
     event_type = models.CharField(max_length=50, choices=constants.EVENT_TYPES)
     location = models.CharField(max_length=100)
-    cover = FileField(related_name='event_covers')
+    cover = FileField(related_name='event_covers', default=constants.PLACEHOLDER_EVENT_COVER)
 
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()

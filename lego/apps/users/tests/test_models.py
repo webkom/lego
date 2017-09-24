@@ -217,8 +217,8 @@ class MembershipTestCase(TestCase):
 
 
 class PenaltyTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = ['initial_files.yaml', 'test_users.yaml', 'test_abakus_groups.yaml',
+                'test_companies.yaml', 'test_events.yaml']
 
     def setUp(self):
         self.test_user = User.objects.get(pk=1)

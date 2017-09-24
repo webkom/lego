@@ -7,7 +7,7 @@ from lego.apps.users.models import User
 
 
 class TagsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_tags_data.yaml',
+    fixtures = ['initial_files.yaml', 'test_abakus_groups.yaml', 'test_tags_data.yaml',
                 'initial_tags.yaml']
 
     def setUp(self):

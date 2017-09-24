@@ -15,7 +15,8 @@ from lego.apps.users.models import AbakusGroup, Penalty
 
 
 class PoolActivationTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml',
+    fixtures = ['initial_files.yaml',
+                'test_abakus_groups.yaml',
                 'test_users.yaml',
                 'test_events.yaml',
                 'test_companies.yaml']
@@ -183,7 +184,8 @@ class PoolActivationTestCase(APITestCase):
 
 
 class PenaltyExpiredTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml',
+    fixtures = ['initial_files.yaml',
+                'test_abakus_groups.yaml',
                 'test_users.yaml',
                 'test_events.yaml',
                 'test_companies.yaml']
@@ -328,7 +330,7 @@ class PenaltyExpiredTestCase(TestCase):
 
 
 class PaymentDueTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
+    fixtures = ['initial_files.yaml', 'test_abakus_groups.yaml', 'test_users.yaml',
                 'test_events.yaml', 'test_companies.yaml']
 
     def setUp(self):

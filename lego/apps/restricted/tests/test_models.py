@@ -5,8 +5,8 @@ from lego.apps.restricted.models import RestrictedMail
 
 class RestrictedMailModelTestCase(TestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml', 'test_restricted_mails.yaml']
+    fixtures = ['initial_files.yaml', 'test_abakus_groups.yaml', 'test_users.yaml',
+                'test_companies.yaml', 'test_events.yaml', 'test_restricted_mails.yaml']
 
     def test_lookup_recipients(self):
         """
