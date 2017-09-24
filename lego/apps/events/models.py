@@ -71,19 +71,23 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The registration
         """
         if self.pools.filter(id=pool.id).exists():
-            reg = self.registrations.update_or_create(
-                event=self,
-                user=user,
-                defaults={'pool': pool,
-                          'feedback': feedback,
-                          'registration_date': timezone.now(),
-                          'unregistration_date': None,
-                          'status': constants.SUCCESS_REGISTER,
-                          'admin_reason': admin_reason}
-            )[0]
-            get_handler(Registration).handle_admin_registration(reg)
-            return reg
+            with transaction.atomic():
+                reg = self.registrations.update_or_create(
+                    event=self,
+                    user=user,
+                    defaults={'pool': pool,
+                              'feedback': feedback,
+                              'registration_date': timezone.now(),
+                              'unregistration_date': None,
+                              'status': constants.SUCCESS_REGISTER,
+                              'admin_reason': admin_reason}
+                )[0]
+                locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
+                locked_pool.counter += 1
+                locked_pool.save(update_fields=['counter'])
 
+                get_handler(Registration).handle_admin_registration(reg)
+                return reg
         else:
             raise NoSuchPool()
 
@@ -267,17 +271,22 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param to_pool: A pool with a free slot. If the event is merged, this will be null.
         """
         if self.waiting_registrations.exists():
-            top = self.pop_from_waiting_list(to_pool)
-            if top:
+            first_waiting = self.pop_from_waiting_list(to_pool)
+            if first_waiting:
+                new_pool = None
                 if to_pool:
-                    top.pool = to_pool
+                    new_pool = to_pool
+                    new_pool.counter += 1
                 else:
                     for pool in self.pools.all():
-                        if self.can_register(top.user, pool):
-                            top.pool = pool
+                        if self.can_register(first_waiting.user, pool):
+                            new_pool = pool
+                            new_pool.counter += 1
                             break
-                top.save()
-                get_handler(Registration).handle_bump(top)
+                first_waiting.pool = new_pool
+                first_waiting.save(update_fields=['pool'])
+                new_pool.save(update_fields=['counter'])
+                get_handler(Registration).handle_bump(first_waiting)
 
     def early_bump(self, opening_pool):
         """
