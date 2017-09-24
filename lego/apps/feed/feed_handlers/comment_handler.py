@@ -30,7 +30,7 @@ class CommentHandler(BaseHandler):
         activity = self.get_activity(comment)
         for feeds, recipients in self.get_feeds_and_recipients(comment):
             self.manager.add_activity(activity, [recipient.pk for recipient in recipients], feeds)
-            if UserFeed not in feeds:
+            if NotificationFeed in feeds:
                 for recipient in recipients:
                     notification = CommentNotification(
                         user=recipient, target=comment.content_object, author=comment.created_by

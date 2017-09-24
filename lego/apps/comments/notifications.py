@@ -8,17 +8,17 @@ class CommentNotification(Notification):
 
     def generate_mail(self):
 
-        target = str(self.kwargs['target'])
+        target_string = str(self.kwargs['target'])
         author = self.kwargs['author']
 
         return self._delay_mail(
             to_email=self.user.email,
             context={
                 'name': self.user.full_name,
-                'target': target,
+                'target': target_string,
                 'author_name': author.full_name
             },
-            subject=f'{author.full_name} har kommentert på {target}',
+            subject=f'{author.full_name} har kommentert på {target_string}',
             plain_template='comments/email/comment.txt',
             html_template='comments/email/comment.html',
         )
@@ -30,17 +30,17 @@ class CommentReplyNotification(Notification):
 
     def generate_mail(self):
 
-        target = str(self.kwargs['target'])
+        target_string = str(self.kwargs['target'])
         author = self.kwargs['author']
 
         return self._delay_mail(
             to_email=self.user.email,
             context={
                 'name': self.user.full_name,
-                'target': target,
+                'target': target_string,
                 'author_name': author.full_name
             },
-            subject=f'{author.full_name} har svart på kommentaren din på {target}',
+            subject=f'{author.full_name} har svart på kommentaren din på {target_string}',
             plain_template='comments/email/comment_reply.txt',
             html_template='comments/email/comment_reply.html',
         )
