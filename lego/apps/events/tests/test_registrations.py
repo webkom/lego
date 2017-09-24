@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
+from lego.apps.events.exceptions import EventNotReady
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup, User
 
@@ -797,3 +798,17 @@ class RegistrationTestCase(TestCase):
 
         event.register(registration_two)
         self.assertTrue(registration_two.is_registered)
+
+    def test_that_is_ready_flag_disables_new_registrations(self):
+        """Test that users are not able to register when is_ready is False"""
+
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        event.is_ready = False
+        event.save()
+
+        user = get_dummy_users(1)[0]
+
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        with self.assertRaises(EventNotReady):
+            event.register(registration)

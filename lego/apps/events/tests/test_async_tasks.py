@@ -197,13 +197,13 @@ class PoolActivationTestCase(APITestCase):
         self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
 
         with self.assertRaises(PoolCounterNotEqualToRegistrationCount):
-            check_that_pool_counters_match_registration_number.delay()
+            check_that_pool_counters_match_registration_number()
 
     def test_ensure_pool_counters_match_registration_number_log(self):
         """Test that counter gets updated to correct registration count"""
 
         self.assertEqual(self.pool_one.registrations.count(), self.pool_one.counter)
-        check_that_pool_counters_match_registration_number.delay()
+        check_that_pool_counters_match_registration_number()
 
 
 class PenaltyExpiredTestCase(TestCase):

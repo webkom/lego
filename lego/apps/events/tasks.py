@@ -231,7 +231,5 @@ def check_that_pool_counters_match_registration_number():
             for pool in locked_event.pools.all():
                 registration_count = pool.registrations.count()
                 if pool.counter != registration_count:
-                    log.critical(
-                        'pool_counter_not_equal_registration_count', pool=pool, event=locked_event
-                    )
+                    log.critical('pool_counter_not_equal_registration_count', pool=pool)
                     raise PoolCounterNotEqualToRegistrationCount()
