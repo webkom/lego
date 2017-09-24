@@ -51,3 +51,11 @@ class AbakusGroupPermissionHandler(PermissionHandler):
             return obj.memberships.filter(user=user).exclude(role=MEMBER).exists()
 
         return False
+
+
+class MembershipPermissionHandler(PermissionHandler):
+
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+        return True

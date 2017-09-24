@@ -17,7 +17,7 @@ from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
 from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
                                       UserPenaltyManager)
-from lego.apps.users.permissions import AbakusGroupPermissionHandler, UserPermissionHandler
+from lego.apps.users.permissions import AbakusGroupPermissionHandler, UserPermissionHandler, MembershipPermissionHandler
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
@@ -38,6 +38,7 @@ class Membership(BasisModel):
 
     class Meta:
         unique_together = ('user', 'abakus_group')
+        permission_handler = MembershipPermissionHandler()
 
     def delete(self, using=None, force=False):
         super(Membership, self).delete(using=using, force=True)

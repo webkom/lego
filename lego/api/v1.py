@@ -57,12 +57,13 @@ router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
 router.register(r'webhooks-stripe', StripeWebhook, base_name='webhooks-stripe')
 router.register(r'groups', AbakusGroupViewSet)
+router.register(r'groups/(?P<group_pk>\d+)/memberships', MembershipViewSet,
+                base_name='abakusgroup-memberships')
 router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>\d+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
 router.register(r'meeting-token',
                 MeetingInvitationTokenViewSet, base_name='meeting-token')
-router.register(r'memberships', MembershipViewSet)
 router.register(
     r'notification-settings', NotificationSettingsViewSet, base_name='notifications-settings'
 )
