@@ -9,7 +9,8 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
-from lego.apps.events.exceptions import EventHasStarted, NoSuchPool, RegistrationsExistInPool
+from lego.apps.events.exceptions import (EventHasStarted, EventNotReady, NoSuchPool,
+                                         RegistrationsExistInPool)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
@@ -172,7 +173,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             user, all_pools=all_pools, is_registered=registration.is_registered
         )
         if not self.is_ready:
-            raise ValueError('Event is not ready')
+            raise EventNotReady()
         if not possible_pools:
             raise ValueError('No available pools')
         if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
@@ -186,9 +187,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             with transaction.atomic():
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
                 is_full = locked_event.is_full
-            if is_full:
-                return registration.add_to_waiting_list()
-            return registration.add_direct_to_pool(possible_pools[0])
+                if not is_full:
+                    return registration.add_direct_to_pool(possible_pools[0])
+            return registration.add_to_waiting_list()
 
         if all_pools.count() == 1:
             return registration.add_to_pool(possible_pools[0])

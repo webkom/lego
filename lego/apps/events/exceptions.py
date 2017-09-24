@@ -28,5 +28,9 @@ class RegistrationsExistInPool(ValueError):
     pass
 
 
+class EventNotReady(ValueError):
+    pass
+
+
 class PoolCounterNotEqualToRegistrationCount(ValueError):
     pass
