@@ -8,7 +8,7 @@ class CommentNotification(Notification):
 
     def generate_mail(self):
 
-        target = self.kwargs['target']
+        target = str(self.kwargs['target'])
         author = self.kwargs['author']
 
         return self._delay_mail(
@@ -30,7 +30,7 @@ class CommentReplyNotification(Notification):
 
     def generate_mail(self):
 
-        target = self.kwargs['target']
+        target = str(self.kwargs['target'])
         author = self.kwargs['author']
 
         return self._delay_mail(
