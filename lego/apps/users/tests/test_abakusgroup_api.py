@@ -298,6 +298,15 @@ class InterestGroupAPITestCase(APITestCase):
         })
         self.assertEquals(response.status_code, 201)
 
+    def test_can_leave_interest_group(self):
+        self.client.force_authenticate(user=self.abakule)
+        self.interest_group.add_user(self.abakule)
+        response = self.client.delete(_get_membership_url(self.interest_group.pk), {
+            'user': self.abakule.pk,
+        })
+
+        self.assertEquals(response.status_code, 201)
+
     def test_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.abakule)
         other = User.objects.exclude(id=self.abakule.pk).first()

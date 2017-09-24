@@ -1,6 +1,9 @@
-from lego.apps.permissions.constants import EDIT, LIST, VIEW
+from lego.apps.permissions.constants import EDIT, LIST, VIEW, DELETE
 from lego.apps.permissions.permissions import PermissionHandler
+from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.users import constants
 from lego.apps.users.constants import MEMBER
+
 
 
 class UserPermissionHandler(PermissionHandler):
@@ -54,8 +57,33 @@ class AbakusGroupPermissionHandler(PermissionHandler):
 
 
 class MembershipPermissionHandler(PermissionHandler):
+    allowed_individual = [VIEW, EDIT, DELETE]
+    force_object_permission_check = True
 
     def has_perm(
             self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
-        return True
+        if not user.is_authenticated():
+            return False
+
+        from lego.apps.users.models import AbakusGroup
+
+        if obj is not None:
+            group = obj.group
+        else:
+            view = kwargs.get('view', None)
+            if view is None:
+                return False
+
+            group_pk = view.kwargs['group_pk']
+            group = AbakusGroup.objects.get(id=group_pk)
+
+        if perm == 'create' and group.type in constants.OPEN_GROUPS:
+            return True
+
+        group_permission_handler = get_permission_handler(AbakusGroup)
+        has_perm = group_permission_handler.has_perm(
+            user, perm, obj=group, queryset=AbakusGroup.objects.none()
+        )
+
+        return has_perm or perm in self.safe_methods or obj.user == user

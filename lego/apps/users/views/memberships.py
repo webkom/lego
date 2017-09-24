@@ -14,3 +14,7 @@ class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         group = self.kwargs['group_pk']
         return Membership.objects.filter(abakus_group_id=group)
+
+    def destroy(self, request, *args, **kwargs):
+        ret = super(MembershipViewSet, self).destroy(request, *args, **kwargs)
+        return ret
