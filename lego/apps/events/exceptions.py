@@ -26,3 +26,7 @@ class EventHasStarted(ValueError):
 
 class RegistrationsExistInPool(ValueError):
     pass
+
+
+class PoolCounterNotEqualToRegistrationCount(ValueError):
+    pass

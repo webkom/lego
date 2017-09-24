@@ -6,9 +6,11 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from lego.apps.events import constants
+from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (async_register, bump_waiting_users_to_new_pool,
                                     check_events_for_registrations_with_expired_penalties,
+                                    check_that_pool_counters_match_registration_number,
                                     notify_user_when_payment_overdue)
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
@@ -180,6 +182,28 @@ class PoolActivationTestCase(APITestCase):
 
         self.assertEqual(self.pool_two.registrations.count(), 0)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
+
+    def test_ensure_pool_counters_match_registration_number(self):
+        """Test that counter gets updated to correct registration count"""
+
+        users = get_dummy_users(3)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            Registration.objects.get_or_create(
+                event=self.event, user=user, pool=self.pool_one
+            )
+
+        self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
+
+        with self.assertRaises(PoolCounterNotEqualToRegistrationCount):
+            check_that_pool_counters_match_registration_number.delay()
+
+    def test_ensure_pool_counters_match_registration_number_log(self):
+        """Test that counter gets updated to correct registration count"""
+
+        self.assertEqual(self.pool_one.registrations.count(), self.pool_one.counter)
+        check_that_pool_counters_match_registration_number.delay()
 
 
 class PenaltyExpiredTestCase(TestCase):

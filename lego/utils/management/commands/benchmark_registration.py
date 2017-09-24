@@ -70,7 +70,6 @@ class Command(BaseCommand):
 
             reg = Registration.objects.get_or_create(event=event, user=user)[0]
 
-            # async_register.delay(reg.id)
             pr = cProfile.Profile()
             pr.enable()
 
@@ -98,7 +97,7 @@ class Command(BaseCommand):
             for user in users:
                 reg = Registration.objects.get_or_create(event=event, user=user)[0]
                 regs.append(reg)
-            time = timezone.now() + timedelta(seconds=10)
+            time = timezone.now() + timedelta(seconds=5)
             for reg in regs:
                 async_register.apply_async((reg.id,), eta=time)
 

@@ -8,7 +8,7 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
-from lego.apps.events.exceptions import EventHasStarted
+from lego.apps.events.exceptions import EventHasStarted, PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
@@ -219,3 +219,19 @@ def notify_user_when_payment_overdue():
         for registration in event.registrations.all():
             if registration.should_notify(time):
                 get_handler(Registration).handle_payment_overdue(registration)
+
+
+@celery_app.task(serializer='json')
+def check_that_pool_counters_match_registration_number():
+    events_ids = Event.objects.filter(start_time__gte=timezone.now()).values_list(flat=True)
+
+    for event_id in events_ids:
+        with transaction.atomic():
+            locked_event = Event.objects.select_for_update().get(pk=event_id)
+            for pool in locked_event.pools.all():
+                registration_count = pool.registrations.count()
+                if pool.counter != registration_count:
+                    log.critical(
+                        'pool_counter_not_equal_registration_count', pool=pool, event=locked_event
+                    )
+                    raise PoolCounterNotEqualToRegistrationCount()
