@@ -8,7 +8,9 @@ from lego.apps.users.models import User
 class FollowEventViewTestCase(APITestCase):
 
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml',
+        'initial_files.yaml',
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
         'test_companies.yaml',
         'test_events.yaml',
         'test_followevent.yaml'

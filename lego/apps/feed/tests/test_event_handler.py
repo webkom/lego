@@ -14,7 +14,7 @@ from lego.utils.content_types import instance_to_string
 @skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class TestEventHandler(FeedTestBase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml',
+        'initial_files.yaml', 'test_abakus_groups.yaml', 'test_users.yaml',
         'test_companies.yaml', 'test_events.yaml', 'test_followcompany.yaml'
     ]
 

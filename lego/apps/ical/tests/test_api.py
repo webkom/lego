@@ -53,7 +53,7 @@ NOW_FOR_TESTING = timezone.make_aware(
 
 @mock.patch('django.utils.timezone.now', side_effect=lambda: NOW_FOR_TESTING)
 class RetreiveDateDependentICalTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_events.yaml',
+    fixtures = ['initial_files.yaml', 'test_abakus_groups.yaml', 'test_events.yaml',
                 'test_meetings.yaml', 'test_users.yaml', 'test_companies.yaml',
                 'test_followevent.yaml']
 
