@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.conf import settings
 from django.utils.module_loading import autodiscover_modules
 
 from . import backend
@@ -15,11 +16,11 @@ class SearchConfig(AppConfig):
         This magic executes modules named search_indexes in every installed app. Search indexes
         is registered this way.
         """
+        if not settings.TESTING:
+            # Simple way to initialize the search backend. We may change this in the future.
+            search_backed = ElasticsearchBackend()
+            search_backed.set_up()
+            backend.current_backend = search_backed
 
-        # Simple way to initialize the search backend. We may change this in the future.
-        search_backed = ElasticsearchBackend()
-        search_backed.set_up()
-        backend.current_backend = search_backed
-
-        autodiscover_modules('search_indexes')
-        from .signals import post_save_callback, post_delete_callback  # noqa
+            autodiscover_modules('search_indexes')
+            from .signals import post_save_callback, post_delete_callback  # noqa

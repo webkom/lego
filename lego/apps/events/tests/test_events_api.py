@@ -355,7 +355,7 @@ class PoolsTestCase(APITestCase):
 
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
-class RegistrationsTestCase(APITransactionTestCase):
+class RegistrationsTransactionTestCase(APITransactionTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
                 'test_users.yaml']
 
@@ -375,6 +375,40 @@ class RegistrationsTestCase(APITransactionTestCase):
         )
         self.assertEqual(res.data['user']['id'], 1)
         self.assertEqual(res.data['status'], constants.SUCCESS_REGISTER)
+
+    def test_register_no_pools(self, *args):
+        event = Event.objects.get(title='NO_POOLS_ABAKUS')
+        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
+        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.data.get('status'), constants.PENDING_REGISTER)
+        res = self.client.get(
+            _get_registrations_detail_url(event.id, registration_response.data['id'])
+        )
+        self.assertEqual(res.data['status'], constants.FAILURE_REGISTER)
+
+    def test_unregister(self, *args):
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        registration = Registration.objects.get(user=self.abakus_user, event=event)
+        registration_response = self.client.delete(
+            _get_registrations_detail_url(event.id, registration.id)
+        )
+
+        get_unregistered = self.client.get(_get_registrations_detail_url(event.id, registration.id))
+        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(get_unregistered.status_code, 200)
+        self.assertIsNone(get_unregistered.data.get('pool'))
+
+
+@mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
+class RegistrationsTestCase(APITestCase):
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
+                'test_users.yaml']
+
+    def setUp(self):
+        Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
+        self.abakus_user = User.objects.get(pk=1)
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
 
     def test_unable_to_create(self, *args):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -443,28 +477,6 @@ class RegistrationsTestCase(APITransactionTestCase):
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['feedback'], 'UPDATED_BY_ADMIN')
-
-    def test_register_no_pools(self, *args):
-        event = Event.objects.get(title='NO_POOLS_ABAKUS')
-        registration_response = self.client.post(_get_registrations_list_url(event.id), {})
-        self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(registration_response.data.get('status'), constants.PENDING_REGISTER)
-        res = self.client.get(
-            _get_registrations_detail_url(event.id, registration_response.data['id'])
-        )
-        self.assertEqual(res.data['status'], constants.FAILURE_REGISTER)
-
-    def test_unregister(self, *args):
-        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
-        registration = Registration.objects.get(user=self.abakus_user, event=event)
-        registration_response = self.client.delete(
-            _get_registrations_detail_url(event.id, registration.id)
-        )
-
-        get_unregistered = self.client.get(_get_registrations_detail_url(event.id, registration.id))
-        self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(get_unregistered.status_code, 200)
-        self.assertIsNone(get_unregistered.data.get('pool'))
 
     def test_can_not_unregister_other_user(self, *args):
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
