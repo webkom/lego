@@ -28,25 +28,27 @@ class CommentHandler(BaseHandler):
 
     def handle_create(self, comment):
         activity = self.get_activity(comment)
+        author = comment.created_by
         for feeds, recipients in self.get_feeds_and_recipients(comment):
             self.manager.add_activity(activity, [recipient.pk for recipient in recipients], feeds)
             if NotificationFeed in feeds:
                 for recipient in recipients:
                     notification = CommentNotification(
-                        user=recipient, target=comment.content_object, author=comment.created_by
+                        user=recipient, target=comment.content_object, author=author
                     )
                     notification.notify()
 
         if comment.parent:
             parent_author = comment.parent.created_by
-            reply_activity = self.get_activity(comment, reply=True)
-            self.manager.add_activity(
-                reply_activity, [parent_author.pk], [NotificationFeed]
-            )
-            reply_notification = CommentReplyNotification(
-                user=parent_author, target=comment.content_object, author=comment.created_by
-            )
-            reply_notification.notify()
+            if not parent_author.pk == author.pk:
+                reply_activity = self.get_activity(comment, reply=True)
+                self.manager.add_activity(
+                    reply_activity, [parent_author.pk], [NotificationFeed]
+                )
+                reply_notification = CommentReplyNotification(
+                    user=parent_author, target=comment.content_object, author=author
+                )
+                reply_notification.notify()
 
     def handle_update(self, comment):
         """
@@ -64,10 +66,11 @@ class CommentHandler(BaseHandler):
     def get_feeds_and_recipients(self, comment):
         result = []
         if hasattr(comment.content_object, 'followers'):
+            author_pk = comment.created_by.pk
             followers = comment.content_object.followers.all().select_related('follower')
             result.append((
                 [PersonalFeed, NotificationFeed],
-                [follow.follower for follow in followers]
+                [follow.follower for follow in followers if not follow.follower.pk == author_pk]
             ))
 
         if comment.created_by:
