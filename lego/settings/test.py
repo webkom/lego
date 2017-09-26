@@ -1,9 +1,12 @@
+import logging
 import os
 
 import stripe
 from cassandra import ConsistencyLevel
 
 from .base import CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS
+
+logging.disable(logging.CRITICAL)
 
 DEBUG = False
 SERVER_URL = 'http://127.0.0.1:8000'
@@ -64,6 +67,8 @@ CHANNEL_LAYERS['default']['CONFIG'] = {
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 INSTALLED_APPS += ('lego.apps.permissions.tests',)
+INSTALLED_APPS.remove('django_extensions')
+INSTALLED_APPS.remove('corsheaders')
 
 SLACK_TEAM = ''
 SLACK_TOKEN = ''

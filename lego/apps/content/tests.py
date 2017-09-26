@@ -31,9 +31,9 @@ class SlugModelTestCase(testcases.TestCase):
 
     def test_slug_slice_when_word_ends_at_max_len(self):
         item = ExampleSlugContent(
-            title='hey, come to this cool event and get free driinks heh')
+            title='hey, come to this cool event and get free driiiiinks heh')
         item.save()
-        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-driinks'.format(item.id),
+        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free'.format(item.id),
                          item.slug)
 
     def test_slug_static(self):
