@@ -110,3 +110,12 @@ class CompanyInterestVerb(Verb):
 
 
 register(CompanyInterestVerb)
+
+
+class CommentReplyVerb(Verb):
+    id = 15
+    infinitive = 'comment_reply'
+    past_tense = infinitive
+
+
+register(CommentReplyVerb)

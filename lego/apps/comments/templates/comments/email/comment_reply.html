@@ -1,0 +1,33 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-info">
+            Svar på kommentar på {{ target }}
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei, {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            {{author_name}} har svart på din kommentar på {{ target }}.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Les mer på <a href="{{ frontend_url }}/">{{ frontend_url }}</a>.
+        </td>
+    </tr>
+
+{% endblock %}

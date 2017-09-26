@@ -44,3 +44,6 @@ class GalleryPicture(models.Model):
     @property
     def comment_target(self):
         return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
+
+    def __str__(self):
+        return f'{self.gallery.title}-#{self.pk}'
