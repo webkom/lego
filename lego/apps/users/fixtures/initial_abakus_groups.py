@@ -32,7 +32,8 @@ initial_tree = {
             '/sudo/admin/meetings/create',
             '/sudo/admin/meetinginvitations/create',
             '/sudo/admin/registrations/create/',
-            '/sudo/admin/events/payment/'
+            '/sudo/admin/events/payment/',
+            '/sudo/admin/comments/create'
         ]},
         {
             'Abakom': [{
