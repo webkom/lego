@@ -2,6 +2,7 @@ from django.utils.timezone import is_aware, make_naive
 from pytz import utc
 from stream_framework.activity import Activity as SFActivity
 from stream_framework.activity import AggregatedActivity as SFAggregatedActivity
+from stream_framework.utils import make_list_unique
 
 
 class Activity(SFActivity):
@@ -64,6 +65,10 @@ class AggregatedActivity(SFAggregatedActivity):
 
     def __init__(self, group, activities=None, created_at=None, updated_at=None, **kwargs):
         super().__init__(group, activities, created_at, updated_at)
+
+    @property
+    def actor_ids(self):
+        return make_list_unique([a.actor for a in self.activities])
 
     @property
     def activity_id(self):
