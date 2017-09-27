@@ -60,6 +60,18 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        """
+        By re-setting the pool counters on save, we can ensure that counters are updated if an
+        event that has been merged gets un-merged. We want to avoid having to increment counters
+        when registering after merge_time for performance reasons
+        """
+        with transaction.atomic():
+            for pool in self.pools.select_for_update().all():
+                pool.counter = pool.registrations.count()
+                pool.save(update_fields=['counter'])
+            return super().save(*args, **kwargs)
+
     def admin_register(self, user, pool, admin_reason, feedback=''):
         """
         Used to force registration for a user, even if the event is full
@@ -83,8 +95,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                               'admin_reason': admin_reason}
                 )[0]
                 locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
-                locked_pool.counter += 1
-                locked_pool.save(update_fields=['counter'])
+                locked_pool.increment()
 
                 get_handler(Registration).handle_admin_registration(reg)
                 return reg
@@ -187,6 +198,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return registration.add_to_waiting_list()
 
         # If the event is merged or has only one pool we can skip a lot of logic
+        if all_pools.count() == 1:
+            return registration.add_to_pool(possible_pools[0])
+
         if self.is_merged:
             with transaction.atomic():
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
@@ -194,9 +208,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if not is_full:
                     return registration.add_direct_to_pool(possible_pools[0])
             return registration.add_to_waiting_list()
-
-        if all_pools.count() == 1:
-            return registration.add_to_pool(possible_pools[0])
 
         # Calculates which pools that are full or open for registration based on capacity
         full_pools, open_pools = self.calculate_full_pools(possible_pools)
@@ -276,16 +287,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 new_pool = None
                 if to_pool:
                     new_pool = to_pool
-                    new_pool.counter += 1
+                    new_pool.increment()
                 else:
                     for pool in self.pools.all():
                         if self.can_register(first_waiting.user, pool):
                             new_pool = pool
-                            new_pool.counter += 1
+                            new_pool.increment()
                             break
                 first_waiting.pool = new_pool
                 first_waiting.save(update_fields=['pool'])
-                new_pool.save(update_fields=['counter'])
                 get_handler(Registration).handle_bump(first_waiting)
 
     def early_bump(self, opening_pool):
@@ -491,12 +501,21 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return False
         return timezone.now() >= self.merge_time
 
+    def get_is_full(self, queryset=None):
+        if queryset is None:
+            queryset = self.pools.filter(activation_date__lte=timezone.now())
+        query = queryset.annotate(Count('registrations')).aggregate(
+            active_capacity=Sum('capacity'), registrations_count=Sum('registrations__count')
+        )
+        active_capacity = query['active_capacity'] or 0
+        registrations_count = query['registrations_count'] or 0
+        if active_capacity == 0:
+            return False
+        return active_capacity <= registrations_count
+
     @property
     def is_full(self):
-        capacity = self.active_capacity
-        if capacity == 0:
-            return False
-        return capacity <= self.number_of_registrations
+        return self.get_is_full()
 
     @property
     def active_capacity(self):
@@ -583,6 +602,16 @@ class Pool(BasisModel):
     @property
     def is_activated(self):
         return self.activation_date <= timezone.now()
+
+    def increment(self):
+        self.counter += 1
+        self.save(update_fields=['counter'])
+        return self
+
+    def decrement(self):
+        self.counter -= 1
+        self.save(update_fields=['counter'])
+        return self
 
     def passed_unregistration_deadline(self):
         if self.unregistration_deadline:
@@ -678,8 +707,7 @@ class Registration(BasisModel):
         with transaction.atomic():
             locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
             if locked_pool.counter < locked_pool.capacity:
-                locked_pool.counter += 1
-                locked_pool.save(update_fields=['counter'])
+                locked_pool.increment()
                 allowed = True
 
         if allowed:
@@ -696,11 +724,10 @@ class Registration(BasisModel):
 
     def unregister(self, is_merged=None):
         # We do not care about the counter if the event is merged or pool is None
-        if not is_merged and self.pool:
+        if self.pool and not is_merged:
             with transaction.atomic():
                 locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
-                locked_pool.counter -= 1
-                locked_pool.save(update_fields=['counter'])
+                locked_pool.decrement()
         return self.set_values(None, timezone.now(), constants.SUCCESS_UNREGISTER)
 
     def set_values(self, pool, unregistration_date, status):

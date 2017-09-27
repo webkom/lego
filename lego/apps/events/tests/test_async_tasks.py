@@ -48,10 +48,6 @@ class PoolActivationTestCase(APITestCase):
         self.pool_two.capacity = 2
         self.pool_two.save()
 
-    def tearDown(self):
-        from django_redis import get_redis_connection
-        get_redis_connection("default").flushall()
-
     def test_users_are_bumped_before_pool_activation(self):
         """" Tests that users are bumped right before pool activation """
         users = get_dummy_users(3)
@@ -183,8 +179,8 @@ class PoolActivationTestCase(APITestCase):
         self.assertEqual(self.pool_two.registrations.count(), 0)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
-    def test_ensure_pool_counters_match_registration_number(self):
-        """Test that counter gets updated to correct registration count"""
+    def test_ensure_pool_counters_raise_error_when_incorrect(self):
+        """Test that counter raises error due to incorrect counter"""
 
         users = get_dummy_users(3)
 
@@ -199,10 +195,28 @@ class PoolActivationTestCase(APITestCase):
         with self.assertRaises(PoolCounterNotEqualToRegistrationCount):
             check_that_pool_counters_match_registration_number()
 
-    def test_ensure_pool_counters_match_registration_number_log(self):
-        """Test that counter gets updated to correct registration count"""
+    def test_ensure_pool_counters_match_registration_number(self):
+        """Test that method does not raise error when counter is ok"""
 
         self.assertEqual(self.pool_one.registrations.count(), self.pool_one.counter)
+        check_that_pool_counters_match_registration_number()
+
+    def test_pool_counter_check_ignore_merged_events(self):
+        """Test that counter raises error due to incorrect counter"""
+
+        self.event.merge_time = timezone.now() - timedelta(days=1)
+        self.event.save()
+        users = get_dummy_users(3)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            reg = Registration.objects.get_or_create(
+                event=self.event, user=user
+            )[0]
+            self.event.register(reg)
+
+        self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
+
         check_that_pool_counters_match_registration_number()
 
 
@@ -222,10 +236,6 @@ class PenaltyExpiredTestCase(TestCase):
             pool.activation_time = timezone.now() - timedelta(days=1)
             pool.capacity = 1
             pool.save()
-
-    def tearDown(self):
-        from django_redis import get_redis_connection
-        get_redis_connection("default").flushall()
 
     def test_is_automatically_bumped_after_penalty_expiration(self):
         """ Tests that the user that registered with penalties is bumped
@@ -362,10 +372,6 @@ class PaymentDueTestCase(TestCase):
         self.event.payment_due_date = timezone.now() - timedelta(days=2)
         self.event.save()
         self.registration = self.event.registrations.first()
-
-    def tearDown(self):
-        from django_redis import get_redis_connection
-        get_redis_connection("default").flushall()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_user_notification_when_overdue_payment(self, mock_get_handler):

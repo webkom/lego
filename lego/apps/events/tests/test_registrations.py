@@ -52,10 +52,6 @@ class RegistrationTestCase(TestCase):
             heed_penalties=True
         )
 
-    def tearDown(self):
-        from django_redis import get_redis_connection
-        get_redis_connection("default").flushall()
-
     def test_can_register_single_unlimited_pool(self):
         """Test registering user to event with a single unlimited pool"""
         user = get_dummy_users(1)[0]
