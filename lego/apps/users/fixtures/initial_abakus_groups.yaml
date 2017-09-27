@@ -13,7 +13,8 @@
     description: Medlemmer av Abakus, is_grade: false, is_committee: false, is_interest_group: false,
     parent: null, logo: null, type: annen, group_text: null, permissions: '["/sudo/admin/meetings/create",
       "/sudo/admin/meetinginvitations/create", "/sudo/admin/registrations/create/",
-      "/sudo/admin/events/payment/"]', lft: 1, rght: 32, tree_id: 2, level: 0}
+      "/sudo/admin/events/payment/", "/sudo/admin/comments/create"]', lft: 1, rght: 32,
+    tree_id: 2, level: 0}
 - model: users.abakusgroup
   pk: 3
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakom,
