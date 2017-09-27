@@ -223,7 +223,14 @@ def notify_user_when_payment_overdue():
 
 @celery_app.task(serializer='json')
 def check_that_pool_counters_match_registration_number():
-    events_ids = Event.objects.filter(start_time__gte=timezone.now()).values_list(flat=True)
+    """
+    Task that checks whether pools counters are in sync with number of registrations. We do not
+    enforce this check for events that are merged, hence the merge_time filter, because
+    incrementing the counter decreases the registration performance
+    """
+    events_ids = Event.objects.filter(
+        start_time__gte=timezone.now(), merge_time__gte=timezone.now()
+    ).values_list(flat=True)
 
     for event_id in events_ids:
         with transaction.atomic():
