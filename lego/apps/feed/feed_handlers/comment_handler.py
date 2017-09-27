@@ -28,23 +28,24 @@ class CommentHandler(BaseHandler):
 
     def handle_create(self, comment):
         activity = self.get_activity(comment)
+        author = comment.created_by
         for feeds, recipients in self.get_feeds_and_recipients(comment):
             self.manager.add_activity(activity, [recipient.pk for recipient in recipients], feeds)
             if NotificationFeed in feeds:
                 for recipient in recipients:
                     notification = CommentNotification(
-                        user=recipient, target=comment.content_object, author=comment.created_by
+                        user=recipient, target=comment.content_object, author=author
                     )
                     notification.notify()
 
-        if comment.parent:
+        if comment.parent and comment.parent.created_by != author:
             parent_author = comment.parent.created_by
             reply_activity = self.get_activity(comment, reply=True)
             self.manager.add_activity(
                 reply_activity, [parent_author.pk], [NotificationFeed]
             )
             reply_notification = CommentReplyNotification(
-                user=parent_author, target=comment.content_object, author=comment.created_by
+                user=parent_author, target=comment.content_object, author=author
             )
             reply_notification.notify()
 
@@ -64,10 +65,11 @@ class CommentHandler(BaseHandler):
     def get_feeds_and_recipients(self, comment):
         result = []
         if hasattr(comment.content_object, 'followers'):
+            author = comment.created_by
             followers = comment.content_object.followers.all().select_related('follower')
             result.append((
                 [PersonalFeed, NotificationFeed],
-                [follow.follower for follow in followers]
+                [follow.follower for follow in followers if not follow.follower == author]
             ))
 
         if comment.created_by:
