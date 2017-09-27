@@ -19,7 +19,7 @@ class AggregatedFeedSerializer(serializers.Serializer):
     last_activity = FeedActivitySerializer()
     activities = FeedActivitySerializer(many=True)
     activity_count = serializers.IntegerField()
-    actor_ids = serializers.ListField(child=serializers.IntegerField())
+    actor_ids = serializers.ListField(child=serializers.CharField())
 
 
 class MarkSerializer(serializers.Serializer):
