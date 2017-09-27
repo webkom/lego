@@ -50,7 +50,7 @@ class AbakusGroupPermissionHandler(PermissionHandler):
         if has_perm:
             return True
 
-        if user.is_authenticated() and perm == EDIT and obj is not None:
+        if user.is_authenticated() and obj is not None:
             return obj.memberships.filter(user=user).exclude(role=MEMBER).exists()
 
         return False
@@ -86,4 +86,5 @@ class MembershipPermissionHandler(PermissionHandler):
             user, perm, obj=group, queryset=AbakusGroup.objects.none()
         )
 
-        return has_perm or perm in self.safe_methods or obj.user == user
+        membership_user = kwargs['request'].data['user']
+        return has_perm or perm in self.safe_methods or membership_user == user

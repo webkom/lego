@@ -24,7 +24,7 @@ class AbakusGroupTestCase(TestCase):
 
 
 class AbakusGroupHierarchyTestCase(TestCase):
-    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml']
+    fixtures = ['initial_files.yaml', 'initial_group_texts.yaml', 'initial_abakus_groups.yaml']
 
     def setUp(self):
         self.abakom = AbakusGroup.objects.get(name='Abakom')

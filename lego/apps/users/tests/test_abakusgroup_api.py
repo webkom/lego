@@ -1,10 +1,9 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 
-from lego.apps.social_groups.models import InterestGroup
 from lego.apps.users import constants
 from lego.apps.users.constants import LEADER
-from lego.apps.users.models import AbakusGroup, User, Membership
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerializer,
                                                        PublicAbakusGroupSerializer)
 
@@ -271,11 +270,12 @@ class DeleteAbakusGroupAPITestCase(APITestCase):
 
 
 class InterestGroupAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_files.yaml', 'initial_group_texts.yaml',
+                'initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus = AbakusGroup.objects.get(name='Abakus')
-        self.interest_group = InterestGroup.objects.get(name='AbaBrygg')
+        self.interest_group = AbakusGroup.objects.get(name='AbaBrygg')
         self.abakule = User.objects.get(username='abakule')
         self.leader = User.objects.get(username='test2')
 

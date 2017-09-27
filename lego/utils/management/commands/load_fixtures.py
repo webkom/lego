@@ -62,7 +62,6 @@ class Command(BaseCommand):
             log.info('Loading development fixtures:')
             self.load_fixtures([
                 'users/fixtures/development_users.yaml',
-                'files/fixtures/development_files.yaml',
                 'gallery/fixtures/development_galleries.yaml',
                 'users/fixtures/development_memberships.yaml',
                 'companies/fixtures/development_companies.yaml',
@@ -130,6 +129,7 @@ class Command(BaseCommand):
         self.load_fixtures([
             'files/fixtures/initial_files.yaml',
             'users/fixtures/development_users.yaml',
+            'users/fixtures/initial_group_texts.yaml',
         ])
         self.upload_development_files()
 

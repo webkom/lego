@@ -29,7 +29,7 @@ class EmailAddressTestCase(TestCase):
 
 class EmailListTestCase(TestCase):
 
-    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml',
+    fixtures = ['initial_files.yaml', 'initial_group_texts.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml',
                 'test_email_addresses.yaml', 'test_email_lists.yaml']
 
     def test_email_address(self):
