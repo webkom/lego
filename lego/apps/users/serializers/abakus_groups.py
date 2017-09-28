@@ -10,7 +10,7 @@ class GroupTextSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupText
         fields = (
-            'text'
+            'text',
         )
 
 

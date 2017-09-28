@@ -63,13 +63,21 @@ class MembershipPermissionHandler(PermissionHandler):
     def has_perm(
             self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
+        """
+        The permissions rules of membership creation is a little convoluted.
+        First off, we need to be authenticated. Then, if we are creating a membership,
+        that is, joining a group, we must check that the group type is a open group,
+        ie. an interest group. However, we still need to check that the user joining is
+        the user logged in, or else Alice can make Bob join any interest group.
+
+        """
         if not user.is_authenticated():
             return False
 
         from lego.apps.users.models import AbakusGroup
 
         if obj is not None:
-            group = obj.group
+            group = obj.abakus_group
         else:
             view = kwargs.get('view', None)
             if view is None:
@@ -78,13 +86,18 @@ class MembershipPermissionHandler(PermissionHandler):
             group_pk = view.kwargs['group_pk']
             group = AbakusGroup.objects.get(id=group_pk)
 
+        if 'request' in kwargs:
+            membership_user = kwargs['request'].data.get('user', None)
+        else:
+            membership_user = obj.user.id
+        is_self = user.id == membership_user
+
         if perm == 'create' and group.type in constants.OPEN_GROUPS:
-            return True
+            return is_self
 
         group_permission_handler = get_permission_handler(AbakusGroup)
         has_perm = group_permission_handler.has_perm(
             user, perm, obj=group, queryset=AbakusGroup.objects.none()
         )
 
-        membership_user = kwargs['request'].data.get('user', None)
-        return has_perm or perm in self.safe_methods or membership_user == user
+        return has_perm or perm in self.safe_methods or is_self
