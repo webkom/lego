@@ -229,8 +229,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
 
 
 class InterestGroupAPITestCase(APITestCase):
-    fixtures = ['initial_files.yaml', 'initial_group_texts.yaml',
-                'initial_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus = AbakusGroup.objects.get(name='Abakus')

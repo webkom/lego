@@ -11,7 +11,6 @@ class SendTestCase(TestCase):
 
     fixtures = [
         'initial_files.yaml',
-        'initial_group_texts.yaml',
         'initial_abakus_groups.yaml',
         'development_users.yaml',
         'development_memberships.yaml'

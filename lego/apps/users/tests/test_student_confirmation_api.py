@@ -194,8 +194,7 @@ class CreateStudentConfirmationAPITestCase(APITestCase):
 
 
 class UpdateStudentConfirmationAPITestCase(APITestCase):
-    fixtures = ['initial_files.yaml', 'initial_group_texts.yaml', 'initial_abakus_groups.yaml',
-                'test_users.yaml']
+    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.user_with_student_confirmation = User.objects.get(username='test1')
