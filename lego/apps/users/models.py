@@ -193,10 +193,10 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """
     username = models.CharField(
-        max_length=30,
+        max_length=50,
         unique=True,
         db_index=True,
-        help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
+        help_text='Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.',
         validators=[username_validator, ReservedNameValidator()],
         error_messages={
             'unique': 'A user with that username already exists.',
@@ -212,7 +212,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
             'unique': 'A user has already verified that student username.',
         }
     )
-    first_name = models.CharField('first name', max_length=30, blank=True)
+    first_name = models.CharField('first name', max_length=50, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField(
