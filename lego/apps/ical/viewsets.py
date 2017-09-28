@@ -1,22 +1,19 @@
 from datetime import timedelta
 
 from django.http import HttpResponse
-from django.template import loader
 from django.utils import timezone
-from django_ical import feedgenerator
 from rest_framework import decorators, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
 from lego.apps.events.models import Event
-from lego.apps.ical import constants
+from lego.apps.ical import constants, utils
 from lego.apps.ical.authentication import ICalTokenAuthentication
+from lego.apps.ical.models import ICalToken
+from lego.apps.ical.serializers import ICalTokenSerializer
 from lego.apps.meetings.models import Meeting
 from lego.apps.permissions.utils import get_permission_handler
-
-from .models import ICalToken
-from .serializers import ICalTokenSerializer
 
 
 class ICalTokenViewset(viewsets.ViewSet):
@@ -26,7 +23,7 @@ class ICalTokenViewset(viewsets.ViewSet):
     To regenerate go to [regenerate](regenerate/).
     """
 
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     @decorators.list_route(methods=['PATCH'])
     def regenerate(self, request, *args, **kwargs):
@@ -51,7 +48,7 @@ class ICalViewset(viewsets.ViewSet):
     usage: [events/?token=yourtoken](events/?token=yourtoken)
     """
 
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [ICalTokenAuthentication]
 
     def list(self, request):
@@ -86,12 +83,7 @@ class ICalViewset(viewsets.ViewSet):
     @decorators.list_route(methods=['GET'])
     def personal(self, request):
         """Personal ical route."""
-        feed = feedgenerator.ICal20Feed(
-            title=constants.ICAL_PERSONAL_TITLE,
-            link=request.get_full_path,
-            description=constants.ICAL_PERSONAL_DESC,
-            language='nb',
-        )
+        feed = utils.generate_ical_feed(request, constants.TYPE_PERSONAL)
 
         permission_handler = get_permission_handler(Event)
         following_events = permission_handler.filter_queryset(
@@ -99,7 +91,7 @@ class ICalViewset(viewsets.ViewSet):
             Event.objects.filter(
                 followers__follower_id=request.user.id,
                 end_time__gt=timezone.now() - timedelta(
-                    days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+                    days=constants.HISTORY_BACKWARDS_IN_DAYS
                 )
             ).all()
         )
@@ -109,45 +101,13 @@ class ICalViewset(viewsets.ViewSet):
             request.user,
             Meeting.objects.filter(
                 end_time__gt=timezone.now() - timedelta(
-                    days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+                    days=constants.HISTORY_BACKWARDS_IN_DAYS
                 )
             )
         )
 
-        desc_event = loader.get_template('ical/event_description.txt')
-        for event in following_events:
-            context = {
-                'description': event.description,
-                'url': event.get_absolute_url()
-            }
-            feed.add_item(
-                title=event.title,
-                unique_id=f'event-{event.id}@abakus.no',
-                link=event.get_absolute_url(),
-                description=desc_event.render(context),
-                start_datetime=event.start_time,
-                end_datetime=event.end_time,
-                location=event.location
-            )
-
-        desc = loader.get_template('ical/meeting_description.txt')
-        for meeting in meetings:
-            context = {
-                'title': meeting.title,
-                'report': meeting.report,
-                'reportAuthor':
-                meeting.report_author.username if meeting.report_author else 'Ikke valgt',
-                'url': meeting.get_absolute_url()
-            }
-            feed.add_item(
-                title=meeting.title,
-                link=meeting.get_absolute_url(),
-                description=desc.render(context),
-                location=meeting.location,
-                unique_id=f'meeting-{meeting.id}@abakus.no',
-                start_datetime=meeting.start_time,
-                end_datetime=meeting.end_time
-            )
+        utils.add_events_to_ical_feed(feed, following_events)
+        utils.add_meetings_to_ical_feed(feed, meetings)
 
         response = HttpResponse()
         feed.write(response, 'utf-8')
@@ -156,12 +116,7 @@ class ICalViewset(viewsets.ViewSet):
     @decorators.list_route(methods=['GET'])
     def registrations(self, request):
         """Registration ical route."""
-        feed = feedgenerator.ICal20Feed(
-            title=constants.ICAL_REGISTRATIONS_TILE,
-            link=request.get_full_path,
-            description=constants.ICAL_REGISTRATIONS_DESC,
-            language='nb',
-        )
+        feed = utils.generate_ical_feed(request, constants.TYPE_REGISTRATIONS)
 
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
@@ -171,28 +126,25 @@ class ICalViewset(viewsets.ViewSet):
             )
         )
 
-        desc = loader.get_template('ical/event_description.txt')
         for event in events:
             reg_time = event.get_earliest_registration_time(request.user)
-            if not reg_time:
+            if not reg_time:  # User cannot register
                 continue
 
-            context = {
-                'description': event.description,
-                'price': event.get_price(request.user),
-                'url': event.get_absolute_url()
-            }
+            ical_starttime = reg_time
+            ical_endtime = ical_starttime + timedelta(
+                minutes=constants.REGISTRATION_EVENT_LENGTH_IN_MINUTES
+            )
+            price = event.get_price(request.user)
+            title = f'Reg: {event.title}'
 
-            feed.add_item(
-                title=f'Reg: {event.title}',
-                link=event.get_absolute_url(),
-                description=desc.render(context),
-                unique_id=f'event-{event.id}@abakus.no',
-                start_datetime=reg_time,
-                location=event.location,
-                end_datetime=reg_time + timedelta(
-                    minutes=constants.ICAL_REGISTRATION_EVENT_LENGTH_IN_MINUTES
-                )
+            utils.add_event_to_ical_feed(
+                feed,
+                event,
+                price=price,
+                title=title,
+                ical_starttime=ical_starttime,
+                ical_endtime=ical_endtime
             )
         response = HttpResponse()
         feed.write(response, 'utf-8')
@@ -202,39 +154,20 @@ class ICalViewset(viewsets.ViewSet):
     @decorators.list_route(methods=['GET'])
     def events(self, request):
         """Event ical route."""
-        feed = feedgenerator.ICal20Feed(
-            title=constants.ICAL_EVENTS_TITLE,
-            link=request.get_full_path,
-            description=constants.ICAL_EVENTS_DESC,
-            language='nb',
-        )
+        feed = utils.generate_ical_feed(request, constants.TYPE_EVENTS)
 
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
             request.user,
             Event.objects.all().filter(
                 end_time__gt=timezone.now() - timedelta(
-                    days=constants.ICAL_HISTORY_BACKWARDS_IN_DAYS
+                    days=constants.HISTORY_BACKWARDS_IN_DAYS
                 )
             )
         )
 
-        desc = loader.get_template('ical/event_description.txt')
-        for event in events:
-            context = {
-                'description': event.description,
-                'price': event.get_price(request.user),
-                'url': event.get_absolute_url()
-            }
-            feed.add_item(
-                title=event.title,
-                link=event.get_absolute_url(),
-                description=desc.render(context),
-                unique_id=f'event-{event.id}@abakus.no',
-                location=event.location,
-                start_datetime=event.start_time,
-                end_datetime=event.end_time
-            )
+        utils.add_events_to_ical_feed(feed, events)
+
         response = HttpResponse()
         feed.write(response, 'utf-8')
         return response
