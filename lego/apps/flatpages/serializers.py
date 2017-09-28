@@ -5,17 +5,17 @@ from lego.utils.serializers import BasisModelSerializer
 
 class PageListSerializer(BasisModelSerializer):
 
-    picture = ImageField(required=False, options={'height': 200, 'width': 200})
+    cover = ImageField(required=False, options={'height': 300})
 
     class Meta:
         model = Page
-        fields = ('pk', 'title', 'slug', 'parent', 'picture')
+        fields = ('pk', 'title', 'slug', 'parent', 'cover')
 
 
 class PageDetailSerializer(BasisModelSerializer):
 
-    picture = ImageField(required=False, options={'height': 200, 'width': 200})
+    cover = ImageField(required=False, options={'height': 500})
 
     class Meta:
         model = Page
-        fields = ('pk', 'title', 'slug', 'content', 'parent', 'picture')
+        fields = ('pk', 'title', 'slug', 'content', 'parent', 'cover')
