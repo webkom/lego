@@ -9,7 +9,7 @@ class PageListSerializer(BasisModelSerializer):
 
     class Meta:
         model = Page
-        fields = ('pk', 'title', 'slug', 'parent', 'picture')
+        fields = ('pk', 'title', 'slug',  'picture')
 
 
 class PageDetailSerializer(BasisModelSerializer):
@@ -18,4 +18,4 @@ class PageDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Page
-        fields = ('pk', 'title', 'slug', 'content', 'parent', 'picture')
+        fields = ('pk', 'title', 'slug', 'content', 'picture')
