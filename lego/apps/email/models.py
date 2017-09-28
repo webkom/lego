@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 
+from lego.apps.users.constants import ROLES
 from lego.utils.validators import ReservedNameValidator
 
 
@@ -49,6 +51,8 @@ class EmailList(models.Model):
     email = models.OneToOneField(EmailAddress, related_name='email_list', editable=False)
 
     users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
+
+    group_roles = ArrayField(models.CharField(max_length=64, choices=ROLES))
     groups = models.ManyToManyField('users.AbakusGroup', related_name='email_lists', blank=True)
 
     @property
@@ -67,6 +71,7 @@ class EmailList(models.Model):
         members += [user.email_address for user in users]
 
         for group in groups:
-            members += [membership.user.email_address for membership in group.memberships]
+            memberships = group.memberships.filter(role__in=self.group_roles)
+            members += [membership.user.email_address for membership in memberships]
 
         return members
