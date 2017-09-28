@@ -1,8 +1,5 @@
 Du er invitert i møte: {{title}}
 
-Referat:
-{{report|striptags}}
-
 Referent:
 {{reportAuthor}}
 

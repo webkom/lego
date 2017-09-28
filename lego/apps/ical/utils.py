@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 from django.conf import settings
+from django.http import HttpResponse
 from django.template import loader
 from django_ical import feedgenerator
 
@@ -49,7 +50,7 @@ def add_meeting_to_ical_feed(feed, meeting):
             meeting.report_author.username if meeting.report_author else 'Ikke valgt',
         'url': meeting.get_absolute_url()
     }
-    desc_template = loader.get_template('ical/event_description.txt')
+    desc_template = loader.get_template('ical/meeting_description.txt')
     feed.add_item(
         title=meeting.title,
         unique_id=f'meeting-{meeting.id}@abakus.no',
@@ -63,11 +64,21 @@ def add_meeting_to_ical_feed(feed, meeting):
 
 def generate_ical_feed(request, calendar_type):
     return feedgenerator.ICal20Feed(
-        title=get_calendar_name(constants.TYPE_PERSONAL),
+        title=get_calendar_name(calendar_type),
         link=request.get_full_path,
-        description=get_calendar_description(constants.TYPE_PERSONAL),
+        description=get_calendar_description(calendar_type),
         language='nb',
+        method='PUBLISH',
+        product_id='-//Abakus//Abakus.no//EN'
     )
+
+
+def render_ical_response(feed, calendar_type):
+    response = HttpResponse(content_type='text/calendar')
+    feed.write(response, 'utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{calendar_type}.ics"'
+    response['Filename'] = f'{calendar_type}.ics'
+    return response
 
 
 def get_frontend_domain():
