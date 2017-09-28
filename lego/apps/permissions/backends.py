@@ -21,7 +21,7 @@ class LegoPermissionBackend(ModelBackend):
 
     @statsd.timer('permissions.has_perm')
     def has_perm(self, user_obj, perm, obj=None):
-        if not user_obj.is_active:
+        if not user_obj.is_anonymous() and not user_obj.is_active:
             return False
 
         if obj is None:
