@@ -10,6 +10,11 @@ class AbakusGroupManager(TreeManager, PersistentModelManager):
         return self.get(name=name)
 
 
+class AbakusGroupManagerWithoutText(AbakusGroupManager):
+    def get_queryset(self, *args, **kwargs):
+            return super().get_queryset().defer('text')
+
+
 class AbakusUserManager(UserManager, PersistentModelManager):
     def create_user(self, username, email=None, password=None, **extra_fields):
         """

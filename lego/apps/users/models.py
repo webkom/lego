@@ -15,9 +15,10 @@ from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
-from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
-                                      UserPenaltyManager)
-from lego.apps.users.permissions import AbakusGroupPermissionHandler, UserPermissionHandler
+from lego.apps.users.managers import (AbakusGroupManager, AbakusGroupManagerWithoutText,
+                                      AbakusUserManager, MembershipManager, UserPenaltyManager)
+from lego.apps.users.permissions import (AbakusGroupPermissionHandler, MembershipPermissionHandler,
+                                         UserPermissionHandler)
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
@@ -38,6 +39,7 @@ class Membership(BasisModel):
 
     class Meta:
         unique_together = ('user', 'abakus_group')
+        permission_handler = MembershipPermissionHandler()
 
     def delete(self, using=None, force=False):
         super(Membership, self).delete(using=using, force=True)
@@ -51,22 +53,34 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     description = models.CharField(blank=True, max_length=200)
     is_grade = models.BooleanField(default=False)
     is_committee = models.BooleanField(default=False)
-    is_interest_group = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
     logo = FileField(related_name='group_pictures')
+    type = models.CharField(max_length=10, choices=constants.GROUP_TYPES,
+                            default=constants.GROUP_OTHER)
+    text = models.TextField(blank=True)
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
         verbose_name='permissions', default=[]
     )
 
-    objects = AbakusGroupManager()
+    objects = AbakusGroupManagerWithoutText()
+    objects_with_text = AbakusGroupManager()
 
     class Meta:
         permission_handler = AbakusGroupPermissionHandler()
 
     def __str__(self):
         return self.name
+
+    @property
+    def leader(self):
+        """Assume there is only one leader, or that we don't care about which leader we get
+        if there is multiple leaders"""
+        membership = self.memberships.filter(role='leader').first()
+        if membership:
+            return membership.user
+        return None
 
     @cached_property
     def memberships(self):

@@ -12,7 +12,6 @@ from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import LIST
 from lego.apps.quotes.models import Quote
-from lego.apps.social_groups.models import InterestGroup
 from lego.apps.users.models import AbakusGroup
 
 
@@ -28,7 +27,6 @@ class SiteMetaViewSet(viewsets.ViewSet):
             'events': Event,
             'articles': Article,
             'companies': Company,
-            'intrest_groups': InterestGroup,
             'joblistings': Joblisting,
             'announcements': Announcement,
             'meetings': Meeting,
