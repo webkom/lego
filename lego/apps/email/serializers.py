@@ -13,7 +13,7 @@ class EmailListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EmailList
-        fields = ('id', 'name', 'email', 'users', 'groups')
+        fields = ('id', 'name', 'email', 'users', 'groups', 'group_roles')
 
 
 class EmailListCreateSerializer(EmailListSerializer):
