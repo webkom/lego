@@ -54,6 +54,7 @@ class Command(BaseCommand):
             'files/fixtures/initial_files.yaml',
             'users/fixtures/initial_abakus_groups.yaml',
             'tags/fixtures/initial_tags.yaml',
+            'flatpages/fixtures/initial_pages.yaml',
         ])
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
@@ -68,7 +69,6 @@ class Command(BaseCommand):
                 'events/fixtures/development_events.yaml',
                 'events/fixtures/development_pools.yaml',
                 'events/fixtures/development_registrations.yaml',
-                'flatpages/fixtures/development_pages.yaml',
                 'articles/fixtures/development_articles.yaml',
                 'quotes/fixtures/development_quotes.yaml',
                 'oauth/fixtures/development_applications.yaml',
