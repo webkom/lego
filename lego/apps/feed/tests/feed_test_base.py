@@ -8,7 +8,7 @@ class FeedTestBase(TestCase):
     def setUpClass(cls):
         super(FeedTestBase, cls).setUpClass()
         try:
-            MigrateCommand().teardown()
+            MigrateCommand().truncate_models()
         except:
             pass
 
@@ -18,7 +18,7 @@ class FeedTestBase(TestCase):
 
     def _post_teardown(self):
         super(FeedTestBase, self)._post_teardown()
-        MigrateCommand().teardown()
+        MigrateCommand().truncate_models()
 
     '''
     Helper functions for aggregated feeds

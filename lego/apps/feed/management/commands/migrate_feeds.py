@@ -1,7 +1,8 @@
 import logging
 import os
 
-from cassandra.cqlengine.management import create_keyspace_simple, drop_keyspace, sync_table
+from cassandra.cqlengine.management import create_keyspace_simple, sync_table
+from cassandra.cqlengine.query import BatchQuery
 from stream_framework import settings
 
 from lego.apps.feed.feeds.company_feed import CompanyFeed
@@ -50,13 +51,15 @@ class Command(BaseCommand):
 
         log.info('Done!')
 
-    def teardown(self):
-        log.info('Dropping Cassandra keyspaces and dropping tables...')
+    def truncate_models(self):
+        log.info('Purging data from all tables...')
 
-        os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
+        for model in self.get_cassandra_models():
+            b = BatchQuery()
 
-        drop_keyspace(
-            settings.STREAM_DEFAULT_KEYSPACE
-        )
+            for instance in model.objects.all():
+                instance.batch(b).delete()
+
+            b.execute()
 
         log.info('Done!')

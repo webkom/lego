@@ -1,5 +1,4 @@
-import os
-from unittest import mock, skipIf
+from unittest import mock
 
 from stream_framework.feed_managers.base import add_operation, remove_operation
 
@@ -13,7 +12,6 @@ from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.feed.verbs import CommentVerb
 
 
-@skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class ManagerTestCase(FeedTestBase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
