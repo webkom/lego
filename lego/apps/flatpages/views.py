@@ -1,9 +1,10 @@
+from itertools import chain
+
 from rest_framework import decorators, viewsets
 from rest_framework.response import Response
 
-from itertools import chain
-
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+
 from .models import Page
 from .serializers import PageDetailSerializer, PageListSerializer
 
