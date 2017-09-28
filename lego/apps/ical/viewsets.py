@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import decorators, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -83,7 +82,8 @@ class ICalViewset(viewsets.ViewSet):
     @decorators.list_route(methods=['GET'])
     def personal(self, request):
         """Personal ical route."""
-        feed = utils.generate_ical_feed(request, constants.TYPE_PERSONAL)
+        calendar_type = constants.TYPE_PERSONAL
+        feed = utils.generate_ical_feed(request, calendar_type)
 
         permission_handler = get_permission_handler(Event)
         following_events = permission_handler.filter_queryset(
@@ -109,14 +109,13 @@ class ICalViewset(viewsets.ViewSet):
         utils.add_events_to_ical_feed(feed, following_events)
         utils.add_meetings_to_ical_feed(feed, meetings)
 
-        response = HttpResponse()
-        feed.write(response, 'utf-8')
-        return response
+        return utils.render_ical_response(feed, calendar_type)
 
     @decorators.list_route(methods=['GET'])
     def registrations(self, request):
         """Registration ical route."""
-        feed = utils.generate_ical_feed(request, constants.TYPE_REGISTRATIONS)
+        calendar_type = constants.TYPE_REGISTRATIONS
+        feed = utils.generate_ical_feed(request, calendar_type)
 
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
@@ -146,15 +145,13 @@ class ICalViewset(viewsets.ViewSet):
                 ical_starttime=ical_starttime,
                 ical_endtime=ical_endtime
             )
-        response = HttpResponse()
-        feed.write(response, 'utf-8')
-
-        return response
+        return utils.render_ical_response(feed, calendar_type)
 
     @decorators.list_route(methods=['GET'])
     def events(self, request):
         """Event ical route."""
-        feed = utils.generate_ical_feed(request, constants.TYPE_EVENTS)
+        calendar_type = constants.TYPE_EVENTS
+        feed = utils.generate_ical_feed(request, calendar_type)
 
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
@@ -168,6 +165,4 @@ class ICalViewset(viewsets.ViewSet):
 
         utils.add_events_to_ical_feed(feed, events)
 
-        response = HttpResponse()
-        feed.write(response, 'utf-8')
-        return response
+        return utils.render_ical_response(feed, calendar_type)
