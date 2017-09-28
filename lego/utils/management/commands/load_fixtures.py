@@ -54,6 +54,7 @@ class Command(BaseCommand):
             'files/fixtures/initial_files.yaml',
             'users/fixtures/initial_abakus_groups.yaml',
             'tags/fixtures/initial_tags.yaml',
+            'flatpages/fixtures/initial_pages.yaml',
         ])
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
