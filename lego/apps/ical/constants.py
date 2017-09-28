@@ -1,11 +1,18 @@
-ICAL_HISTORY_BACKWARDS_IN_DAYS = 10
-ICAL_REGISTRATION_EVENT_LENGTH_IN_MINUTES = 30
+HISTORY_BACKWARDS_IN_DAYS = 10
+REGISTRATION_EVENT_LENGTH_IN_MINUTES = 30
 
-ICAL_PERSONAL_TITLE = "Abakus.no - Møter og Favorittarrangementer "
-ICAL_PERSONAL_DESC = "Dine møter og favorittarrangementer på abakus.no"
+TYPE_PERSONAL = 'PERSONAL'
+TYPE_EVENTS = 'EVENTS'
+TYPE_REGISTRATIONS = 'PERSONAL'
 
-ICAL_EVENTS_TITLE = "Abakus.no - Arrangementer"
-ICAL_EVENTS_DESC = "Oversikt over bedriftspresentasjoner, kurs og andre arrangementer på abakus.no"
+TITLES = {
+    TYPE_PERSONAL: 'Møter og Favorittarrangementer',
+    TYPE_EVENTS: 'Arrangementer',
+    TYPE_REGISTRATIONS: 'Registreringstidspunkt'
+}
 
-ICAL_REGISTRATIONS_TILE = "Abakus.no - Registreringstidspunkt"
-ICAL_REGISTRATIONS_DESC = "Registreringstidspunktene til arrangementene på abakus.no"
+DESCRIPTIONS = {
+    TYPE_PERSONAL: 'Dine møter og favorittarrangementer på abakus.no',
+    TYPE_EVENTS: 'Oversikt over bedriftspresentasjoner, kurs og andre arrangementer på abakus.no',
+    TYPE_REGISTRATIONS: 'Registreringstidspunktene til arrangementene på abakus.no'
+}
