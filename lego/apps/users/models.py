@@ -15,8 +15,8 @@ from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
-from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
-                                      UserPenaltyManager)
+from lego.apps.users.managers import (AbakusGroupManager, AbakusGroupManagerWithoutText,
+                                      AbakusUserManager, MembershipManager, UserPenaltyManager)
 from lego.apps.users.permissions import (AbakusGroupPermissionHandler, MembershipPermissionHandler,
                                          UserPermissionHandler)
 from lego.utils.models import BasisModel, PersistentModel
@@ -48,10 +48,6 @@ class Membership(BasisModel):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
 
-class GroupText(PersistentModel):
-    text = models.TextField(blank=True)
-
-
 class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
@@ -61,14 +57,15 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     logo = FileField(related_name='group_pictures')
     type = models.CharField(max_length=10, choices=constants.GROUP_TYPES,
                             default=constants.GROUP_OTHER)
-    group_text = models.ForeignKey(GroupText, blank=True, null=True, on_delete=models.CASCADE)
+    text = models.TextField(blank=True)
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
         verbose_name='permissions', default=[]
     )
 
-    objects = AbakusGroupManager()
+    objects = AbakusGroupManagerWithoutText()
+    objects_with_text = AbakusGroupManager()
 
     class Meta:
         permission_handler = AbakusGroupPermissionHandler()

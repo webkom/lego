@@ -129,7 +129,6 @@ class Command(BaseCommand):
         self.load_fixtures([
             'files/fixtures/initial_files.yaml',
             'users/fixtures/development_users.yaml',
-            'users/fixtures/initial_group_texts.yaml',
         ])
         self.upload_development_files()
 
