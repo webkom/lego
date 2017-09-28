@@ -69,7 +69,6 @@ class Command(BaseCommand):
                 'events/fixtures/development_events.yaml',
                 'events/fixtures/development_pools.yaml',
                 'events/fixtures/development_registrations.yaml',
-                'flatpages/fixtures/development_pages.yaml',
                 'articles/fixtures/development_articles.yaml',
                 'quotes/fixtures/development_quotes.yaml',
                 'oauth/fixtures/development_applications.yaml',
