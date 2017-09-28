@@ -77,6 +77,7 @@
     name: Abakusmember
     capacity: 2
     event: 1
+    counter: 2
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
       - - Abakus
@@ -127,6 +128,7 @@
     name: Abakusmember
     capacity: 3
     event: 5
+    counter: 3
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
       - - Abakus

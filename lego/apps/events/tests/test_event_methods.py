@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from lego.apps.events.models import Event, Registration
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup
 
 from .utils import get_dummy_users
@@ -19,6 +19,23 @@ class EventMethodTest(TestCase):
     def test_str(self):
         event = Event.objects.get(pk=1)
         self.assertEqual(str(event), event.title)
+
+    def test_event_save(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.merge_time = timezone.now() - timedelta(days=1)
+        users = get_dummy_users(2)
+        webkom = AbakusGroup.objects.get(name='Webkom')
+        for user in users:
+            webkom.add_user(user)
+            reg = Registration.objects.create(event=event, user=user)
+            event.register(reg)
+
+        for pool in event.pools.all():
+            self.assertEqual(pool.counter, 0)
+        event.save()
+        event.refresh_from_db()
+        for pool in event.pools.all():
+            self.assertEqual(pool.counter, pool.registrations.count())
 
     def test_calculate_full_pools(self):
         """Test calculation of open and full pools for usage in registering method"""
@@ -195,3 +212,38 @@ class EventMethodTest(TestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(user)
 
         self.assertEqual(event.spots_left_for_user(user), 3)
+
+    def test_is_full_when_not_full(self):
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        self.assertEqual(event.is_full, False)
+
+    def test_is_full_when_full(self):
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+
+        users = get_dummy_users(5)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEqual(event.is_full, True)
+
+    def test_is_full_when_unlimited(self):
+
+        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+
+        pool = Pool.objects.create(
+            name="Pool1", event=event, capacity=0,
+            activation_date=timezone.now() - timedelta(days=1)
+        )
+        webkom_group = AbakusGroup.objects.get(name='Webkom')
+        pool.permission_groups.set([webkom_group])
+        users = get_dummy_users(5)
+
+        for user in users:
+            webkom_group.add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEqual(event.is_full, False)

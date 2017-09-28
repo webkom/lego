@@ -92,7 +92,9 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'event_type',
                   'location', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
-                  'start_time', 'end_time', 'merge_time', 'use_captcha', 'tags', 'pools')
+                  'start_time', 'end_time', 'merge_time', 'use_captcha', 'tags', 'pools',
+                  'is_ready')
+        extra_kwargs = {'is_ready': {'required': False}}
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
