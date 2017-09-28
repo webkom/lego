@@ -13,8 +13,10 @@ class EmailListTestCase(APITestCase):
     def setUp(self):
         self.url = '/api/v1/email-lists/'
         self.user = User.objects.get(username='test1')
+        self.user2 = User.objects.get(username='test2')
         self.admin_group = AbakusGroup.objects.get(name='EmailAdminTest')
         self.admin_group.add_user(self.user)
+        self.admin_group.add_user(self.user2, role='leader')
 
         self.client.force_login(self.user)
 
@@ -29,10 +31,20 @@ class EmailListTestCase(APITestCase):
             'name': 'Jubileum',
             'email': 'jubileum',
             'users': [
-                1, 2
-            ]
+                3, 4
+            ],
+            'groups': [self.admin_group.id],
+            'group_roles': ['member']
         })
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        email_list = EmailList.objects.get(email='jubileum')
+        members = email_list.members()
+
+        self.assertCountEqual(
+            ['test1@user.com', 'user@admin.com', 'abakusgroup@admin.com'],
+            members
+        )
 
     def test_create_list_invalid_email(self):
         """Bad request when the user tries to create a list with an invalid email"""
@@ -41,7 +53,8 @@ class EmailListTestCase(APITestCase):
             'email': 'not valid email',
             'users': [
                 1, 2
-            ]
+            ],
+            'group_roles': ['member']
         })
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
@@ -50,7 +63,8 @@ class EmailListTestCase(APITestCase):
             'email': 'admin',
             'users': [
                 1, 2
-            ]
+            ],
+            'group_roles': ['member']
         })
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
