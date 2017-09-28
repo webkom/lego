@@ -15,7 +15,9 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             'description',
             'parent',
             'permissions',
-            'memberships'
+            'memberships',
+            'type',
+            'text',
         )
 
 

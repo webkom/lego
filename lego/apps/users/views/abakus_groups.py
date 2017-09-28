@@ -8,6 +8,7 @@ from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerial
 
 
 class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+
     queryset = AbakusGroup.objects.all()
     ordering = 'id'
 
@@ -22,6 +23,8 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == 'retrieve':
-            return self.queryset.prefetch_related('users')
+            return AbakusGroup.objects_with_text \
+                .prefetch_related('users') \
+                .all()
 
         return self.queryset
