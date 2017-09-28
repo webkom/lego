@@ -1,4 +1,0 @@
-- model: social_groups.InterestGroup
-  pk: 12
-  fields:
-    description_long: 'We like a lot of stuff'

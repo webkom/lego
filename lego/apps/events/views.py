@@ -1,5 +1,4 @@
 from celery import chain
-from django.core.cache import cache
 from django.db import transaction
 from django.db.models import Prefetch
 from rest_framework import decorators, mixins, status, viewsets
@@ -62,20 +61,21 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return super().get_serializer_class()
 
     def update(self, request, *args, **kwargs):
-        """
-        If the capacity of the event increases we have to bump waiting users.
-        To ensure that no new users register while waiting for the bump to occur,
-        we set the same cache that registrations need to complete. The cache is deleted
-        at the end of the Celery-task.
-        """
+        """ If the capacity of the event increases we have to bump waiting users. """
         try:
             event_id = self.kwargs.get('pk', None)
-            response = super().update(request, *args, **kwargs)
-            cache.set(f'event_lock-{event_id}', 'expansion-bump', timeout=60)
+            instance = super().update(request, *args, **kwargs)
             check_for_bump_on_pool_creation_or_expansion.delay(event_id)
-            return response
+            return instance
         except RegistrationsExistInPool:
             raise APIRegistrationsExistsInPool()
+
+    def perform_update(self, serializer):
+        """
+        We set the is_ready flag on update to lock the event for bumping waiting registrations.
+        This is_ready flag is set to True when the bumping is finished
+        """
+        serializer.save(is_ready=False)
 
     @decorators.detail_route(methods=['GET'], serializer_class=EventAdministrateSerializer)
     def administrate(self, request, *args, **kwargs):
@@ -169,7 +169,7 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             if registration.event.feedback_required and not feedback:
                 raise ValidationError({'error': 'Feedback is required'})
             registration.feedback = feedback
-            registration.save()
+            registration.save(update_fields=['feedback'])
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(registration)
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)

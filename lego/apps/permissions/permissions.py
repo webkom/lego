@@ -40,6 +40,8 @@ class PermissionHandler:
     # We may also be able to skip the has_object_permission it the model is based on the
     # ObjectPermissionsModel
     skip_object_permission = False
+    # Sometimes we need use the filter function to display permitted elements.
+    force_queryset_filtering = False
 
     perms_without_object = [CREATE]
 
@@ -90,7 +92,7 @@ class PermissionHandler:
         if queryset is not None and issubclass(queryset.model, ObjectPermissionsModel):
             return True
 
-        return False
+        return self.force_queryset_filtering
 
     def has_perm(
             self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs

@@ -3,3 +3,5 @@
   fields:
     name: test
     email: test
+    group_roles:
+      - member

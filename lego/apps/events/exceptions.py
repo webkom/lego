@@ -26,3 +26,14 @@ class EventHasStarted(ValueError):
 
 class RegistrationsExistInPool(ValueError):
     pass
+
+
+class EventNotReady(ValueError):
+    pass
+
+
+class PoolCounterNotEqualToRegistrationCount(ValueError):
+    def __init__(self, pool, event):
+        message = f'Pool {pool.id} for event {event.id} was supposed to have {pool.capacity} ' \
+                  f'registrations, but has {pool.counter}!'
+        super().__init__(message)

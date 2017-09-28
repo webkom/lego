@@ -1,0 +1,11 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei, {{ name }}!
+
+{{ author_name }} har kommentert på {{ target }}
+
+Les mer på {{ frontend_url }}/
+
+{% endblock %}

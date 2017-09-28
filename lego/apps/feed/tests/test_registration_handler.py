@@ -1,6 +1,4 @@
-import os
 from datetime import timedelta
-from unittest import skipIf
 
 from django.utils import timezone
 
@@ -11,7 +9,6 @@ from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import AbakusGroup, User
 
 
-@skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class TestRegistrationHandler(FeedTestBase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
                 'test_companies.yaml', 'test_events.yaml'

@@ -27,7 +27,6 @@ from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
-from lego.apps.social_groups.views import InterestGroupViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.password_change import ChangePasswordViewSet
@@ -58,13 +57,13 @@ router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
 router.register(r'webhooks-stripe', StripeWebhook, base_name='webhooks-stripe')
 router.register(r'groups', AbakusGroupViewSet)
-router.register(r'interest-groups', InterestGroupViewSet)
+router.register(r'groups/(?P<group_pk>\d+)/memberships', MembershipViewSet,
+                base_name='abakusgroup-memberships')
 router.register(r'meetings', MeetingViewSet)
 router.register(r'meetings/(?P<meeting_pk>\d+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
 router.register(r'meeting-token',
                 MeetingInvitationTokenViewSet, base_name='meeting-token')
-router.register(r'memberships', MembershipViewSet)
 router.register(
     r'notification-settings', NotificationSettingsViewSet, base_name='notifications-settings'
 )

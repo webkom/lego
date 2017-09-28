@@ -31,9 +31,9 @@ class SlugModelTestCase(testcases.TestCase):
 
     def test_slug_slice_when_word_ends_at_max_len(self):
         item = ExampleSlugContent(
-            title='hey, come to this cool event and get free driinks heh')
+            title='hey, come to this cool event and get free driiiiinks heh')
         item.save()
-        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-driinks'.format(item.id),
+        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free'.format(item.id),
                          item.slug)
 
     def test_slug_static(self):
@@ -51,10 +51,8 @@ class ContentModelTestCase(testcases.TestCase):
                 'development_users.yaml', 'test_articles.yaml']
 
     def test_parse_content(self):
-        content = (
-            '<p>some <b>cool</b> text telling you to come to this party</p>'
-            '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
-        )
+        content = '<p>some <b>cool</b> text telling you to come to this party</p>' \
+                  '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
         article = Article(
             title='test content',
             description='test description',
@@ -65,10 +63,10 @@ class ContentModelTestCase(testcases.TestCase):
         self.assertEqual(article.content, content)
 
     def test_parse_content_strip_unsafe_values(self):
-        content = (
-            '<p>some <b>cool</b> text telling you to come to this party</p>'
-            '<p><script>window.alert("I am a virus")</script></p>'
-        )
+        content = """
+            <p>some <b>cool</b> text telling you to come to this party</p>
+            <p><script>window.alert("I am a virus")</script></p>
+        """
         article = Article(
             title='test content',
             description='test description',
@@ -79,10 +77,10 @@ class ContentModelTestCase(testcases.TestCase):
         self.assertTrue('<script>' not in article.content)
 
     def test_parse_content_strip_css_values(self):
-        content = (
-            '<p>some <b>cool</b> text telling you to come to this party</p>'
-            '<p style="color: red;">psst.. We got free <strike>dranks!</strike>drinks</p>'
-        )
+        content = """
+            <p>some <b>cool</b> text telling you to come to this party</p>
+            <p style="color: red;">psst.. We got free <strike>dranks!</strike>drinks</p>
+        """
         article = Article(
             title='test content',
             description='test description',
@@ -93,11 +91,11 @@ class ContentModelTestCase(testcases.TestCase):
         self.assertTrue('style="color: red;"' not in article.content)
 
     def test_parse_content_handle_images(self):
-        content = (
-            '<p>some <b>cool</b> text telling you to come to this party</p>',
-            '<p><img data-file-key="default_male_avatar.png" src="dont_store_this_url.png" /></p>',
-            '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
-        )
+        content = """
+            <p>some <b>cool</b> text telling you to come to this party</p>
+            <p><img data-file-key="default_male_avatar.png" src="dont_store_this_url.png" /></p>
+            <p>psst.. We got free <strike>dranks!</strike>drinks</p>
+        """
 
         article = Article(
             title='test content',
@@ -109,12 +107,12 @@ class ContentModelTestCase(testcases.TestCase):
         self.assertTrue('src="http://localhost:8888/' in article.content)
 
     def test_parse_content_handle_private_files(self):
-        content = (
-            '<p>some <b>cool</b> text telling you to come to this party</p>',
-            '<p><img data-file-key="not_public.png" src="dont_store_this_url.png" /></p>',
-            '<p><img data-file-key="default_female_avatar.png" src="img.png" /></p>',
-            '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
-        )
+        content = """
+            <p>some <b>cool</b> text telling you to come to this party</p>
+            <p><img data-file-key="not_public.png" src="dont_store_this_url.png" /></p>
+            <p><img data-file-key="default_female_avatar.png" src="img.png" /></p>
+            <p>psst.. We got free <strike>dranks!</strike>drinks</p>
+        """
 
         with self.assertRaises(ValidationError):
             Article(
@@ -125,12 +123,12 @@ class ContentModelTestCase(testcases.TestCase):
             )
 
     def test_parse_content_handle_missing_files(self):
-        content = (
-            '<p>some <b>cool</b> text telling you to come to this party</p>',
-            '<p><img data-file-key="2234521.png" src="1.png" /></p>',
-            '<p><img data-file-key="22345551.png" src="2.png" /></p>',
-            '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
-        )
+        content = """
+            <p>some <b>cool</b> text telling you to come to this party</p>
+            <p><img data-file-key="2234521.png" src="1.png" /></p>
+            <p><img data-file-key="22345551.png" src="2.png" /></p>
+            <p>psst.. We got free <strike>dranks!</strike>drinks</p>
+        """
 
         with self.assertRaises(ValidationError):
             Article(

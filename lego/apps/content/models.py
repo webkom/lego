@@ -75,7 +75,10 @@ class Content(SlugModel):
                 'p', 'b', 'i', 'u', 'h1', 'h2', 'code', 'pre', 'blockquote', 'strong'
                 'strong', 'strike', 'ul', 'cite', 'li', 'em', 'hr', 'img', 'div', 'a'
             ],
-            attributes=['data-file-key', 'data-username', 'data-block-type', 'href'],
+            attributes={
+                'a': ['href'],
+                'img': ['data-file-key'],
+            },
             strip=True
         )
         html = BeautifulSoup(safe_content, 'html.parser')

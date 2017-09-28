@@ -8,6 +8,7 @@ from lego.apps.permissions.utils import get_permission_handler
 class MeetingPermissionHandler(PermissionHandler):
 
     force_object_permission_check = True
+    force_queryset_filtering = True
 
     def filter_queryset(self, user, queryset, **kwargs):
         if user.is_authenticated():
@@ -15,11 +16,6 @@ class MeetingPermissionHandler(PermissionHandler):
                 Q(_invited_users=user) | Q(created_by=user)
             ).distinct()
         return queryset.none()
-
-    def has_object_level_permissions(self, user, perm, obj=None, queryset=None):
-        if not user.is_authenticated():
-            return False
-        return super().has_object_level_permissions(user, perm, obj, queryset)
 
     def has_perm(
             self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs

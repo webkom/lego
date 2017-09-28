@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.conf import settings
 
 
 class UsersConfig(AppConfig):
@@ -6,5 +7,5 @@ class UsersConfig(AppConfig):
     verbose_name = 'Users'
 
     def ready(self):
-        super().ready()
-        from .signals import post_save_callback  # noqa
+        if not settings.TESTING:
+            from .signals import post_save_callback  # noqa

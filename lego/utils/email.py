@@ -48,9 +48,9 @@ class EmailMessage:
         context = {
             'site': settings.SITE['domain'],
             'from': settings.SITE['owner'],
+            'contact_email': settings.SITE['contact_email'],
             'system_name': settings.SITE['name'],
             'frontend_url': settings.FRONTEND_URL
-
         }
         return context
 
