@@ -20,7 +20,7 @@
 
     <tr>
         <td class="content-block">
-            <p>Noen har startet registrering av en ny bruker på Abakus.no.</p>
+            <p>Takk for at du startet registrering av en ny bruker på Abakus.no!</p>
             <p>For å fullføre registreringen, trykk på knappen under.</p>
         </td>
     </tr>
@@ -28,6 +28,15 @@
     <tr>
         <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
           <a href="{{ frontend_url }}/users/registration/?token={{ token }}" class="btn-primary" itemprop="url">Fullfør registrering</a>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <p>
+                Staret ikke du registreringen? Ignorer denne mailen, du kan eventuelt ta kontakt
+                med {{ owner }} om du har spørsmål ({{ contact_email }}).
+            </p>
         </td>
     </tr>
 
