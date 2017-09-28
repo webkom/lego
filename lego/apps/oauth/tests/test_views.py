@@ -62,7 +62,7 @@ class OauthApplicationViewsTestCase(APITestCase):
 
         self.client.force_login(self.user)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_applications(self):
         """Make sure permitted users can list applications."""

@@ -23,11 +23,7 @@ class ApplicationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     """
     serializer_class = ApplicationSerializer
     ordering = 'id'
-
-    def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return APIApplication.objects.filter(user=self.request.user)
-        return APIApplication.objects.none()
+    queryset = APIApplication.objects.all()
 
 
 class AccessTokenViewSet(mixins.ListModelMixin,
