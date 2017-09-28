@@ -1,19 +1,13 @@
-import os
-from unittest import skipIf
-
 from lego.apps.events.models import Event
 from lego.apps.feed.feed_handlers import PenaltyHandler
-from lego.apps.feed.feed_manager import feed_manager
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import Penalty, User
 
 
-@skipIf(os.getenv('DRONE', False), 'Not running cassandra tests in drone')
 class TestPenaltyHandler(FeedTestBase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
-                'test_companies.yaml', 'test_events.yaml'
-                ]
+                'test_companies.yaml', 'test_events.yaml']
 
     def setUp(self):
         self.events = Event.objects.all()
@@ -24,11 +18,6 @@ class TestPenaltyHandler(FeedTestBase):
             weight=1,
             reason='test',
             source_event=self.events.first()
-        )
-        feed_manager.remove_activity(
-            self.all_activities(NotificationFeed(self.user.id))[0],
-            [self.user.id],
-            [NotificationFeed]
         )
 
     def test_create(self):
