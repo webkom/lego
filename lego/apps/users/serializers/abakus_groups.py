@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from lego.apps.users.models import AbakusGroup
+from lego.apps.users.models import AbakusGroup, GroupText
 from lego.apps.users.serializers.memberships import MembershipSerializer
-from lego.apps.users.models import GroupText
 
 
 class GroupTextSerializer(serializers.ModelSerializer):

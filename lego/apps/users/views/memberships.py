@@ -1,5 +1,4 @@
-from rest_framework import viewsets, status
-from rest_framework.response import Response
+from rest_framework import viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.users.filters import MembershipFilterSet

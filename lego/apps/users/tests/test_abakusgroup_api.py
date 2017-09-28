@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 
 from lego.apps.users import constants
 from lego.apps.users.constants import LEADER
-from lego.apps.users.models import AbakusGroup, User, Membership
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerializer,
                                                        PublicAbakusGroupSerializer)
 
@@ -22,7 +22,8 @@ def _get_membership_url(pk):
 
 
 def _get_membership_detail_url(group_pk, membership_pk):
-    return reverse('api:v1:abakusgroup-memberships-detail', kwargs={'group_pk': group_pk, 'pk': membership_pk})
+    return reverse('api:v1:abakusgroup-memberships-detail',
+                   kwargs={'group_pk': group_pk, 'pk': membership_pk})
 
 
 def _get_detail_url(pk):
@@ -227,52 +228,6 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
         self.successful_update(self.leader)
 
 
-class DeleteAbakusGroupAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
-
-    def setUp(self):
-        self.all_groups = AbakusGroup.objects.all()
-
-        self.with_permission = User.objects.get(username='abakusgroupadmin_test')
-        self.without_permission = (User.objects
-                                   .exclude(pk=self.with_permission.pk)
-                                   .first())
-
-        self.test_group = AbakusGroup.objects.get(name='TestGroup')
-        self.leader = User.objects.create(username='leader')
-        self.test_group.add_user(self.leader, role=constants.LEADER)
-
-        self.groupadmin_test_group = AbakusGroup.objects.get(name='AbakusGroupAdminTest')
-        self.groupadmin_test_group.add_user(self.with_permission)
-
-    def successful_delete(self, user):
-        self.client.force_authenticate(user=user)
-        response = self.client.delete(_get_detail_url(self.test_group.pk))
-
-        self.assertEqual(response.status_code, 204)
-        self.assertRaises(AbakusGroup.DoesNotExist, AbakusGroup.objects.get,
-                          pk=self.test_group.pk)
-
-    def test_without_auth(self):
-        response = self.client.delete(_get_detail_url(self.test_group.pk))
-        self.assertEqual(response.status_code, 401)
-
-    def test_with_permission(self):
-        self.successful_delete(self.with_permission)
-
-    def test_without_permission(self):
-        self.client.force_authenticate(user=self.without_permission)
-        response = self.client.delete(_get_detail_url(self.test_group.pk))
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_unsuccessful_delete_as_leader(self):
-        self.client.force_authenticate(user=self.leader)
-        response = self.client.delete(_get_detail_url(self.test_group.pk))
-
-        self.assertEqual(response.status_code, 403)
-
-
 class InterestGroupAPITestCase(APITestCase):
     fixtures = ['initial_files.yaml', 'initial_group_texts.yaml',
                 'initial_abakus_groups.yaml', 'test_users.yaml']
@@ -307,7 +262,8 @@ class InterestGroupAPITestCase(APITestCase):
     def test_can_leave_interest_group(self):
         self.client.force_authenticate(user=self.abakule)
         membership = self.interest_group.add_user(self.abakule)
-        response = self.client.delete(_get_membership_detail_url(self.interest_group.pk, membership.pk))
+        response = self.client.delete(_get_membership_detail_url(self.interest_group.pk,
+                                                                 membership.pk))
 
         self.assertEquals(response.status_code, 204)
 
@@ -322,15 +278,16 @@ class InterestGroupAPITestCase(APITestCase):
     def test_cannot_leave_for_another(self):
         self.client.force_authenticate(user=self.abakule)
         membership = self.interest_group.add_user(self.abakommer)
-        response = self.client.delete(_get_membership_detail_url(self.interest_group.pk, membership.id))
+        response = self.client.delete(_get_membership_detail_url(self.interest_group.pk,
+                                                                 membership.id))
         self.assertEquals(response.status_code, 403)
 
     def test_leader_can_kick(self):
         self.client.force_authenticate(user=self.leader)
         membership = self.interest_group.add_user(self.abakule)
 
-        response = self.client.delete(_get_membership_detail_url(self.interest_group.pk, membership.id))
-        # TODO(mht): return value here ?
+        response = self.client.delete(_get_membership_detail_url(self.interest_group.pk,
+                                                                 membership.id))
         self.assertEquals(response.status_code, 204)
 
     def test_leader_cannot_join_for_another(self):
@@ -340,4 +297,3 @@ class InterestGroupAPITestCase(APITestCase):
             'role': 'member'
         })
         self.assertEquals(response.status_code, 403)
-

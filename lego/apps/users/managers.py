@@ -1,6 +1,5 @@
 from django.contrib.auth.models import UserManager
 from django.utils import timezone
-from django.db import models
 from mptt.managers import TreeManager
 
 from lego.utils.managers import PersistentModelManager

@@ -15,8 +15,10 @@ from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
-from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager, UserPenaltyManager)
-from lego.apps.users.permissions import AbakusGroupPermissionHandler, UserPermissionHandler, MembershipPermissionHandler
+from lego.apps.users.managers import (AbakusGroupManager, AbakusUserManager, MembershipManager,
+                                      UserPenaltyManager)
+from lego.apps.users.permissions import (AbakusGroupPermissionHandler, MembershipPermissionHandler,
+                                         UserPermissionHandler)
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
@@ -57,7 +59,8 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     is_committee = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
     logo = FileField(related_name='group_pictures')
-    type = models.CharField(max_length=10, choices=constants.GROUP_TYPES, default=constants.GROUP_OTHER)
+    type = models.CharField(max_length=10, choices=constants.GROUP_TYPES,
+                            default=constants.GROUP_OTHER)
     group_text = models.ForeignKey(GroupText, blank=True, null=True, on_delete=models.CASCADE)
 
     permissions = ArrayField(
@@ -72,6 +75,15 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def leader(self):
+        """Assume there is only one leader, or that we don't care about which leader we get
+        if there is multiple leaders"""
+        membership = self.memberships.filter(role='leader').first()
+        if membership:
+            return membership.user
+        return None
 
     @cached_property
     def memberships(self):

@@ -1,5 +1,5 @@
-from lego.apps.users.models import AbakusGroup
 from lego.apps.users.constants import GROUP_INTEREST
+from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 
 """
@@ -67,8 +67,7 @@ initial_tree = {
                     }, {}]
                 }
             ],
-            'Interessegrupper': [{},
-                {
+            'Interessegrupper': [{}, {
                     'AbaBrygg': [{
                         'permissions': [],
                         'description': 'Interessegruppe for AbaBrygg',

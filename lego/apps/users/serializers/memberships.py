@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
-from lego.apps.users.models import Membership, AbakusGroup
+from lego.apps.users.models import AbakusGroup, Membership
 
 
 class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         fields = (
+            'id',
             'user',
             'role',
             'is_active',

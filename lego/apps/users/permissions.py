@@ -1,9 +1,8 @@
-from lego.apps.permissions.constants import EDIT, LIST, VIEW, DELETE
+from lego.apps.permissions.constants import DELETE, EDIT, LIST, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users import constants
 from lego.apps.users.constants import MEMBER
-
 
 
 class UserPermissionHandler(PermissionHandler):
@@ -44,7 +43,8 @@ class AbakusGroupPermissionHandler(PermissionHandler):
     def has_perm(
             self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
-
+        if perm == 'delete':
+            return False
         has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 
         if has_perm:
@@ -70,6 +70,10 @@ class MembershipPermissionHandler(PermissionHandler):
         ie. an interest group. However, we still need to check that the user joining is
         the user logged in, or else Alice can make Bob join any interest group.
 
+        We have decided that no user are authenticated to delete a group, so when we check
+        that the user has permission to act on the group, we need to special case the delete
+        case, since users should be able to delete their own membership, and leaders are
+        supposed to be able to kick members of their group.
         """
         if not user.is_authenticated():
             return False
@@ -82,7 +86,6 @@ class MembershipPermissionHandler(PermissionHandler):
             view = kwargs.get('view', None)
             if view is None:
                 return False
-
             group_pk = view.kwargs['group_pk']
             group = AbakusGroup.objects.get(id=group_pk)
 
@@ -94,9 +97,11 @@ class MembershipPermissionHandler(PermissionHandler):
 
         if perm == 'create' and group.type in constants.OPEN_GROUPS:
             return is_self
+        elif perm == 'delete':
+            return is_self or group.leader == user
 
         group_permission_handler = get_permission_handler(AbakusGroup)
-        has_perm = group_permission_handler.has_perm(
+        has_perm = perm == group_permission_handler.has_perm(
             user, perm, obj=group, queryset=AbakusGroup.objects.none()
         )
 
