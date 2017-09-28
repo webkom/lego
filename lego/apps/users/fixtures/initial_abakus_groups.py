@@ -1,4 +1,5 @@
 from lego.apps.users.models import AbakusGroup
+from lego.apps.users.constants import GROUP_INTEREST
 from lego.utils.functions import insert_abakus_groups
 
 """
@@ -70,21 +71,21 @@ initial_tree = {
                 {
                     'AbaBrygg': [{
                         'permissions': [],
-                        'is_interest_group': True,
                         'description': 'Interessegruppe for AbaBrygg',
-                        'group_text_id': 2
+                        'group_text_id': 2,
+                        'type': GROUP_INTEREST
                     }, {}],
                     'abaGolf': [{
                         'permissions': [],
-                        'is_interest_group': True,
                         'description': 'Interessegruppe for abaGolf',
-                        'group_text_id': 3
+                        'group_text_id': 3,
+                        'type': GROUP_INTEREST
                     }, {}],
                     'Turgruppa': [{
                         'permissions': [],
-                        'is_interest_group': True,
                         'description': 'Interessegruppe for Turgruppa',
-                        'group_text_id': 4
+                        'group_text_id': 4,
+                        'type': GROUP_INTEREST
                     }, {}]
                 }]
         }

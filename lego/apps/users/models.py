@@ -55,7 +55,6 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     description = models.CharField(blank=True, max_length=200)
     is_grade = models.BooleanField(default=False)
     is_committee = models.BooleanField(default=False)
-    is_interest_group = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
     logo = FileField(related_name='group_pictures')
     type = models.CharField(max_length=10, choices=constants.GROUP_TYPES, default=constants.GROUP_OTHER)

@@ -86,5 +86,5 @@ class MembershipPermissionHandler(PermissionHandler):
             user, perm, obj=group, queryset=AbakusGroup.objects.none()
         )
 
-        membership_user = kwargs['request'].data['user']
+        membership_user = kwargs['request'].data.get('user', None)
         return has_perm or perm in self.safe_methods or membership_user == user
