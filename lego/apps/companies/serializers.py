@@ -30,10 +30,17 @@ class SemesterStatusSerializer(serializers.ModelSerializer):
 
 class SemesterStatusDetailSerializer(SemesterStatusSerializer):
     contract = FileField(required=False, allow_null=True)
+    statistics = FileField(required=False, allow_null=True)
+    evaluation = FileField(required=False, allow_null=True)
+
+    contract_name = CharField(source='contract_id', read_only=True)
+    statistics_name = CharField(source='statistics_id', read_only=True)
+    evaluation_name = CharField(source='evaluation_id', read_only=True)
 
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'semester', 'contacted_status', 'contract')
+        fields = ('id', 'semester', 'contacted_status', 'contract', 'statistics',
+                  'evaluation', 'contract_name', 'statistics_name', 'evaluation_name')
 
 
 class CompanyContactSerializer(BasisModelSerializer):
