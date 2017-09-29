@@ -1,12 +1,9 @@
-from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.permissions import PermissionHandler
 
 
 class APIApplicationPermissionHandler(PermissionHandler):
 
-    permission_map = {
-        LIST: [],
-    }
+    force_queryset_filtering = True
 
     def filter_queryset(self, user, queryset, **kwargs):
         if user.is_authenticated:
