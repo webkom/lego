@@ -30,6 +30,7 @@ TRANSLATED_EVENTS = {
     OTHER: 'Annet',
 }
 
+CONTACT_IN_OSLO = 'contact_in_oslo'
 INTERESTED = 'interested'
 NOT_INTERESTED = 'not_interested'
 CONTACTED = 'contacted'
