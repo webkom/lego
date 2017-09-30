@@ -25,6 +25,7 @@ class AttrCache:
         'meetings.meetinginvitation': attr_renderers.render_meeting_invitation,
         'articles.article': attr_renderers.render_article,
         'notifications.announcement': attr_renderers.render_announcement,
+        'gallery.gallerypicture': attr_renderers.render_gallery_picture,
     }
 
     RELATED_FIELDS = {
