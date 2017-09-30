@@ -61,7 +61,9 @@ class SemesterStatus(TimeStampModel):
     company = models.ForeignKey(Company, related_name='semester_statuses')
     semester = models.ForeignKey(Semester)
     contacted_status = ArrayField(models.CharField(choices=SEMESTER_STATUSES, max_length=64))
-    contract = FileField()
+    contract = FileField(related_name='semester_status_contracts')
+    statistics = FileField(related_name='semester_status_statistics')
+    evaluation = FileField(related_name='semester_status_evaluations')
 
     class Meta:
         unique_together = ('semester', 'company')
