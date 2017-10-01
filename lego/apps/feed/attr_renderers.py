@@ -43,3 +43,13 @@ def render_announcement(announcement):
         'id': announcement.id,
         'message': announcement.message
     }
+
+
+def render_gallery_picture(gallery_picture):
+    return {
+        'id': gallery_picture.id,
+        'gallery': {
+            'id': gallery_picture.gallery.id,
+            'title': gallery_picture.gallery.title
+        }
+    }
