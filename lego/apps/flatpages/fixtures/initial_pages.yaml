@@ -2,6 +2,5 @@
   pk: 1
   fields:
     title: Om oss
-    cover: page_cover.png
     slug: om-oss
     content: <p>Om oss</p>
