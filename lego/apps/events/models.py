@@ -338,7 +338,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     reg.pool = pool
                     reg.save()
                     get_handler(Registration).handle_bump(reg)
-        self.check_for_bump_or_rebalance(pool)
+            self.check_for_bump_or_rebalance(pool)
 
     def try_to_rebalance(self, open_pool):
         """
