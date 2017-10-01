@@ -67,6 +67,16 @@ class ListJoblistingsTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
+        now = timezone.now()
+        Joblisting.objects.all().update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now + timedelta(days=10)
+        )
+
+        Joblisting.objects.filter(pk=3).update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now - timedelta(days=5)
+        )
 
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
@@ -95,6 +105,16 @@ class RetrieveJoblistingsTestCase(APITestCase):
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
+        now = timezone.now()
+        Joblisting.objects.all().update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now + timedelta(days=10)
+        )
+
+        Joblisting.objects.filter(pk=3).update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now - timedelta(days=5)
+        )
 
     def test_with_group_permission(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
@@ -118,6 +138,16 @@ class CreateJoblistingsTestCase(APITestCase):
         self.abakom_user = User.objects.get(username='abakommer')
         AbakusGroup.objects.get(name='Abakom').add_user(self.abakom_user)
         self.not_abakom_user = User.objects.get(username='pleb')
+        now = timezone.now()
+        Joblisting.objects.all().update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now + timedelta(days=10)
+        )
+
+        Joblisting.objects.filter(pk=3).update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now - timedelta(days=5)
+        )
 
     def test_joblistings_create(self):
         self.client.force_authenticate(user=self.abakom_user)
@@ -138,6 +168,17 @@ class EditJoblistingsTestCase(APITestCase):
         self.abakom_user = User.objects.get(username='abakommer')
         AbakusGroup.objects.get(name='Abakom').add_user(self.abakom_user)
         self.not_abakom_user = User.objects.get(username='pleb')
+
+        now = timezone.now()
+        Joblisting.objects.all().update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now + timedelta(days=10)
+        )
+
+        Joblisting.objects.filter(pk=3).update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now - timedelta(days=5)
+        )
 
     def test_joblistings_edit_one_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
@@ -171,6 +212,16 @@ class DeleteJoblistingsTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakom').add_user(self.abakom_user)
         self.not_abakom_user = User.objects.get(username='pleb')
         AbakusGroup.objects.get(name='Abakus').add_user(self.not_abakom_user)
+        now = timezone.now()
+        Joblisting.objects.all().update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now + timedelta(days=10)
+        )
+
+        Joblisting.objects.filter(pk=3).update(
+            visible_from=now - timedelta(days=10),
+            visible_to=now - timedelta(days=5)
+        )
 
     def test_can_delete(self):
         self.client.force_authenticate(self.abakom_user)
