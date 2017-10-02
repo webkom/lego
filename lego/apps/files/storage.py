@@ -40,7 +40,7 @@ class Storage:
                 'acl': 'private',
                 'Content-Type': mime_type
             },
-            ExpiresIn=30
+            ExpiresIn=60*10
         )
         return signed
 
