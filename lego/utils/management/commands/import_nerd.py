@@ -119,36 +119,37 @@ class Command(BaseCommand):
         for file_name in file_names:
             print(f'\t{file_name}')
 
-        # We need to update the group MPTT mapping
-        group_tree = initial_tree
-        nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/1_nerd_export_groups.yaml')
-        for group_model in nerd_groups:
-            group_fields = group_model['fields']
-            group_name = group_fields['name']
-            lego_group_ids[group_model['pk']] = group_name
-            group_fields.pop('name', None)
-            if group_fields['parent'] is None:
-                group_fields.pop('parent', None)
-                group_tree[group_name] = [group_fields, {}]
-                continue
-            parent = lego_group_ids[group_fields['parent']]
-            group_fields.pop('parent', None)
-            print(f'Attempting to find path for group: {group_name}')
-            results = list(self.find_group_path(parent, group_tree))
-            path = ' -> '.join(results[0][1] + [group_name])
-            print(f'Found group path: {path}')
-            if not options['yes']:
-                choice = input('Do you wish to import this group? (y/n)').lower()
-                if choice == 'n' or choice == 'no' or choice == 'nei':
-                    print(f'[IGNORE] Ignoring {group_name}\n----------------')
+        if os.path.isfile(f'{IMPORT_DIRECTORY}/1_nerd_export_groups.yaml'):
+            # We need to update the group MPTT mapping
+            group_tree = initial_tree
+            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/1_nerd_export_groups.yaml')
+            for group_model in nerd_groups:
+                group_fields = group_model['fields']
+                group_name = group_fields['name']
+                lego_group_ids[group_model['pk']] = group_name
+                group_fields.pop('name', None)
+                if group_fields['parent'] is None:
+                    group_fields.pop('parent', None)
+                    group_tree[group_name] = [group_fields, {}]
                     continue
-            results[0][0][1][group_name] = [group_fields, {}]
-            print(f'[SUCCESS] Added {group_name} to the import tree\n------------------')
+                parent = lego_group_ids[group_fields['parent']]
+                group_fields.pop('parent', None)
+                print(f'Attempting to find path for group: {group_name}')
+                results = list(self.find_group_path(parent, group_tree))
+                path = ' -> '.join(results[0][1] + [group_name])
+                print(f'Found group path: {path}')
+                if not options['yes']:
+                    choice = input('Do you wish to import this group? (y/n)').lower()
+                    if choice == 'n' or choice == 'no' or choice == 'nei':
+                        print(f'[IGNORE] Ignoring {group_name}\n----------------')
+                        continue
+                results[0][0][1][group_name] = [group_fields, {}]
+                print(f'[SUCCESS] Added {group_name} to the import tree\n------------------')
 
-        insert_abakus_groups(group_tree)
-        AbakusGroup.objects.rebuild()
-        file_names.remove('1_nerd_export_groups.yaml')
-        # End MPTT mapping
+            insert_abakus_groups(group_tree)
+            AbakusGroup.objects.rebuild()
+            file_names.remove('1_nerd_export_groups.yaml')
+            # End MPTT mapping
 
         print('Starting import of fixtures')
         for file_name in file_names:
