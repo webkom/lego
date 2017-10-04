@@ -29,7 +29,8 @@ WHEN_TO_IMPORT_FILES = 3
 IGNORED_DIRECTORIES = ['common', 'thumbs']
 # TODO: Which files/directories actually need to be public?
 PUBLIC_FILE_DIRECTORIES = ['announcements', 'common', 'events', 'groups', 'users']
-# Directories that contains files with the following format: "%yyyy-%mm-%dd-%user_id-%file_name.%file_type"
+# Directories that contains files with the following format:
+# "%yyyy-%mm-%dd-%user_id-%file_name.%file_type"
 USER_FILE_DIRECTORIES = ['announcements', 'events', 'groups', 'users']
 
 lego_group_ids = {
@@ -162,7 +163,8 @@ class Command(BaseCommand):
             file_date = datetime.fromtimestamp(os.path.getmtime(file_path))
             if current_upload_directory in USER_FILE_DIRECTORIES:
                 user_file_split = file.split('-')
-                if len(user_file_split) == 5 and User.objects.filter(pk=int(user_file_split[3])).exists():
+                if len(user_file_split) == 5 \
+                        and User.objects.filter(pk=int(user_file_split[3])).exists():
                     file_user = User.all_objects.get(pk=int(user_file_split[3]))
                     file_date = datetime.strptime(
                         '{}{}{}'.format(user_file_split[0], user_file_split[1], user_file_split[2]),
@@ -253,6 +255,3 @@ class Command(BaseCommand):
                 self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files/uploads')
                 files_have_been_imported = True
             self.import_nerd_fixture(file_name)
-
-
-
