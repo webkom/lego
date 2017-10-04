@@ -631,8 +631,8 @@ class Registration(BasisModel):
     pool = models.ForeignKey(Pool, null=True, related_name='registrations')
     registration_date = models.DateTimeField(db_index=True, null=True)
     unregistration_date = models.DateTimeField(null=True)
-    feedback = models.CharField(max_length=100, blank=True)
-    admin_reason = models.CharField(max_length=100, blank=True)
+    feedback = models.CharField(max_length=255, blank=True)
+    admin_reason = models.CharField(max_length=255, blank=True)
     status = models.CharField(
         max_length=20, default=constants.PENDING_REGISTER, choices=constants.STATUSES
     )

@@ -149,6 +149,7 @@ class Command(BaseCommand):
                 continue
 
             file_pk = file_path.replace(f'{IMPORT_DIRECTORY}/files/uploads/', '')
+            file_pk = file_pk.replace('å', 'å')  # U+030A != U+00E5
 
             # .nerd_export/files/uploads/common => common
             current_upload_directory = file_path.split('/')[3]
