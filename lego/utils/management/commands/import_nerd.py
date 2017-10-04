@@ -246,6 +246,8 @@ class Command(BaseCommand):
 
         print('Starting import of fixtures')
         for file_name in file_names:
+            if os.path.isdir(f'{IMPORT_DIRECTORY}/{file_name}'):
+                continue
             file_priority = int(file_name[0])
             if file_priority >= WHEN_TO_IMPORT_FILES and not files_have_been_imported:
                 self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files/uploads')
