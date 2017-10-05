@@ -254,4 +254,10 @@ class Command(BaseCommand):
             if file_priority >= WHEN_TO_IMPORT_FILES and not files_have_been_imported:
                 self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files/uploads')
                 files_have_been_imported = True
+            log.info(f'Handling fixture: {file_name}')
+            if not options['yes']:
+                choice = input('Do you wish to import this fixture? (y/n)').lower()
+                if choice == 'n' or choice == 'no' or choice == 'nei':
+                    print(f'[IGNORE] Ignoring fixture {file_name}\n----------------')
+                    continue
             self.import_nerd_fixture(file_name)
