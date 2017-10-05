@@ -22,11 +22,14 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
 
 
 class PublicAbakusGroupSerializer(serializers.ModelSerializer):
+    memberships = MembershipSerializer(many=True, read_only=True)
+
     class Meta:
         model = AbakusGroup
         fields = (
             'id',
             'name',
             'description',
+            'memberships',
             'parent'
         )
