@@ -1,6 +1,6 @@
 from django_filters import CharFilter, FilterSet
 
-from lego.apps.users.models import Membership
+from lego.apps.users.models import AbakusGroup, Membership
 
 
 class MembershipFilterSet(FilterSet):
@@ -9,3 +9,10 @@ class MembershipFilterSet(FilterSet):
     class Meta:
         model = Membership
         fields = ('group',)
+
+
+class AbakusGroupFilterSet(FilterSet):
+
+    class Meta:
+        model = AbakusGroup
+        fields = ('type',)
