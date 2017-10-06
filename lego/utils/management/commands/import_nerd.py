@@ -18,14 +18,6 @@ from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
 IMPORT_DIRECTORY = '.nerd_export'
-"""
-Which priority should the file import follow?
-
-For example, if WHEN_TO_IMPORT_FILES = 4
-Fixtures with priority from 1 to 3 will get imported,
-then the files and then the rest of the fixtures (priority 4 and up).
-"""
-WHEN_TO_IMPORT_FILES = 3
 IGNORED_DIRECTORIES = ['common', 'thumbs']
 # TODO: Which files/directories actually need to be public?
 PUBLIC_FILE_DIRECTORIES = ['announcements', 'common', 'events', 'groups', 'users']
@@ -138,10 +130,6 @@ class Command(BaseCommand):
                 continue
             file_path = os.path.join(directory, file)
             if os.path.isdir(file_path):
-                if file in IGNORED_DIRECTORIES:
-                    continue
-                # Recursive upload
-                self.upload_files(uploads_bucket, file_path)
                 continue
             try:
                 file_type = File.get_file_type(file)
@@ -149,42 +137,25 @@ class Command(BaseCommand):
                 log.warning(f'Unknown filetype for file: {file_path}')
                 continue
 
-            file_pk = file_path.replace(f'{IMPORT_DIRECTORY}/files/uploads/', '')
-            file_pk = file_pk.replace('å', 'å')  # U+030A != U+00E5
+            file_pk = file_path.replace(f'{IMPORT_DIRECTORY}/files/', '')
 
             # .nerd_export/files/uploads/common => common
-            current_upload_directory = file_path.split('/')[3]
+            current_upload_directory = file_pk.split('-')[0]
 
             log.info(f'Uploading {file_path} to bucket with key: "{file_pk}"')
             storage.upload_file(uploads_bucket, file, file_path)
 
-            file_user = None
             # Kind of hacky, but no other option on Linux
+            # TODO: use database export datetime instead
             file_date = datetime.fromtimestamp(os.path.getmtime(file_path))
-            if current_upload_directory in USER_FILE_DIRECTORIES:
-                user_file_split = file.split('-')
-                if len(user_file_split) == 5 \
-                        and User.objects.filter(pk=int(user_file_split[3])).exists():
-                    file_user = User.all_objects.get(pk=int(user_file_split[3]))
-                    file_date = datetime.strptime(
-                        '{}{}{}'.format(user_file_split[0], user_file_split[1], user_file_split[2]),
-                        '%Y%m%d'
-                    )
-
-            file_object, created = File.objects.get_or_create(pk=file_pk, defaults={
+            File.objects.get_or_create(pk=file_pk, defaults={
                 'created_at': file_date,
                 'state': 'ready',
                 'file_type': file_type,
                 'token': get_random_string(32),
-                'user': file_user,
+                'user': None,
                 'public': True if current_upload_directory in PUBLIC_FILE_DIRECTORIES else False
             })
-
-            if current_upload_directory == 'users' and file_user is not None:
-                # Set the file as profile picture for the owner of the file
-                log.info(f'Setting profile picture for user {file_user} to: {file_object.key}')
-                file_user.picture = file_object
-                # user_object.save()
 
     def run(self, *args, **options):
         if not os.path.exists(IMPORT_DIRECTORY):
@@ -200,10 +171,20 @@ class Command(BaseCommand):
         # Prepare storage bucket for development.
         # We skip this in production, where the bucket needs to be created manually.
         files_have_been_imported = False
+        """
         uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
         log.info(f'Makes sure the {uploads_bucket} bucket exists')
         storage.create_bucket(uploads_bucket)
+        if not options['yes']:
+            choice = input('Do you wish to upload/import all files? (y/n)').lower()
+            if choice == 'n' or choice == 'no' or choice == 'nei':
+                print(f'[IGNORE] Ignoring upload of files\n----------------')
+            else:
+                self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files')
+        else:
+            self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files')
         # End upload files
+        """
 
         file_names = os.listdir(IMPORT_DIRECTORY)
         file_names.sort()
@@ -250,10 +231,6 @@ class Command(BaseCommand):
         for file_name in file_names:
             if os.path.isdir(f'{IMPORT_DIRECTORY}/{file_name}'):
                 continue
-            file_priority = int(file_name[0])
-            if file_priority >= WHEN_TO_IMPORT_FILES and not files_have_been_imported:
-                self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files/uploads')
-                files_have_been_imported = True
             log.info(f'Handling fixture: {file_name}')
             if not options['yes']:
                 choice = input('Do you wish to import this fixture? (y/n)').lower()
@@ -261,3 +238,7 @@ class Command(BaseCommand):
                     print(f'[IGNORE] Ignoring fixture {file_name}\n----------------')
                     continue
             self.import_nerd_fixture(file_name)
+
+        # Make sure user profile pictures are owned by the users
+        print('Setting ownership of user profile pictures')
+        # for User.all_objects.exclude(picture__isnull=True)
