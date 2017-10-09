@@ -7,8 +7,7 @@ from rest_framework.response import Response
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.quotes.filters import QuotesFilterSet
 from lego.apps.quotes.models import Quote
-from lego.apps.quotes.serializers import (QuoteCreateAndUpdateSerializer, QuoteDetailSerializer,
-                                          QuoteSerializer)
+from lego.apps.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteSerializer
 
 
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -17,8 +16,6 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     filter_class = QuotesFilterSet
 
     def get_serializer_class(self):
-        if self.action in ['retrieve']:
-            return QuoteDetailSerializer
         if self.action in ['create', 'update', 'partial_update']:
             return QuoteCreateAndUpdateSerializer
         return QuoteSerializer
