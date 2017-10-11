@@ -147,6 +147,7 @@ class Command(BaseCommand):
 
             # Kind of hacky, but no other option on Linux
             # TODO: use database export datetime instead
+            """
             file_date = datetime.fromtimestamp(os.path.getmtime(file_path))
             File.objects.get_or_create(pk=file_pk, defaults={
                 'created_at': file_date,
@@ -156,6 +157,7 @@ class Command(BaseCommand):
                 'user': None,
                 'public': True if current_upload_directory in PUBLIC_FILE_DIRECTORIES else False
             })
+            """
 
     def run(self, *args, **options):
         if not os.path.exists(IMPORT_DIRECTORY):
@@ -176,7 +178,7 @@ class Command(BaseCommand):
         log.info(f'Makes sure the {uploads_bucket} bucket exists')
         storage.create_bucket(uploads_bucket)
         if not options['yes']:
-            choice = input('Do you wish to upload/import all files? (y/n)').lower()
+            choice = input('Do you wish to upload/import all files? [Y/n]').lower()
             if choice == 'n' or choice == 'no' or choice == 'nei':
                 print(f'[IGNORE] Ignoring upload of files\n----------------')
             else:
@@ -215,7 +217,7 @@ class Command(BaseCommand):
                 path = ' -> '.join(results[0][1] + [group_name])
                 print(f'Found group path: {path}')
                 if not options['yes']:
-                    choice = input('Do you wish to import this group? (y/n)').lower()
+                    choice = input('Do you wish to import this group? [Y/n]').lower()
                     if choice == 'n' or choice == 'no' or choice == 'nei':
                         print(f'[IGNORE] Ignoring {group_name}\n----------------')
                         continue
@@ -233,7 +235,7 @@ class Command(BaseCommand):
                 continue
             log.info(f'Handling fixture: {file_name}')
             if not options['yes']:
-                choice = input('Do you wish to import this fixture? (y/n)').lower()
+                choice = input('Do you wish to import this fixture? [Y/n]').lower()
                 if choice == 'n' or choice == 'no' or choice == 'nei':
                     print(f'[IGNORE] Ignoring fixture {file_name}\n----------------')
                     continue
