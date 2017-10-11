@@ -1,4 +1,4 @@
-from lego.apps.users.constants import GROUP_INTEREST
+from lego.apps.users.constants import GROUP_INTEREST, GROUP_COMMITTEE, GROUP_GRADE
 from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 
@@ -47,24 +47,24 @@ initial_tree = {
                     '/sudo/admin/joblistings/',
                 ]},
                 {
-                    'Arrkom': [{'is_committee': True, 'logo_id': 'abakus_arrkom.png'}, {}],
-                    'backup': [{'is_committee': True, 'logo_id': 'abakus_backup.png'}, {}],
+                    'Arrkom': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_arrkom.png'}, {}],
+                    'backup': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_backup.png'}, {}],
                     'Bedkom': [{
-                        'is_committee': True,
+                        'type': GROUP_COMMITTEE,
                         'logo_id': 'abakus_bedkom.png',
                         'permissions': ['/sudo/admin/companyinterest']
                     }, {}],
                     'Fagkom': [{
-                        'is_committee': True,
+                        'type': GROUP_COMMITTEE,
                         'logo_id': 'abakus_fagkom.png',
                         'permissions': ['/sudo/admin/companyinterest']
                     }, {}],
-                    'Koskom': [{'is_committee': True, 'logo_id': 'abakus_koskom.png'}, {}],
-                    'LaBamba': [{'is_committee': True, 'logo_id': 'abakus_labamba.png'}, {}],
-                    'PR': [{'is_committee': True, 'logo_id': 'abakus_pr.png'}, {}],
-                    'readme': [{'is_committee': True, 'logo_id': 'abakus_readme.png'}, {}],
+                    'Koskom': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_koskom.png'}, {}],
+                    'LaBamba': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_labamba.png'}, {}],
+                    'PR': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_pr.png'}, {}],
+                    'readme': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_readme.png'}, {}],
                     'Webkom': [{
-                        'is_committee': True,
+                        'type': GROUP_COMMITTEE,
                         'logo_id': 'abakus_webkom.png',
                         'permissions': ['/sudo/'],
                         'text': 'hei'
@@ -120,18 +120,18 @@ initial_tree = {
     ],
     'Students': [{}, {
         'Datateknologi': [{}, {
-            '1. klasse Datateknologi': [{'is_grade': True}, {}],
-            '2. klasse Datateknologi': [{'is_grade': True}, {}],
-            '3. klasse Datateknologi': [{'is_grade': True}, {}],
-            '4. klasse Datateknologi': [{'is_grade': True}, {}],
-            '5. klasse Datateknologi': [{'is_grade': True}, {}],
+            '1. klasse Datateknologi': [{'type': GROUP_GRADE}, {}],
+            '2. klasse Datateknologi': [{'type': GROUP_GRADE}, {}],
+            '3. klasse Datateknologi': [{'type': GROUP_GRADE}, {}],
+            '4. klasse Datateknologi': [{'type': GROUP_GRADE}, {}],
+            '5. klasse Datateknologi': [{'type': GROUP_GRADE}, {}],
         }],
         'Kommunikasjonsteknologi': [{}, {
-            '1. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
-            '2. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
-            '3. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
-            '4. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
-            '5. klasse Kommunikasjonsteknologi': [{'is_grade': True}, {}],
+            '1. klasse Kommunikasjonsteknologi': [{'type': GROUP_GRADE}, {}],
+            '2. klasse Kommunikasjonsteknologi': [{'type': GROUP_GRADE}, {}],
+            '3. klasse Kommunikasjonsteknologi': [{'type': GROUP_GRADE}, {}],
+            '4. klasse Kommunikasjonsteknologi': [{'type': GROUP_GRADE}, {}],
+            '5. klasse Kommunikasjonsteknologi': [{'type': GROUP_GRADE}, {}],
         }]
     }]
 }

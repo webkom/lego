@@ -4,37 +4,36 @@
 - model: users.abakusgroup
   pk: 1
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Users,
-    description: "Brukere p\xE5 Abakus.no", is_grade: false, is_committee: false,
-    parent: null, logo: null, type: annen, text: '', permissions: '[]', lft: 1, rght: 2,
-    tree_id: 1, level: 0}
+    description: "Brukere p\xE5 Abakus.no", parent: null, logo: null, type: annen,
+    text: '', permissions: '[]', lft: 1, rght: 2, tree_id: 1, level: 0}
 - model: users.abakusgroup
   pk: 2
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakus,
-    description: Medlemmer av Abakus, is_grade: false, is_committee: false, parent: null,
-    logo: null, type: annen, text: '', permissions: '["/sudo/admin/meetings/create",
-      "/sudo/admin/meetinginvitations/create", "/sudo/admin/registrations/create/",
-      "/sudo/admin/events/payment/", "/sudo/admin/comments/create"]', lft: 1, rght: 32,
-    tree_id: 2, level: 0}
+    description: Medlemmer av Abakus, parent: null, logo: null, type: annen, text: '',
+    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/", "/sudo/admin/comments/create"]',
+    lft: 1, rght: 32, tree_id: 2, level: 0}
 - model: users.abakusgroup
   pk: 3
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakom,
-    description: Medlemmer av Abakom, is_grade: false, is_committee: false, parent: 2,
-    logo: null, type: annen, text: '', permissions: '["/sudo/admin/events/", "/sudo/admin/pools/",
-      "/sudo/admin/registrations/", "/sudo/admin/companies/", "/sudo/admin/joblistings/"]',
-    lft: 2, rght: 23, tree_id: 2, level: 1}
+    description: Medlemmer av Abakom, parent: 2, logo: null, type: annen, text: '',
+    permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
+      "/sudo/admin/companies/", "/sudo/admin/joblistings/"]', lft: 2, rght: 23, tree_id: 2,
+    level: 1}
 - model: users.abakusgroup
   pk: 4
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Arrkom,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_arrkom.png,
-    type: annen, text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 2, level: 2}
+    description: '', parent: 3, logo: abakus_arrkom.png, type: komite, text: '', permissions: '[]',
+    lft: 3, rght: 4, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 5
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: backup,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_backup.png,
-    type: annen, text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 2, level: 2}
+    description: '', parent: 3, logo: abakus_backup.png, type: komite, text: '', permissions: '[]',
+    lft: 5, rght: 6, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 6
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Bedkom,
+<<<<<<< HEAD
     description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_bedkom.png,
     type: annen, text: '', permissions: '["/sudo/admin/companyinterest"]', lft: 7,
     rght: 8, tree_id: 2, level: 2}
@@ -44,151 +43,147 @@
     description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_fagkom.png,
     type: annen, text: '', permissions: '["/sudo/admin/companyinterest"]', lft: 9,
     rght: 10, tree_id: 2, level: 2}
+=======
+    description: '', parent: 3, logo: abakus_bedkom.png, type: komite, text: '', permissions: '[]',
+    lft: 7, rght: 8, tree_id: 2, level: 2}
+- model: users.abakusgroup
+  pk: 7
+  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Fagkom,
+    description: '', parent: 3, logo: abakus_fagkom.png, type: komite, text: '', permissions: '[]',
+    lft: 9, rght: 10, tree_id: 2, level: 2}
+>>>>>>> There is no point in keeping seperate fields for committee/grade, just use 'type'
 - model: users.abakusgroup
   pk: 8
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Koskom,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_koskom.png,
-    type: annen, text: '', permissions: '[]', lft: 11, rght: 12, tree_id: 2, level: 2}
+    description: '', parent: 3, logo: abakus_koskom.png, type: komite, text: '', permissions: '[]',
+    lft: 11, rght: 12, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 9
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: LaBamba,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_labamba.png,
-    type: annen, text: '', permissions: '[]', lft: 13, rght: 14, tree_id: 2, level: 2}
+    description: '', parent: 3, logo: abakus_labamba.png, type: komite, text: '',
+    permissions: '[]', lft: 13, rght: 14, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 10
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: PR,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_pr.png,
-    type: annen, text: '', permissions: '[]', lft: 15, rght: 16, tree_id: 2, level: 2}
+    description: '', parent: 3, logo: abakus_pr.png, type: komite, text: '', permissions: '[]',
+    lft: 15, rght: 16, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 11
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: readme,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_readme.png,
-    type: annen, text: '', permissions: '[]', lft: 17, rght: 18, tree_id: 2, level: 2}
+    description: '', parent: 3, logo: abakus_readme.png, type: komite, text: '', permissions: '[]',
+    lft: 17, rght: 18, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 12
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Webkom,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_webkom.png,
-    type: annen, text: hei, permissions: '["/sudo/"]', lft: 19, rght: 20, tree_id: 2,
-    level: 2}
+    description: '', parent: 3, logo: abakus_webkom.png, type: komite, text: hei,
+    permissions: '["/sudo/"]', lft: 19, rght: 20, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 13
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Hovedstyret,
-    description: '', is_grade: false, is_committee: false, parent: 3, logo: abakus_hs.png,
-    type: annen, text: '', permissions: '["/sudo/admin/"]', lft: 21, rght: 22, tree_id: 2,
-    level: 2}
+    description: '', parent: 3, logo: abakus_hs.png, type: annen, text: '', permissions: '["/sudo/admin/"]',
+    lft: 21, rght: 22, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 14
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Interessegrupper,
-    description: '', is_grade: false, is_committee: false, parent: 2, logo: null,
-    type: annen, text: '', permissions: '[]', lft: 24, rght: 31, tree_id: 2, level: 1}
+    description: '', parent: 2, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 24, rght: 31, tree_id: 2, level: 1}
 - model: users.abakusgroup
   pk: 15
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: AbaBrygg,
-    description: Interessegruppe for AbaBrygg, is_grade: false, is_committee: false,
-    parent: 14, logo: null, type: interesse, text: "Hender det seg at du tar en pils?\
-      \ Er lommeboken ofte tom, kanskje p\xE5 grunn av pils?\nVisste du at ved \xE5\
-      \ brygge \xF8l selv kan man enkelt produsere \xF8l til 3-4 kroner flaska?\n\
-      Ikke bare er det koselig, besparende, og luktfritt (!) \xE5 brygge eget \xF8\
-      l, men imotsetningtil vinbrygging trenger man ikke v\xE6re supermann for at\
-      \ sluttresultatet smaker godt.\n\nabaBrygg er en liten gruppe som passer deg\
-      \ som har en lidenskap for \xF8l, harlyst til \xE5 pr\xF8ve noe nytt, eller\
-      \ bare trenger litt starthjelp med brygginga.\n", permissions: '[]', lft: 25,
-    rght: 26, tree_id: 2, level: 2}
+    description: Interessegruppe for AbaBrygg, parent: 14, logo: null, type: interesse,
+    text: "Hender det seg at du tar en pils? Er lommeboken ofte tom, kanskje p\xE5\
+      \ grunn av pils?\nVisste du at ved \xE5 brygge \xF8l selv kan man enkelt produsere\
+      \ \xF8l til 3-4 kroner flaska?\nIkke bare er det koselig, besparende, og luktfritt\
+      \ (!) \xE5 brygge eget \xF8l, men imotsetningtil vinbrygging trenger man ikke\
+      \ v\xE6re supermann for at sluttresultatet smaker godt.\n\nabaBrygg er en liten\
+      \ gruppe som passer deg som har en lidenskap for \xF8l, harlyst til \xE5 pr\xF8\
+      ve noe nytt, eller bare trenger litt starthjelp med brygginga.\n", permissions: '[]',
+    lft: 25, rght: 26, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 16
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: abaGolf,
-    description: Interessegruppe for abaGolf, is_grade: false, is_committee: false,
-    parent: 14, logo: null, type: interesse, text: "Hei, er du en person som liker\
-      \ \xE5 klaske baller p\xE5 gr\xF8nne baner?Da er Abakus golf gruppa for deg.\n\
-      Vi tenker at dette vil v\xE6re en portal for oss som \xF8nsker \xE5komme oss\
-      \ ut p\xE5 banene med noen hyggelige folk fra Abakus.\nDet vil ogs\xE5 bli blestet\
-      \ om eventuelleturnerninger som m\xE5tte dukke opp.\nSamt vil det v\xE6re treningsmuligheter\
-      \ gjennom hele vintereni samarbeid med NTNUI Golf.\n", permissions: '[]', lft: 27,
-    rght: 28, tree_id: 2, level: 2}
+    description: Interessegruppe for abaGolf, parent: 14, logo: null, type: interesse,
+    text: "Hei, er du en person som liker \xE5 klaske baller p\xE5 gr\xF8nne baner?Da\
+      \ er Abakus golf gruppa for deg.\nVi tenker at dette vil v\xE6re en portal for\
+      \ oss som \xF8nsker \xE5komme oss ut p\xE5 banene med noen hyggelige folk fra\
+      \ Abakus.\nDet vil ogs\xE5 bli blestet om eventuelleturnerninger som m\xE5tte\
+      \ dukke opp.\nSamt vil det v\xE6re treningsmuligheter gjennom hele vintereni\
+      \ samarbeid med NTNUI Golf.\n", permissions: '[]', lft: 27, rght: 28, tree_id: 2,
+    level: 2}
 - model: users.abakusgroup
   pk: 17
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Turgruppa,
-    description: Interessegruppe for Turgruppa, is_grade: false, is_committee: false,
-    parent: 14, logo: null, type: interesse, text: "Abakus sin turgruppe er for alle\
-      \ som elsker, liker eller har sett norsk natur. Denne turgruppenvil arrangere\
-      \ ulike turer i fjell skog og mark. Om vinteren vil det v\xE6re mulighet for\
-      \ toppturereller \xE5 g\xE5 mellom hytter p\xE5 vidda. H\xF8st og v\xE5r, vil\
-      \ turene g\xE5 i fjell og langs elv og vann.Det vil alltid v\xE6re flott stemning\
-      \ og minneverdige turopplevelser som er m\xE5let.\n\n Om du harforslag til tur\
-      \ eller lurer p\xE5 om dette er noe du kan v\xE6re med p\xE5, ikke n\xF8l med\
-      \ \xE5 ta kontakt.", permissions: '[]', lft: 29, rght: 30, tree_id: 2, level: 2}
+    description: Interessegruppe for Turgruppa, parent: 14, logo: null, type: interesse,
+    text: "Abakus sin turgruppe er for alle som elsker, liker eller har sett norsk\
+      \ natur. Denne turgruppenvil arrangere ulike turer i fjell skog og mark. Om\
+      \ vinteren vil det v\xE6re mulighet for toppturereller \xE5 g\xE5 mellom hytter\
+      \ p\xE5 vidda. H\xF8st og v\xE5r, vil turene g\xE5 i fjell og langs elv og vann.Det\
+      \ vil alltid v\xE6re flott stemning og minneverdige turopplevelser som er m\xE5\
+      let.\n\n Om du harforslag til tur eller lurer p\xE5 om dette er noe du kan v\xE6\
+      re med p\xE5, ikke n\xF8l med \xE5 ta kontakt.", permissions: '[]', lft: 29,
+    rght: 30, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 18
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Students,
-    description: '', is_grade: false, is_committee: false, parent: null, logo: null,
-    type: annen, text: '', permissions: '[]', lft: 1, rght: 26, tree_id: 3, level: 0}
+    description: '', parent: null, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 1, rght: 26, tree_id: 3, level: 0}
 - model: users.abakusgroup
   pk: 19
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Datateknologi,
-    description: '', is_grade: false, is_committee: false, parent: 18, logo: null,
-    type: annen, text: '', permissions: '[]', lft: 2, rght: 13, tree_id: 3, level: 1}
+    description: '', parent: 18, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 2, rght: 13, tree_id: 3, level: 1}
 - model: users.abakusgroup
   pk: 20
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 1.
-      klasse Datateknologi, description: '', is_grade: true, is_committee: false,
-    parent: 19, logo: null, type: annen, text: '', permissions: '[]', lft: 3, rght: 4,
-    tree_id: 3, level: 2}
+      klasse Datateknologi, description: '', parent: 19, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 21
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 2.
-      klasse Datateknologi, description: '', is_grade: true, is_committee: false,
-    parent: 19, logo: null, type: annen, text: '', permissions: '[]', lft: 5, rght: 6,
-    tree_id: 3, level: 2}
+      klasse Datateknologi, description: '', parent: 19, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 22
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 3.
-      klasse Datateknologi, description: '', is_grade: true, is_committee: false,
-    parent: 19, logo: null, type: annen, text: '', permissions: '[]', lft: 7, rght: 8,
-    tree_id: 3, level: 2}
+      klasse Datateknologi, description: '', parent: 19, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 7, rght: 8, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 23
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 4.
-      klasse Datateknologi, description: '', is_grade: true, is_committee: false,
-    parent: 19, logo: null, type: annen, text: '', permissions: '[]', lft: 9, rght: 10,
-    tree_id: 3, level: 2}
+      klasse Datateknologi, description: '', parent: 19, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 9, rght: 10, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 24
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 5.
-      klasse Datateknologi, description: '', is_grade: true, is_committee: false,
-    parent: 19, logo: null, type: annen, text: '', permissions: '[]', lft: 11, rght: 12,
-    tree_id: 3, level: 2}
+      klasse Datateknologi, description: '', parent: 19, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 11, rght: 12, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 25
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Kommunikasjonsteknologi,
-    description: '', is_grade: false, is_committee: false, parent: 18, logo: null,
-    type: annen, text: '', permissions: '[]', lft: 14, rght: 25, tree_id: 3, level: 1}
+    description: '', parent: 18, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 14, rght: 25, tree_id: 3, level: 1}
 - model: users.abakusgroup
   pk: 26
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 1.
-      klasse Kommunikasjonsteknologi, description: '', is_grade: true, is_committee: false,
-    parent: 25, logo: null, type: annen, text: '', permissions: '[]', lft: 15, rght: 16,
-    tree_id: 3, level: 2}
+      klasse Kommunikasjonsteknologi, description: '', parent: 25, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 15, rght: 16, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 27
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 2.
-      klasse Kommunikasjonsteknologi, description: '', is_grade: true, is_committee: false,
-    parent: 25, logo: null, type: annen, text: '', permissions: '[]', lft: 17, rght: 18,
-    tree_id: 3, level: 2}
+      klasse Kommunikasjonsteknologi, description: '', parent: 25, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 17, rght: 18, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 28
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 3.
-      klasse Kommunikasjonsteknologi, description: '', is_grade: true, is_committee: false,
-    parent: 25, logo: null, type: annen, text: '', permissions: '[]', lft: 19, rght: 20,
-    tree_id: 3, level: 2}
+      klasse Kommunikasjonsteknologi, description: '', parent: 25, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 19, rght: 20, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 29
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 4.
-      klasse Kommunikasjonsteknologi, description: '', is_grade: true, is_committee: false,
-    parent: 25, logo: null, type: annen, text: '', permissions: '[]', lft: 21, rght: 22,
-    tree_id: 3, level: 2}
+      klasse Kommunikasjonsteknologi, description: '', parent: 25, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 21, rght: 22, tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 30
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 5.
-      klasse Kommunikasjonsteknologi, description: '', is_grade: true, is_committee: false,
-    parent: 25, logo: null, type: annen, text: '', permissions: '[]', lft: 23, rght: 24,
-    tree_id: 3, level: 2}
+      klasse Kommunikasjonsteknologi, description: '', parent: 25, logo: null, type: klasse,
+    text: '', permissions: '[]', lft: 23, rght: 24, tree_id: 3, level: 2}

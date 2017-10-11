@@ -1,3 +1,4 @@
+from lego.apps.users.constants import GROUP_COMMITTEE
 from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 
@@ -110,9 +111,9 @@ test_tree = {
                     '/sudo/admin/joblistings/',
                 ]},
                 {
-                    'Bedkom': [{'is_committee': True}, {}],
-                    'Fagkom': [{'is_committee': True}, {}],
-                    'Webkom': [{'is_committee': True, 'permissions': ['/sudo/'], }, {}],
+                    'Bedkom': [{'type': GROUP_COMMITTEE}, {}],
+                    'Fagkom': [{'type': GROUP_COMMITTEE}, {}],
+                    'Webkom': [{'type': GROUP_COMMITTEE, 'permissions': ['/sudo/'], }, {}],
                 }
             ],
         }
