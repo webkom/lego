@@ -31,7 +31,7 @@ class Membership(BasisModel):
     user = models.ForeignKey('users.User')
     abakus_group = models.ForeignKey('users.AbakusGroup')
 
-    role = models.CharField(max_length=20, choices=constants.ROLES, default=constants.MEMBER)
+    role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True, db_index=True)
 
     start_date = models.DateField(auto_now_add=True, blank=True, db_index=True)
