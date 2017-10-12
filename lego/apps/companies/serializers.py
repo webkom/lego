@@ -125,14 +125,14 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
                   'logo', 'files', 'company_contacts')
 
 
-class CompanyInterestSerializer(BasisModelSerializer):
+class CompanyInterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInterest
         fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
                   'other_offers', 'comment')
 
 
-class CompanyInterestListSerializer(BasisModelSerializer):
+class CompanyInterestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInterest
         fields = ('id', 'company_name', 'contact_person', 'mail')

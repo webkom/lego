@@ -6,10 +6,11 @@ from lego.apps.comments.models import Comment
 from lego.apps.companies.permissions import (CompanyContactPermissionHandler,
                                              CompanyInterestPermissionHandler,
                                              CompanyPermissionHandler,
-                                             NestedCompanyPermissionHandler)
+                                             NestedCompanyPermissionHandler,
+                                             SemesterPermissionHandler)
 from lego.apps.files.models import FileField
 from lego.apps.users.models import User
-from lego.utils.models import BasisModel, TimeStampModel
+from lego.utils.models import BasisModel, PersistentModel, TimeStampModel
 
 from .constants import (AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER_STATUSES, SPRING,
                         TRANSLATED_EVENTS, TRANSLATED_OTHER_OFFERS)
@@ -21,7 +22,7 @@ class Semester(BasisModel):
 
     class Meta:
         unique_together = ('year', 'semester')
-        permission_handler = CompanyPermissionHandler()
+        permission_handler = SemesterPermissionHandler()
 
 
 class Company(BasisModel):
@@ -83,7 +84,7 @@ class CompanyContact(BasisModel):
         permission_handler = CompanyContactPermissionHandler()
 
 
-class CompanyInterest(BasisModel):
+class CompanyInterest(PersistentModel, TimeStampModel):
     company_name = models.CharField(max_length=255)
     contact_person = models.CharField(max_length=255)
     mail = models.EmailField()

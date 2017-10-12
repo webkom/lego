@@ -49,8 +49,16 @@ initial_tree = {
                 {
                     'Arrkom': [{'is_committee': True, 'logo_id': 'abakus_arrkom.png'}, {}],
                     'backup': [{'is_committee': True, 'logo_id': 'abakus_backup.png'}, {}],
-                    'Bedkom': [{'is_committee': True, 'logo_id': 'abakus_bedkom.png'}, {}],
-                    'Fagkom': [{'is_committee': True, 'logo_id': 'abakus_fagkom.png'}, {}],
+                    'Bedkom': [{
+                        'is_committee': True,
+                        'logo_id': 'abakus_bedkom.png',
+                        'permissions': ['/sudo/admin/companyinterest']
+                    }, {}],
+                    'Fagkom': [{
+                        'is_committee': True,
+                        'logo_id': 'abakus_fagkom.png',
+                        'permissions': ['/sudo/admin/companyinterest']
+                    }, {}],
                     'Koskom': [{'is_committee': True, 'logo_id': 'abakus_koskom.png'}, {}],
                     'LaBamba': [{'is_committee': True, 'logo_id': 'abakus_labamba.png'}, {}],
                     'PR': [{'is_committee': True, 'logo_id': 'abakus_pr.png'}, {}],

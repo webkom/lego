@@ -1,4 +1,4 @@
-from lego.apps.permissions.constants import CREATE
+from lego.apps.permissions.constants import CREATE, LIST
 from lego.apps.permissions.permissions import PermissionHandler
 from lego.apps.permissions.utils import get_permission_handler
 
@@ -28,6 +28,15 @@ class NestedCompanyPermissionHandler(CompanyPermissionHandler):
         return has_perm
 
 
+class SemesterPermissionHandler(PermissionHandler):
+
+    default_keyword_permission = '/sudo/admin/companies/{perm}/'
+
+    authentication_map = {
+        LIST: False,
+    }
+
+
 class CompanyContactPermissionHandler(NestedCompanyPermissionHandler):
     """
     Lookup permissions on the parent company object and allow public view based on the public
@@ -42,7 +51,8 @@ class CompanyInterestPermissionHandler(PermissionHandler):
     """
     Allow creation of CompanyInterest without a valid user.
     """
+    default_keyword_permission = '/sudo/admin/companyinterest/{perm}'
 
     authentication_map = {
-        CREATE: False
+        CREATE: False,
     }

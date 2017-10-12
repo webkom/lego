@@ -69,7 +69,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
     serializer_class = SemesterSerializer
 
 
-class CompanyInterestViewSet(viewsets.ModelViewSet):
+class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     """
     Used by new companies to register interest in Abakus and our services.
     """
