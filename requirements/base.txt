@@ -11,7 +11,7 @@ stream-framework==1.4.0
 certifi==2017.7.27
 elasticsearch==5.4.0
 celery==4.1.0
-stripe==1.66.0
+stripe==1.67.0
 statsd==3.2.1
 structlog==17.2.0
 boto3==1.4.7
