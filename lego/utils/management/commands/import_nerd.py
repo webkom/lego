@@ -12,7 +12,7 @@ from lego.apps.files.exceptions import UnknownFileType
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
 from lego.apps.users.fixtures.initial_abakus_groups import initial_tree
-from lego.apps.users.models import AbakusGroup
+from lego.apps.users.models import AbakusGroup, User
 from lego.utils.functions import insert_abakus_groups
 from lego.utils.management_command import BaseCommand
 
@@ -172,26 +172,24 @@ class Command(BaseCommand):
         if not os.path.exists(IMPORT_DIRECTORY):
             log.error(f'Missing import directory: "{IMPORT_DIRECTORY}"')
             exit(1)
-        elif not os.path.exists(f'{IMPORT_DIRECTORY}/files'):
-            log.error(f'Missing files to import directory: "{IMPORT_DIRECTORY}/files"')
-            exit(1)
 
         self.load_initial_fixtures()
 
         # Upload files
-        # Prepare storage bucket for development.
-        # We skip this in production, where the bucket needs to be created manually.
-        uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
-        log.info(f'Makes sure the {uploads_bucket} bucket exists')
-        storage.create_bucket(uploads_bucket)
-        if not options['yes']:
-            choice = input('Do you wish to upload/import all files? [Y/n]').lower()
-            if choice == 'n' or choice == 'no' or choice == 'nei':
-                print(f'[IGNORE] Ignoring upload of files\n----------------')
+        if os.path.exists(f'{IMPORT_DIRECTORY}/files'):
+            # Prepare storage bucket for development.
+            # We skip this in production, where the bucket needs to be created manually.
+            uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
+            log.info(f'Makes sure the {uploads_bucket} bucket exists')
+            storage.create_bucket(uploads_bucket)
+            if not options['yes']:
+                choice = input('Do you wish to upload/import all files? [Y/n]').lower()
+                if choice == 'n' or choice == 'no' or choice == 'nei':
+                    print(f'[IGNORE] Ignoring upload of files\n----------------')
+                else:
+                    self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files')
             else:
                 self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files')
-        else:
-            self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files')
         # End upload files
 
         file_names = os.listdir(IMPORT_DIRECTORY)
@@ -204,7 +202,8 @@ class Command(BaseCommand):
             print(f'\t{file_name}')
 
         if os.path.isfile(f'{IMPORT_DIRECTORY}/1_nerd_export_group_files.yaml'):
-            self.handle_fixture_import('1_nerd_export_group_files.yaml')
+            self.handle_fixture_import('1_nerd_export_group_files.yaml', options['yes'])
+            file_names.remove('1_nerd_export_group_files.yaml')
 
         if os.path.isfile(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml'):
             # We need to update the group MPTT mapping
@@ -212,6 +211,8 @@ class Command(BaseCommand):
             nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml')
             for group_model in nerd_groups:
                 group_fields = group_model['fields']
+                if group_fields['logo']:
+                    group_fields['logo'] = File.objects.get(key=group_fields['logo'])
                 group_name = group_fields['name']
                 lego_group_ids[group_model['pk']] = group_name
                 group_fields.pop('name', None)
@@ -244,4 +245,8 @@ class Command(BaseCommand):
 
         # Make sure user profile pictures are owned by the users
         print('Setting ownership of user profile pictures')
-        # for User.all_objects.exclude(picture__isnull=True)
+        for user in User.all_objects.exclude(picture__isnull=True):
+            if user.picture.token == 'token':
+                continue
+            user.picture.user = user
+            user.picture.save()

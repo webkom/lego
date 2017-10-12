@@ -53,8 +53,7 @@ class Command(BaseCommand):
         self.load_fixtures([
             'files/fixtures/initial_files.yaml',
             'users/fixtures/initial_abakus_groups.yaml',
-            'tags/fixtures/initial_tags.yaml',
-            'flatpages/fixtures/initial_pages.yaml',
+            'tags/fixtures/initial_tags.yaml'
         ])
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:

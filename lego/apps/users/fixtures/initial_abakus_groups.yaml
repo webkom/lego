@@ -33,25 +33,13 @@
 - model: users.abakusgroup
   pk: 6
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Bedkom,
-<<<<<<< HEAD
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_bedkom.png,
-    type: annen, text: '', permissions: '["/sudo/admin/companyinterest"]', lft: 7,
-    rght: 8, tree_id: 2, level: 2}
-- model: users.abakusgroup
-  pk: 7
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Fagkom,
-    description: '', is_grade: false, is_committee: true, parent: 3, logo: abakus_fagkom.png,
-    type: annen, text: '', permissions: '["/sudo/admin/companyinterest"]', lft: 9,
-    rght: 10, tree_id: 2, level: 2}
-=======
-    description: '', parent: 3, logo: abakus_bedkom.png, type: komite, text: '', permissions: '[]',
+    description: '', parent: 3, logo: abakus_bedkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest"]',
     lft: 7, rght: 8, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 7
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Fagkom,
-    description: '', parent: 3, logo: abakus_fagkom.png, type: komite, text: '', permissions: '[]',
+    description: '', parent: 3, logo: abakus_fagkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest"]',
     lft: 9, rght: 10, tree_id: 2, level: 2}
->>>>>>> There is no point in keeping seperate fields for committee/grade, just use 'type'
 - model: users.abakusgroup
   pk: 8
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Koskom,
