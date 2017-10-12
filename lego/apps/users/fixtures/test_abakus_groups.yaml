@@ -60,62 +60,97 @@
       "/sudo/admin/interestgroups/view/", "/sudo/admin/interestgroups/create/", "/sudo/admin/interestgroups/edit/",
       "/sudo/admin/interestgroups/delete/"]', lft: 1, rght: 2, tree_id: 10, level: 0}
 - model: users.abakusgroup
-  pk: 11
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Interessegrupper,
-    description: '', parent: null, logo: null, type: annen, text: '', permissions: '[]',
-    lft: 1, rght: 4, tree_id: 11, level: 0}
-- model: users.abakusgroup
-  pk: 12
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: TestInterestGroup,
-    description: '', parent: 11, logo: null, type: annen, text: '', permissions: '[]',
-    lft: 2, rght: 3, tree_id: 11, level: 1}
-- model: users.abakusgroup
   pk: 13
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: GalleryAdminTest,
     description: '', parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/gallerys/"]',
-    lft: 1, rght: 2, tree_id: 12, level: 0}
+    lft: 1, rght: 2, tree_id: 11, level: 0}
 - model: users.abakusgroup
   pk: 14
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: GalleryTest,
     description: '', parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/gallerys/list/",
-      "/sudo/admin/gallerys/view/"]', lft: 1, rght: 2, tree_id: 13, level: 0}
+      "/sudo/admin/gallerys/view/"]', lft: 1, rght: 2, tree_id: 12, level: 0}
 - model: users.abakusgroup
   pk: 15
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: EmailAdminTest,
     description: '', parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/emailusers/",
-      "/sudo/admin/emailgroups/", "/sudo/admin/emaillists/"]', lft: 1, rght: 2, tree_id: 14,
+      "/sudo/admin/emailgroups/", "/sudo/admin/emaillists/"]', lft: 1, rght: 2, tree_id: 13,
     level: 0}
 - model: users.abakusgroup
   pk: 16
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Users,
     description: "Brukere p\xE5 Abakus.no", parent: null, logo: null, type: annen,
-    text: '', permissions: '[]', lft: 1, rght: 2, tree_id: 15, level: 0}
+    text: '', permissions: '[]', lft: 1, rght: 2, tree_id: 14, level: 0}
 - model: users.abakusgroup
   pk: 17
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakus,
     description: Medlemmer av Abakus, parent: null, logo: null, type: annen, text: '',
     permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
       "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]', lft: 1,
-    rght: 10, tree_id: 16, level: 0}
+    rght: 20, tree_id: 15, level: 0}
 - model: users.abakusgroup
   pk: 18
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakom,
     description: Medlemmer av Abakom, parent: 17, logo: null, type: annen, text: '',
     permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
-      "/sudo/admin/companies/", "/sudo/admin/joblistings/"]', lft: 2, rght: 9, tree_id: 16,
+      "/sudo/admin/companies/", "/sudo/admin/joblistings/"]', lft: 2, rght: 9, tree_id: 15,
     level: 1}
 - model: users.abakusgroup
   pk: 19
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Bedkom,
     description: '', parent: 18, logo: null, type: komite, text: '', permissions: '[]',
-    lft: 3, rght: 4, tree_id: 16, level: 2}
+    lft: 3, rght: 4, tree_id: 15, level: 2}
 - model: users.abakusgroup
   pk: 20
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Fagkom,
     description: '', parent: 18, logo: null, type: komite, text: '', permissions: '[]',
-    lft: 5, rght: 6, tree_id: 16, level: 2}
+    lft: 5, rght: 6, tree_id: 15, level: 2}
 - model: users.abakusgroup
   pk: 21
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Webkom,
     description: '', parent: 18, logo: null, type: komite, text: '', permissions: '["/sudo/"]',
-    lft: 7, rght: 8, tree_id: 16, level: 2}
+    lft: 7, rght: 8, tree_id: 15, level: 2}
+- model: users.abakusgroup
+  pk: 11
+  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Interessegrupper,
+    description: '', parent: 17, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 10, rght: 19, tree_id: 15, level: 1}
+- model: users.abakusgroup
+  pk: 12
+  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: TestInterestGroup,
+    description: '', parent: 11, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 11, rght: 12, tree_id: 15, level: 2}
+- model: users.abakusgroup
+  pk: 22
+  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: AbaBrygg,
+    description: Interessegruppe for AbaBrygg, parent: 11, logo: null, type: interesse,
+    text: "Hender det seg at du tar en pils? Er lommeboken ofte tom, kanskje p\xE5\
+      \ grunn av pils?\nVisste du at ved \xE5 brygge \xF8l selv kan man enkelt produsere\
+      \ \xF8l til 3-4 kroner flaska?\nIkke bare er det koselig, besparende, og luktfritt\
+      \ (!) \xE5 brygge eget \xF8l, men imotsetningtil vinbrygging trenger man ikke\
+      \ v\xE6re supermann for at sluttresultatet smaker godt.\n\nabaBrygg er en liten\
+      \ gruppe som passer deg som har en lidenskap for \xF8l, harlyst til \xE5 pr\xF8\
+      ve noe nytt, eller bare trenger litt starthjelp med brygginga.\n", permissions: '[]',
+    lft: 13, rght: 14, tree_id: 15, level: 2}
+- model: users.abakusgroup
+  pk: 23
+  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: abaGolf,
+    description: Interessegruppe for abaGolf, parent: 11, logo: null, type: interesse,
+    text: "Hei, er du en person som liker \xE5 klaske baller p\xE5 gr\xF8nne baner?Da\
+      \ er Abakus golf gruppa for deg.\nVi tenker at dette vil v\xE6re en portal for\
+      \ oss som \xF8nsker \xE5komme oss ut p\xE5 banene med noen hyggelige folk fra\
+      \ Abakus.\nDet vil ogs\xE5 bli blestet om eventuelleturnerninger som m\xE5tte\
+      \ dukke opp.\nSamt vil det v\xE6re treningsmuligheter gjennom hele vintereni\
+      \ samarbeid med NTNUI Golf.\n", permissions: '[]', lft: 15, rght: 16, tree_id: 15,
+    level: 2}
+- model: users.abakusgroup
+  pk: 24
+  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Turgruppa,
+    description: Interessegruppe for Turgruppa, parent: 11, logo: null, type: interesse,
+    text: "Abakus sin turgruppe er for alle som elsker, liker eller har sett norsk\
+      \ natur. Denne turgruppenvil arrangere ulike turer i fjell skog og mark. Om\
+      \ vinteren vil det v\xE6re mulighet for toppturereller \xE5 g\xE5 mellom hytter\
+      \ p\xE5 vidda. H\xF8st og v\xE5r, vil turene g\xE5 i fjell og langs elv og vann.Det\
+      \ vil alltid v\xE6re flott stemning og minneverdige turopplevelser som er m\xE5\
+      let.\n\n Om du harforslag til tur eller lurer p\xE5 om dette er noe du kan v\xE6\
+      re med p\xE5, ikke n\xF8l med \xE5 ta kontakt.", permissions: '[]', lft: 17,
+    rght: 18, tree_id: 15, level: 2}

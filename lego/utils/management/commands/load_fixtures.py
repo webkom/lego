@@ -62,6 +62,7 @@ class Command(BaseCommand):
             self.upload_development_files()
             log.info('Loading development fixtures:')
             self.load_fixtures([
+                'users/fixtures/development_abakus_groups.yaml',
                 'users/fixtures/development_users.yaml',
                 'gallery/fixtures/development_galleries.yaml',
                 'users/fixtures/development_memberships.yaml',
