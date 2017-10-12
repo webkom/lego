@@ -1,4 +1,5 @@
 from django.utils.encoding import force_text
+from elasticsearch.helpers import BulkIndexError
 from structlog import get_logger
 
 from . import backend
@@ -157,7 +158,10 @@ class SearchIndex:
         def update_bulk(result_set):
             self.get_backend().update_many(map(prepare, result_set))
 
-        batch(self.get_queryset(), update_bulk)
+        try:
+            batch(self.get_queryset(), update_bulk)
+        except BulkIndexError as e:
+            log.critical(e)
 
     def update_instance(self, instance):
         """
