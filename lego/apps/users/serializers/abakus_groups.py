@@ -42,6 +42,6 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'parent',
-            'logo'
-            'parent'
+            'logo',
+            'parent',
         )

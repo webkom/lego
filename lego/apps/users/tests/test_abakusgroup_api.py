@@ -80,7 +80,6 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         keys = set(user.keys())
         keys.remove('action_grant')
 
-        self.assertEqual(len(user['memberships']), 1)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
