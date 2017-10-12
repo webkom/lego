@@ -89,6 +89,7 @@ CHANNEL_LAYERS['default']['CONFIG'] = {
 ELASTICSEARCH = [
     {'host': env('ELASTICSEARCH_HOST')},
 ]
+SEARCH_INDEX = env('SEARCH_INDEX', default='lego-search')
 
 # Stripe
 stripe.api_key = env('STRIPE_API_KEY')
