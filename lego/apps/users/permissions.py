@@ -102,7 +102,7 @@ class MembershipPermissionHandler(PermissionHandler):
 
         group_permission_handler = get_permission_handler(AbakusGroup)
         has_perm = perm == group_permission_handler.has_perm(
-            user, perm, obj=group, queryset=AbakusGroup.objects.none()
-        )
+            user, 'edit', obj=group, queryset=AbakusGroup.objects.none()
+        ) or group_permission_handler.keyword_permission(group, 'edit')
 
         return has_perm or perm in self.safe_methods or is_self
