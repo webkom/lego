@@ -12,7 +12,7 @@ from lego.apps.files.exceptions import UnknownFileType
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
 from lego.apps.users.fixtures.initial_abakus_groups import initial_tree
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 from lego.utils.management_command import BaseCommand
 
@@ -22,7 +22,7 @@ IGNORED_DIRECTORIES = ['common', 'thumbs']
 # TODO: Which files/directories actually need to be public?
 PUBLIC_FILE_DIRECTORIES = ['announcements', 'common', 'events', 'groups', 'users']
 # Directories that contains files with the following format:
-# "%yyyy-%mm-%dd-%user_id-%file_name.%file_type"
+# "%yyyy-%mm-%dd-%hh%MM%ss-%file_name.%file_type"
 USER_FILE_DIRECTORIES = ['announcements', 'events', 'groups', 'users']
 
 lego_group_ids = {
@@ -146,9 +146,8 @@ class Command(BaseCommand):
             storage.upload_file(uploads_bucket, file, file_path)
 
             # Kind of hacky, but no other option on Linux
-            # TODO: use database export datetime instead
-            """
             file_date = datetime.fromtimestamp(os.path.getmtime(file_path))
+            # Only create the file if does not exist
             File.objects.get_or_create(pk=file_pk, defaults={
                 'created_at': file_date,
                 'state': 'ready',
@@ -157,7 +156,17 @@ class Command(BaseCommand):
                 'user': None,
                 'public': True if current_upload_directory in PUBLIC_FILE_DIRECTORIES else False
             })
-            """
+
+    def handle_fixture_import(self, file_name, skip_questions=False):
+        if os.path.isdir(f'{IMPORT_DIRECTORY}/{file_name}'):
+            return
+        log.info(f'Handling fixture: {file_name}')
+        if not skip_questions:
+            choice = input('Do you wish to import this fixture? [Y/n]').lower()
+            if choice == 'n' or choice == 'no' or choice == 'nei':
+                print(f'[IGNORE] Ignoring fixture {file_name}\n----------------')
+                return
+        self.import_nerd_fixture(file_name)
 
     def run(self, *args, **options):
         if not os.path.exists(IMPORT_DIRECTORY):
@@ -172,8 +181,6 @@ class Command(BaseCommand):
         # Upload files
         # Prepare storage bucket for development.
         # We skip this in production, where the bucket needs to be created manually.
-        files_have_been_imported = False
-        """
         uploads_bucket = getattr(settings, 'AWS_S3_BUCKET', None)
         log.info(f'Makes sure the {uploads_bucket} bucket exists')
         storage.create_bucket(uploads_bucket)
@@ -186,7 +193,6 @@ class Command(BaseCommand):
         else:
             self.upload_files(uploads_bucket, f'{IMPORT_DIRECTORY}/files')
         # End upload files
-        """
 
         file_names = os.listdir(IMPORT_DIRECTORY)
         file_names.sort()
@@ -197,10 +203,13 @@ class Command(BaseCommand):
                 continue
             print(f'\t{file_name}')
 
-        if os.path.isfile(f'{IMPORT_DIRECTORY}/1_nerd_export_groups.yaml'):
+        if os.path.isfile(f'{IMPORT_DIRECTORY}/1_nerd_export_group_files.yaml'):
+            self.handle_fixture_import('1_nerd_export_group_files.yaml')
+
+        if os.path.isfile(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml'):
             # We need to update the group MPTT mapping
             group_tree = initial_tree
-            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/1_nerd_export_groups.yaml')
+            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml')
             for group_model in nerd_groups:
                 group_fields = group_model['fields']
                 group_name = group_fields['name']
@@ -226,20 +235,12 @@ class Command(BaseCommand):
 
             insert_abakus_groups(group_tree)
             AbakusGroup.objects.rebuild()
-            file_names.remove('1_nerd_export_groups.yaml')
+            file_names.remove('2_nerd_export_groups.yaml')
             # End MPTT mapping
 
         print('Starting import of fixtures')
         for file_name in file_names:
-            if os.path.isdir(f'{IMPORT_DIRECTORY}/{file_name}'):
-                continue
-            log.info(f'Handling fixture: {file_name}')
-            if not options['yes']:
-                choice = input('Do you wish to import this fixture? [Y/n]').lower()
-                if choice == 'n' or choice == 'no' or choice == 'nei':
-                    print(f'[IGNORE] Ignoring fixture {file_name}\n----------------')
-                    continue
-            self.import_nerd_fixture(file_name)
+            self.handle_fixture_import(file_name, options['yes'])
 
         # Make sure user profile pictures are owned by the users
         print('Setting ownership of user profile pictures')
