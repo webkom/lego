@@ -56,8 +56,6 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     active_capacity = serializers.ReadOnlyField()
     price = serializers.SerializerMethodField()
     waiting_registrations = RegistrationReadSerializer(many=True)
-    activation_time = ActivationTimeField()
-    spots_left = SpotsLeftField()
 
     class Meta:
         model = Event
@@ -65,13 +63,22 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
                   'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
                   'pools', 'company', 'active_capacity', 'feedback_required', 'is_priced',
                   'price', 'price_member', 'price_guest', 'use_stripe', 'use_captcha',
-                  'waiting_registrations', 'activation_time', 'spots_left', 'tags', 'is_merged')
+                  'waiting_registrations', 'tags', 'is_merged')
         read_only = True
 
     def get_price(self, obj):
         request = self.context.get('request', None)
         if request:
             return obj.get_price(user=request.user)
+
+
+class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
+    """ User specfic event serializer that appends data based on request.user """
+    activation_time = ActivationTimeField()
+    spots_left = SpotsLeftField()
+
+    class Meta(EventReadDetailedSerializer.Meta):
+        fields = EventReadDetailedSerializer.Meta.fields + ('activation_time', 'spots_left')
 
 
 class EventAdministrateSerializer(EventReadSerializer):
@@ -90,10 +97,10 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'event_type',
-                  'location', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
-                  'start_time', 'end_time', 'merge_time', 'use_captcha', 'tags', 'pools',
-                  'is_ready')
+        fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'feedback_required',
+                  'event_type', 'location', 'is_priced', 'price_member', 'price_guest',
+                  'use_stripe', 'start_time', 'end_time', 'merge_time', 'use_captcha', 'tags',
+                  'pools', 'is_ready')
         extra_kwargs = {'is_ready': {'required': False}}
 
     def create(self, validated_data):
