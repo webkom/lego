@@ -11,8 +11,8 @@ from lego.apps.files.models import FileField
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, TimeStampModel
 
-from .constants import (AUTUMN, COMPANY_EVENTS, SEMESTER, SEMESTER_STATUSES, SPRING,
-                        TRANSLATED_EVENTS)
+from .constants import (AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER_STATUSES, SPRING,
+                        TRANSLATED_EVENTS, TRANSLATED_OTHER_OFFERS)
 
 
 class Semester(BasisModel):
@@ -89,18 +89,13 @@ class CompanyInterest(BasisModel):
     mail = models.EmailField()
     semesters = models.ManyToManyField(Semester, blank=True)
     events = ArrayField(models.CharField(max_length=64, choices=COMPANY_EVENTS))
-    readme = models.BooleanField(default=False)
-    collaboration = models.BooleanField(default=False)
-    itdagene = models.BooleanField(default=False)
+    other_offers = ArrayField(models.CharField(max_length=64, choices=OTHER_OFFERS))
     comment = models.TextField(blank=True)
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
 
     def generate_mail_context(self):
-        readme = 'Ja' if self.readme else 'Nei'
-        collaboration = 'Ja' if self.collaboration else 'Nei'
-        itdagene = 'Ja' if self.itdagene else 'Nei'
 
         semesters = []
         for semester in self.semesters.all():
@@ -113,14 +108,16 @@ class CompanyInterest(BasisModel):
         for event in self.events:
             events.append(TRANSLATED_EVENTS[event])
 
+        others = []
+        for offer in self.other_offers:
+            others.append(TRANSLATED_OTHER_OFFERS[offer])
+
         return {
             'company_name': self.company_name,
             'contact_person': self.contact_person,
             'mail': self.mail,
             'semesters': ', '.join(semesters),
             'events': ', '. join(events),
-            'readme': readme,
-            'collaboration': collaboration,
-            'itdagene': itdagene,
+            'others': ', '.join(others),
             'comment': self.comment
         }

@@ -129,7 +129,7 @@ class CompanyInterestSerializer(BasisModelSerializer):
     class Meta:
         model = CompanyInterest
         fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
-                  'readme', 'collaboration', 'itdagene', 'comment')
+                  'other_offers', 'comment')
 
 
 class CompanyInterestListSerializer(BasisModelSerializer):
