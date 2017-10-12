@@ -247,3 +247,59 @@ class EventMethodTest(TestCase):
             event.register(registration)
 
         self.assertEqual(event.is_full, False)
+
+    def test_bump_on_pool_expansion(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        pool = event.pools.get(name='Abakusmember')
+        users = get_dummy_users(event.total_capacity + 1)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEquals(event.waiting_registrations.count(), 1)
+
+        pool.capacity = pool.capacity + 1
+        pool.save()
+
+        event.bump_on_pool_creation_or_expansion()
+
+        self.assertEquals(event.waiting_registrations.count(), 0)
+
+    def test_bump_on_pool_creation(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(event.total_capacity + 1)
+        webkom_group = AbakusGroup.objects.get(name='Webkom')
+
+        for user in users:
+            webkom_group.add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEquals(event.waiting_registrations.count(), 1)
+
+        pool = Pool.objects.create(
+            name="Pool1", event=event, capacity=1,
+            activation_date=timezone.now() - timedelta(days=1)
+        )
+        pool.permission_groups.set([webkom_group])
+
+        event.bump_on_pool_creation_or_expansion()
+
+        self.assertEquals(event.waiting_registrations.count(), 0)
+
+    def test_bump_on_pool_expansion_or_creation_when_no_change(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(event.total_capacity + 1)
+
+        for user in users:
+            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEquals(event.waiting_registrations.count(), 1)
+
+        event.bump_on_pool_creation_or_expansion()
+
+        self.assertEquals(event.waiting_registrations.count(), 1)
