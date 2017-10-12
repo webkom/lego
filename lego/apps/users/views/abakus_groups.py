@@ -2,6 +2,7 @@ from rest_framework import viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
+from lego.apps.users.filters import AbakusGroupFilterSet
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerializer,
                                                        PublicAbakusGroupSerializer)
@@ -11,6 +12,7 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = AbakusGroup.objects.all()
     ordering = 'id'
+    filter_class = AbakusGroupFilterSet
 
     def get_serializer_class(self):
         if self.action == 'list':
