@@ -19,6 +19,7 @@ from .constants import (AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER
 class Semester(BasisModel):
     year = models.PositiveIntegerField()
     semester = models.CharField(max_length=64, choices=SEMESTER)
+    active_interest_form = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('year', 'semester')

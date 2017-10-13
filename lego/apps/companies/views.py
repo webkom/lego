@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from lego.apps.companies.filters import SemesterFilterSet
 from lego.apps.companies.models import (Company, CompanyContact, CompanyFile, CompanyInterest,
                                         Semester, SemesterStatus)
 from lego.apps.companies.serializers import (CompanyAdminDetailSerializer,
@@ -65,6 +66,8 @@ class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 
 class SemesterViewSet(viewsets.ModelViewSet):
+    filter_class = SemesterFilterSet
+
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
 
