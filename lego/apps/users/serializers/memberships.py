@@ -12,6 +12,7 @@ class MembershipSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user',
+            'abakus_group',
             'role',
             'is_active',
             'start_date',
