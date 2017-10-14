@@ -30,6 +30,25 @@ TRANSLATED_EVENTS = {
     OTHER: 'Annet',
 }
 
+COLLABORATION = 'collaboration'
+README = 'readme'
+ITDAGENE = 'itdagene'
+LABAMBA_SPONSOR = 'labamba_sponsor'
+
+OTHER_OFFERS = (
+    (COLLABORATION, COLLABORATION),
+    (README, README),
+    (ITDAGENE, ITDAGENE),
+    (LABAMBA_SPONSOR, LABAMBA_SPONSOR),
+)
+
+TRANSLATED_OTHER_OFFERS = {
+    COLLABORATION: 'Samarbeid med andre linjeforeninger',
+    README: 'Annonsering i readme',
+    ITDAGENE: 'Stand på itDAGENE',
+    LABAMBA_SPONSOR: 'Sponsing av LaBamba',
+}
+
 CONTACT_IN_OSLO = 'contact_in_oslo'
 INTERESTED = 'interested'
 NOT_INTERESTED = 'not_interested'

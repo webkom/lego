@@ -6,22 +6,24 @@ from lego.apps.comments.models import Comment
 from lego.apps.companies.permissions import (CompanyContactPermissionHandler,
                                              CompanyInterestPermissionHandler,
                                              CompanyPermissionHandler,
-                                             NestedCompanyPermissionHandler)
+                                             NestedCompanyPermissionHandler,
+                                             SemesterPermissionHandler)
 from lego.apps.files.models import FileField
 from lego.apps.users.models import User
-from lego.utils.models import BasisModel, TimeStampModel
+from lego.utils.models import BasisModel, PersistentModel, TimeStampModel
 
-from .constants import (AUTUMN, COMPANY_EVENTS, SEMESTER, SEMESTER_STATUSES, SPRING,
-                        TRANSLATED_EVENTS)
+from .constants import (AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER_STATUSES, SPRING,
+                        TRANSLATED_EVENTS, TRANSLATED_OTHER_OFFERS)
 
 
 class Semester(BasisModel):
     year = models.PositiveIntegerField()
     semester = models.CharField(max_length=64, choices=SEMESTER)
+    active_interest_form = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('year', 'semester')
-        permission_handler = CompanyPermissionHandler()
+        permission_handler = SemesterPermissionHandler()
 
 
 class Company(BasisModel):
@@ -83,24 +85,19 @@ class CompanyContact(BasisModel):
         permission_handler = CompanyContactPermissionHandler()
 
 
-class CompanyInterest(BasisModel):
+class CompanyInterest(PersistentModel, TimeStampModel):
     company_name = models.CharField(max_length=255)
     contact_person = models.CharField(max_length=255)
     mail = models.EmailField()
     semesters = models.ManyToManyField(Semester, blank=True)
     events = ArrayField(models.CharField(max_length=64, choices=COMPANY_EVENTS))
-    readme = models.BooleanField(default=False)
-    collaboration = models.BooleanField(default=False)
-    itdagene = models.BooleanField(default=False)
+    other_offers = ArrayField(models.CharField(max_length=64, choices=OTHER_OFFERS))
     comment = models.TextField(blank=True)
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
 
     def generate_mail_context(self):
-        readme = 'Ja' if self.readme else 'Nei'
-        collaboration = 'Ja' if self.collaboration else 'Nei'
-        itdagene = 'Ja' if self.itdagene else 'Nei'
 
         semesters = []
         for semester in self.semesters.all():
@@ -113,14 +110,16 @@ class CompanyInterest(BasisModel):
         for event in self.events:
             events.append(TRANSLATED_EVENTS[event])
 
+        others = []
+        for offer in self.other_offers:
+            others.append(TRANSLATED_OTHER_OFFERS[offer])
+
         return {
             'company_name': self.company_name,
             'contact_person': self.contact_person,
             'mail': self.mail,
             'semesters': ', '.join(semesters),
             'events': ', '. join(events),
-            'readme': readme,
-            'collaboration': collaboration,
-            'itdagene': itdagene,
+            'others': ', '.join(others),
             'comment': self.comment
         }

@@ -3,24 +3,28 @@
   fields:
     semester: 'spring'
     year: 2017
+    active_interest_form: False
 
 - model: companies.Semester
   pk: 2
   fields:
     semester: 'autumn'
     year: 2017
+    active_interest_form: True
 
 - model: companies.Semester
   pk: 3
   fields:
     semester: 'spring'
     year: 2018
+    active_interest_form: True
 
 - model: companies.Semester
   pk: 4
   fields:
     semester: 'autumn'
     year: 2018
+    active_interest_form: True
 
 - model: companies.Company
   pk: 1
