@@ -7,9 +7,7 @@ Kontaktperson: {{ contact_person }}
 E-post: {{ mail }}
 Semestere: {{ semesters }}
 Arrangementer: {{ events }}
-Annonsere i readme: {{ readme }}
-Samarbeid med andre foreninger: {{ collaboration }}
-Stand på itDAGENE: {{ itdagene }}
+Andre ønsker: {{ others }}
 Kommentar: {{ comment }}
 
 
