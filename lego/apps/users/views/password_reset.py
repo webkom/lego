@@ -34,8 +34,8 @@ class PasswordResetRequestViewSet(viewsets.GenericViewSet):
                 "token": token,
             },
             subject='Nullstill ditt passord på abakus.no',
-            plain_template='users/email/password_reset.html',
-            html_template='users/email/password_reset.txt',
+            plain_template='users/email/reset_password.html',
+            html_template='users/email/reset_password.txt',
             from_email=None
         )
 
