@@ -706,7 +706,7 @@ class Registration(BasisModel):
         allowed = False
         with transaction.atomic():
             locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
-            if locked_pool.counter < locked_pool.capacity:
+            if locked_pool.capacity == 0 or locked_pool.counter < locked_pool.capacity:
                 locked_pool.increment()
                 allowed = True
 
