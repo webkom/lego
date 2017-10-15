@@ -63,7 +63,8 @@ class RegistrationTestCase(TestCase):
 
         registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
-        self.assertEqual(pool.registrations.count(), event.number_of_registrations)
+        self.assertIsNotNone(registration.pool)
+        self.assertEqual(pool.registrations.count(), 1)
 
     def test_can_register_single_pool(self):
         """Test registering user to event with only a single pool"""
