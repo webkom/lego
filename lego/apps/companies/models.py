@@ -31,11 +31,11 @@ class Company(BasisModel):
     student_contact = models.ForeignKey(User, related_name='companies', null=True)
     previous_contacts = models.ManyToManyField(User)
 
-    description = models.CharField(max_length=500, blank=True)
+    description = models.TextField(blank=True)
     phone = models.CharField(max_length=100, blank=True)
     company_type = models.CharField(max_length=200, blank=True)
     website = models.URLField(blank=True)
-    address = models.CharField(max_length=100, blank=True)
+    address = models.CharField(max_length=200, blank=True)
     admin_comment = models.CharField(max_length=100, blank=True)
     active = models.BooleanField(default=True)
     payment_mail = models.EmailField(max_length=100, blank=True)
