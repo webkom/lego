@@ -5,6 +5,7 @@ from structlog import get_logger
 from lego.apps.email.models import EmailList
 from lego.apps.external_sync.base import ExternalSystem
 from lego.apps.external_sync.utils.gsuite import GSuiteLib
+from lego.apps.users.constants import GROUP_COMMITTEE
 
 log = get_logger()
 
@@ -39,7 +40,7 @@ class GSuiteSystem(ExternalSystem):
         Sync groups in GSUITE_GROUPS and groups with internal_email.
         """
         return queryset.filter(
-            Q(is_committee=True) | Q(name__in=settings.GSUITE_GROUPS)
+            Q(type=GROUP_COMMITTEE) | Q(name__in=settings.GSUITE_GROUPS)
         ).filter(
             internal_email__isnull=False, internal_email_enabled=True,
         )

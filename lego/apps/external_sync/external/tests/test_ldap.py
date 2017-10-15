@@ -4,6 +4,7 @@ from unittest.mock import call
 from django.test import TestCase, override_settings
 
 from lego.apps.external_sync.external import ldap
+from lego.apps.users.constants import GROUP_COMMITTEE
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -32,7 +33,7 @@ class LDAPTestCase(TestCase):
         self.assertSetEqual(
             set(filtered),
             set(AbakusGroup.objects.filter(
-                is_committee=True
+                type=GROUP_COMMITTEE
             ).values_list('name', flat=True)).union(['UserAdminTest'])
         )
 

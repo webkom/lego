@@ -4,6 +4,7 @@ from structlog import get_logger
 
 from lego.apps.external_sync.base import ExternalSystem
 from lego.apps.external_sync.utils.ldap import LDAPLib
+from lego.apps.users.constants import GROUP_COMMITTEE
 
 log = get_logger()
 
@@ -42,7 +43,7 @@ class LDAPSystem(ExternalSystem):
         """
         Sync groups in LDAP_GROUPS and committees.
         """
-        return queryset.filter(Q(is_committee=True) | Q(name__in=settings.LDAP_GROUPS))
+        return queryset.filter(Q(type=GROUP_COMMITTEE) | Q(name__in=settings.LDAP_GROUPS))
 
     def user_exists(self, user):
         return bool(self.ldap.search_user(user.username))

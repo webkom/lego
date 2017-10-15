@@ -1,6 +1,0 @@
-- model: flatpages.page
-  pk: 1
-  fields:
-    title: Om oss
-    slug: om-oss
-    content: <p>Om oss</p>

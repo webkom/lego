@@ -31,7 +31,7 @@ class Membership(BasisModel):
     user = models.ForeignKey('users.User')
     abakus_group = models.ForeignKey('users.AbakusGroup')
 
-    role = models.CharField(max_length=20, choices=constants.ROLES, default=constants.MEMBER)
+    role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True, db_index=True)
 
     start_date = models.DateField(auto_now_add=True, blank=True, db_index=True)
@@ -51,8 +51,6 @@ class Membership(BasisModel):
 class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
-    is_grade = models.BooleanField(default=False)
-    is_committee = models.BooleanField(default=False)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
     logo = FileField(related_name='group_pictures')
     type = models.CharField(max_length=10, choices=constants.GROUP_TYPES,
@@ -72,6 +70,14 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_committee(self):
+        return self.type == constants.GROUP_COMMITTEE
+
+    @property
+    def is_grade(self):
+        return self.type == constants.GROUP_GRADE
 
     @property
     def leader(self):
@@ -193,10 +199,10 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """
     username = models.CharField(
-        max_length=30,
+        max_length=50,
         unique=True,
         db_index=True,
-        help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
+        help_text='Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.',
         validators=[username_validator, ReservedNameValidator()],
         error_messages={
             'unique': 'A user with that username already exists.',
@@ -212,7 +218,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
             'unique': 'A user has already verified that student username.',
         }
     )
-    first_name = models.CharField('first name', max_length=30, blank=True)
+    first_name = models.CharField('first name', max_length=50, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField(
@@ -262,7 +268,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
 
     @property
     def grade(self):
-        return self.abakus_groups.filter(is_grade=True).first()
+        return self.abakus_groups.filter(type=constants.GROUP_GRADE).first()
 
     @property
     def profile_picture(self):
