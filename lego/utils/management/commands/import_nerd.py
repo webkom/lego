@@ -18,12 +18,6 @@ from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
 IMPORT_DIRECTORY = '.nerd_export'
-IGNORED_DIRECTORIES = ['common', 'thumbs']
-# TODO: Which files/directories actually need to be public?
-PUBLIC_FILE_DIRECTORIES = ['announcements', 'common', 'events', 'groups', 'users']
-# Directories that contains files with the following format:
-# "%yyyy-%mm-%dd-%hh%MM%ss-%file_name.%file_type"
-USER_FILE_DIRECTORIES = ['announcements', 'events', 'groups', 'users']
 
 lego_group_ids = {
     1: 'Users',
@@ -154,7 +148,7 @@ class Command(BaseCommand):
                 'file_type': file_type,
                 'token': get_random_string(32),
                 'user': None,
-                'public': True if current_upload_directory in PUBLIC_FILE_DIRECTORIES else False
+                'public': False
             })
 
     def handle_fixture_import(self, file_name, skip_questions=False):
