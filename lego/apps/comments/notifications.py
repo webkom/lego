@@ -10,13 +10,15 @@ class CommentNotification(Notification):
 
         target_string = str(self.kwargs['target'])
         author = self.kwargs['author']
+        text = self.kwargs['text']
 
         return self._delay_mail(
             to_email=self.user.email,
             context={
                 'name': self.user.full_name,
                 'target': target_string,
-                'author_name': author.full_name
+                'author_name': author.full_name,
+                'text': text
             },
             subject=f'{author.full_name} har kommentert på {target_string}',
             plain_template='comments/email/comment.txt',

@@ -34,7 +34,10 @@ class CommentHandler(BaseHandler):
             if NotificationFeed in feeds:
                 for recipient in recipients:
                     notification = CommentNotification(
-                        user=recipient, target=comment.content_object, author=author
+                        user=recipient,
+                        target=comment.content_object,
+                        author=author,
+                        text=comment.text
                     )
                     notification.notify()
 
