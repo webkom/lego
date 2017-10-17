@@ -133,9 +133,6 @@ class Command(BaseCommand):
 
             file_pk = file_path.replace(f'{IMPORT_DIRECTORY}/files/', '')
 
-            # .nerd_export/files/uploads/common => common
-            current_upload_directory = file_pk.split('-')[0]
-
             log.info(f'Uploading {file_path} to bucket with key: "{file_pk}"')
             storage.upload_file(uploads_bucket, file, file_path)
 
@@ -199,10 +196,10 @@ class Command(BaseCommand):
             self.handle_fixture_import('1_nerd_export_group_files.yaml', options['yes'])
             file_names.remove('1_nerd_export_group_files.yaml')
 
-        if os.path.isfile(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml'):
+        if os.path.isfile(f'{IMPORT_DIRECTORY}/1_nerd_export_group_objects.yaml'):
             # We need to update the group MPTT mapping
             group_tree = initial_tree
-            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml')
+            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/1_nerd_export_group_objects.yaml')
             for group_model in nerd_groups:
                 group_fields = group_model['fields']
                 if group_fields['logo']:
@@ -230,7 +227,7 @@ class Command(BaseCommand):
 
             insert_abakus_groups(group_tree)
             AbakusGroup.objects.rebuild()
-            file_names.remove('2_nerd_export_groups.yaml')
+            file_names.remove('1_nerd_export_group_objects.yaml')
             # End MPTT mapping
 
         print('Starting import of fixtures')
