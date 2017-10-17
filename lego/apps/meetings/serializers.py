@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from rest_framework_jwt.serializers import User
 
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
-from lego.apps.users.models import AbakusGroup
+from lego.apps.users.fields import PublicUserField
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
@@ -49,6 +49,9 @@ class MeetingBulkInvite(serializers.Serializer):
 
 class MeetingSerializer(BasisModelSerializer):
     invitations = MeetingInvitationSerializer(many=True, read_only=True)
+    report_author = PublicUserField(
+        queryset=User.objects.all(), allow_null=True, required=False)
+    created_by = PublicUserField(read_only=True)
 
     class Meta:
         model = Meeting
