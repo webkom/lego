@@ -84,10 +84,10 @@ class LDAPTestCase(TestCase):
         group = AbakusGroup.objects.get(name='UserAdminTest')
         self.ldap.add_group(group)
 
-        self.ldap.ldap.add_group.assert_called_once_with(group.id, group.name)
+        self.ldap.ldap.add_group.assert_called_once_with(group.id, group.name.lower())
 
         members = list(group.memberships.values_list('user__username', flat=True))
-        self.ldap.ldap.update_group_members.assert_called_once_with(group.name, members)
+        self.ldap.ldap.update_group_members.assert_called_once_with(group.name.lower(), members)
 
     def test_update_group(self):
         """Make sure memberships gets updated at group update"""
@@ -95,4 +95,4 @@ class LDAPTestCase(TestCase):
         members = list(group.memberships.values_list('user__username', flat=True))
 
         self.ldap.update_group(group)
-        self.ldap.ldap.update_group_members.assert_called_once_with(group.name, members)
+        self.ldap.ldap.update_group_members.assert_called_once_with(group.name.lower(), members)

@@ -39,7 +39,20 @@ HEALTH_CHECK_REMOTE_IPS = [
     '127.0.0.'
 ]
 
-LDAP_GROUPS = []
+LDAP_GROUPS = [
+    'Ababand',
+    'Fondstyret',
+    'Hovedstyret',
+    'itDAGENE',
+    'Jubileum',
+    'Kasserere',
+    'Ordenen',
+    'PR-ansvarlige',
+    'Revy',
+    'Revystyret',
+    'xcom-data',
+    'xcom-komtek',
+]
 
 LMTP_HOST = '0.0.0.0'
 LMTP_PORT = 8024
