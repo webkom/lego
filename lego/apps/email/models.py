@@ -52,7 +52,7 @@ class EmailList(models.Model):
 
     users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
 
-    group_roles = ArrayField(models.CharField(max_length=64, choices=ROLES))
+    group_roles = ArrayField(models.CharField(max_length=64, choices=ROLES), default=list)
     groups = models.ManyToManyField('users.AbakusGroup', related_name='email_lists', blank=True)
 
     @property
@@ -71,7 +71,10 @@ class EmailList(models.Model):
         members += [user.email_address for user in users]
 
         for group in groups:
-            memberships = group.memberships.filter(role__in=self.group_roles)
+            if not self.group_roles:
+                memberships = group.memberships.all()
+            else:
+                memberships = group.memberships.filter(role__in=self.group_roles)
             members += [membership.user.email_address for membership in memberships]
 
         return members

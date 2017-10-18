@@ -18,12 +18,6 @@ from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
 IMPORT_DIRECTORY = '.nerd_export'
-IGNORED_DIRECTORIES = ['common', 'thumbs']
-# TODO: Which files/directories actually need to be public?
-PUBLIC_FILE_DIRECTORIES = ['announcements', 'common', 'events', 'groups', 'users']
-# Directories that contains files with the following format:
-# "%yyyy-%mm-%dd-%hh%MM%ss-%file_name.%file_type"
-USER_FILE_DIRECTORIES = ['announcements', 'events', 'groups', 'users']
 
 lego_group_ids = {
     1: 'Users',
@@ -139,9 +133,6 @@ class Command(BaseCommand):
 
             file_pk = file_path.replace(f'{IMPORT_DIRECTORY}/files/', '')
 
-            # .nerd_export/files/uploads/common => common
-            current_upload_directory = file_pk.split('-')[0]
-
             log.info(f'Uploading {file_path} to bucket with key: "{file_pk}"')
             storage.upload_file(uploads_bucket, file, file_path)
 
@@ -154,7 +145,7 @@ class Command(BaseCommand):
                 'file_type': file_type,
                 'token': get_random_string(32),
                 'user': None,
-                'public': True if current_upload_directory in PUBLIC_FILE_DIRECTORIES else False
+                'public': False
             })
 
     def handle_fixture_import(self, file_name, skip_questions=False):
@@ -205,10 +196,10 @@ class Command(BaseCommand):
             self.handle_fixture_import('1_nerd_export_group_files.yaml', options['yes'])
             file_names.remove('1_nerd_export_group_files.yaml')
 
-        if os.path.isfile(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml'):
+        if os.path.isfile(f'{IMPORT_DIRECTORY}/1_nerd_export_group_objects.yaml'):
             # We need to update the group MPTT mapping
             group_tree = initial_tree
-            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/2_nerd_export_groups.yaml')
+            nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/1_nerd_export_group_objects.yaml')
             for group_model in nerd_groups:
                 group_fields = group_model['fields']
                 if group_fields['logo']:
@@ -236,7 +227,7 @@ class Command(BaseCommand):
 
             insert_abakus_groups(group_tree)
             AbakusGroup.objects.rebuild()
-            file_names.remove('2_nerd_export_groups.yaml')
+            file_names.remove('1_nerd_export_group_objects.yaml')
             # End MPTT mapping
 
         print('Starting import of fixtures')
