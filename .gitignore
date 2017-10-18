@@ -64,3 +64,6 @@ celerybeat-schedule
 lego/files/
 google-credentials.json
 .nerd_export
+
+# Vim swap files
+*.swp

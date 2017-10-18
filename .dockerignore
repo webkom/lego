@@ -66,3 +66,6 @@ google-credentials.json
 
 .git/
 charts/
+
+# Vim swap files
+*.swp
