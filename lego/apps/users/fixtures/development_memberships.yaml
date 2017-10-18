@@ -96,27 +96,6 @@
     abakus_group:
       - Hovedstyret
     start_date: 1994-01-01
-
-- model: users.Membership
-  pk: 12
-  fields:
-    user:
-      - perkrifj
-    role: leader
-    abakus_group:
-      - AbaBrygg
-    start_date: 1994-01-01
-
-- model: users.Membership
-  pk: 13
-  fields:
-    user:
-      - perkrifj
-    role: leader
-    abakus_group:
-      - abaGolf
-    start_date: 1994-01-01
-
 - model: users.Membership
   pk: 14
   fields:
@@ -290,23 +269,4 @@
       - fredriry
     abakus_group:
       - 3. klasse Datateknologi
-    start_date: 1994-01-01
-
-
-- model: users.Membership
-  pk: 32
-  fields:
-    user: 1
-    role: member
-    abakus_group:
-      - AbaBrygg
-    start_date: 1994-01-01
-
-- model: users.Membership
-  pk: 33
-  fields:
-    user: 2
-    role: member
-    abakus_group:
-      - AbaBrygg
     start_date: 1994-01-01
