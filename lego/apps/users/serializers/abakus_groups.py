@@ -22,6 +22,8 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
+        if validated_data.get('type', None) == 'interesse':
+            validated_data['parent'] = AbakusGroup.objects.get(name='Interessegrupper')
         group = super(DetailedAbakusGroupSerializer, self).create(validated_data)
         user = self.context['request'].user
         Membership.objects.create(**{
