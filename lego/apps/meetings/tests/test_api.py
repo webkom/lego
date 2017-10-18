@@ -138,7 +138,7 @@ class DeleteMeetingTestCase(APITestCase):
 
 
 class InviteToMeetingTestCase(APITestCase):
-    fixtures = ['initial_abakus_groups.yaml', 'development_abakus_groups.yaml',
+    fixtures = ['test_abakus_groups.yaml',
                 'test_meetings.yaml', 'test_users.yaml', 'initial_files.yaml']
 
     def setUp(self):

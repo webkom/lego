@@ -77,7 +77,8 @@ initial_tree = {
             ],
             'Interessegrupper': [{
                 'description': 'Super-gruppe for alle interessegrupper i Abakus'
-            }, {}]
+                },
+                {}]
         }
     ],
     'Students': [{}, {
