@@ -54,7 +54,6 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
-    price = serializers.SerializerMethodField()
     waiting_registrations = RegistrationReadSerializer(many=True)
 
     class Meta:
@@ -62,23 +61,25 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
                   'pools', 'company', 'active_capacity', 'feedback_description',
-                  'feedback_required', 'is_priced', 'price', 'price_member', 'price_guest',
+                  'feedback_required', 'is_priced', 'price_member', 'price_guest',
                   'use_stripe', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged')
         read_only = True
-
-    def get_price(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            return obj.get_price(user=request.user)
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     """ User specfic event serializer that appends data based on request.user """
     activation_time = ActivationTimeField()
     spots_left = SpotsLeftField()
+    price = serializers.SerializerMethodField()
 
     class Meta(EventReadDetailedSerializer.Meta):
-        fields = EventReadDetailedSerializer.Meta.fields + ('activation_time', 'spots_left')
+        fields = EventReadDetailedSerializer.Meta.fields + \
+                 ('price', 'activation_time', 'spots_left')
+
+    def get_price(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            return obj.get_price(user=request.user)
 
 
 class EventAdministrateSerializer(EventReadSerializer):

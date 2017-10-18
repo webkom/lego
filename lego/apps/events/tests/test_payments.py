@@ -5,7 +5,7 @@ from celery import chain
 from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
-from lego.apps.events.tasks import async_payment, registration_save
+from lego.apps.events.tasks import async_payment, registration_payment_save
 from lego.apps.users.models import AbakusGroup, User
 
 from .utils import create_token
@@ -32,7 +32,7 @@ class StripePaymentTestCase(APITestCase):
         with self.assertRaises(stripe.error.StripeError):
             chain(
                 async_payment.s(registration.id, token),
-                registration_save.s(registration.id)
+                registration_payment_save.s(registration.id)
             ).delay()
 
         registration.refresh_from_db()
@@ -44,7 +44,7 @@ class StripePaymentTestCase(APITestCase):
         with self.assertRaises(stripe.error.StripeError):
             chain(
                 async_payment.s(registration.id, token),
-                registration_save.s(registration.id)
+                registration_payment_save.s(registration.id)
             ).delay()
 
         registration.refresh_from_db()
@@ -55,7 +55,7 @@ class StripePaymentTestCase(APITestCase):
         registration = self.event.get_registration(self.abakus_user)
         chain(
             async_payment.s(registration.id, token),
-            registration_save.s(registration.id)
+            registration_payment_save.s(registration.id)
         ).delay()
 
         registration.refresh_from_db()
