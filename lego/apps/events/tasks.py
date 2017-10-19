@@ -8,7 +8,7 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
-from lego.apps.events.exceptions import EventHasStarted, PoolCounterNotEqualToRegistrationCount
+from lego.apps.events.exceptions import EventHasClosed, PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
@@ -69,7 +69,7 @@ def async_register(self, registration_id):
             'registration_cache_lock_error', exception=e, registration_id=self.registration.id
         )
         raise self.retry(exc=e, max_retries=3)
-    except EventHasStarted as e:
+    except EventHasClosed as e:
         log.warn(
             'registration_tried_after_started', exception=e, registration_id=self.registration.id
         )
@@ -93,7 +93,7 @@ def async_unregister(self, registration_id):
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e, max_retries=3)
-    except EventHasStarted as e:
+    except EventHasClosed as e:
         log.warn(
             'unregistration_tried_after_started', exception=e, registration_id=registration.id
         )
