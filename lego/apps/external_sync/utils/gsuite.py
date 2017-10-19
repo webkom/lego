@@ -175,6 +175,9 @@ class GSuiteLib:
         except HttpError as e:
             if e.resp.status == 404:
                 return
+            elif e.resp.status == 409:
+                # Member already exists.
+                return
             raise
 
     def delete_membership(self, group_key, user_key):
