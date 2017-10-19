@@ -14,6 +14,7 @@ from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, Notifica
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
+from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
@@ -121,3 +122,4 @@ router.register(r'email-users', UserEmailViewSet, base_name='email-users')
 router.register(r'email-groups', AbakusGroupEmailViewSet, base_name='email-groups')
 router.register(r'contact-form', ContactFormViewSet, base_name='contact-form')
 router.register(r'site-meta', SiteMetaViewSet, base_name='site-meta')
+router.register(r'frontpage', FrontpageViewSet, base_name='frontpage')

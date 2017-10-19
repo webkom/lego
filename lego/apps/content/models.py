@@ -56,6 +56,7 @@ class Content(SlugModel):
     images = ManyToManyField(File, blank=True)
     tags = ManyToManyField(Tag, blank=True)
     slug_field = 'title'
+    pinned = models.BooleanField(default=False)
 
     _images = None
 
