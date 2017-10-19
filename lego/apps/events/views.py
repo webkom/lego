@@ -23,7 +23,8 @@ from lego.apps.events.serializers.registrations import (AdminRegistrationCreateA
                                                         RegistrationReadSerializer,
                                                         StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
-                                    check_for_bump_on_pool_creation_or_expansion, registration_save)
+                                    check_for_bump_on_pool_creation_or_expansion,
+                                    registration_payment_save)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.utils.functions import verify_captcha
 
@@ -106,7 +107,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         registration.save()
         chain(
             async_payment.s(registration.id, serializer.data['token']),
-            registration_save.s(registration.id)
+            registration_payment_save.s(registration.id)
         ).delay()
         payment_serializer = RegistrationPaymentReadSerializer(
             registration, context={'request': request}
