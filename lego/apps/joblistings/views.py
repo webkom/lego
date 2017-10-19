@@ -8,6 +8,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
 class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
