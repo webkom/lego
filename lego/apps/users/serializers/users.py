@@ -97,9 +97,11 @@ class SearchUserSerializer(serializers.ModelSerializer):
 
 
 class SearchGroupSerializer(serializers.ModelSerializer):
+    logo = ImageField(required=False, options={'height': 200, 'width': 200})
+
     class Meta:
         model = AbakusGroup
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'type', 'logo')
 
 
 class MeSerializer(serializers.ModelSerializer):
