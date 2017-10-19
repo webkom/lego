@@ -43,15 +43,16 @@ class Payment(celery_app.Task):
                 self.registration.charge_status = error['code']
                 self.registration.save()
                 notify_user_registration(
-                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error_msg=error['message']
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration,
+                    error_message=error['message']
                 )
             else:
                 self.registration.charge_status = constants.PAYMENT_FAILURE
                 self.registration.save()
                 notify_user_registration(
-                    constants.SOCKET_PAYMENT_FAILURE, self.registration, error_msg='Payment failed'
+                    constants.SOCKET_PAYMENT_FAILURE, self.registration,
+                    error_message='Payment failed'
                 )
-            # TODO: Notify about payment failure!
 
 
 @celery_app.task(base=AsyncRegister, bind=True)
@@ -120,7 +121,6 @@ def async_payment(self, registration_id, token):
             }
         )
         return response
-        # TODO: Notify payment succeeded
     except stripe.error.CardError as e:
         raise self.retry(exc=e)
     except stripe.error.InvalidRequestError as e:
@@ -128,7 +128,7 @@ def async_payment(self, registration_id, token):
         self.registration.charge_status = e.json_body['error']['type']
         self.registration.save()
         notify_user_payment(
-            constants.SOCKET_PAYMENT_FAILURE, self.registration, error_msg='Invalid request'
+            constants.SOCKET_PAYMENT_FAILURE, self.registration, error_message='Invalid request'
         )
     except stripe.error.StripeError as e:
         log.error('stripe_error', exception=e, registration_id=self.registration.id)
@@ -136,14 +136,16 @@ def async_payment(self, registration_id, token):
 
 
 @celery_app.task(serializer='json', bind=True)
-def registration_save(self, result, registration_id):
+def registration_payment_save(self, result, registration_id):
     try:
         registration = Registration.objects.get(id=registration_id)
         registration.charge_id = result['id']
         registration.charge_amount = result['amount']
         registration.charge_status = result['status']
         registration.save()
-        notify_user_registration(constants.SOCKET_PAYMENT_SUCCESS, registration)
+        notify_user_payment(
+            constants.SOCKET_PAYMENT_SUCCESS, registration, success_message='Betaling gjennomført'
+        )
     except IntegrityError as e:
         log.error('registration_save_error', exception=e, registration_id=registration_id)
         raise self.retry(exc=e)
