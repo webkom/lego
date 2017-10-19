@@ -3,7 +3,7 @@ from rest_framework import routers
 from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import (CompanyContactViewSet, CompanyFilesViewSet,
-                                       CompanyInterestViewSet, CompanyViewSet,
+                                       CompanyInterestViewSet, CompanyViewSet, PublicCompanyViewSet,
                                        SemesterStatusViewSet, SemesterViewSet)
 from lego.apps.contact.views import ContactFormViewSet
 from lego.apps.email.views import AbakusGroupEmailViewSet, EmailListViewSet, UserEmailViewSet
@@ -51,6 +51,7 @@ router.register(r'companies/(?P<company_pk>\d+)/files',
                 CompanyFilesViewSet, base_name='company-files')
 router.register(r'company-interests', CompanyInterestViewSet, base_name='company-interest')
 router.register(r'company-semesters', SemesterViewSet)
+router.register(r'public-companies', PublicCompanyViewSet)
 router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(r'events/(?P<event_pk>\d+)/registrations',

@@ -31,6 +31,16 @@ class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return CompanyAdminDetailSerializer if is_admin else CompanyDetailSerializer
 
 
+class PublicCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+    queryset = Company.objects.all().prefetch_related('semester_statuses', 'files')
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CompanyListSerializer
+
+        return CompanyDetailSerializer
+
+
 class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = CompanyFile.objects.all()
     serializer_class = CompanyFileSerializer
