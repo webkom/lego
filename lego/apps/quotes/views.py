@@ -14,6 +14,7 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Quote.objects.all().prefetch_related('tags')
     filter_class = QuotesFilterSet
+    ordering = '-created_at'
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
