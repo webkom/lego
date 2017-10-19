@@ -23,8 +23,8 @@ class GroupIndex(SearchIndex):
 
     queryset = AbakusGroup.objects.all()
     serializer_class = SearchGroupSerializer
-    result_fields = ('name',)
-    autocomplete_result_fields = ('name',)
+    result_fields = ('name', 'type', 'logo')
+    autocomplete_result_fields = ('name', 'type', 'logo')
 
     def get_autocomplete(self, instance):
         return [instance.name] + instance.name.split(' ')
