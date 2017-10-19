@@ -29,7 +29,8 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             'reactions',
             'reactions_grouped',
             'tags',
-            'content'
+            'content',
+            'created_at'
         )
 
 
@@ -56,4 +57,4 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'cover', 'description', 'tags')
+        fields = ('id', 'title', 'cover', 'description', 'tags', 'created_at')
