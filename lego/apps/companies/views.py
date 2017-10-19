@@ -71,6 +71,7 @@ class SemesterViewSet(viewsets.ModelViewSet):
 
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
+    pagination_class = None
 
 
 class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
