@@ -214,9 +214,9 @@ def bump_waiting_users_to_new_pool():
 @celery_app.task(serializer='json')
 def notify_user_when_payment_overdue():
     time = timezone.now()
-    events = Event.objects.filter(
-        payment_due_date__range=(time - timedelta(days=7), time), is_priced=True
-    ).exclude(registrations=None).prefetch_related('registrations')
+    events = Event.objects.filter(is_priced=True).exclude(
+        payment_due_days=None, registrations=None
+    ).prefetch_related('registrations')
     for event in events:
         for registration in event.registrations.all():
             if registration.should_notify(time):

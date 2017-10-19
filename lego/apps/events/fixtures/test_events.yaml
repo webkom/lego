@@ -66,7 +66,7 @@
     is_priced: True
     price_member: 10000
     price_guest: 15000
-    payment_due_date: '2011-09-01T13:20:30+03:00'
+    payment_due_days: 3
     created_by: 1
     can_view_groups:
       - - Abakus
@@ -128,7 +128,6 @@
     name: Abakusmember
     capacity: 3
     event: 5
-    counter: 3
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
       - - Abakus

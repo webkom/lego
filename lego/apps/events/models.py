@@ -50,7 +50,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     use_stripe = models.BooleanField(default=True)
     price_member = models.PositiveIntegerField(default=0)
     price_guest = models.PositiveIntegerField(default=0)
-    payment_due_date = models.DateTimeField(null=True)
+    payment_due_days = models.PositiveSmallIntegerField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
 
     is_ready = models.BooleanField(default=True)
@@ -663,6 +663,11 @@ class Registration(BasisModel):
     def is_registered(self):
         return self.pool is not None
 
+    def is_registration_due_payment(self):
+        if not self.is_registered or self.has_paid():
+            return False
+        return self.registration_date + timedelta(days=self.event.payment_due_days) > timezone.now()
+
     def validate(self):
         if self.pool and self.unregistration_date:
             raise ValidationError('Pool and unregistration_date should not both be set')
@@ -673,7 +678,7 @@ class Registration(BasisModel):
     def should_notify(self, time=None):
         if not time:
             time = timezone.now()
-        if not self.has_paid():
+        if self.is_registration_due_payment():
             return not self.last_notified_overdue_payment or\
                (time - self.last_notified_overdue_payment).days >= constants.DAYS_BETWEEN_NOTIFY
         return False
