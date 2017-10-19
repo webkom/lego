@@ -8,9 +8,15 @@ from django.core.management import call_command
 from django.utils.crypto import get_random_string
 from slugify import slugify
 
+from lego.apps.articles.models import Article
+from lego.apps.events.models import Event
 from lego.apps.files.exceptions import UnknownFileType
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
+from lego.apps.flatpages.models import Page
+from lego.apps.joblistings.models import Joblisting
+from lego.apps.meetings.models import Meeting
+from lego.apps.quotes.models import Quote
 from lego.apps.users.fixtures.initial_abakus_groups import initial_tree
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.functions import insert_abakus_groups
@@ -241,3 +247,22 @@ class Command(BaseCommand):
                 continue
             user.picture.user = user
             user.picture.save()
+
+        # Loop through all the models and generate slug for them if they do not exist
+        for article in Article.all_objects.all():
+            article.save()
+
+        for event in Event.all_objects.all():
+            event.save()
+
+        for page in Page.all_objects.all():
+            page.save()
+
+        for joblisting in Joblisting.all_objects.all():
+            joblisting.save()
+
+        for meeting in Meeting.all_objects.all():
+            meeting.save()
+
+        for quote in Quote.all_objects.all():
+            quote.save()
