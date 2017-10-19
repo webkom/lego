@@ -9,7 +9,7 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (EventHasStarted, EventNotReady, NoSuchPool,
+from lego.apps.events.exceptions import (EventHasClosed, EventNotReady, NoSuchPool,
                                          RegistrationsExistInPool)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
@@ -181,8 +181,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.heed_penalties:
             penalties = user.number_of_penalties()
         current_time = timezone.now()
-        if self.start_time < current_time:
-            raise EventHasStarted()
+        if self.start_time - timedelta(hours=constants.REGISTRATION_CLOSE_TIME) < current_time:
+            raise EventHasClosed()
 
         all_pools = self.pools.all()
         possible_pools = self.get_possible_pools(
@@ -236,7 +236,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         notifies the waiting list that there might be a bump available.
         """
         if self.start_time < timezone.now():
-            raise EventHasStarted()
+            raise EventHasClosed()
 
         # Locks unregister so that no user can register before bump is executed.
         pool = registration.pool
