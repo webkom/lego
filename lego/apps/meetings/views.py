@@ -14,6 +14,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Meeting.objects.prefetch_related('invitations', 'invitations__user')
+    ordering = '-start_time'
     serializer_class = MeetingSerializer
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
