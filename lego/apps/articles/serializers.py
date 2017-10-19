@@ -49,7 +49,9 @@ class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             'author',
             'description',
             'tags',
-            'content'
+            'content',
+            'pinned',
+            'created_at'
         )
 
 

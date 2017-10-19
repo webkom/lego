@@ -42,8 +42,8 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'event_type',
-                  'location', 'start_time', 'thumbnail',
-                  'total_capacity', 'company', 'registration_count', 'tags')
+                  'location', 'start_time', 'thumbnail', 'total_capacity',
+                  'company', 'registration_count', 'tags', 'pinned')
         read_only = True
 
 

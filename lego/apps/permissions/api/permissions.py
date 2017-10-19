@@ -32,6 +32,7 @@ class LegoPermissions(permissions.BasePermission):
 
         user = request.user
         queryset = view.get_queryset()
+
         permission_handler = self.permission_handler(view)
 
         has_perm = permission_handler.has_perm(
