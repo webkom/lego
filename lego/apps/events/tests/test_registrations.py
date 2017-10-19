@@ -684,6 +684,22 @@ class RegistrationTestCase(TestCase):
             event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
 
+    def test_cant_register_after_event_has_closed(self):
+        """Test that a user cannot register after the event has started."""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+
+        current_time = timezone.now()
+        event.start_time = current_time + timedelta(hours=1)
+        event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        with self.assertRaises(ValueError):
+            event.register(registration)
+        self.assertEqual(event.number_of_registrations, 0)
+
     def test_presence_method_raises_error_with_illegal_value(self):
         """Test that presence raises error when given an illegal presence choice"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
