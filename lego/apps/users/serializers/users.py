@@ -2,13 +2,15 @@ from rest_framework import exceptions, serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
-from lego.apps.users.fields import AbakusGroupField, AbakusGroupListField
+from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.penalties import PenaltySerializer
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
 
+    abakus_groups = PublicAbakusGroupSerializer(many=True)
     penalties = serializers.SerializerMethodField('get_valid_penalties')
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
 
@@ -46,7 +48,8 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'allergies',
             'is_staff',
             'is_active',
-            'penalties'
+            'penalties',
+            'abakus_groups'
         )
 
 
@@ -66,6 +69,13 @@ class PublicUserSerializer(serializers.ModelSerializer):
             'profile_picture'
         )
         read_only_fields = ('username',)
+
+
+class PublicUserWithGroupsSerializer(PublicUserSerializer):
+    abakus_groups = PublicAbakusGroupSerializer(many=True)
+
+    class Meta(PublicUserSerializer.Meta):
+        fields = PublicUserSerializer.Meta.fields + ('abakus_groups',)
 
 
 class AdministrateUserSerializer(PublicUserSerializer):
@@ -108,7 +118,7 @@ class MeSerializer(serializers.ModelSerializer):
     Also used by our JWT handler and returned to the user when a user obtains a JWT token.
     """
 
-    abakus_groups = AbakusGroupListField()
+    abakus_groups = PublicAbakusGroupSerializer(many=True)
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
     ical_token = serializers.SerializerMethodField('get_user_ical_token')
     penalties = serializers.SerializerMethodField('get_valid_penalties')
