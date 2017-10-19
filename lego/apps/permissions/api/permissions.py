@@ -31,7 +31,13 @@ class LegoPermissions(permissions.BasePermission):
             return False
 
         user = request.user
-        queryset = view.get_queryset()
+        try:
+            queryset = view.get_queryset()
+        except AttributeError:
+            # view wasn't a ModelViewSet, so it has no `get_queryset`.
+            # All is allowed :)
+            return True
+
         permission_handler = self.permission_handler(view)
 
         has_perm = permission_handler.has_perm(
