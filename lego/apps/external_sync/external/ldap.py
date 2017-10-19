@@ -77,14 +77,14 @@ class LDAPSystem(ExternalSystem):
         return bool(self.ldap.search_group(group.id))
 
     def add_group(self, group):
-        members = list(group.memberships.values_list('user__username', flat=True))
+        members = list(group.memberships.distinct('user').values_list('user__username', flat=True))
         self.ldap.add_group(
             group.id, group.name.lower()
         )
         self.ldap.update_group_members(group.name.lower(), members)
 
     def update_group(self, group):
-        members = list(group.memberships.values_list('user__username', flat=True))
+        members = list(group.memberships.distinct('user').values_list('user__username', flat=True))
         self.ldap.update_group_members(group.name.lower(), members)
 
     def delete_excess_groups(self, groups):
