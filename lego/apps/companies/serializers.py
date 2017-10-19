@@ -110,7 +110,6 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
 
-    student_contact = PublicUserField(required=False, allow_null=True, queryset=User.objects.all())
     semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
     company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
@@ -119,7 +118,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'student_contact', 'description', 'phone',
+        fields = ('id', 'name', 'description', 'phone',
                   'company_type', 'website', 'address', 'payment_mail', 'comments',
                   'comment_target', 'semester_statuses', 'active', 'admin_comment',
                   'logo', 'files', 'company_contacts')
