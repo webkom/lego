@@ -29,7 +29,7 @@ class ListArticlesTestCase(APITestCase):
         response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 200)
         article = response.data['results'][0]
-        self.assertEqual(set(PublicArticleSerializer.Meta.fields), set(article.keys()))
+        self.assertEqual(len(PublicArticleSerializer.Meta.fields), len(article.keys()))
 
     def test_authorized_without_permission(self):
         user = self.all_users.first()
