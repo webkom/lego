@@ -20,7 +20,7 @@ class NoSuchPool(ValueError):
     pass
 
 
-class EventHasStarted(ValueError):
+class EventHasClosed(ValueError):
     pass
 
 
