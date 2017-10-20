@@ -74,17 +74,17 @@ The application track the following events:
 +--------------------------------------------------+----------------------------------------------------------------------------+
 | <PREFIX>.task.send_push                          | Track time spent used on sending push messages.                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
-| <PREFIX>.request.total.<METHOD>.<URL>            |                                                                            |
+| <PREFIX>.request.total.<METHOD>                  |                                                                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
-| <PREFIX>.response.total.<METHOD>.<URL>           |                                                                            |
+| <PREFIX>.response.total.<METHOD>                 |                                                                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
-| <PREFIX>.request.latency.<METHOD>.<URL>          |                                                                            |
+| <PREFIX>.request.latency.<METHOD>                |                                                                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
-| <PREFIX>.response.latency.<METHOD>.<URL>         |                                                                            |
+| <PREFIX>.response.latency.<METHOD>               |                                                                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
-| <PREFIX>.request.unknown_latency.<METHOD>.<URL>  |                                                                            |
+| <PREFIX>.request.unknown_latency.<METHOD>        |                                                                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
-| <PREFIX>.response.unknown_latency.<METHOD>.<URL> |                                                                            |
+| <PREFIX>.response.unknown_latency.<METHOD>       |                                                                            |
 +--------------------------------------------------+----------------------------------------------------------------------------+
 
 We use the Prometheus statsd exporter to collect these metrics. The following config parses the
@@ -212,47 +212,41 @@ metrics and collects the tag:
     environment="$2"
     task="$3"
 
-    *.*.request.total.*.*
+    *.*.request.total.*
     name="request_total"
     system="$1"
     environment="$2"
     method="$3"
-    url="$4"
 
-    *.*.response.total.*.*
+    *.*.response.total.*
     name="response_total"
     system="$1"
     environment="$2"
     method="$3"
-    url="$4"
 
-    *.*.request.latency.*.*
+    *.*.request.latency.*
     name="request_latency"
     system="$1"
     environment="$2"
     method="$3"
-    url="$4"
 
-    *.*.response.latency.*.*
+    *.*.response.latency.*
     name="response_latency"
     system="$1"
     environment="$2"
     method="$3"
-    url="$4"
 
-    *.*.request.unknown_latency.*.*
+    *.*.request.unknown_latency.*
     name="request_unknown_latency"
     system="$1"
     environment="$2"
     method="$3"
-    url="$4"
 
-    *.*.response.unknown_latency.*.*
+    *.*.response.unknown_latency.*
     name="response_unknown_latency"
     system="$1"
     environment="$2"
     method="$3"
-    url="$4"
 
 Analytics
 ---------
