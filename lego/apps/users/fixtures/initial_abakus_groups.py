@@ -52,12 +52,12 @@ initial_tree = {
                     'Bedkom': [{
                         'type': GROUP_COMMITTEE,
                         'logo_id': 'abakus_bedkom.png',
-                        'permissions': ['/sudo/admin/companyinterest']
+                        'permissions': ['/sudo/admin/companyinterest/']
                     }, {}],
                     'Fagkom': [{
                         'type': GROUP_COMMITTEE,
                         'logo_id': 'abakus_fagkom.png',
-                        'permissions': ['/sudo/admin/companyinterest']
+                        'permissions': ['/sudo/admin/companyinterest/']
                     }, {}],
                     'Koskom': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_koskom.png'}, {}],
                     'LaBamba': [{'type': GROUP_COMMITTEE, 'logo_id': 'abakus_labamba.png'}, {}],
