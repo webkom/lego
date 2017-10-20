@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 
 from lego.apps.companies.filters import SemesterFilterSet
 from lego.apps.companies.models import (Company, CompanyContact, CompanyFile, CompanyInterest,
@@ -25,8 +25,10 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return CompanyAdminDetailSerializer
 
 
-class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+class CompanyViewSet(AllowedPermissionsMixin, viewsets.mixins.ListModelMixin,
+                     viewsets.mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Company.objects.all()
+    permission_classes = (permissions.IsAuthenticated, )
 
     def get_serializer_class(self):
         if self.action == 'list':
