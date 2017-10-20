@@ -33,12 +33,12 @@
 - model: users.abakusgroup
   pk: 6
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Bedkom,
-    description: '', parent: 3, logo: abakus_bedkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest"]',
+    description: '', parent: 3, logo: abakus_bedkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/"]',
     lft: 7, rght: 8, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 7
   fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Fagkom,
-    description: '', parent: 3, logo: abakus_fagkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest"]',
+    description: '', parent: 3, logo: abakus_fagkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/"]',
     lft: 9, rght: 10, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 8
