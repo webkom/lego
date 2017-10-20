@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from lego.apps.meetings.authentication import MeetingInvitationTokenAuthentication
+from lego.apps.meetings.filters import MeetingFilterSet
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.serializers import (MeetingBulkInvite, MeetingGroupInvite,
                                             MeetingInvitationSerializer,
@@ -14,8 +15,14 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Meeting.objects.prefetch_related('invitations', 'invitations__user')
-    ordering = '-start_time'
+    filter_class = MeetingFilterSet
     serializer_class = MeetingSerializer
+
+    def get_ordering(self):
+        ordering = self.request.query_params.get('ordering', None)
+        if ordering in ['start_time', '-start_time']:
+            return ordering
+        return 'start_time'
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
     def invite_user(self, request, *args, **kwargs):
