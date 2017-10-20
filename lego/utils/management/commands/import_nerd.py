@@ -208,6 +208,7 @@ class Command(BaseCommand):
             nerd_groups = self.load_yaml(f'{IMPORT_DIRECTORY}/1_nerd_export_group_objects.yaml')
             for group_model in nerd_groups:
                 group_fields = group_model['fields']
+                group_fields['id'] = group_model['pk']
                 if group_fields['logo']:
                     group_fields['logo'] = File.objects.get(key=group_fields['logo'])
                 group_name = group_fields['name']
