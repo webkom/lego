@@ -21,11 +21,6 @@ def method(request):
     return method
 
 
-def url(request):
-    url = request.path
-    return url
-
-
 class LoggingMiddleware(MiddlewareMixin):
     """
     Attach request information to the log context
@@ -64,19 +59,19 @@ class LoggingMiddleware(MiddlewareMixin):
 class StatsDBeforeMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        statsd.incr(f'request.total.{method(request)}.{url(request)}')
+        statsd.incr(f'request.total.{method(request)}')
         request.statsd_before_middleware_event = timeit.default_timer()
 
     def process_response(self, request, response):
-        statsd.incr(f'response.total.{method(request)}.{url(request)}')
+        statsd.incr(f'response.total.{method(request)}')
 
         if hasattr(request, 'statsd_before_middleware_event'):
             statsd.timing(
-                f'request.latency.{method(request)}.{url(request)}',
+                f'request.latency.{method(request)}',
                 timeit.default_timer() - request.statsd_before_middleware_event
             )
         else:
-            statsd.incr(f'request.unknown_latency.{method(request)}.{url(request)}')
+            statsd.incr(f'request.unknown_latency.{method(request)}')
 
         return response
 
@@ -89,10 +84,10 @@ class StatsDAfterMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
         if hasattr(request, 'statsd_after_middleware_event'):
             statsd.timing(
-                f'response.latency.{method(request)}.{url(request)}',
+                f'response.latency.{method(request)}',
                 timeit.default_timer() - request.statsd_after_middleware_event
             )
         else:
-            statsd.incr(f'response.unknown_latency.{method(request)}.{url(request)}')
+            statsd.incr(f'response.unknown_latency.{method(request)}')
 
         return response
