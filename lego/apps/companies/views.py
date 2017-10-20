@@ -11,25 +11,28 @@ from lego.apps.companies.serializers import (CompanyAdminDetailSerializer,
                                              SemesterSerializer, SemesterStatusDetailSerializer,
                                              SemesterStatusSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.permissions.constants import EDIT
 
 
-class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related('semester_statuses', 'files')\
         .select_related('student_contact')
     pagination_class = None
 
     def get_serializer_class(self):
-        if not self.request:
-            return CompanyDetailSerializer
-
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, self.get_queryset())
-
         if self.action == 'list':
-            return CompanyAdminListSerializer if is_admin else CompanyListSerializer
+            return CompanyAdminListSerializer
 
-        return CompanyAdminDetailSerializer if is_admin else CompanyDetailSerializer
+        return CompanyAdminDetailSerializer
+
+
+class CompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CompanyListSerializer
+
+        return CompanyDetailSerializer
 
 
 class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
