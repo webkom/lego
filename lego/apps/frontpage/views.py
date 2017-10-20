@@ -3,7 +3,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
 from lego.apps.articles.models import Article
-from lego.apps.articles.serializers import SearchArticleSerializer
+from lego.apps.articles.serializers import PublicArticleSerializer
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.permissions.constants import LIST
@@ -36,7 +36,7 @@ class FrontpageViewSet(viewsets.ViewSet):
         else:
             queryset_events = events_handler.filter_queryset(request.user, queryset_events_base)
 
-        articles = SearchArticleSerializer(queryset_articles[:10], many=True).data
+        articles = PublicArticleSerializer(queryset_articles[:10], many=True).data
         events = EventSearchSerializer(queryset_events, many=True).data
         ret = {
             'articles': articles,
