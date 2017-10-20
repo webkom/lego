@@ -20,7 +20,9 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_ordering(self):
         ordering = self.request.query_params.get('ordering', None)
-        return ordering or 'start_time'
+        if ordering in ['start_time', '-start_time']:
+            return ordering
+        return 'start_time'
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
     def invite_user(self, request, *args, **kwargs):
