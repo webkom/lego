@@ -13,6 +13,7 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = AbakusGroup.objects.all()
     ordering = 'id'
     filter_class = AbakusGroupFilterSet
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == 'list':

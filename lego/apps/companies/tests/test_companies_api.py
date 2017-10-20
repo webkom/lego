@@ -32,11 +32,11 @@ _test_company_contact_data = [
 
 
 def _get_list_url():
-    return reverse('api:v1:company-list')
+    return reverse('api:v1:bdb-list')
 
 
 def _get_detail_url(pk):
-    return reverse('api:v1:company-detail', kwargs={'pk': pk})
+    return reverse('api:v1:bdb-detail', kwargs={'pk': pk})
 
 
 def _get_semester_status_list_url(company_pk):
