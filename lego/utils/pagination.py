@@ -37,7 +37,11 @@ class CursorPagination(RFCursorPagination):
         else:
             # Try to get the `ordering` attribute on the viewset class. Defaults to the `ordering`
             # attribute on the paginator class.
-            ordering = getattr(view, 'ordering', self.ordering)
+
+            if hasattr(view, 'get_ordering'):
+                ordering = view.get_ordering()
+            else:
+                ordering = getattr(view, 'ordering', self.ordering)
 
             assert ordering is not None, (
                 'Using cursor pagination, but no ordering attribute was declared '
