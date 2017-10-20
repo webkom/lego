@@ -112,8 +112,10 @@ STATSD_PREFIX = env('STATSD_PREFIX', default='lego')
 ANALYTICS_HOST = env('ANALYTICS_HOST')
 
 # CORS
+CORS_FRONTEND_URL = urlparse(FRONTEND_URL).netloc
 CORS_ORIGIN_WHITELIST = list({
-    urlparse(FRONTEND_URL).netloc,
+    CORS_FRONTEND_URL,
+    f'www.{CORS_FRONTEND_URL}',
     '127.0.0.1:3000',
     'localhost:3000'
 })
