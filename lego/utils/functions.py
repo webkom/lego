@@ -23,7 +23,12 @@ def verify_captcha(captcha_response):
 def insert_abakus_groups(tree, parent=None):
     for key, value in tree.items():
         kwargs = value[0]
-        node = AbakusGroup.objects.update_or_create(
-            name=key, defaults={**kwargs, 'parent': parent}
-        )[0]
+        if 'id' in kwargs:
+            node = AbakusGroup.objects.update_or_create(
+                id=kwargs['id'], name=key, defaults={**kwargs, 'parent': parent}
+            )[0]
+        else:
+            node = AbakusGroup.objects.update_or_create(
+                name=key, defaults={**kwargs, 'parent': parent}
+            )[0]
         insert_abakus_groups(value[1], node)
