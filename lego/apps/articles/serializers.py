@@ -61,4 +61,4 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'cover', 'description', 'tags', 'created_at')
+        fields = ('id', 'title', 'cover', 'description', 'tags', 'created_at', 'pinned')
