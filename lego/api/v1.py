@@ -2,8 +2,8 @@ from rest_framework import routers
 
 from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
-from lego.apps.companies.views import (CompanyContactViewSet, CompanyFilesViewSet,
-                                       CompanyInterestViewSet, CompanyViewSet,
+from lego.apps.companies.views import (AdminCompanyViewSet, CompanyContactViewSet,
+                                       CompanyFilesViewSet, CompanyInterestViewSet, CompanyViewSet,
                                        SemesterStatusViewSet, SemesterViewSet)
 from lego.apps.contact.views import ContactFormViewSet
 from lego.apps.email.views import AbakusGroupEmailViewSet, EmailListViewSet, UserEmailViewSet
@@ -123,3 +123,4 @@ router.register(r'email-groups', AbakusGroupEmailViewSet, base_name='email-group
 router.register(r'contact-form', ContactFormViewSet, base_name='contact-form')
 router.register(r'site-meta', SiteMetaViewSet, base_name='site-meta')
 router.register(r'frontpage', FrontpageViewSet, base_name='frontpage')
+router.register(r'bdb', AdminCompanyViewSet, base_name='bdb')
