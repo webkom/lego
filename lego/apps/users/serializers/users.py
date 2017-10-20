@@ -44,12 +44,13 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'full_name',
             'gender',
             'email',
+            'email_address',
             'profile_picture',
             'allergies',
             'is_staff',
             'is_active',
             'penalties',
-            'abakus_groups'
+            'abakus_groups',
         )
 
 
@@ -147,6 +148,7 @@ class MeSerializer(serializers.ModelSerializer):
             'last_name',
             'full_name',
             'email',
+            'email_address',
             'profile_picture',
             'gender',
             'allergies',
