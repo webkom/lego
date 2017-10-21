@@ -1,3 +1,5 @@
+from lego.apps.feed.registry import handler_exists
+
 from .tasks import add_to_feeds
 
 
@@ -18,10 +20,13 @@ class AsyncSignalHandler(BaseSignalHandler):
     """
 
     def on_create(self, instance):
-        add_to_feeds.delay(instance, action='create')
+        if handler_exists(instance):
+            add_to_feeds.delay(instance, action='create')
 
     def on_update(self, instance):
-        add_to_feeds.delay(instance, action='update')
+        if handler_exists(instance):
+            add_to_feeds.delay(instance, action='update')
 
     def on_delete(self, instance):
-        add_to_feeds.delay(instance, action='delete')
+        if handler_exists(instance):
+            add_to_feeds.delay(instance, action='delete')
