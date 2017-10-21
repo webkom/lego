@@ -17,7 +17,7 @@ class FrontpageViewSet(viewsets.ViewSet):
     def list(self, request):
         articles_handler = get_permission_handler(Article)
         articles_queryset_base = Article.objects.all()\
-            .order_by('pinned', '-created_at').prefetch_related('tags')
+            .order_by('-pinned', '-created_at').prefetch_related('tags')
 
         if articles_handler.has_perm(request.user, LIST, queryset=articles_queryset_base):
             queryset_articles = articles_queryset_base
@@ -28,7 +28,7 @@ class FrontpageViewSet(viewsets.ViewSet):
 
         events_handler = get_permission_handler(Event)
         queryset_events_base = Event.objects.all()\
-            .filter(start_time__gt=datetime.now()).order_by('pinned', 'start_time')\
+            .filter(start_time__gt=datetime.now()).order_by('-pinned', 'start_time')\
             .prefetch_related('pools', 'pools__registrations', 'company', 'tags')
 
         if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
