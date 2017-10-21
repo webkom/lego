@@ -7,8 +7,8 @@
     event_type: 0
     location: R1
     company: 1
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: '2118-09-01T13:20:30+03:00'
+    end_time: '2118-09-01T15:20:30+03:00'
     can_view_groups:
       - - Abakus
 
@@ -21,8 +21,9 @@
     event_type: 3
     location: F254
     company: 2
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: '2118-09-02T13:20:30+03:00'
+    end_time: '2118-09-02T15:20:30+03:00'
+    pinned: true
     can_view_groups:
       - - Abakus
 
@@ -35,8 +36,8 @@
     event_type: 3
     location: F254
     company: 3
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: '2118-09-03T13:20:30+03:00'
+    end_time: '2118-09-03T15:20:30+03:00'
     can_view_groups:
       - - Webkom
 
