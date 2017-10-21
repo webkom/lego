@@ -5,7 +5,11 @@ from .models import AbakusGroup
 
 class AbakusGroupListField(serializers.RelatedField):
 
-    queryset = AbakusGroup.objects.all()
+    def __init__(self, **kwargs):
+        kwargs['many'] = True
+        if not kwargs.get('read_only', False):
+            kwargs['queryset'] = AbakusGroup.objects.all()
+        super().__init__(**kwargs)
 
     def to_representation(self, iterable):
         return [{'id': group.id, 'name': group.name} for group in iterable.all()]

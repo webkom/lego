@@ -3,6 +3,7 @@ from rest_framework import decorators, exceptions, mixins, viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.restricted.constants import RESTRICTED_TOKEN_PREFIX
+from lego.apps.restricted.filters import RestrictedMailFilterSet
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.restricted.serializers import (RestrictedMailDetailSerializer,
                                               RestrictedMailListSerializer)
@@ -11,6 +12,8 @@ from lego.apps.restricted.serializers import (RestrictedMailDetailSerializer,
 class RestrictedMailViewSet(AllowedPermissionsMixin,
                             mixins.ListModelMixin, mixins.RetrieveModelMixin,
                             mixins.CreateModelMixin, viewsets.GenericViewSet):
+
+    filter_class = RestrictedMailFilterSet
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
