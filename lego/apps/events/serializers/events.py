@@ -61,8 +61,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
                   'pools', 'company', 'active_capacity', 'feedback_description',
-                  'feedback_required', 'is_priced', 'price_member', 'price_guest',
-                  'use_stripe', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged')
+                  'feedback_required', 'is_priced', 'payment_due_days', 'price_member',
+                  'price_guest', 'use_stripe', 'use_captcha', 'waiting_registrations', 'tags',
+                  'is_merged')
         read_only = True
 
 

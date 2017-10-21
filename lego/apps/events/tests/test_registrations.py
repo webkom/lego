@@ -40,6 +40,30 @@ class RegistrationMethodTest(TestCase):
         self.event.register(registration)
         self.assertEqual(self.event.get_price(registration.user), 15000)
 
+    def test_is_registration_due_payment_when_not_due(self):
+        registration = Registration.objects.get_or_create(
+            event=self.event, user=self.users[1]
+        )[0]
+        self.event.register(registration)
+        self.assertEqual(registration.is_registration_due_payment(), False)
+
+    def test_is_registration_due_payment_when_due(self):
+        self.event.register(self.registration)
+        self.registration.registration_date = timezone.now() + timedelta(
+            days=(self.event.payment_due_days + 1)
+        )
+        self.registration.save()
+        self.assertEqual(self.registration.is_registration_due_payment(), True)
+
+    def test_is_registration_due_payment_when_paid(self):
+        self.event.register(self.registration)
+        self.registration.registration_date = timezone.now() + timedelta(
+            days=self.event.payment_due_days + 1
+        )
+        self.registration.set_payment_success()
+        self.registration.save()
+        self.assertEqual(self.registration.is_registration_due_payment(), False)
+
 
 class RegistrationTestCase(TestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',

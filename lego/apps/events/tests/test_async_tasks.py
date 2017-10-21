@@ -369,9 +369,12 @@ class PaymentDueTestCase(TestCase):
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
         self.event.start_time = timezone.now() + timedelta(days=1)
         self.event.merge_time = timezone.now() + timedelta(hours=12)
-        self.event.payment_due_date = timezone.now() - timedelta(days=2)
         self.event.save()
         self.registration = self.event.registrations.first()
+        self.registration.registration_date = timezone.now() + timedelta(
+            days=(self.event.payment_due_days + 1)
+        )
+        self.registration.save()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_user_notification_when_overdue_payment(self, mock_get_handler):
@@ -414,11 +417,13 @@ class PaymentDueTestCase(TestCase):
         mock_get_handler.assert_not_called()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_no_notification_when_event_is_not_due(self, mock_get_handler):
-        """Test that notification is not added when event is not overdue"""
+    def test_no_notification_when_registration_is_not_due(self, mock_get_handler):
+        """Test that notification is not added when registration is not overdue"""
 
-        self.event.payment_due_date = timezone.now() + timedelta(days=1)
-        self.event.save()
+        self.registration.registration_date = timezone.now() - timedelta(
+            days=(self.event.payment_due_days + 1)
+        )
+        self.registration.save()
 
         notify_user_when_payment_overdue.delay()
         mock_get_handler.assert_not_called()
