@@ -24,7 +24,7 @@ class PasswordResetRequestViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         try:
-            User.objects.get(email_iexact=email)
+            User.objects.get(email__iexact=email)
         except User.DoesNotExist:
             raise ValidationError({"email": "User with that email does not exist"})
         token = PasswordReset.generate_reset_token(email)

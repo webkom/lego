@@ -1,4 +1,5 @@
 from django.contrib.auth.models import UserManager
+from django.db.models import Q
 from django.utils import timezone
 from mptt.managers import TreeManager
 
@@ -31,7 +32,7 @@ class AbakusUserManager(UserManager, PersistentModelManager):
         return self._create_user(username, email, password, **extra_fields)
 
     def get_by_natural_key(self, username):
-        return self.get(username__iexact=username.lower())
+        return self.get(Q(username__iexact=username.lower()) | Q(email__iexact=username.lower()))
 
 
 class MembershipManager(PersistentModelManager):

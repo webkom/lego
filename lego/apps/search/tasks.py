@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from structlog import get_logger
 
 from lego import celery_app
@@ -27,11 +28,12 @@ def instance_update(self, identifier, logger_context=None):
     """
     self.setup_logger(logger_context)
 
-    instance = string_to_instance(identifier)
-    if instance:
+    try:
+        instance = string_to_instance(identifier)
+
         index = get_model_index(instance)
         index.update_instance(instance)
-    else:
+    except ObjectDoesNotExist:
         # Could not find the instance in the DB. Call the instance_delete task to make sure the
         # object gets removed from our index.
         log.warn('search_update_non_existing_instance', identifier=identifier)
