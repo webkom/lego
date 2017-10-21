@@ -6,7 +6,8 @@ from lego.apps.restricted.constants import RESTRICTED_TOKEN_PREFIX
 from lego.apps.restricted.filters import RestrictedMailFilterSet
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.restricted.serializers import (RestrictedMailDetailSerializer,
-                                              RestrictedMailListSerializer)
+                                              RestrictedMailListSerializer,
+                                              RestrictedMailSerializer)
 
 
 class RestrictedMailViewSet(AllowedPermissionsMixin,
@@ -17,13 +18,18 @@ class RestrictedMailViewSet(AllowedPermissionsMixin,
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return RestrictedMail.objects.filter(created_by=self.request.user)
+            queryset = RestrictedMail.objects.filter(created_by=self.request.user)
+            if self.action == 'retrieve':
+                return queryset.prefetch_related('users', 'groups', 'events', 'meetings')
+            return queryset
         return RestrictedMail.objects.none()
 
     def get_serializer_class(self):
-        if self.action in ['list']:
+        if self.action == 'list':
             return RestrictedMailListSerializer
-        return RestrictedMailDetailSerializer
+        if self.action == 'retrieve':
+            return RestrictedMailDetailSerializer
+        return RestrictedMailSerializer
 
     @decorators.detail_route(methods=['GET'])
     def token(self, *arg, **kwargs):
