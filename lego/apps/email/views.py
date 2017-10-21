@@ -1,11 +1,12 @@
 from rest_framework import mixins, viewsets
 
+from lego.apps.email.filters import EmailListFilterSet, EmailUserFilterSet
 from lego.apps.email.models import EmailList
-from lego.apps.email.permissions import GroupEmailPermissionHandler, UserEmailPermissionHandler
-from lego.apps.email.serializers import (AbakusGroupEmailSerializer, EmailListCreateSerializer,
-                                         EmailListSerializer, UserEmailSerializer)
+from lego.apps.email.permissions import UserEmailPermissionHandler
+from lego.apps.email.serializers import (EmailListCreateSerializer, EmailListSerializer,
+                                         UserEmailCreateSerializer, UserEmailSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import User
 
 
 class EmailListViewSet(AllowedPermissionsMixin,
@@ -19,6 +20,7 @@ class EmailListViewSet(AllowedPermissionsMixin,
     """
     queryset = EmailList.objects.all().prefetch_related('users', 'groups')
     ordering = 'id'
+    filter_class = EmailListFilterSet
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -27,24 +29,19 @@ class EmailListViewSet(AllowedPermissionsMixin,
 
 
 class UserEmailViewSet(AllowedPermissionsMixin,
+                       mixins.CreateModelMixin,
                        mixins.ListModelMixin,
                        mixins.RetrieveModelMixin,
                        mixins.UpdateModelMixin,
                        viewsets.GenericViewSet):
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().exclude(internal_email=None)
     serializer_class = UserEmailSerializer
     ordering = 'id'
+    filter_class = EmailUserFilterSet
     permission_handler = UserEmailPermissionHandler()
 
-
-class AbakusGroupEmailViewSet(AllowedPermissionsMixin,
-                              mixins.ListModelMixin,
-                              mixins.RetrieveModelMixin,
-                              mixins.UpdateModelMixin,
-                              viewsets.GenericViewSet):
-
-    queryset = AbakusGroup.objects.all()
-    serializer_class = AbakusGroupEmailSerializer
-    ordering = 'id'
-    permission_handler = GroupEmailPermissionHandler()
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserEmailCreateSerializer
+        return super().get_serializer_class()

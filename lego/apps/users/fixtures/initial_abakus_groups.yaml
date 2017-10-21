@@ -3,140 +3,131 @@
 #
 - model: users.abakusgroup
   pk: 1
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Users,
-    description: "Brukere p\xE5 Abakus.no", parent: null, logo: null, type: annen,
-    text: '', permissions: '[]', lft: 1, rght: 2, tree_id: 1, level: 0}
+  fields: {deleted: false, name: Users, description: "Brukere p\xE5 Abakus.no", parent: null,
+    logo: null, type: annen, text: '', permissions: '[]', lft: 1, rght: 2, tree_id: 1,
+    level: 0}
 - model: users.abakusgroup
   pk: 2
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakus,
-    description: Medlemmer av Abakus, parent: null, logo: null, type: annen, text: '',
-    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
-      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/", "/sudo/admin/comments/create"]',
-    lft: 1, rght: 26, tree_id: 2, level: 0}
+  fields: {deleted: false, name: Abakus, description: Medlemmer av Abakus, parent: null,
+    logo: null, type: annen, text: '', permissions: '["/sudo/admin/meetings/create",
+      "/sudo/admin/meetinginvitations/create", "/sudo/admin/registrations/create/",
+      "/sudo/admin/events/payment/", "/sudo/admin/comments/create"]', lft: 1, rght: 26,
+    tree_id: 2, level: 0}
 - model: users.abakusgroup
   pk: 3
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Abakom,
-    description: Medlemmer av Abakom, parent: 2, logo: null, type: annen, text: '',
-    permissions: '["/sudo/admin/events/", "/sudo/admin/pools/", "/sudo/admin/registrations/",
-      "/sudo/admin/companies/", "/sudo/admin/joblistings/"]', lft: 2, rght: 23, tree_id: 2,
-    level: 1}
+  fields: {deleted: false, name: Abakom, description: Medlemmer av Abakom, parent: 2,
+    logo: null, type: annen, text: '', permissions: '["/sudo/admin/events/", "/sudo/admin/pools/",
+      "/sudo/admin/registrations/", "/sudo/admin/companies/", "/sudo/admin/joblistings/"]',
+    lft: 2, rght: 23, tree_id: 2, level: 1}
 - model: users.abakusgroup
   pk: 4
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Arrkom,
-    description: '', parent: 3, logo: abakus_arrkom.png, type: komite, text: '', permissions: '[]',
-    lft: 3, rght: 4, tree_id: 2, level: 2}
+  fields: {deleted: false, name: Arrkom, description: '', parent: 3, logo: abakus_arrkom.png,
+    type: komite, text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 5
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: backup,
-    description: '', parent: 3, logo: abakus_backup.png, type: komite, text: '', permissions: '[]',
-    lft: 5, rght: 6, tree_id: 2, level: 2}
+  fields: {deleted: false, name: backup, description: '', parent: 3, logo: abakus_backup.png,
+    type: komite, text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 6
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Bedkom,
-    description: '', parent: 3, logo: abakus_bedkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/"]',
-    lft: 7, rght: 8, tree_id: 2, level: 2}
+  fields: {deleted: false, name: Bedkom, description: '', parent: 3, logo: abakus_bedkom.png,
+    type: komite, text: '', permissions: '["/sudo/admin/companyinterest/"]', lft: 7,
+    rght: 8, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 7
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Fagkom,
-    description: '', parent: 3, logo: abakus_fagkom.png, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/"]',
-    lft: 9, rght: 10, tree_id: 2, level: 2}
+  fields: {deleted: false, name: Fagkom, description: '', parent: 3, logo: abakus_fagkom.png,
+    type: komite, text: '', permissions: '["/sudo/admin/companyinterest/"]', lft: 9,
+    rght: 10, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 8
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Koskom,
-    description: '', parent: 3, logo: abakus_koskom.png, type: komite, text: '', permissions: '[]',
-    lft: 11, rght: 12, tree_id: 2, level: 2}
+  fields: {deleted: false, name: Koskom, description: '', parent: 3, logo: abakus_koskom.png,
+    type: komite, text: '', permissions: '[]', lft: 11, rght: 12, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 9
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: LaBamba,
-    description: '', parent: 3, logo: abakus_labamba.png, type: komite, text: '',
-    permissions: '[]', lft: 13, rght: 14, tree_id: 2, level: 2}
+  fields: {deleted: false, name: LaBamba, description: '', parent: 3, logo: abakus_labamba.png,
+    type: komite, text: '', permissions: '[]', lft: 13, rght: 14, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 10
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: PR,
-    description: '', parent: 3, logo: abakus_pr.png, type: komite, text: '', permissions: '[]',
-    lft: 15, rght: 16, tree_id: 2, level: 2}
+  fields: {deleted: false, name: PR, description: '', parent: 3, logo: abakus_pr.png,
+    type: komite, text: '', permissions: '[]', lft: 15, rght: 16, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 11
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: readme,
-    description: '', parent: 3, logo: abakus_readme.png, type: komite, text: '', permissions: '[]',
-    lft: 17, rght: 18, tree_id: 2, level: 2}
+  fields: {deleted: false, name: readme, description: '', parent: 3, logo: abakus_readme.png,
+    type: komite, text: '', permissions: '[]', lft: 17, rght: 18, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 12
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Webkom,
-    description: '', parent: 3, logo: abakus_webkom.png, type: komite, text: hei,
-    permissions: '["/sudo/"]', lft: 19, rght: 20, tree_id: 2, level: 2}
+  fields: {deleted: false, name: Webkom, description: '', parent: 3, logo: abakus_webkom.png,
+    type: komite, text: hei, permissions: '["/sudo/"]', lft: 19, rght: 20, tree_id: 2,
+    level: 2}
 - model: users.abakusgroup
   pk: 13
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Hovedstyret,
-    description: '', parent: 3, logo: abakus_hs.png, type: annen, text: '', permissions: '["/sudo/admin/"]',
-    lft: 21, rght: 22, tree_id: 2, level: 2}
+  fields: {deleted: false, name: Hovedstyret, description: '', parent: 3, logo: abakus_hs.png,
+    type: annen, text: '', permissions: '["/sudo/admin/"]', lft: 21, rght: 22, tree_id: 2,
+    level: 2}
 - model: users.abakusgroup
   pk: 14
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Interessegrupper,
-    description: Super-gruppe for alle interessegrupper i Abakus, parent: 2, logo: null,
-    type: annen, text: '', permissions: '[]', lft: 24, rght: 25, tree_id: 2, level: 1}
+  fields: {deleted: false, name: Interessegrupper, description: Super-gruppe for alle
+      interessegrupper i Abakus, parent: 2, logo: null, type: annen, text: '', permissions: '[]',
+    lft: 24, rght: 25, tree_id: 2, level: 1}
 - model: users.abakusgroup
   pk: 15
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Students,
-    description: '', parent: null, logo: null, type: annen, text: '', permissions: '[]',
-    lft: 1, rght: 26, tree_id: 3, level: 0}
+  fields: {deleted: false, name: Students, description: '', parent: null, logo: null,
+    type: annen, text: '', permissions: '[]', lft: 1, rght: 26, tree_id: 3, level: 0}
 - model: users.abakusgroup
   pk: 16
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Datateknologi,
-    description: '', parent: 15, logo: null, type: annen, text: '', permissions: '[]',
-    lft: 2, rght: 13, tree_id: 3, level: 1}
+  fields: {deleted: false, name: Datateknologi, description: '', parent: 15, logo: null,
+    type: annen, text: '', permissions: '[]', lft: 2, rght: 13, tree_id: 3, level: 1}
 - model: users.abakusgroup
   pk: 17
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 1.
-      klasse Datateknologi, description: '', parent: 16, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 1. klasse Datateknologi, description: '', parent: 16,
+    logo: null, type: klasse, text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 3,
+    level: 2}
 - model: users.abakusgroup
   pk: 18
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 2.
-      klasse Datateknologi, description: '', parent: 16, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 2. klasse Datateknologi, description: '', parent: 16,
+    logo: null, type: klasse, text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 3,
+    level: 2}
 - model: users.abakusgroup
   pk: 19
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 3.
-      klasse Datateknologi, description: '', parent: 16, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 7, rght: 8, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 3. klasse Datateknologi, description: '', parent: 16,
+    logo: null, type: klasse, text: '', permissions: '[]', lft: 7, rght: 8, tree_id: 3,
+    level: 2}
 - model: users.abakusgroup
   pk: 20
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 4.
-      klasse Datateknologi, description: '', parent: 16, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 9, rght: 10, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 4. klasse Datateknologi, description: '', parent: 16,
+    logo: null, type: klasse, text: '', permissions: '[]', lft: 9, rght: 10, tree_id: 3,
+    level: 2}
 - model: users.abakusgroup
   pk: 21
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 5.
-      klasse Datateknologi, description: '', parent: 16, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 11, rght: 12, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 5. klasse Datateknologi, description: '', parent: 16,
+    logo: null, type: klasse, text: '', permissions: '[]', lft: 11, rght: 12, tree_id: 3,
+    level: 2}
 - model: users.abakusgroup
   pk: 22
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: Kommunikasjonsteknologi,
-    description: '', parent: 15, logo: null, type: annen, text: '', permissions: '[]',
-    lft: 14, rght: 25, tree_id: 3, level: 1}
+  fields: {deleted: false, name: Kommunikasjonsteknologi, description: '', parent: 15,
+    logo: null, type: annen, text: '', permissions: '[]', lft: 14, rght: 25, tree_id: 3,
+    level: 1}
 - model: users.abakusgroup
   pk: 23
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 1.
-      klasse Kommunikasjonsteknologi, description: '', parent: 22, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 15, rght: 16, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 1. klasse Kommunikasjonsteknologi, description: '',
+    parent: 22, logo: null, type: klasse, text: '', permissions: '[]', lft: 15, rght: 16,
+    tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 24
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 2.
-      klasse Kommunikasjonsteknologi, description: '', parent: 22, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 17, rght: 18, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 2. klasse Kommunikasjonsteknologi, description: '',
+    parent: 22, logo: null, type: klasse, text: '', permissions: '[]', lft: 17, rght: 18,
+    tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 25
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 3.
-      klasse Kommunikasjonsteknologi, description: '', parent: 22, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 19, rght: 20, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 3. klasse Kommunikasjonsteknologi, description: '',
+    parent: 22, logo: null, type: klasse, text: '', permissions: '[]', lft: 19, rght: 20,
+    tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 26
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 4.
-      klasse Kommunikasjonsteknologi, description: '', parent: 22, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 21, rght: 22, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 4. klasse Kommunikasjonsteknologi, description: '',
+    parent: 22, logo: null, type: klasse, text: '', permissions: '[]', lft: 21, rght: 22,
+    tree_id: 3, level: 2}
 - model: users.abakusgroup
   pk: 27
-  fields: {deleted: false, internal_email: null, internal_email_enabled: true, name: 5.
-      klasse Kommunikasjonsteknologi, description: '', parent: 22, logo: null, type: klasse,
-    text: '', permissions: '[]', lft: 23, rght: 24, tree_id: 3, level: 2}
+  fields: {deleted: false, name: 5. klasse Kommunikasjonsteknologi, description: '',
+    parent: 22, logo: null, type: klasse, text: '', permissions: '[]', lft: 23, rght: 24,
+    tree_id: 3, level: 2}

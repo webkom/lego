@@ -11,11 +11,11 @@ class EmailAddressTestCase(TestCase):
 
     def test_create_duplicate(self):
         """Only one instance of the address is allowed."""
-        self.assertRaises(IntegrityError, EmailAddress.objects.create, email='test')
+        self.assertRaises(IntegrityError, EmailAddress.objects.create, email='address')
 
     def test_is_assigned_when_used_by_list(self):
         """The is_Assigned function returns True when the address is used by an EmailList."""
-        address = EmailAddress.objects.get(email='test')
+        address = EmailAddress.objects.get(email='address')
         self.assertTrue(address.is_assigned())
 
         list = EmailList.objects.get(id=1)
@@ -23,20 +23,20 @@ class EmailAddressTestCase(TestCase):
 
     def test_is_assigned_when_not_used(self):
         """is_assigned returns False when the address is'nt used."""
-        address = EmailAddress.objects.get(email='test1')
+        address = EmailAddress.objects.get(email='address1')
         self.assertFalse(address.is_assigned())
 
 
 class EmailListTestCase(TestCase):
 
     fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml',
-                'test_users.yaml', 'test_email_addresses.yaml', 'test_email_lists.yaml']
+                'test_email_addresses.yaml', 'test_users.yaml', 'test_email_lists.yaml']
 
     def test_email_address(self):
         """email_address should return the full address."""
         list = EmailList.objects.get(id=1)
 
-        self.assertEqual('test@abakus.no', list.email_address)
+        self.assertEqual('address@abakus.no', list.email_address)
 
     def test_members(self):
         """The members function returns a list of user emails"""

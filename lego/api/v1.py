@@ -6,7 +6,7 @@ from lego.apps.companies.views import (AdminCompanyViewSet, CompanyContactViewSe
                                        CompanyFilesViewSet, CompanyInterestViewSet, CompanyViewSet,
                                        SemesterStatusViewSet, SemesterViewSet)
 from lego.apps.contact.views import ContactFormViewSet
-from lego.apps.email.views import AbakusGroupEmailViewSet, EmailListViewSet, UserEmailViewSet
+from lego.apps.email.views import EmailListViewSet, UserEmailViewSet
 from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet
 from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet,
@@ -120,7 +120,6 @@ router.register(r'galleries/(?P<gallery_pk>\d+)/pictures', GalleryPictureViewSet
 router.register(r'announcements', AnnouncementViewSet, base_name='announcements')
 router.register(r'email-lists', EmailListViewSet, base_name='email-lists')
 router.register(r'email-users', UserEmailViewSet, base_name='email-users')
-router.register(r'email-groups', AbakusGroupEmailViewSet, base_name='email-groups')
 router.register(r'contact-form', ContactFormViewSet, base_name='contact-form')
 router.register(r'site-meta', SiteMetaViewSet, base_name='site-meta')
 router.register(r'frontpage', FrontpageViewSet, base_name='frontpage')
