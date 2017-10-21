@@ -13,7 +13,6 @@
       - admin
     abakus_group:
       - Webkom
-    start_date: 1990-01-01
 
 - model: users.User
   pk: 2
@@ -30,7 +29,6 @@
       - admin
     abakus_group:
       - Abakus
-    start_date: 1990-01-01
 
 - model: users.User
   pk: 3
@@ -46,7 +44,6 @@
     user:
       - admin
     abakus_group: 1
-    start_date: 1990-01-01
 
 - model: events.Event
   pk: 1

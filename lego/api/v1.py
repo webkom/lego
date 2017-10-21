@@ -29,6 +29,7 @@ from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
+from lego.apps.users.views.membership_history import MembershipHistoryViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.password_change import ChangePasswordViewSet
 from lego.apps.users.views.password_reset import (PasswordResetPerformViewSet,
@@ -124,3 +125,4 @@ router.register(r'contact-form', ContactFormViewSet, base_name='contact-form')
 router.register(r'site-meta', SiteMetaViewSet, base_name='site-meta')
 router.register(r'frontpage', FrontpageViewSet, base_name='frontpage')
 router.register(r'bdb', AdminCompanyViewSet, base_name='bdb')
+router.register(r'membership-history', MembershipHistoryViewSet, base_name='membership-history')
