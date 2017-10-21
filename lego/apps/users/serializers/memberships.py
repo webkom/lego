@@ -15,9 +15,9 @@ class MembershipSerializer(serializers.ModelSerializer):
             'abakus_group',
             'role',
             'is_active',
-            'start_date',
-            'end_date',
+            'created_at',
         )
+        read_only_fields = ('created_at', 'abakus_group', )
 
     def validate(self, attrs):
         group = AbakusGroup.objects.get(pk=self.context['view'].kwargs['group_pk'])
