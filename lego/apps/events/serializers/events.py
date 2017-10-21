@@ -43,7 +43,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'event_type',
                   'location', 'start_time', 'thumbnail', 'total_capacity',
-                  'company', 'registration_count', 'tags', 'pinned')
+                  'company', 'registration_count', 'tags')
         read_only = True
 
 
@@ -151,6 +151,6 @@ class EventSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
-                  'location', 'start_time', 'thumbnail', 'end_time',
-                  'total_capacity', 'company', 'registration_count', 'tags')
+                  'location', 'start_time', 'thumbnail', 'end_time', 'total_capacity',
+                  'company', 'registration_count', 'tags', 'pinned')
         read_only = True
