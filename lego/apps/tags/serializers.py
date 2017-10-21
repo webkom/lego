@@ -1,9 +1,9 @@
-from django.core.validators import validate_slug
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from lego.apps.tags.models import Tag
+from lego.apps.tags.validators import validate_tag
 
 
 class TagSerializer(ModelSerializer):
@@ -20,7 +20,7 @@ class TagSerializer(ModelSerializer):
 
     def get_validators(self):
         validators = super().get_validators()
-        validators.append(validate_slug)
+        validators.append(validate_tag)
         return validators
 
 
