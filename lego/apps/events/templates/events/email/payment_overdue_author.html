@@ -1,0 +1,43 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-bad">
+            Følgende har ikke betalt for arrangementet {{ event.title }}
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Her er en liste over de som ikke har betalt for {{ event }}:
+            <ul>
+            {% for user in users %}
+                <li>
+                {{ user.name }} med epost: <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+            Vennligst følg dette opp, og marker disse med betalt manuelt om dette er i orden
+
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+          <a href="{{ frontend_url }}/events/{{ id }}/administrate" class="btn-primary" itemprop="url">Administrer Arrangement</a>
+        </td>
+    </tr>
+
+
+{% endblock %}

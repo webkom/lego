@@ -10,6 +10,7 @@ from lego import celery_app
 from lego.apps.events import constants
 from lego.apps.events.exceptions import EventHasClosed, PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
+from lego.apps.events.notifications import EventPaymentOverdueCreatorNotification
 from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
                                          notify_user_registration)
@@ -215,12 +216,36 @@ def bump_waiting_users_to_new_pool():
 def notify_user_when_payment_overdue():
     time = timezone.now()
     events = Event.objects.filter(
-        payment_due_date__range=(time - timedelta(days=7), time), is_priced=True
+        payment_due_date__range=(time - timedelta(days=7), time), is_priced=True, use_stripe=True
     ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
         for registration in event.registrations.all():
             if registration.should_notify(time):
                 get_handler(Registration).handle_payment_overdue(registration)
+
+
+@celery_app.task(serializer='json')
+def notify_event_creator_when_payment_overdue():
+    time = timezone.now()
+    events = Event.objects.filter(
+        payment_due_date__lte=time, is_priced=True, use_stripe=True,
+        end_time__gte=time
+    ).exclude(registrations=None).prefetch_related('registrations')
+    for event in events:
+        registrations_due = Registration.objects.filter(
+            event=event, charge_id=None, charge_status=None
+        ).prefetch_related('user')
+        if registrations_due:
+            users = [
+                {
+                    'name': registration.user.get_full_name(),
+                    'email': registration.user.email
+                } for registration in registrations_due
+            ]
+            notification = EventPaymentOverdueCreatorNotification(
+                event.created_by, event=event, users=users
+            )
+            notification.notify()
 
 
 @celery_app.task(serializer='json')
