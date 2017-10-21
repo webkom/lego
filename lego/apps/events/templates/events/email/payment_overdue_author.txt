@@ -1,0 +1,17 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+Her er en liste over de som ikke har betalt for {{ event }}:
+
+{% for user in users %}
+{{ user.name }} med epost: {{ user.email }}
+{% endfor %}
+
+Vennligst følg dette opp, og marker disse med betalt manuelt om dette er i orden
+
+Administrer Arrangementet på {{ frontend_url }}/events/{{ id }}/administrate
+
+{% endblock %}

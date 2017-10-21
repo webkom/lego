@@ -13,6 +13,7 @@ WEEKLY_MAIL = 'weekly_mail'
 EVENT_BUMP = 'event_bump'
 EVENT_ADMIN_REGISTRATION = 'event_admin_registration'
 EVENT_PAYMENT_OVERDUE = 'event_payment_overdue'
+EVENT_PAYMENT_OVERDUE_CREATOR = 'event_payment_overdue_creator'
 
 # Meeting
 MEETING_INVITE = 'meeting_invite'
@@ -38,6 +39,7 @@ NOTIFICATION_TYPES = [
     EVENT_BUMP,
     EVENT_ADMIN_REGISTRATION,
     EVENT_PAYMENT_OVERDUE,
+    EVENT_PAYMENT_OVERDUE_CREATOR,
     MEETING_INVITE,
     PENALTY_CREATION,
     RESTRICTED_MAIL_SENT,

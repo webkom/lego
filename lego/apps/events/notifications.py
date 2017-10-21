@@ -1,5 +1,5 @@
 from lego.apps.notifications.constants import (EVENT_ADMIN_REGISTRATION, EVENT_BUMP,
-                                               EVENT_PAYMENT_OVERDUE)
+                                               EVENT_PAYMENT_OVERDUE, EVENT_PAYMENT_OVERDUE_CREATOR)
 from lego.apps.notifications.notification import Notification
 
 
@@ -46,7 +46,7 @@ class EventPaymentOverdueNotification(Notification):
             context={
                 'event': event.title,
                 'name': self.user.full_name,
-                'slug': event.slug,
+                'id': event.id,
             },
             subject=f'Du har ikke betalt påmeldingen på arrangementet {event.title}',
             plain_template='events/email/payment_overdue.txt',
@@ -62,6 +62,29 @@ class EventPaymentOverdueNotification(Notification):
                 'event': event.title,
             },
             instance=event
+        )
+
+
+class EventPaymentOverdueCreatorNotification(Notification):
+
+    name = EVENT_PAYMENT_OVERDUE_CREATOR
+
+    def generate_mail(self):
+        event = self.kwargs['event']
+        users = self.kwargs['users']
+
+        return self._delay_mail(
+            to_email=self.user.email,
+            context={
+                'event': event.title,
+                'users': users,
+                'name': self.user.full_name,
+                'id': event.id,
+            },
+            subject=f'Følgende registrerte har ikke betalt påmeldingen til arrangementet'
+                    f' {event.title}',
+            plain_template='events/email/payment_overdue_author.txt',
+            html_template='events/email/payment_overdue_author.html',
         )
 
 
