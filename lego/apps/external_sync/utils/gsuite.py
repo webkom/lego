@@ -181,4 +181,10 @@ class GSuiteLib:
             raise
 
     def delete_membership(self, group_key, user_key):
-        return self.client.members().delete(groupKey=group_key, memberKey=user_key).execute()
+        try:
+            return self.client.members().delete(groupKey=group_key, memberKey=user_key).execute()
+        except HttpError as e:
+            if e.resp.status == 404:
+                # OK, does not exists anyway
+                return
+            raise
