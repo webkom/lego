@@ -5,7 +5,6 @@
       - webkom
     abakus_group:
       - Users
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 2
@@ -14,7 +13,6 @@
       - webkom
     abakus_group:
       - Abakus
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 3
@@ -23,7 +21,7 @@
       - webkom
     abakus_group:
       - Webkom
-    start_date: 1994-01-01
+
 - model: users.Membership
   pk: 4
   fields:
@@ -31,7 +29,6 @@
       - bedkom
     abakus_group:
       - Users
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 5
@@ -40,7 +37,6 @@
       - bedkom
     abakus_group:
       - Abakus
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 6
@@ -49,7 +45,6 @@
       - bedkom
     abakus_group:
       - Bedkom
-    start_date: 1994-01-01
 
 
 - model: users.Membership
@@ -59,7 +54,6 @@
       - hansanf
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 8
@@ -68,7 +62,6 @@
       - hoiby
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 9
@@ -77,7 +70,6 @@
       - torborgs
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 10
@@ -86,7 +78,6 @@
       - einerkja
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 11
@@ -95,7 +86,7 @@
       - runeblek
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
+
 - model: users.Membership
   pk: 14
   fields:
@@ -103,7 +94,6 @@
       - test1
     abakus_group:
       - Users
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 14
@@ -112,7 +102,7 @@
       - test1
     abakus_group:
       - Abakus
-    start_date: 1994-01-01
+
 - model: users.Membership
   pk: 15
   fields:
@@ -121,7 +111,6 @@
     role: leader
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 16
@@ -130,7 +119,6 @@
       - stalepe
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 17
@@ -139,7 +127,6 @@
       - andenor
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 
 - model: users.Membership
@@ -149,7 +136,6 @@
       - fredriry
     abakus_group:
       - Hovedstyret
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 19
@@ -158,7 +144,6 @@
       - hansanf
     abakus_group:
       - 1. klasse Datateknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 20
@@ -167,7 +152,6 @@
       - hoiby
     abakus_group:
       - 2. klasse Datateknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 21
@@ -176,7 +160,6 @@
       - torborgs
     abakus_group:
       - 3. klasse Datateknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 22
@@ -185,7 +168,6 @@
       - einerkja
     abakus_group:
       - 4. klasse Datateknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 23
@@ -194,7 +176,6 @@
       - runeblek
     abakus_group:
       - 5. klasse Datateknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 24
@@ -204,7 +185,6 @@
     role: leader
     abakus_group:
       - 1. klasse Kommunikasjonsteknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 25
@@ -214,7 +194,6 @@
     role: leader
     abakus_group:
       - 2. klasse Kommunikasjonsteknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 26
@@ -223,7 +202,6 @@
       - test1
     abakus_group:
       - 3. klasse Kommunikasjonsteknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 27
@@ -232,7 +210,6 @@
       - test1
     abakus_group:
       - 4. klasse Kommunikasjonsteknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 28
@@ -241,7 +218,6 @@
       - perkrifj
     abakus_group:
       - 5. klasse Kommunikasjonsteknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 29
@@ -250,7 +226,6 @@
       - stalepe
     abakus_group:
       - 1. klasse Datateknologi
-    start_date: 1994-01-01
 
 - model: users.Membership
   pk: 30
@@ -259,7 +234,6 @@
       - andenor
     abakus_group:
       - 2. klasse Datateknologi
-    start_date: 1994-01-01
 
 
 - model: users.Membership
@@ -269,4 +243,3 @@
       - fredriry
     abakus_group:
       - 3. klasse Datateknologi
-    start_date: 1994-01-01

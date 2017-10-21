@@ -4,8 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
-from django.db.models import Q
+from django.db import models, transaction
 from django.utils import timezone
 from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
@@ -25,6 +24,14 @@ from lego.utils.validators import ReservedNameValidator
 from .validators import email_blacklist_validator, student_username_validator, username_validator
 
 
+class MembershipHistory(models.Model):
+    user = models.ForeignKey('users.User')
+    abakus_group = models.ForeignKey('users.AbakusGroup')
+    role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField()
+
+
 class Membership(BasisModel):
     objects = MembershipManager()
 
@@ -34,15 +41,20 @@ class Membership(BasisModel):
     role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True, db_index=True)
 
-    start_date = models.DateField(auto_now_add=True, blank=True, db_index=True)
-    end_date = models.DateField(null=True, blank=True, db_index=True)
-
     class Meta:
         unique_together = ('user', 'abakus_group')
         permission_handler = MembershipPermissionHandler()
 
     def delete(self, using=None, force=False):
-        super(Membership, self).delete(using=using, force=True)
+        with transaction.atomic():
+            MembershipHistory.objects.create(
+                user=self.user,
+                abakus_group=self.abakus_group,
+                role=self.role,
+                start_date=self.created_at,
+                end_date=timezone.now()
+            )
+            super(Membership, self).delete(using=using, force=True)
 
     def __str__(self):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
@@ -92,8 +104,6 @@ class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
     def memberships(self):
         descendants = self.get_descendants(True)
         return Membership.objects.filter(
-            Q(start_date=None) | Q(start_date__lte=timezone.now()),
-            Q(end_date=None) | Q(end_date__gte=timezone.now(), ),
             deleted=False,
             is_active=True,
             user__abakus_groups__in=descendants,
@@ -168,8 +178,6 @@ class PermissionsMixin(models.Model):
     @cached_property
     def memberships(self):
         return Membership.objects.filter(
-            Q(start_date=None) | Q(start_date__lte=timezone.now()),
-            Q(end_date=None) | Q(end_date__gte=timezone.now(), ),
             deleted=False,
             is_active=True,
             user=self,
@@ -180,8 +188,6 @@ class PermissionsMixin(models.Model):
         groups = set()
 
         memberships = self.memberships.filter(
-            Q(start_date=None) | Q(start_date__lte=timezone.now()),
-            Q(end_date=None) | Q(end_date__gte=timezone.now(),),
             deleted=False,
             is_active=True,
         ).select_related('abakus_group')
