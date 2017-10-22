@@ -2,9 +2,11 @@
 
 > LEGO Er Ganske Oppdelt
 
-We use GitHub issues and project boards for simple project management.
+LEGO is the backend for [abakus.no](https://abakus.no) - the frontend is located at
+[webkom/lego-webapp](https://github.com/webkom/lego-webapp).
+Documentation is located at [lego.abakus.no](https://lego.abakus.no]). We also have a [beginner's guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide).
 
-Documentation is located inside the docs/ folder in this repository. We also have a [Noob guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide)
+We use GitHub issues and project boards for simple project management.
 
 ## Getting started
 
@@ -51,25 +53,20 @@ foo = long_function_name(
 )
 ```
 
-No. Just don't. Please.
-
-- Kenneth Reitz - Creator of the Requests project
-
 ## Deployment
 
 Lego runs in Kubernetes and deploys are managed by Drone and Spinnaker.
-  
+
 How to deploy:
 1. Make sure the changes is pushed to master and the test passes.
 2. Have you added some new settings in `settings/`? If so make sure the Spinnaker deployment reflects these changes.
-3. We run migrations automatically, make sure they work! 
+3. We run migrations automatically, make sure they work!
 4. Push to the `prod` branch. From master: `git push origin master:prod`
 
-Spinnaker now starts the deployment. This takes some time, tests must pass and we have to build a 
+Spinnaker now starts the deployment. This takes some time, tests must pass and we have to build a
 docker image.
 
 ## Tools
 
 We recommend Pycharm for development, use your @stud.ntnu.no email to register a free professional
 account.
-
