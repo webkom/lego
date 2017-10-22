@@ -1,0 +1,438 @@
+- model: users.User
+  pk: 1
+  fields:
+    username: test1
+    student_username: test1student
+    password: pbkdf2_sha256$24000$zowF0cRkFimt$qzeoY9hZ0X3zDhlG0FP8imaGto8S2N6ed1AMp83xcn4= # test
+    gender: male
+    first_name: test
+    last_name: user1
+    email: test1@user.com
+    crypt_password_hash: '$6$akKj2oBqaAp/2T5.$m73QJBWs0TiBMHTX3PSs/xhde0YKkr4PnKocXAo.T6SGz/qwhiPh0Gdo.2DTiYnNhyIifv7Fe.cTaVachdgrm.' # webkom
+- model: users.User
+  pk: 2
+  fields:
+    username: test2
+    gender: male
+    first_name: test
+    last_name: user2
+    email: test2@user.com
+- model: users.User
+  pk: 3
+  fields:
+    username: webkom
+    first_name: webkom
+    gender: male
+    picture: 'default_other_avatar.png'
+    last_name: webkom
+    email: webkom@abakus.no
+    password: pbkdf2_sha256$12000$H0aWD4yl0CVd$b0S/vVYcRRGqXygh1390tc9eyKBMyIgcp3SAbkxIBb0= # webkom
+- model: users.User
+  pk: 4
+  fields:
+    username: bedkom
+    first_name: bedkom
+    picture: default_female_avatar.png
+    last_name: bedkom
+    email: bedkom@abakus.no
+    password: pbkdf2_sha256$30000$LRjfuW81G3u9$8lEi6kbgZ3ai/dBicdWi/wO1wZU93rT10WaF1vekEMs= # bedkom
+- fields:
+    email: jburke186@ekrubnylcaj.com
+    first_name: Jaclyn
+    gender: female
+    last_name: Burke
+    username: jaclynburke
+  model: users.User
+  pk: 5
+- fields:
+    email: jbauer81@reuabrefinnej.net
+    first_name: Jennifer
+    gender: female
+    last_name: Bauer
+    username: jenniferbauer
+  model: users.User
+  pk: 6
+- fields:
+    email: cholmes676@semlohenirehtac.org
+    first_name: Catherine
+    gender: female
+    last_name: Holmes
+    username: catherineholmes
+  model: users.User
+  pk: 7
+- fields:
+    email: mvega101@agevairam.org
+    first_name: Maria
+    gender: female
+    last_name: Vega
+    username: mariavega
+  model: users.User
+  pk: 8
+- fields:
+    email: ebyrd258@drybamme.biz
+    first_name: Emma
+    gender: female
+    last_name: Byrd
+    username: emmabyrd
+  model: users.User
+  pk: 9
+- fields:
+    email: mfrazier478@reizarfnagrom.org
+    first_name: Morgan
+    gender: female
+    last_name: Frazier
+    username: morganfrazier
+  model: users.User
+  pk: 10
+- fields:
+    email: kstevenson840@nosnevetseilyk.net
+    first_name: Kylie
+    gender: female
+    last_name: Stevenson
+    username: kyliestevenson
+  model: users.User
+  pk: 11
+- fields:
+    email: brojas2@sajordranreb.net
+    first_name: Bernard
+    gender: male
+    last_name: Rojas
+    username: bernardrojas
+  model: users.User
+  pk: 12
+- fields:
+    email: ilittle309@elttileneri.biz
+    first_name: Irene
+    gender: female
+    last_name: Little
+    username: irenelittle
+  model: users.User
+  pk: 13
+- fields:
+    email: tperkins648@snikreprelyat.com
+    first_name: Tayler
+    gender: female
+    last_name: Perkins
+    username: taylerperkins
+  model: users.User
+  pk: 14
+- fields:
+    email: bjennings710@sgninnejyenttirb.biz
+    first_name: Brittney
+    gender: female
+    last_name: Jennings
+    username: brittneyjennings
+  model: users.User
+  pk: 15
+- fields:
+    email: khayes951@seyahanirak.org
+    first_name: Karina
+    gender: female
+    last_name: Hayes
+    username: karinahayes
+  model: users.User
+  pk: 16
+- fields:
+    email: bparker884@rekrapinattirb.org
+    first_name: Brittani
+    gender: female
+    last_name: Parker
+    username: brittaniparker
+  model: users.User
+  pk: 17
+- fields:
+    email: cross994@ssoraidualc.net
+    first_name: Claudia
+    gender: female
+    last_name: Ross
+    username: claudiaross
+  model: users.User
+  pk: 18
+- fields:
+    email: brobles855@selbornednarb.com
+    first_name: Branden
+    gender: male
+    last_name: Robles
+    username: brandenrobles
+  model: users.User
+  pk: 19
+- fields:
+    email: tmarsh14@hsramyrret.org
+    first_name: Terry
+    gender: male
+    last_name: Marsh
+    username: terrymarsh
+  model: users.User
+  pk: 20
+- fields:
+    email: rcarlson64@noslracdlanor.com
+    first_name: Ronald
+    gender: male
+    last_name: Carlson
+    username: ronaldcarlson
+  model: users.User
+  pk: 21
+- fields:
+    email: vpearson622@nosraepacinorev.com
+    first_name: Veronica
+    gender: female
+    last_name: Pearson
+    username: veronicapearson
+  model: users.User
+  pk: 22
+- fields:
+    email: rstevenson445@nosnevetsykcir.biz
+    first_name: Ricky
+    gender: male
+    last_name: Stevenson
+    username: rickystevenson
+  model: users.User
+  pk: 23
+- fields:
+    email: egoodman920@namdoogeelime.biz
+    first_name: Emilee
+    gender: female
+    last_name: Goodman
+    username: emileegoodman
+  model: users.User
+  pk: 24
+- fields:
+    email: dbowers753@srewobsivad.net
+    first_name: Davis
+    gender: male
+    last_name: Bowers
+    username: davisbowers
+  model: users.User
+  pk: 25
+- fields:
+    email: tdennis483@sinnednyrat.biz
+    first_name: Taryn
+    gender: female
+    last_name: Dennis
+    username: taryndennis
+  model: users.User
+  pk: 26
+- fields:
+    email: dwong107@gnowyenaled.com
+    first_name: Delaney
+    gender: female
+    last_name: Wong
+    username: delaneywong
+  model: users.User
+  pk: 27
+- fields:
+    email: lcollins219@snillocekul.com
+    first_name: Luke
+    gender: male
+    last_name: Collins
+    username: lukecollins
+  model: users.User
+  pk: 28
+- fields:
+    email: rlong612@gnolleahcar.org
+    first_name: Rachael
+    gender: female
+    last_name: Long
+    username: rachaellong
+  model: users.User
+  pk: 29
+- fields:
+    email: tmack271@kcamsamoht.biz
+    first_name: Thomas
+    gender: male
+    last_name: Mack
+    username: thomasmack
+  model: users.User
+  pk: 30
+- fields:
+    email: erose784@esorniwde.org
+    first_name: Edwin
+    gender: male
+    last_name: Rose
+    username: edwinrose
+  model: users.User
+  pk: 31
+- fields:
+    email: mavila720@alivayram.net
+    first_name: Mary
+    gender: female
+    last_name: Avila
+    username: maryavila
+  model: users.User
+  pk: 32
+- fields:
+    email: jmoss585@ssomderraj.com
+    first_name: Jarred
+    gender: male
+    last_name: Moss
+    username: jarredmoss
+  model: users.User
+  pk: 33
+- fields:
+    email: hfoster229@retsofnedyah.org
+    first_name: Hayden
+    gender: male
+    last_name: Foster
+    username: haydenfoster
+  model: users.User
+  pk: 34
+- fields:
+    email: vnewman799@namwenairelav.org
+    first_name: Valeria
+    gender: female
+    last_name: Newman
+    username: valerianewman
+  model: users.User
+  pk: 35
+- fields:
+    email: dwang845@gnawekard.net
+    first_name: Drake
+    gender: male
+    last_name: Wang
+    username: drakewang
+  model: users.User
+  pk: 36
+- fields:
+    email: kstevenson473@nosnevetsnetsrik.net
+    first_name: Kirsten
+    gender: female
+    last_name: Stevenson
+    username: kirstenstevenson
+  model: users.User
+  pk: 37
+- fields:
+    email: swagner720@rengawharas.com
+    first_name: Sarah
+    gender: female
+    last_name: Wagner
+    username: sarahwagner
+  model: users.User
+  pk: 38
+- fields:
+    email: slang554@gnalevets.org
+    first_name: Steve
+    gender: male
+    last_name: Lang
+    username: stevelang
+  model: users.User
+  pk: 39
+- fields:
+    email: qrios117@soirnniuq.net
+    first_name: Quinn
+    gender: male
+    last_name: Rios
+    username: quinnrios
+  model: users.User
+  pk: 40
+- fields:
+    email: krobles882@selborydok.biz
+    first_name: Kody
+    gender: male
+    last_name: Robles
+    username: kodyrobles
+  model: users.User
+  pk: 41
+- fields:
+    email: slawrence170@ecnerwalnasus.org
+    first_name: Susan
+    gender: female
+    last_name: Lawrence
+    username: susanlawrence
+  model: users.User
+  pk: 42
+- fields:
+    email: dwalsh416@hslawatokad.com
+    first_name: Dakota
+    gender: female
+    last_name: Walsh
+    username: dakotawalsh
+  model: users.User
+  pk: 43
+- fields:
+    email: kingram438@margnieillek.com
+    first_name: Kellie
+    gender: female
+    last_name: Ingram
+    username: kellieingram
+  model: users.User
+  pk: 44
+- fields:
+    email: pchapman798@nampahcretep.biz
+    first_name: Peter
+    gender: male
+    last_name: Chapman
+    username: peterchapman
+  model: users.User
+  pk: 45
+- fields:
+    email: kholt213@tlohenirehtak.net
+    first_name: Katherine
+    gender: female
+    last_name: Holt
+    username: katherineholt
+  model: users.User
+  pk: 46
+- fields:
+    email: lrobertson696@nostreboraicitel.net
+    first_name: Leticia
+    gender: female
+    last_name: Robertson
+    username: leticiarobertson
+  model: users.User
+  pk: 47
+- fields:
+    email: cstephens348@snehpetsenitsirhc.com
+    first_name: Christine
+    gender: female
+    last_name: Stephens
+    username: christinestephens
+  model: users.User
+  pk: 48
+- fields:
+    email: jclark846@kralcnosaj.net
+    first_name: Jason
+    gender: male
+    last_name: Clark
+    username: jasonclark
+  model: users.User
+  pk: 49
+- fields:
+    email: pthomas668@samohtnotyap.net
+    first_name: Payton
+    gender: male
+    last_name: Thomas
+    username: paytonthomas
+  model: users.User
+  pk: 50
+- fields:
+    email: bjennings170@sgninnejekalb.org
+    first_name: Blake
+    gender: male
+    last_name: Jennings
+    username: blakejennings
+  model: users.User
+  pk: 51
+- fields:
+    email: ddavis444@sivadetnaved.com
+    first_name: Devante
+    gender: male
+    last_name: Davis
+    username: devantedavis
+  model: users.User
+  pk: 52
+- fields:
+    email: ejohnston827@notsnhojttoille.net
+    first_name: Elliott
+    gender: male
+    last_name: Johnston
+    username: elliottjohnston
+  model: users.User
+  pk: 53
+- fields:
+    email: qarmstrong191@gnortsmranotniuq.biz
+    first_name: Quinton
+    gender: male
+    last_name: Armstrong
+    username: quintonarmstrong
+  model: users.User
+  pk: 54

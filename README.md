@@ -4,7 +4,7 @@
 
 LEGO is the backend for [abakus.no](https://abakus.no) - the frontend is located at
 [webkom/lego-webapp](https://github.com/webkom/lego-webapp).
-Documentation is located at [lego.abakus.no](https://lego.abakus.no]). We also have a [beginner's guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide).
+Documentation is located at [lego.abakus.no](https://lego.abakus.no). We also have a [beginner's guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide).
 
 We use GitHub issues and project boards for simple project management.
 
