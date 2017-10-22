@@ -21,12 +21,13 @@
     <tr>
         <td class="content-block">
             Du har ikke betalt for {{ event }}.
+            Dersom du ikke betaler innen fristen {{ due_date|date:"j. M Y, H:i" }} vil du bli avmeldt arrangementet.
         </td>
     </tr>
 
     <tr>
         <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-          <a href="{{ frontend_url }}/events/{{ id }}" class="btn-primary" itemprop="url">Vis Arrangement</a>
+          <a href="{{ frontend_url }}/events/{{ id }}" class="btn-primary" itemprop="url">Betal her</a>
         </td>
     </tr>
 

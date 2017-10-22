@@ -4,7 +4,8 @@
 
 Hei {{ name }}!
 
-Du har ikke betalt for {{ event }}
+Du har ikke betalt for {{ event }}.
+Dersom du ikke betaler innen fristen {{ due_date|date:"j. M Y, H:i" }} vil du bli avmeldt arrangementet.
 
 Les mer på {{ frontend_url }}/events/{{ id }}
 
