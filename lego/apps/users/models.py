@@ -40,6 +40,7 @@ class Membership(BasisModel):
 
     role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True, db_index=True)
+    email_lists_enabled = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('user', 'abakus_group')
@@ -234,6 +235,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
             'unique': 'A user with that email already exists.',
         }
     )
+    email_lists_enabled = models.BooleanField(default=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(

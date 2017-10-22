@@ -15,6 +15,7 @@ class MembershipSerializer(serializers.ModelSerializer):
             'abakus_group',
             'role',
             'is_active',
+            'email_lists_enabled',
             'created_at',
         )
         read_only_fields = ('created_at', 'abakus_group', )

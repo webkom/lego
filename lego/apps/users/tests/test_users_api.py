@@ -375,7 +375,6 @@ class RetrieveSelfTestCase(APITestCase):
             'last_name',
             'full_name',
             'email',
-            'is_staff',
             'is_active',
             'penalties'
         )

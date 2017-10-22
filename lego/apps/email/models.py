@@ -65,16 +65,23 @@ class EmailList(models.Model):
         """
 
         members = []
-        users = self.users.all()
+        users = self.users.filter(email_lists_enabled=True)
         groups = self.groups.all()
 
         members += [user.email_address for user in users]
 
         for group in groups:
             if not self.group_roles:
-                memberships = group.memberships.all()
+                memberships = group.memberships.filter(
+                    email_lists_enabled=True,
+                    user__email_lists_enabled=True,
+                )
             else:
-                memberships = group.memberships.filter(role__in=self.group_roles)
+                memberships = group.memberships.filter(
+                    email_lists_enabled=True,
+                    user__email_lists_enabled=True,
+                    role__in=self.group_roles,
+                )
             members += [membership.user.email_address for membership in memberships]
 
-        return members
+        return list(set(members))
