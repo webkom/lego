@@ -33,7 +33,7 @@ def notify_event_registration(action_type, registration, **kwargs):
         'type': action_type,
         'payload': registration,
         'meta': kwargs
-    }, context={'user': registration.user})
+    })
     notify_group(group, serializer.data)
 
 

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from lego.apps.events.serializers.events import EventReadDetailedSerializer
 from lego.apps.events.serializers.registrations import (RegistrationPaymentReadSerializer,
-                                                        RegistrationReadSerializer)
+                                                        RegistrationPublicReadSerializer)
 
 
 class MetaSerializer(serializers.Serializer):
@@ -20,7 +20,7 @@ class WebsocketSerializer(serializers.Serializer):
 
 
 class RegistrationReadSocketSerializer(WebsocketSerializer):
-    payload = RegistrationReadSerializer()
+    payload = RegistrationPublicReadSerializer()
 
 
 class RegistrationPaymentReadSocketSerializer(WebsocketSerializer):

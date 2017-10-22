@@ -170,10 +170,13 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             feedback = serializer.data.get('feedback', '')
             if registration.event.feedback_required and not feedback:
                 raise ValidationError({'error': 'Feedback is required'})
+            registration.status = constants.PENDING_REGISTER
             registration.feedback = feedback
-            registration.save(update_fields=['feedback'])
+            registration.save(update_fields=['status', 'feedback'])
             transaction.on_commit(lambda: async_register.delay(registration.id))
-        registration_serializer = RegistrationReadSerializer(registration)
+        registration_serializer = RegistrationReadSerializer(
+            registration, context={'user': registration.user}
+        )
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def destroy(self, request, *args, **kwargs):
