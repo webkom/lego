@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 
 from lego.apps.email.models import EmailAddress, EmailList
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.fields import AbakusGroupListField, PublicUserField, PublicUserListField
+from lego.apps.users.models import User
 
 from .fields import EmailAddressField
 
@@ -14,6 +15,11 @@ class EmailListSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailList
         fields = ('id', 'name', 'email', 'users', 'groups', 'group_roles')
+
+
+class EmailListDetailSerializer(EmailListSerializer):
+    users = PublicUserListField({'read_only': True})
+    groups = AbakusGroupListField({'read_only': True})
 
 
 class EmailListCreateSerializer(EmailListSerializer):
@@ -49,19 +55,36 @@ class GSuiteAddressSerializer(serializers.ModelSerializer):
 
 class UserEmailSerializer(GSuiteAddressSerializer):
 
+    user = PublicUserField(read_only=True, source='*')
     internal_email = EmailAddressField(queryset=EmailAddress.objects.all(), validators=[])
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'internal_email', 'internal_email_enabled')
-        read_only_fields = ('id', 'username')
+        fields = ('id', 'user', 'internal_email', 'internal_email_enabled')
 
 
-class AbakusGroupEmailSerializer(GSuiteAddressSerializer):
+class UserEmailCreateSerializer(serializers.Serializer):
 
-    internal_email = EmailAddressField(queryset=EmailAddress.objects.all(), validators=[])
+    user = PublicUserField(queryset=User.objects.all())
+    internal_email = EmailAddressField(queryset=EmailAddress.objects.all())
+    internal_email_enabled = serializers.BooleanField()
 
-    class Meta:
-        model = AbakusGroup
-        fields = ('id', 'name', 'internal_email', 'internal_email_enabled')
-        read_only_fields = ('id', 'name')
+    def create(self, validated_data):
+        user = validated_data['user']
+        internal_email = validated_data['internal_email']
+        internal_email_enabled = validated_data['internal_email_enabled']
+
+        user.internal_email = internal_email
+        user.internal_email_enabled = internal_email_enabled
+        user.save()
+
+        return user
+
+    def to_representation(self, instance):
+        serializer = UserEmailSerializer(instance=instance)
+        return serializer.data
+
+    def validate_user(self, user):
+        if user.internal_email_id is not None:
+            raise exceptions.ValidationError('User already has a internal email.')
+        return user

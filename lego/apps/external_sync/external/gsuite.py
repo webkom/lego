@@ -1,11 +1,9 @@
 from django.conf import settings
-from django.db.models import Q
 from structlog import get_logger
 
 from lego.apps.email.models import EmailList
 from lego.apps.external_sync.base import ExternalSystem
 from lego.apps.external_sync.utils.gsuite import GSuiteLib
-from lego.apps.users.constants import GROUP_COMMITTEE
 
 log = get_logger()
 
@@ -39,11 +37,7 @@ class GSuiteSystem(ExternalSystem):
         """
         Sync groups in GSUITE_GROUPS and groups with internal_email.
         """
-        return queryset.filter(
-            Q(type=GROUP_COMMITTEE) | Q(name__in=settings.GSUITE_GROUPS)
-        ).filter(
-            internal_email__isnull=False, internal_email_enabled=True,
-        )
+        return queryset.none()
 
     def user_exists(self, user):
         return self.gsuite.user_exists(user.internal_email_address)
@@ -80,26 +74,15 @@ class GSuiteSystem(ExternalSystem):
             self.gsuite.delete_user(excess_user)
 
     def group_exists(self, group):
-        return self.gsuite.group_exists(group.internal_email_address)
+        return False
 
     def add_group(self, group):
-        self.gsuite.add_group(group.name, group.internal_email_address)
-        self.gsuite.set_memberships(
-            group.internal_email_address,
-            [membership.user.email_address for membership in group.memberships]
-        )
+        pass
 
     def update_group(self, group):
-        self.gsuite.update_group(group.internal_email_address, group.name)
-        self.gsuite.set_memberships(
-            group.internal_email_address,
-            [membership.user.email_address for membership in group.memberships]
-        )
+        pass
 
     def delete_excess_groups(self, groups):
-        """
-        Please delete groups manually.
-        """
         pass
 
     """

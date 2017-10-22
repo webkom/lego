@@ -102,3 +102,12 @@ class PublicEventField(serializers.PrimaryKeyRelatedField):
         from lego.apps.events.serializers.events import EventPublicSerializer
         serializer = EventPublicSerializer(instance=value)
         return serializer.data
+
+
+class PublicEventListField(serializers.ManyRelatedField):
+    def __init__(self, field_kwargs=None, **kwargs):
+        if field_kwargs is None:
+            field_kwargs = {}
+
+        kwargs['child_relation'] = PublicEventField(**field_kwargs)
+        super().__init__(**kwargs)
