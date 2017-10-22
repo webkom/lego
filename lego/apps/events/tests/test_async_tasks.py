@@ -456,17 +456,6 @@ class PaymentDueTestCase(TestCase):
         )
         mock_notification.assert_called_once()
 
-    def test_creator_notification_when_event_is_past_due_date_multiple_test(self):
-        """Test that email is sent when event is past due and multiple users has not paid"""
-
-        user = get_dummy_users(1)[0]
-        AbakusGroup.objects.get(name='Abakus').add_user(user)
-
-        registration_two = Registration.objects.get_or_create(event=self.event, user=user)[0]
-        self.event.register(registration_two)
-
-        notify_event_creator_when_payment_overdue.delay()
-
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
     def test_creator_notification_is_not_sent_when_everyone_has_paid(self, mock_notification):
         """Test that email is not sent when event is past due and everyone has paid"""
@@ -478,7 +467,7 @@ class PaymentDueTestCase(TestCase):
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
     def test_creator_notification_is_not_sent_when_not_priced(self, mock_notification):
-        """Test that email is not sent when event is past due and everyone has paid"""
+        """Test that email is not sent when event is not priced"""
 
         self.event.is_priced = False
         self.event.save()
@@ -488,7 +477,7 @@ class PaymentDueTestCase(TestCase):
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
     def test_creator_notification_is_not_sent_past_end_time(self, mock_notification):
-        """Test that email is not sent when event is past due and everyone has paid"""
+        """Test that email is not sent when event is past end time"""
 
         self.event.end_time = timezone.now() - timedelta(hours=1)
         self.event.save()

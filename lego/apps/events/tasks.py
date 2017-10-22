@@ -28,7 +28,7 @@ class AsyncRegister(celery_app.Task):
         if self.request.retries == self.max_retries:
             self.registration.status = constants.FAILURE_REGISTER
             self.registration.save()
-            notify_user_registration(constants.SOCKET_PAYMENT_FAILURE, self.registration)
+            notify_user_registration(constants.SOCKET_REGISTRATION_FAILURE, self.registration)
 
 
 class Payment(celery_app.Task):
