@@ -5,13 +5,13 @@ from lego.apps.users.models import User
 
 
 class JSONWebTokenTestCase(APITestCase):
-    fixtures = ['initial_files.yaml', 'development_users.yaml']
+    fixtures = ['initial_files.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
         self.user_data = {
             'username': self.user.username,
-            'password': 'webkom'
+            'password': 'test'
         }
 
     def check_user(self, user):
