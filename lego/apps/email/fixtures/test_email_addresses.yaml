@@ -1,11 +1,15 @@
 - model: email.EmailAddress
-  pk: test
+  pk: address
   fields: {}
 
 - model: email.EmailAddress
-  pk: test1
+  pk: address1
   fields: {}
 
 - model: email.EmailAddress
   pk: noassigned
+  fields: {}
+
+- model: email.EmailAddress
+  pk: test1
   fields: {}

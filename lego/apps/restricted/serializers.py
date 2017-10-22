@@ -1,4 +1,7 @@
+from lego.apps.events.fields import PublicEventListField
+from lego.apps.meetings.fields import MeetingListField
 from lego.apps.restricted.models import RestrictedMail
+from lego.apps.users.fields import AbakusGroupListField, PublicUserListField
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -11,12 +14,19 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 
     def save(self, **kwargs):
         kwargs['token'] = RestrictedMail.create_token()
-        super().save(**kwargs)
+        return super().save(**kwargs)
 
 
-class RestrictedMailDetailSerializer(RestrictedMailListSerializer):
+class RestrictedMailSerializer(RestrictedMailListSerializer):
 
     class Meta(RestrictedMailListSerializer.Meta):
         fields = RestrictedMailListSerializer.Meta.fields + (
             'users', 'groups', 'events', 'meetings', 'raw_addresses'
         )
+
+
+class RestrictedMailDetailSerializer(RestrictedMailSerializer):
+    users = PublicUserListField({'read_only': True})
+    groups = AbakusGroupListField({'read_only': True})
+    events = PublicEventListField({'read_only': True})
+    meetings = MeetingListField({'read_only': True})

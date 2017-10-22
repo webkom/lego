@@ -2,6 +2,6 @@
   pk: 1
   fields:
     name: test
-    email: test
+    email: address
     group_roles:
       - member

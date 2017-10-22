@@ -60,7 +60,7 @@ class Membership(BasisModel):
         return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
 
 
-class AbakusGroup(GSuiteAddress, MPTTModel, PersistentModel):
+class AbakusGroup(MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
     parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
