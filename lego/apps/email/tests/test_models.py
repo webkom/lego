@@ -52,4 +52,7 @@ class EmailListTestCase(TestCase):
         list.users.add(user)
         list.groups.add(group)
 
-        self.assertListEqual(['test1@user.com', 'test2@user.com'], list.members())
+        self.assertSequenceEqual(
+            {'test1@user.com', 'test2@user.com'},
+            set(list.members())
+        )

@@ -13,7 +13,7 @@ from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import (DetailedUserSerializer, MeSerializer,
-                                               PublicUserWithGroupsSerializer)
+                                               PublicUserSerializer, PublicUserWithGroupsSerializer)
 
 log = get_logger()
 
@@ -22,11 +22,11 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     lookup_field = 'username'
-    serializer_class = PublicUserWithGroupsSerializer
+    serializer_class = PublicUserSerializer
     ordering = 'id'
 
     def get_queryset(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action == 'retrieve':
             return self.queryset.prefetch_related('abakus_groups')
         return self.queryset
 
@@ -40,10 +40,12 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             try:
                 instance = self.get_object()
             except AssertionError:
-                return super().get_serializer_class()
+                return PublicUserWithGroupsSerializer
 
             if self.request.user.has_perm(EDIT, instance) or self.request.user == instance:
                 return DetailedUserSerializer
+
+            return PublicUserWithGroupsSerializer
 
         elif self.action == 'create':
             return RegistrationConfirmationSerializer
