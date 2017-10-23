@@ -60,10 +60,10 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
                   'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
-                  'pools', 'company', 'active_capacity', 'feedback_description',
-                  'feedback_required', 'is_priced', 'price_member', 'price_guest',
-                  'use_stripe', 'payment_due_date', 'use_captcha', 'waiting_registrations', 'tags',
-                  'is_merged')
+                  'pools', 'unregistration_deadline', 'company', 'active_capacity',
+                  'feedback_description', 'feedback_required', 'is_priced', 'price_member',
+                  'price_guest', 'use_stripe', 'payment_due_date', 'use_captcha',
+                  'waiting_registrations', 'tags', 'is_merged')
         read_only = True
 
 
@@ -102,7 +102,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
                   'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
                   'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time',
-                  'merge_time', 'use_captcha', 'tags', 'pools', 'pinned')
+                  'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned')
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
@@ -130,7 +130,6 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                             'name': pool.get('name'),
                             'capacity': pool.get('capacity', 0),
                             'activation_date': pool.get('activation_date'),
-                            'unregistration_deadline': pool.get('unregistration_deadline', None)
                         }
                     )[0]
                     created_pool.permission_groups.set(permission_groups)

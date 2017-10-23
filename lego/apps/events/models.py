@@ -37,6 +37,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
+    unregistration_deadline = models.DateTimeField(null=True)
 
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
@@ -242,7 +243,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         pool = registration.pool
         registration.unregister(is_merged=self.is_merged)
         if pool:
-            if self.heed_penalties and pool.passed_unregistration_deadline():
+            if self.heed_penalties and self.passed_unregistration_deadline:
                 if not registration.user.penalties.filter(source_event=self).exists():
                     Penalty.objects.create(
                         user=registration.user,
@@ -552,6 +553,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
 
     @property
+    def passed_unregistration_deadline(self):
+        if self.unregistration_deadline:
+            return self.unregistration_deadline < timezone.now()
+        return False
+
+    @property
     def waiting_registrations(self):
         return self.registrations.filter(
             pool=None,
@@ -580,7 +587,6 @@ class Pool(BasisModel):
     capacity = models.PositiveSmallIntegerField(default=0)
     event = models.ForeignKey(Event, related_name='pools')
     activation_date = models.DateTimeField()
-    unregistration_deadline = models.DateTimeField(null=True)
     permission_groups = models.ManyToManyField(AbakusGroup)
 
     counter = models.PositiveSmallIntegerField(default=0)
@@ -613,11 +619,6 @@ class Pool(BasisModel):
         self.counter -= 1
         self.save(update_fields=['counter'])
         return self
-
-    def passed_unregistration_deadline(self):
-        if self.unregistration_deadline:
-            return self.unregistration_deadline < timezone.now()
-        return False
 
     def __str__(self):
         return self.name
