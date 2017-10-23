@@ -326,9 +326,8 @@ class PenaltyTestCase(TestCase):
     def test_penalties_created_on_unregister(self):
         """Test that user gets penalties on unregister after limit"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
-        for pool in event.pools.all():
-            pool.unregistration_deadline = timezone.now() - timedelta(days=1)
-            pool.save()
+        event.unregistration_deadline = timezone.now() - timedelta(days=1)
+        event.save()
 
         registration = event.registrations.first()
         penalties_before = registration.user.number_of_penalties()
