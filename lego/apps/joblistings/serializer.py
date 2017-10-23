@@ -64,5 +64,4 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
         instance.workplaces.set(new_workplaces)
 
         instance.save()
-
         return instance
