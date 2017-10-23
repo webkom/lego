@@ -123,7 +123,7 @@ CORS_ORIGIN_WHITELIST = list({
 # Restricted
 RESTRICTED_ADDRESS = env('RESTRICTED_ADDRESS', default='restricted')
 RESTRICTED_DOMAIN = env('RESTRICTED_DOMAIN', default='abakus.no')
-RESTRICTED_FROM = env('RESTRICTED_FROM', default='Abakus Linjeforening <no-reply@abakus.no>')
+RESTRICTED_FROM = env('RESTRICTED_FROM', default='Abakus <no-reply@abakus.no>')
 
 # Push Notifications
 PUSH_NOTIFICATIONS_SETTINGS['APNS_USE_SANDBOX'] = env('APNS_USE_SANDBOX', default=False)

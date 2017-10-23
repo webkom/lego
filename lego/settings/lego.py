@@ -6,7 +6,7 @@ SITE = {
     'contact_email': 'webkom@abakus.no',
     'documentation_url': '/docs/',
     'domain': 'abakus.no',
-    'owner': 'Abakus Linjeforening'
+    'owner': 'Abakus'
 }
 
 API_VERSION = 'v1'
@@ -59,7 +59,7 @@ LMTP_PORT = 8024
 
 RESTRICTED_ADDRESS = 'restricted'
 RESTRICTED_DOMAIN = 'abakus.no'
-RESTRICTED_FROM = 'Abakus Linjeforening <no-reply@abakus.no>'
+RESTRICTED_FROM = 'Abakus <no-reply@abakus.no>'
 RESTRICTED_ALLOW_ORIGINAL_SENDER = False
 
 GSUITE_DOMAIN = 'abakus.no'
