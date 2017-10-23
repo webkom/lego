@@ -38,14 +38,20 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             return instance
 
 
-class RegistrationReadSerializer(BasisModelSerializer):
+class RegistrationPublicReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
-    feedback = FeedbackField()
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'feedback', 'status')
+        fields = ('id', 'user', 'pool', 'status')
         read_only = True
+
+
+class RegistrationReadSerializer(RegistrationPublicReadSerializer):
+    feedback = FeedbackField()
+
+    class Meta(RegistrationPublicReadSerializer.Meta):
+        fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback',)
 
 
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
