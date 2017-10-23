@@ -46,6 +46,7 @@ class EventPaymentOverdueNotification(Notification):
             context={
                 'event': event.title,
                 'name': self.user.full_name,
+                'due_date': event.payment_due_date,
                 'id': event.id,
             },
             subject=f'Du har ikke betalt påmeldingen på arrangementet {event.title}',

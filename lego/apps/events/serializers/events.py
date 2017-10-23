@@ -62,7 +62,8 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
                   'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
                   'pools', 'company', 'active_capacity', 'feedback_description',
                   'feedback_required', 'is_priced', 'price_member', 'price_guest',
-                  'use_stripe', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged')
+                  'use_stripe', 'payment_due_date', 'use_captcha', 'waiting_registrations', 'tags',
+                  'is_merged')
         read_only = True
 
 
@@ -100,9 +101,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Event
         fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
                   'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
-                  'price_guest', 'use_stripe', 'start_time', 'end_time', 'merge_time',
-                  'use_captcha', 'tags', 'pools', 'is_ready')
-        extra_kwargs = {'is_ready': {'required': False}}
+                  'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time',
+                  'merge_time', 'use_captcha', 'tags', 'pools', 'pinned')
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
