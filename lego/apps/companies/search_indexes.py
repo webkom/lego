@@ -1,8 +1,8 @@
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
-from .models import Company
-from .serializers import CompanySearchSerializer
+from .models import Company, CompanyContact
+from .serializers import CompanySearchSerializer, CompanyContactSearchSerializer
 
 
 class CompanyModelIndex(SearchIndex):
@@ -17,3 +17,17 @@ class CompanyModelIndex(SearchIndex):
 
 
 register(CompanyModelIndex)
+
+
+class CompanyContactModelIndex(SearchIndex):
+
+    queryset = CompanyContact.objects.all()
+    serializer_class = CompanyContactSearchSerializer
+    result_fields = ('name', )
+    autocomplete_result_fields = ('name', 'company')
+
+    def get_autocomplete(self, instance):
+        return instance.name
+
+
+register(CompanyContactModelIndex)

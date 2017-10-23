@@ -140,3 +140,9 @@ class CompanySearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name', 'description', 'website', 'company_type', 'address')
+
+
+class CompanyContactSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyContact
+        fields = ('name', 'company')

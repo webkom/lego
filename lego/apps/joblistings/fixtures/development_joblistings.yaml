@@ -4,15 +4,15 @@
     title: 'BEKK - sommerjobb 2017!'
     description: '<p>En bedrift.</p>'
     text: '<p>BEKK er et solid programvarehus i kraftig vekst.
-      Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
-      avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
-      effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
-      utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
+    Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
+    avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
+    effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
+    utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
     company: 1
     responsible: 1
     deadline: '2016-11-03T02:00:00+00:00'
     visible_from: '2016-09-30T16:15:00+00:00'
-    visible_to: '2017-09-30T16:15:00+00:00'
+    visible_to: '2030-11-30T16:15:00+00:00'
     job_type: summer_job
     workplaces:
     - 2
@@ -26,22 +26,22 @@
     title: 'Iterate - deltidsstilling!'
     description: '<p>En bedrift.</p>'
     text: '<p>Iterate er et solid programvarehus i kraftig vekst.
-      Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
-      avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
-      effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
-      utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
+    Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
+    avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
+    effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
+    utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
     company: 2
     responsible: 2
     deadline: '2016-11-01T02:00:00+00:00'
     visible_from: '2016-09-30T16:15:00+00:00'
-    visible_to: '2017-09-30T16:15:00+00:00'
+    visible_to: '2030-11-30T16:15:00+00:00'
     job_type: part_time
     workplaces:
     - 1
     - 2
     from_year: 2
     to_year: 5
-    application_url: 'https://dagbladet.no'
+    application_url: 'https://www.nrk.no/'
 
 - model: joblistings.Joblisting
   pk: 3
@@ -49,41 +49,41 @@
     title: 'Acando - fulltid stilling!'
     description: '<p>En bedrift.</p>'
     text: '<p>Acando er et solid programvarehus i kraftig vekst.
-        Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
-        avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
-        effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
-        utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
+    Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
+    avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
+    effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
+    utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
     company: 3
     deadline: '2016-11-04T02:00:00+00:00'
     visible_from: '2016-09-30T16:15:00+00:00'
-    visible_to: '2017-09-30T16:15:00+00:00'
+    visible_to: '2030-11-30T16:15:00+00:00'
     job_type: full_time
     workplaces:
     - 1
     from_year: 5
     to_year: 5
-    application_url: 'https://dagbladet.no'
+    application_url: 'https://www.nrk.no/'
 
 - model: joblistings.Joblisting
   pk: 4
   fields:
     title: 'Acando - fulltid stilling!'
-    description: '<p> En bedrift. </p>'
+    description: '<p>En bedrift.</p>'
     text: '<p>Acando er et solid programvarehus i kraftig vekst.
-      Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
-      avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
-      effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
-      utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
+    Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
+    avdelingskontorer i Tromsø, Trondheim, Bergen og Oslo. Vi ønsker å
+    effektivisere helsevesenet ved å lage en fantastisk elektronisk pasientjournal
+    utviklet av dyktige utviklere i samarbeid med en erfaren medisinsk stab</p>'
     company: 3
     deadline: '2016-11-04T02:00:00+00:00'
     visible_from: '2016-09-30T16:15:00+00:00'
-    visible_to: '2017-01-30T16:15:00+00:00'
+    visible_to: '2030-11-30T16:15:00+00:00'
     job_type: full_time
     workplaces:
     - 1
     from_year: 5
     to_year: 5
-    application_url: 'https://dagbladet.no'
+    application_url: 'https://www.nrk.no/'
 
 - model: joblistings.Workplace
   pk: 1
