@@ -13,7 +13,7 @@ from lego.utils.serializers import BasisModelSerializer
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
-    pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all())
+    pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(required=False)
     admin_reason = serializers.CharField(required=True)
 

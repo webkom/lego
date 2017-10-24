@@ -28,7 +28,7 @@ class AdminRegistrationTestCase(TestCase):
         no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, admin_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, no_of_regs_before + 1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
@@ -44,7 +44,7 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = wrong_pool.registrations.count()
 
         with self.assertRaises(ValueError):
-            event_one.admin_register(user, wrong_pool, admin_reason='test')
+            event_one.admin_register(user, admin_reason='test', pool=wrong_pool)
         self.assertEqual(event_one.number_of_registrations, e1_no_of_regs_before)
         self.assertEqual(event_two.number_of_registrations, e2_no_of_regs_before)
         self.assertEqual(wrong_pool.registrations.count(), pool_no_of_regs_before)
@@ -59,7 +59,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, admin_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -73,7 +73,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, admin_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -91,7 +91,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, admin_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -109,7 +109,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, admin_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -122,6 +122,17 @@ class AdminRegistrationTestCase(TestCase):
 
         e1_no_of_regs_before = event.number_of_registrations
 
-        event.admin_register(user, pool, admin_reason='test')
-        event.admin_register(user, pool, admin_reason='test')
+        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
+
+    def test_ar_without_pool(self):
+        """Test that user is not registered twice when admin registered is run twice"""
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        waiting_regs_before = event.waiting_registrations.count()
+
+        event.admin_register(user, admin_reason='test')
+        self.assertEqual(event.waiting_registrations.count(), waiting_regs_before+1)

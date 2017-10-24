@@ -473,10 +473,10 @@ class RegistrationTestCase(TestCase):
 
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            event.admin_register(user, pool_one, admin_reason='test')
+            event.admin_register(user, pool=pool_one, admin_reason='test')
         for user in webkom_users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            event.admin_register(user, pool_two, admin_reason='test')
+            event.admin_register(user, pool=pool_two, admin_reason='test')
 
         AbakusGroup.objects.get(name='Abakus').add_user(users[5])
         registration = Registration.objects.get_or_create(event=event, user=users[5])[0]

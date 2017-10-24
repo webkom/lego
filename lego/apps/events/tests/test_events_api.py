@@ -654,6 +654,19 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         self.assertEqual(registration_response.status_code, 400)
 
+    def test_ar_to_waiting_list(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.request_user)
+        self.client.force_authenticate(self.request_user)
+        self.assertEqual(self.event.waiting_registrations.count(), 0)
+
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_register/',
+            {'user': self.user.id, 'admin_reason': 'test'}
+        )
+
+        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
+
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
 class StripePaymentTestCase(APITestCase):
