@@ -1,4 +1,4 @@
-# LEGO [![CircleCI](https://circleci.com/gh/webkom/lego/tree/master.svg?style=svg&circle-token=26520c314e094786c87c6a14af78c0cd7c82caec)](https://circleci.com/gh/webkom/lego/tree/master)
+# LEGO [![DroneCI](https://ci.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci.abakus.no/webkom/lego)
 
 > LEGO Er Ganske Oppdelt
 
