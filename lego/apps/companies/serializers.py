@@ -13,7 +13,7 @@ from lego.utils.serializers import BasisModelSerializer
 class SemesterSerializer(BasisModelSerializer):
     class Meta:
         model = Semester
-        fields = ('id', 'year', 'semester')
+        fields = ('id', 'year', 'semester', 'active_interest_form')
 
 
 class SemesterStatusSerializer(serializers.ModelSerializer):
