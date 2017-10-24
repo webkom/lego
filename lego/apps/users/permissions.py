@@ -69,9 +69,12 @@ class MembershipPermissionHandler(PermissionHandler):
         if has_perm:
             return True
 
+        if not user.is_authenticated():
+            # Don't allow any unauthorized users see memberships
+            return False
+
         if obj is not None:
-            return obj.abakus_group.type in constants.OPEN_GROUPS and \
-                (obj.user == user or obj.role in EDIT_ROLES)
+            return obj.abakus_group.type in constants.OPEN_GROUPS and obj.user == user
 
         # Retrieve parent group
         view = kwargs.get('view', None)
@@ -81,7 +84,11 @@ class MembershipPermissionHandler(PermissionHandler):
         from lego.apps.users.models import AbakusGroup
         abakus_group = AbakusGroup.objects.get(id=abakus_group_pk)
 
-        if abakus_group.type == constants.OPEN_GROUPS:
+        if abakus_group.type == constants.GROUP_COMMITTEE:
+            if perm == LIST:
+                return True
+
+        if abakus_group.type in constants.OPEN_GROUPS:
             if perm == LIST:
                 return True
             elif perm == DELETE:
