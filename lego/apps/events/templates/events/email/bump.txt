@@ -6,6 +6,6 @@ Hei {{ name }}!
 
 Du har blitt flyttet opp fra ventelisten på arrangementet {{ event }}.
 
-Les mer på {{ frontend_url }}/events/{{ slug }}
+Les mer på {{ frontend_url }}/events/{{ id }}
 
 {% endblock %}

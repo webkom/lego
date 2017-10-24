@@ -1,3 +1,4 @@
+from cassandra import DriverException
 from django.test import TestCase
 
 from lego.apps.feed.management.commands.migrate_feeds import Command as MigrateCommand
@@ -9,7 +10,7 @@ class FeedTestBase(TestCase):
         super(FeedTestBase, cls).setUpClass()
         try:
             MigrateCommand().truncate_models()
-        except:
+        except DriverException:
             pass
 
     def _pre_setup(self):
