@@ -15,7 +15,7 @@ class EventBumpNotification(Notification):
             context={
                 'event': event.title,
                 'name': self.user.full_name,
-                'slug': event.slug,
+                'id': event.id,
             },
             subject=f'Du er flyttet opp fra ventelisten på arrangementet {event.title}',
             plain_template='events/email/bump.txt',
@@ -102,8 +102,8 @@ class EventAdminRegistrationNotification(Notification):
             context={
                 'event': event.title,
                 'name': self.user.full_name,
-                'slug': event.slug,
-                'reason': reason
+                'reason': reason,
+                'id': event.id,
             },
             subject=f'Du har blitt adminpåmeldt på arrangementet {event.title}',
             plain_template='events/email/admin_registration.txt',
