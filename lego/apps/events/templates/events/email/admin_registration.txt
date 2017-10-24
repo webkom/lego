@@ -9,6 +9,6 @@ En administrator har meldt deg på arrangementet {{ event }} på grunn av:
 {{ reason }}
 
 
-Les mer på {{ frontend_url }}/events/{{ slug }}
+Les mer på {{ frontend_url }}/events/{{ id }}
 
 {% endblock %}
