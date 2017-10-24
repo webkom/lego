@@ -3,5 +3,5 @@
 
 django-debug-toolbar==1.8
 tox==2.9.1
-flake8==3.4.1
+flake8==3.5.0
 isort==4.2.15
