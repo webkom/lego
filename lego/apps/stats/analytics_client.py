@@ -12,12 +12,15 @@ development = getattr(settings, 'DEVELOPMENT', False)
 def setup_analytics():
     global default_client, development
 
-    host = getattr(settings, 'ANALYTICS_HOST', 'http://127.0.0.1:5000')
-    send = not (development or getattr(settings, 'TESTING', False))
+    write_key = getattr(settings, 'ANALYTICS_WRITE_KEY', '')
+    host = getattr(settings, 'ANALYTICS_HOST', 'https://api.segment.io')
+
+    production = getattr(settings, 'ENVIRONMENT_NAME', None) == 'production'
+    send = not (development or getattr(settings, 'TESTING', False)) or production
 
     if not default_client:
         default_client = Client(
-            'lego', host=host, debug=False, on_error=None, send=send
+            write_key=write_key, host=host, debug=False, on_error=None, send=send
         )
 
 
