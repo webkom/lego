@@ -110,7 +110,7 @@ STATSD_PREFIX = env('STATSD_PREFIX', default='lego')
 
 # Analytics
 ANALYTICS_HOST = env('ANALYTICS_HOST', default=None)
-ANALYTICS_WRITE_KEY = env('ANALYTICS_WRITE_KEY', default=None)
+ANALYTICS_WRITE_KEY = env('ANALYTICS_WRITE_KEY', default='')
 
 # CORS
 CORS_FRONTEND_URL = urlparse(FRONTEND_URL).netloc
