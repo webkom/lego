@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from lego.apps.companies.models import CompanyInterest
 from lego.apps.companies.notifications import CompanyInterestNotification
 from lego.apps.feed.activities import Activity
@@ -7,6 +9,7 @@ from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.registry import register_handler
 from lego.apps.feed.verbs import CompanyInterestVerb
 from lego.apps.users.models import AbakusGroup
+from lego.utils.tasks import send_email
 
 
 class CompanyInterestHandler(BaseHandler):
@@ -37,6 +40,14 @@ class CompanyInterestHandler(BaseHandler):
                 recipient, company_interest=company_interest
             )
             notification.notify()
+
+        send_email.delay(
+                to_email=f'bedriftskontakt@{settings.GSUITE_DOMAIN}',
+                context=company_interest.generate_mail_context(),
+                subject='En ny bedrift har meldt sin interesse',
+                plain_template='companies/email/company_interest.txt',
+                html_template='companies/email/company_interest.html',
+            )
 
     def handle_create(self, company_interest):
         pass
