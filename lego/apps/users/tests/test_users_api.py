@@ -10,7 +10,7 @@ from lego.apps.events.models import Event
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
-from lego.apps.users.serializers.users import DetailedUserSerializer
+from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.test_utils import fake_time
 
 _test_user_data = {
@@ -256,7 +256,7 @@ class UpdateUsersAPITestCase(APITestCase):
         user = User.objects.get(pk=update_object.pk)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(set(response.data.keys()), set(DetailedUserSerializer.Meta.fields))
+        self.assertEqual(set(response.data.keys()), set(MeSerializer.Meta.fields))
 
         for key, value in self.modified_user.items():
             self.assertEqual(getattr(user, key), value)

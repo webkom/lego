@@ -99,7 +99,11 @@ class CreateStudentConfirmationAPITestCase(APITestCase):
     }
 
     def setUp(self):
+        grade = AbakusGroup.objects.create(
+            name=constants.FIRST_GRADE_DATA, type=constants.GROUP_GRADE
+        )
         self.user_with_student_confirmation = User.objects.get(username='test1')
+        grade.add_user(self.user_with_student_confirmation)
         self.user_without_student_confirmation = User.objects.get(username='test2')
 
     def test_with_unauthenticated_user(self):
@@ -197,6 +201,9 @@ class UpdateStudentConfirmationAPITestCase(APITestCase):
     fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
+        grade = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
+        self.user_with_student_confirmation = User.objects.get(username='test1')
+        grade.add_user(self.user_with_student_confirmation)
         self.user_with_student_confirmation = User.objects.get(username='test1')
         self.user_without_student_confirmation = User.objects.get(username='test2')
 

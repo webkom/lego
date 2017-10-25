@@ -19,21 +19,6 @@ class DetailedUserSerializer(serializers.ModelSerializer):
         serializer = PenaltySerializer(instance=qs, many=True)
         return serializer.data
 
-    def validate_username(self, username):
-        """
-        It is not possible to change username tom something that exists.
-        Used to remove case-sensitivity.
-        """
-        username_exists = User.objects\
-            .filter(username__iexact=username)\
-            .exclude(id=self.instance.id)\
-            .exists()
-
-        if username_exists:
-            raise exceptions.ValidationError('Username exists')
-
-        return username
-
     class Meta:
         model = User
         fields = (
@@ -140,6 +125,21 @@ class MeSerializer(serializers.ModelSerializer):
     def get_is_student(self, user):
         return user.is_verified_student()
 
+    def validate_username(self, username):
+        """
+        It is not possible to change username tom something that exists.
+        Used to remove case-sensitivity.
+        """
+        username_exists = User.objects \
+            .filter(username__iexact=username) \
+            .exclude(id=self.instance.id) \
+            .exists()
+
+        if username_exists:
+            raise exceptions.ValidationError('Username exists')
+
+        return username
+
     class Meta:
         model = User
         fields = (
@@ -162,4 +162,3 @@ class MeSerializer(serializers.ModelSerializer):
             'penalties',
             'ical_token'
         )
-        read_only_fields = ('username',)
