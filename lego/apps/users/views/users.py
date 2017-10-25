@@ -43,7 +43,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 return PublicUserWithGroupsSerializer
 
             if self.request.user.has_perm(EDIT, instance) or self.request.user == instance:
-                return DetailedUserSerializer
+                return MeSerializer
 
             return PublicUserWithGroupsSerializer
 

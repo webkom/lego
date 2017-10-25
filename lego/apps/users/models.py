@@ -160,7 +160,8 @@ class PermissionsMixin(models.Model):
 
     @property
     def is_abakus_member(self):
-        return 'Abakus' in [group.name for group in self.all_groups]
+        return constants.MEMBER_GROUP in [group.name for group in self.all_groups]
+
 
     @property
     def is_abakom_member(self):
@@ -299,8 +300,17 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     def profile_picture(self, value):
         self.picture = value
 
+    @PermissionsMixin.is_abakus_member.setter
+    def is_abakus_member(self, add_to_group):
+        if self.is_verified_student():
+            abakus_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+            if add_to_group:
+                abakus_group.add_user(self)
+            else:
+                abakus_group.remove_user(self)
+
     def is_verified_student(self):
-        return self.student_username is not None
+        return self.student_username is not None and self.grade is not None
 
     def get_short_name(self):
         return self.first_name

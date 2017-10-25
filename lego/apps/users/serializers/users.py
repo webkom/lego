@@ -50,7 +50,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'allergies',
             'is_active',
             'penalties',
-            'abakus_groups',
+            'abakus_groups'
         )
 
 
@@ -126,6 +126,7 @@ class MeSerializer(serializers.ModelSerializer):
     ical_token = serializers.SerializerMethodField('get_user_ical_token')
     penalties = serializers.SerializerMethodField('get_valid_penalties')
     is_student = serializers.SerializerMethodField()
+    is_abakus_member = serializers.BooleanField()
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
