@@ -127,7 +127,7 @@ class AdminRegistrationTestCase(TestCase):
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
 
     def test_ar_without_pool(self):
-        """Test that user is not registered twice when admin registered is run twice"""
+        """Test that admin registration without pool puts the registration in the waiting list"""
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Abakus').add_user(user)

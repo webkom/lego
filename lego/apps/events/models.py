@@ -84,39 +84,25 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param feedback: Feedback to organizers
         :return: The registration
         """
-        if not pool:
-            with transaction.atomic():
-                reg = self.registrations.update_or_create(
-                    event=self,
-                    user=user,
-                    defaults={'pool': None,
-                              'feedback': feedback,
-                              'registration_date': timezone.now(),
-                              'unregistration_date': None,
-                              'status': constants.SUCCESS_REGISTER,
-                              'admin_reason': admin_reason}
-                )[0]
-                get_handler(Registration).handle_admin_registration(reg)
-                return reg
-        if self.pools.filter(id=pool.id).exists():
-            with transaction.atomic():
-                reg = self.registrations.update_or_create(
-                    event=self,
-                    user=user,
-                    defaults={'pool': pool,
-                              'feedback': feedback,
-                              'registration_date': timezone.now(),
-                              'unregistration_date': None,
-                              'status': constants.SUCCESS_REGISTER,
-                              'admin_reason': admin_reason}
-                )[0]
+        if pool and not self.pools.filter(id=pool.id).exists():
+            raise NoSuchPool()
+        with transaction.atomic():
+            reg = self.registrations.update_or_create(
+                event=self,
+                user=user,
+                defaults={'pool': pool,
+                          'feedback': feedback,
+                          'registration_date': timezone.now(),
+                          'unregistration_date': None,
+                          'status': constants.SUCCESS_REGISTER,
+                          'admin_reason': admin_reason}
+            )[0]
+            if pool:
                 locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
                 locked_pool.increment()
 
-                get_handler(Registration).handle_admin_registration(reg)
-                return reg
-        else:
-            raise NoSuchPool()
+            get_handler(Registration).handle_admin_registration(reg)
+            return reg
 
     def get_absolute_url(self):
         return f'{settings.FRONTEND_URL}/events/{self.id}/'
