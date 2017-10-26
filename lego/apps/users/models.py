@@ -160,8 +160,10 @@ class PermissionsMixin(models.Model):
 
     @property
     def is_abakus_member(self):
-        return constants.MEMBER_GROUP in [group.name for group in self.all_groups]
-
+        for group in self.all_groups:
+            if group.name == constants.MEMBER_GROUP:
+                return True
+        return False
 
     @property
     def is_abakom_member(self):
