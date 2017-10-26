@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from lego.apps.content.fields import ContentSerializerField
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.users.fields import PublicUserField
@@ -49,6 +50,7 @@ class MeetingBulkInvite(serializers.Serializer):
 
 class MeetingSerializer(BasisModelSerializer):
     invitations = MeetingInvitationSerializer(many=True, read_only=True)
+    report = ContentSerializerField()
     report_author = PublicUserField(
         queryset=User.objects.all(), allow_null=True, required=False)
     created_by = PublicUserField(read_only=True)

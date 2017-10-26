@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DateTimeField
 
 from lego.apps.comments.models import Comment
+from lego.apps.content.fields import ContentSerializerField
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer, GenericRelationField
 
@@ -12,6 +13,7 @@ class CommentSerializer(BasisModelSerializer):
     created_at = DateTimeField(read_only=True)
     updated_at = DateTimeField(read_only=True)
     comment_target = GenericRelationField(source='content_object')
+    text = ContentSerializerField()
 
     class Meta:
         model = Comment
@@ -32,6 +34,9 @@ class CommentSerializer(BasisModelSerializer):
 
 
 class UpdateCommentSerializer(BasisModelSerializer):
+
+    text = ContentSerializerField()
+
     class Meta:
         model = Comment
         fields = ('text',)

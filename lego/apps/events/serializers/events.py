@@ -5,6 +5,7 @@ from rest_framework.fields import CharField
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.fields import CompanyField
 from lego.apps.companies.models import Company
+from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (PoolAdministrateSerializer,
@@ -55,6 +56,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     waiting_registrations = RegistrationReadSerializer(many=True)
+    text = ContentSerializerField()
 
     class Meta:
         model = Event
@@ -96,6 +98,7 @@ class EventAdministrateSerializer(EventReadSerializer):
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     pools = PoolCreateAndUpdateSerializer(many=True, required=False)
+    text = ContentSerializerField()
 
     class Meta:
         model = Event
@@ -146,6 +149,7 @@ class EventSearchSerializer(serializers.ModelSerializer):
         required=False,
         options={'height': 500, 'width': 500, 'smart': True}
     )
+    text = ContentSerializerField()
 
     class Meta:
         model = Event
