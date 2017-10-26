@@ -8,12 +8,11 @@ from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
-from lego.apps.events.serializers.pools import (
-    PoolAdministrateSerializer, PoolCreateAndUpdateSerializer, PoolReadSerializer
-)
-from lego.apps.events.serializers.registrations import (
-    RegistrationReadDetailedSerializer, RegistrationReadSerializer
-)
+from lego.apps.events.serializers.pools import (PoolAdministrateSerializer,
+                                                PoolCreateAndUpdateSerializer, PoolReadSerializer,
+                                                PoolReadAuthSerializer)
+from lego.apps.events.serializers.registrations import (RegistrationReadDetailedSerializer,
+                                                        RegistrationReadSerializer)
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -63,7 +62,6 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
-    waiting_registrations = RegistrationReadSerializer(many=True)
     text = ContentSerializerField()
     created_by = PublicUserSerializer()
 
@@ -85,10 +83,12 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     activation_time = ActivationTimeField()
     spots_left = SpotsLeftField()
     price = serializers.SerializerMethodField()
+    waiting_registrations = RegistrationReadSerializer(many=True)
+    pools = PoolReadAuthSerializer(many=True)
 
     class Meta(EventReadDetailedSerializer.Meta):
         fields = EventReadDetailedSerializer.Meta.fields + \
-                 ('price', 'activation_time', 'spots_left')
+                 ('price', 'activation_time', 'spots_left', 'waiting_registrations')
 
     def get_price(self, obj):
         request = self.context.get('request', None)

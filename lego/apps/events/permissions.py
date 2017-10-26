@@ -1,6 +1,6 @@
 from structlog import get_logger
 
-from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
+from lego.apps.permissions.constants import CREATE, DELETE, EDIT, LIST, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 
 log = get_logger()
@@ -9,6 +9,11 @@ log = get_logger()
 class EventPermissionHandler(PermissionHandler):
 
     perms_without_object = [CREATE, 'administrate']
+
+    authentication_map = {
+        VIEW: False,
+        LIST: False
+    }
 
 
 class RegistrationPermissionHandler(PermissionHandler):

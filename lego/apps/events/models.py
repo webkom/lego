@@ -11,8 +11,8 @@ from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed, EventNotReady, NoSuchPool, NoSuchRegistration, RegistrationExists,
-    RegistrationsExistInPool
-)
+    RegistrationsExistInPool)
+from lego.apps.events.managers import EventManager
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
@@ -57,8 +57,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
+    public = models.BooleanField(default=True)
 
     is_ready = models.BooleanField(default=True)
+
+    objects = EventManager()
 
     class Meta:
         permission_handler = EventPermissionHandler()
@@ -520,6 +523,27 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return sum([pool.spots_left() for pool in pools])
 
+    def event_visible_to_user(self, user):
+        if not self.public:
+            if user.is_authenticated:
+                return self.details_visible_to_user(user)
+            return False
+        return True
+
+    def details_visible_to_user(self, user):
+        """
+        Returns `True` if the user is able to attend the event, or if the user created it.
+        Returns an empty list if the user is an admin (HS or Webkom)
+        :param user:
+        :return:
+        """
+        if self.get_possible_pools(user, future=True, is_admitted=False):
+            return True
+        if user == self.created_by:
+            return True
+        allowed_keywords = ['/sudo/', '/sudo/admin/']
+        return [kw for kw in allowed_keywords if kw in user.get_all_permissions()]
+
     @property
     def is_merged(self):
         if self.merge_time is None:
@@ -622,6 +646,10 @@ class Pool(BasisModel):
         if self.capacity == 0:
             return False
         return self.registrations.count() >= self.capacity
+
+    @property
+    def registration_count(self):
+        return self.registrations.count()
 
     def spots_left(self):
         return self.capacity - self.registrations.count()
