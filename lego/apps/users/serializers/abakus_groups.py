@@ -19,6 +19,7 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             'type',
             'text',
             'logo',
+            'number_of_users'
         )
 
     def create(self, validated_data):
