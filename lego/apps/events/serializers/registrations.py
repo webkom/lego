@@ -76,8 +76,15 @@ class StripeTokenSerializer(serializers.Serializer):
     token = serializers.CharField()
 
 
+class StripeMetaSerializer(serializers.Serializer):
+    EVENT_ID = serializers.IntegerField()
+    USER = serializers.CharField()
+    EMAIL = serializers.EmailField()
+
+
 class StripeObjectSerializer(serializers.Serializer):
     id = serializers.CharField()
     amount = serializers.IntegerField()
     amount_refunded = serializers.IntegerField()
     status = serializers.CharField()
+    metadata = StripeMetaSerializer()

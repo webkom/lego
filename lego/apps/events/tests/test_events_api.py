@@ -9,6 +9,7 @@ from djangorestframework_camel_case.render import camelize
 from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.events import constants
+from lego.apps.events.exceptions import WebhookDidNotFindRegistration
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.events.tests.utils import get_dummy_users
@@ -704,6 +705,25 @@ class StripePaymentTestCase(APITestCase):
         self.assertEqual(registration.charge_status, 'succeeded')
         self.assertEqual(registration.charge_amount, 10000)
         self.assertEqual(registration.charge_amount_refunded, 10000)
+
+    def test_refund_webhook_raising_error(self):
+        token = create_token('4242424242424242', '123')
+        self.issue_payment(token)
+        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
+
+        stripe.Refund.create(charge=registration.charge_id)
+
+        stripe_events_all = stripe.Event.all(limit=3)
+        stripe_event = None
+        for obj in stripe_events_all.data:
+            if obj.data.object.id == registration.charge_id:
+                stripe_event = obj
+                break
+        self.assertIsNotNone(stripe_event)
+
+        registration.delete()
+        with self.assertRaises(WebhookDidNotFindRegistration):
+            stripe_webhook_event(event_id=stripe_event.id, event_type='charge.refunded')
 
 
 class CapacityExpansionTestCase(APITestCase):

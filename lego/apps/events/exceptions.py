@@ -37,3 +37,10 @@ class PoolCounterNotEqualToRegistrationCount(ValueError):
         message = f'Pool {pool.id} for event {event.id} was supposed to have {pool.capacity} ' \
                   f'registrations, but has {pool.counter}!'
         super().__init__(message)
+
+
+class WebhookDidNotFindRegistration(ValueError):
+    def __init__(self, event_id, metadata):
+        message = f'Stripe webhook with ID: {event_id} for event {metadata["EVENT_ID"]} tried ' \
+                  f'getting registration for user {metadata["USER"]}, but did not find any!'
+        super().__init__(message)
