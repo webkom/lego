@@ -8,7 +8,8 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
-from lego.apps.events.exceptions import EventHasClosed, PoolCounterNotEqualToRegistrationCount
+from lego.apps.events.exceptions import (EventHasClosed, PoolCounterNotEqualToRegistrationCount,
+                                         WebhookDidNotFindRegistration)
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.notifications import EventPaymentOverdueCreatorNotification
 from lego.apps.events.serializers.registrations import StripeObjectSerializer
@@ -170,15 +171,16 @@ def stripe_webhook_event(event_id, event_type):
         serializer.is_valid(raise_exception=True)
 
         metadata = serializer.data['metadata']
-        registration = Registration.objects.get(
+        registration = Registration.objects.filter(
             event_id=metadata['EVENT_ID'], user__email=metadata['EMAIL']
-        )
+        ).first()
+        if not registration:
+            raise WebhookDidNotFindRegistration(event_id, metadata)
         registration.charge_id = serializer.data['id']
         registration.charge_amount = serializer.data['amount']
         registration.charge_amount_refunded = serializer.data['amount_refunded']
         registration.charge_status = serializer.data['status']
         registration.save()
-        # TODO: Notify websockets based on event.type
 
 
 @celery_app.task(serializer='json')
