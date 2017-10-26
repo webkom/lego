@@ -1,14 +1,10 @@
-import bleach
-from bs4 import BeautifulSoup
 from django.contrib.contenttypes.fields import GenericRelation
-from django.db import models, transaction
+from django.db import models
 from django.db.models import ManyToManyField
 from django.utils.text import slugify
-from django_thumbor import generate_url
-from rest_framework.exceptions import ValidationError
 
 from lego.apps.comments.models import Comment
-from lego.apps.files.models import File
+from lego.apps.content.fields import ContentField
 from lego.apps.reactions.models import Reaction
 from lego.apps.tags.models import Tag
 
@@ -50,47 +46,13 @@ class SlugModel(models.Model):
 class Content(SlugModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    text = models.TextField(blank=True)
+    text = ContentField(allow_images=True)
     comments = GenericRelation(Comment)
     reactions = GenericRelation(Reaction)
-    images = ManyToManyField(File, blank=True)
     tags = ManyToManyField(Tag, blank=True)
-    slug_field = 'title'
     pinned = models.BooleanField(default=False)
 
-    _images = None
-
-    @property
-    def content(self):
-        text = BeautifulSoup(self.text, 'html.parser')
-        for image in text.find_all('img'):
-            image['src'] = generate_url(image.get('data-file-key'))
-        return str(text)
-
-    @content.setter
-    def content(self, value):
-        images = []
-        safe_content = bleach.clean(
-            value,
-            tags=[
-                'p', 'b', 'i', 'u', 'h1', 'h2', 'code', 'pre', 'blockquote', 'strong'
-                'strong', 'strike', 'ul', 'cite', 'li', 'em', 'hr', 'img', 'div', 'a'
-            ],
-            attributes={
-                'a': ['href'],
-                'img': ['data-file-key'],
-            },
-            strip=True
-        )
-        html = BeautifulSoup(safe_content, 'html.parser')
-        for image in html.find_all('img'):
-            images.append(image.get('data-file-key'))
-        if images:
-            self._images = File.objects.filter(key__in=images, public=True)
-            diff = set(images) - set(map(lambda f: f.key, self._images))
-            if len(diff):
-                raise ValidationError(detail=f'Images {diff} not found')
-        self.text = safe_content
+    slug_field = 'title'
 
     @property
     def reactions_grouped(self):
@@ -111,16 +73,6 @@ class Content(SlugModel):
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        if self._images is None:
-            return super().save(*args, **kwargs)
-
-        images = self._images
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            self.images = images
-            super().save()
 
     @property
     def comment_target(self):

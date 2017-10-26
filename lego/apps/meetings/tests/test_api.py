@@ -9,6 +9,7 @@ test_meeting_data = [
     {
         'title': 'Halla damer',
         'location': 'Plebkom',
+        'report': '<p>report</p>',
         'start_time': '2016-10-01T13:20:30Z',
         'end_time': '2016-10-01T14:00:30Z',
     }

@@ -1,5 +1,6 @@
 from lego.apps.companies.fields import CompanyContactField, CompanyField
 from lego.apps.companies.models import Company, CompanyContact
+from lego.apps.content.fields import ContentSerializerField
 from lego.apps.joblistings.models import Joblisting, Workplace
 from lego.utils.serializers import BasisModelSerializer
 
@@ -24,6 +25,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
     workplaces = WorkplaceSerializer(many=True)
     company = CompanyField(queryset=Company.objects.all())
     responsible = CompanyContactField(queryset=CompanyContact.objects.all())
+    text = ContentSerializerField()
 
     class Meta:
         model = Joblisting
@@ -34,6 +36,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
 
 class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
     workplaces = WorkplaceSerializer(many=True)
+    text = ContentSerializerField()
 
     class Meta:
         model = Joblisting

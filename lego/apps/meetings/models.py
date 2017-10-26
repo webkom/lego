@@ -3,7 +3,7 @@ from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
-from lego.apps.content.models import Content
+from lego.apps.content.fields import ContentField
 from lego.apps.meetings import constants
 from lego.apps.meetings.permissions import (MeetingInvitationPermissionHandler,
                                             MeetingPermissionHandler)
@@ -12,18 +12,21 @@ from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
 
-class Meeting(Content, BasisModel):
+class Meeting(BasisModel):
 
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
 
-    report = models.TextField(blank=True)
+    report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
-    _invited_users = models.ManyToManyField(User, through='MeetingInvitation',
-                                            related_name='meeting_invitation',
-                                            through_fields=('meeting', 'user'))
+    _invited_users = models.ManyToManyField(
+        User,
+        through='MeetingInvitation',
+        related_name='meeting_invitation',
+        through_fields=('meeting', 'user')
+    )
 
     class Meta:
         permission_handler = MeetingPermissionHandler()

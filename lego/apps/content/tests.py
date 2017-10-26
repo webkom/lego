@@ -1,7 +1,7 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.test import testcases
 from django.utils.text import slugify
-from rest_framework.exceptions import ValidationError
 
 from lego.apps.articles.models import Article
 from lego.apps.content.models import SlugModel
@@ -56,11 +56,12 @@ class ContentModelTestCase(testcases.TestCase):
         article = Article(
             title='test content',
             description='test description',
-            content=content,
+            text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
-        self.assertEqual(article.content, content)
+        article.refresh_from_db()
+        self.assertEqual(article.text, content)
 
     def test_parse_content_strip_unsafe_values(self):
         content = """
@@ -70,11 +71,12 @@ class ContentModelTestCase(testcases.TestCase):
         article = Article(
             title='test content',
             description='test description',
-            content=content,
+            text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
-        self.assertTrue('<script>' not in article.content)
+        article.refresh_from_db()
+        self.assertTrue('<script>' not in article.text)
 
     def test_parse_content_strip_css_values(self):
         content = """
@@ -84,11 +86,12 @@ class ContentModelTestCase(testcases.TestCase):
         article = Article(
             title='test content',
             description='test description',
-            content=content,
+            text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
-        self.assertTrue('style="color: red;"' not in article.content)
+        article.refresh_from_db()
+        self.assertTrue('style="color: red;"' not in article.text)
 
     def test_parse_content_handle_images(self):
         content = """
@@ -100,11 +103,12 @@ class ContentModelTestCase(testcases.TestCase):
         article = Article(
             title='test content',
             description='test description',
-            content=content,
+            text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
-        self.assertTrue('src="http://localhost:8888/' in article.content)
+        article.refresh_from_db()
+        self.assertFalse('src' in article.text)
 
     def test_parse_content_handle_private_files(self):
         content = """
@@ -115,10 +119,10 @@ class ContentModelTestCase(testcases.TestCase):
         """
 
         with self.assertRaises(ValidationError):
-            Article(
+            Article.objects.create(
                 title='test content',
                 description='test description',
-                content=content,
+                text=content,
                 author=User.objects.get(username='webkom')
             )
 
@@ -131,9 +135,9 @@ class ContentModelTestCase(testcases.TestCase):
         """
 
         with self.assertRaises(ValidationError):
-            Article(
+            Article.objects.create(
                 title='test content',
                 description='test description',
-                content=content,
+                text=content,
                 author=User.objects.get(username='webkom')
             )

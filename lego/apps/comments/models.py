@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from lego.apps.comments.permissions import CommentPermissionHandler
+from lego.apps.content.fields import ContentField
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel
@@ -15,7 +16,7 @@ class CommentManager(BasisModelManager):
 
 class Comment(BasisModel, ObjectPermissionsModel):
 
-    text = models.TextField()
+    text = ContentField(allow_images=False)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()

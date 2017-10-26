@@ -2,6 +2,7 @@ from rest_framework.fields import CharField
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.content.fields import ContentSerializerField
 from lego.apps.files.fields import ImageField
 from lego.apps.reactions.serializers import GroupedReactionSerializer, ReactionSerializer
 from lego.apps.tags.serializers import TagSerializerMixin
@@ -16,7 +17,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     reactions_grouped = GroupedReactionSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
-    content = CharField()
+    content = ContentSerializerField(source='text')
 
     class Meta:
         model = Article
@@ -38,7 +39,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
-    content = CharField()
+    content = ContentSerializerField(source='text')
 
     class Meta:
         model = Article
