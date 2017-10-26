@@ -19,21 +19,6 @@ class DetailedUserSerializer(serializers.ModelSerializer):
         serializer = PenaltySerializer(instance=qs, many=True)
         return serializer.data
 
-    def validate_username(self, username):
-        """
-        It is not possible to change username tom something that exists.
-        Used to remove case-sensitivity.
-        """
-        username_exists = User.objects\
-            .filter(username__iexact=username)\
-            .exclude(id=self.instance.id)\
-            .exists()
-
-        if username_exists:
-            raise exceptions.ValidationError('Username exists')
-
-        return username
-
     class Meta:
         model = User
         fields = (
@@ -50,7 +35,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             'allergies',
             'is_active',
             'penalties',
-            'abakus_groups',
+            'abakus_groups'
         )
 
 
@@ -117,7 +102,7 @@ class SearchGroupSerializer(serializers.ModelSerializer):
 
 class MeSerializer(serializers.ModelSerializer):
     """
-    Serializer for the read-only /me endpoint.
+    Serializer for the /me, retrieve and update endpoint with EDIT permissions.
     Also used by our JWT handler and returned to the user when a user obtains a JWT token.
     """
 
@@ -126,6 +111,7 @@ class MeSerializer(serializers.ModelSerializer):
     ical_token = serializers.SerializerMethodField('get_user_ical_token')
     penalties = serializers.SerializerMethodField('get_valid_penalties')
     is_student = serializers.SerializerMethodField()
+    is_abakus_member = serializers.BooleanField()
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -138,6 +124,21 @@ class MeSerializer(serializers.ModelSerializer):
 
     def get_is_student(self, user):
         return user.is_verified_student()
+
+    def validate_username(self, username):
+        """
+        It is not possible to change username tom something that exists.
+        Used to remove case-sensitivity.
+        """
+        username_exists = User.objects \
+            .filter(username__iexact=username) \
+            .exclude(id=self.instance.id) \
+            .exists()
+
+        if username_exists:
+            raise exceptions.ValidationError('Username exists')
+
+        return username
 
     class Meta:
         model = User
@@ -161,4 +162,3 @@ class MeSerializer(serializers.ModelSerializer):
             'penalties',
             'ical_token'
         )
-        read_only_fields = ('username',)

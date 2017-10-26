@@ -10,7 +10,7 @@ from lego.apps.events.models import Event
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
-from lego.apps.users.serializers.users import DetailedUserSerializer
+from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.test_utils import fake_time
 
 _test_user_data = {
@@ -256,7 +256,7 @@ class UpdateUsersAPITestCase(APITestCase):
         user = User.objects.get(pk=update_object.pk)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(set(response.data.keys()), set(DetailedUserSerializer.Meta.fields))
+        self.assertEqual(set(response.data.keys()), set(MeSerializer.Meta.fields))
 
         for key, value in self.modified_user.items():
             self.assertEqual(getattr(user, key), value)
@@ -315,6 +315,29 @@ class UpdateUsersAPITestCase(APITestCase):
             'username': self.without_perm.username.upper()
         })
         self.assertEquals(status.HTTP_200_OK, response.status_code)
+
+    def test_update_abakus_membership(self):
+        """Try to change the is_abakus_member"""
+        self.client.force_login(self.without_perm)
+        response = self.client.patch(_get_detail_url(self.without_perm.username), {
+            'is_abakus_member': True
+        })
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(response.data['is_abakus_member'], True)
+
+    def test_update_abakus_membership_when_not_student(self):
+        """Try to change the is_abakus_member when user is not a student"""
+        user = self.all_users.exclude(student_username__isnull=False).first()
+        self.client.force_login(user)
+        response = self.client.patch(_get_detail_url(user.username), {
+            'is_abakus_member': True
+        })
+        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_update_not_failing_when_not_student(self):
+        """Test the update method not failing when the user is not a student"""
+        user = self.all_users.exclude(student_username__isnull=False).first()
+        self.successful_update(user, user)
 
 
 class DeleteUsersAPITestCase(APITestCase):
