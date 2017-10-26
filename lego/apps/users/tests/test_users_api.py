@@ -316,6 +316,29 @@ class UpdateUsersAPITestCase(APITestCase):
         })
         self.assertEquals(status.HTTP_200_OK, response.status_code)
 
+    def test_update_abakus_membership(self):
+        """Try to change the is_abakus_member"""
+        self.client.force_login(self.without_perm)
+        response = self.client.patch(_get_detail_url(self.without_perm.username), {
+            'is_abakus_member': True
+        })
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(response.data['is_abakus_member'], True)
+
+    def test_update_abakus_membership_when_not_student(self):
+        """Try to change the is_abakus_member when user is not a student"""
+        user = self.all_users.exclude(student_username__isnull=False).first()
+        self.client.force_login(user)
+        response = self.client.patch(_get_detail_url(user.username), {
+            'is_abakus_member': True
+        })
+        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_update_not_failing_when_not_student(self):
+        """Test the update method not failing when the user is not a student"""
+        user = self.all_users.exclude(student_username__isnull=False).first()
+        self.successful_update(user, user)
+
 
 class DeleteUsersAPITestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
