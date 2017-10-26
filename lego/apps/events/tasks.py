@@ -169,7 +169,11 @@ def stripe_webhook_event(event_id, event_type):
         serializer = StripeObjectSerializer(data=event.data['object'])
         serializer.is_valid(raise_exception=True)
 
-        registration = Registration.objects.get(charge_id=serializer.data['id'])
+        metadata = serializer.data['metadata']
+        registration = Registration.objects.get(
+            event_id=metadata['EVENT_ID'], user__email=metadata['EMAIL']
+        )
+        registration.charge_id = serializer.data['id']
         registration.charge_amount = serializer.data['amount']
         registration.charge_amount_refunded = serializer.data['amount_refunded']
         registration.charge_status = serializer.data['status']
