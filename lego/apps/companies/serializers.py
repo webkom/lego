@@ -4,6 +4,7 @@ from rest_framework.fields import CharField
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.models import (Company, CompanyContact, CompanyFile, CompanyInterest,
                                         Semester, SemesterStatus)
+from lego.apps.feed.registry import get_handler
 from lego.apps.files.fields import FileField, ImageField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
@@ -125,6 +126,15 @@ class CompanyInterestSerializer(serializers.ModelSerializer):
         model = CompanyInterest
         fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
                   'other_offers', 'comment')
+
+    def create(self, validated_data):
+        semesters = validated_data.pop('semesters')
+        company_interest = CompanyInterest.objects.create(**validated_data)
+        company_interest.semesters.add(*semesters)
+        company_interest.save()
+        get_handler(CompanyInterest).handle_interest(company_interest)
+
+        return company_interest
 
 
 class CompanyInterestListSerializer(serializers.ModelSerializer):

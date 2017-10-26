@@ -14,7 +14,7 @@ class CompanyInterestHandler(BaseHandler):
     model = CompanyInterest
     manager = feed_manager
 
-    def handle_create(self, company_interest):
+    def handle_interest(self, company_interest):
 
         activity = Activity(
             actor=company_interest,
@@ -37,6 +37,9 @@ class CompanyInterestHandler(BaseHandler):
                 recipient, company_interest=company_interest
             )
             notification.notify()
+
+    def handle_create(self, company_interest):
+        pass
 
     def handle_update(self, company_interest):
         pass
