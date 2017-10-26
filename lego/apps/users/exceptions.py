@@ -1,3 +1,0 @@
-
-class UserNotStudent(ValueError):
-    pass

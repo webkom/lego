@@ -1,10 +1,7 @@
-from django.db import transaction
 from rest_framework import exceptions, serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
-from lego.apps.users import constants
-from lego.apps.users.exceptions import UserNotStudent
 from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -165,20 +162,3 @@ class MeSerializer(serializers.ModelSerializer):
             'penalties',
             'ical_token'
         )
-
-    def update(self, instance, validated_data):
-        with transaction.atomic():
-            is_abakus_member = validated_data.pop('is_abakus_member', None)
-            user = super().update(instance, validated_data)
-            if is_abakus_member is None or is_abakus_member == instance.is_abakus_member:
-                return user
-            if not instance.is_verified_student():
-                raise UserNotStudent()
-            abakus_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-            if is_abakus_member:
-                abakus_group.add_user(instance)
-            else:
-                abakus_group.remove_user(instance)
-            # We need to delete the cached_property to re-evaluate is_abakus_member
-            del user.all_groups
-            return user

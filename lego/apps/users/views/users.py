@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status, viewsets
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import ValidationError
@@ -9,7 +10,6 @@ from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users import constants
-from lego.apps.users.exceptions import UserNotStudent
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
@@ -100,7 +100,25 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return Response(payload, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
-        try:
-            return super().update(request, *args, **kwargs)
-        except UserNotStudent:
-            raise ValidationError(detail='You have to be a verified student to perform this action')
+        partial = kwargs.pop('partial', False)
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        is_abakus_member = serializer.validated_data.pop('is_abakus_member', None)
+        with transaction.atomic():
+            super().perform_update(serializer)
+            if is_abakus_member is None or is_abakus_member == user.is_abakus_member:
+                return Response(data=serializer.data, status=status.HTTP_200_OK)
+            if not user.is_verified_student():
+                raise ValidationError(
+                    detail='You have to be a verified student to perform this action'
+                )
+            abakus_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+            if is_abakus_member:
+                abakus_group.add_user(user)
+            else:
+                abakus_group.remove_user(user)
+        payload = serializer.data
+        payload['is_abakus_member'] = is_abakus_member
+        return Response(data=payload, status=status.HTTP_200_OK)
