@@ -9,11 +9,12 @@ from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users import constants
+from lego.apps.users.exceptions import UserNotStudent
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
-from lego.apps.users.serializers.users import (DetailedUserSerializer, MeSerializer,
-                                               PublicUserSerializer, PublicUserWithGroupsSerializer)
+from lego.apps.users.serializers.users import (MeSerializer, PublicUserSerializer,
+                                               PublicUserWithGroupsSerializer)
 
 log = get_logger()
 
@@ -97,3 +98,9 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         payload = get_jwt_token(user)
         return Response(payload, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        try:
+            return super().update(request, *args, **kwargs)
+        except UserNotStudent:
+            raise ValidationError(detail='You have to be a verified student to perform this action')

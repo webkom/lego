@@ -300,17 +300,8 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     def profile_picture(self, value):
         self.picture = value
 
-    @PermissionsMixin.is_abakus_member.setter
-    def is_abakus_member(self, add_to_group):
-        if self.is_verified_student():
-            abakus_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-            if add_to_group:
-                abakus_group.add_user(self)
-            else:
-                abakus_group.remove_user(self)
-
     def is_verified_student(self):
-        return self.student_username is not None and self.grade is not None
+        return self.student_username is not None
 
     def get_short_name(self):
         return self.first_name
