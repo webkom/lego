@@ -6,7 +6,8 @@ from lego.apps.users.models import User
 
 class EmailListFilterSet(FilterSet):
 
-    email = CharFilter(name='email_id')
+    name = CharFilter(lookup_expr='icontains')
+    email = CharFilter(name='email__email', lookup_expr='icontains')
 
     class Meta:
         model = EmailList
@@ -15,7 +16,7 @@ class EmailListFilterSet(FilterSet):
 
 class EmailUserFilterSet(FilterSet):
 
-    email = CharFilter(name='internal_email_id')
+    email = CharFilter(name='internal_email__email', lookup_expr='icontains')
 
     class Meta:
         model = User
