@@ -34,17 +34,17 @@ class GalleryViewSetTestCase(APITestCase):
         """Permitted user should be able to see all pictures."""
         self.client.force_login(self.permitted_user)
 
-        response = self.client.get(f'{self.url}1/')
+        response = self.client.get(f'{self.url}1/pictures/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data['pictures']))
+        self.assertEqual(2, len(response.data['results']))
 
     def test_detail_gallery_read_user(self, mock_signer):
         """Read only user is able to fetch the gallery."""
         self.client.force_login(self.read_only_user)
 
-        response = self.client.get(f'{self.url}1/')
+        response = self.client.get(f'{self.url}1/pictures/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data['pictures']))
+        self.assertEqual(1, len(response.data['results']))
 
     def test_detail_gallery_denied(self, mock_signer):
         """Users is not able to fetch galleries by default."""

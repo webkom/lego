@@ -5,7 +5,7 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.events.fields import PublicEventField
 from lego.apps.events.models import Event
 from lego.apps.files.fields import FileField, ImageField
-from lego.apps.gallery.fields import GalleryCoverField, PictureListField
+from lego.apps.gallery.fields import GalleryCoverField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
 from lego.utils.serializers import BasisModelSerializer
@@ -73,7 +73,6 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
 
 class GallerySerializer(BasisModelSerializer):
 
-    pictures = PictureListField()
     cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
     photographers = PublicUserField(many=True, queryset=User.objects.all())
     event = PublicEventField(queryset=Event.objects.all(), required=False)
@@ -82,7 +81,7 @@ class GallerySerializer(BasisModelSerializer):
         model = Gallery
         fields = (
             'id', 'title', 'description', 'location', 'taken_at', 'created_at', 'event',
-            'pictures', 'photographers', 'cover',
+            'photographers', 'cover',
         )
         read_only_fields = ('created_at', 'pictures')
 
