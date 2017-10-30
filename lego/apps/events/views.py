@@ -101,7 +101,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if not event.is_priced or not event.use_stripe:
             raise PermissionDenied()
 
-        if registration.charge_id:
+        if registration.has_paid():
             raise APIPaymentExists()
         registration.charge_status = constants.PAYMENT_PENDING
         registration.save()
