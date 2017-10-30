@@ -9,7 +9,7 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 
     class Meta:
         model = RestrictedMail
-        fields = ('id', 'from_address', 'hide_sender', 'used', 'created_at')
+        fields = ('id', 'from_address', 'hide_sender', 'used', 'created_at', 'weekly')
         read_only_fields = ('used', 'created_at')
 
     def save(self, **kwargs):
