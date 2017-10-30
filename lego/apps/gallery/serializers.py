@@ -62,9 +62,9 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GalleryPicture
-        fields = ('id', 'description', 'taggees', 'active', 'file', 'thumbnail',
+        fields = ('id', 'gallery', 'description', 'taggees', 'active', 'file', 'thumbnail',
                   'raw_file', 'comments', 'comment_target')
-        read_only_fields = ('raw_file', 'thumbnail')
+        read_only_fields = ('raw_file', 'thumbnail', 'gallery')
 
     def validate(self, attrs):
         gallery = Gallery.objects.get(pk=self.context['view'].kwargs['gallery_pk'])
