@@ -2,6 +2,7 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from structlog import get_logger
 
+from lego.apps.stats.instance_tracking import track_instance
 from lego.apps.stats.statsd_client import statsd
 
 log = get_logger()
@@ -28,6 +29,8 @@ def post_save_callback(instance, created, **kwargs):
             model=model,
             pk=instance.pk
         )
+
+    track_instance(instance)
 
 
 @receiver(post_delete)

@@ -110,8 +110,8 @@ def _get_registrations_detail_url(event_pk, registration_pk):
 
 
 class ListEventsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -137,8 +137,8 @@ class ListEventsTestCase(APITestCase):
 
 
 class RetrieveEventsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -192,8 +192,8 @@ class RetrieveEventsTestCase(APITestCase):
 
 
 class CreateEventsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -301,8 +301,8 @@ class CreateEventsTestCase(APITestCase):
 
 
 class PoolsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -357,8 +357,8 @@ class PoolsTestCase(APITestCase):
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
 class RegistrationsTransactionTestCase(APITransactionTestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
@@ -402,8 +402,8 @@ class RegistrationsTransactionTestCase(APITransactionTestCase):
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
 class RegistrationsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
@@ -546,8 +546,8 @@ class RegistrationsTestCase(APITestCase):
 
 
 class EventAdministrateTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.get(pk=1)
@@ -569,8 +569,8 @@ class EventAdministrateTestCase(APITestCase):
 
 
 class CreateAdminRegistrationTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_users = User.objects.all()
@@ -675,8 +675,8 @@ class StripePaymentTestCase(APITestCase):
     Testing cards used:
     https://stripe.com/docs/testing#cards
     """
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.get(pk=1)
@@ -740,8 +740,8 @@ class StripePaymentTestCase(APITestCase):
 
 
 class CapacityExpansionTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_events.yaml',
-                'test_users.yaml', 'test_companies.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml',
+                'test_companies.yaml']
 
     def setUp(self):
         self.webkom_user = User.objects.get(pk=1)

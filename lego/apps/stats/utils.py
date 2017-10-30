@@ -1,6 +1,7 @@
 from structlog import get_logger
 
 from .analytics_client import track as analytics_track
+from .analytics_client import group, identify  # noqa
 
 log = get_logger()
 

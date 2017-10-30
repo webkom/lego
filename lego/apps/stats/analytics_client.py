@@ -59,8 +59,22 @@ def identify(user):
             'full_name': user.full_name,
             'email': user.email,
             'gender': user.gender,
+            'student_username': user.student_username,
+            'is_active': user.is_active,
         })
+        _proxy('identify', user, traits=traits)
     else:
         log.warn('analytics_identify_unknown_user')
 
-    _proxy('identify', user, traits=traits)
+
+def group(membership):
+    group = membership.abakus_group
+    traits = {
+        'name': group.name,
+        'type': group.type,
+        'is_committee': group.is_committee,
+        'is_grade': group.is_grade,
+        'role': membership.role,
+        'is_active': membership.is_active,
+    }
+    _proxy('group', membership.user, group_id=membership.abakus_group_id, traits=traits)

@@ -9,8 +9,8 @@ def _get_frontpage():
 
 
 class FrontpageAPITestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
 
     def setUp(self):
         self.user = User.objects.get(username='webkommer')
