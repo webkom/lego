@@ -1,5 +1,8 @@
 from django.test import TestCase
 
+from lego.apps.events.tests.utils import get_dummy_users
+from lego.apps.notifications.constants import EMAIL, PUSH, WEEKLY_MAIL
+from lego.apps.notifications.models import NotificationSetting
 from lego.apps.restricted.models import RestrictedMail
 
 
@@ -37,3 +40,31 @@ class RestrictedMailModelTestCase(TestCase):
         """Return none when an invalid lookup is performed"""
         restricted_mail = RestrictedMail.get_restricted_mail('test@abakus.no', 'invalid_token')
         self.assertIsNone(restricted_mail)
+
+    def test_lookup_recipients_for_weekly_mail(self):
+        """
+        Lookup recipients for weekly mail, make sure unsubscribed users are removed
+        """
+        restricted_mail = RestrictedMail.objects.create(from_address='test@test.no', weekly=True)
+
+        unsubscribed_one, unsubscribed_two, no_setting, subscribed = get_dummy_users(4)
+        restricted_mail.users.add(unsubscribed_one, unsubscribed_two, no_setting, subscribed)
+
+        NotificationSetting.objects.create(user=unsubscribed_one,
+                                           notification_type=WEEKLY_MAIL,
+                                           enabled=False)
+        NotificationSetting.objects.create(user=unsubscribed_two,
+                                           notification_type=WEEKLY_MAIL,
+                                           enabled=True,
+                                           channels=[PUSH])
+        NotificationSetting.objects.create(user=subscribed,
+                                           notification_type=WEEKLY_MAIL,
+                                           enabled=True,
+                                           channels=[EMAIL])
+
+        recipients = restricted_mail.lookup_recipients()
+
+        self.assertCountEqual(recipients, [
+            no_setting.email,
+            subscribed.email
+        ])
