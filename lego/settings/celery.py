@@ -33,6 +33,10 @@ def cassandra_init(*args, **kwargs):
         **settings.CASSANDRA_DRIVER_KWARGS
     )
 
+    from lego.apps.stats import analytics_client
+    analytics_client.default_client = None
+    analytics_client.setup_analytics()
+
 
 @app.on_configure.connect()
 def on_configure(*args, **kwargs):

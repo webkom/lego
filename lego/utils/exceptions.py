@@ -30,7 +30,8 @@ def exception_handler(exc, context):
         log.warn(
             'request_error',
             status_code=response.status_code,
-            detail=detail
+            detail=detail,
+            exc=exc
         )
     else:
         log.error('unhandled_request_exception', exc=exc)
