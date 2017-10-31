@@ -21,9 +21,11 @@ def track_instance(instance):
         if instance.status not in [SUCCESS_REGISTER, SUCCESS_UNREGISTER]:
             return
 
-        registered = instance.is_registered
         event = instance.event
         pool = instance.pool
+
+        registered = not(pool is None and instance.unregistration_date)
+
         properties = {
             'id': instance.id,
             'has_paid': instance.has_paid(),
