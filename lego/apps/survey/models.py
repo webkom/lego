@@ -68,6 +68,9 @@ class Submission(BasisModel):
     submitted_time = models.DateTimeField(null=True)
     submitted = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('survey', 'user')
+
     def submit(self):
         self.submitted = True
         self.submitted_time = timezone.now()
@@ -77,5 +80,5 @@ class Submission(BasisModel):
 class Answer(BasisModel):
     submission = models.ForeignKey(Submission, related_name='answers')
     question = models.ForeignKey(Question, related_name='answers')
-    selected_answers = models.ForeignKey(Alternative, related_name='answers', blank=True)
-    answer_text = models.TextField(max_length=255, blank=True)
+    selected_answers = models.ForeignKey(Alternative, related_name='answers', blank=True, null=True)
+    answer_text = models.TextField(max_length=255, blank=True, null=True)
