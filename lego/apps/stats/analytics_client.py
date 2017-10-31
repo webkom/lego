@@ -9,6 +9,10 @@ default_client = None
 development = getattr(settings, 'DEVELOPMENT', False)
 
 
+def handle_analytics_error(exception, *args, **kwargs):
+    log.critical('analytics_error', exc=exception)
+
+
 def setup_analytics():
     global default_client, development
 
@@ -20,7 +24,7 @@ def setup_analytics():
 
     if not default_client:
         default_client = Client(
-            write_key=write_key, host=host, debug=False, on_error=None, send=send
+            write_key=write_key, host=host, debug=False, on_error=handle_analytics_error, send=send
         )
 
 
