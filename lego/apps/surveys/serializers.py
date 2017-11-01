@@ -1,41 +1,42 @@
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 
 from lego.apps.events.serializers.events import EventReadSerializer
-from lego.apps.survey.constants import QUESTION_TYPES
-from lego.apps.survey.models import Alternative, Answer, Question, Submission, Survey
-from lego.apps.users.serializers.users import PublicUserSerializer
+from lego.apps.surveys.constants import QUESTION_TYPES
+from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
+# from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
-class AlternativeSerializer(BasisModelSerializer):
+class OptionSerializer(BasisModelSerializer):
 
     class Meta:
-        model = Alternative
-        fields = ('id', 'alternative_text', 'alternative_type')
+        model = Option
+        fields = ('id', 'option_text')
 
 
 class QuestionSerializer(BasisModelSerializer):
     question_type = serializers.ChoiceField(choices=QUESTION_TYPES)
-    alternatives = AlternativeSerializer(many=True, required=False, allow_null=True)
+    options = OptionSerializer(many=True, required=False, allow_null=True)
 
     class Meta:
         model = Question
-        fields = ('id', 'question_type', 'question_text',  'mandatory', 'alternatives')
+        fields = ('id', 'question_type', 'question_text', 'mandatory', 'options')
 
 
 class AnswerSerializer(BasisModelSerializer):
     question = QuestionSerializer()
+    selected_options = OptionSerializer(many=True, required=False)
 
     class Meta:
         model = Answer
-        fields = ('id', 'submission', 'question', 'answer_text', 'selected_answers')
+        fields = ('id', 'submission', 'question', 'answer_text', 'selected_options')
 
 
 class AnswerCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('id', 'question', 'answer_text', 'selected_answers')
+        fields = ('id', 'question', 'answer_text', 'selected_options')
 
 
 class SurveyReadSerializer(BasisModelSerializer):
@@ -58,9 +59,9 @@ class SubmissionReadSerializer(BasisModelSerializer):
 
 
 class SubmissionReadDetailedSerializer(BasisModelSerializer):
-    # Not used atm, but might be used later. Should some info only be showed in detail?
-    user = PublicUserSerializer()
-    survey = SurveyReadSerializer()
+    # Not any different from list serializer atm. Should some info only be showed in detail?
+    # user = PublicUserSerializer()
+    # survey = SurveyReadSerializer()
     answers = AnswerSerializer(many=True)
 
     class Meta:
@@ -77,34 +78,41 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
 
     def create(self, validated_data):
         survey = Survey.objects.get(pk=self.context['view'].kwargs['survey_pk'])
-        answers = None
-        if 'answers' in validated_data:
-            answers = validated_data.pop('answers')
+        answers = None if 'answers' not in validated_data else validated_data.pop('answers')
         submission = Submission.objects.create(survey=survey, **validated_data)
         submission.save()
 
-        for answer in answers:
-            question = Question.objects.get(id=getattr(answer.pop('question'), 'id'))
-            new_answer = Answer.objects.create(submission=submission, question=question, **answer)
-            new_answer.save()
+        if answers is not None:
+            for answer in answers:
+                question = answer.pop('question')
+
+                if getattr(question, 'question_type') in [1, 2]:
+                    if getattr(question, 'question_type') is 1 and \
+                                    len(answer['selected_options']) > 1:
+                        raise exceptions.ValidationError('You cannot select multiple options for '
+                                                         'this type of question.')
+
+                    Answer.create(submission, question, **answer)
+                else:
+                    new_answer = Answer.objects.create(submission=submission, question=question,
+                                                       **answer)
+                    new_answer.save()
 
         return submission
 
 
 class SurveyReadDetailedSerializer(BasisModelSerializer):
-    submissions = SubmissionReadDetailedSerializer(many=True)
     questions = QuestionSerializer(many=True)
     event = EventReadSerializer()
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'questions',
-                  'submissions', 'event', 'template_type')
+        fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type')
 
 
 class SurveyCreateAndUpdateSerializer(BasisModelSerializer):
     is_clone = serializers.BooleanField()
-    questions = QuestionSerializer(many=True)
+    questions = QuestionSerializer(many=True, required=False, allow_null=True)
 
     class Meta:
         model = Survey
@@ -122,16 +130,15 @@ class SurveyCreateAndUpdateSerializer(BasisModelSerializer):
         survey.save()
 
         for question in questions:
-            alternatives = None
-            if 'alternatives' in question:
-                alternatives = question.pop('alternatives')
+            options = None
+            if 'options' in question:
+                options = question.pop('options')
             new_question = Question.objects.create(survey=survey, **question)
             new_question.save()
 
-            if alternatives is not None:
-                for alternative in alternatives:
-                    new_alternative = Alternative.objects.create(question=new_question,
-                                                                 **alternative)
-                    new_alternative.save()
+            if options is not None:
+                for option in options:
+                    new_option = Option.objects.create(question=new_question, **option)
+                    new_option.save()
 
         return survey

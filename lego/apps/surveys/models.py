@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 
 from lego.apps.events.constants import EVENT_TYPES
-from lego.apps.survey.constants import ALTERNATIVE_TYPES, QUESTION_TYPES
+from lego.apps.surveys.constants import QUESTION_TYPES
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -29,8 +29,8 @@ class Survey(BasisModel):
             copied_q.survey = new_survey
             copied_q.save()
 
-            for alternative in question.alternatives.all().reverse():
-                copied_a = deepcopy(alternative)
+            for option in question.options.all().reverse():
+                copied_a = deepcopy(option)
                 copied_a.id = None
                 copied_a.question = copied_q
                 copied_a.save()
@@ -56,10 +56,9 @@ class Question(BasisModel):
     relative_index = models.IntegerField(null=True)
 
 
-class Alternative(BasisModel):
-    question = models.ForeignKey(Question, related_name='alternatives')
-    alternative_text = models.TextField(max_length=255)
-    alternative_type = models.PositiveSmallIntegerField(choices=ALTERNATIVE_TYPES, default=1)
+class Option(BasisModel):
+    question = models.ForeignKey(Question, related_name='options')
+    option_text = models.TextField(max_length=255)
 
 
 class Submission(BasisModel):
@@ -80,5 +79,14 @@ class Submission(BasisModel):
 class Answer(BasisModel):
     submission = models.ForeignKey(Submission, related_name='answers')
     question = models.ForeignKey(Question, related_name='answers')
-    selected_answers = models.ForeignKey(Alternative, related_name='answers', blank=True, null=True)
+    selected_options = models.ManyToManyField(Option, related_name='selected_in_answers',
+                                              blank=True)
     answer_text = models.TextField(max_length=255, blank=True, null=True)
+
+    def create(submission, question, **kwargs):
+        selected_options = kwargs.pop('selected_options')
+        answer = Answer.objects.create(submission=submission, question=question, **kwargs)
+        answer.save()
+        for selected_option in selected_options:
+            answer.selected_options.add(selected_option)
+        answer.save()
