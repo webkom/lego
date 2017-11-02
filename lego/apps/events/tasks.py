@@ -252,7 +252,8 @@ def notify_user_when_payment_soon_overdue(self, logger_context=None):
 
     time = timezone.now()
     events = Event.objects.filter(
-        payment_due_date__range=(time - timedelta(days=7), time), is_priced=True, use_stripe=True
+        payment_due_date__range=(time - timedelta(days=2), time + timedelta(days=3)),
+        is_priced=True, use_stripe=True
     ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
         for registration in event.registrations.exclude(pool=None):
@@ -274,8 +275,8 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
         end_time__gte=time
     ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
-        registrations_due = Registration.objects.filter(
-            event=event, charge_id=None, charge_status=None
+        registrations_due = Registration.objects.filter(event=event).exclude(
+            charge_status__in=[constants.PAYMENT_MANUAL, constants.PAYMENT_SUCCESS]
         ).prefetch_related('user')
         if registrations_due:
             users = [
