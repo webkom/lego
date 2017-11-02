@@ -16,11 +16,12 @@ from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
                                          notify_user_registration)
 from lego.apps.feed.registry import get_handler
+from lego.utils.tasks import AbakusTask
 
 log = get_logger()
 
 
-class AsyncRegister(celery_app.Task):
+class AsyncRegister(AbakusTask):
     serializer = 'json'
     default_retry_delay = 5
     registration = None
@@ -32,7 +33,7 @@ class AsyncRegister(celery_app.Task):
             notify_user_registration(constants.SOCKET_REGISTRATION_FAILURE, self.registration)
 
 
-class Payment(celery_app.Task):
+class Payment(AbakusTask):
     serializer = 'json'
     default_retry_delay = 5
     registration = None
@@ -58,7 +59,9 @@ class Payment(celery_app.Task):
 
 
 @celery_app.task(base=AsyncRegister, bind=True)
-def async_register(self, registration_id):
+def async_register(self, registration_id, logger_context=None):
+    self.setup_logger(logger_context)
+
     self.registration = Registration.objects.get(id=registration_id)
     try:
         with transaction.atomic():
@@ -66,6 +69,7 @@ def async_register(self, registration_id):
             transaction.on_commit(lambda: notify_event_registration(
                 constants.SOCKET_REGISTRATION_SUCCESS, self.registration
             ))
+        log.info('registration_success', registration_id=self.registration.id)
     except LockError as e:
         log.error(
             'registration_cache_lock_error', exception=e, registration_id=self.registration.id
@@ -80,8 +84,10 @@ def async_register(self, registration_id):
         raise self.retry(exc=e, max_retries=3)
 
 
-@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
-def async_unregister(self, registration_id):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask, default_retry_delay=30)
+def async_unregister(self, registration_id, logger_context=None):
+    self.setup_logger(logger_context)
+
     registration = Registration.objects.get(id=registration_id)
     pool_id = registration.pool_id
     try:
@@ -92,6 +98,7 @@ def async_unregister(self, registration_id):
                 constants.SOCKET_UNREGISTRATION_SUCCESS, registration,
                 from_pool=pool_id, activation_time=activation_time
             ))
+        log.info('unregistration_success', registration_id=self.registration.id)
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e, max_retries=3)
@@ -107,7 +114,9 @@ def async_unregister(self, registration_id):
 
 
 @celery_app.task(base=Payment, bind=True)
-def async_payment(self, registration_id, token):
+def async_payment(self, registration_id, token, logger_context=None):
+    self.setup_logger(logger_context)
+
     self.registration = Registration.objects.get(id=registration_id)
     event = self.registration.event
     try:
@@ -122,6 +131,7 @@ def async_payment(self, registration_id, token):
                 'EMAIL': self.registration.user.email
             }
         )
+        log.info('stripe_payment_success', registration_id=self.registration.id)
         return response
     except stripe.error.CardError as e:
         raise self.retry(exc=e)
@@ -137,8 +147,10 @@ def async_payment(self, registration_id, token):
         raise self.retry(exc=e)
 
 
-@celery_app.task(serializer='json', bind=True)
-def registration_payment_save(self, result, registration_id):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def registration_payment_save(self, result, registration_id, logger_context=None):
+    self.setup_logger(logger_context)
+
     try:
         registration = Registration.objects.get(id=registration_id)
         registration.charge_id = result['id']
@@ -153,9 +165,11 @@ def registration_payment_save(self, result, registration_id):
         raise self.retry(exc=e)
 
 
-@celery_app.task(serializer='json', bind=True)
-def check_for_bump_on_pool_creation_or_expansion(self, event_id):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def check_for_bump_on_pool_creation_or_expansion(self, event_id, logger_context=None):
     """Task checking for bumps when event and pools are updated"""
+    self.setup_logger(logger_context)
+
     # Event is locked using the instance field "is_ready"
     event = Event.objects.get(pk=event_id)
     event.bump_on_pool_creation_or_expansion()
@@ -163,8 +177,10 @@ def check_for_bump_on_pool_creation_or_expansion(self, event_id):
     event.save(update_fields=['is_ready'])
 
 
-@celery_app.task(serializer='json')
-def stripe_webhook_event(event_id, event_type):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def stripe_webhook_event(self, event_id, event_type, logger_context=None):
+    self.setup_logger(logger_context)
+
     if event_type in ['charge.failed', 'charge.refunded', 'charge.succeeded']:
         event = stripe.Event.retrieve(event_id)
         serializer = StripeObjectSerializer(data=event.data['object'])
@@ -175,16 +191,20 @@ def stripe_webhook_event(event_id, event_type):
             event_id=metadata['EVENT_ID'], user__email=metadata['EMAIL']
         ).first()
         if not registration:
+            log.error('stripe_webhook_error', event_id=event_id, metadata=metadata)
             raise WebhookDidNotFindRegistration(event_id, metadata)
         registration.charge_id = serializer.data['id']
         registration.charge_amount = serializer.data['amount']
         registration.charge_amount_refunded = serializer.data['amount_refunded']
         registration.charge_status = serializer.data['status']
         registration.save()
+        log.info('stripe_webhook_received', event_id=event_id, registration_id=registration.id)
 
 
-@celery_app.task(serializer='json')
-def check_events_for_registrations_with_expired_penalties():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def check_events_for_registrations_with_expired_penalties(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     events_ids = Event.objects.filter(
         start_time__gte=timezone.now()
     ).exclude(registrations=None).values_list(flat=True)
@@ -200,8 +220,10 @@ def check_events_for_registrations_with_expired_penalties():
                                 break
 
 
-@celery_app.task(serializer='json')
-def bump_waiting_users_to_new_pool():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def bump_waiting_users_to_new_pool(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     events_ids = Event.objects.filter(start_time__gte=timezone.now()).exclude(
         registrations=None).values_list(flat=True)
     for event_id in events_ids:
@@ -214,12 +236,20 @@ def bump_waiting_users_to_new_pool():
                         now = timezone.now()
                         if not pool.is_activated and act < now + timedelta(minutes=35):
                             locked_event.early_bump(pool)
+                            log.info(
+                                'early_bump_executed', event_id=event_id, pool_id=pool.id
+                            )
                         elif pool.is_activated and act > now - timedelta(minutes=35):
+                            log.info(
+                                'early_bump_executed', event_id=event_id, pool_id=pool.id
+                            )
                             locked_event.early_bump(pool)
 
 
-@celery_app.task(serializer='json')
-def notify_user_when_payment_overdue():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def notify_user_when_payment_overdue(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     time = timezone.now()
     events = Event.objects.filter(
         payment_due_date__range=(time - timedelta(days=7), time), is_priced=True, use_stripe=True
@@ -227,11 +257,17 @@ def notify_user_when_payment_overdue():
     for event in events:
         for registration in event.registrations.all():
             if registration.should_notify(time):
+                log.info(
+                    'registration_notified_overdue_payment', event_id=event.id,
+                    registration_id=registration.id
+                )
                 get_handler(Registration).handle_payment_overdue(registration)
 
 
-@celery_app.task(serializer='json')
-def notify_event_creator_when_payment_overdue():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def notify_event_creator_when_payment_overdue(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     time = timezone.now()
     events = Event.objects.filter(
         payment_due_date__lte=time, is_priced=True, use_stripe=True,
@@ -252,15 +288,21 @@ def notify_event_creator_when_payment_overdue():
                 event.created_by, event=event, users=users
             )
             notification.notify()
+            log.info(
+                'event_creator_notified_of_overdue_payments', event_id=event.id,
+                creator=event.created_by
+            )
 
 
-@celery_app.task(serializer='json')
-def check_that_pool_counters_match_registration_number():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def check_that_pool_counters_match_registration_number(self, logger_context=None):
     """
     Task that checks whether pools counters are in sync with number of registrations. We do not
     enforce this check for events that are merged, hence the merge_time filter, because
     incrementing the counter decreases the registration performance
     """
+    self.setup_logger(logger_context)
+
     events_ids = Event.objects.filter(
         start_time__gte=timezone.now(), merge_time__gte=timezone.now()
     ).values_list(flat=True)
