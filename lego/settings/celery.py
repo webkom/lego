@@ -72,8 +72,8 @@ schedule = {
         'task': 'lego.apps.events.tasks.bump_waiting_users_to_new_pool',
         'schedule': crontab(minute='*/30')
     },
-    'notify_user_when_payment_overdue': {
-        'task': 'lego.apps.events.tasks.notify_user_when_payment_overdue',
+    'notify_user_when_payment_soon_overdue': {
+        'task': 'lego.apps.events.tasks.notify_user_when_payment_soon_overdue',
         'schedule': crontab(hour=9, minute=0)
     },
     'notify_event_creator_when_payment_overdue': {

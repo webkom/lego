@@ -12,7 +12,7 @@ from lego.apps.events.tasks import (async_register, bump_waiting_users_to_new_po
                                     check_events_for_registrations_with_expired_penalties,
                                     check_that_pool_counters_match_registration_number,
                                     notify_event_creator_when_payment_overdue,
-                                    notify_user_when_payment_overdue)
+                                    notify_user_when_payment_soon_overdue)
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
 
@@ -376,10 +376,21 @@ class PaymentDueTestCase(TestCase):
         self.registration = self.event.registrations.first()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
+    def test_user_notification_when_overdue_payment_and_in_waiting_list(self, mock_get_handler):
+        """Tests that payment notification is not added when registration is in waiting list"""
+
+        self.registration.pool = None
+        self.registration.save()
+        notify_user_when_payment_soon_overdue.delay()
+        mock_get_handler(
+            Registration
+        ).handle_payment_overdue.assert_not_called()
+
+    @mock.patch('lego.apps.events.tasks.get_handler')
     def test_user_notification_when_overdue_payment(self, mock_get_handler):
         """Tests that notification is added when registration has not paid"""
 
-        notify_user_when_payment_overdue.delay()
+        notify_user_when_payment_soon_overdue.delay()
         mock_get_handler(
             Registration
         ).handle_payment_overdue.assert_called_once_with(self.registration)
@@ -390,7 +401,7 @@ class PaymentDueTestCase(TestCase):
         self.registration.last_notified_overdue_payment = timezone.now() - timedelta(days=1)
         self.registration.save()
 
-        notify_user_when_payment_overdue.delay()
+        notify_user_when_payment_soon_overdue.delay()
         mock_get_handler(
             Registration
         ).handle_payment_overdue.assert_called_once_with(self.registration)
@@ -402,7 +413,7 @@ class PaymentDueTestCase(TestCase):
         self.registration.last_notified_overdue_payment = timezone.now()
         self.registration.save()
 
-        notify_user_when_payment_overdue.delay()
+        notify_user_when_payment_soon_overdue.delay()
         mock_get_handler.assert_not_called()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
@@ -412,7 +423,7 @@ class PaymentDueTestCase(TestCase):
         self.registration.charge_status = constants.PAYMENT_SUCCESS
         self.registration.save()
 
-        notify_user_when_payment_overdue.delay()
+        notify_user_when_payment_soon_overdue.delay()
         mock_get_handler.assert_not_called()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
@@ -422,7 +433,7 @@ class PaymentDueTestCase(TestCase):
         self.event.payment_due_date = timezone.now() + timedelta(days=1)
         self.event.save()
 
-        notify_user_when_payment_overdue.delay()
+        notify_user_when_payment_soon_overdue.delay()
         mock_get_handler.assert_not_called()
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')

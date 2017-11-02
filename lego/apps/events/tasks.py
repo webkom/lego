@@ -247,7 +247,7 @@ def bump_waiting_users_to_new_pool(self, logger_context=None):
 
 
 @celery_app.task(serializer='json', bind=True, base=AbakusTask)
-def notify_user_when_payment_overdue(self, logger_context=None):
+def notify_user_when_payment_soon_overdue(self, logger_context=None):
     self.setup_logger(logger_context)
 
     time = timezone.now()
@@ -255,7 +255,7 @@ def notify_user_when_payment_overdue(self, logger_context=None):
         payment_due_date__range=(time - timedelta(days=7), time), is_priced=True, use_stripe=True
     ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
-        for registration in event.registrations.all():
+        for registration in event.registrations.exclude(pool=None):
             if registration.should_notify(time):
                 log.info(
                     'registration_notified_overdue_payment', event_id=event.id,
