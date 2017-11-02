@@ -16,11 +16,12 @@ from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
                                          notify_user_registration)
 from lego.apps.feed.registry import get_handler
+from lego.utils.tasks import AbakusTask
 
 log = get_logger()
 
 
-class AsyncRegister(celery_app.Task):
+class AsyncRegister(AbakusTask):
     serializer = 'json'
     default_retry_delay = 5
     registration = None
@@ -32,7 +33,7 @@ class AsyncRegister(celery_app.Task):
             notify_user_registration(constants.SOCKET_REGISTRATION_FAILURE, self.registration)
 
 
-class Payment(celery_app.Task):
+class Payment(AbakusTask):
     serializer = 'json'
     default_retry_delay = 5
     registration = None
@@ -58,7 +59,9 @@ class Payment(celery_app.Task):
 
 
 @celery_app.task(base=AsyncRegister, bind=True)
-def async_register(self, registration_id):
+def async_register(self, registration_id, logger_context=None):
+    self.setup_logger(logger_context)
+
     self.registration = Registration.objects.get(id=registration_id)
     try:
         with transaction.atomic():
@@ -80,8 +83,10 @@ def async_register(self, registration_id):
         raise self.retry(exc=e, max_retries=3)
 
 
-@celery_app.task(serializer='json', bind=True, default_retry_delay=30)
-def async_unregister(self, registration_id):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask, default_retry_delay=30)
+def async_unregister(self, registration_id, logger_context=None):
+    self.setup_logger(logger_context)
+
     registration = Registration.objects.get(id=registration_id)
     pool_id = registration.pool_id
     try:
@@ -107,7 +112,9 @@ def async_unregister(self, registration_id):
 
 
 @celery_app.task(base=Payment, bind=True)
-def async_payment(self, registration_id, token):
+def async_payment(self, registration_id, token, logger_context=None):
+    self.setup_logger(logger_context)
+
     self.registration = Registration.objects.get(id=registration_id)
     event = self.registration.event
     try:
@@ -137,8 +144,10 @@ def async_payment(self, registration_id, token):
         raise self.retry(exc=e)
 
 
-@celery_app.task(serializer='json', bind=True)
-def registration_payment_save(self, result, registration_id):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def registration_payment_save(self, result, registration_id, logger_context=None):
+    self.setup_logger(logger_context)
+
     try:
         registration = Registration.objects.get(id=registration_id)
         registration.charge_id = result['id']
@@ -200,8 +209,10 @@ def check_events_for_registrations_with_expired_penalties():
                                 break
 
 
-@celery_app.task(serializer='json')
-def bump_waiting_users_to_new_pool():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def bump_waiting_users_to_new_pool(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     events_ids = Event.objects.filter(start_time__gte=timezone.now()).exclude(
         registrations=None).values_list(flat=True)
     for event_id in events_ids:
@@ -254,13 +265,15 @@ def notify_event_creator_when_payment_overdue():
             notification.notify()
 
 
-@celery_app.task(serializer='json')
-def check_that_pool_counters_match_registration_number():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def check_that_pool_counters_match_registration_number(self, logger_context=None):
     """
     Task that checks whether pools counters are in sync with number of registrations. We do not
     enforce this check for events that are merged, hence the merge_time filter, because
     incrementing the counter decreases the registration performance
     """
+    self.setup_logger(logger_context)
+
     events_ids = Event.objects.filter(
         start_time__gte=timezone.now(), merge_time__gte=timezone.now()
     ).values_list(flat=True)
