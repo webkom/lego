@@ -65,7 +65,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
                   'pools', 'unregistration_deadline', 'company', 'active_capacity',
                   'feedback_description', 'feedback_required', 'is_priced', 'price_member',
                   'price_guest', 'use_stripe', 'payment_due_date', 'use_captcha',
-                  'waiting_registrations', 'tags', 'is_merged')
+                  'waiting_registrations', 'tags', 'is_merged', 'heed_penalties')
         read_only = True
 
 
@@ -105,7 +105,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
                   'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
                   'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time',
-                  'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned')
+                  'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned',
+                  'heed_penalties')
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
