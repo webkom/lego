@@ -339,6 +339,21 @@ class PenaltyTestCase(TestCase):
         self.assertEqual(penalties_before, 0)
         self.assertEqual(penalties_after, event.penalty_weight)
 
+    def test_penalties_created_when_not_present_and_not_heed_penalties(self):
+        """Test that user does not get penalties when not present and event not heeding penalties"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        event.heed_penalties = False
+        event.save()
+
+        registration = event.registrations.first()
+        penalties_before = registration.user.number_of_penalties()
+
+        registration.set_presence(constants.NOT_PRESENT)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertEqual(penalties_before, 0)
+        self.assertEqual(penalties_after, 0)
+
     def test_penalties_created_when_not_present(self):
         """Test that user gets penalties when not present"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
