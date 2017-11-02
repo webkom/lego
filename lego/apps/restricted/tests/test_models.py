@@ -64,7 +64,7 @@ class RestrictedMailModelTestCase(TestCase):
 
         recipients = restricted_mail.lookup_recipients()
 
-        self.assertListEqual(recipients, [
+        self.assertListEqual(sorted(recipients), sorted([
             no_setting.email,
             subscribed.email
-        ])
+        ]))

@@ -33,7 +33,8 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             'reactions_grouped',
             'tags',
             'content',
-            'created_at'
+            'created_at',
+            'pinned'
         )
 
 
