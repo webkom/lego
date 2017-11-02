@@ -35,6 +35,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
 
 
 class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
+    responsible = CompanyContactField(queryset=CompanyContact.objects.all(), required=False)
     workplaces = WorkplaceSerializer(many=True)
     text = ContentSerializerField()
 
@@ -55,6 +56,7 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
 
     def update(self, instance, validated_data):
         workplaces_data = validated_data.pop('workplaces')
+        responsible = validated_data.pop('responsible', None)
         instance = super().update(instance, validated_data)
         new_workplaces = []
 
@@ -63,6 +65,11 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
             new_workplaces.append(workplace)
         instance.workplaces.set(new_workplaces)
 
-        instance.save()
+        if responsible:
+            instance.responsible = responsible
+        else:
+            instance.responsible = None
+
+        instance.save() 
 
         return instance
