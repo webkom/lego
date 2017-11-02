@@ -165,9 +165,11 @@ def registration_payment_save(self, result, registration_id, logger_context=None
         raise self.retry(exc=e)
 
 
-@celery_app.task(serializer='json', bind=True)
-def check_for_bump_on_pool_creation_or_expansion(self, event_id):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def check_for_bump_on_pool_creation_or_expansion(self, event_id, logger_context=None):
     """Task checking for bumps when event and pools are updated"""
+    self.setup_logger(logger_context)
+
     # Event is locked using the instance field "is_ready"
     event = Event.objects.get(pk=event_id)
     event.bump_on_pool_creation_or_expansion()
@@ -175,8 +177,10 @@ def check_for_bump_on_pool_creation_or_expansion(self, event_id):
     event.save(update_fields=['is_ready'])
 
 
-@celery_app.task(serializer='json')
-def stripe_webhook_event(event_id, event_type):
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def stripe_webhook_event(self, event_id, event_type, logger_context=None):
+    self.setup_logger(logger_context)
+
     if event_type in ['charge.failed', 'charge.refunded', 'charge.succeeded']:
         event = stripe.Event.retrieve(event_id)
         serializer = StripeObjectSerializer(data=event.data['object'])
@@ -242,8 +246,10 @@ def bump_waiting_users_to_new_pool(self, logger_context=None):
                             locked_event.early_bump(pool)
 
 
-@celery_app.task(serializer='json')
-def notify_user_when_payment_overdue():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def notify_user_when_payment_overdue(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     time = timezone.now()
     events = Event.objects.filter(
         payment_due_date__range=(time - timedelta(days=7), time), is_priced=True, use_stripe=True
@@ -258,8 +264,10 @@ def notify_user_when_payment_overdue():
                 get_handler(Registration).handle_payment_overdue(registration)
 
 
-@celery_app.task(serializer='json')
-def notify_event_creator_when_payment_overdue():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def notify_event_creator_when_payment_overdue(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     time = timezone.now()
     events = Event.objects.filter(
         payment_due_date__lte=time, is_priced=True, use_stripe=True,
