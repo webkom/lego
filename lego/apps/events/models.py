@@ -107,14 +107,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def get_absolute_url(self):
         return f'{settings.FRONTEND_URL}/events/{self.id}/'
 
-    def can_register(self, user, pool, future=False, is_registered=None):
+    def can_register(self, user, pool, future=False, is_admitted=None):
         if not pool.is_activated and not future:
             return False
 
-        if is_registered is None:
-            is_registered = self.is_registered(user)
+        if is_admitted is None:
+            is_admitted = self.is_admitted(user)
 
-        if is_registered:
+        if is_admitted:
             return False
 
         for group in pool.permission_groups.all():
@@ -138,12 +138,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 return reg_time + timedelta(hours=3)
         return reg_time
 
-    def get_possible_pools(self, user, future=False, all_pools=None, is_registered=None):
+    def get_possible_pools(self, user, future=False, all_pools=None, is_admitted=None):
         if not all_pools:
             all_pools = self.pools.all()
-        if is_registered is None:
-            is_registered = self.is_registered(user)
-        if is_registered:
+        if is_admitted is None:
+            is_admitted = self.is_admitted(user)
+        if is_admitted:
             return []
         queryset = all_pools.filter(permission_groups__in=user.all_groups)
         if future:
@@ -187,7 +187,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         all_pools = self.pools.all()
         possible_pools = self.get_possible_pools(
-            user, all_pools=all_pools, is_registered=registration.is_registered
+            user, all_pools=all_pools, is_admitted=registration.is_admitted
         )
         if not self.is_ready:
             raise EventNotReady()
@@ -473,7 +473,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         capacities = [pool.capacity for pool in pools]
         return pools[capacities.index(max(capacities))]
 
-    def is_registered(self, user):
+    def is_admitted(self, user):
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
     def get_registration(self, user):
@@ -661,7 +661,7 @@ class Registration(BasisModel):
         super().save(*args, **kwargs)
 
     @property
-    def is_registered(self):
+    def is_admitted(self):
         return self.pool is not None
 
     def validate(self):

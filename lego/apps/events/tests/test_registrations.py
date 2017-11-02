@@ -810,7 +810,7 @@ class RegistrationTestCase(TestCase):
         event.unregister(registration_one)
 
         event.register(registration_two)
-        self.assertTrue(registration_two.is_registered)
+        self.assertTrue(registration_two.is_admitted)
 
     def test_that_is_ready_flag_disables_new_registrations(self):
         """Test that users are not able to register when is_ready is False"""
