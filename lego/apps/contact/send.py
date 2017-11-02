@@ -24,7 +24,7 @@ def send_message(title, message, user, anonymous):
             'from_email': from_email
         },
         subject='Ny henvendelse fra kontaktskjemaet',
-        plain_template='contact/email/contact_form.html',
-        html_template='contact/email/contact_form.txt',
+        plain_template='contact/email/contact_form.txt',
+        html_template='contact/email/contact_form.html',
         from_email=None
     )
