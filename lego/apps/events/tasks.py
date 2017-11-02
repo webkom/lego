@@ -69,6 +69,7 @@ def async_register(self, registration_id, logger_context=None):
             transaction.on_commit(lambda: notify_event_registration(
                 constants.SOCKET_REGISTRATION_SUCCESS, self.registration
             ))
+        log.info('registration_success', registration_id=self.registration.id)
     except LockError as e:
         log.error(
             'registration_cache_lock_error', exception=e, registration_id=self.registration.id
@@ -97,6 +98,7 @@ def async_unregister(self, registration_id, logger_context=None):
                 constants.SOCKET_UNREGISTRATION_SUCCESS, registration,
                 from_pool=pool_id, activation_time=activation_time
             ))
+        log.info('unregistration_success', registration_id=self.registration.id)
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e, max_retries=3)
@@ -129,6 +131,7 @@ def async_payment(self, registration_id, token, logger_context=None):
                 'EMAIL': self.registration.user.email
             }
         )
+        log.info('stripe_payment_success', registration_id=self.registration.id)
         return response
     except stripe.error.CardError as e:
         raise self.retry(exc=e)
@@ -184,16 +187,20 @@ def stripe_webhook_event(event_id, event_type):
             event_id=metadata['EVENT_ID'], user__email=metadata['EMAIL']
         ).first()
         if not registration:
+            log.error('stripe_webhook_error', event_id=event_id, metadata=metadata)
             raise WebhookDidNotFindRegistration(event_id, metadata)
         registration.charge_id = serializer.data['id']
         registration.charge_amount = serializer.data['amount']
         registration.charge_amount_refunded = serializer.data['amount_refunded']
         registration.charge_status = serializer.data['status']
         registration.save()
+        log.info('stripe_webhook_received', event_id=event_id, registration_id=registration.id)
 
 
-@celery_app.task(serializer='json')
-def check_events_for_registrations_with_expired_penalties():
+@celery_app.task(serializer='json', bind=True, base=AbakusTask)
+def check_events_for_registrations_with_expired_penalties(self, logger_context=None):
+    self.setup_logger(logger_context)
+
     events_ids = Event.objects.filter(
         start_time__gte=timezone.now()
     ).exclude(registrations=None).values_list(flat=True)
@@ -225,7 +232,13 @@ def bump_waiting_users_to_new_pool(self, logger_context=None):
                         now = timezone.now()
                         if not pool.is_activated and act < now + timedelta(minutes=35):
                             locked_event.early_bump(pool)
+                            log.info(
+                                'early_bump_executed', event_id=event_id, pool_id=pool.id
+                            )
                         elif pool.is_activated and act > now - timedelta(minutes=35):
+                            log.info(
+                                'early_bump_executed', event_id=event_id, pool_id=pool.id
+                            )
                             locked_event.early_bump(pool)
 
 
@@ -238,6 +251,10 @@ def notify_user_when_payment_overdue():
     for event in events:
         for registration in event.registrations.all():
             if registration.should_notify(time):
+                log.info(
+                    'registration_notified_overdue_payment', event_id=event.id,
+                    registration_id=registration.id
+                )
                 get_handler(Registration).handle_payment_overdue(registration)
 
 
@@ -263,6 +280,10 @@ def notify_event_creator_when_payment_overdue():
                 event.created_by, event=event, users=users
             )
             notification.notify()
+            log.info(
+                'event_creator_notified_of_overdue_payments', event_id=event.id,
+                creator=event.created_by
+            )
 
 
 @celery_app.task(serializer='json', bind=True, base=AbakusTask)
