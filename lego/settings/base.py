@@ -86,6 +86,7 @@ MIDDLEWARE_CLASSES = [
     'lego.utils.middleware.StatsDBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'lego.utils.middleware.CORSPatchMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
