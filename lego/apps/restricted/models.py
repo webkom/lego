@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from structlog import get_logger
 
+from lego.apps.notifications.constants import EMAIL, WEEKLY_MAIL
+from lego.apps.notifications.models import NotificationSetting
 from lego.utils.models import BasisModel
 
 log = get_logger()
@@ -27,6 +29,7 @@ class RestrictedMail(BasisModel):
     hide_sender = models.BooleanField(default=False)
     token = models.CharField(max_length=128, db_index=True, unique=True)
     used = models.DateTimeField(null=True)
+    weekly = models.BooleanField(default=False)
 
     users = models.ManyToManyField('users.User', blank=True)
     groups = models.ManyToManyField('users.AbakusGroup', blank=True)
@@ -65,6 +68,9 @@ class RestrictedMail(BasisModel):
         recipients = set(all_raw_addresses)
 
         for user in all_users:
+            if self.weekly:
+                if EMAIL not in NotificationSetting.active_channels(user, WEEKLY_MAIL):
+                    continue
             recipients.add(user.email_address)
 
         return list(recipients)
