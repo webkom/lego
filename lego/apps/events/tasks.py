@@ -275,7 +275,7 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
         end_time__gte=time
     ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
-        registrations_due = Registration.objects.filter(event=event).exclude(
+        registrations_due = event.registrations.exclude(pool=None).exclude(
             charge_status__in=[constants.PAYMENT_MANUAL, constants.PAYMENT_SUCCESS]
         ).prefetch_related('user')
         if registrations_due:
