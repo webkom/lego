@@ -19,11 +19,6 @@ class SurveyViewSet(viewsets.ModelViewSet):
             return SurveyReadDetailedSerializer
         return SurveyReadSerializer
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        survey = Survey.objects.get(instance.id)
-        survey.delete()
-
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
