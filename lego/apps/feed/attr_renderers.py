@@ -53,3 +53,25 @@ def render_gallery_picture(gallery_picture):
             'title': gallery_picture.gallery.title
         }
     }
+
+
+def render_abakus_group(abakus_group):
+    logo = None
+    if abakus_group.logo_id:
+        logo = generate_url(abakus_group.logo_id, height=100, width=100)
+
+    return {
+        'id': abakus_group.id,
+        'name': abakus_group.name,
+        'type': abakus_group.type,
+        'logo': logo
+    }
+
+
+def render_registration(registration):
+    pool = registration.pool
+    return {
+        'id': registration.id,
+        'waiting_list': pool is None and registration.unregistration_date is None,
+        'registered': not (pool is None and registration.unregistration_date),
+    }

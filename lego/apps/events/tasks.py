@@ -98,7 +98,7 @@ def async_unregister(self, registration_id, logger_context=None):
                 constants.SOCKET_UNREGISTRATION_SUCCESS, registration,
                 from_pool=pool_id, activation_time=activation_time
             ))
-        log.info('unregistration_success', registration_id=self.registration.id)
+        log.info('unregistration_success', registration_id=registration.id)
     except LockError as e:
         log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
         raise self.retry(exc=e, max_retries=3)

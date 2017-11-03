@@ -1,5 +1,6 @@
 from lego.apps.events.constants import SUCCESS_REGISTER, SUCCESS_UNREGISTER
 from lego.apps.events.models import Registration
+from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.users.models import Membership, User
 
 from .utils import group, identify, track
@@ -24,17 +25,16 @@ def track_instance(instance):
         event = instance.event
         pool = instance.pool
 
-        registered = not(pool is None and instance.unregistration_date)
-
         properties = {
             'id': instance.id,
             'has_paid': instance.has_paid(),
             'presence': instance.presence,
             'waiting_list': pool is None and instance.unregistration_date is None,
+            'registered': not(pool is None and instance.unregistration_date),
             'event_id': event.id,
             'event_title': event.title,
             'event_type': event.event_type,
-            'event_start_time': event.start_time.isoformat(),
+            'event_start_time': event.start_time,
             'event_company': event.company_id,
             'event_is_priced': event.is_priced,
             'event_use_stripe': event.use_stripe,
@@ -58,10 +58,24 @@ def track_instance(instance):
             properties['seconds_after_opening'] = \
                 int((instance.registration_date - earliest_registration).total_seconds())
 
-        if registered:
-            track(instance.user, 'event_register', properties)
-        else:
-            if event.start_time and instance.unregistration_date:
-                properties['seconds_before_start'] = \
-                    int((event.start_time - instance.unregistration_date).total_seconds())
-            track(instance.user, 'event_unregister', properties)
+        if event.start_time and instance.unregistration_date:
+            properties['seconds_before_start'] = \
+                int((event.start_time - instance.unregistration_date).total_seconds())
+
+        track(instance.user, 'events.registration', properties)
+
+    elif isinstance(instance, FollowUser):
+        # Track following between users
+        track(instance.follower, 'follower.follow', {
+            'target_user': instance.target_id
+        })
+    elif isinstance(instance, FollowEvent):
+        # Track user following an event
+        track(instance.follower, 'follower.follow', {
+            'target_event': instance.target_id
+        })
+    elif isinstance(instance, FollowCompany):
+        # Track user following  company
+        track(instance.follower, 'follower.follow', {
+            'target_company': instance.target_id
+        })

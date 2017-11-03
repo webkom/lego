@@ -119,3 +119,13 @@ class CommentReplyVerb(Verb):
 
 
 register(CommentReplyVerb)
+
+
+class GroupJoinVerb(Verb):
+    id = 16
+    infinitive = 'group_join'
+    past_tense = infinitive
+    aggregation_group = '{verb}-{object_content_type}-{object_id}'
+
+
+register(GroupJoinVerb)
