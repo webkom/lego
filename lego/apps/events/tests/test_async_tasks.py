@@ -465,6 +465,30 @@ class PaymentDueTestCase(TestCase):
         mock_notification.assert_called_once()
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
+    def test_creator_notification_only_shows_those_who_have_not_paid(self, mock_notification):
+        """Test creator notify only list those who has not paid for an overdue event"""
+
+        self.event.payment_due_date = timezone.now() - timedelta(days=2)
+        self.event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Abakus').add_user(user)
+
+        registration_two = Registration.objects.get_or_create(event=self.event, user=user)[0]
+        self.event.register(registration_two)
+        registration_two.set_payment_success()
+
+        notify_event_creator_when_payment_overdue.delay()
+        call = mock_notification.mock_calls[0]
+        self.assertEqual(call[1], (self.event.created_by,))
+        self.assertEqual(call[2]['event'], self.event)
+        self.assertEqual(
+            1,
+            len(call[2]['users'])
+        )
+        mock_notification.assert_called_once()
+
+    @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
     def test_creator_notification_when_event_is_past_due_date_multiple(self, mock_notification):
         """Test that email is sent when event is past due and multiple users has not paid"""
 
