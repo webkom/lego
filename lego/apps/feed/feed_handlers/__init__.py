@@ -6,4 +6,5 @@ from .registration_handler import *  # noqa
 from .meetings_handler import *  # noqa
 from .restricted_handler import *  # noqa
 from .announcement_handler import *  # noqa
-from .company_interest_handler import * # noqa
+from .company_interest_handler import *  # noqa
+from .membership_handler import *  # noqa

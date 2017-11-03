@@ -26,6 +26,8 @@ class AttrCache:
         'articles.article': attr_renderers.render_article,
         'notifications.announcement': attr_renderers.render_announcement,
         'gallery.gallerypicture': attr_renderers.render_gallery_picture,
+        'users.abakusgroup': attr_renderers.render_abakus_group,
+        'events.registration': attr_renderers.render_registration,
     }
 
     RELATED_FIELDS = {
@@ -52,7 +54,7 @@ class AttrCache:
         Cache the items we looked up for a small amount of time.
         """
         cache.set_many(
-            {f'{self.CACHE_KEY}{key}': value for key, value in items.items()}, timeout=60*5
+            {f'{self.CACHE_KEY}{key}': value for key, value in items.items()}, timeout=60
         )
 
     def extract_properties(self, content_type, ids):
