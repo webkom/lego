@@ -6,6 +6,7 @@ Hei {{ name }}!
 
 {{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
 
+Tid: {{ meeting_start_time }}
 Referent: {{ report_author }}
 
 Delta på møtet: {{frontend_url}}/meetings/{{meeting_id}}?action=accept&token={{token}}
