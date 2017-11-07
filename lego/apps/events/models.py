@@ -240,9 +240,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             raise EventHasClosed()
 
         # Locks unregister so that no user can register before bump is executed.
-        pool = registration.pool
+        pool_id = registration.pool_id
         registration.unregister(is_merged=self.is_merged)
-        if pool:
+        if pool_id:
             if self.heed_penalties and self.passed_unregistration_deadline:
                 if not registration.user.penalties.filter(source_event=self).exists():
                     Penalty.objects.create(
@@ -252,7 +252,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     )
             with transaction.atomic():
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
-                locked_event.check_for_bump_or_rebalance(pool)
+                locked_pool = locked_event.pools.get(id=pool_id)
+                locked_event.check_for_bump_or_rebalance(locked_pool)
 
     def check_for_bump_or_rebalance(self, open_pool):
         """
