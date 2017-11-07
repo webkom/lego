@@ -1,6 +1,8 @@
 
 from lego.apps.notifications.constants import MEETING_INVITE
 from lego.apps.notifications.notification import Notification
+from django.utils import timezone
+import pytz
 
 
 class MeetingInvitationNotification(Notification):
@@ -11,6 +13,7 @@ class MeetingInvitationNotification(Notification):
         meeting_invitation = self.kwargs['meeting_invitation']
         meeting = meeting_invitation.meeting
         token = meeting_invitation.generate_invitation_token()
+        time = timezone.localtime(value=meeting.start_time, timezone=pytz.timezone('Europe/Oslo'))
 
         return self._delay_mail(
             to_email=self.user.email_address,
@@ -19,6 +22,7 @@ class MeetingInvitationNotification(Notification):
                 'owner': meeting.created_by.full_name,
                 'meeting_id': meeting.id,
                 'meeting_title': meeting.title,
+                'meeting_start_time': time.strftime("%H:%M den %x"),
                 'report_author':
                     meeting.report_author.full_name if meeting.report_author else 'Ikke valgt',
                 'token': token
