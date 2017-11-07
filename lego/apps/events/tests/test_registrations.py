@@ -454,6 +454,9 @@ class RegistrationTestCase(TestCase):
         registration_to_unregister = Registration.objects.get(event=event, user=user_to_unregister)
         event.unregister(registration_to_unregister)
 
+        pool.refresh_from_db()
+
+        self.assertEqual(pool.counter, pool.registrations.count())
         self.assertEqual(pool.registrations.count(), pool_size_before)
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
