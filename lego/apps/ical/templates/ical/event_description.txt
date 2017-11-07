@@ -1,7 +1,5 @@
-{{description|striptags}}
-
+{{description}}
 {% if price %}
-Pris: {{price}}
+Pris: {{price}},-
 {% endif %}
-
 {{url}}
