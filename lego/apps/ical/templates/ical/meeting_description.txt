@@ -1,6 +1,5 @@
 Du er invitert i møte: {{title}}
 
-Referent:
-{{reportAuthor}}
+Referent: {{reportAuthor}}
 
 {{url}}

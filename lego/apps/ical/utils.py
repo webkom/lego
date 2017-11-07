@@ -28,7 +28,7 @@ def add_event_to_ical_feed(
         'url': event.get_absolute_url()
     }
     if price is not None:
-        desc_context['price'] = price
+        desc_context['price'] = "{:.2f}".format(price / 100)  # Price is in øre NOK, show as NOK
 
     desc_template = loader.get_template('ical/event_description.txt')
     feed.add_item(
@@ -47,7 +47,7 @@ def add_meeting_to_ical_feed(feed, meeting):
         'title': meeting.title,
         'report': meeting.report,
         'reportAuthor':
-            meeting.report_author.username if meeting.report_author else 'Ikke valgt',
+            meeting.report_author.full_name if meeting.report_author else 'Ikke valgt',
         'url': meeting.get_absolute_url()
     }
     desc_template = loader.get_template('ical/meeting_description.txt')
