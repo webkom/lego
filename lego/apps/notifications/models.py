@@ -89,7 +89,7 @@ class Announcement(BasisModel):
                     users = announcement_lookup()
                     all_users += list(users)
 
-        return all_users
+        return list(set(all_users))
 
     def send(self):
         if self.sent:
