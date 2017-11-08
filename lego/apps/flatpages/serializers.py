@@ -14,7 +14,7 @@ class PageListSerializer(BasisModelSerializer):
 
 class PageDetailSerializer(BasisModelSerializer):
 
-    picture = ImageField(required=False, options={'height': 200, 'width': 200})
+    picture = ImageField(required=False, options={'height': 500})
 
     class Meta:
         model = Page
