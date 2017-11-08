@@ -1,5 +1,6 @@
 from django.http import HttpResponse
-from rest_framework import decorators, exceptions, mixins, viewsets
+from rest_framework import decorators, exceptions, mixins, permissions, viewsets
+from rest_framework.generics import get_object_or_404
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.restricted.constants import RESTRICTED_TOKEN_PREFIX
@@ -31,13 +32,18 @@ class RestrictedMailViewSet(AllowedPermissionsMixin,
             return RestrictedMailDetailSerializer
         return RestrictedMailSerializer
 
-    @decorators.detail_route(methods=['GET'])
+    @decorators.detail_route(methods=['GET'], permission_classes=(permissions.AllowAny,))
     def token(self, *arg, **kwargs):
         """
         Download the token belonging to a restricted mail. This token has to be attached to
         the restricted mail for authentication.
         """
-        instance = self.get_object()
+        instance = get_object_or_404(RestrictedMail.objects.all(), id=kwargs['pk'])
+        auth = self.request.GET.get('auth')
+
+        if not instance.token_verify_query_param(auth):
+            raise exceptions.AuthenticationFailed
+
         if not instance.token:
             raise exceptions.NotFound
 

@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from lego.apps.restricted.models import RestrictedMail
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -30,18 +31,16 @@ class RestrictedViewTestCase(APITestCase):
 
     def test_get_token_valid_instance(self):
         """Return a token file for a valid instance"""
-        self.client.force_login(self.allowed_user)
+        token = RestrictedMail.objects.get(id='1').token_query_param()
 
-        response = self.client.get(f'{self.url}1/token/')
+        response = self.client.get(f'{self.url}1/token/?auth={token}')
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEquals('attachment; filename="token"', response['Content-Disposition'])
 
         content = response.content.decode()
         self.assertEquals('LEGOTOKENtoken', content)
 
-    def test_get_token_invalid_instance(self):
-        """Return 404 when a user tries to get a token for an instance owned by another user"""
-        self.client.force_login(self.allowed_user)
-
-        response = self.client.get(f'{self.url}2/token/')
-        self.assertEquals(status.HTTP_404_NOT_FOUND, response.status_code)
+    def test_get_token_no_auth(self):
+        """Return 401 on invalid token"""
+        response = self.client.get(f'{self.url}1/token/?auth=invalid')
+        self.assertEquals(status.HTTP_401_UNAUTHORIZED, response.status_code)
