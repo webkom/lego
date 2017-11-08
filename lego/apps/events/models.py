@@ -247,9 +247,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if not registration.user.penalties.filter(source_event=self).exists():
                     Penalty.objects.create(
                         user=registration.user,
-                        reason='Unregistered from event too late',
-                        weight=1, source_event=self
+                        reason=f'Meldte seg av {self.title} for sent.',
+                        weight=1,
+                        source_event=self
                     )
+
             with transaction.atomic():
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
                 locked_pool = locked_event.pools.get(id=pool_id)
@@ -699,7 +701,7 @@ class Registration(BasisModel):
             if not self.user.penalties.filter(source_event=self.event).exists():
                 Penalty.objects.create(
                     user=self.user,
-                    reason=f'was registered to event {self.event.title}, but did not attend it.',
+                    reason=f'Møtte ikke opp på {self.event.title}.',
                     weight=self.event.penalty_weight_on_not_present, source_event=self.event
                 )
         else:

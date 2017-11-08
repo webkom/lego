@@ -7,5 +7,5 @@ class PenaltySerializer(serializers.ModelSerializer):
     class Meta:
         model = Penalty
         fields = (
-            'id', 'user', 'reason', 'weight', 'source_event'
+            'id', 'created_at', 'user', 'reason', 'weight', 'source_event'
         )
