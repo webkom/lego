@@ -30,3 +30,6 @@ class RestrictedMailDetailSerializer(RestrictedMailSerializer):
     groups = AbakusGroupListField({'read_only': True})
     events = PublicEventListField({'read_only': True})
     meetings = MeetingListField({'read_only': True})
+
+    class Meta(RestrictedMailSerializer.Meta):
+        fields = RestrictedMailSerializer.Meta.fields + ('token_query_param', )

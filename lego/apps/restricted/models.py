@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import ArrayField
+from django.core import signing
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -82,6 +83,25 @@ class RestrictedMail(BasisModel):
         timestamp = timestamp or timezone.now()
         self.used = timestamp
         self.save()
+
+    def token_query_param(self):
+        """
+        Return a token that can be used to access the token file.
+        """
+        return signing.TimestampSigner().sign(self.id)
+
+    def token_verify_query_param(self, token):
+        """
+        Verify token access based on the token query param.
+        """
+        try:
+            # Valid in 10 min
+            valid_in = 60 * 10
+            data = signing.TimestampSigner().unsign(token, max_age=valid_in)
+            return data == str(self.id)
+        except signing.BadSignature:
+            pass
+        return False
 
     @staticmethod
     def create_token():
