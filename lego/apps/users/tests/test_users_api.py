@@ -427,4 +427,4 @@ class RetrieveSelfTestCase(APITestCase):
 
         self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
         self.assertEqual(len(response.data['penalties']), 1)
-        self.assertEqual(len(response.data['penalties'][0]), 5)
+        self.assertEqual(len(response.data['penalties'][0]), 6)
