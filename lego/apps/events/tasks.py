@@ -30,7 +30,10 @@ class AsyncRegister(AbakusTask):
         if self.request.retries == self.max_retries:
             self.registration.status = constants.FAILURE_REGISTER
             self.registration.save()
-            notify_user_registration(constants.SOCKET_REGISTRATION_FAILURE, self.registration)
+            notify_user_registration(
+                constants.SOCKET_REGISTRATION_FAILURE, self.registration,
+                error_message='Registrering feilet'
+            )
 
 
 class Payment(AbakusTask):
@@ -99,9 +102,6 @@ def async_unregister(self, registration_id, logger_context=None):
                 from_pool=pool_id, activation_time=activation_time
             ))
         log.info('unregistration_success', registration_id=registration.id)
-    except LockError as e:
-        log.error('unregistration_cache_lock_error', exception=e, registration_id=registration.id)
-        raise self.retry(exc=e, max_retries=3)
     except EventHasClosed as e:
         log.warn(
             'unregistration_tried_after_started', exception=e, registration_id=registration.id
@@ -110,7 +110,10 @@ def async_unregister(self, registration_id, logger_context=None):
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
         registration.save()
-        notify_user_registration(constants.SOCKET_UNREGISTRATION_FAILURE, registration)
+        notify_user_registration(
+            constants.SOCKET_UNREGISTRATION_FAILURE, registration,
+            error_message='Avregistrering feilet'
+        )
 
 
 @celery_app.task(base=Payment, bind=True)
