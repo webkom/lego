@@ -1,16 +1,19 @@
 from oauth2_provider.models import AccessToken
 from rest_framework import serializers
 
+from lego.apps.users.fields import PublicUserField
+
 from .fields import ApplicationField, ProtectedTokenField
 from .models import APIApplication
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    user = PublicUserField(read_only=True)
 
     class Meta:
         model = APIApplication
         fields = [
-            'id', 'name', 'description', 'redirect_uris', 'client_id', 'client_secret',
+            'id', 'name', 'description', 'redirect_uris', 'client_id', 'client_secret', 'user'
         ]
         read_only_fields = ['client_id', 'client_secret', 'user']
 
