@@ -1,34 +1,87 @@
 pipeline:
-  test:
-    image: python:3.6
+  setup:
+    image: abakus/lego-testbase
     when:
       event: push
     environment:
       - CASS_DRIVER_NO_CYTHON=1
       - CASS_DRIVER_NO_EXTENSIONS=1
       - LANG=C.UTF-8
+    commands:
+      - make ci_settings
+
+  missing-migrations:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
       - DATABASE=database
       - CACHE=cache
       - CASSANDRA=cassandra
+    group: testing
     commands:
-      - pip install tox
-      - pip install -r requirements/test.txt
-      - make ci_settings
+      - tox -e missing-migrations
 
-      - python manage.py migrate
-      - python manage.py missing_migrations
-
+  tests:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+      - DATABASE=database
+      - CACHE=cache
+      - CASSANDRA=cassandra
+    group: testing
+    commands:
       - tox -e tests
+
+  isort:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
       - tox -e isort
+
+  flake8:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
       - tox -e flake8
-      - tox -e coverage
+
+  docs:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
       - tox -e docs
+
+  coverage:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - tox -e coverage
 
   docker:
     image: plugins/docker
     when:
       branch:
         - prod
+      status: success
+      event: push
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/lego
     secrets: [ docker_username, docker_password ]
