@@ -15,6 +15,16 @@ class EventPermissionHandler(PermissionHandler):
         LIST: False
     }
 
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        if obj:
+            user.permissions = self.check_keyword_permissions(user, perm, obj.__class__)
+        elif queryset:
+            user.permissions = self.check_keyword_permissions(user, perm, queryset.model)
+        return has_perm
+
 
 class RegistrationPermissionHandler(PermissionHandler):
 

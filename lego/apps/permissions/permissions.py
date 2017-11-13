@@ -121,9 +121,7 @@ class PermissionHandler:
             raise ValueError('The model is null, cannot continue.')
 
         if check_keyword_permissions:
-            required_keyword_permissions = self.required_keyword_permissions(model, perm)
-            has_perms = user.has_perms(required_keyword_permissions)
-            if has_perms:
+            if self.check_keyword_permissions(user, perm, model):
                 return True
 
         if obj:
@@ -134,6 +132,13 @@ class PermissionHandler:
             if isinstance(obj, ObjectPermissionsModel):
                 return self.has_object_permissions(user, perm, obj)
 
+        return False
+
+    def check_keyword_permissions(self, user, perm, model):
+        required_keyword_permissions = self.required_keyword_permissions(model, perm)
+        has_perms = user.has_perms(required_keyword_permissions)
+        if has_perms:
+            return True
         return False
 
     def filter_queryset(self, user, queryset, **kwargs):
