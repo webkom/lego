@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from rest_framework.fields import CharField
 
+from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
@@ -54,6 +56,8 @@ class MeetingSerializer(BasisModelSerializer):
     report_author = PublicUserField(
         queryset=User.objects.all(), allow_null=True, required=False)
     created_by = PublicUserField(read_only=True)
+    comments = CommentSerializer(read_only=True, many=True)
+    comment_target = CharField(read_only=True)
 
     class Meta:
         model = Meeting
