@@ -4,6 +4,8 @@ from rest_framework import exceptions, serializers
 from lego.apps.users.models import User
 from lego.utils.functions import verify_captcha
 
+import re
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     captcha_response = serializers.CharField(required=True)
@@ -26,6 +28,8 @@ class RegistrationConfirmationSerializer(serializers.ModelSerializer):
         username_exists = User.objects.filter(username__iexact=username).exists()
         if username_exists:
             raise exceptions.ValidationError('Username exists')
+        if not re.match("^[A-Za-z0-9]+$", username):
+            raise exceptions.ValidationError('Illegal character in username')
         return username
 
     def validate_password(self, password):
