@@ -20,11 +20,8 @@ class CompanyInterestHandler(BaseHandler):
     def handle_interest(self, company_interest):
 
         activity = Activity(
-            actor=company_interest,
-            verb=CompanyInterestVerb,
-            object=company_interest,
-            time=company_interest.created_at,
-            extra_context={}
+            actor=company_interest, verb=CompanyInterestVerb, object=company_interest,
+            time=company_interest.created_at, extra_context={}
         )
 
         recipients = [
@@ -32,22 +29,22 @@ class CompanyInterestHandler(BaseHandler):
         ]
 
         self.manager.add_activity(
-            activity, [recipient.pk for recipient in recipients], [NotificationFeed]
+            activity,
+            [recipient.pk for recipient in recipients],
+            [NotificationFeed]
         )
 
         for recipient in recipients:
-            notification = CompanyInterestNotification(
-                recipient, company_interest=company_interest
-            )
+            notification = CompanyInterestNotification(recipient, company_interest=company_interest)
             notification.notify()
 
         send_email.delay(
-                to_email=f'bedriftskontakt@{settings.GSUITE_DOMAIN}',
-                context=company_interest.generate_mail_context(),
-                subject='En ny bedrift har meldt sin interesse',
-                plain_template='companies/email/company_interest.txt',
-                html_template='companies/email/company_interest.html',
-            )
+            to_email=f'bedriftskontakt@{settings.GSUITE_DOMAIN}',
+            context=company_interest.generate_mail_context(),
+            subject='En ny bedrift har meldt sin interesse',
+            plain_template='companies/email/company_interest.txt',
+            html_template='companies/email/company_interest.html',
+        )
 
     def handle_create(self, company_interest):
         pass

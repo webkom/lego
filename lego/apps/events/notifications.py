@@ -27,11 +27,9 @@ class EventBumpNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/bump.txt',
-            context={
+            template='events/push/bump.txt', context={
                 'event': event.title,
-            },
-            instance=event
+            }, instance=event
         )
 
 
@@ -59,11 +57,9 @@ class EventPaymentOverdueNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/payment_overdue.txt',
-            context={
+            template='events/push/payment_overdue.txt', context={
                 'event': event.title,
-            },
-            instance=event
+            }, instance=event
         )
 
 
@@ -84,7 +80,7 @@ class EventPaymentOverdueCreatorNotification(Notification):
                 'id': event.id,
             },
             subject=f'Følgende registrerte har ikke betalt påmeldingen til arrangementet'
-                    f' {event.title}',
+            f' {event.title}',
             plain_template='events/email/payment_overdue_author.txt',
             html_template='events/email/payment_overdue_author.html',
         )
@@ -115,11 +111,9 @@ class EventAdminRegistrationNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/admin_registration.txt',
-            context={
+            template='events/push/admin_registration.txt', context={
                 'event': event.title,
-            },
-            instance=event
+            }, instance=event
         )
 
 

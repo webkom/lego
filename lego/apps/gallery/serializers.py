@@ -15,15 +15,14 @@ from .models import Gallery, GalleryPicture
 
 class GalleryCoverSerializer(serializers.ModelSerializer):
 
-    file = ImageField(
-        required=False,
-        options={'height': 700, 'smart': True}
-    )
+    file = ImageField(required=False, options={'height': 700, 'smart': True})
 
     thumbnail = ImageField(
-        source='file',
-        read_only=True,
-        options={'height': 300, 'width': 300, 'smart': True}
+        source='file', read_only=True, options={
+            'height': 300,
+            'width': 300,
+            'smart': True
+        }
     )
 
     class Meta:
@@ -46,14 +45,13 @@ class GalleryListSerializer(BasisModelSerializer):
 
 class GalleryPictureSerializer(serializers.ModelSerializer):
 
-    file = ImageField(
-        required=True,
-        options={'height': 700, 'smart': True}
-    )
+    file = ImageField(required=True, options={'height': 700, 'smart': True})
     thumbnail = ImageField(
-        source='file',
-        read_only=True,
-        options={'height': 200, 'width': 300, 'smart': True}
+        source='file', read_only=True, options={
+            'height': 200,
+            'width': 300,
+            'smart': True
+        }
     )
     raw_file = FileField(source='file', read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
@@ -62,8 +60,10 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GalleryPicture
-        fields = ('id', 'gallery', 'description', 'taggees', 'active', 'file', 'thumbnail',
-                  'raw_file', 'comments', 'comment_target')
+        fields = (
+            'id', 'gallery', 'description', 'taggees', 'active', 'file', 'thumbnail', 'raw_file',
+            'comments', 'comment_target'
+        )
         read_only_fields = ('raw_file', 'thumbnail', 'gallery')
 
     def validate(self, attrs):
@@ -80,14 +80,20 @@ class GallerySerializer(BasisModelSerializer):
     class Meta:
         model = Gallery
         fields = (
-            'id', 'title', 'description', 'location', 'taken_at', 'created_at', 'event',
-            'photographers', 'cover',
+            'id',
+            'title',
+            'description',
+            'location',
+            'taken_at',
+            'created_at',
+            'event',
+            'photographers',
+            'cover',
         )
         read_only_fields = ('created_at', 'pictures')
 
 
 class GallerySearchSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Gallery
         fields = (

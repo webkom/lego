@@ -25,35 +25,22 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.second_user = User.objects.get(id=2)
         self.article1 = Article.objects.get(id=2)
         self.article2 = Article.objects.get(id=3)
-        comment1 = Comment.objects.create(
-            content_object=self.article1, text='comment 1'
-        )
-        comment2 = Comment.objects.create(
-            content_object=self.article2, text='comment 2'
-        )
+        comment1 = Comment.objects.create(content_object=self.article1, text='comment 1')
+        comment2 = Comment.objects.create(content_object=self.article2, text='comment 2')
 
         get_redis_connection().flushdb()
         # Activity 1 and 2 get the same aggregation group.
         self.activity1 = Activity(
-            actor=User.objects.get(id=3),
-            verb=CommentVerb,
-            object=comment1,
-            target=comment1.content_object,
-            time=datetime.now()-timedelta(minutes=1)
+            actor=User.objects.get(id=3), verb=CommentVerb, object=comment1,
+            target=comment1.content_object, time=datetime.now() - timedelta(minutes=1)
         )
         self.activity2 = Activity(
-            actor=User.objects.get(id=3),
-            verb=CommentVerb,
-            object=comment1,
-            target=comment1.content_object,
-            time=datetime.now() - timedelta(minutes=2)
+            actor=User.objects.get(id=3), verb=CommentVerb, object=comment1,
+            target=comment1.content_object, time=datetime.now() - timedelta(minutes=2)
         )
         self.activity3 = Activity(
-            actor=User.objects.get(id=4),
-            verb=CommentVerb,
-            object=comment2,
-            target=comment2.content_object,
-            time=datetime.now()
+            actor=User.objects.get(id=4), verb=CommentVerb, object=comment2,
+            target=comment2.content_object, time=datetime.now()
         )
         feed_manager.add_activity(
             self.activity1,
@@ -63,6 +50,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
 
     def test_list_notifications(self):
         """Try to list user notifications."""
+
         def test_for_user(user, expected_length=1):
             self.client.force_login(user)
             response = self.client.get(self.url)
@@ -102,13 +90,10 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
 
         notifications = self.client.get(f'{self.url}').json()['results']
         self.assertEqual(len(notifications), 2)
-
         '''
             Test marking as seen and read
         '''
-        res = self.client.post(f'{self.url}{notifications[0]["id"]}/mark/', data=dict(
-            seen=True
-        ))
+        res = self.client.post(f'{self.url}{notifications[0]["id"]}/mark/', data=dict(seen=True))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
@@ -117,9 +102,7 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.assertFalse(notification['read'])
         self.assertTrue(notification['seen'])
 
-        res = self.client.post(f'{self.url}{notifications[0]["id"]}/mark/', data=dict(
-            read=True
-        ))
+        res = self.client.post(f'{self.url}{notifications[0]["id"]}/mark/', data=dict(read=True))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
@@ -127,26 +110,22 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         notification = self.client.get(f'{self.url}').json()['results'][0]
         self.assertTrue(notification['read'])
         self.assertTrue(notification['seen'])
-
         '''
             Cannot unsee or unread
         '''
-        res = self.client.post(f'{self.url}{notifications[0]["id"]}/mark/', data=dict(
-            seen=False,
-            read=False
-        ))
+        res = self.client.post(
+            f'{self.url}{notifications[0]["id"]}/mark/', data=dict(seen=False, read=False)
+        )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 1)
         self.assertEqual(res['unreadCount'], 1)
-
         '''
             Test marking as both seen and read
         '''
-        res = self.client.post(f'{self.url}{notifications[1]["id"]}/mark/', data=dict(
-            seen=True,
-            read=True
-        ))
+        res = self.client.post(
+            f'{self.url}{notifications[1]["id"]}/mark/', data=dict(seen=True, read=True)
+        )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 0)
@@ -163,18 +142,13 @@ class NotificationViewsTestCase(APITestCase, FeedTestBase):
         self.assertEqual(res['unseenCount'], 2)
         self.assertEqual(res['unreadCount'], 2)
 
-        res = self.client.post(f'{self.url}mark_all/', data=dict(
-            seen=True
-        ))
+        res = self.client.post(f'{self.url}mark_all/', data=dict(seen=True))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 0)
         self.assertEqual(res['unreadCount'], 2)
 
-        res = self.client.post(f'{self.url}mark_all/', data=dict(
-            seen=True,
-            read=True
-        ))
+        res = self.client.post(f'{self.url}mark_all/', data=dict(seen=True, read=True))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.get(f'{self.url}notification_data/').json()
         self.assertEqual(res['unseenCount'], 0)

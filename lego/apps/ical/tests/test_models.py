@@ -5,8 +5,7 @@ from lego.apps.users.models import User
 
 
 class TokenTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.user = User.objects.get(id=1)

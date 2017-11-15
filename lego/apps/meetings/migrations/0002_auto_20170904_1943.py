@@ -15,6 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='meetinginvitation',
             name='status',
-            field=models.CharField(choices=[('NO_ANSWER', 'NO_ANSWER'), ('ATTENDING', 'ATTENDING'), ('NOT_ATTENDING', 'NOT_ATTENDING')], default='NO_ANSWER', max_length=50),
+            field=models.CharField(
+                choices=[
+                    ('NO_ANSWER', 'NO_ANSWER'), ('ATTENDING', 'ATTENDING'),
+                    ('NOT_ATTENDING', 'NOT_ATTENDING')
+                ], default='NO_ANSWER', max_length=50
+            ),
         ),
     ]

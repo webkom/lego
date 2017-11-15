@@ -25,7 +25,7 @@ class RegistrationPermissionHandler(PermissionHandler):
         return False
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
 
         is_self = self.is_self(perm, user, obj)

@@ -26,37 +26,60 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='registration',
             name='created_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='registration_created', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='registration_created',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='registration',
             name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='registrations', to='events.Event'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='registrations',
+                to='events.Event'
+            ),
         ),
         migrations.AddField(
             model_name='registration',
             name='pool',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='registrations', to='events.Pool'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE,
+                related_name='registrations', to='events.Pool'
+            ),
         ),
         migrations.AddField(
             model_name='registration',
             name='updated_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='registration_updated', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='registration_updated',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='registration',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='registrations', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='registrations',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='pool',
             name='created_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='pool_created', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='pool_created',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='pool',
             name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pools', to='events.Event'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='pools', to='events.Event'
+            ),
         ),
         migrations.AddField(
             model_name='pool',
@@ -66,37 +89,57 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pool',
             name='updated_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='pool_updated', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='pool_updated',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='event',
             name='can_edit_groups',
-            field=models.ManyToManyField(blank=True, related_name='can_edit_event', to='users.AbakusGroup'),
+            field=models.ManyToManyField(
+                blank=True, related_name='can_edit_event', to='users.AbakusGroup'
+            ),
         ),
         migrations.AddField(
             model_name='event',
             name='can_edit_users',
-            field=models.ManyToManyField(blank=True, related_name='can_edit_event', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(
+                blank=True, related_name='can_edit_event', to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='event',
             name='can_view_groups',
-            field=models.ManyToManyField(blank=True, related_name='can_view_event', to='users.AbakusGroup'),
+            field=models.ManyToManyField(
+                blank=True, related_name='can_view_event', to='users.AbakusGroup'
+            ),
         ),
         migrations.AddField(
             model_name='event',
             name='company',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='events', to='companies.Company'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, related_name='events',
+                to='companies.Company'
+            ),
         ),
         migrations.AddField(
             model_name='event',
             name='cover',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='event_covers', to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='event_covers', to='files.File'
+            ),
         ),
         migrations.AddField(
             model_name='event',
             name='created_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='event_created', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='event_created',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
             model_name='event',
@@ -111,7 +154,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='updated_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='event_updated', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='event_updated',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterUniqueTogether(
             name='registration',

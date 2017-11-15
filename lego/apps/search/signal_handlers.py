@@ -5,7 +5,6 @@ from .tasks import instance_delete, instance_update
 
 
 class BaseSignalHandler:
-
     def on_save(self, instance):
         pass
 

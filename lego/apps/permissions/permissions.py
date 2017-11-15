@@ -95,7 +95,7 @@ class PermissionHandler:
         return self.force_queryset_filtering
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         """
         Check permission on a object.
@@ -150,16 +150,16 @@ class PermissionHandler:
             # User is authenticated, display objects created by user or object with group rights.
             groups = [abakus_group.pk for abakus_group in user.all_groups]
             return queryset.filter(
-                Q(can_edit_users__in=[user.pk]) | Q(can_edit_groups__in=groups) |
-                Q(can_view_groups__in=groups) | Q(created_by=user) | Q(require_auth=False)
+                Q(can_edit_users__in=[user.pk])
+                | Q(can_edit_groups__in=groups)
+                | Q(can_view_groups__in=groups) | Q(created_by=user)
+                | Q(require_auth=False)
             ).distinct()
 
         return queryset
 
     def require_auth(self, perm, obj=None, queryset=None):
-        require_auth = self.authentication_map.get(
-            perm, self.default_require_auth
-        )
+        require_auth = self.authentication_map.get(perm, self.default_require_auth)
         if not require_auth:
             return False
 
@@ -193,9 +193,7 @@ class PermissionHandler:
         function is used otherwise.
         """
 
-        return self.permission_map.get(perm, [
-            self.keyword_permission(model, perm)
-        ])
+        return self.permission_map.get(perm, [self.keyword_permission(model, perm)])
 
     def created_by(self, user, obj):
         created_by = getattr(obj, 'created_by_id', None)

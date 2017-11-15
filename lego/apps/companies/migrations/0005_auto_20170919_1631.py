@@ -19,27 +19,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CompanyFile',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
             ],
         ),
         migrations.AddField(
             model_name='company',
             name='logo',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='company_logos', to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='company_logos', to='files.File'
+            ),
         ),
         migrations.AddField(
             model_name='semesterstatus',
             name='contract',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='files.File'
+            ),
         ),
         migrations.AddField(
             model_name='companyfile',
             name='company',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='files', to='companies.Company'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, related_name='files',
+                to='companies.Company'
+            ),
         ),
         migrations.AddField(
             model_name='companyfile',
             name='file',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, to='files.File'
+            ),
         ),
     ]

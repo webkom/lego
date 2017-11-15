@@ -20,7 +20,7 @@ class CursorPagination(RFCursorPagination):
         ordering_filters = [
             filter_cls for filter_cls in getattr(view, 'filter_backends', [])
             if hasattr(filter_cls, 'get_ordering')
-            ]
+        ]
 
         if ordering_filters:
             # If a filter exists on the view that implements `get_ordering`
@@ -30,9 +30,7 @@ class CursorPagination(RFCursorPagination):
             ordering = filter_instance.get_ordering(request, queryset, view)
             assert ordering is not None, (
                 'Using cursor pagination, but filter class {filter_cls} '
-                'returned a `None` ordering.'.format(
-                    filter_cls=filter_cls.__name__
-                )
+                'returned a `None` ordering.'.format(filter_cls=filter_cls.__name__)
             )
         else:
             # Try to get the `ordering` attribute on the viewset class. Defaults to the `ordering`
@@ -53,11 +51,12 @@ class CursorPagination(RFCursorPagination):
                 'nearly-unique field on the model, such as "-created" or "pk".'
             )
 
-        assert isinstance(ordering, (six.string_types, list, tuple)), (
-            'Invalid ordering. Expected string or tuple, but got {type}'.format(
-                type=type(ordering).__name__
-            )
-        )
+        assert isinstance(ordering,
+                          (six.string_types, list, tuple)), (
+                              'Invalid ordering. Expected string or tuple, but got {type}'.format(
+                                  type=type(ordering).__name__
+                              )
+                          )
 
         if isinstance(ordering, six.string_types):
             return (ordering, )

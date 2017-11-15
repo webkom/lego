@@ -17,11 +17,13 @@ class NotificationSettingsViewSetTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        response = self.client.post(self.url, {
-            'notification_type': 'weekly_mail',
-            'enabled': True,
-            'channels': ['email']
-        })
+        response = self.client.post(
+            self.url, {
+                'notification_type': 'weekly_mail',
+                'enabled': True,
+                'channels': ['email']
+            }
+        )
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list(self):
@@ -30,23 +32,25 @@ class NotificationSettingsViewSetTestCase(APITestCase):
     def test_alternatives(self):
         self.client.force_login(self.user)
         response = self.client.get(f'{self.url}alternatives/')
-        self.assertEquals(response.data, {
-            'notification_types': constants.NOTIFICATION_TYPES,
-            'channels': constants.CHANNELS
-        })
+        self.assertEquals(
+            response.data,
+            {
+                'notification_types': constants.NOTIFICATION_TYPES,
+                'channels': constants.CHANNELS
+            }
+        )
 
     def test_change_setting(self):
         self.client.force_login(self.user)
 
-        response = self.client.post(self.url, {
-            'notification_type': 'weekly_mail',
-            'enabled': True
-        })
-        self.assertEquals(response.data, {
-            'notification_type': 'weekly_mail',
-            'enabled': True,
-            'channels': ['email', 'push']
-        })
+        response = self.client.post(self.url, {'notification_type': 'weekly_mail', 'enabled': True})
+        self.assertEquals(
+            response.data, {
+                'notification_type': 'weekly_mail',
+                'enabled': True,
+                'channels': ['email', 'push']
+            }
+        )
 
     def test_change_setting_defaults(self):
         """Make sure a new setting is created with correct defaults"""
@@ -56,8 +60,11 @@ class NotificationSettingsViewSetTestCase(APITestCase):
             'notification_type': constants.MEETING_INVITE,
         })
 
-        self.assertEquals(response.data, {
-            'notification_type': constants.MEETING_INVITE,
-            'enabled': True,
-            'channels': constants.CHANNELS
-        })
+        self.assertEquals(
+            response.data,
+            {
+                'notification_type': constants.MEETING_INVITE,
+                'enabled': True,
+                'channels': constants.CHANNELS
+            }
+        )

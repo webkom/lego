@@ -21,10 +21,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ICalToken',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('token', models.CharField(db_index=True, default=lego.apps.ical.models.generate_new_token, max_length=64)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'token',
+                    models.CharField(
+                        db_index=True, default=lego.apps.ical.models.generate_new_token,
+                        max_length=64
+                    )
+                ),
+                (
+                    'user',
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
         ),
     ]

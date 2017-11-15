@@ -15,22 +15,45 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='EmailAddress',
             fields=[
-                ('email', models.CharField(max_length=128, primary_key=True, serialize=False, validators=[django.core.validators.RegexValidator(regex=re.compile('(^[-!#$%&\'*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&\'*+/=?^_`{}|~0-9A-Z]+)*\\Z|^"([\\001-\\010\\013\\014\\016-\\037!#-\\[\\]-\\177]|\\\\[\\001-\\011\\013\\014\\016-\\177])*"\\Z)', 34)), lego.utils.validators.ReservedNameValidator()])),
+                (
+                    'email',
+                    models.CharField(
+                        max_length=128, primary_key=True, serialize=False, validators=[
+                            django.core.validators.RegexValidator(
+                                regex=re.compile(
+                                    '(^[-!#$%&\'*+/=?^_`{}|~0-9A-Z]+(\\.[-!#$%&\'*+/=?^_`{}|~0-9A-Z]+)*\\Z|^"([\\001-\\010\\013\\014\\016-\\037!#-\\[\\]-\\177]|\\\\[\\001-\\011\\013\\014\\016-\\177])*"\\Z)',
+                                    34
+                                )
+                            ),
+                            lego.utils.validators.ReservedNameValidator()
+                        ]
+                    )
+                ),
             ],
         ),
         migrations.CreateModel(
             name='EmailList',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
                 ('name', models.CharField(max_length=64)),
-                ('email', models.OneToOneField(editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='email_list', to='email.EmailAddress')),
+                (
+                    'email',
+                    models.OneToOneField(
+                        editable=False, on_delete=django.db.models.deletion.CASCADE,
+                        related_name='email_list', to='email.EmailAddress'
+                    )
+                ),
             ],
         ),
     ]

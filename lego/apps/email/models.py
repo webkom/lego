@@ -14,12 +14,9 @@ class EmailAddress(models.Model):
     """
 
     email = models.CharField(
-        max_length=128,
-        primary_key=True,
-        validators=[
-            RegexValidator(regex=EmailValidator.user_regex),
-            ReservedNameValidator()
-        ]
+        max_length=128, primary_key=True,
+        validators=[RegexValidator(regex=EmailValidator.user_regex),
+                    ReservedNameValidator()]
     )
 
     def is_assigned(self, new_owner=None):

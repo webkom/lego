@@ -5,7 +5,6 @@ CHANNELS = [EMAIL, PUSH]
 
 CHANNEL_CHOICES = [(channel, channel) for channel in CHANNELS]
 
-
 # Generics
 WEEKLY_MAIL = 'weekly_mail'
 

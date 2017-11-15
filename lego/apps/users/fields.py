@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 
 class AbakusGroupField(serializers.PrimaryKeyRelatedField):
-
     def __init__(self, **kwargs):
         if 'read_only' not in kwargs.keys() and 'queryset' not in kwargs.keys():
             kwargs['read_only'] = True
@@ -16,7 +15,6 @@ class AbakusGroupField(serializers.PrimaryKeyRelatedField):
 
 
 class AbakusGroupListField(serializers.ManyRelatedField):
-
     def __init__(self, field_kwargs=None, **kwargs):
         if field_kwargs is None:
             field_kwargs = {}
@@ -26,7 +24,6 @@ class AbakusGroupListField(serializers.ManyRelatedField):
 
 
 class PublicUserField(serializers.PrimaryKeyRelatedField):
-
     def use_pk_only_optimization(self):
         return False
 

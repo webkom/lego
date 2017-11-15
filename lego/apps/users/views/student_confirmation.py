@@ -48,21 +48,17 @@ class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
         student_username = serializer.validated_data.get('student_username')
 
         token = Registrations.generate_student_confirmation_token(
-            student_username,
-            serializer.validated_data.get('course'),
+            student_username, serializer.validated_data.get('course'),
             serializer.validated_data.get('member')
         )
 
         send_email.delay(
-            to_email=f'{student_username}@{constants.STUDENT_EMAIL_DOMAIN}',
-            context={
+            to_email=f'{student_username}@{constants.STUDENT_EMAIL_DOMAIN}', context={
                 "token": token,
                 "full_name": user.get_full_name(),
-            },
-            subject='Bekreft student kontoen din på Abakus.no',
+            }, subject='Bekreft student kontoen din på Abakus.no',
             plain_template='users/email/student_confirmation.txt',
-            html_template='users/email/student_confirmation.html',
-            from_email=None
+            html_template='users/email/student_confirmation.html', from_email=None
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -89,9 +85,7 @@ class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
         user = request.user
 
         if user.is_verified_student():
-            raise ValidationError(
-                detail='Already confirmed a student username',
-            )
+            raise ValidationError(detail='Already confirmed a student username', )
 
         user.student_username = student_confirmation['student_username']
         course = student_confirmation['course'].lower()

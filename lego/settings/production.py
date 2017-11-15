@@ -5,18 +5,17 @@ import environ
 import stripe
 from cassandra import ConsistencyLevel
 
-from lego.settings import (BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS,
-                           MIDDLEWARE_CLASSES, PUSH_NOTIFICATIONS_SETTINGS)
+from lego.settings import (
+    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES,
+    PUSH_NOTIFICATIONS_SETTINGS
+)
 
 from .secure import *  # noqa
 
 env = environ.Env(
-    DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list, ['api.abakus.no']),
-    CASSANDRA_HOSTS=(list, [])
+    DEBUG=(bool, False), ALLOWED_HOSTS=(list, ['api.abakus.no']), CASSANDRA_HOSTS=(list, [])
 )
 environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
-
 
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
@@ -27,14 +26,10 @@ SERVER_EMAIL = env('SERVER_EMAIL', default='Abakus Webkom <webkom@abakus.no>')
 ENVIRONMENT_NAME = env('ENVIRONMENT_NAME', default='production')
 
 # Database
-DATABASES = {
-    'default': env.db()
-}
+DATABASES = {'default': env.db()}
 
 # Cache
-CACHES = {
-    'default': env.cache()
-}
+CACHES = {'default': env.cache()}
 
 # Email / We may enable the celery email backend.
 EMAIL_CONFIG = env.email()
@@ -52,10 +47,7 @@ THUMBOR_SECURITY_KEY = env('THUMBOR_SECURITY_KEY')
 # Sentry
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 SENTRY_DSN = env('SENTRY')
-RAVEN_CONFIG = {
-    'dsn': SENTRY_DSN,
-    'release': env('RELEASE', default='latest')
-}
+RAVEN_CONFIG = {'dsn': SENTRY_DSN, 'release': env('RELEASE', default='latest')}
 INSTALLED_APPS += [
     'raven.contrib.django.raven_compat',
 ]
@@ -81,13 +73,13 @@ STREAM_REDIS_CONFIG = {
     }
 }
 
-CHANNEL_LAYERS['default']['CONFIG'] = {
-    'hosts': [env('CHANNELS_REDIS_URL')]
-}
+CHANNEL_LAYERS['default']['CONFIG'] = {'hosts': [env('CHANNELS_REDIS_URL')]}
 
 # Elasticsearch
 ELASTICSEARCH = [
-    {'host': env('ELASTICSEARCH_HOST')},
+    {
+        'host': env('ELASTICSEARCH_HOST')
+    },
 ]
 SEARCH_INDEX = env('SEARCH_INDEX', default='lego-search')
 
@@ -114,12 +106,9 @@ ANALYTICS_WRITE_KEY = env('ANALYTICS_WRITE_KEY', default='')
 
 # CORS
 CORS_FRONTEND_URL = urlparse(FRONTEND_URL).netloc
-CORS_ORIGIN_WHITELIST = list({
-    CORS_FRONTEND_URL,
-    f'www.{CORS_FRONTEND_URL}',
-    '127.0.0.1:3000',
-    'localhost:3000'
-})
+CORS_ORIGIN_WHITELIST = list(
+    {CORS_FRONTEND_URL, f'www.{CORS_FRONTEND_URL}', '127.0.0.1:3000', 'localhost:3000'}
+)
 
 # Restricted
 RESTRICTED_ADDRESS = env('RESTRICTED_ADDRESS', default='restricted')

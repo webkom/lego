@@ -28,19 +28,18 @@ class EventHandler(BaseHandler):
     def get_feeds_and_recipients(self, event):
         result = []
         if event.company_id:
-            result.append((
-                [PersonalFeed],
-                list(event.company.followers.values_list('follower__id', flat=True))
-            ))
+            result.append(
+                (
+                    [PersonalFeed],
+                    list(event.company.followers.values_list('follower__id', flat=True))
+                )
+            )
             result.append(([CompanyFeed], [event.company_id]))
         return result
 
     def get_activity(self, event):
         return Activity(
-            actor=event.company,
-            verb=EventCreateVerb,
-            object=event,
-            time=event.created_at,
+            actor=event.company, verb=EventCreateVerb, object=event, time=event.created_at,
             extra_context={
                 'title': event.title
             }

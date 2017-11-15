@@ -12,5 +12,4 @@ class Migration(migrations.Migration):
         ('companies', '0007_auto_20170922_0203'),
     ]
 
-    operations = [
-    ]
+    operations = []

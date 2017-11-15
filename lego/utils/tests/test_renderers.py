@@ -4,7 +4,6 @@ from lego.utils.renderers import JSONRenderer
 
 
 class JSONRendererTestCase(TestCase):
-
     def setUp(self):
         self.renderer = JSONRenderer()
 

@@ -29,8 +29,7 @@ def cassandra_init(*args, **kwargs):
     connection.setup(
         hosts=settings.STREAM_CASSANDRA_HOSTS,
         consistency=settings.STREAM_CASSANDRA_CONSISTENCY_LEVEL,
-        default_keyspace=settings.STREAM_DEFAULT_KEYSPACE,
-        **settings.CASSANDRA_DRIVER_KWARGS
+        default_keyspace=settings.STREAM_DEFAULT_KEYSPACE, **settings.CASSANDRA_DRIVER_KWARGS
     )
 
     from lego.apps.stats import analytics_client
@@ -91,14 +90,8 @@ schedule = {
 }
 
 app.conf.update(
-    beat_schedule=schedule,
-    result_backend=None,
-    task_track_started=True,
-    task_serializer='pickle',
-    worker_disable_rate_limits=True,
-    task_ignore_result=True,
-    task_acks_late=False,
-    worker_hijack_root_logger=False,
-    worker_redirect_stdouts=False,
+    beat_schedule=schedule, result_backend=None, task_track_started=True, task_serializer='pickle',
+    worker_disable_rate_limits=True, task_ignore_result=True, task_acks_late=False,
+    worker_hijack_root_logger=False, worker_redirect_stdouts=False,
     accept_content=['pickle', 'json']
 )

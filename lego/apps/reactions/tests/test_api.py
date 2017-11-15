@@ -25,11 +25,7 @@ class CreateReactionsAPITestCase(APITestCase):
         content_type = ContentType.objects.get_for_model(Article)
         return {
             'type': ReactionType.objects.first().pk,
-            'target': '{0}.{1}-{2}'.format(
-                content_type.app_label,
-                content_type.model,
-                article_id
-            )
+            'target': '{0}.{1}-{2}'.format(content_type.app_label, content_type.model, article_id)
         }
 
     def setUp(self):
@@ -64,10 +60,7 @@ class CreateReactionsAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_invalid_reaction_type(self):
-        test_data = {
-            **self.test_data,
-            'type': 'xxxyzb'
-        }
+        test_data = {**self.test_data, 'type': 'xxxyzb'}
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
         self.assertEqual(response.status_code, 400)

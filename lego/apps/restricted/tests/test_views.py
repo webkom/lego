@@ -6,8 +6,10 @@ from lego.apps.users.models import AbakusGroup, User
 
 
 class RestrictedViewTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml', 'test_restricted_mails.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_restricted_mails.yaml'
+    ]
 
     def setUp(self):
         self.url = '/api/v1/restricted-mail/'

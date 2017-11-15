@@ -42,14 +42,10 @@ class UserRegistrationRequestViewSet(viewsets.GenericViewSet):
         token = Registrations.generate_registration_token(email)
 
         send_email.delay(
-            to_email=email,
-            context={
+            to_email=email, context={
                 "token": token,
-            },
-            subject='Velkommen til Abakus.no',
-            plain_template='users/email/registration.txt',
-            html_template='users/email/registration.html',
-            from_email=None
+            }, subject='Velkommen til Abakus.no', plain_template='users/email/registration.txt',
+            html_template='users/email/registration.html', from_email=None
         )
 
         return Response(status=status.HTTP_202_ACCEPTED)

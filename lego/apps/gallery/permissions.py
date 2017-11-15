@@ -10,7 +10,7 @@ class GalleryPicturePermissionHandler(PermissionHandler):
     default_keyword_permission = '/sudo/admin/gallerys/{perm}/'
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         if obj:
             obj = obj.gallery

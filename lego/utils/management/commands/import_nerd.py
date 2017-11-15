@@ -70,10 +70,7 @@ class Command(BaseCommand):
             help='Dry run the import (only test the import).',
         )
         parser.add_argument(
-            '--yes',
-            action='store_true',
-            default=False,
-            help='Answer yes during questions'
+            '--yes', action='store_true', default=False, help='Answer yes during questions'
         )
 
     def call_command(self, *args, **options):
@@ -95,10 +92,12 @@ class Command(BaseCommand):
     def load_initial_fixtures(self):
         log.info('Loading initial fixtures:')
 
-        self.load_fixtures([
-            'files/fixtures/initial_files.yaml',
-            'tags/fixtures/initial_tags.yaml',
-        ])
+        self.load_fixtures(
+            [
+                'files/fixtures/initial_files.yaml',
+                'tags/fixtures/initial_tags.yaml',
+            ]
+        )
 
         log.info('Done loading initial fixtures!')
 
@@ -145,14 +144,16 @@ class Command(BaseCommand):
             # Kind of hacky, but no other option on Linux
             file_date = datetime.fromtimestamp(os.path.getmtime(file_path))
             # Only create the file if does not exist
-            File.objects.get_or_create(pk=file_pk, defaults={
-                'created_at': file_date,
-                'state': 'ready',
-                'file_type': file_type,
-                'token': get_random_string(32),
-                'user': None,
-                'public': False
-            })
+            File.objects.get_or_create(
+                pk=file_pk, defaults={
+                    'created_at': file_date,
+                    'state': 'ready',
+                    'file_type': file_type,
+                    'token': get_random_string(32),
+                    'user': None,
+                    'public': False
+                }
+            )
 
     def handle_fixture_import(self, file_name, skip_questions=False):
         if os.path.isdir(f'{IMPORT_DIRECTORY}/{file_name}'):

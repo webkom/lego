@@ -25,10 +25,13 @@ urlpatterns = [
     url(r'^api/', include('lego.api.urls', namespace='api')),
     url(r'^authorization/', include(authorization_urlpatterns)),
     url(r'^', include(health_urlpatterns, namespace='health')),
-    url(r'^api-docs/', include_docs_urls(
-        title=settings.SITE['name'], description=settings.SITE['slogan'],
-        patterns=api, schema_url='/api'
-    )),
+    url(
+        r'^api-docs/',
+        include_docs_urls(
+            title=settings.SITE['name'], description=settings.SITE['slogan'], patterns=api,
+            schema_url='/api'
+        )
+    ),
     url(r'^$', TemplateView.as_view(template_name='landing.html'), name='landing_page'),
 ]
 

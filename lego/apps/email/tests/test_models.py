@@ -29,8 +29,10 @@ class EmailAddressTestCase(TestCase):
 
 class EmailListTestCase(TestCase):
 
-    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml',
-                'test_email_addresses.yaml', 'test_users.yaml', 'test_email_lists.yaml']
+    fixtures = [
+        'initial_files.yaml', 'initial_abakus_groups.yaml', 'test_email_addresses.yaml',
+        'test_users.yaml', 'test_email_lists.yaml'
+    ]
 
     def test_email_address(self):
         """email_address should return the full address."""
@@ -52,7 +54,4 @@ class EmailListTestCase(TestCase):
         list.users.add(user)
         list.groups.add(group)
 
-        self.assertSequenceEqual(
-            {'test1@user.com', 'test2@user.com'},
-            set(list.members())
-        )
+        self.assertSequenceEqual({'test1@user.com', 'test2@user.com'}, set(list.members()))

@@ -26,9 +26,7 @@ class ApplicationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = APIApplication.objects.all()
 
 
-class AccessTokenViewSet(mixins.ListModelMixin,
-                         mixins.DestroyModelMixin,
-                         viewsets.GenericViewSet):
+class AccessTokenViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     """
     list:
     List grants or access-tokens the current user has created.

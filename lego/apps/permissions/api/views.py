@@ -9,9 +9,7 @@ permission_cache = {}
 
 
 def permission_handler(view, model):
-    handler = getattr(
-        view, 'permission_handler', None
-    )
+    handler = getattr(view, 'permission_handler', None)
     if not handler:
         handler = get_permission_handler(model)
 
@@ -50,9 +48,7 @@ def wrap_results(response):
     in case the inheritee isn't using pagination.
     """
     if isinstance(response.data, list):
-        return {
-            'results': response.data
-        }
+        return {'results': response.data}
 
     return response.data
 
@@ -62,6 +58,7 @@ class AllowedPermissionsMixin:
     Append a `permission` value on list and retrieve methods. This makes it possible for a
     frontend to decide which actions a user can perform.
     """
+
     def __init__(self, *args, **kwargs):
         if hasattr(super(), 'list'):
             self.list = self._list
@@ -74,7 +71,8 @@ class AllowedPermissionsMixin:
         response = super().list(request, args, kwargs)
         response.data = wrap_results(response)
         response.data['action_grant'] = get_viewset_permissions(
-            self, self.get_queryset().model, request.user, None, self.get_queryset()
+            self,
+            self.get_queryset().model, request.user, None, self.get_queryset()
         )
         return response
 
@@ -84,6 +82,7 @@ class AllowedPermissionsMixin:
         response = Response(serializer.data)
         response.data = wrap_results(response)
         response.data['action_grant'] = get_viewset_permissions(
-            self, self.get_queryset().model, request.user, obj, self.get_queryset()
+            self,
+            self.get_queryset().model, request.user, obj, self.get_queryset()
         )
         return response

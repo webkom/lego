@@ -17,6 +17,7 @@ class GSuiteLib:
 
     user_key: Unique user email (eirsyl@abakus.no)
     """
+
     def __init__(self):
         credentials = self.get_credentials()
         self.client = build(
@@ -48,39 +49,47 @@ class GSuiteLib:
             raise
 
     def add_user(self, user_id, user_key, first_name, last_name, email, password_hash):
-        return self.client.users().insert(body={
-            'name': {
-                'givenName': first_name,
-                'familyName': last_name
-            },
-            'password': password_hash,
-            'hashFunction': 'crypt',
-            'changePasswordAtNextLogin': False,
-            'primaryEmail': user_key,
-            'externalIds': [
-                {'type': 'account', 'value': str(user_id)}
-            ],
-            'emails': [
-                {'address': email, 'type': 'other'}
-            ]
-        }).execute()
+        return self.client.users().insert(
+            body={
+                'name': {
+                    'givenName': first_name,
+                    'familyName': last_name
+                },
+                'password': password_hash,
+                'hashFunction': 'crypt',
+                'changePasswordAtNextLogin': False,
+                'primaryEmail': user_key,
+                'externalIds': [{
+                    'type': 'account',
+                    'value': str(user_id)
+                }],
+                'emails': [{
+                    'address': email,
+                    'type': 'other'
+                }]
+            }
+        ).execute()
 
     def update_user(self, user_id, user_key, first_name, last_name, email, password_hash):
-        return self.client.users().update(userKey=user_key, body={
-            'suspended': False,
-            'name': {
-                'givenName': first_name,
-                'familyName': last_name
-            },
-            'password': password_hash,
-            'hashFunction': 'crypt',
-            'externalIds': [
-                {'type': 'account', 'value': str(user_id)}
-            ],
-            'emails': [
-                {'address': email, 'type': 'other'}
-            ]
-        }).execute()
+        return self.client.users().update(
+            userKey=user_key, body={
+                'suspended': False,
+                'name': {
+                    'givenName': first_name,
+                    'familyName': last_name
+                },
+                'password': password_hash,
+                'hashFunction': 'crypt',
+                'externalIds': [{
+                    'type': 'account',
+                    'value': str(user_id)
+                }],
+                'emails': [{
+                    'address': email,
+                    'type': 'other'
+                }]
+            }
+        ).execute()
 
     def delete_user(self, user_key):
         """
@@ -120,15 +129,10 @@ class GSuiteLib:
             raise
 
     def add_group(self, name, group_key):
-        return self.client.groups().insert(body={
-            'name': name,
-            'email': group_key
-        }).execute()
+        return self.client.groups().insert(body={'name': name, 'email': group_key}).execute()
 
     def update_group(self, group_key, name):
-        return self.client.groups().update(groupKey=group_key, body={
-            'name': name
-        }).execute()
+        return self.client.groups().update(groupKey=group_key, body={'name': name}).execute()
 
     def get_members(self, group_key):
         members = []
@@ -155,10 +159,7 @@ class GSuiteLib:
 
         for member in member_keys:
             if member not in remote_members:
-                self.add_membership(
-                    group_key=group_key,
-                    user_key=member
-                )
+                self.add_membership(group_key=group_key, user_key=member)
 
         for excess_member in set(remote_members) - set(member_keys):
             self.delete_membership(group_key, excess_member)
@@ -168,10 +169,12 @@ class GSuiteLib:
         The API returns 404 when we try to add an unknown gmail account.
         """
         try:
-            return self.client.members().insert(groupKey=group_key, body={
-                'role': role,
-                'email': user_key
-            }).execute()
+            return self.client.members().insert(
+                groupKey=group_key, body={
+                    'role': role,
+                    'email': user_key
+                }
+            ).execute()
         except HttpError as e:
             if e.resp.status == 404:
                 return

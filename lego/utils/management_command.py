@@ -20,12 +20,7 @@ class BaseCommand(DjangoBaseCommand):
         -v 2 DEBUG
         """
         self.verbosity = getattr(self, 'verbosity', options['verbosity'])
-        log_levels = {
-            0: logging.WARNING,
-            1: logging.INFO,
-            2: logging.DEBUG,
-            3: logging.DEBUG
-        }
+        log_levels = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG, 3: logging.DEBUG}
 
         root_log = logging.getLogger('')
         for handler in root_log.handlers:

@@ -1,4 +1,3 @@
-
 SPRING = 'spring'
 AUTUMN = 'autumn'
 
@@ -6,7 +5,6 @@ SEMESTER = (
     (SPRING, SPRING),
     (AUTUMN, AUTUMN),
 )
-
 
 COMPANY_PRESENTATION = 'company_presentation'
 COURSE = 'course'

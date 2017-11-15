@@ -12,10 +12,10 @@ from lego.apps.events.exceptions import (APINoSuchPool, APINoSuchRegistration, A
                                          RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.serializers.events import (EventAdministrateSerializer,
-                                                 EventCreateAndUpdateSerializer,
-                                                 EventReadSerializer,
-                                                 EventReadUserDetailedSerializer)
+from lego.apps.events.serializers.events import (
+    EventAdministrateSerializer, EventCreateAndUpdateSerializer, EventReadSerializer,
+    EventReadUserDetailedSerializer
+)
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (AdminRegistrationCreateAndUpdateSerializer,
                                                         AdminUnregisterSerializer,
@@ -49,8 +49,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 'pools', 'pools__permission_groups',
                 Prefetch(
                     'pools__registrations', queryset=Registration.objects.select_related('user')
-                ),
-                Prefetch('registrations', queryset=Registration.objects.select_related('user')),
+                ), Prefetch('registrations', queryset=Registration.objects.select_related('user')),
                 'tags'
             )
         else:
@@ -88,7 +87,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get('pk', None)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
-            'pools', 'pools__permission_groups',
+            'pools',
+            'pools__permission_groups',
             Prefetch('pools__registrations', queryset=Registration.objects.select_related('user')),
             Prefetch('registrations', queryset=Registration.objects.select_related('user')),
         )
@@ -115,15 +115,17 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             registration_payment_save.s(registration.id)
         ).delay()
         payment_serializer = RegistrationPaymentReadSerializer(
-            registration, context={'request': request}
+            registration, context={
+                'request': request
+            }
         )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-class PoolViewSet(mixins.CreateModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  viewsets.GenericViewSet):
+class PoolViewSet(
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     queryset = Pool.objects.all()
     serializer_class = PoolCreateAndUpdateSerializer
 
@@ -140,12 +142,10 @@ class PoolViewSet(mixins.CreateModelMixin,
             raise APIRegistrationsExistsInPool
 
 
-class RegistrationViewSet(AllowedPermissionsMixin,
-                          mixins.CreateModelMixin,
-                          mixins.RetrieveModelMixin,
-                          mixins.UpdateModelMixin,
-                          mixins.DestroyModelMixin,
-                          viewsets.GenericViewSet):
+class RegistrationViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     serializer_class = RegistrationReadSerializer
     ordering = 'registration_date'
 
@@ -180,7 +180,9 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             registration.save(update_fields=['status', 'feedback'])
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(
-            registration, context={'user': registration.user}
+            registration, context={
+                'user': registration.user
+            }
         )
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -193,8 +195,9 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         serializer = RegistrationReadSerializer(instance)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    @decorators.list_route(methods=['POST'],
-                           serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+    @decorators.list_route(
+        methods=['POST'], serializer_class=AdminRegistrationCreateAndUpdateSerializer
+    )
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get('event_pk', None)
         event = Event.objects.get(id=event_id)

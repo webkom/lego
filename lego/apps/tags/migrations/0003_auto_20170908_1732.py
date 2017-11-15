@@ -18,6 +18,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tag',
             name='tag',
-            field=models.CharField(max_length=64, primary_key=True, serialize=False, validators=[django.core.validators.RegexValidator(re.compile('^[-a-z0-9æøå_.#%$&/]+\\Z', 32), "Enter a valid 'tag' consisting of letters, numbers, underscores or hyphens.", 'invalid')]),
+            field=models.CharField(
+                max_length=64, primary_key=True, serialize=False, validators=[
+                    django.core.validators.RegexValidator(
+                        re.compile('^[-a-z0-9æøå_.#%$&/]+\\Z', 32),
+                        "Enter a valid 'tag' consisting of letters, numbers, underscores or hyphens.",
+                        'invalid'
+                    )
+                ]
+            ),
         ),
     ]

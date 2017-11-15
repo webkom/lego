@@ -17,8 +17,9 @@ class JoblistingSerializer(BasisModelSerializer):
 
     class Meta:
         model = Joblisting
-        fields = ('id', 'title', 'company', 'deadline', 'job_type', 'workplaces',
-                  'from_year', 'to_year')
+        fields = (
+            'id', 'title', 'company', 'deadline', 'job_type', 'workplaces', 'from_year', 'to_year'
+        )
 
 
 class JoblistingDetailedSerializer(BasisModelSerializer):
@@ -29,9 +30,10 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Joblisting
-        fields = ('id', 'title', 'text', 'company', 'responsible', 'description', 'deadline',
-                  'job_type', 'workplaces', 'visible_from', 'visible_to', 'from_year', 'to_year',
-                  'application_url')
+        fields = (
+            'id', 'title', 'text', 'company', 'responsible', 'description', 'deadline', 'job_type',
+            'workplaces', 'visible_from', 'visible_to', 'from_year', 'to_year', 'application_url'
+        )
 
 
 class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
@@ -40,9 +42,11 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Joblisting
-        fields = ('id', 'title', 'text', 'company', 'responsible', 'description', 'deadline',
-                  'visible_from', 'visible_to', 'job_type', 'workplaces', 'from_year',
-                  'to_year', 'application_url')
+        fields = (
+            'id', 'title', 'text', 'company', 'responsible', 'description', 'deadline',
+            'visible_from', 'visible_to', 'job_type', 'workplaces', 'from_year', 'to_year',
+            'application_url'
+        )
 
     def create(self, validated_data):
         workplaces_data = validated_data.pop('workplaces')

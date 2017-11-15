@@ -7,9 +7,7 @@ EDIT_ROLES = (constants.LEADER, constants.CO_LEADER)
 
 class UserPermissionHandler(PermissionHandler):
 
-    permission_map = {
-        VIEW: []
-    }
+    permission_map = {VIEW: []}
 
     allowed_individual = [VIEW, EDIT]
     force_object_permission_check = True
@@ -20,7 +18,7 @@ class UserPermissionHandler(PermissionHandler):
         return False
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
 
         is_self = self.is_self(perm, user, obj)
@@ -32,16 +30,13 @@ class UserPermissionHandler(PermissionHandler):
 
 class AbakusGroupPermissionHandler(PermissionHandler):
 
-    permission_map = {
-        LIST: [],
-        VIEW: []
-    }
+    permission_map = {LIST: [], VIEW: []}
 
     force_object_permission_check = True
     default_keyword_permission = '/sudo/admin/groups/{perm}/'
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         if perm == 'delete':
             return False
@@ -62,7 +57,7 @@ class MembershipPermissionHandler(PermissionHandler):
     default_keyword_permission = '/sudo/admin/groups/{perm}/'
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 

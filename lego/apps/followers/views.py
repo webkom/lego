@@ -1,14 +1,17 @@
 from rest_framework import mixins, viewsets
 
 from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
-from lego.apps.followers.serializers import (FollowCompanySerializer, FollowEventSerializer,
-                                             FollowUserSerializer)
+from lego.apps.followers.serializers import (
+    FollowCompanySerializer, FollowEventSerializer, FollowUserSerializer
+)
 
 from .filters import FollowCompanyFilterSet, FollowEventFilterSet, FollowUserFilterSet
 
 
-class FollowerBaseViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
-                          mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class FollowerBaseViewSet(
+    mixins.ListModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     pass
 
 

@@ -10,23 +10,35 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('require_auth', models.BooleanField(default=False, verbose_name='require auth')),
                 ('text', models.TextField()),
                 ('object_id', models.PositiveIntegerField(db_index=True)),
             ],
             options={
-                'ordering': ('created_at',),
+                'ordering': ('created_at', ),
             },
         ),
     ]

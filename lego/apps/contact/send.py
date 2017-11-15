@@ -16,15 +16,12 @@ def send_message(title, message, user, anonymous):
     from_email = 'Unknown' if anonymous else user.email_address
 
     send_email.delay(
-        to_email=emails,
-        context={
+        to_email=emails, context={
             'title': title,
             'message': message,
             'from_name': from_name,
             'from_email': from_email
-        },
-        subject='Ny henvendelse fra kontaktskjemaet',
+        }, subject='Ny henvendelse fra kontaktskjemaet',
         plain_template='contact/email/contact_form.txt',
-        html_template='contact/email/contact_form.html',
-        from_email=None
+        html_template='contact/email/contact_form.html', from_email=None
     )

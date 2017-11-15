@@ -10,43 +10,35 @@ from lego.apps.users.models import User
 
 class ActivityTestCase(TestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
-                'test_articles.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.user = User.objects.get(id=1)
         self.article = Article.objects.get(id=2)
-        self.comment = Comment(
-            content_object=self.article, text='comment'
-        )
+        self.comment = Comment(content_object=self.article, text='comment')
         self.comment.save(current_user=self.user)
         self.test_time = now()
 
     def test_create_activity(self):
         """Check that the objects gets stored as content_strings."""
         activity = Activity(
-            actor=self.user,
-            verb=CommentVerb,
-            object=self.comment,
-            target=self.article,
+            actor=self.user, verb=CommentVerb, object=self.comment, target=self.article,
             extra_context={
                 'content': self.comment.text
             }
         )
 
         self.assertEqual(activity.actor, 'users.user-1')
-        self.assertEqual(activity.object, 'comments.comment-{comment_id}'.format(
-            comment_id=self.comment.id))
+        self.assertEqual(
+            activity.object, 'comments.comment-{comment_id}'.format(comment_id=self.comment.id)
+        )
         self.assertEqual(activity.target, 'articles.article-2')
         self.assertEqual(activity.verb, CommentVerb)
 
     def test_create_activity_with_time(self):
         """Check the time storage. The time should be naive."""
         activity = Activity(
-            time=self.test_time,
-            actor=self.user,
-            verb=CommentVerb,
-            object=self.comment,
+            time=self.test_time, actor=self.user, verb=CommentVerb, object=self.comment,
             extra_context={
                 'content': self.comment.text
             }

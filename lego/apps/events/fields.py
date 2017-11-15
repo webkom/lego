@@ -6,7 +6,6 @@ from lego.apps.permissions.constants import EDIT
 
 
 class FeedbackField(serializers.Field):
-
     def get_attribute(self, instance):
         return instance
 
@@ -22,7 +21,6 @@ class FeedbackField(serializers.Field):
 
 
 class ChargeStatusField(serializers.Field):
-
     def get_attribute(self, instance):
         return instance
 
@@ -38,7 +36,6 @@ class ChargeStatusField(serializers.Field):
 
 
 class ActivationTimeField(serializers.Field):
-
     def get_attribute(self, instance):
         return instance
 
@@ -49,7 +46,6 @@ class ActivationTimeField(serializers.Field):
 
 
 class SpotsLeftField(serializers.Field):
-
     def get_attribute(self, instance):
         return instance
 
@@ -60,7 +56,6 @@ class SpotsLeftField(serializers.Field):
 
 
 class SetChargeStatusField(serializers.ChoiceField):
-
     def get_attribute(self, instance):
         return instance
 
@@ -77,7 +72,6 @@ class SetChargeStatusField(serializers.ChoiceField):
 
 
 class PresenceField(serializers.ChoiceField):
-
     def get_attribute(self, instance):
         return instance
 
@@ -94,7 +88,6 @@ class PresenceField(serializers.ChoiceField):
 
 
 class PublicEventField(serializers.PrimaryKeyRelatedField):
-
     def use_pk_only_optimization(self):
         return False
 

@@ -17,12 +17,49 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MembershipHistory',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('role', models.CharField(choices=[('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'), ('treasurer', 'treasurer'), ('recruiting', 'recruiting'), ('development', 'development'), ('editor', 'editor'), ('retiree', 'retiree'), ('media_relations', 'media_relations'), ('active_retiree', 'active_retiree'), ('alumni', 'alumni'), ('webmaster', 'webmaster'), ('interest_group_admin', 'interest_group_admin'), ('alumni_admin', 'alumni_admin'), ('retiree_email', 'retiree_email'), ('company_admin', 'company_admin'), ('dugnad_admin', 'dugnad_admin'), ('trip_admin', 'trip_admin'), ('sponsor_admin', 'sponsor_admin'), ('social_admin', 'social_admin')], default='member', max_length=30)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
+                (
+                    'role',
+                    models.CharField(
+                        choices=[
+                            ('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'),
+                            ('treasurer',
+                             'treasurer'), ('recruiting',
+                                            'recruiting'), ('development',
+                                                            'development'), ('editor', 'editor'),
+                            ('retiree', 'retiree'), ('media_relations', 'media_relations'),
+                            ('active_retiree',
+                             'active_retiree'), ('alumni', 'alumni'), ('webmaster', 'webmaster'),
+                            ('interest_group_admin',
+                             'interest_group_admin'), ('alumni_admin', 'alumni_admin'),
+                            ('retiree_email',
+                             'retiree_email'), ('company_admin',
+                                                'company_admin'), ('dugnad_admin', 'dugnad_admin'),
+                            ('trip_admin',
+                             'trip_admin'), ('sponsor_admin',
+                                             'sponsor_admin'), ('social_admin', 'social_admin')
+                        ], default='member', max_length=30
+                    )
+                ),
                 ('start_date', models.DateField(null=True)),
                 ('end_date', models.DateField()),
-                ('abakus_group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.AbakusGroup')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'abakus_group',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to='users.AbakusGroup'
+                    )
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
         ),
         migrations.RemoveField(

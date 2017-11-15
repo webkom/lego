@@ -1,5 +1,6 @@
-from push_notifications.api.rest_framework import (APNSDeviceAuthorizedViewSet,
-                                                   GCMDeviceAuthorizedViewSet)
+from push_notifications.api.rest_framework import (
+    APNSDeviceAuthorizedViewSet, GCMDeviceAuthorizedViewSet
+)
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
@@ -8,8 +9,10 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.stats.utils import track
 
 from .models import Announcement, NotificationSetting
-from .serializers import (AnnouncementDetailSerializer, AnnouncementListSerializer,
-                          NotificationSettingCreateSerializer, NotificationSettingSerializer)
+from .serializers import (
+    AnnouncementDetailSerializer, AnnouncementListSerializer, NotificationSettingCreateSerializer,
+    NotificationSettingSerializer
+)
 
 
 class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -54,10 +57,12 @@ class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.Gener
         """
         Return a list of all possible notification_types and channels.
         """
-        return Response({
-            'notification_types': constants.NOTIFICATION_TYPES,
-            'channels': constants.CHANNELS
-        })
+        return Response(
+            {
+                'notification_types': constants.NOTIFICATION_TYPES,
+                'channels': constants.CHANNELS
+            }
+        )
 
 
 class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
@@ -90,8 +95,9 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(AnnouncementListSerializer(serializer.instance).data,
-                        status=status.HTTP_201_CREATED)
+        return Response(
+            AnnouncementListSerializer(serializer.instance).data, status=status.HTTP_201_CREATED
+        )
 
     @decorators.detail_route(methods=['POST'])
     def send(self, request, *args, **kwargs):

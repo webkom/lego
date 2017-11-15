@@ -6,6 +6,7 @@ class FeedAggregator(RecentVerbAggregator):
     This feed aggregator groups events by target, verb and date by default. Verbs can have a
     custom aggregation_group variable for custom grouping.
     """
+
     def default_group_aggregate(self, activity):
         verb = activity.verb.id
         target_id = activity.target_id

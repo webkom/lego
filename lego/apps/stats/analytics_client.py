@@ -34,10 +34,12 @@ def _proxy(method, user, *args, **kwargs):
     fn = getattr(default_client, method)
 
     kwargs['context'] = {
-        'version': environ.get('RELEASE', 'latest'),
-        'system': 'lego',
+        'version':
+        environ.get('RELEASE', 'latest'),
+        'system':
+        'lego',
         'environment':
-            'development' if development else getattr(settings, 'ENVIRONMENT_NAME', 'unknown')
+        'development' if development else getattr(settings, 'ENVIRONMENT_NAME', 'unknown')
     }
 
     if user.is_authenticated:
@@ -56,16 +58,18 @@ def identify(user):
     traits = {}
 
     if user.is_authenticated:
-        traits.update({
-            'username': user.username,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'full_name': user.full_name,
-            'email': user.email,
-            'gender': user.gender,
-            'student_username': user.student_username,
-            'is_active': user.is_active,
-        })
+        traits.update(
+            {
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'full_name': user.full_name,
+                'email': user.email,
+                'gender': user.gender,
+                'student_username': user.student_username,
+                'is_active': user.is_active,
+            }
+        )
         _proxy('identify', user, traits=traits)
     else:
         log.warn('analytics_identify_unknown_user')

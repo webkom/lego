@@ -8,20 +8,20 @@ from rest_framework.test import APITestCase
 from lego.apps.events import constants
 from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
-from lego.apps.events.tasks import (async_register, bump_waiting_users_to_new_pool,
-                                    check_events_for_registrations_with_expired_penalties,
-                                    check_that_pool_counters_match_registration_number,
-                                    notify_event_creator_when_payment_overdue,
-                                    notify_user_when_payment_soon_overdue)
+from lego.apps.events.tasks import (
+    async_register, bump_waiting_users_to_new_pool,
+    check_events_for_registrations_with_expired_penalties,
+    check_that_pool_counters_match_registration_number, notify_event_creator_when_payment_overdue,
+    notify_user_when_payment_soon_overdue
+)
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
 
 
 class PoolActivationTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml',
-                'test_users.yaml',
-                'test_events.yaml',
-                'test_companies.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
+    ]
 
     _test_pools_data = [
         {
@@ -55,8 +55,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
 
         self.assertEqual(self.pool_two.registrations.count(), 0)
@@ -69,8 +68,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
 
         self.pool_two.activation_date = timezone.now() - timedelta(minutes=30)
@@ -87,8 +85,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
             registrations.append(Registration.objects.get(id=registration.id))
 
@@ -103,8 +100,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
 
         bump_waiting_users_to_new_pool()
@@ -127,13 +123,15 @@ class PoolActivationTestCase(APITestCase):
         users = get_dummy_users(2)
 
         Penalty.objects.create(
-            user=users[1], reason='test', weight=3, source_event=self.event,
+            user=users[1],
+            reason='test',
+            weight=3,
+            source_event=self.event,
         )
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
 
         bump_waiting_users_to_new_pool()
@@ -151,8 +149,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
 
         bump_waiting_users_to_new_pool()
@@ -167,8 +164,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=self.event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(registration)
 
         self.pool_two.activation_date = timezone.now() - timedelta(minutes=40)
@@ -187,9 +183,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            Registration.objects.get_or_create(
-                event=self.event, user=user, pool=self.pool_one
-            )
+            Registration.objects.get_or_create(event=self.event, user=user, pool=self.pool_one)
 
         self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
 
@@ -211,9 +205,7 @@ class PoolActivationTestCase(APITestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
-            reg = Registration.objects.get_or_create(
-                event=self.event, user=user
-            )[0]
+            reg = Registration.objects.get_or_create(event=self.event, user=user)[0]
             self.event.register(reg)
 
         self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
@@ -222,10 +214,9 @@ class PoolActivationTestCase(APITestCase):
 
 
 class PenaltyExpiredTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml',
-                'test_users.yaml',
-                'test_events.yaml',
-                'test_companies.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
+    ]
 
     def setUp(self):
         self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -299,9 +290,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        p1 = Penalty.objects.create(
-            user=users[1], reason='test', weight=3, source_event=self.event
-        )
+        p1 = Penalty.objects.create(user=users[1], reason='test', weight=3, source_event=self.event)
 
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
@@ -323,9 +312,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        p1 = Penalty.objects.create(
-            user=users[2], reason='test', weight=3, source_event=self.event
-        )
+        p1 = Penalty.objects.create(user=users[2], reason='test', weight=3, source_event=self.event)
 
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
@@ -347,9 +334,7 @@ class PenaltyExpiredTestCase(TestCase):
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
-        p1 = Penalty.objects.create(
-            user=users[1], reason='test', weight=3, source_event=self.event
-        )
+        p1 = Penalty.objects.create(user=users[1], reason='test', weight=3, source_event=self.event)
 
         for user in users:
             registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
@@ -363,8 +348,9 @@ class PenaltyExpiredTestCase(TestCase):
 
 
 class PaymentDueTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
-                'test_events.yaml', 'test_companies.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
+    ]
 
     def setUp(self):
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
@@ -382,18 +368,16 @@ class PaymentDueTestCase(TestCase):
         self.registration.pool = None
         self.registration.save()
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler(
-            Registration
-        ).handle_payment_overdue.assert_not_called()
+        mock_get_handler(Registration).handle_payment_overdue.assert_not_called()
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_user_notification_when_overdue_payment(self, mock_get_handler):
         """Tests that notification is added when registration has not paid"""
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler(
-            Registration
-        ).handle_payment_overdue.assert_called_once_with(self.registration)
+        mock_get_handler(Registration).handle_payment_overdue.assert_called_once_with(
+            self.registration
+        )
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_user_notification_when_time_limit_passed(self, mock_get_handler):
@@ -402,9 +386,9 @@ class PaymentDueTestCase(TestCase):
         self.registration.save()
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler(
-            Registration
-        ).handle_payment_overdue.assert_called_once_with(self.registration)
+        mock_get_handler(Registration).handle_payment_overdue.assert_called_once_with(
+            self.registration
+        )
 
     @mock.patch('lego.apps.events.tasks.get_handler')
     def test_no_notification_when_recently_notified(self, mock_get_handler):
@@ -444,7 +428,7 @@ class PaymentDueTestCase(TestCase):
         self.event.save()
         notify_event_creator_when_payment_overdue.delay()
         call = mock_notification.mock_calls[0]
-        self.assertEqual(call[1], (self.event.created_by,))
+        self.assertEqual(call[1], (self.event.created_by, ))
         self.assertEqual(call[2]['event'], self.event)
         self.assertEqual(1, len(call[2]['users']))
         mock_notification.assert_called_once()
@@ -459,7 +443,7 @@ class PaymentDueTestCase(TestCase):
         self.registration.charge_status = constants.PAYMENT_FAILURE
         notify_event_creator_when_payment_overdue.delay()
         call = mock_notification.mock_calls[0]
-        self.assertEqual(call[1], (self.event.created_by,))
+        self.assertEqual(call[1], (self.event.created_by, ))
         self.assertEqual(call[2]['event'], self.event)
         self.assertEqual(1, len(call[2]['users']))
         mock_notification.assert_called_once()
@@ -480,12 +464,9 @@ class PaymentDueTestCase(TestCase):
 
         notify_event_creator_when_payment_overdue.delay()
         call = mock_notification.mock_calls[0]
-        self.assertEqual(call[1], (self.event.created_by,))
+        self.assertEqual(call[1], (self.event.created_by, ))
         self.assertEqual(call[2]['event'], self.event)
-        self.assertEqual(
-            1,
-            len(call[2]['users'])
-        )
+        self.assertEqual(1, len(call[2]['users']))
         mock_notification.assert_called_once()
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
@@ -503,12 +484,9 @@ class PaymentDueTestCase(TestCase):
 
         notify_event_creator_when_payment_overdue.delay()
         call = mock_notification.mock_calls[0]
-        self.assertEqual(call[1], (self.event.created_by,))
+        self.assertEqual(call[1], (self.event.created_by, ))
         self.assertEqual(call[2]['event'], self.event)
-        self.assertEqual(
-            2,
-            len(call[2]['users'])
-        )
+        self.assertEqual(2, len(call[2]['users']))
         mock_notification.assert_called_once()
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')

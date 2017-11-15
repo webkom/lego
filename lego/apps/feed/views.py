@@ -73,8 +73,7 @@ class FeedViewSet(viewsets.GenericViewSet):
         assert lookup_url_kwarg in self.kwargs, (
             'Expected view %s to be called with a URL keyword argument '
             'named "%s". Fix your URL conf, or set the `.lookup_field` '
-            'attribute on the view correctly.' %
-            (self.__class__.__name__, lookup_url_kwarg)
+            'attribute on the view correctly.' % (self.__class__.__name__, lookup_url_kwarg)
         )
 
         try:
@@ -157,8 +156,7 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         return self.feed_class(self.request.user.pk)
 
     @decorators.list_route(
-        permission_classes=[permissions.IsAuthenticated],
-        serializer_class=MarkSerializer,
+        permission_classes=[permissions.IsAuthenticated], serializer_class=MarkSerializer,
         methods=['POST']
     )
     def mark_all(self, request):
@@ -173,8 +171,7 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @decorators.detail_route(
-        permission_classes=[permissions.IsAuthenticated],
-        serializer_class=MarkSerializer,
+        permission_classes=[permissions.IsAuthenticated], serializer_class=MarkSerializer,
         methods=['POST']
     )
     def mark(self, request, pk):
@@ -188,10 +185,7 @@ class NotificationFeedViewSet(FeedViewSet, FeedListMixin):
         feed.mark_activity(pk, **data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.list_route(
-        permission_classes=[permissions.IsAuthenticated],
-        methods=['GET']
-    )
+    @decorators.list_route(permission_classes=[permissions.IsAuthenticated], methods=['GET'])
     def notification_data(self, request):
         feed = self.get_queryset()
         return Response(feed.get_notification_data())

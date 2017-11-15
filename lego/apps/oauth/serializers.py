@@ -6,11 +6,15 @@ from .models import APIApplication
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = APIApplication
         fields = [
-            'id', 'name', 'description', 'redirect_uris', 'client_id', 'client_secret',
+            'id',
+            'name',
+            'description',
+            'redirect_uris',
+            'client_id',
+            'client_secret',
         ]
         read_only_fields = ['client_id', 'client_secret', 'user']
 
@@ -20,11 +24,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
         """
         request = self.context['request']
         kwargs['user'] = request.user
-        kwargs.update({
-            'skip_authorization': False,
-            'client_type': APIApplication.CLIENT_PUBLIC,
-            'authorization_grant_type': APIApplication.GRANT_AUTHORIZATION_CODE,
-        })
+        kwargs.update(
+            {
+                'skip_authorization': False,
+                'client_type': APIApplication.CLIENT_PUBLIC,
+                'authorization_grant_type': APIApplication.GRANT_AUTHORIZATION_CODE,
+            }
+        )
         return super().save(**kwargs)
 
 

@@ -36,6 +36,7 @@ class NotificationSettingTestCase(TestCase):
         """enabled=True should return a list with valid channels"""
         user = User.objects.get(pk=4)
 
-        self.assertEquals(NotificationSetting.active_channels(user, constants.WEEKLY_MAIL), [
-            constants.EMAIL
-        ])
+        self.assertEquals(
+            NotificationSetting.active_channels(user, constants.WEEKLY_MAIL),
+            [constants.EMAIL]
+        )

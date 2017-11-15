@@ -1,4 +1,3 @@
-
 import pytz
 from django.utils import timezone
 
@@ -38,11 +37,9 @@ class MeetingInvitationNotification(Notification):
         meeting = meeting_invitation.meeting
 
         return self._delay_push(
-            template='meetings/push/meeting_invitation.txt',
-            context={
+            template='meetings/push/meeting_invitation.txt', context={
                 'owner': meeting.created_by.full_name,
                 'meeting_id': meeting.id,
                 'meeting_title': meeting.title,
-            },
-            instance=meeting
+            }, instance=meeting
         )

@@ -10,8 +10,8 @@ from lego.utils.content_types import instance_to_string
 
 class TestEventHandler(FeedTestBase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml',
-        'test_companies.yaml', 'test_events.yaml', 'test_followcompany.yaml'
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_followcompany.yaml'
     ]
 
     def setUp(self):

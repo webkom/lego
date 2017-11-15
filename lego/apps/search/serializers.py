@@ -5,8 +5,7 @@ class QuerySerializer(serializers.Serializer):
     query = serializers.CharField()
     types = serializers.ListField(child=serializers.CharField(), default=[])
     filters = serializers.DictField(
-        child=serializers.ListField(child=serializers.CharField()),
-        default={}
+        child=serializers.ListField(child=serializers.CharField()), default={}
     )
 
 

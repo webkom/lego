@@ -24,39 +24,39 @@ class SlugModelTestCase(testcases.TestCase):
 
     def test_slug_slice(self):
         item = ExampleSlugContent(
-            title='hey, come to this cool event and get free drinks all night')
+            title='hey, come to this cool event and get free drinks all night'
+        )
         item.save()
-        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id),
-                         item.slug)
+        self.assertEqual(
+            '{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id), item.slug
+        )
 
     def test_slug_slice_when_word_ends_at_max_len(self):
-        item = ExampleSlugContent(
-            title='hey, come to this cool event and get free driiiiinks heh')
+        item = ExampleSlugContent(title='hey, come to this cool event and get free driiiiinks heh')
         item.save()
-        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free'.format(item.id),
-                         item.slug)
+        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free'.format(item.id), item.slug)
 
     def test_slug_static(self):
-        item = ExampleSlugContent(
-            title='hey come to this cool event and get free drinks all night')
+        item = ExampleSlugContent(title='hey come to this cool event and get free drinks all night')
         item.save()
         item.title = 'hi'
         item.save()
-        self.assertEqual('{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id),
-                         item.slug)
+        self.assertEqual(
+            '{}-hey-come-to-this-cool-event-and-get-free-drinks'.format(item.id), item.slug
+        )
 
 
 class ContentModelTestCase(testcases.TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'initial_files.yaml',
-                'development_users.yaml', 'test_articles.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'initial_files.yaml', 'development_users.yaml',
+        'test_articles.yaml'
+    ]
 
     def test_parse_content(self):
         content = '<p>some <b>cool</b> text telling you to come to this party</p>' \
                   '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
         article = Article(
-            title='test content',
-            description='test description',
-            text=content,
+            title='test content', description='test description', text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
@@ -69,9 +69,7 @@ class ContentModelTestCase(testcases.TestCase):
             <p><script>window.alert("I am a virus")</script></p>
         """
         article = Article(
-            title='test content',
-            description='test description',
-            text=content,
+            title='test content', description='test description', text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
@@ -84,9 +82,7 @@ class ContentModelTestCase(testcases.TestCase):
             <p style="color: red;">psst.. We got free <strike>dranks!</strike>drinks</p>
         """
         article = Article(
-            title='test content',
-            description='test description',
-            text=content,
+            title='test content', description='test description', text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
@@ -101,9 +97,7 @@ class ContentModelTestCase(testcases.TestCase):
         """
 
         article = Article(
-            title='test content',
-            description='test description',
-            text=content,
+            title='test content', description='test description', text=content,
             author=User.objects.get(username='webkom')
         )
         article.save()
@@ -120,9 +114,7 @@ class ContentModelTestCase(testcases.TestCase):
 
         with self.assertRaises(ValidationError):
             Article.objects.create(
-                title='test content',
-                description='test description',
-                text=content,
+                title='test content', description='test description', text=content,
                 author=User.objects.get(username='webkom')
             )
 
@@ -136,8 +128,6 @@ class ContentModelTestCase(testcases.TestCase):
 
         with self.assertRaises(ValidationError):
             Article.objects.create(
-                title='test content',
-                description='test description',
-                text=content,
+                title='test content', description='test description', text=content,
                 author=User.objects.get(username='webkom')
             )

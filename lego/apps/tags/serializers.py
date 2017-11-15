@@ -7,10 +7,9 @@ from lego.apps.tags.validators import validate_tag
 
 
 class TagSerializer(ModelSerializer):
-
     class Meta:
         model = Tag
-        fields = ('tag',)
+        fields = ('tag', )
 
     def to_representation(self, instance):
         return instance.tag
@@ -64,7 +63,6 @@ class TagSerializerMixin(serializers.Serializer):
 
 
 class TagSearchSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Tag
         fields = ('tag', )

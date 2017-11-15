@@ -13,7 +13,7 @@ class AbakusGroupManager(TreeManager, PersistentModelManager):
 
 class AbakusGroupManagerWithoutText(AbakusGroupManager):
     def get_queryset(self, *args, **kwargs):
-            return super().get_queryset().defer('text')
+        return super().get_queryset().defer('text')
 
 
 class AbakusUserManager(UserManager, PersistentModelManager):
@@ -37,12 +37,13 @@ class AbakusUserManager(UserManager, PersistentModelManager):
 
 class MembershipManager(PersistentModelManager):
     def get_by_natural_key(self, username, abakus_group_name):
-        return self.get(user__username__iexact=username.lower(),
-                        abakus_group__name__iexact=abakus_group_name.lower())
+        return self.get(
+            user__username__iexact=username.lower(),
+            abakus_group__name__iexact=abakus_group_name.lower()
+        )
 
 
 class UserPenaltyManager(PersistentModelManager):
-
     def valid(self):
         from lego.apps.users.models import Penalty
         offset = Penalty.penalty_offset(timezone.now(), False)

@@ -11,10 +11,7 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 def response_handler(token, user=None, request=None):
     statsd.incr('authentication.authenticate.jwt', 1)
     track(user, 'authenticate')
-    return {
-        'token': token,
-        'user': MeSerializer(user).data
-    }
+    return {'token': token, 'user': MeSerializer(user).data}
 
 
 def get_jwt_token(user):

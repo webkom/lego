@@ -14,15 +14,14 @@ from lego.apps.feed.verbs import CommentVerb
 
 class ManagerTestCase(FeedTestBase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
-                'test_comments.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml', 'test_comments.yaml'
+    ]
 
     def setUp(self):
         self.comment = Comment.objects.first()
         self.activity = Activity(
-            actor=self.comment.created_by,
-            verb=CommentVerb,
-            object=self.comment,
+            actor=self.comment.created_by, verb=CommentVerb, object=self.comment,
             target=self.comment.content_object
         )
 
@@ -51,11 +50,7 @@ class ManagerTestCase(FeedTestBase):
 
         activity_mock = mock.Mock()
 
-        feed_manager.add_activity(
-            activity_mock,
-            ['abc', 'def'],
-            [NotificationFeed]
-        )
+        feed_manager.add_activity(activity_mock, ['abc', 'def'], [NotificationFeed])
 
         self.assertIn({'abc', 'def'}, mock_create_fanout_tasks.call_args[0])
         self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])
@@ -68,11 +63,7 @@ class ManagerTestCase(FeedTestBase):
 
         activity_mock = mock.Mock()
 
-        feed_manager.remove_activity(
-            activity_mock,
-            ['abc', 'def'],
-            [NotificationFeed]
-        )
+        feed_manager.remove_activity(activity_mock, ['abc', 'def'], [NotificationFeed])
 
         self.assertIn({'abc', 'def'}, mock_create_fanout_tasks.call_args[0])
         self.assertIn(NotificationFeed, mock_create_fanout_tasks.call_args[0])

@@ -31,20 +31,14 @@ class MessageProcessor:
         if not token:
             log.critical('restricted_mail_no_token_found', sender=self.sender)
             # Notify about failure
-            self.feed_handler.handle_failure(
-                sender=self.sender,
-                reason='TOKEN_NOT_FOUND'
-            )
+            self.feed_handler.handle_failure(sender=self.sender, reason='TOKEN_NOT_FOUND')
             return None
 
         restricted_message = self.lookup_instance(self.sender, token)
         if restricted_message is None:
             log.critical('restricted_mail_token_not_found')
             # Notify about failure
-            self.feed_handler.handle_failure(
-                sender=self.sender,
-                reason='TOKEN_INVALID'
-            )
+            self.feed_handler.handle_failure(sender=self.sender, reason='TOKEN_INVALID')
             return None
 
         recipients = restricted_message.lookup_recipients()
@@ -120,9 +114,7 @@ class MessageProcessor:
         Create a new connection and bulk send mails
         """
         connection = get_connection(fail_silently=False)
-        messages = [
-            EmailMessage(recipient, sender, deepcopy(message)) for recipient in recipients
-        ]
+        messages = [EmailMessage(recipient, sender, deepcopy(message)) for recipient in recipients]
         log.info('restricted_mail_process_messages', sender=sender, recipients=len(messages))
         return connection.send_messages(messages)
 
@@ -132,15 +124,14 @@ class MessageProcessor:
         Notify the recipient about the sender rewrite.
         """
 
-        footer = [
-            '------------',
-            'Du kan ikke svare direkte på denne eposten.'
-        ]
+        footer = ['------------', 'Du kan ikke svare direkte på denne eposten.']
 
         if not hide_sender:
             footer.append(f'Opprinnelig avsender er {sender}, send svar til denne adressen.')
-            footer.append('Denne eposten har uorginal avsender for å redusere risikoen for at '
-                          'meldingen oppfattes som spam.')
+            footer.append(
+                'Denne eposten har uorginal avsender for å redusere risikoen for at '
+                'meldingen oppfattes som spam.'
+            )
         else:
             footer.append('Opprinnelig avsender har valgt å skjule sin adresse.')
 

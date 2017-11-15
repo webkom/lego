@@ -12,13 +12,11 @@ class MeetingPermissionHandler(PermissionHandler):
 
     def filter_queryset(self, user, queryset, **kwargs):
         if user.is_authenticated():
-            return queryset.filter(
-                Q(_invited_users=user) | Q(created_by=user)
-            ).distinct()
+            return queryset.filter(Q(_invited_users=user) | Q(created_by=user)).distinct()
         return queryset.none()
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         if not user.is_authenticated():
             return False
@@ -40,7 +38,7 @@ class MeetingInvitationPermissionHandler(PermissionHandler):
     force_object_permission_check = True
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         if not user.is_authenticated():
             return False

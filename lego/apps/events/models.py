@@ -260,10 +260,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     self.heed_penalties and self.passed_unregistration_deadline:
                 if not registration.user.penalties.filter(source_event=self).exists():
                     Penalty.objects.create(
-                        user=registration.user,
-                        reason=f'Meldte seg av {self.title} for sent.',
-                        weight=1,
-                        source_event=self
+                        user=registration.user, reason=f'Meldte seg av {self.title} for sent.',
+                        weight=1, source_event=self
                     )
 
             with transaction.atomic():
@@ -434,7 +432,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if self.heed_penalties:
                     penalties = registration.user.number_of_penalties()
                     earliest_reg = self.get_earliest_registration_time(
-                                 registration.user, [to_pool], penalties
+                        registration.user,
+                        [to_pool], penalties
                     )
                 if self.heed_penalties and penalties < 3 and earliest_reg < timezone.now():
                     for group in registration.user.all_groups:
@@ -446,7 +445,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             for registration in self.waiting_registrations:
                 penalties = registration.user.number_of_penalties()
                 earliest_reg = self.get_earliest_registration_time(
-                             registration.user, None, penalties
+                    registration.user, None, penalties
                 )
                 if penalties < 3 and earliest_reg < timezone.now():
                     return registration
@@ -565,9 +564,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def unregistered(self):
         return self.registrations.filter(
-            pool=None,
-            unregistration_date__isnull=False,
-            status=constants.SUCCESS_UNREGISTER
+            pool=None, unregistration_date__isnull=False, status=constants.SUCCESS_UNREGISTER
         )
 
     @property
@@ -579,8 +576,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def waiting_registrations(self):
         return self.registrations.filter(
-            pool=None,
-            unregistration_date=None,
+            pool=None, unregistration_date=None,
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
@@ -716,8 +712,7 @@ class Registration(BasisModel):
                 and self.event.penalty_weight_on_not_present:
             if not self.user.penalties.filter(source_event=self.event).exists():
                 Penalty.objects.create(
-                    user=self.user,
-                    reason=f'Møtte ikke opp på {self.event.title}.',
+                    user=self.user, reason=f'Møtte ikke opp på {self.event.title}.',
                     weight=self.event.penalty_weight_on_not_present, source_event=self.event
                 )
         else:

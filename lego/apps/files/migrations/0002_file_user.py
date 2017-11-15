@@ -20,6 +20,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='file',
             name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='uploaded_files', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE,
+                related_name='uploaded_files', to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

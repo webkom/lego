@@ -20,9 +20,10 @@ _test_joblistings_data = [
         'from_year': 3,
         'to_year': 5,
         'application_url': 'http://www.vg.no',
-        'workplaces': [{'town': 'Oslo'}]
-    },
-    {
+        'workplaces': [{
+            'town': 'Oslo'
+        }]
+    }, {
         'title': 'EY',
         'company': 2,
         'description': 'En bedrift.',
@@ -34,9 +35,10 @@ _test_joblistings_data = [
         'from_year': 3,
         'to_year': 5,
         'application_url': 'http://www.vg.no',
-        'workplaces': [{'town': 'Trondheim'}]
-    },
-    {
+        'workplaces': [{
+            'town': 'Trondheim'
+        }]
+    }, {
         'title': 'Itera',
         'company': 1,
         'description': 'En bedrift.',
@@ -48,7 +50,11 @@ _test_joblistings_data = [
         'from_year': 3,
         'to_year': 5,
         'application_url': 'http://www.vg.no',
-        'workplaces': [{'town': 'Oslo'}, {'town': 'Trondheim'}]
+        'workplaces': [{
+            'town': 'Oslo'
+        }, {
+            'town': 'Trondheim'
+        }]
     }
 ]
 
@@ -62,20 +68,20 @@ def _get_detail_url(pk):
 
 
 class ListJoblistingsTestCase(APITestCase):
-    fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'test_abakus_groups.yaml']
+    fixtures = [
+        'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
+        'test_abakus_groups.yaml'
+    ]
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
         now = timezone.now()
         Joblisting.objects.all().update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now + timedelta(days=10)
+            visible_from=now - timedelta(days=10), visible_to=now + timedelta(days=10)
         )
 
         Joblisting.objects.filter(pk=3).update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now - timedelta(days=5)
+            visible_from=now - timedelta(days=10), visible_to=now - timedelta(days=5)
         )
 
     def test_with_abakus_user(self):
@@ -100,20 +106,20 @@ class ListJoblistingsTestCase(APITestCase):
 
 
 class RetrieveJoblistingsTestCase(APITestCase):
-    fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'test_abakus_groups.yaml']
+    fixtures = [
+        'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
+        'test_abakus_groups.yaml'
+    ]
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
         now = timezone.now()
         Joblisting.objects.all().update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now + timedelta(days=10)
+            visible_from=now - timedelta(days=10), visible_to=now + timedelta(days=10)
         )
 
         Joblisting.objects.filter(pk=3).update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now - timedelta(days=5)
+            visible_from=now - timedelta(days=10), visible_to=now - timedelta(days=5)
         )
 
     def test_with_group_permission(self):
@@ -131,8 +137,10 @@ class RetrieveJoblistingsTestCase(APITestCase):
 
 
 class CreateJoblistingsTestCase(APITestCase):
-    fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'test_abakus_groups.yaml']
+    fixtures = [
+        'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
+        'test_abakus_groups.yaml'
+    ]
 
     def setUp(self):
         self.abakom_user = User.objects.get(username='abakommer')
@@ -140,13 +148,11 @@ class CreateJoblistingsTestCase(APITestCase):
         self.not_abakom_user = User.objects.get(username='pleb')
         now = timezone.now()
         Joblisting.objects.all().update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now + timedelta(days=10)
+            visible_from=now - timedelta(days=10), visible_to=now + timedelta(days=10)
         )
 
         Joblisting.objects.filter(pk=3).update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now - timedelta(days=5)
+            visible_from=now - timedelta(days=10), visible_to=now - timedelta(days=5)
         )
 
     def test_joblistings_create(self):
@@ -161,8 +167,10 @@ class CreateJoblistingsTestCase(APITestCase):
 
 
 class EditJoblistingsTestCase(APITestCase):
-    fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'test_abakus_groups.yaml']
+    fixtures = [
+        'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
+        'test_abakus_groups.yaml'
+    ]
 
     def setUp(self):
         self.abakom_user = User.objects.get(username='abakommer')
@@ -171,40 +179,37 @@ class EditJoblistingsTestCase(APITestCase):
 
         now = timezone.now()
         Joblisting.objects.all().update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now + timedelta(days=10)
+            visible_from=now - timedelta(days=10), visible_to=now + timedelta(days=10)
         )
 
         Joblisting.objects.filter(pk=3).update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now - timedelta(days=5)
+            visible_from=now - timedelta(days=10), visible_to=now - timedelta(days=5)
         )
 
     def test_joblistings_edit_one_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
-        res = self.client.put(_get_detail_url(1),
-                              _test_joblistings_data[1])
+        res = self.client.put(_get_detail_url(1), _test_joblistings_data[1])
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data.get('workplaces')[0].get('town'), 'Trondheim')
 
     def test_joblistings_edit_multiple_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
-        res = self.client.put(_get_detail_url(1),
-                              _test_joblistings_data[2])
+        res = self.client.put(_get_detail_url(1), _test_joblistings_data[2])
         self.assertEqual(res.status_code, 200)
         self.assertEqual('Itera', res.data.get('title'))
         self.assertEqual(len(res.data.get('workplaces')), 2)
 
     def test_pleb_cannot_edit(self):
         self.client.force_authenticate(user=self.not_abakom_user)
-        res = self.client.put(_get_detail_url(1),
-                              _test_joblistings_data[1])
+        res = self.client.put(_get_detail_url(1), _test_joblistings_data[1])
         self.assertEqual(res.status_code, 403)
 
 
 class DeleteJoblistingsTestCase(APITestCase):
-    fixtures = ['development_joblistings.yaml', 'test_users.yaml',
-                'development_companies.yaml', 'test_abakus_groups.yaml']
+    fixtures = [
+        'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
+        'test_abakus_groups.yaml'
+    ]
 
     def setUp(self):
         self.joblisting = Joblisting.objects.get(id=1)
@@ -214,13 +219,11 @@ class DeleteJoblistingsTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.not_abakom_user)
         now = timezone.now()
         Joblisting.objects.all().update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now + timedelta(days=10)
+            visible_from=now - timedelta(days=10), visible_to=now + timedelta(days=10)
         )
 
         Joblisting.objects.filter(pk=3).update(
-            visible_from=now - timedelta(days=10),
-            visible_to=now - timedelta(days=5)
+            visible_from=now - timedelta(days=10), visible_to=now - timedelta(days=5)
         )
 
     def test_can_delete(self):

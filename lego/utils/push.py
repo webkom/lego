@@ -9,7 +9,6 @@ log = get_logger()
 
 
 class PushMessage:
-
     def __init__(self, user, template, context, instance=None):
         self.user = user
         self.template = template
@@ -36,9 +35,7 @@ class PushMessage:
         apns_devices = APNSDevice.objects.filter(user=self.user, active=True)
 
         log.info(
-            'send_push',
-            message=message,
-            gcm_devices=gcm_devices.count(),
+            'send_push', message=message, gcm_devices=gcm_devices.count(),
             apns_devices=apns_devices.count()
         )
 

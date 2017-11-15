@@ -18,6 +18,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='abakusgroup',
             name='permissions',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=50, validators=[lego.apps.permissions.validators.KeywordPermissionValidator()]), default=[], size=None, verbose_name='permissions'),
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    max_length=50,
+                    validators=[lego.apps.permissions.validators.KeywordPermissionValidator()]
+                ), default=[], size=None, verbose_name='permissions'
+            ),
         ),
     ]
