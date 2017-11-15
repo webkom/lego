@@ -21,7 +21,7 @@ from lego.apps.users.permissions import (AbakusGroupPermissionHandler, Membershi
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
-from .validators import email_blacklist_validator, student_username_validator, username_validator
+from .validators import email_blacklist_validator, username_validator
 
 
 class MembershipHistory(models.Model):
@@ -212,7 +212,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         max_length=50,
         unique=True,
         db_index=True,
-        help_text='Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.',
+        help_text='Required. 50 characters or fewer. Letters, digits and _ only.',
         validators=[username_validator, ReservedNameValidator()],
         error_messages={
             'unique': 'A user with that username already exists.',
@@ -222,8 +222,8 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         max_length=30,
         unique=True,
         null=True,
-        help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
-        validators=[student_username_validator, ReservedNameValidator()],
+        help_text='30 characters or fewer. Letters, digits and _ only.',
+        validators=[username_validator, ReservedNameValidator()],
         error_messages={
             'unique': 'A user has already verified that student username.',
         }
