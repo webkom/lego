@@ -239,7 +239,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return registration.add_to_pool(chosen_pool)
 
-    def unregister(self, registration, admin_unregistration_reason=None):
+    def unregister(self, registration, admin_unregistration_reason=''):
         """
         Pulls the registration, and clears relevant fields. Sets unregistration date.
         If the user was in a pool, and not in the waiting list,

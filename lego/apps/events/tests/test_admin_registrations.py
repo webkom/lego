@@ -147,6 +147,20 @@ class AdminRegistrationTestCase(TestCase):
         event.admin_unregister(reg.user, admin_unregistration_reason='test')
         self.assertEqual(event.number_of_registrations, regs_before - 1)
 
+    def test_admin_unreg_does_not_give_penalties(self):
+        """Test that admin unregistration does not automatically give penalties"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        event.unregistration_deadline = timezone.now() - timedelta(days=1)
+        event.heed_penalties = True
+        event.save()
+        reg = event.registrations.exclude(pool=None).first()
+
+        regs_before = event.number_of_registrations
+
+        event.admin_unregister(reg.user, admin_unregistration_reason='test')
+        self.assertEqual(event.number_of_registrations, regs_before - 1)
+        self.assertEqual(reg.user.number_of_penalties(), 0)
+
     def test_admin_unreg_from_waiting_list(self):
         """Test that admin unregistration from waiting list"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
