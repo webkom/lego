@@ -21,12 +21,14 @@ from lego.apps.events.serializers.registrations import (AdminRegistrationCreateA
                                                         RegistrationPaymentReadSerializer,
                                                         RegistrationReadDetailedSerializer,
                                                         RegistrationReadSerializer,
-                                                        StripeTokenSerializer, RegistrationSearchSerializer)
+                                                        RegistrationSearchSerializer,
+                                                        StripeTokenSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
                                     check_for_bump_on_pool_creation_or_expansion,
                                     registration_payment_save)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.functions import verify_captcha
 
 
@@ -229,4 +231,5 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
 
         reg.presence = constants.PRESENT
         reg.save()
-        return Response(status=status.HTTP_200_OK)
+        data = PublicUserSerializer(reg.user).data
+        return Response(data=data, status=status.HTTP_200_OK)

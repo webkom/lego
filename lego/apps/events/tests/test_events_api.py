@@ -108,6 +108,7 @@ def _get_registrations_detail_url(event_pk, registration_pk):
     return reverse('api:v1:registrations-detail', kwargs={'event_pk': event_pk,
                                                           'pk': registration_pk})
 
+
 def _get_registration_search_url(event_pk):
     return reverse('api:v1:registration-search-list', kwargs={'event_pk': event_pk})
 
@@ -789,6 +790,7 @@ class CapacityExpansionTestCase(APITestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(self.event.waiting_registrations.count(), 1)
 
+
 class RegistrationSearchTestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml',
                 'test_companies.yaml']
@@ -818,6 +820,7 @@ class RegistrationSearchTestCase(APITestCase):
             'username': self.users[0].username,
         })
         self.assertEquals(res.status_code, 200)
+        self.assertNotEqual(res.data.get('username', None), None)
 
     def test_asd_user(self):
         self.client.force_authenticate(self.webkom_user)

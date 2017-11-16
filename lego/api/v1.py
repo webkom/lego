@@ -7,7 +7,8 @@ from lego.apps.companies.views import (AdminCompanyViewSet, CompanyContactViewSe
                                        SemesterStatusViewSet, SemesterViewSet)
 from lego.apps.contact.views import ContactFormViewSet
 from lego.apps.email.views import EmailListViewSet, UserEmailViewSet
-from lego.apps.events.views import EventViewSet, PoolViewSet, RegistrationViewSet, RegistrationSearchViewSet
+from lego.apps.events.views import (EventViewSet, PoolViewSet, RegistrationSearchViewSet,
+                                    RegistrationViewSet)
 from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import (CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet,
                                   PersonalFeedViewSet, UserFeedViewSet)
@@ -55,8 +56,8 @@ router.register(r'company-interests', CompanyInterestViewSet, base_name='company
 router.register(r'company-semesters', SemesterViewSet)
 router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
-router.register(r'events/(?P<event_pk>\d+)/registration_search', RegistrationSearchViewSet,
-                base_name='registration-search')
+router.register(r'events/(?P<event_pk>\d+)/registration_search',
+                RegistrationSearchViewSet, base_name='registration-search')
 router.register(r'events/(?P<event_pk>\d+)/registrations',
                 RegistrationViewSet, base_name='registrations')
 router.register(r'webhooks-stripe', StripeWebhook, base_name='webhooks-stripe')
