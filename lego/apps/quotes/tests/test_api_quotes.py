@@ -35,7 +35,7 @@ class QuoteViewSetTestCase(APITestCase):
 
     def setUp(self):
         self.authenticated_user = User.objects.get(username='test1')
-        self.group = AbakusGroup.objects.get(name='QuoteAdminTest')
+        self.group = AbakusGroup.objects_with_text.get(name='QuoteAdminTest')
         self.group.add_user(self.authenticated_user)
         self.unauthenticated_user = User.objects.get(username='test2')
 
@@ -112,3 +112,23 @@ class QuoteViewSetTestCase(APITestCase):
 
         response = self.client.get(_get_list_unapproved_url())
         self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+
+    def test_list_approved_unauthorized(self):
+        """Users with regular permissions should be able to see approved quotes"""
+        self.group.permissions.remove('/sudo/admin/quotes/edit/')
+        self.group.save()
+        self.client.force_authenticate(self.authenticated_user)
+
+        response = self.client.get(_get_list_approved_url())
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertTrue(len(response.data['results']) > 0)
+
+    def test_list_unapproved_unauthorized(self):
+        """Users with regular permissions should not be able to see unapproved quotes"""
+        self.group.permissions.remove('/sudo/admin/quotes/edit/')
+        self.group.save()
+        self.client.force_authenticate(self.authenticated_user)
+
+        response = self.client.get(_get_list_unapproved_url())
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEquals(len(response.data['results']), 0)
