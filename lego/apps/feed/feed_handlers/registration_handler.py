@@ -107,7 +107,24 @@ class RegistrationHandler(BaseHandler):
 
         # Send Notification
         notification = EventAdminRegistrationNotification(
-            registration.user, event=registration.event, reason=registration.admin_reason
+            registration.user, event=registration.event,
+            reason=registration.admin_registration_reason
+        )
+        notification.notify()
+
+    def handle_admin_unregistration(self, registration):
+        activity = Activity(
+            actor=registration.event,
+            verb=AdminRegistrationVerb,
+            object=registration,
+            target=registration.user
+        )
+        self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
+
+        # Send Notification
+        notification = EventAdminRegistrationNotification(
+            registration.user, event=registration.event,
+            reason=registration.admin_registration_reason
         )
         notification.notify()
 

@@ -1,5 +1,6 @@
-from lego.apps.notifications.constants import (EVENT_ADMIN_REGISTRATION, EVENT_BUMP,
-                                               EVENT_PAYMENT_OVERDUE, EVENT_PAYMENT_OVERDUE_CREATOR)
+from lego.apps.notifications.constants import (EVENT_ADMIN_REGISTRATION, EVENT_ADMIN_UNREGISTRATION,
+                                               EVENT_BUMP, EVENT_PAYMENT_OVERDUE,
+                                               EVENT_PAYMENT_OVERDUE_CREATOR)
 from lego.apps.notifications.notification import Notification
 
 
@@ -108,6 +109,39 @@ class EventAdminRegistrationNotification(Notification):
             subject=f'Du har blitt adminpåmeldt på arrangementet {event.title}',
             plain_template='events/email/admin_registration.txt',
             html_template='events/email/admin_registration.html',
+        )
+
+    def generate_push(self):
+        event = self.kwargs['event']
+
+        return self._delay_push(
+            template='events/push/admin_registration.txt',
+            context={
+                'event': event.title,
+            },
+            instance=event
+        )
+
+
+class EventAdminUnregistrationNotification(Notification):
+
+    name = EVENT_ADMIN_UNREGISTRATION
+
+    def generate_mail(self):
+        event = self.kwargs['event']
+        reason = self.kwargs['reason']
+
+        return self._delay_mail(
+            to_email=self.user.email,
+            context={
+                'event': event.title,
+                'name': self.user.full_name,
+                'reason': reason,
+                'id': event.id,
+            },
+            subject=f'Du har blitt fjernet fra arrangementet {event.title}',
+            plain_template='events/email/admin_unregistration.txt',
+            html_template='events/email/admin_unregistration.html',
         )
 
     def generate_push(self):

@@ -1,0 +1,13 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+En administrator har fjernet deg fra arrangementet {{ event }} på grunn av:
+
+{{ reason }}
+
+Ta kontakt med {{ author }} dersom du skulle være uenig i dette.
+
+{% endblock %}

@@ -28,7 +28,7 @@ class AdminRegistrationTestCase(TestCase):
         no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, no_of_regs_before + 1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
@@ -44,7 +44,7 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = wrong_pool.registrations.count()
 
         with self.assertRaises(ValueError):
-            event_one.admin_register(user, admin_reason='test', pool=wrong_pool)
+            event_one.admin_register(user, admin_registration_reason='test', pool=wrong_pool)
         self.assertEqual(event_one.number_of_registrations, e1_no_of_regs_before)
         self.assertEqual(event_two.number_of_registrations, e2_no_of_regs_before)
         self.assertEqual(wrong_pool.registrations.count(), pool_no_of_regs_before)
@@ -59,7 +59,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -73,7 +73,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -91,7 +91,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -109,7 +109,7 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
         pool_no_of_regs_before = pool.registrations.count()
 
-        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
         self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
 
@@ -122,8 +122,8 @@ class AdminRegistrationTestCase(TestCase):
 
         e1_no_of_regs_before = event.number_of_registrations
 
-        event.admin_register(user, admin_reason='test', pool=pool)
-        event.admin_register(user, admin_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
+        event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
 
     def test_ar_without_pool(self):
@@ -134,5 +134,27 @@ class AdminRegistrationTestCase(TestCase):
 
         waiting_regs_before = event.waiting_registrations.count()
 
-        event.admin_register(user, admin_reason='test')
+        event.admin_register(user, admin_registration_reason='test')
         self.assertEqual(event.waiting_registrations.count(), waiting_regs_before+1)
+
+    def test_admin_unreg(self):
+        """Test that admin unregistration from waiting list"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        reg = event.registrations.exclude(pool=None).first()
+
+        regs_before = event.number_of_registrations
+
+        event.admin_unregister(reg.user, admin_unregistration_reason='test')
+        self.assertEqual(event.number_of_registrations, regs_before - 1)
+
+    def test_admin_unreg_from_waiting_list(self):
+        """Test that admin unregistration from waiting list"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        reg = event.registrations.first()
+        reg.pool = None
+        reg.save()
+
+        waiting_regs_before = event.waiting_registrations.count()
+
+        event.admin_unregister(reg.user, admin_unregistration_reason='test')
+        self.assertEqual(event.waiting_registrations.count(), waiting_regs_before - 1)

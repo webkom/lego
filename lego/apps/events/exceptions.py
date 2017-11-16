@@ -11,6 +11,11 @@ class APIPaymentExists(APIException):
     default_detail = 'Payment already exist.'
 
 
+class APINoSuchRegistration(APIException):
+    status_code = 400
+    default_detail = 'No such registration exists for this event.'
+
+
 class APIRegistrationsExistsInPool(APIException):
     status_code = 409
     default_detail = 'Registrations exists within this pool'
@@ -21,6 +26,10 @@ class NoSuchPool(ValueError):
 
 
 class EventHasClosed(ValueError):
+    pass
+
+
+class NoSuchRegistration(ValueError):
     pass
 
 

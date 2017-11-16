@@ -14,7 +14,7 @@ class EventPermissionHandler(PermissionHandler):
 class RegistrationPermissionHandler(PermissionHandler):
 
     allowed_individual = [VIEW, EDIT, DELETE]
-    perms_without_object = [CREATE, 'admin_register']
+    perms_without_object = [CREATE, 'admin_register', 'admin_unregister']
     force_object_permission_check = True
 
     def is_self(self, perm, user, obj):

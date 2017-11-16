@@ -39,7 +39,7 @@ class TestRegistrationHandler(FeedTestBase):
         self.event.admin_register(
             user=self.user,
             pool=self.event.pools.first(),
-            admin_reason='test'
+            admin_registration_reason='test'
         )
 
         self.assertEqual(self.activity_count(self.feed), 1)

@@ -11,11 +11,16 @@ from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
 
+class AdminUnregisterSerializer(serializers.Serializer):
+    user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
+    admin_unregistration_reason = serializers.CharField(required=True)
+
+
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(required=False)
-    admin_reason = serializers.CharField(required=True)
+    admin_registration_reason = serializers.CharField(required=True)
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
@@ -71,7 +76,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status',
-                  'registration_date', 'unregistration_date', 'admin_reason',
+                  'registration_date', 'unregistration_date', 'admin_registration_reason',
                   'charge_id', 'charge_status', 'charge_amount', 'charge_amount_refunded')
         read_only = True
 

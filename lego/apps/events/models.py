@@ -10,7 +10,7 @@ from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (EventHasClosed, EventNotReady, NoSuchPool,
-                                         RegistrationsExistInPool)
+                                         NoSuchRegistration, RegistrationsExistInPool)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
@@ -74,7 +74,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 pool.save(update_fields=['counter'])
             return super().save(*args, **kwargs)
 
-    def admin_register(self, user, admin_reason, pool=None, feedback=''):
+    def admin_register(self, user, admin_registration_reason, pool=None, feedback=''):
         """
         Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
@@ -95,7 +95,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                           'registration_date': timezone.now(),
                           'unregistration_date': None,
                           'status': constants.SUCCESS_REGISTER,
-                          'admin_reason': admin_reason}
+                          'admin_registration_reason': admin_registration_reason}
             )[0]
             if pool:
                 locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
@@ -103,6 +103,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
             get_handler(Registration).handle_admin_registration(reg)
             return reg
+
+    def admin_unregister(self, user, admin_unregistration_reason):
+        with transaction.atomic():
+            registration = self.registrations.filter(user=user).first()
+            if not registration:
+                raise NoSuchRegistration()
+            self.unregister(registration, admin_unregistration_reason=admin_unregistration_reason)
+            get_handler(Registration).handle_admin_unregistration(registration)
+            return registration
 
     def get_absolute_url(self):
         return f'{settings.FRONTEND_URL}/events/{self.id}/'
@@ -230,7 +239,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return registration.add_to_pool(chosen_pool)
 
-    def unregister(self, registration):
+    def unregister(self, registration, admin_unregistration_reason=None):
         """
         Pulls the registration, and clears relevant fields. Sets unregistration date.
         If the user was in a pool, and not in the waiting list,
@@ -241,9 +250,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         # Locks unregister so that no user can register before bump is executed.
         pool_id = registration.pool_id
-        registration.unregister(is_merged=self.is_merged)
+        registration.unregister(
+            is_merged=self.is_merged, admin_unregistration_reason=admin_unregistration_reason
+        )
         if pool_id:
-            if self.heed_penalties and self.passed_unregistration_deadline:
+            if not admin_unregistration_reason and\
+                    self.heed_penalties and self.passed_unregistration_deadline:
                 if not registration.user.penalties.filter(source_event=self).exists():
                     Penalty.objects.create(
                         user=registration.user,
@@ -400,6 +412,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         return self.registrations.update_or_create(event=self, user=user,
                                                    defaults={'pool': None,
+                                                             'status': constants.SUCCESS_REGISTER,
                                                              'unregistration_date': None})[0]
 
     def pop_from_waiting_list(self, to_pool=None):
@@ -637,7 +650,8 @@ class Registration(BasisModel):
     registration_date = models.DateTimeField(db_index=True, null=True)
     unregistration_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=255, blank=True)
-    admin_reason = models.CharField(max_length=255, blank=True)
+    admin_registration_reason = models.CharField(max_length=255, blank=True)
+    admin_unregistration_reason = models.CharField(max_length=255, blank=True)
     status = models.CharField(
         max_length=20, default=constants.PENDING_REGISTER, choices=constants.STATUSES
     )
@@ -728,17 +742,23 @@ class Registration(BasisModel):
         self.registration_date = timezone.now()
         return self.set_values(None, None, constants.SUCCESS_REGISTER)
 
-    def unregister(self, is_merged=None):
+    def unregister(self, is_merged=None, admin_unregistration_reason=''):
         # We do not care about the counter if the event is merged or pool is None
         if self.pool and not is_merged:
             with transaction.atomic():
                 locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
                 locked_pool.decrement()
-        return self.set_values(None, timezone.now(), constants.SUCCESS_UNREGISTER)
+        return self.set_values(
+            None, timezone.now(), constants.SUCCESS_UNREGISTER, admin_unregistration_reason
+        )
 
-    def set_values(self, pool, unregistration_date, status):
+    def set_values(self, pool, unregistration_date, status, admin_unregistration_reason=''):
         self.pool = pool
         self.unregistration_date = unregistration_date
         self.status = status
-        self.save(update_fields=['registration_date', 'pool', 'unregistration_date', 'status'])
+        self.admin_unregistration_reason = admin_unregistration_reason
+        self.save(update_fields=[
+            'registration_date', 'pool', 'unregistration_date', 'status',
+            'admin_unregistration_reason'
+        ])
         return self
