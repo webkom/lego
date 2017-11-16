@@ -108,6 +108,9 @@ def _get_registrations_detail_url(event_pk, registration_pk):
     return reverse('api:v1:registrations-detail', kwargs={'event_pk': event_pk,
                                                           'pk': registration_pk})
 
+def _get_registration_search_url(event_pk):
+    return reverse('api:v1:registration-search-list', kwargs={'event_pk': event_pk})
+
 
 class ListEventsTestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
@@ -785,3 +788,59 @@ class CapacityExpansionTestCase(APITestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(self.event.waiting_registrations.count(), 1)
+
+class RegistrationSearchTestCase(APITestCase):
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml',
+                'test_companies.yaml']
+
+    def setUp(self):
+        self.webkom_user = User.objects.get(pk=1)
+
+        abakus_group = AbakusGroup.objects.get(name='Abakus')
+        webkom_group = AbakusGroup.objects.get(name='Webkom')
+        webkom_group.add_user(self.webkom_user)
+        self.client.force_authenticate(self.webkom_user)
+        event_data = _test_event_data[0]
+        event_data['pools'][0]['permission_groups'] = [abakus_group.id]
+
+        self.event_response = self.client.post(_get_list_url(), event_data)
+        self.event = Event.objects.get(id=self.event_response.data.pop('id', None))
+        self.event.start_time = timezone.now() + timedelta(hours=3)
+        self.users = get_dummy_users(11)
+        for user in self.users:
+            abakus_group.add_user(user)
+            registration = Registration.objects.get_or_create(event=self.event, user=user)[0]
+            self.event.register(registration)
+
+    def test_register_presence(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(_get_registration_search_url(self.event.pk), {
+            'username': self.users[0].username,
+        })
+        self.assertEquals(res.status_code, 200)
+
+    def test_asd_user(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(_get_registration_search_url(self.event.pk), {
+            'username': 'asd007 xXx james bond',
+        })
+        self.assertEquals(res.status_code, 400)
+
+    def test_no_username(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(_get_registration_search_url(self.event.pk), {})
+        self.assertEquals(res.status_code, 400)
+
+    def test_user_not_registered(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(_get_registration_search_url(self.event.pk), {
+            'username': self.webkom_user.username
+        })
+        self.assertEquals(res.status_code, 400)
+
+    def test_auth(self):
+        self.client.force_authenticate(self.users[0])
+        res = self.client.post(_get_registration_search_url(self.event.pk), {
+            'username': self.users[0].username,
+        })
+        self.assertEquals(res.status_code, 403)

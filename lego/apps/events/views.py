@@ -21,11 +21,12 @@ from lego.apps.events.serializers.registrations import (AdminRegistrationCreateA
                                                         RegistrationPaymentReadSerializer,
                                                         RegistrationReadDetailedSerializer,
                                                         RegistrationReadSerializer,
-                                                        StripeTokenSerializer)
+                                                        StripeTokenSerializer, RegistrationSearchSerializer)
 from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
                                     check_for_bump_on_pool_creation_or_expansion,
                                     registration_payment_save)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.utils import get_permission_handler
 from lego.utils.functions import verify_captcha
 
 
@@ -201,3 +202,31 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             raise APINoSuchPool()
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
+
+
+class RegistrationSearchViewSet(AllowedPermissionsMixin,
+                                mixins.CreateModelMixin,
+                                viewsets.GenericViewSet):
+    serializer_class = RegistrationSearchSerializer
+    ordering = 'registration_date'
+
+    def get_queryset(self):
+        event_id = self.kwargs.get('event_pk', None)
+        return Registration.objects.filter(event=event_id).prefetch_related('user')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.data['username']
+
+        try:
+            reg = self.get_queryset().get(user__username=username)
+        except Registration.DoesNotExist:
+            raise ValidationError({'error': 'No user with that username'})
+
+        if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
+            raise PermissionDenied()
+
+        reg.presence = constants.PRESENT
+        reg.save()
+        return Response(status=status.HTTP_200_OK)
