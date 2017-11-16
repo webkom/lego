@@ -230,6 +230,9 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
                 'error': f'User {reg.user.username} is not registered for this event'
             })
 
+        if reg.presence != constants.UNKNOWN:
+            raise ValidationError({'error': f'User {reg.user.username} is already present.' })
+
         reg.presence = constants.PRESENT
         reg.save()
         data = RegistrationReadSerializer(reg).data

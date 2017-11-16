@@ -847,3 +847,13 @@ class RegistrationSearchTestCase(APITestCase):
             'username': self.users[0].username,
         })
         self.assertEquals(res.status_code, 403)
+
+    def test_double_register(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(_get_registration_search_url(self.event.pk), {
+            'username': self.users[0].username,
+        })
+        res = self.client.post(_get_registration_search_url(self.event.pk), {
+            'username': self.users[0].username,
+        })
+        self.assertEquals(res.status_code, 400)
