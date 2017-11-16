@@ -28,6 +28,7 @@ from lego.apps.events.tasks import (async_payment, async_register, async_unregis
                                     registration_payment_save)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.users.models import User
 from lego.utils.functions import verify_captcha
 
 
@@ -220,18 +221,30 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
         serializer.is_valid(raise_exception=True)
         username = serializer.data['username']
 
-        try:
-            reg = self.get_queryset().get(user__username=username)
-        except Registration.DoesNotExist:
-            raise ValidationError({'error': 'No user with that username'})
-
         if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
-            raise PermissionDenied({
-                'error': f'User {reg.user.username} is not registered for this event'
+            raise PermissionDenied()
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise ValidationError({
+                'error': f'There is no user with username {username}',
+                'error_code': 'no_user'
+            })
+
+        try:
+            reg = self.get_queryset().get(user=user)
+        except Registration.DoesNotExist:
+            raise ValidationError({
+                'error': 'The registration does not exist',
+                'error_code': 'not_registered'
             })
 
         if reg.presence != constants.UNKNOWN:
-            raise ValidationError({'error': f'User {reg.user.username} is already present.' })
+            raise ValidationError({
+                'error': f'User {reg.user.username} is already present.',
+                'error_code': 'already_present'
+            })
 
         reg.presence = constants.PRESENT
         reg.save()
