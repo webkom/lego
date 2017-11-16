@@ -56,6 +56,17 @@ pipeline:
     commands:
       - tox -e flake8
 
+  yapf:
+    image: abakus/lego-testbase
+    pull: true
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
+      - tox -e yapf
+
   docs:
     image: abakus/lego-testbase
     when:
