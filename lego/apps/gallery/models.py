@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
@@ -51,3 +52,6 @@ class GalleryPicture(models.Model):
 
     def __str__(self):
         return f'{self.gallery.title}-#{self.pk}'
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/photos/{self.gallery.id}/picture/{self.id}'
