@@ -1,6 +1,7 @@
 from lego.apps.events.models import Registration
 from lego.apps.events.notifications import (EventAdminRegistrationNotification,
-                                            EventBumpNotification, EventPaymentOverdueNotification)
+                                            EventBumpNotification, EventPaymentOverdueNotification,
+                                            EventAdminUnregistrationNotification)
 from lego.apps.feed.activities import Activity
 from lego.apps.feed.feed_handlers.base_handler import BaseHandler
 from lego.apps.feed.feed_manager import feed_manager
@@ -9,7 +10,7 @@ from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
 from lego.apps.feed.registry import register_handler
 from lego.apps.feed.verbs import (AdminRegistrationVerb, EventRegisterVerb, PaymentOverdueVerb,
-                                  RegistrationBumpVerb)
+                                  RegistrationBumpVerb, AdminUnregistrationVerb)
 
 
 class RegistrationHandler(BaseHandler):
@@ -115,16 +116,16 @@ class RegistrationHandler(BaseHandler):
     def handle_admin_unregistration(self, registration):
         activity = Activity(
             actor=registration.event,
-            verb=AdminRegistrationVerb,
+            verb=AdminUnregistrationVerb,
             object=registration,
             target=registration.user
         )
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
         # Send Notification
-        notification = EventAdminRegistrationNotification(
+        notification = EventAdminUnregistrationNotification(
             registration.user, event=registration.event,
-            reason=registration.admin_registration_reason
+            reason=registration.admin_unregistration_reason, creator=registration.event.created_by
         )
         notification.notify()
 
