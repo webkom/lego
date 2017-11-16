@@ -85,16 +85,12 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_PERSONAL
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        permission_handler = get_permission_handler(Event)
-        following_events = permission_handler.filter_queryset(
-            request.user,
-            Event.objects.filter(
-                followers__follower_id=request.user.id,
-                end_time__gt=timezone.now() - timedelta(
-                    days=constants.HISTORY_BACKWARDS_IN_DAYS
-                )
-            ).all()
-        )
+        following_events = Event.objects.filter(
+            followers__follower_id=request.user.id,
+            end_time__gt=timezone.now() - timedelta(
+                days=constants.HISTORY_BACKWARDS_IN_DAYS
+            )
+        ).all()
 
         permission_handler = get_permission_handler(Meeting)
         meetings = permission_handler.filter_queryset(
@@ -117,12 +113,8 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_REGISTRATIONS
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        permission_handler = get_permission_handler(Event)
-        events = permission_handler.filter_queryset(
-            request.user,
-            Event.objects.all().filter(
-                end_time__gt=timezone.now()
-            )
+        events = Event.objects.all().filter(
+            end_time__gt=timezone.now()
         )
 
         for event in events:
@@ -134,7 +126,7 @@ class ICalViewset(viewsets.ViewSet):
             ical_endtime = ical_starttime + timedelta(
                 minutes=constants.REGISTRATION_EVENT_LENGTH_IN_MINUTES
             )
-            price = event.get_price(request.user)
+            price = event.get_price(request.user) if event.is_priced else None
             title = f'Reg: {event.title}'
 
             utils.add_event_to_ical_feed(
@@ -153,14 +145,11 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_EVENTS
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        permission_handler = get_permission_handler(Event)
-        events = permission_handler.filter_queryset(
-            request.user,
-            Event.objects.all().filter(
-                end_time__gt=timezone.now() - timedelta(
-                    days=constants.HISTORY_BACKWARDS_IN_DAYS
-                )
+        events = Event.objects.all().filter(
+            end_time__gt=timezone.now() - timedelta(
+                days=constants.HISTORY_BACKWARDS_IN_DAYS
             )
+
         )
 
         utils.add_events_to_ical_feed(feed, events)

@@ -28,7 +28,7 @@ def add_event_to_ical_feed(
         'url': event.get_absolute_url()
     }
     if price is not None:
-        desc_context['price'] = "{:.2f}".format(price / 100)  # Price is in øre NOK, show as NOK
+        desc_context['price'] = int(price / 100)  # Price is in øre NOK, show as NOK
 
     desc_template = loader.get_template('ical/event_description.txt')
     feed.add_item(
