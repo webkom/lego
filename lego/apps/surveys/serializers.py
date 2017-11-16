@@ -3,7 +3,6 @@ from rest_framework import exceptions, serializers
 from lego.apps.events.serializers.events import EventReadSerializer
 from lego.apps.surveys.constants import QUESTION_TYPES
 from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
-# from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -20,7 +19,7 @@ class QuestionSerializer(BasisModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'question_type', 'question_text', 'mandatory', 'options')
+        fields = ('id', 'question_type', 'question_text', 'mandatory', 'options', 'relative_index')
 
 
 class AnswerSerializer(BasisModelSerializer):
@@ -44,24 +43,10 @@ class SurveyReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'event')
+        fields = ('id', 'title', 'active_from', 'event', 'is_template')
 
 
 class SubmissionReadSerializer(BasisModelSerializer):
-    # Do we want user and survey as nested objects?
-    # user = PublicUserSerializer()
-    # survey = SurveyReadSerializer()
-    answers = AnswerSerializer(many=True)
-
-    class Meta:
-        model = Submission
-        fields = ('id', 'user', 'survey', 'submitted', 'submitted_time', 'answers')
-
-
-class SubmissionReadDetailedSerializer(BasisModelSerializer):
-    # Not any different from list serializer atm. Should some info only be showed in detail?
-    # user = PublicUserSerializer()
-    # survey = SurveyReadSerializer()
     answers = AnswerSerializer(many=True)
 
     class Meta:
@@ -111,20 +96,13 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
 
 
 class SurveyCreateAndUpdateSerializer(BasisModelSerializer):
-    is_clone = serializers.BooleanField()
     questions = QuestionSerializer(many=True, required=False, allow_null=True)
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'is_clone', 'event', 'questions')
+        fields = ('id', 'title', 'active_from', 'template_type', 'event', 'questions')
 
     def create(self, validated_data):
-        is_clone = validated_data['is_clone']
-        event = validated_data['event']
-        if is_clone:
-            template = Survey.objects.get(template_type=event.event_type)
-            return template.copy(event, validated_data)
-
         questions = validated_data.pop('questions')
         survey = Survey.objects.create(**validated_data)
         survey.save()
