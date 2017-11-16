@@ -7,9 +7,9 @@ from rest_framework.response import Response
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (APINoSuchPool, APINoSuchRegistration, APIPaymentExists,
-                                         APIRegistrationsExistsInPool, NoSuchPool,
-                                         NoSuchRegistration, RegistrationsExistInPool,
-                                         APIRegistrationExists, RegistrationExists)
+                                         APIRegistrationExists, APIRegistrationsExistsInPool,
+                                         NoSuchPool, NoSuchRegistration, RegistrationExists,
+                                         RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (EventAdministrateSerializer,

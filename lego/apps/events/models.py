@@ -10,8 +10,8 @@ from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (EventHasClosed, EventNotReady, NoSuchPool,
-                                         NoSuchRegistration, RegistrationsExistInPool,
-                                         RegistrationExists)
+                                         NoSuchRegistration, RegistrationExists,
+                                         RegistrationsExistInPool)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField

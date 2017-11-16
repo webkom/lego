@@ -52,8 +52,8 @@ class EventNotReady(ValueError):
 
 class PoolCounterNotEqualToRegistrationCount(ValueError):
     def __init__(self, pool, event):
-        message = f'Pool {pool.id} for event {event.id} was supposed to have {pool.capacity} ' \
-                  f'registrations, but has {pool.counter}!'
+        message = f'Pool {pool.id} for event {event.id} was supposed to have ' \
+                  f'{pool.counter} registrations, but has {pool.registrations.count()}!'
         super().__init__(message)
 
 

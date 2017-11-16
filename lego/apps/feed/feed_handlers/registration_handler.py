@@ -1,7 +1,7 @@
 from lego.apps.events.models import Registration
 from lego.apps.events.notifications import (EventAdminRegistrationNotification,
-                                            EventBumpNotification, EventPaymentOverdueNotification,
-                                            EventAdminUnregistrationNotification)
+                                            EventAdminUnregistrationNotification,
+                                            EventBumpNotification, EventPaymentOverdueNotification)
 from lego.apps.feed.activities import Activity
 from lego.apps.feed.feed_handlers.base_handler import BaseHandler
 from lego.apps.feed.feed_manager import feed_manager
@@ -9,8 +9,8 @@ from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
 from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import (AdminRegistrationVerb, EventRegisterVerb, PaymentOverdueVerb,
-                                  RegistrationBumpVerb, AdminUnregistrationVerb)
+from lego.apps.feed.verbs import (AdminRegistrationVerb, AdminUnregistrationVerb, EventRegisterVerb,
+                                  PaymentOverdueVerb, RegistrationBumpVerb)
 
 
 class RegistrationHandler(BaseHandler):
