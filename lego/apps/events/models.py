@@ -10,7 +10,8 @@ from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (EventHasClosed, EventNotReady, NoSuchPool,
-                                         NoSuchRegistration, RegistrationsExistInPool)
+                                         NoSuchRegistration, RegistrationsExistInPool,
+                                         RegistrationExists)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
@@ -87,22 +88,23 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if pool and not self.pools.filter(id=pool.id).exists():
             raise NoSuchPool()
         with transaction.atomic():
-            reg = self.registrations.update_or_create(
-                event=self,
-                user=user,
-                defaults={'pool': pool,
-                          'feedback': feedback,
-                          'registration_date': timezone.now(),
-                          'unregistration_date': None,
-                          'status': constants.SUCCESS_REGISTER,
-                          'admin_registration_reason': admin_registration_reason}
-            )[0]
+            registration = self.registrations.get_or_create(event=self, user=user)[0]
+            if registration.pool_id:
+                raise RegistrationExists()
+
             if pool:
                 locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
                 locked_pool.increment()
 
-            get_handler(Registration).handle_admin_registration(reg)
-            return reg
+                registration.add_direct_to_pool(
+                    pool, feedback=feedback, admin_registration_reason=admin_registration_reason
+                )
+            else:
+                registration.add_to_waiting_list(
+                    feedback=feedback, admin_registration_reason=admin_registration_reason
+                )
+            get_handler(Registration).handle_admin_registration(registration)
+            return registration
 
     def admin_unregister(self, user, admin_unregistration_reason):
         with transaction.atomic():
@@ -734,13 +736,18 @@ class Registration(BasisModel):
             return self.add_direct_to_pool(pool)
         return self.add_to_waiting_list()
 
-    def add_direct_to_pool(self, pool):
-        self.registration_date = timezone.now()
-        return self.set_values(pool, None, constants.SUCCESS_REGISTER)
+    def add_direct_to_pool(self, pool, **kwargs):
+        return self.set_values(
+            pool=pool, registration_date=timezone.now(), unregistration_date=None,
+            status=constants.SUCCESS_REGISTER, **kwargs
+        )
 
-    def add_to_waiting_list(self):
+    def add_to_waiting_list(self, **kwargs):
         self.registration_date = timezone.now()
-        return self.set_values(None, None, constants.SUCCESS_REGISTER)
+        return self.set_values(
+            pool=None, registration_date=timezone.now(), unregistration_date=None,
+            status=constants.SUCCESS_REGISTER, **kwargs
+        )
 
     def unregister(self, is_merged=None, admin_unregistration_reason=''):
         # We do not care about the counter if the event is merged or pool is None
@@ -749,16 +756,12 @@ class Registration(BasisModel):
                 locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
                 locked_pool.decrement()
         return self.set_values(
-            None, timezone.now(), constants.SUCCESS_UNREGISTER, admin_unregistration_reason
+            pool=None, unregistration_date=timezone.now(), status=constants.SUCCESS_UNREGISTER,
+            admin_unregistration_reason=admin_unregistration_reason
         )
 
-    def set_values(self, pool, unregistration_date, status, admin_unregistration_reason=''):
-        self.pool = pool
-        self.unregistration_date = unregistration_date
-        self.status = status
-        self.admin_unregistration_reason = admin_unregistration_reason
-        self.save(update_fields=[
-            'registration_date', 'pool', 'unregistration_date', 'status',
-            'admin_unregistration_reason'
-        ])
+    def set_values(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.save(update_fields=kwargs.keys())
         return self

@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
+from lego.apps.events.exceptions import RegistrationExists
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup
 
@@ -123,7 +124,8 @@ class AdminRegistrationTestCase(TestCase):
         e1_no_of_regs_before = event.number_of_registrations
 
         event.admin_register(user, admin_registration_reason='test', pool=pool)
-        event.admin_register(user, admin_registration_reason='test', pool=pool)
+        with self.assertRaises(RegistrationExists):
+            event.admin_register(user, admin_registration_reason='test', pool=pool)
         self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
 
     def test_ar_without_pool(self):

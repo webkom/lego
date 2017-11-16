@@ -16,9 +16,14 @@ class APINoSuchRegistration(APIException):
     default_detail = 'No such registration exists for this event.'
 
 
+class APIRegistrationExists(APIException):
+    status_code = 400
+    default_detail = 'A registration for this user already exists.'
+
+
 class APIRegistrationsExistsInPool(APIException):
     status_code = 409
-    default_detail = 'Registrations exists within this pool'
+    default_detail = 'Registrations exists within this pool.'
 
 
 class NoSuchPool(ValueError):
@@ -30,6 +35,10 @@ class EventHasClosed(ValueError):
 
 
 class NoSuchRegistration(ValueError):
+    pass
+
+
+class RegistrationExists(ValueError):
     pass
 
 

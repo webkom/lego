@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (APINoSuchPool, APINoSuchRegistration, APIPaymentExists,
                                          APIRegistrationsExistsInPool, NoSuchPool,
-                                         NoSuchRegistration, RegistrationsExistInPool)
+                                         NoSuchRegistration, RegistrationsExistInPool,
+                                         APIRegistrationExists, RegistrationExists)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (EventAdministrateSerializer,
@@ -215,6 +216,8 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             registration = event.admin_unregister(**serializer.validated_data)
         except NoSuchRegistration:
             raise APINoSuchRegistration()
+        except RegistrationExists:
+            raise APIRegistrationExists()
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_200_OK)
 
