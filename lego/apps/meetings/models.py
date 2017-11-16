@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
 
+from lego.apps.comments.models import Comment
 from lego.apps.content.fields import ContentField
 from lego.apps.meetings import constants
 from lego.apps.meetings.permissions import (
@@ -19,6 +21,7 @@ class Meeting(BasisModel):
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
+    comments = GenericRelation(Comment)
 
     report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(
@@ -74,6 +77,10 @@ class Meeting(BasisModel):
 
     def announcement_lookup(self):
         return self.invited_users
+
+    @property
+    def comment_target(self):
+        return f'{self._meta.app_label}.{self._meta.model_name}-{self.pk}'
 
 
 class MeetingInvitation(BasisModel):
