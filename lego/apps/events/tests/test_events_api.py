@@ -820,7 +820,7 @@ class RegistrationSearchTestCase(APITestCase):
             'username': self.users[0].username,
         })
         self.assertEquals(res.status_code, 200)
-        self.assertNotEqual(res.data.get('username', None), None)
+        self.assertNotEqual(res.data.get('user', None), None)
 
     def test_asd_user(self):
         self.client.force_authenticate(self.webkom_user)

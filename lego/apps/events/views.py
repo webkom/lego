@@ -28,7 +28,6 @@ from lego.apps.events.tasks import (async_payment, async_register, async_unregis
                                     registration_payment_save)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.functions import verify_captcha
 
 
@@ -227,9 +226,11 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
             raise ValidationError({'error': 'No user with that username'})
 
         if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
-            raise PermissionDenied()
+            raise PermissionDenied({
+                'error': f'User {reg.user.username} is not registered for this event'
+            })
 
         reg.presence = constants.PRESENT
         reg.save()
-        data = PublicUserSerializer(reg.user).data
+        data = RegistrationReadSerializer(reg).data
         return Response(data=data, status=status.HTTP_200_OK)
