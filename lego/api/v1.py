@@ -61,7 +61,7 @@ router.register(r'webhooks-stripe', StripeWebhook, base_name='webhooks-stripe')
 router.register(r'groups', AbakusGroupViewSet)
 router.register(r'groups/(?P<group_pk>\d+)/memberships', MembershipViewSet,
                 base_name='abakusgroup-memberships')
-router.register(r'meetings', MeetingViewSet)
+router.register(r'meetings', MeetingViewSet, base_name='meeting')
 router.register(r'meetings/(?P<meeting_pk>\d+)/invitations',
                 MeetingInvitationViewSet, base_name='meeting-invitations')
 router.register(r'meeting-token',
