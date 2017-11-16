@@ -54,6 +54,10 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
         fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback',)
 
 
+class RegistrationSearchSerializer(serializers.Serializer):
+    username = serializers.CharField()
+
+
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
     charge_status = ChargeStatusField()
 
