@@ -743,7 +743,6 @@ class Registration(BasisModel):
         )
 
     def add_to_waiting_list(self, **kwargs):
-        self.registration_date = timezone.now()
         return self.set_values(
             pool=None, registration_date=timezone.now(), unregistration_date=None,
             status=constants.SUCCESS_REGISTER, **kwargs

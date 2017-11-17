@@ -148,7 +148,7 @@ class EventAdminUnregistrationNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/admin_registration.txt',
+            template='events/push/admin_unregistration.txt',
             context={
                 'event': event.title,
             },

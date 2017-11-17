@@ -1,0 +1,1 @@
+En administrator har fjernet deg fra arrangementet {{ event }}.
