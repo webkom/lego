@@ -221,9 +221,6 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
         serializer.is_valid(raise_exception=True)
         username = serializer.data['username']
 
-        if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
-            raise PermissionDenied()
-
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -239,6 +236,9 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
                 'error': 'The registration does not exist',
                 'error_code': 'not_registered'
             })
+
+        if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
+            raise PermissionDenied()
 
         if reg.presence != constants.UNKNOWN:
             raise ValidationError({
