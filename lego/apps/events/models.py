@@ -178,7 +178,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: The registration (in the chosen pool)
         """
         user = registration.user
-        penalties = None
+        penalties = 0
         if self.heed_penalties:
             penalties = user.number_of_penalties()
         current_time = timezone.now()
