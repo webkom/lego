@@ -16,11 +16,15 @@ def get_mail_token(message):
         if message_payload is None and len(message_payload) > PREFIX_LENGTH:
             return
 
-        message_payload = message_payload.decode()
+        try:
+            message_payload = message_payload.decode()
 
-        if message_payload[0:PREFIX_LENGTH] == RESTRICTED_TOKEN_PREFIX:
-            del message.get_payload()[i]
-            return message_payload[PREFIX_LENGTH:].strip()
+            if message_payload[0:PREFIX_LENGTH] == RESTRICTED_TOKEN_PREFIX:
+                del message.get_payload()[i]
+                return message_payload[PREFIX_LENGTH:].strip()
+        except UnicodeDecodeError:
+            # Don't crash if the mail contains attachments that lego cant parse.
+            return
 
     if message.is_multipart():
         for i in range(len(message.get_payload())):
