@@ -1,10 +1,11 @@
 from rest_framework import viewsets
 
 from lego.apps.surveys.models import Submission, Survey
-from lego.apps.surveys.serializers import (SubmissionCreateAndUpdateSerializer,
-                                           SubmissionReadSerializer,
-                                           SurveyCreateAndUpdateSerializer,
-                                           SurveyReadDetailedSerializer, SurveyReadSerializer)
+from lego.apps.surveys.permissions import SubmissionPermissions
+from lego.apps.surveys.serializers import (
+    SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer, SurveyCreateAndUpdateSerializer,
+    SurveyReadDetailedSerializer, SurveyReadSerializer
+)
 
 
 class SurveyViewSet(viewsets.ModelViewSet):
@@ -20,6 +21,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
+    permission_classes = [SubmissionPermissions]
 
     def get_queryset(self):
         survey_id = self.kwargs['survey_pk']

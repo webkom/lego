@@ -157,6 +157,7 @@
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
     feedback: 'LIKER IKKE PIZZA'
+    presence: 'PRESENT'
 
 - model: events.Registration
   pk: 2

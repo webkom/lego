@@ -145,5 +145,6 @@ router.register(r'site-meta', SiteMetaViewSet, base_name='site-meta')
 router.register(r'frontpage', FrontpageViewSet, base_name='frontpage')
 router.register(r'bdb', AdminCompanyViewSet, base_name='bdb')
 router.register(r'membership-history', MembershipHistoryViewSet, base_name='membership-history')
-router.register(r'surveys', SurveyViewSet, base_name='surveys')
-router.register(r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet)
+router.register(r'surveys', SurveyViewSet)
+router.register(r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet,
+                base_name='submission')

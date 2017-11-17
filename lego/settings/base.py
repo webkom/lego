@@ -12,7 +12,6 @@ ALLOWED_HOSTS = ['*']
 SHELL_PLUS = 'ipython'
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -56,7 +55,7 @@ INSTALLED_APPS = [
     'lego.apps.websockets',
     'lego.apps.joblistings',
     'lego.apps.email',
-    'lego.apps.survey',
+    'lego.apps.surveys',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'

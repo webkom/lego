@@ -92,11 +92,13 @@
 - model: users.abakusgroup
   pk: 19
   fields: {deleted: false, name: Bedkom, description: '', parent: 18, logo: null,
-    type: komite, text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 15, level: 2}
+    type: komite, text: '', permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/",
+    "/sudo/admin/submissions/"]', lft: 3, rght: 4, tree_id: 15, level: 2}
 - model: users.abakusgroup
   pk: 20
   fields: {deleted: false, name: Fagkom, description: '', parent: 18, logo: null,
-    type: komite, text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 15, level: 2}
+    type: komite, text: '', permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/",
+    "/sudo/admin/submissions/"]', lft: 5, rght: 6, tree_id: 15, level: 2}
 - model: users.abakusgroup
   pk: 21
   fields: {deleted: false, name: Webkom, description: '', parent: 18, logo: null,

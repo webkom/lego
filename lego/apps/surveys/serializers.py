@@ -51,7 +51,7 @@ class SubmissionReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ('id', 'user', 'survey', 'submitted', 'submitted_time', 'answers')
+        fields = ('id', 'user', 'survey', 'answers')
 
 
 class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
