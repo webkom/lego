@@ -318,4 +318,6 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
                 registration_count = pool.registrations.count()
                 if pool.counter != registration_count:
                     log.critical('pool_counter_not_equal_registration_count', pool=pool)
-                    raise PoolCounterNotEqualToRegistrationCount(pool, locked_event)
+                    raise PoolCounterNotEqualToRegistrationCount(
+                        pool, registration_count, locked_event
+                    )
