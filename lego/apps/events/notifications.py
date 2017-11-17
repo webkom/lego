@@ -129,12 +129,15 @@ class EventAdminUnregistrationNotification(Notification):
 
     def generate_mail(self):
         event = self.kwargs['event']
+        creator = self.kwargs['creator']
         reason = self.kwargs['reason']
 
         return self._delay_mail(
             to_email=self.user.email,
             context={
                 'event': event.title,
+                'creator_name': creator.full_name,
+                'creator_email': creator.email,
                 'name': self.user.full_name,
                 'reason': reason,
                 'id': event.id,

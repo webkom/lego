@@ -682,6 +682,7 @@ class AdminUnregistrationTestCase(APITestCase):
         self.webkom_user = User.objects.first()
         AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
         self.event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        self.event.created_by = self.abakus_users.first()
         self.event.start_time = timezone.now() + timedelta(hours=3)
         self.event.save()
 

@@ -8,6 +8,4 @@ En administrator har meldt deg på arrangementet {{ event }} på grunn av:
 
 {{ reason }}
 
-Ta kontakt med {{ creator }} dersom du skulle være uenig i dette.
-
 {% endblock %}

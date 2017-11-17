@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from lego.apps.events.exceptions import RegistrationExists
 from lego.apps.events.models import Event, Registration
-from lego.apps.users.models import AbakusGroup
+from lego.apps.users.models import AbakusGroup, User
 
 from .utils import get_dummy_users
 
@@ -142,6 +142,8 @@ class AdminRegistrationTestCase(TestCase):
     def test_admin_unreg(self):
         """Test that admin unregistration from waiting list"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        event.created_by = User.objects.all().first()
+        event.save()
         reg = event.registrations.exclude(pool=None).first()
 
         regs_before = event.number_of_registrations
@@ -152,6 +154,7 @@ class AdminRegistrationTestCase(TestCase):
     def test_admin_unreg_does_not_give_penalties(self):
         """Test that admin unregistration does not automatically give penalties"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        event.created_by = User.objects.all().first()
         event.unregistration_deadline = timezone.now() - timedelta(days=1)
         event.heed_penalties = True
         event.save()
@@ -166,6 +169,8 @@ class AdminRegistrationTestCase(TestCase):
     def test_admin_unreg_from_waiting_list(self):
         """Test that admin unregistration from waiting list"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        event.created_by = User.objects.all().first()
+        event.save()
         reg = event.registrations.first()
         reg.pool = None
         reg.save()
