@@ -6,8 +6,9 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (APINoSuchPool, APIPaymentExists,
-                                         APIRegistrationsExistsInPool, NoSuchPool,
+from lego.apps.events.exceptions import (APINoSuchPool, APINoSuchRegistration, APIPaymentExists,
+                                         APIRegistrationExists, APIRegistrationsExistsInPool,
+                                         NoSuchPool, NoSuchRegistration, RegistrationExists,
                                          RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
@@ -17,6 +18,7 @@ from lego.apps.events.serializers.events import (EventAdministrateSerializer,
                                                  EventReadUserDetailedSerializer)
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (AdminRegistrationCreateAndUpdateSerializer,
+                                                        AdminUnregisterSerializer,
                                                         RegistrationCreateAndUpdateSerializer,
                                                         RegistrationPaymentReadSerializer,
                                                         RegistrationReadDetailedSerializer,
@@ -204,6 +206,21 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             raise APINoSuchPool()
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
+
+    @decorators.list_route(methods=['POST'], serializer_class=AdminUnregisterSerializer)
+    def admin_unregister(self, request, *args, **kwargs):
+        event_id = self.kwargs.get('event_pk', None)
+        event = Event.objects.get(id=event_id)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            registration = event.admin_unregister(**serializer.validated_data)
+        except NoSuchRegistration:
+            raise APINoSuchRegistration()
+        except RegistrationExists:
+            raise APIRegistrationExists()
+        reg_data = RegistrationReadDetailedSerializer(registration).data
+        return Response(data=reg_data, status=status.HTTP_200_OK)
 
 
 class RegistrationSearchViewSet(AllowedPermissionsMixin,

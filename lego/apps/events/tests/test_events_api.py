@@ -593,7 +593,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': self.pool.id, 'admin_reason': 'test'}
+            {'user': self.user.id, 'pool': self.pool.id, 'admin_registration_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 201)
@@ -608,7 +608,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': self.pool.id, 'admin_reason': 'test'}
+            {'user': self.user.id, 'pool': self.pool.id, 'admin_registration_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 403)
@@ -624,7 +624,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'pool': nonexistant_pool_id, 'admin_reason': 'test'}
+            {'user': self.user.id, 'pool': nonexistant_pool_id, 'admin_registration_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 400)
@@ -638,14 +638,14 @@ class CreateAdminRegistrationTestCase(APITestCase):
             {'user': self.user.id,
              'pool': self.pool.id,
              'feedback': 'TEST',
-             'admin_reason': 'test'
+             'admin_registration_reason': 'test'
              }
         )
 
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(registration_response.data.get('feedback'), 'TEST')
 
-    def test_without_admin_reason(self):
+    def test_without_admin_registration_reason(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.request_user)
         self.client.force_authenticate(self.request_user)
         registration_response = self.client.post(
@@ -653,7 +653,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
             {'user': self.user.id,
              'pool': self.pool.id,
              'feedback': 'TEST',
-             'admin_reason': ''
+             'admin_registration_reason': ''
              }
         )
 
@@ -666,11 +666,65 @@ class CreateAdminRegistrationTestCase(APITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/',
-            {'user': self.user.id, 'admin_reason': 'test'}
+            {'user': self.user.id, 'admin_registration_reason': 'test'}
         )
 
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
+
+
+class AdminUnregistrationTestCase(APITestCase):
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml',
+                'test_events.yaml']
+
+    def setUp(self):
+        self.abakus_users = User.objects.all()
+        self.webkom_user = User.objects.first()
+        AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
+        self.event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        self.event.created_by = self.abakus_users.first()
+        self.event.start_time = timezone.now() + timedelta(hours=3)
+        self.event.save()
+
+    def test_admin_unregistration(self):
+        AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
+        user = self.event.registrations.exclude(pool=None).first()
+
+        self.client.force_authenticate(self.webkom_user)
+        registrations_before = self.event.number_of_registrations
+
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_unregister/',
+            {'user': user.id, 'admin_unregistration_reason': 'test'}
+        )
+
+        self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(self.event.number_of_registrations, registrations_before - 1)
+
+    def test_admin_unregistration_without_permission(self):
+        non_admin_user = get_dummy_users(1)[0]
+        user = self.event.registrations.exclude(pool=None).first()
+
+        self.client.force_authenticate(non_admin_user)
+
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_unregister/',
+            {'user': user.id, 'admin_unregistration_reason': 'test'}
+        )
+
+        self.assertEqual(registration_response.status_code, 403)
+
+    def test_without_admin_unregistration_reason(self):
+        """ Test that admin cannot unregister user without unregistration reason"""
+        self.client.force_authenticate(self.webkom_user)
+        user = self.event.registrations.exclude(pool=None).first()
+
+        registration_response = self.client.post(
+            f'{_get_registrations_list_url(self.event.id)}admin_unregister/',
+            {'user': user.id, 'admin_unregistration_reason': ''}
+        )
+
+        self.assertEqual(registration_response.status_code, 400)
 
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')

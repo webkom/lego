@@ -1,5 +1,6 @@
 from lego.apps.events.models import Registration
 from lego.apps.events.notifications import (EventAdminRegistrationNotification,
+                                            EventAdminUnregistrationNotification,
                                             EventBumpNotification, EventPaymentOverdueNotification)
 from lego.apps.feed.activities import Activity
 from lego.apps.feed.feed_handlers.base_handler import BaseHandler
@@ -8,8 +9,8 @@ from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
 from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import (AdminRegistrationVerb, EventRegisterVerb, PaymentOverdueVerb,
-                                  RegistrationBumpVerb)
+from lego.apps.feed.verbs import (AdminRegistrationVerb, AdminUnregistrationVerb, EventRegisterVerb,
+                                  PaymentOverdueVerb, RegistrationBumpVerb)
 
 
 class RegistrationHandler(BaseHandler):
@@ -107,7 +108,24 @@ class RegistrationHandler(BaseHandler):
 
         # Send Notification
         notification = EventAdminRegistrationNotification(
-            registration.user, event=registration.event, reason=registration.admin_reason
+            registration.user, event=registration.event,
+            reason=registration.admin_registration_reason
+        )
+        notification.notify()
+
+    def handle_admin_unregistration(self, registration):
+        activity = Activity(
+            actor=registration.event,
+            verb=AdminUnregistrationVerb,
+            object=registration,
+            target=registration.user
+        )
+        self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
+
+        # Send Notification
+        notification = EventAdminUnregistrationNotification(
+            registration.user, event=registration.event,
+            reason=registration.admin_unregistration_reason, creator=registration.event.created_by
         )
         notification.notify()
 
