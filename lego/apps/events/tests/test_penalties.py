@@ -411,3 +411,19 @@ class PenaltyTestCase(TestCase):
             event.penalty_weight_on_not_present + other_event.penalty_weight_on_not_present
         )
         self.assertEqual(penalties_after, other_event.penalty_weight_on_not_present)
+
+    def test_able_to_register_when_not_heed_penalties_with_penalties(self):
+        """Test that user is able to register when heed_penalties is false and user has penalties"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        other_event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.heed_penalties = False
+        event.save()
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        Penalty.objects.create(user=user, reason='TEST', weight=3, source_event=other_event)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+
+        registration.refresh_from_db()
+        self.assertIsNotNone(registration.pool)
