@@ -156,12 +156,12 @@ class SearchIndex:
             return prepared['content_type'], prepared['pk'], prepared['data']
 
         def update_bulk(result_set):
-            self.get_backend().update_many(map(prepare, result_set))
+            try:
+                self.get_backend().update_many(map(prepare, result_set))
+            except BulkIndexError as e:
+                log.critical(e)
 
-        try:
-            batch(self.get_queryset(), update_bulk)
-        except BulkIndexError as e:
-            log.critical(e)
+        batch(self.get_queryset(), update_bulk)
 
     def update_instance(self, instance):
         """
