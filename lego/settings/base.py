@@ -177,7 +177,9 @@ CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_USE_SANDBOX': False,
     'UPDATE_ON_DUPLICATE_REG_ID': True,
-    'APNS_TOPIC': 'no.abakus.abakus'
+    'APNS_TOPIC': 'no.abakus.abakus',
+    'GCM_ERROR_TIMEOUT': 30,
+    'FCM_ERROR_TIMEOUT': 30,
 }
 
 GSUITE_DELEGATED_ACCOUNT = os.environ.get('GSUITE_DELEGATED_ACCOUNT')
