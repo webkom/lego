@@ -87,9 +87,7 @@ class ICalViewset(viewsets.ViewSet):
 
         following_events = Event.objects.filter(
             followers__follower_id=request.user.id,
-            end_time__gt=timezone.now() - timedelta(
-                days=constants.HISTORY_BACKWARDS_IN_DAYS
-            )
+            end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
         ).all()
 
         permission_handler = get_permission_handler(Meeting)
@@ -111,9 +109,7 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_REGISTRATIONS
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        events = Event.objects.all().filter(
-            end_time__gt=timezone.now()
-        )
+        events = Event.objects.all().filter(end_time__gt=timezone.now())
 
         for event in events:
             reg_time = event.get_earliest_registration_time(request.user)
@@ -140,9 +136,7 @@ class ICalViewset(viewsets.ViewSet):
         feed = utils.generate_ical_feed(request, calendar_type)
 
         events = Event.objects.all().filter(
-            end_time__gt=timezone.now() - timedelta(
-                days=constants.HISTORY_BACKWARDS_IN_DAYS
-            )
+            end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
         )
 
         utils.add_events_to_ical_feed(feed, events)

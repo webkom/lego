@@ -1,6 +1,7 @@
-from lego.apps.notifications.constants import (EVENT_ADMIN_REGISTRATION, EVENT_ADMIN_UNREGISTRATION,
-                                               EVENT_BUMP, EVENT_PAYMENT_OVERDUE,
-                                               EVENT_PAYMENT_OVERDUE_CREATOR)
+from lego.apps.notifications.constants import (
+    EVENT_ADMIN_REGISTRATION, EVENT_ADMIN_UNREGISTRATION, EVENT_BUMP, EVENT_PAYMENT_OVERDUE,
+    EVENT_PAYMENT_OVERDUE_CREATOR
+)
 from lego.apps.notifications.notification import Notification
 
 
@@ -145,9 +146,7 @@ class EventAdminUnregistrationNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/admin_unregistration.txt',
-            context={
+            template='events/push/admin_unregistration.txt', context={
                 'event': event.title,
-            },
-            instance=event
+            }, instance=event
         )

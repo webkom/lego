@@ -9,9 +9,10 @@ from django.utils import timezone
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (EventHasClosed, EventNotReady, NoSuchPool,
-                                         NoSuchRegistration, RegistrationExists,
-                                         RegistrationsExistInPool)
+from lego.apps.events.exceptions import (
+    EventHasClosed, EventNotReady, NoSuchPool, NoSuchRegistration, RegistrationExists,
+    RegistrationsExistInPool
+)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
@@ -410,10 +411,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param user: The user that will be registered to the waiting list.
         :return: A registration for the waiting list, with `pool=null`
         """
-        return self.registrations.update_or_create(event=self, user=user,
-                                                   defaults={'pool': None,
-                                                             'status': constants.SUCCESS_REGISTER,
-                                                             'unregistration_date': None})[0]
+        return self.registrations.update_or_create(
+            event=self, user=user, defaults={
+                'pool': None,
+                'status': constants.SUCCESS_REGISTER,
+                'unregistration_date': None
+            }
+        )[0]
 
     def pop_from_waiting_list(self, to_pool=None):
         """

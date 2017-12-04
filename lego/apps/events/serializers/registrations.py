@@ -76,9 +76,11 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status',
-                  'registration_date', 'unregistration_date', 'admin_registration_reason',
-                  'charge_id', 'charge_status', 'charge_amount', 'charge_amount_refunded')
+        fields = (
+            'id', 'user', 'pool', 'event', 'presence', 'feedback', 'status', 'registration_date',
+            'unregistration_date', 'admin_registration_reason', 'charge_id', 'charge_status',
+            'charge_amount', 'charge_amount_refunded'
+        )
         read_only = True
 
 

@@ -6,10 +6,11 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (APINoSuchPool, APINoSuchRegistration, APIPaymentExists,
-                                         APIRegistrationExists, APIRegistrationsExistsInPool,
-                                         NoSuchPool, NoSuchRegistration, RegistrationExists,
-                                         RegistrationsExistInPool)
+from lego.apps.events.exceptions import (
+    APINoSuchPool, APINoSuchRegistration, APIPaymentExists, APIRegistrationExists,
+    APIRegistrationsExistsInPool, NoSuchPool, NoSuchRegistration, RegistrationExists,
+    RegistrationsExistInPool
+)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (
@@ -17,17 +18,16 @@ from lego.apps.events.serializers.events import (
     EventReadUserDetailedSerializer
 )
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
-from lego.apps.events.serializers.registrations import (AdminRegistrationCreateAndUpdateSerializer,
-                                                        AdminUnregisterSerializer,
-                                                        RegistrationCreateAndUpdateSerializer,
-                                                        RegistrationPaymentReadSerializer,
-                                                        RegistrationReadDetailedSerializer,
-                                                        RegistrationReadSerializer,
-                                                        RegistrationSearchSerializer,
-                                                        StripeTokenSerializer)
-from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
-                                    check_for_bump_on_pool_creation_or_expansion,
-                                    registration_payment_save)
+from lego.apps.events.serializers.registrations import (
+    AdminRegistrationCreateAndUpdateSerializer, AdminUnregisterSerializer,
+    RegistrationCreateAndUpdateSerializer, RegistrationPaymentReadSerializer,
+    RegistrationReadDetailedSerializer, RegistrationReadSerializer, RegistrationSearchSerializer,
+    StripeTokenSerializer
+)
+from lego.apps.events.tasks import (
+    async_payment, async_register, async_unregister, check_for_bump_on_pool_creation_or_expansion,
+    registration_payment_save
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.models import User
@@ -226,9 +226,9 @@ class RegistrationViewSet(
         return Response(data=reg_data, status=status.HTTP_200_OK)
 
 
-class RegistrationSearchViewSet(AllowedPermissionsMixin,
-                                mixins.CreateModelMixin,
-                                viewsets.GenericViewSet):
+class RegistrationSearchViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
+):
     serializer_class = RegistrationSearchSerializer
     ordering = 'registration_date'
 
@@ -244,27 +244,33 @@ class RegistrationSearchViewSet(AllowedPermissionsMixin,
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            raise ValidationError({
-                'error': f'There is no user with username {username}',
-                'error_code': 'no_user'
-            })
+            raise ValidationError(
+                {
+                    'error': f'There is no user with username {username}',
+                    'error_code': 'no_user'
+                }
+            )
 
         try:
             reg = self.get_queryset().get(user=user)
         except Registration.DoesNotExist:
-            raise ValidationError({
-                'error': 'The registration does not exist',
-                'error_code': 'not_registered'
-            })
+            raise ValidationError(
+                {
+                    'error': 'The registration does not exist',
+                    'error_code': 'not_registered'
+                }
+            )
 
         if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
             raise PermissionDenied()
 
         if reg.presence != constants.UNKNOWN:
-            raise ValidationError({
-                'error': f'User {reg.user.username} is already present.',
-                'error_code': 'already_present'
-            })
+            raise ValidationError(
+                {
+                    'error': f'User {reg.user.username} is already present.',
+                    'error_code': 'already_present'
+                }
+            )
 
         reg.presence = constants.PRESENT
         reg.save()
