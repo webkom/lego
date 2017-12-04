@@ -15,8 +15,10 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     """
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-    cover = models.ForeignKey('gallery.GalleryPicture', related_name='gallery_covers',
-                              null=True, on_delete=models.SET_NULL)
+    cover = models.ForeignKey(
+        'gallery.GalleryPicture', related_name='gallery_covers', null=True,
+        on_delete=models.SET_NULL
+    )
     location = models.CharField(max_length=64)
     taken_at = models.DateField(null=True)
     photographers = models.ManyToManyField('users.User')

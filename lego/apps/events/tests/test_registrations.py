@@ -11,16 +11,18 @@ from .utils import get_dummy_users
 
 
 class RegistrationMethodTest(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
         self.event = Event.objects.get(title='POOLS_AND_PRICED')
         self.users = get_dummy_users(2)
         AbakusGroup.objects.get(name='Abakus').add_user(self.users[0])
-        self.registration = Registration.objects.get_or_create(event=self.event,
-                                                               user=self.users[0])[0]
+        self.registration = Registration.objects.get_or_create(
+            event=self.event, user=self.users[0]
+        )[0]
 
     def test_str(self):
         d = {
@@ -35,21 +37,20 @@ class RegistrationMethodTest(TestCase):
         self.assertEqual(self.event.get_price(self.registration.user), 10000)
 
     def test_user_cost(self):
-        registration = Registration.objects.get_or_create(event=self.event,
-                                                          user=self.users[1])[0]
+        registration = Registration.objects.get_or_create(event=self.event, user=self.users[1])[0]
         self.event.register(registration)
         self.assertEqual(self.event.get_price(registration.user), 15000)
 
 
 class RegistrationTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         Event.objects.all().update(
             start_time=timezone.now() + timedelta(hours=3),
-            merge_time=timezone.now() + timedelta(hours=12),
-            heed_penalties=True
+            merge_time=timezone.now() + timedelta(hours=12), heed_penalties=True
         )
 
     def test_can_register_single_unlimited_pool(self):
@@ -138,9 +139,8 @@ class RegistrationTestCase(TestCase):
         registration_webkom_2 = Registration.objects.get_or_create(
             event=event, user=webkom_users[1]
         )[0]
-        registration_abakus = Registration.objects.get_or_create(
-            event=event, user=abakus_users[0]
-        )[0]
+        registration_abakus = Registration.objects.get_or_create(event=event,
+                                                                 user=abakus_users[0])[0]
         event.register(registration_webkom_2)
         event.register(registration_abakus)
         self.assertEqual(pool.registrations.count(), 1)
@@ -158,8 +158,10 @@ class RegistrationTestCase(TestCase):
 
         registration_one = Registration.objects.get_or_create(event=event, user=user_1)[0]
         event.register(registration_one)
-        pool_two = Pool.objects.create(name='test', capacity=1, event=event,
-                                       activation_date=(timezone.now() - timedelta(hours=24)))
+        pool_two = Pool.objects.create(
+            name='test', capacity=1, event=event,
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         with self.assertRaises(ValueError):
             event.register(registration_one)
 
@@ -175,7 +177,8 @@ class RegistrationTestCase(TestCase):
         permission_groups[0].add_user(user)
         Pool.objects.create(
             name='Webkom', capacity=1, event=event,
-            activation_date=(timezone.now() + timedelta(hours=24)))
+            activation_date=(timezone.now() + timedelta(hours=24))
+        )
         with self.assertRaises(ValueError):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
@@ -225,11 +228,13 @@ class RegistrationTestCase(TestCase):
         permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
         pool_one = Pool.objects.create(
             name='Abakus', capacity=1, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         pool_one.permission_groups.add(permission_groups_one[0])
         pool_two = Pool.objects.create(
             name='Webkom', capacity=2, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         pool_two.permission_groups.add(permission_groups_two[0])
 
         users = get_dummy_users(3)
@@ -250,7 +255,8 @@ class RegistrationTestCase(TestCase):
         permission_groups_two = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
             name='Webkom', capacity=1, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         pool.permission_groups = permission_groups_two
 
         user = get_dummy_users(1)[0]
@@ -268,7 +274,8 @@ class RegistrationTestCase(TestCase):
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
             name='Webkom', capacity=2, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         pool.permission_groups = permission_groups
         event.merge_time = timezone.now() - timedelta(hours=12)
         users = get_dummy_users(pool.capacity + 1)
@@ -378,7 +385,8 @@ class RegistrationTestCase(TestCase):
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
             name='Webkom', capacity=0, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         pool.permission_groups = permission_groups
         users = get_dummy_users(pool.capacity + 10)
 
@@ -398,7 +406,8 @@ class RegistrationTestCase(TestCase):
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
             name='Webkom', capacity=0, event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)))
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         pool.permission_groups = permission_groups
         users = get_dummy_users(pool.capacity + 10)
 
@@ -657,9 +666,8 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(abakus_pool.registrations.count(), 1)
         self.assertEqual(webkom_pool.registrations.count(), 2)
 
-        registration_webkom = Registration.objects.get_or_create(
-            event=event, user=webkom_users[2]
-        )[0]
+        registration_webkom = Registration.objects.get_or_create(event=event,
+                                                                 user=webkom_users[2])[0]
         event.register(registration_webkom)
 
         registration_to_unregister = Registration.objects.get(event=event, user=webkom_users[0])
@@ -763,8 +771,10 @@ class RegistrationTestCase(TestCase):
         no_of_waiting_registrations_before = event.waiting_registrations.count()
         self.assertEqual(no_of_waiting_registrations_before, 3)
 
-        new_pool = Pool.objects.create(name='test', capacity=3, event=event,
-                                       activation_date=(timezone.now() - timedelta(hours=24)))
+        new_pool = Pool.objects.create(
+            name='test', capacity=3, event=event,
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
         new_pool.permission_groups = [AbakusGroup.objects.get(name='Abakus')]
         event.bump_on_pool_creation_or_expansion()
 

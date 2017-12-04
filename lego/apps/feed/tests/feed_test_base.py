@@ -24,6 +24,7 @@ class FeedTestBase(TestCase):
     '''
     Helper functions for aggregated feeds
     '''
+
     def activity_count(self, feed):
         count = 0
         for aggregated in feed[:]:

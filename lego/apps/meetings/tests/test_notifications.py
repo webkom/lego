@@ -9,8 +9,9 @@ from lego.apps.users.models import User
 
 @patch('lego.utils.email.django_send_mail')
 class MeetingInvitationNotificationTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml',
-                'test_users.yaml', 'initial_files.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml', 'initial_files.yaml'
+    ]
 
     def setUp(self):
         user = User.objects.all().first()
@@ -19,9 +20,7 @@ class MeetingInvitationNotificationTestCase(TestCase):
         meeting.save()
         invitation, _created = meeting.invite_user(user)
         self.notifier = MeetingInvitationNotification(
-            user,
-            meeting=meeting,
-            meeting_invitation=invitation
+            user, meeting=meeting, meeting_invitation=invitation
         )
 
     def assertEmailContains(self, send_mail_mock, content):

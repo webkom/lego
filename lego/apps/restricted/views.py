@@ -6,14 +6,15 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.restricted.constants import RESTRICTED_TOKEN_PREFIX
 from lego.apps.restricted.filters import RestrictedMailFilterSet
 from lego.apps.restricted.models import RestrictedMail
-from lego.apps.restricted.serializers import (RestrictedMailDetailSerializer,
-                                              RestrictedMailListSerializer,
-                                              RestrictedMailSerializer)
+from lego.apps.restricted.serializers import (
+    RestrictedMailDetailSerializer, RestrictedMailListSerializer, RestrictedMailSerializer
+)
 
 
-class RestrictedMailViewSet(AllowedPermissionsMixin,
-                            mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                            mixins.CreateModelMixin, viewsets.GenericViewSet):
+class RestrictedMailViewSet(
+    AllowedPermissionsMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin, viewsets.GenericViewSet
+):
 
     filter_class = RestrictedMailFilterSet
 
@@ -32,7 +33,7 @@ class RestrictedMailViewSet(AllowedPermissionsMixin,
             return RestrictedMailDetailSerializer
         return RestrictedMailSerializer
 
-    @decorators.detail_route(methods=['GET'], permission_classes=(permissions.AllowAny,))
+    @decorators.detail_route(methods=['GET'], permission_classes=(permissions.AllowAny, ))
     def token(self, *arg, **kwargs):
         """
         Download the token belonging to a restricted mail. This token has to be attached to

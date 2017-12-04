@@ -22,17 +22,61 @@ class Migration(migrations.Migration):
             name='APIApplication',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('client_id', models.CharField(db_index=True, default=oauth2_provider.generators.generate_client_id, max_length=100, unique=True)),
-                ('redirect_uris', models.TextField(blank=True, help_text='Allowed URIs list, space separated', validators=[oauth2_provider.validators.validate_uris])),
-                ('client_type', models.CharField(choices=[('confidential', 'Confidential'), ('public', 'Public')], max_length=32)),
-                ('authorization_grant_type', models.CharField(choices=[('authorization-code', 'Authorization code'), ('implicit', 'Implicit'), ('password', 'Resource owner password-based'), ('client-credentials', 'Client credentials')], max_length=32)),
-                ('client_secret', models.CharField(blank=True, db_index=True, default=oauth2_provider.generators.generate_client_secret, max_length=255)),
+                (
+                    'client_id',
+                    models.CharField(
+                        db_index=True, default=oauth2_provider.generators.generate_client_id,
+                        max_length=100, unique=True
+                    )
+                ),
+                (
+                    'redirect_uris',
+                    models.TextField(
+                        blank=True, help_text='Allowed URIs list, space separated',
+                        validators=[oauth2_provider.validators.validate_uris]
+                    )
+                ),
+                (
+                    'client_type',
+                    models.CharField(
+                        choices=[('confidential', 'Confidential'), ('public', 'Public')],
+                        max_length=32
+                    )
+                ),
+                (
+                    'authorization_grant_type',
+                    models.CharField(
+                        choices=[
+                            ('authorization-code', 'Authorization code'), ('implicit', 'Implicit'),
+                            ('password', 'Resource owner password-based'),
+                            ('client-credentials', 'Client credentials')
+                        ], max_length=32
+                    )
+                ),
+                (
+                    'client_secret',
+                    models.CharField(
+                        blank=True, db_index=True,
+                        default=oauth2_provider.generators.generate_client_secret, max_length=255
+                    )
+                ),
                 ('name', models.CharField(blank=True, max_length=255)),
                 ('skip_authorization', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('description', models.CharField(blank=True, max_length=100, verbose_name='application description')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='oauth_apiapplication', to=settings.AUTH_USER_MODEL)),
+                (
+                    'description',
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name='application description'
+                    )
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                        related_name='oauth_apiapplication', to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
             options={
                 'abstract': False,

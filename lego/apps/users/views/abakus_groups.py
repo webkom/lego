@@ -4,8 +4,9 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users.filters import AbakusGroupFilterSet
 from lego.apps.users.models import AbakusGroup
-from lego.apps.users.serializers.abakus_groups import (DetailedAbakusGroupSerializer,
-                                                       PublicAbakusGroupSerializer)
+from lego.apps.users.serializers.abakus_groups import (
+    DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
+)
 
 
 class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

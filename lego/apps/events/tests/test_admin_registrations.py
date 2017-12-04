@@ -11,8 +11,9 @@ from .utils import get_dummy_users
 
 
 class AdminRegistrationTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         Event.objects.all().update(
@@ -61,8 +62,8 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = pool.registrations.count()
 
         event.admin_register(user, admin_registration_reason='test', pool=pool)
-        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
-        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
+        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before + 1)
+        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
     def test_ar_after_merge(self):
         """Test that admin can force register user into pool after merge"""
@@ -75,8 +76,8 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = pool.registrations.count()
 
         event.admin_register(user, admin_registration_reason='test', pool=pool)
-        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
-        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
+        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before + 1)
+        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
     def test_ar_to_full_pool(self):
         """Test that admin can force register user into an already full pool"""
@@ -93,8 +94,8 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = pool.registrations.count()
 
         event.admin_register(user, admin_registration_reason='test', pool=pool)
-        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
-        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
+        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before + 1)
+        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
     def test_ar_to_full_event(self):
         """Test that admin can force register user into an already full event"""
@@ -111,8 +112,8 @@ class AdminRegistrationTestCase(TestCase):
         pool_no_of_regs_before = pool.registrations.count()
 
         event.admin_register(user, admin_registration_reason='test', pool=pool)
-        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
-        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before+1)
+        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before + 1)
+        self.assertEqual(pool.registrations.count(), pool_no_of_regs_before + 1)
 
     def test_ar_twice(self):
         """Test that user is not registered twice when admin registered is run twice"""
@@ -126,7 +127,7 @@ class AdminRegistrationTestCase(TestCase):
         event.admin_register(user, admin_registration_reason='test', pool=pool)
         with self.assertRaises(RegistrationExists):
             event.admin_register(user, admin_registration_reason='test', pool=pool)
-        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before+1)
+        self.assertEqual(event.number_of_registrations, e1_no_of_regs_before + 1)
 
     def test_ar_without_pool(self):
         """Test that admin registration without pool puts the registration in the waiting list"""
@@ -137,7 +138,7 @@ class AdminRegistrationTestCase(TestCase):
         waiting_regs_before = event.waiting_registrations.count()
 
         event.admin_register(user, admin_registration_reason='test')
-        self.assertEqual(event.waiting_registrations.count(), waiting_regs_before+1)
+        self.assertEqual(event.waiting_registrations.count(), waiting_regs_before + 1)
 
     def test_admin_unreg(self):
         """Test that admin unregistration from waiting list"""

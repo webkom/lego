@@ -19,16 +19,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='semesterstatus',
             name='evaluation',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='semester_status_evaluations', to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='semester_status_evaluations', to='files.File'
+            ),
         ),
         migrations.AddField(
             model_name='semesterstatus',
             name='statistics',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='semester_status_statistics', to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='semester_status_statistics', to='files.File'
+            ),
         ),
         migrations.AlterField(
             model_name='semesterstatus',
             name='contract',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='semester_status_contracts', to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='semester_status_contracts', to='files.File'
+            ),
         ),
     ]

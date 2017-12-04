@@ -15,8 +15,9 @@ class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Quote
-        fields = ('id', 'created_at', 'text', 'source', 'approved', 'tags',
-                  'comments', 'comment_target')
+        fields = (
+            'id', 'created_at', 'text', 'source', 'approved', 'tags', 'comments', 'comment_target'
+        )
 
 
 class QuoteCreateAndUpdateSerializer(BasisModelSerializer):

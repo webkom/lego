@@ -6,18 +6,16 @@ from lego.apps.users.models import Penalty, User
 
 
 class TestPenaltyHandler(FeedTestBase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
-                'test_companies.yaml', 'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         self.events = Event.objects.all()
         self.handler = PenaltyHandler()
         self.user = User.objects.first()
         self.penalty = Penalty.objects.create(
-            user=self.user,
-            weight=1,
-            reason='test',
-            source_event=self.events.first()
+            user=self.user, weight=1, reason='test', source_event=self.events.first()
         )
 
     def test_create(self):

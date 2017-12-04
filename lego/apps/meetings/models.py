@@ -5,8 +5,9 @@ from django.db import models
 
 from lego.apps.content.fields import ContentField
 from lego.apps.meetings import constants
-from lego.apps.meetings.permissions import (MeetingInvitationPermissionHandler,
-                                            MeetingPermissionHandler)
+from lego.apps.meetings.permissions import (
+    MeetingInvitationPermissionHandler, MeetingPermissionHandler
+)
 from lego.apps.stats.utils import track
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
@@ -22,9 +23,7 @@ class Meeting(BasisModel):
     report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
     _invited_users = models.ManyToManyField(
-        User,
-        through='MeetingInvitation',
-        related_name='meeting_invitation',
+        User, through='MeetingInvitation', related_name='meeting_invitation',
         through_fields=('meeting', 'user')
     )
 
@@ -50,9 +49,7 @@ class Meeting(BasisModel):
 
     def invite_user(self, user, created_by=None):
         invitation, created = self.invitations.update_or_create(
-            user=user,
-            meeting=self,
-            defaults={
+            user=user, meeting=self, defaults={
                 'created_by': created_by
             }
         )
@@ -92,10 +89,7 @@ class MeetingInvitation(BasisModel):
         permission_handler = MeetingInvitationPermissionHandler()
 
     def generate_invitation_token(self):
-        data = signing.dumps({
-            'user_id': self.user.id,
-            'meeting_id': self.meeting.id
-        })
+        data = signing.dumps({'user_id': self.user.id, 'meeting_id': self.meeting.id})
 
         token = TimestampSigner().sign(data)
         return token
@@ -114,8 +108,7 @@ class MeetingInvitation(BasisModel):
             data = signing.loads(TimestampSigner().unsign(token, max_age=valid_in))
 
             return MeetingInvitation.objects.filter(
-                user=int(data['user_id']),
-                meeting=int(data['meeting_id'])
+                user=int(data['user_id']), meeting=int(data['meeting_id'])
             )[0]
         except (BadSignature, SignatureExpired):
             return None
@@ -123,15 +116,19 @@ class MeetingInvitation(BasisModel):
     def accept(self):
         self.status = constants.ATTENDING
         self.save()
-        track(self.user, 'meeting.accept_invite', properties={
-            'meeting_id': self.meeting_id,
-            'invite_id: ': self.id,
-        })
+        track(
+            self.user, 'meeting.accept_invite', properties={
+                'meeting_id': self.meeting_id,
+                'invite_id: ': self.id,
+            }
+        )
 
     def reject(self):
         self.status = constants.NOT_ATTENDING
         self.save()
-        track(self.user, 'meeting.reject_invite', properties={
-            'meeting_id': self.meeting_id,
-            'invite_id: ': self.id,
-        })
+        track(
+            self.user, 'meeting.reject_invite', properties={
+                'meeting_id': self.meeting_id,
+                'invite_id: ': self.id,
+            }
+        )

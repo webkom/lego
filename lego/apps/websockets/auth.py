@@ -16,6 +16,7 @@ def jwt_create_channel_session(func):
     user pk to the channel session, so the user
     can be retrieved later.
     """
+
     @channel_session
     @functools.wraps(func)
     def inner(message, *args, **kwargs):
@@ -47,6 +48,7 @@ def jwt_retrieve_channel_session(func):
 
     Must be used in combination with jwt_create_channel_session
     """
+
     @channel_session
     @functools.wraps(func)
     def inner(message, *args, **kwargs):

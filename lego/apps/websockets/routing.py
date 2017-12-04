@@ -21,9 +21,7 @@ websocket_routes = [
     route('websocket.disconnect', handle_disconnect)
 ]
 
-routing = [
-    include(websocket_routes)
-]
+routing = [include(websocket_routes)]
 
 if settings.WS_SERVER:
     routing.append(route('http.request', http_consumer))

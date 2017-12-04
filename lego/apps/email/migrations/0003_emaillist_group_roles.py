@@ -16,7 +16,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='emaillist',
             name='group_roles',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'), ('treasurer', 'treasurer')], max_length=64), default=['member'], size=None),
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[
+                        ('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'),
+                        ('treasurer', 'treasurer')
+                    ], max_length=64
+                ), default=['member'], size=None
+            ),
             preserve_default=False,
         ),
     ]

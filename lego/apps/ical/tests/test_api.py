@@ -46,16 +46,16 @@ def _get_all_ical_urls(token):
 
 
 NOW_FOR_TESTING = timezone.make_aware(
-    timezone.datetime(2009, 1, 1, 1),
-    timezone.get_current_timezone()
+    timezone.datetime(2009, 1, 1, 1), timezone.get_current_timezone()
 )
 
 
 @mock.patch('django.utils.timezone.now', side_effect=lambda: NOW_FOR_TESTING)
 class RetreiveDateDependentICalTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml',
-                'test_meetings.yaml', 'test_companies.yaml',
-                'test_followevent.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_meetings.yaml',
+        'test_companies.yaml', 'test_followevent.yaml'
+    ]
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)

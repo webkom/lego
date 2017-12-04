@@ -6,8 +6,9 @@ from structlog import get_logger
 
 from lego.apps.users.models import User
 from lego.apps.users.password_reset import PasswordReset
-from lego.apps.users.serializers.password_reset import (PasswordResetPerformSerializer,
-                                                        PasswordResetRequestSerializer)
+from lego.apps.users.serializers.password_reset import (
+    PasswordResetPerformSerializer, PasswordResetRequestSerializer
+)
 from lego.apps.users.serializers.users import DetailedUserSerializer
 from lego.utils.tasks import send_email
 
@@ -29,14 +30,11 @@ class PasswordResetRequestViewSet(viewsets.GenericViewSet):
             raise ValidationError({"email": "User with that email does not exist"})
         token = PasswordReset.generate_reset_token(email)
         send_email.delay(
-            to_email=email,
-            context={
+            to_email=email, context={
                 "token": token,
-            },
-            subject='Nullstill ditt passord på abakus.no',
+            }, subject='Nullstill ditt passord på abakus.no',
             plain_template='users/email/reset_password.txt',
-            html_template='users/email/reset_password.html',
-            from_email=None
+            html_template='users/email/reset_password.html', from_email=None
         )
 
         return Response(status=status.HTTP_202_ACCEPTED)

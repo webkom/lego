@@ -18,8 +18,9 @@ def exception_handler(exc, context):
     if not response and isinstance(exc, IntegrityError):
         set_rollback()
         response = Response(
-            {'detail': 'Some values are supposed to be unique but are not.'},
-            status=status.HTTP_409_CONFLICT
+            {
+                'detail': 'Some values are supposed to be unique but are not.'
+            }, status=status.HTTP_409_CONFLICT
         )
 
     if response:
@@ -27,12 +28,7 @@ def exception_handler(exc, context):
         if isinstance(response.data, dict):
             detail = response.data.get('detail')
 
-        log.warn(
-            'request_error',
-            status_code=response.status_code,
-            detail=detail,
-            exc=exc
-        )
+        log.warn('request_error', status_code=response.status_code, detail=detail, exc=exc)
     else:
         log.error('unhandled_request_exception', exc=exc)
 

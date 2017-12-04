@@ -1,4 +1,3 @@
-
 """
 The index_registry dict keeps the mapping between SearchIndexes and models.
 'players.player': PlayerIndex

@@ -11,13 +11,7 @@ class Workplace(BasisModel):
 
 
 class Joblisting(Content, BasisModel):
-    YEAR_CHOICES = (
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5)
-    )
+    YEAR_CHOICES = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
 
     FULL_TIME = 'full_time'
     PART_TIME = 'part_time'

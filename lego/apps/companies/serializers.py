@@ -2,8 +2,9 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
-from lego.apps.companies.models import (Company, CompanyContact, CompanyFile, CompanyInterest,
-                                        Semester, SemesterStatus)
+from lego.apps.companies.models import (
+    Company, CompanyContact, CompanyFile, CompanyInterest, Semester, SemesterStatus
+)
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.fields import FileField, ImageField
 from lego.apps.users.fields import PublicUserField
@@ -18,7 +19,6 @@ class SemesterSerializer(BasisModelSerializer):
 
 
 class SemesterStatusSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = SemesterStatus
         fields = ('id', 'semester', 'contacted_status')
@@ -40,12 +40,13 @@ class SemesterStatusDetailSerializer(SemesterStatusSerializer):
 
     class Meta:
         model = SemesterStatus
-        fields = ('id', 'semester', 'contacted_status', 'contract', 'statistics',
-                  'evaluation', 'contract_name', 'statistics_name', 'evaluation_name')
+        fields = (
+            'id', 'semester', 'contacted_status', 'contract', 'statistics', 'evaluation',
+            'contract_name', 'statistics_name', 'evaluation_name'
+        )
 
 
 class CompanyContactSerializer(BasisModelSerializer):
-
     class Meta:
         model = CompanyContact
         fields = ('id', 'name', 'role', 'mail', 'phone', 'mobile')
@@ -72,15 +73,18 @@ class CompanyFileSerializer(serializers.ModelSerializer):
 class CompanyListSerializer(BasisModelSerializer):
     logo = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
-        source='logo',
-        required=False,
-        options={'height': 500, 'width': 500, 'smart': True}
+        source='logo', required=False, options={
+            'height': 500,
+            'width': 500,
+            'smart': True
+        }
     )
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'website', 'company_type', 'address', 'logo',
-                  'thumbnail')
+        fields = (
+            'id', 'name', 'description', 'website', 'company_type', 'address', 'logo', 'thumbnail'
+        )
 
 
 class CompanyAdminListSerializer(BasisModelSerializer):
@@ -89,8 +93,7 @@ class CompanyAdminListSerializer(BasisModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment',
-                  'active')
+        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment', 'active')
 
 
 class CompanyDetailSerializer(BasisModelSerializer):
@@ -98,8 +101,9 @@ class CompanyDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'phone', 'company_type', 'website', 'address',
-                  'logo')
+        fields = (
+            'id', 'name', 'description', 'phone', 'company_type', 'website', 'address', 'logo'
+        )
 
 
 class CompanyAdminDetailSerializer(BasisModelSerializer):
@@ -115,17 +119,20 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'student_contact', 'description', 'phone',
-                  'company_type', 'website', 'address', 'payment_mail', 'comments',
-                  'comment_target', 'semester_statuses', 'active', 'admin_comment',
-                  'logo', 'files', 'company_contacts')
+        fields = (
+            'id', 'name', 'student_contact', 'description', 'phone', 'company_type', 'website',
+            'address', 'payment_mail', 'comments', 'comment_target', 'semester_statuses', 'active',
+            'admin_comment', 'logo', 'files', 'company_contacts'
+        )
 
 
 class CompanyInterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInterest
-        fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'events',
-                  'other_offers', 'comment')
+        fields = (
+            'id', 'company_name', 'contact_person', 'mail', 'semesters', 'events', 'other_offers',
+            'comment'
+        )
 
     def create(self, validated_data):
         semesters = validated_data.pop('semesters')
@@ -147,6 +154,7 @@ class CompanySearchSerializer(serializers.ModelSerializer):
     """
     Public company information available on search.
     """
+
     class Meta:
         model = Company
         fields = ('id', 'name', 'description', 'website', 'company_type', 'address')

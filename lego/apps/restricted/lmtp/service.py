@@ -5,8 +5,9 @@ from django.conf import settings
 from django.utils import timezone
 from structlog import get_logger
 
-from lego.apps.restricted.exceptions import (DefectMessageException, MessageIDNotExistException,
-                                             ParseEmailException)
+from lego.apps.restricted.exceptions import (
+    DefectMessageException, MessageIDNotExistException, ParseEmailException
+)
 from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.parser import ParserMessageType
 from lego.apps.stats.statsd_client import statsd

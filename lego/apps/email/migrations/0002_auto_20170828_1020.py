@@ -20,11 +20,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='emaillist',
             name='groups',
-            field=models.ManyToManyField(blank=True, related_name='email_lists', to='users.AbakusGroup'),
+            field=models.ManyToManyField(
+                blank=True, related_name='email_lists', to='users.AbakusGroup'
+            ),
         ),
         migrations.AddField(
             model_name='emaillist',
             name='users',
-            field=models.ManyToManyField(blank=True, related_name='email_lists', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(
+                blank=True, related_name='email_lists', to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

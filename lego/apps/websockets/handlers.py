@@ -7,10 +7,7 @@ from .groups import group_for_user
 
 
 def find_groups(user):
-    groups = [
-        Group('global'),
-        group_for_user(user)
-    ] + find_event_groups(user)
+    groups = [Group('global'), group_for_user(user)] + find_event_groups(user)
 
     return groups
 

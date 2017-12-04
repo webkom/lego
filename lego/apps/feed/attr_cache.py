@@ -30,9 +30,7 @@ class AttrCache:
         'events.registration': attr_renderers.render_registration,
     }
 
-    RELATED_FIELDS = {
-        'meetings.meetinginvitation': ['meeting']
-    }
+    RELATED_FIELDS = {'meetings.meetinginvitation': ['meeting']}
 
     def lookup_cache(self, content_strings):
         """
@@ -54,7 +52,8 @@ class AttrCache:
         Cache the items we looked up for a small amount of time.
         """
         cache.set_many(
-            {f'{self.CACHE_KEY}{key}': value for key, value in items.items()}, timeout=60
+            {f'{self.CACHE_KEY}{key}': value
+             for key, value in items.items()}, timeout=60
         )
 
     def extract_properties(self, content_type, ids):

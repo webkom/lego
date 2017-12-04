@@ -3,22 +3,9 @@ from rest_framework.test import APITestCase
 
 from lego.apps.users.models import AbakusGroup, User
 
-_test_company_data = [
-    {
-        'name': 'TEST'
-    },
-    {
-        'name': 'TEST2'
-    }
-]
+_test_company_data = [{'name': 'TEST'}, {'name': 'TEST2'}]
 
-_test_semester_status_data = [
-    {
-        'semester': 2,
-        'company': 1,
-        'contactedStatus': ['interested']
-    }
-]
+_test_semester_status_data = [{'semester': 2, 'company': 1, 'contactedStatus': ['interested']}]
 
 _test_company_contact_data = [
     {
@@ -56,8 +43,7 @@ def _get_company_contacts_detail_url(company_pk, pk):
 
 
 class ListCompaniesTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -77,8 +63,7 @@ class ListCompaniesTestCase(APITestCase):
 
 
 class RetrieveCompaniesTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -97,8 +82,7 @@ class RetrieveCompaniesTestCase(APITestCase):
 
 
 class CreateCompaniesTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -130,8 +114,7 @@ class CreateCompaniesTestCase(APITestCase):
 
 
 class DeleteCompaniesTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -153,8 +136,7 @@ class DeleteCompaniesTestCase(APITestCase):
 
 
 class CreateSemesterStatusTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -170,9 +152,7 @@ class CreateSemesterStatusTestCase(APITestCase):
     def test_semester_status_creation_with_bedkom_user(self):
         AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        response = self.client.post(
-            _get_semester_status_list_url(1), _test_semester_status_data[0]
-        )
+        response = self.client.post(_get_semester_status_list_url(1), _test_semester_status_data[0])
         self.assertEqual(response.status_code, 201)
 
     def test_semester_status_update_with_abakus_user(self):
@@ -196,8 +176,7 @@ class CreateSemesterStatusTestCase(APITestCase):
 
 
 class DeleteSemesterStatusTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -216,8 +195,7 @@ class DeleteSemesterStatusTestCase(APITestCase):
 
 
 class CreateCompanyContactsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()
@@ -257,8 +235,7 @@ class CreateCompanyContactsTestCase(APITestCase):
 
 
 class DeleteCompanyContacsTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()

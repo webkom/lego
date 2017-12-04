@@ -8,7 +8,6 @@ from lego.apps.email.validators import validate_email_address
 
 
 class ValidatorsTestCase(TestCase):
-
     @mock.patch('lego.apps.email.models.EmailAddress.is_assigned', return_value=True)
     def test_email_address_validator(self, mock_is_assigned):
         """The validator should raise ValidationError if is_assigned returns True"""

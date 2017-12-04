@@ -3,17 +3,18 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from lego.apps.comments.models import Comment
-from lego.apps.companies.permissions import (CompanyContactPermissionHandler,
-                                             CompanyInterestPermissionHandler,
-                                             CompanyPermissionHandler,
-                                             NestedCompanyPermissionHandler,
-                                             SemesterPermissionHandler)
+from lego.apps.companies.permissions import (
+    CompanyContactPermissionHandler, CompanyInterestPermissionHandler, CompanyPermissionHandler,
+    NestedCompanyPermissionHandler, SemesterPermissionHandler
+)
 from lego.apps.files.models import FileField
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, PersistentModel, TimeStampModel
 
-from .constants import (AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER_STATUSES, SPRING,
-                        TRANSLATED_EVENTS, TRANSLATED_OTHER_OFFERS)
+from .constants import (
+    AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER_STATUSES, SPRING, TRANSLATED_EVENTS,
+    TRANSLATED_OTHER_OFFERS
+)
 
 
 class Semester(BasisModel):
@@ -119,7 +120,7 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             'contact_person': self.contact_person,
             'mail': self.mail,
             'semesters': ', '.join(semesters),
-            'events': ', '. join(events),
+            'events': ', '.join(events),
             'others': ', '.join(others),
             'comment': self.comment
         }

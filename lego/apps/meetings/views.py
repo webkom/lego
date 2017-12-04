@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from lego.apps.meetings.authentication import MeetingInvitationTokenAuthentication
 from lego.apps.meetings.filters import MeetingFilterSet
 from lego.apps.meetings.models import Meeting, MeetingInvitation
-from lego.apps.meetings.serializers import (MeetingBulkInvite, MeetingGroupInvite,
-                                            MeetingInvitationSerializer,
-                                            MeetingInvitationUpdateSerializer, MeetingSerializer,
-                                            MeetingUserInvite)
+from lego.apps.meetings.serializers import (
+    MeetingBulkInvite, MeetingGroupInvite, MeetingInvitationSerializer,
+    MeetingInvitationUpdateSerializer, MeetingSerializer, MeetingUserInvite
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
 
@@ -21,11 +21,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         permission_handler = get_permission_handler(Meeting)
         return permission_handler.filter_queryset(
-            self.request.user,
-            Meeting.objects.prefetch_related(
-                'invitations',
-                'invitations__user'
-            )
+            self.request.user, Meeting.objects.prefetch_related('invitations', 'invitations__user')
         )
 
     def get_ordering(self):

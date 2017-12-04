@@ -31,18 +31,13 @@ class RestrictedHandler(BaseHandler):
             return
 
         activity = Activity(
-            actor=restricted_mail.created_by,
-            verb=RestrictedMailSent,
-            object=restricted_mail,
-            time=restricted_mail.used,
-            extra_context={}
+            actor=restricted_mail.created_by, verb=RestrictedMailSent, object=restricted_mail,
+            time=restricted_mail.used, extra_context={}
         )
         self.manager.add_activity(activity, [restricted_mail.created_by.pk], [NotificationFeed])
 
         # Send notification
-        notification = RestrictedMailSentNotification(
-            restricted_mail.created_by
-        )
+        notification = RestrictedMailSentNotification(restricted_mail.created_by)
         notification.notify()
 
     def handle_failure(self, sender, reason):
@@ -53,9 +48,7 @@ class RestrictedHandler(BaseHandler):
         """
         send_email.delay(
             to_email=sender,
-            context={
-                'reason': reason
-            },
+            context={'reason': reason},
             subject=f'Kunne ikke sende ut begrenset epost',
             plain_template='restricted/email/process_failure.txt',
             html_template='restricted/email/process_failure.html',

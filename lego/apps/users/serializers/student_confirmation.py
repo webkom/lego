@@ -9,16 +9,12 @@ from lego.utils.functions import verify_captcha
 class StudentConfirmationSerializer(serializers.Serializer):
 
     student_username = serializers.CharField(
-        max_length=30,
-        help_text='30 characters or fewer. Letters, digits and _ only.',
+        max_length=30, help_text='30 characters or fewer. Letters, digits and _ only.',
         validators=[username_validator]
     )
     captcha_response = serializers.CharField()
 
-    course = serializers.ChoiceField(choices=(
-        constants.DATA,
-        constants.KOMTEK
-    ))
+    course = serializers.ChoiceField(choices=(constants.DATA, constants.KOMTEK))
     member = serializers.BooleanField()
 
     def validate_student_username(self, value):

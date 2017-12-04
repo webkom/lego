@@ -24,6 +24,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='abakusgroup',
             name='type',
-            field=models.CharField(choices=[('komite', 'komite'), ('interesse', 'interesse'), ('annen', 'annen')], default='annen', max_length=10),
+            field=models.CharField(
+                choices=[('komite', 'komite'), ('interesse', 'interesse'), ('annen', 'annen')],
+                default='annen', max_length=10
+            ),
         ),
     ]

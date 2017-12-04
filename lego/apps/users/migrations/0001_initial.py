@@ -31,21 +31,96 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
+                (
+                    'last_login',
+                    models.DateTimeField(blank=True, null=True, verbose_name='last login')
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('crypt_password_hash', models.CharField(max_length=1024)),
                 ('internal_email_enabled', models.BooleanField(default=True)),
-                ('username', models.CharField(db_index=True, error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=30, unique=True, validators=[django.core.validators.RegexValidator('^[\\w.@+-]+$', 'Enter a valid username.  This value may contain only letters, numbers and @/./+/-/_ characters.', 'invalid'), lego.utils.validators.ReservedNameValidator()])),
-                ('student_username', models.CharField(error_messages={'unique': 'A user has already verified that student username.'}, help_text='30 characters or fewer. Letters, digits and ./-/_ only.', max_length=30, null=True, unique=True, validators=[django.core.validators.RegexValidator('^[a-z0-9-._]+$', 'Enter a valid username.  This value may contain only letters, numbers and ./-/_ characters.', 'invalid'), lego.utils.validators.ReservedNameValidator()])),
-                ('first_name', models.CharField(blank=True, max_length=30, verbose_name='first name')),
-                ('last_name', models.CharField(blank=True, max_length=30, verbose_name='last name')),
-                ('allergies', models.CharField(blank=True, max_length=30, verbose_name='allergies')),
-                ('email', models.EmailField(error_messages={'unique': 'A user with that email already exists.'}, max_length=254, unique=True, validators=[lego.apps.users.validators.EmailValidatorWithBlacklist(blacklist=['abakus.no'])])),
-                ('gender', models.CharField(choices=[('male', 'male'), ('female', 'female'), ('other', 'other')], max_length=50)),
-                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.')),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
+                (
+                    'username',
+                    models.CharField(
+                        db_index=True, error_messages={
+                            'unique': 'A user with that username already exists.'
+                        }, help_text=
+                        'Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
+                        max_length=30, unique=True, validators=[
+                            django.core.validators.RegexValidator(
+                                '^[\\w.@+-]+$',
+                                'Enter a valid username.  This value may contain only letters, numbers and @/./+/-/_ characters.',
+                                'invalid'
+                            ),
+                            lego.utils.validators.ReservedNameValidator()
+                        ]
+                    )
+                ),
+                (
+                    'student_username',
+                    models.CharField(
+                        error_messages={
+                            'unique': 'A user has already verified that student username.'
+                        }, help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
+                        max_length=30, null=True, unique=True, validators=[
+                            django.core.validators.RegexValidator(
+                                '^[a-z0-9-._]+$',
+                                'Enter a valid username.  This value may contain only letters, numbers and ./-/_ characters.',
+                                'invalid'
+                            ),
+                            lego.utils.validators.ReservedNameValidator()
+                        ]
+                    )
+                ),
+                (
+                    'first_name',
+                    models.CharField(blank=True, max_length=30, verbose_name='first name')
+                ),
+                (
+                    'last_name',
+                    models.CharField(blank=True, max_length=30, verbose_name='last name')
+                ),
+                (
+                    'allergies',
+                    models.CharField(blank=True, max_length=30, verbose_name='allergies')
+                ),
+                (
+                    'email',
+                    models.EmailField(
+                        error_messages={'unique': 'A user with that email already exists.'},
+                        max_length=254, unique=True, validators=[
+                            lego.apps.users.validators.EmailValidatorWithBlacklist(
+                                blacklist=['abakus.no']
+                            )
+                        ]
+                    )
+                ),
+                (
+                    'gender',
+                    models.CharField(
+                        choices=[('male', 'male'), ('female', 'female'), ('other', 'other')],
+                        max_length=50
+                    )
+                ),
+                (
+                    'is_active',
+                    models.BooleanField(
+                        default=True, help_text=
+                        'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+                    )
+                ),
+                (
+                    'date_joined',
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name='date joined'
+                    )
+                ),
             ],
             options={
                 'abstract': False,
@@ -57,7 +132,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AbakusGroup',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('internal_email_enabled', models.BooleanField(default=True)),
                 ('name', models.CharField(db_index=True, max_length=80, unique=True)),
@@ -65,13 +145,34 @@ class Migration(migrations.Migration):
                 ('is_grade', models.BooleanField(default=False)),
                 ('is_committee', models.BooleanField(default=False)),
                 ('is_interest_group', models.BooleanField(default=False)),
-                ('permissions', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=50, validators=[lego.apps.permissions.validators.KeywordPermissionValidator()]), default=list, size=None, verbose_name='permissions')),
+                (
+                    'permissions',
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.CharField(
+                            max_length=50, validators=[
+                                lego.apps.permissions.validators.KeywordPermissionValidator()
+                            ]
+                        ), default=list, size=None, verbose_name='permissions'
+                    )
+                ),
                 ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('internal_email', models.OneToOneField(editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='abakusgroup', to='email.EmailAddress')),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='users.AbakusGroup')),
+                (
+                    'internal_email',
+                    models.OneToOneField(
+                        editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='abakusgroup', to='email.EmailAddress'
+                    )
+                ),
+                (
+                    'parent',
+                    mptt.fields.TreeForeignKey(
+                        blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                        related_name='children', to='users.AbakusGroup'
+                    )
+                ),
             ],
             options={
                 'abstract': False,
@@ -80,33 +181,117 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Membership',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('role', models.CharField(choices=[('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'), ('treasurer', 'treasurer')], default='member', max_length=20)),
+                (
+                    'role',
+                    models.CharField(
+                        choices=[
+                            ('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'),
+                            ('treasurer', 'treasurer')
+                        ], default='member', max_length=20
+                    )
+                ),
                 ('is_active', models.BooleanField(default=True)),
                 ('start_date', models.DateField(auto_now_add=True)),
                 ('end_date', models.DateField(blank=True, null=True)),
-                ('abakus_group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.AbakusGroup')),
-                ('created_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='membership_created', to=settings.AUTH_USER_MODEL)),
-                ('updated_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='membership_updated', to=settings.AUTH_USER_MODEL)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'abakus_group',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to='users.AbakusGroup'
+                    )
+                ),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='membership_created', to=settings.AUTH_USER_MODEL
+                    )
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='membership_updated', to=settings.AUTH_USER_MODEL
+                    )
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
         ),
         migrations.CreateModel(
             name='Penalty',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('reason', models.CharField(max_length=1000)),
                 ('weight', models.IntegerField(default=1)),
-                ('created_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='penalty_created', to=settings.AUTH_USER_MODEL)),
-                ('source_event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='penalties', to='events.Event')),
-                ('updated_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='penalty_updated', to=settings.AUTH_USER_MODEL)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='penalties', to=settings.AUTH_USER_MODEL)),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE, related_name='penalty_created',
+                        to=settings.AUTH_USER_MODEL
+                    )
+                ),
+                (
+                    'source_event',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name='penalties',
+                        to='events.Event'
+                    )
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE, related_name='penalty_updated',
+                        to=settings.AUTH_USER_MODEL
+                    )
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name='penalties',
+                        to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
             options={
                 'abstract': False,
@@ -116,17 +301,28 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='abakus_groups',
-            field=models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='users', related_query_name='user', through='users.Membership', to='users.AbakusGroup'),
+            field=models.ManyToManyField(
+                blank=True, help_text=
+                'The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+                related_name='users', related_query_name='user', through='users.Membership',
+                to='users.AbakusGroup'
+            ),
         ),
         migrations.AddField(
             model_name='user',
             name='internal_email',
-            field=models.OneToOneField(editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user', to='email.EmailAddress'),
+            field=models.OneToOneField(
+                editable=False, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='user', to='email.EmailAddress'
+            ),
         ),
         migrations.AddField(
             model_name='user',
             name='picture',
-            field=lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_pictures', to='files.File'),
+            field=lego.apps.files.models.FileField(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='user_pictures', to='files.File'
+            ),
         ),
         migrations.AlterUniqueTogether(
             name='membership',

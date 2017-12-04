@@ -8,26 +8,30 @@ from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
-from lego.apps.events.serializers.pools import (PoolAdministrateSerializer,
-                                                PoolCreateAndUpdateSerializer, PoolReadSerializer)
-from lego.apps.events.serializers.registrations import (RegistrationReadDetailedSerializer,
-                                                        RegistrationReadSerializer)
+from lego.apps.events.serializers.pools import (
+    PoolAdministrateSerializer, PoolCreateAndUpdateSerializer, PoolReadSerializer
+)
+from lego.apps.events.serializers.registrations import (
+    RegistrationReadDetailedSerializer, RegistrationReadSerializer
+)
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.utils.serializers import BasisModelSerializer
 
 
 class EventPublicSerializer(BasisModelSerializer):
+
     thumbnail = ImageField(
-        source='cover',
-        required=False,
-        options={'height': 500, 'width': 500, 'smart': True}
+        source='cover', required=False, options={
+            'height': 500,
+            'width': 500,
+            'smart': True
+        }
     )
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'event_type',
-                  'location', 'thumbnail')
+        fields = ('id', 'title', 'description', 'event_type', 'location', 'thumbnail')
         read_only = True
 
 
@@ -35,16 +39,19 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     cover = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
-        source='cover',
-        required=False,
-        options={'height': 500, 'width': 500, 'smart': True}
+        source='cover', required=False, options={
+            'height': 500,
+            'width': 500,
+            'smart': True
+        }
     )
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'cover', 'event_type',
-                  'location', 'start_time', 'thumbnail', 'total_capacity',
-                  'company', 'registration_count', 'tags')
+        fields = (
+            'id', 'title', 'description', 'cover', 'event_type', 'location', 'start_time',
+            'thumbnail', 'total_capacity', 'company', 'registration_count', 'tags'
+        )
         read_only = True
 
 
@@ -60,12 +67,14 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type', 'location',
-                  'comments', 'comment_target', 'start_time', 'end_time', 'merge_time',
-                  'pools', 'unregistration_deadline', 'company', 'active_capacity',
-                  'feedback_description', 'feedback_required', 'is_priced', 'price_member',
-                  'price_guest', 'use_stripe', 'payment_due_date', 'use_captcha',
-                  'waiting_registrations', 'tags', 'is_merged', 'heed_penalties')
+        fields = (
+            'id', 'title', 'description', 'cover', 'text', 'event_type', 'location', 'comments',
+            'comment_target', 'start_time', 'end_time', 'merge_time', 'pools',
+            'unregistration_deadline', 'company', 'active_capacity', 'feedback_description',
+            'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
+            'payment_due_date', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged',
+            'heed_penalties'
+        )
         read_only = True
 
 
@@ -91,8 +100,9 @@ class EventAdministrateSerializer(EventReadSerializer):
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
 
     class Meta(EventReadSerializer.Meta):
-        fields = EventReadSerializer.Meta.fields + ('pools', 'unregistered',
-                                                    'waiting_registrations')
+        fields = EventReadSerializer.Meta.fields + (
+            'pools', 'unregistered', 'waiting_registrations'
+        )
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -102,11 +112,12 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
-                  'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
-                  'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time',
-                  'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned',
-                  'heed_penalties')
+        fields = (
+            'id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
+            'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
+            'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time', 'merge_time',
+            'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned', 'heed_penalties'
+        )
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
@@ -146,15 +157,19 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 class EventSearchSerializer(serializers.ModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     thumbnail = ImageField(
-        source='cover',
-        required=False,
-        options={'height': 500, 'width': 500, 'smart': True}
+        source='cover', required=False, options={
+            'height': 500,
+            'width': 500,
+            'smart': True
+        }
     )
     text = ContentSerializerField()
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'cover', 'text', 'event_type',
-                  'location', 'start_time', 'thumbnail', 'end_time', 'total_capacity',
-                  'company', 'registration_count', 'tags', 'pinned')
+        fields = (
+            'id', 'title', 'description', 'cover', 'text', 'event_type', 'location', 'start_time',
+            'thumbnail', 'end_time', 'total_capacity', 'company', 'registration_count', 'tags',
+            'pinned'
+        )
         read_only = True

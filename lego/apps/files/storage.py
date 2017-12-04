@@ -9,7 +9,6 @@ from django.utils.crypto import get_random_string
 
 
 class Storage:
-
     def __init__(self):
         self.session = boto3.Session(
             aws_access_key_id=getattr(settings, 'AWS_ACCESS_KEY_ID', None),
@@ -27,28 +26,26 @@ class Storage:
         mime_type, encoding = guess_type(key)
 
         signed = self.client.generate_presigned_post(
-            Bucket=bucket,
-            Key=key,
-            Conditions=[
+            Bucket=bucket, Key=key, Conditions=[
                 ['content-length-range', 10, 1000000000],
-                {'success_action_redirect': redirect_url},
-                {'acl': 'private'},
-                {'Content-Type': mime_type}
-            ],
-            Fields={
+                {
+                    'success_action_redirect': redirect_url
+                }, {
+                    'acl': 'private'
+                },
+                {
+                    'Content-Type': mime_type
+                }
+            ], Fields={
                 'success_action_redirect': redirect_url,
                 'acl': 'private',
                 'Content-Type': mime_type
-            },
-            ExpiresIn=60*10
+            }, ExpiresIn=60 * 10
         )
         return signed
 
     def generate_signed_url(self, bucket, key):
-        params = {
-            'Bucket': bucket,
-            'Key': key
-        }
+        params = {'Bucket': bucket, 'Key': key}
         presigned_url = self.client.generate_presigned_url(
             ClientMethod='get_object', Params=params, ExpiresIn=60
         )

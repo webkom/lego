@@ -26,9 +26,11 @@ class CommentSerializer(BasisModelSerializer):
             parent = attrs['parent']
             if parent.object_id != comment_target.id or parent.content_type != \
                     ContentType.objects.get_for_model(comment_target):
-                raise ValidationError({
-                    'parent': 'parent does not point to the same comment_target'
-                })
+                raise ValidationError(
+                    {
+                        'parent': 'parent does not point to the same comment_target'
+                    }
+                )
 
         return attrs
 
@@ -39,4 +41,4 @@ class UpdateCommentSerializer(BasisModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('text',)
+        fields = ('text', )

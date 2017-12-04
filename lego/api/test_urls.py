@@ -3,7 +3,6 @@ from django.test import TestCase
 
 
 class VersionRedirectTestCase(TestCase):
-
     def test_redirect(self):
         response = self.client.get('/api/users/')
         self.assertEqual(response.status_code, 302)

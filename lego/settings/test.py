@@ -54,19 +54,19 @@ STREAM_REDIS_CONFIG = {
 }
 
 ELASTICSEARCH = [
-    {'host': 'localhost'},
+    {
+        'host': 'localhost'
+    },
 ]
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
-CHANNEL_LAYERS['default']['CONFIG'] = {
-    'hosts': [f'redis://{CACHE}/5']
-}
+CHANNEL_LAYERS['default']['CONFIG'] = {'hosts': [f'redis://{CACHE}/5']}
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-INSTALLED_APPS += ('lego.apps.permissions.tests',)
+INSTALLED_APPS += ('lego.apps.permissions.tests', )
 INSTALLED_APPS.remove('django_extensions')
 INSTALLED_APPS.remove('corsheaders')
 

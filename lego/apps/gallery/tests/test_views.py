@@ -10,8 +10,10 @@ from lego.apps.users.models import AbakusGroup, User
 @mock.patch('lego.apps.files.fields.storage.generate_signed_url', return_value='signed_url')
 class GalleryViewSetTestCase(APITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_files.yaml',
-                'test_galleries.yaml', 'test_gallery_pictures.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_files.yaml', 'test_galleries.yaml',
+        'test_gallery_pictures.yaml'
+    ]
 
     def setUp(self):
         self.permitted_user = User.objects.get(username='test1')
@@ -78,9 +80,12 @@ class GalleryViewSetTestCase(APITestCase):
         """The permitted user is able to update pictures"""
         self.client.force_login(self.permitted_user)
 
-        response = self.client.patch(f'{self.url}1/pictures/2/', {
-            'active': True, 'description': 'Test description'
-        })
+        response = self.client.patch(
+            f'{self.url}1/pictures/2/', {
+                'active': True,
+                'description': 'Test description'
+            }
+        )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
         self.assertTrue(GalleryPicture.objects.get(id=2).active)

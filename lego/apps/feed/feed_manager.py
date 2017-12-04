@@ -1,8 +1,9 @@
 import logging
 
 from stream_framework.feed_managers.base import FanoutPriority, add_operation, remove_operation
-from stream_framework.tasks import (fanout_operation, fanout_operation_hi_priority,
-                                    fanout_operation_low_priority)
+from stream_framework.tasks import (
+    fanout_operation, fanout_operation_hi_priority, fanout_operation_low_priority
+)
 from stream_framework.utils import chunks, get_metrics_instance
 from structlog import get_logger
 
@@ -33,10 +34,7 @@ class FeedManager:
 
         for feed_class in feed_classes:
             self.create_fanout_tasks(
-                set(recipients),
-                feed_class,
-                add_operation,
-                operation_kwargs=operation_kwargs,
+                set(recipients), feed_class, add_operation, operation_kwargs=operation_kwargs,
                 fanout_priority=FanoutPriority.HIGH
             )
         self.metrics.on_activity_published()
@@ -49,10 +47,7 @@ class FeedManager:
 
         for feed_class in feed_classes:
             self.create_fanout_tasks(
-                set(recipients),
-                feed_class,
-                remove_operation,
-                operation_kwargs=operation_kwargs,
+                set(recipients), feed_class, remove_operation, operation_kwargs=operation_kwargs,
                 fanout_priority=FanoutPriority.HIGH
             )
         self.metrics.on_activity_removed()
@@ -64,8 +59,9 @@ class FeedManager:
 
         return self.priority_fanout_task.get(priority, fanout_operation)
 
-    def create_fanout_tasks(self, follower_ids, feed_class, operation,
-                            operation_kwargs=None, fanout_priority=None):
+    def create_fanout_tasks(
+        self, follower_ids, feed_class, operation, operation_kwargs=None, fanout_priority=None
+    ):
         """
         Creates the fanout task for the given activities and feed classes
         followers
@@ -87,10 +83,7 @@ class FeedManager:
 
         for ids_chunk in user_ids_chunks:
             task = fanout_task.delay(
-                feed_manager=self,
-                feed_class=feed_class,
-                user_ids=ids_chunk,
-                operation=operation,
+                feed_manager=self, feed_class=feed_class, user_ids=ids_chunk, operation=operation,
                 operation_kwargs=operation_kwargs
             )
             tasks.append(task)

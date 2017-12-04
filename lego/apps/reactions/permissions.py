@@ -24,7 +24,7 @@ class ReactionPermissionHandler(PermissionHandler):
         return queryset
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
 
         has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)

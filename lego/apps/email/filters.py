@@ -20,4 +20,4 @@ class EmailUserFilterSet(FilterSet):
 
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ('email', )

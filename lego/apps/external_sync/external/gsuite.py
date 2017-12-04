@@ -44,21 +44,13 @@ class GSuiteSystem(ExternalSystem):
 
     def add_user(self, user):
         return self.gsuite.add_user(
-            user.id,
-            user.internal_email_address,
-            user.first_name,
-            user.last_name,
-            user.email,
+            user.id, user.internal_email_address, user.first_name, user.last_name, user.email,
             user.crypt_password_hash
         )
 
     def update_user(self, user):
         return self.gsuite.update_user(
-            user.id,
-            user.internal_email_address,
-            user.first_name,
-            user.last_name,
-            user.email,
+            user.id, user.internal_email_address, user.first_name, user.last_name, user.email,
             user.crypt_password_hash
         )
 
@@ -122,7 +114,4 @@ class GSuiteSystem(ExternalSystem):
     def set_group_members(self, group_key, members):
         desired_member_emails = set(members)
 
-        self.gsuite.set_memberships(
-            group_key=group_key,
-            member_keys=desired_member_emails
-        )
+        self.gsuite.set_memberships(group_key=group_key, member_keys=desired_member_emails)

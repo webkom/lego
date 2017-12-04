@@ -77,9 +77,7 @@ class ElasticsearchBackend(SearchBacked):
         return self.connection.suggest(payload, index=settings.SEARCH_INDEX)
 
     def _refresh_template(self, template_name='lego-search'):
-        context = {
-            'index': self._index_name()
-        }
+        context = {'index': self._index_name()}
         template = render_to_string('search/elasticsearch/index_template.json', context)
         try:
             self.connection.indices.delete_template(template_name)
@@ -110,7 +108,6 @@ class ElasticsearchBackend(SearchBacked):
         self._refresh_template()
 
     def update_many(self, tuple_list):
-
         def create_operation(data_tuple):
             content_type, pk, data = data_tuple
             data_fields = dict()
@@ -132,7 +129,6 @@ class ElasticsearchBackend(SearchBacked):
         return self._bulk(map(create_operation, tuple_list))
 
     def remove_many(self, tuple_list):
-
         def create_operation(data_tuple):
             content_type, pk = data_tuple
             return self._remove(content_type, pk)
@@ -166,9 +162,11 @@ class ElasticsearchBackend(SearchBacked):
                                 }
                             }
                         },
-                        'filter': [
-                            {'terms': {f'{k}_filter': v}} for k, v in filters.items()
-                        ]
+                        'filter': [{
+                            'terms': {
+                                f'{k}_filter': v
+                            }
+                        } for k, v in filters.items()]
                     }
                 }
             }
@@ -183,10 +181,7 @@ class ElasticsearchBackend(SearchBacked):
                     field for field in search_index.get_result_fields() if field in source.keys()
                 ]
                 result = {field: source[field] for field in result_fields}
-                result.update({
-                    'id': hit['_id'],
-                    'content_type': hit['_type']
-                })
+                result.update({'id': hit['_id'], 'content_type': hit['_type']})
                 return result
 
         return filter(lambda hit: hit is not None, map(parse_result, result['hits']['hits']))
@@ -221,11 +216,7 @@ class ElasticsearchBackend(SearchBacked):
                     if field in source.keys()
                 ]
                 result = {field: source[field] for field in result_fields}
-                result.update({
-                    'id': hit['_id'],
-                    'content_type': hit['_type'],
-                    'text': hit['text']
-                })
+                result.update({'id': hit['_id'], 'content_type': hit['_type'], 'text': hit['text']})
                 return result
 
         return filter(

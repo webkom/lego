@@ -17,6 +17,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='company',
             name='student_contact',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='companies', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, related_name='companies',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

@@ -35,12 +35,8 @@ class MembershipHandler(BaseHandler):
 
     def get_activity(self, membership):
         return Activity(
-            verb=GroupJoinVerb,
-            actor=membership.user,
-            target=membership.abakus_group,
-            object=membership,
-            time=membership.created_at,
-            extra_context={}
+            verb=GroupJoinVerb, actor=membership.user, target=membership.abakus_group,
+            object=membership, time=membership.created_at, extra_context={}
         )
 
 

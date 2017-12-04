@@ -28,22 +28,19 @@ class AnnouncementHandler(BaseHandler):
             return
 
         activity = Activity(
-            actor=announcement.created_by,
-            verb=AnnouncementVerb,
-            object=announcement,
-            time=announcement.created_at,
-            extra_context={}
+            actor=announcement.created_by, verb=AnnouncementVerb, object=announcement,
+            time=announcement.created_at, extra_context={}
         )
         recipients = announcement.lookup_recipients()
         self.manager.add_activity(
-            activity, [recipient.pk for recipient in recipients], [NotificationFeed, PersonalFeed]
+            activity,
+            [recipient.pk for recipient in recipients],
+            [NotificationFeed, PersonalFeed]
         )
 
         # Send notifications
         for recipient in recipients:
-            notification = AnnouncementNotification(
-                recipient, announcement=announcement
-            )
+            notification = AnnouncementNotification(recipient, announcement=announcement)
             notification.notify()
 
 

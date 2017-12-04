@@ -8,4 +8,4 @@ class SemesterFilterSet(FilterSet):
 
     class Meta:
         model = Semester
-        fields = ('company_interest',)
+        fields = ('company_interest', )

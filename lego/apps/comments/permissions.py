@@ -4,9 +4,8 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
 class CommentPermissionHandler(PermissionHandler):
-
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
 
         can_access_target = False

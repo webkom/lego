@@ -15,20 +15,10 @@ def post_save_callback(instance, created, **kwargs):
 
     if created:
         statsd.incr(f'instance.create.{app}.{model}', 1)
-        log.info(
-            'instance_create',
-            app=app,
-            model=model,
-            pk=instance.pk
-        )
+        log.info('instance_create', app=app, model=model, pk=instance.pk)
     else:
         statsd.incr(f'instance.update.{app}.{model}', 1)
-        log.info(
-            'instance_update',
-            app=app,
-            model=model,
-            pk=instance.pk
-        )
+        log.info('instance_update', app=app, model=model, pk=instance.pk)
 
     track_instance(instance)
 
@@ -39,9 +29,4 @@ def post_delete_callback(instance, **kwargs):
     model = instance._meta.model_name
 
     statsd.incr('instance.delete.{app}.{model}', 1)
-    log.info(
-        f'instance_delete',
-        app=app,
-        model=model,
-        pk=instance.pk
-    )
+    log.info(f'instance_delete', app=app, model=model, pk=instance.pk)

@@ -50,12 +50,7 @@ class ContentField(TextField):
                 raise ValidationError('Found img tag without the data-file-key property')
 
         if images:
-            files = File.objects.filter(
-                key__in=images,
-                public=True,
-                state=READY,
-                file_type=IMAGE
-            )
+            files = File.objects.filter(key__in=images, public=True, state=READY, file_type=IMAGE)
             diff = set(images) - set([file.key for file in files])
             if len(diff):
                 raise ValidationError(f'Images {diff} not found')

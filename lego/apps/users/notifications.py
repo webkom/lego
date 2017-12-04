@@ -27,10 +27,8 @@ class PenaltyNotification(Notification):
         penalty = self.kwargs['penalty']
 
         return self._delay_push(
-            template='users/push/penalty.txt',
-            context={
+            template='users/push/penalty.txt', context={
                 'weight': penalty.weight,
                 'event': penalty.source_event.title,
-            },
-            instance=penalty
+            }, instance=penalty
         )

@@ -47,11 +47,8 @@ class File(TimeStampModel):
             )
             file_token = get_random_string(32)
             file = cls.objects.create(
-                key=key_storage_name,
-                file_type=cls.get_file_type(key_storage_name),
-                token=file_token,
-                user=user,
-                public=public
+                key=key_storage_name, file_type=cls.get_file_type(key_storage_name),
+                token=file_token, user=user, public=public
             )
             log.info('file_upload_new', user_key=key, file=key_storage_name)
             return file
@@ -64,9 +61,7 @@ class File(TimeStampModel):
         stale_threshold = timezone.now() - timedelta(hours=12)
         garbage = cls.objects.filter(state=PENDING_UPLOAD, created_at__lte=stale_threshold)
         result = garbage.delete()
-        log.info(
-            'file_purge_garbage', row_count=result[1], stale_threshold=stale_threshold
-        )
+        log.info('file_purge_garbage', row_count=result[1], stale_threshold=stale_threshold)
 
     @classmethod
     def get_file_type(cls, file_name):

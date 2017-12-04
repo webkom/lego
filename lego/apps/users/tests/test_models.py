@@ -73,9 +73,11 @@ class AbakusGroupHierarchyTestCase(TestCase):
         abakus = AbakusGroup.objects.get(name='Abakus')
         users = AbakusGroup.objects.get(name='Users')
         students = AbakusGroup.objects.get(name='Students')
-        union = set(list(abakus.get_descendants(include_self=True)) +
-                    list(users.get_descendants(include_self=True)) +
-                    list(students.get_descendants(include_self=True)))
+        union = set(
+            list(abakus.get_descendants(include_self=True)) +
+            list(users.get_descendants(include_self=True)) +
+            list(students.get_descendants(include_self=True))
+        )
         self.assertEqual(set(AbakusGroup.objects.all()), union)
 
 
@@ -167,9 +169,7 @@ class UserTestCase(TestCase):
 
     def test_validate_student_confirmation_token(self):
         student_confirmation_token = Registrations.generate_student_confirmation_token(
-            'teststudentusername',
-            constants.DATA,
-            True
+            'teststudentusername', constants.DATA, True
         )
         token = Registrations.validate_student_confirmation_token(student_confirmation_token)
         self.assertEqual(token['student_username'], 'teststudentusername')
@@ -177,9 +177,7 @@ class UserTestCase(TestCase):
         self.assertEqual(token['member'], True)
 
         student_confirmation_token = Registrations.generate_student_confirmation_token(
-            'teststudentusername',
-            constants.DATA,
-            True
+            'teststudentusername', constants.DATA, True
         )
         token = Registrations.validate_student_confirmation_token(student_confirmation_token)
         self.assertNotEqual(token['student_username'], 'wrongtestusername')
@@ -194,39 +192,38 @@ class MembershipTestCase(TestCase):
         self.test_committee = AbakusGroup.objects.get(name='Webkom')
         self.test_user = User.objects.get(pk=1)
         self.test_membership = Membership(
-            user=self.test_user,
-            abakus_group=self.test_committee,
-            role=constants.TREASURER
+            user=self.test_user, abakus_group=self.test_committee, role=constants.TREASURER
         )
         self.test_membership.save()
 
     def test_to_string(self):
         self.assertEqual(
-            str(self.test_membership),
-            '{0} is {1} in {2}'.format(
-                self.test_membership.user,
-                self.test_membership.get_role_display(),
+            str(self.test_membership), '{0} is {1} in {2}'.format(
+                self.test_membership.user, self.test_membership.get_role_display(),
                 self.test_membership.abakus_group
             )
         )
 
     def test_natural_key(self):
-        found_membership = Membership.objects.get_by_natural_key(self.test_user.username,
-                                                                 self.test_committee.name)
+        found_membership = Membership.objects.get_by_natural_key(
+            self.test_user.username, self.test_committee.name
+        )
         self.assertEqual(self.test_membership, found_membership)
 
 
 class PenaltyTestCase(TestCase):
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_users.yaml', 'test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         self.test_user = User.objects.get(pk=1)
         self.source = Event.objects.all().first()
 
     def test_create_penalty(self):
-        penalty = Penalty.objects.create(user=self.test_user, reason='test',
-                                         weight=1, source_event=self.source)
+        penalty = Penalty.objects.create(
+            user=self.test_user, reason='test', weight=1, source_event=self.source
+        )
 
         self.assertEqual(self.test_user.number_of_penalties(), 1)
         self.assertEqual(self.test_user, penalty.user)
@@ -238,21 +235,22 @@ class PenaltyTestCase(TestCase):
     def test_count_weights(self):
         weights = [1, 2]
         for weight in weights:
-            Penalty.objects.create(user=self.test_user, reason='test',
-                                   weight=weight, source_event=self.source)
+            Penalty.objects.create(
+                user=self.test_user, reason='test', weight=weight, source_event=self.source
+            )
 
         self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
 
     @mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1))
     def test_only_count_active_penalties(self, mock_now):
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=20),
-                               user=self.test_user, reason='test', weight=1,
-                               source_event=self.source)
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=19,
-                                                               hours=23,
-                                                               minutes=59),
-                               user=self.test_user, reason='test', weight=1,
-                               source_event=self.source)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=20), user=self.test_user, reason='test',
+            weight=1, source_event=self.source
+        )
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59), user=self.test_user,
+            reason='test', weight=1, source_event=self.source
+        )
         self.assertEqual(self.test_user.number_of_penalties(), 1)
 
     @override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10)))
@@ -260,17 +258,17 @@ class PenaltyTestCase(TestCase):
     def test_frozen_penalties_count_as_active_winter(self, mock_now):
         # This penalty is created slightly less than 20 days from the freeze-point.
         # It should be counted as active.
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=20,
-                                                               hours=23,
-                                                               minutes=59),
-                               user=self.test_user, reason='active', weight=1,
-                               source_event=self.source)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=20, hours=23, minutes=59), user=self.test_user,
+            reason='active', weight=1, source_event=self.source
+        )
 
         # This penalty is created exactly 20 days from the freeze-point.
         # It should be counted as inactive.
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=21),
-                               user=self.test_user, reason='inactive', weight=1,
-                               source_event=self.source)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=21), user=self.test_user, reason='inactive',
+            weight=1, source_event=self.source
+        )
 
         self.assertEqual(self.test_user.number_of_penalties(), 1)
         self.assertEqual(self.test_user.penalties.valid().first().reason, 'active')
@@ -280,17 +278,17 @@ class PenaltyTestCase(TestCase):
     def test_frozen_penalties_count_as_active_summer(self, mock_now):
         # This penalty is created slightly less than 20 days from the freeze-point.
         # It should be counted as active.
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=20,
-                                                               hours=23,
-                                                               minutes=59),
-                               user=self.test_user, reason='active', weight=1,
-                               source_event=self.source)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=20, hours=23, minutes=59), user=self.test_user,
+            reason='active', weight=1, source_event=self.source
+        )
 
         # This penalty is created exactly 20 days from the freeze-point.
         # It should be counted as inactive.
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=21),
-                               user=self.test_user, reason='inactive', weight=1,
-                               source_event=self.source)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=21), user=self.test_user, reason='inactive',
+            weight=1, source_event=self.source
+        )
 
         self.assertEqual(self.test_user.number_of_penalties(), 1)
         self.assertEqual(self.test_user.penalties.valid().first().reason, 'active')

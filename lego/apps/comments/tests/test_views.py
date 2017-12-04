@@ -17,9 +17,7 @@ def _get_detail_url(pk):
 
 
 class CreateCommentsAPITestCase(APITestCase):
-    fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml'
-    ]
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.all_comments = Comment.objects.all()
@@ -32,10 +30,11 @@ class CreateCommentsAPITestCase(APITestCase):
     def test_without_auth(self):
         content_type = ContentType.objects.get_for_model(Article)
         post_data = {
-            'text': 'Hey',
-            'comment_target': '{0}.{1}-{2}'.format(
-                content_type.app_label,
-                content_type.model,
+            'text':
+            'Hey',
+            'comment_target':
+            '{0}.{1}-{2}'.format(
+                content_type.app_label, content_type.model,
                 Article.objects.first().pk
             )
         }
@@ -46,8 +45,10 @@ class CreateCommentsAPITestCase(APITestCase):
     def test_without_view_permissions(self):
         self.client.force_authenticate(user=self.without_permission)
         post_data = {
-            'text': 'Hey',
-            'comment_target': '{0}-{1}'.format(
+            'text':
+            'Hey',
+            'comment_target':
+            '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
                 Article.objects.first().pk
             )
@@ -60,10 +61,11 @@ class CreateCommentsAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         content_type = ContentType.objects.get_for_model(Article)
         post_data = {
-            'text': 'Hey',
-            'comment_target': '{0}.{1}-{2}'.format(
-                content_type.app_label,
-                content_type.model,
+            'text':
+            'Hey',
+            'comment_target':
+            '{0}.{1}-{2}'.format(
+                content_type.app_label, content_type.model,
                 Article.objects.first().pk
             )
         }
@@ -78,10 +80,7 @@ class CreateCommentsAPITestCase(APITestCase):
 
     def test_with_empty_text_and_source(self):
         self.client.force_authenticate(user=self.with_permission)
-        post_data = {
-            'text': '',
-            'comment_target': ''
-        }
+        post_data = {'text': '', 'comment_target': ''}
         response = self.client.post(_get_list_url(), post_data)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -90,10 +89,11 @@ class CreateCommentsAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         content_type = ContentType.objects.get_for_model(Article)
         post_data = {
-            'text': 'Hey',
-            'comment_target': '{0}.{1}-{2}'.format(
-                content_type.app_label+'xyz',
-                content_type.model,
+            'text':
+            'Hey',
+            'comment_target':
+            '{0}.{1}-{2}'.format(
+                content_type.app_label + 'xyz', content_type.model,
                 Article.objects.first().pk
             )
         }
@@ -104,10 +104,12 @@ class CreateCommentsAPITestCase(APITestCase):
     def test_with_invalid_objectid(self):
         self.client.force_authenticate(user=self.with_permission)
         post_data = {
-            'text': 'Hey',
-            'comment_target': '{0}-{1}'.format(
+            'text':
+            'Hey',
+            'comment_target':
+            '{0}-{1}'.format(
                 ContentType.objects.get_for_model(Article).app_label,
-                Article.objects.last().pk+1000
+                Article.objects.last().pk + 1000
             ),
         }
         response = self.client.post(_get_list_url(), post_data)
@@ -118,51 +120,58 @@ class CreateCommentsAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         content_type = ContentType.objects.get_for_model(Article)
         comment_target = '{0}.{1}-{2}'.format(
-            content_type.app_label,
-            content_type.model,
+            content_type.app_label, content_type.model,
             Article.objects.last().pk
         )
 
-        response = self.client.post(_get_list_url(), {
-            'comment_target': comment_target,
-            'text': 'first comment'
-        })
+        response = self.client.post(
+            _get_list_url(), {
+                'comment_target': comment_target,
+                'text': 'first comment'
+            }
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pk = response.data['id']
 
-        response2 = self.client.post(_get_list_url(), {
-            'comment_target': comment_target,
-            'text': 'second comment',
-            'parent': pk
-        })
+        response2 = self.client.post(
+            _get_list_url(),
+            {
+                'comment_target': comment_target,
+                'text': 'second comment',
+                'parent': pk
+            }
+        )
         self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
 
     def test_with_invalid_parent(self):
         self.client.force_authenticate(user=self.with_permission)
         content_type = ContentType.objects.get_for_model(Article)
         comment_target = '{0}.{1}-{2}'.format(
-            content_type.app_label,
-            content_type.model,
+            content_type.app_label, content_type.model,
             Article.objects.last().pk
         )
         comment_target_2 = '{0}.{1}-{2}'.format(
-            content_type.app_label,
-            content_type.model,
+            content_type.app_label, content_type.model,
             Article.objects.first().pk
         )
 
-        response = self.client.post(_get_list_url(), {
-            'comment_target': comment_target,
-            'text': 'first comment'
-        })
+        response = self.client.post(
+            _get_list_url(), {
+                'comment_target': comment_target,
+                'text': 'first comment'
+            }
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pk = response.data['id']
 
-        response2 = self.client.post(_get_list_url(), {
-            'comment_target': comment_target_2,
-            'text': 'second comment',
-            'parent': pk
-        })
+        response2 = self.client.post(
+            _get_list_url(),
+            {
+                'comment_target': comment_target_2,
+                'text': 'second comment',
+                'parent': pk
+            }
+        )
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('parent', response2.data)
 
@@ -170,23 +179,26 @@ class CreateCommentsAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.with_permission)
         content_type = ContentType.objects.get_for_model(Article)
         comment_target = '{0}.{1}-{2}'.format(
-            content_type.app_label,
-            content_type.model,
+            content_type.app_label, content_type.model,
             Article.objects.last().pk
         )
 
-        response = self.client.post(_get_list_url(), {
-            'comment_target': comment_target,
-            'text': 'first comment'
-        })
+        response = self.client.post(
+            _get_list_url(), {
+                'comment_target': comment_target,
+                'text': 'first comment'
+            }
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         pk = response.data['id']
 
-        response2 = self.client.post(_get_list_url(), {
-            'comment_target': comment_target,
-            'text': 'second comment',
-            'parent': pk+1000
-        })
+        response2 = self.client.post(
+            _get_list_url(), {
+                'comment_target': comment_target,
+                'text': 'second comment',
+                'parent': pk + 1000
+            }
+        )
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('parent', response2.data)
 
@@ -201,32 +213,31 @@ class CreateCommentsAPITestCase(APITestCase):
             belong to. The user should then not be allowed to post a comment on this article
         """
 
-        article = Article(
-            text='hello world',
-            author=self.without_permission
-        )
+        article = Article(text='hello world', author=self.without_permission)
         article.save()
         article.can_view_groups.add(group)
 
         content_type = ContentType.objects.get_for_model(Article)
 
         comment_target = '{0}.{1}-{2}'.format(
-            content_type.app_label,
-            content_type.model,
-            article.id
+            content_type.app_label, content_type.model, article.id
         )
 
-        response = self.client.post(_get_list_url(), {
-            'comment_target': comment_target,
-            'text': 'first comment'
-        })
+        response = self.client.post(
+            _get_list_url(), {
+                'comment_target': comment_target,
+                'text': 'first comment'
+            }
+        )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class UpdateCommentsAPITestCase(APITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml',
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+        'test_articles.yaml',
     ]
 
     def setUp(self):
@@ -245,9 +256,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         self.without_permission = self.all_users.exclude(pk=self.with_permission.pk).first()
         self.test_comment = Comment.objects.first()
 
-    modified_comment = {
-        'text': 'whats up'
-    }
+    modified_comment = {'text': 'whats up'}
 
     def successful_update(self, updater, update_object):
         self.client.force_authenticate(user=updater)
@@ -269,8 +278,7 @@ class UpdateCommentsAPITestCase(APITestCase):
 
         content_type = ContentType.objects.get_for_model(Article)
         comment_target = '{0}.{1}-{2}'.format(
-            content_type.app_label,
-            content_type.model,
+            content_type.app_label, content_type.model,
             Article.objects.last().pk
         )
 
@@ -291,9 +299,7 @@ class UpdateCommentsAPITestCase(APITestCase):
 
 
 class DeleteUsersAPITestCase(APITestCase):
-    fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml'
-    ]
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
         self.test_comment = Comment.objects.create(

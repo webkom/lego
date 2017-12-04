@@ -15,6 +15,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='notificationsetting',
             name='notification_type',
-            field=models.CharField(choices=[('weekly_mail', 'weekly_mail'), ('event_bump', 'event_bump'), ('event_admin_registration', 'event_admin_registration'), ('event_payment_overdue', 'event_payment_overdue'), ('event_payment_overdue_creator', 'event_payment_overdue_creator'), ('meeting_invite', 'meeting_invite'), ('penalty_creation', 'penalty_creation'), ('restricted_mail_sent', 'restricted_mail_sent'), ('company_interest_created', 'company_interest_created'), ('comment', 'comment'), ('comment_reply', 'comment_reply'), ('announcement', 'announcement')], max_length=64),
+            field=models.CharField(
+                choices=[
+                    ('weekly_mail', 'weekly_mail'), ('event_bump', 'event_bump'),
+                    ('event_admin_registration', 'event_admin_registration'),
+                    ('event_payment_overdue', 'event_payment_overdue'),
+                    ('event_payment_overdue_creator',
+                     'event_payment_overdue_creator'), ('meeting_invite', 'meeting_invite'),
+                    ('penalty_creation',
+                     'penalty_creation'), ('restricted_mail_sent', 'restricted_mail_sent'),
+                    ('company_interest_created', 'company_interest_created'),
+                    ('comment', 'comment'), ('comment_reply',
+                                             'comment_reply'), ('announcement', 'announcement')
+                ], max_length=64
+            ),
         ),
     ]
