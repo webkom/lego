@@ -21,7 +21,9 @@ class Meeting(BasisModel):
     end_time = models.DateTimeField(blank=True, null=True)
 
     report = ContentField(blank=True, allow_images=True)
-    report_author = models.ForeignKey(User, blank=True, null=True, related_name='meetings_reports')
+    report_author = models.ForeignKey(
+        User, blank=True, null=True, related_name='meetings_reports', on_delete=models.SET_NULL
+    )
     _invited_users = models.ManyToManyField(
         User, through='MeetingInvitation', related_name='meeting_invitation',
         through_fields=('meeting', 'user')
@@ -78,8 +80,8 @@ class Meeting(BasisModel):
 
 class MeetingInvitation(BasisModel):
 
-    meeting = models.ForeignKey(Meeting, related_name='invitations')
-    user = models.ForeignKey(User, related_name='invitations')
+    meeting = models.ForeignKey(Meeting, related_name='invitations', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='invitations', on_delete=models.CASCADE)
     status = models.CharField(
         max_length=50, choices=constants.INVITATION_STATUS_TYPES, default=constants.NO_ANSWER
     )

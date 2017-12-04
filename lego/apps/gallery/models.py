@@ -23,7 +23,9 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     taken_at = models.DateField(null=True)
     photographers = models.ManyToManyField('users.User')
 
-    event = models.ForeignKey('events.Event', related_name='galleries', null=True)
+    event = models.ForeignKey(
+        'events.Event', related_name='galleries', null=True, on_delete=models.SET_NULL
+    )
 
 
 class GalleryPicture(models.Model):
@@ -31,7 +33,7 @@ class GalleryPicture(models.Model):
     Store the relation between the gallery and the file in remote storage.
     Inactive element are only visible for users with can_edit permissions.
     """
-    gallery = models.ForeignKey(Gallery, related_name='pictures')
+    gallery = models.ForeignKey(Gallery, related_name='pictures', on_delete=models.CASCADE)
     file = FileField(related_name='gallery_pictures')
     taggees = models.ManyToManyField('users.User', blank=True)
 

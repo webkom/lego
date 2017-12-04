@@ -28,8 +28,8 @@ from .validators import email_blacklist_validator, username_validator
 
 
 class MembershipHistory(models.Model):
-    user = models.ForeignKey('users.User')
-    abakus_group = models.ForeignKey('users.AbakusGroup')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey('users.AbakusGroup', on_delete=models.CASCADE)
     role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     start_date = models.DateField(null=True)
     end_date = models.DateField()
@@ -38,8 +38,8 @@ class MembershipHistory(models.Model):
 class Membership(BasisModel):
     objects = MembershipManager()
 
-    user = models.ForeignKey('users.User')
-    abakus_group = models.ForeignKey('users.AbakusGroup')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey('users.AbakusGroup', on_delete=models.CASCADE)
 
     role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True, db_index=True)
@@ -64,7 +64,9 @@ class Membership(BasisModel):
 class AbakusGroup(MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
-    parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
+    parent = TreeForeignKey(
+        'self', blank=True, null=True, related_name='children', on_delete=models.SET_NULL
+    )
     logo = FileField(related_name='group_pictures')
     type = models.CharField(
         max_length=10, choices=constants.GROUP_TYPES, default=constants.GROUP_OTHER
@@ -318,10 +320,12 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
 
 class Penalty(BasisModel):
 
-    user = models.ForeignKey(User, related_name='penalties')
+    user = models.ForeignKey(User, related_name='penalties', on_delete=models.CASCADE)
     reason = models.CharField(max_length=1000)
     weight = models.IntegerField(default=1)
-    source_event = models.ForeignKey('events.Event', related_name='penalties')
+    source_event = models.ForeignKey(
+        'events.Event', related_name='penalties', on_delete=models.CASCADE
+    )
 
     objects = UserPenaltyManager()
 

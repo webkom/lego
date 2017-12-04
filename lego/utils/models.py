@@ -56,11 +56,11 @@ class BasisModel(PersistentModel, TimeStampModel):
     """
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, default=None, editable=False,
-        related_name="%(class)s_created", db_index=True
+        related_name="%(class)s_created", db_index=True, on_delete=models.SET_NULL
     )
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, default=None, editable=False,
-        related_name="%(class)s_updated"
+        related_name="%(class)s_updated", on_delete=models.SET_NULL
     )
 
     objects = BasisModelManager()

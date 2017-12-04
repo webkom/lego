@@ -15,16 +15,16 @@ jwt_urlpatterns = [
 ]
 
 authorization_urlpatterns = [
-    url(r'^oauth2/', include('lego.apps.oauth.urls', namespace='oauth2_provider')),
-    url(r'', include(jwt_urlpatterns, namespace='jwt')),
+    url(r'^oauth2/', include('lego.apps.oauth.urls')),
+    url(r'', include(jwt_urlpatterns)),
     url(r'^login/', login, {'template_name': 'authorization/login.html'}, name='login'),
     url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
 ]
 
 urlpatterns = [
-    url(r'^api/', include('lego.api.urls', namespace='api')),
+    url(r'^api/', include('lego.api.urls')),
     url(r'^authorization/', include(authorization_urlpatterns)),
-    url(r'^', include(health_urlpatterns, namespace='health')),
+    url(r'^', include(health_urlpatterns)),
     url(
         r'^api-docs/',
         include_docs_urls(

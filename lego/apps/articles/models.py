@@ -8,7 +8,7 @@ from lego.utils.models import BasisModel
 
 class Article(Content, BasisModel, ObjectPermissionsModel):
 
-    author = models.ForeignKey('users.User')
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE)
     cover = FileField(related_name='article_covers')
 
     class Meta:
