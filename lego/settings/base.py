@@ -14,15 +14,15 @@ SHELL_PLUS = 'ipython'
 INSTALLED_APPS = [
     'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions',
     'django.contrib.messages', 'django.contrib.staticfiles', 'django_extensions', 'oauth2_provider',
-    'rest_framework', 'corsheaders', 'mptt', 'channels', 'django_thumbor', 'django_filters',
-    'push_notifications', 'lego.utils', 'lego.apps.users', 'lego.apps.permissions',
-    'lego.apps.articles', 'lego.apps.comments', 'lego.apps.contact', 'lego.apps.content',
-    'lego.apps.events', 'lego.apps.external_sync', 'lego.apps.companies', 'lego.apps.feed',
-    'lego.apps.files', 'lego.apps.flatpages', 'lego.apps.followers', 'lego.apps.frontpage',
-    'lego.apps.gallery', 'lego.apps.ical', 'lego.apps.stats', 'lego.apps.meetings',
-    'lego.apps.notifications', 'lego.apps.oauth', 'lego.apps.search', 'lego.apps.slack',
-    'lego.apps.tags', 'lego.apps.quotes', 'lego.apps.reactions', 'lego.apps.restricted',
-    'lego.apps.websockets', 'lego.apps.joblistings', 'lego.apps.email'
+    'rest_framework', 'corsheaders', 'mptt', 'channels', 'django_filters', 'push_notifications',
+    'lego.utils', 'lego.apps.users', 'lego.apps.permissions', 'lego.apps.articles',
+    'lego.apps.comments', 'lego.apps.contact', 'lego.apps.content', 'lego.apps.events',
+    'lego.apps.external_sync', 'lego.apps.companies', 'lego.apps.feed', 'lego.apps.files',
+    'lego.apps.flatpages', 'lego.apps.followers', 'lego.apps.frontpage', 'lego.apps.gallery',
+    'lego.apps.ical', 'lego.apps.stats', 'lego.apps.meetings', 'lego.apps.notifications',
+    'lego.apps.oauth', 'lego.apps.search', 'lego.apps.slack', 'lego.apps.tags', 'lego.apps.quotes',
+    'lego.apps.reactions', 'lego.apps.restricted', 'lego.apps.websockets', 'lego.apps.joblistings',
+    'lego.apps.email'
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'

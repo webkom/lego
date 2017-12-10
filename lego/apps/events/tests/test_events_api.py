@@ -3,7 +3,7 @@ from datetime import timedelta
 from unittest import mock, skipIf
 
 import stripe
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from djangorestframework_camel_case.render import camelize
 from rest_framework.test import APITestCase, APITransactionTestCase

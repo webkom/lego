@@ -5,7 +5,7 @@ class KeywordPermissions:
 
     @staticmethod
     def get_group_permissions(user):
-        if user.is_anonymous():
+        if user.is_anonymous:
             return set()
 
         perms = set()

@@ -2,7 +2,7 @@ from datetime import timedelta
 from unittest import mock
 
 from django.contrib.auth import authenticate
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 

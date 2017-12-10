@@ -1,10 +1,10 @@
 from urllib.parse import unquote
 
 from django.core.exceptions import ObjectDoesNotExist
-from django_thumbor import generate_url
 from rest_framework import serializers
 
 from lego.apps.files.constants import IMAGE
+from lego.apps.files.thumbor import generate_url
 
 from .models import File
 from .storage import storage

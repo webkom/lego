@@ -1,12 +1,12 @@
 from bs4 import BeautifulSoup
 from django.core.exceptions import ValidationError
 from django.db.models import TextField
-from django_thumbor import generate_url
 from rest_framework import serializers
 
 from lego.apps.content.utils import sanitize_html
 from lego.apps.files.constants import IMAGE, READY
 from lego.apps.files.models import File
+from lego.apps.files.thumbor import generate_url
 
 
 class ContentField(TextField):

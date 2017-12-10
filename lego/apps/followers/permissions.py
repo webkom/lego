@@ -10,14 +10,14 @@ class FollowersPermissionHandler(PermissionHandler):
     permission_map = {CREATE: []}
 
     def filter_queryset(self, user, queryset, **kwargs):
-        if user.is_authenticated():
+        if user.is_authenticated:
             return queryset.filter(follower=user)
         return queryset.none()
 
     def has_perm(
         self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
 
         has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)

@@ -43,7 +43,7 @@ class LoggingMiddleware(MiddlewareMixin):
         else:
             context['request_id'] = self.generate_request_id()
 
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             context['current_user'] = request.user.id
         else:
             context['current_user'] = None

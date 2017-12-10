@@ -257,7 +257,7 @@ class RegistrationTestCase(TestCase):
             name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
-        pool.permission_groups = permission_groups_two
+        pool.permission_groups.set(permission_groups_two)
 
         user = get_dummy_users(1)[0]
         permission_groups_one[0].add_user(user)
@@ -276,7 +276,7 @@ class RegistrationTestCase(TestCase):
             name='Webkom', capacity=2, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
-        pool.permission_groups = permission_groups
+        pool.permission_groups.set(permission_groups)
         event.merge_time = timezone.now() - timedelta(hours=12)
         users = get_dummy_users(pool.capacity + 1)
         expected_users_in_waiting_list = 1
@@ -387,7 +387,7 @@ class RegistrationTestCase(TestCase):
             name='Webkom', capacity=0, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
-        pool.permission_groups = permission_groups
+        pool.permission_groups.set(permission_groups)
         users = get_dummy_users(pool.capacity + 10)
 
         for user in users:
@@ -408,7 +408,7 @@ class RegistrationTestCase(TestCase):
             name='Webkom', capacity=0, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
-        pool.permission_groups = permission_groups
+        pool.permission_groups.set(permission_groups)
         users = get_dummy_users(pool.capacity + 10)
 
         for user in users:
@@ -775,7 +775,7 @@ class RegistrationTestCase(TestCase):
             name='test', capacity=3, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
-        new_pool.permission_groups = [AbakusGroup.objects.get(name='Abakus')]
+        new_pool.permission_groups.set([AbakusGroup.objects.get(name='Abakus')])
         event.bump_on_pool_creation_or_expansion()
 
         no_of_waiting_registrations_after = event.waiting_registrations.count()

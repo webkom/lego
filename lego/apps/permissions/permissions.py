@@ -144,7 +144,7 @@ class PermissionHandler:
         """
         if issubclass(queryset.model, ObjectPermissionsModel):
             # Unauthenticated users can only see objects with no auth required.
-            if not user.is_authenticated():
+            if not user.is_authenticated:
                 return queryset.filter(require_auth=False)
 
             # User is authenticated, display objects created by user or object with group rights.
@@ -172,7 +172,7 @@ class PermissionHandler:
         return True
 
     def is_authenticated(self, user):
-        return user and user.is_authenticated()
+        return user and user.is_authenticated
 
     def keyword_permission(self, model, perm):
         """

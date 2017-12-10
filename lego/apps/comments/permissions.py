@@ -9,7 +9,7 @@ class CommentPermissionHandler(PermissionHandler):
     ):
 
         can_access_target = False
-        if user.is_authenticated() and perm == CREATE:
+        if user.is_authenticated and perm == CREATE:
             """
             We need to validate the data tries to create. We have to do this manually because
             this happens before rest_framework parses the request.

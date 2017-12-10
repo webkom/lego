@@ -40,7 +40,7 @@ class TagSerializerMixin(serializers.Serializer):
             for tag in tags:
                 Tag.objects.get_or_create(pk=tag)
             if tags:
-                instance.tags = tags
+                instance.tags.set(tags)
                 instance.save()
 
         return instance
@@ -56,7 +56,7 @@ class TagSerializerMixin(serializers.Serializer):
                 for tag in tags:
                     Tag.objects.get_or_create(pk=tag)
 
-                instance.tags = tags
+                instance.tags.set(tags)
                 instance.save()
 
         return instance

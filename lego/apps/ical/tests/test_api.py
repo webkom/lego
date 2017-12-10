@@ -1,7 +1,7 @@
 import re
 from unittest import mock
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from icalendar import Calendar
 from rest_framework.test import APITestCase
