@@ -6,7 +6,7 @@ import stripe
 from cassandra import ConsistencyLevel
 
 from lego.settings import (
-    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE_CLASSES,
+    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE,
     PUSH_NOTIFICATIONS_SETTINGS
 )
 
@@ -51,9 +51,9 @@ RAVEN_CONFIG = {'dsn': SENTRY_DSN, 'release': env('RELEASE', default='latest')}
 INSTALLED_APPS += [
     'raven.contrib.django.raven_compat',
 ]
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
-] + MIDDLEWARE_CLASSES
+] + MIDDLEWARE
 
 # Celery
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
