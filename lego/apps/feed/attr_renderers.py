@@ -1,4 +1,4 @@
-from django_thumbor import generate_url
+from lego.apps.files.thumbor import generate_url
 
 
 def render_user(user):

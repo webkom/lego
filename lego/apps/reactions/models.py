@@ -18,9 +18,9 @@ class ReactionType(BasisModel):
 
 
 class Reaction(BasisModel):
-    type = models.ForeignKey(ReactionType)
+    type = models.ForeignKey(ReactionType, on_delete=models.CASCADE)
 
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
 

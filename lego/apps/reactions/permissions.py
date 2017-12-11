@@ -19,7 +19,7 @@ class ReactionPermissionHandler(PermissionHandler):
     force_object_permission_check = True
 
     def filter_queryset(self, user, queryset, **kwargs):
-        if user.is_authenticated():
+        if user.is_authenticated:
             return queryset.filter(created_by=user)
         return queryset
 
@@ -32,7 +32,7 @@ class ReactionPermissionHandler(PermissionHandler):
         if has_perm:
             return True
 
-        if user.is_authenticated():
+        if user.is_authenticated:
 
             if perm == LIST:
                 # The filter removes unwanted objects.

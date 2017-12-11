@@ -25,8 +25,10 @@ class Joblisting(Content, BasisModel):
         (OTHER, OTHER),
     )
 
-    company = models.ForeignKey(Company, related_name='joblistings')
-    responsible = models.ForeignKey(CompanyContact, related_name='joblistings', null=True)
+    company = models.ForeignKey(Company, related_name='joblistings', on_delete=models.CASCADE)
+    responsible = models.ForeignKey(
+        CompanyContact, related_name='joblistings', null=True, on_delete=models.SET_NULL
+    )
     deadline = models.DateTimeField(null=True)
     visible_from = models.DateTimeField(auto_now_add=True)
     visible_to = models.DateTimeField()

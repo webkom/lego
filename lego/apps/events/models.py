@@ -44,7 +44,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
     heed_penalties = models.BooleanField(default=True)
-    company = models.ForeignKey(Company, related_name='events', null=True)
+    company = models.ForeignKey(
+        Company, related_name='events', null=True, on_delete=models.SET_NULL
+    )
 
     use_captcha = models.BooleanField(default=True)
     feedback_description = models.CharField(max_length=255, blank=True)
@@ -603,7 +605,7 @@ class Pool(BasisModel):
 
     name = models.CharField(max_length=100)
     capacity = models.PositiveSmallIntegerField(default=0)
-    event = models.ForeignKey(Event, related_name='pools')
+    event = models.ForeignKey(Event, related_name='pools', on_delete=models.CASCADE)
     activation_date = models.DateTimeField()
     permission_groups = models.ManyToManyField(AbakusGroup)
 
@@ -646,9 +648,11 @@ class Registration(BasisModel):
     """
     A registration for an event. Can be connected to either a pool or a waiting list.
     """
-    user = models.ForeignKey(User, related_name='registrations')
-    event = models.ForeignKey(Event, related_name='registrations')
-    pool = models.ForeignKey(Pool, null=True, related_name='registrations')
+    user = models.ForeignKey(User, related_name='registrations', on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, related_name='registrations', on_delete=models.CASCADE)
+    pool = models.ForeignKey(
+        Pool, null=True, related_name='registrations', on_delete=models.CASCADE
+    )
     registration_date = models.DateTimeField(db_index=True, null=True)
     unregistration_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=255, blank=True)

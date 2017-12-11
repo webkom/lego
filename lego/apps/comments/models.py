@@ -17,10 +17,10 @@ class CommentManager(BasisModelManager):
 class Comment(BasisModel, ObjectPermissionsModel):
 
     text = ContentField(allow_images=False)
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
-    parent = models.ForeignKey('self', null=True, blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
 
     objects = CommentManager()
 

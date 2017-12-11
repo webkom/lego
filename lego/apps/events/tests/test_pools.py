@@ -42,7 +42,7 @@ class PoolCapacityTestCase(TestCase):
                 name='Abakus', capacity=capacity, event=event,
                 activation_date=(timezone.now() - timedelta(hours=24))
             )
-            pool.permission_groups = permission_groups
+            pool.permission_groups.set(permission_groups)
 
     def test_capacity_with_single_pool(self):
         event = Event.objects.get(title='NO_POOLS_ABAKUS')

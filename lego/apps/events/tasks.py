@@ -206,7 +206,7 @@ def check_events_for_registrations_with_expired_penalties(self, logger_context=N
     self.setup_logger(logger_context)
 
     events_ids = Event.objects.filter(start_time__gte=timezone.now()
-                                      ).exclude(registrations=None).values_list(flat=True)
+                                      ).exclude(registrations=None).values_list('id', flat=True)
     for event_id in events_ids:
         with transaction.atomic():
             locked_event = Event.objects.select_for_update().get(pk=event_id)
@@ -224,7 +224,7 @@ def bump_waiting_users_to_new_pool(self, logger_context=None):
     self.setup_logger(logger_context)
 
     events_ids = Event.objects.filter(start_time__gte=timezone.now()
-                                      ).exclude(registrations=None).values_list(flat=True)
+                                      ).exclude(registrations=None).values_list('id', flat=True)
     for event_id in events_ids:
         with transaction.atomic():
             locked_event = Event.objects.select_for_update().get(pk=event_id)
@@ -300,7 +300,7 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
 
     events_ids = Event.objects.filter(
         start_time__gte=timezone.now(), merge_time__gte=timezone.now()
-    ).values_list(flat=True)
+    ).values_list('id', flat=True)
 
     for event_id in events_ids:
         with transaction.atomic():

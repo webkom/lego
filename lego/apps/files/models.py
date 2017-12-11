@@ -22,7 +22,9 @@ class File(TimeStampModel):
     state = models.CharField(max_length=24, choices=FILE_STATES, default=PENDING_UPLOAD)
     file_type = models.CharField(max_length=24, choices=FILE_TYPES)
     token = models.CharField(max_length=32)
-    user = models.ForeignKey('users.User', related_name='uploaded_files', null=True)
+    user = models.ForeignKey(
+        'users.User', related_name='uploaded_files', null=True, on_delete=models.SET_NULL
+    )
     bucket = getattr(settings, 'AWS_S3_BUCKET', None)
     public = models.BooleanField(default=False, null=False)
 

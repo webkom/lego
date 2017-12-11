@@ -13,7 +13,7 @@ class UserPermissionHandler(PermissionHandler):
     force_object_permission_check = True
 
     def is_self(self, perm, user, obj):
-        if user.is_authenticated() and obj is not None:
+        if user.is_authenticated and obj is not None:
             return perm in self.allowed_individual and obj == user
         return False
 
@@ -45,7 +45,7 @@ class AbakusGroupPermissionHandler(PermissionHandler):
         if has_perm:
             return True
 
-        if user.is_authenticated() and obj is not None:
+        if user.is_authenticated and obj is not None:
             return obj.memberships.filter(user=user, role__in=EDIT_ROLES).exists()
 
         return False
@@ -64,7 +64,7 @@ class MembershipPermissionHandler(PermissionHandler):
         if has_perm:
             return True
 
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             # Don't allow any unauthorized users see memberships
             return False
 

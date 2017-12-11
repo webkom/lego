@@ -54,7 +54,7 @@ def add_meeting_to_ical_feed(feed, meeting):
 
 def generate_ical_feed(request, calendar_type):
     return feedgenerator.ICal20Feed(
-        title=get_calendar_name(calendar_type), link=request.get_full_path,
+        title=get_calendar_name(calendar_type), link=request.get_full_path(),
         description=get_calendar_description(calendar_type), language='nb', method='PUBLISH',
         product_id='-//Abakus//Abakus.no//EN'
     )

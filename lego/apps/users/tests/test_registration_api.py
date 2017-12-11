@@ -1,6 +1,6 @@
 from unittest import mock
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.users.registrations import Registrations

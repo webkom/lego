@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
-from django.core.urlresolvers import resolve
 from django.http import Http404, HttpResponseRedirect
+from django.urls import resolve
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 
@@ -20,8 +20,9 @@ def version_redirect(request, path):
     return HttpResponseRedirect(new_path)
 
 
+app_name = 'api'
 urlpatterns = [
-    url(r'^v1/', include(v1.urls, namespace='v1')),
+    url(r'^v1/', include((v1.urls, 'v1'), namespace='v1')),
     url(r'^$', RedirectView.as_view(url=f'/api/{settings.API_VERSION}/'), name='default'),
     url(r'^(.*)/$', version_redirect),
 ]

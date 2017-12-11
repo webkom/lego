@@ -3,7 +3,7 @@ import os
 import stripe
 from cassandra import ConsistencyLevel
 
-from .base import INSTALLED_APPS, MIDDLEWARE_CLASSES
+from .base import INSTALLED_APPS, MIDDLEWARE
 from .rest_framework import REST_FRAMEWORK
 
 DEBUG = True
@@ -45,9 +45,9 @@ INTERNAL_IPS = ['127.0.0.1']
 INSTALLED_APPS += [
     'debug_toolbar',
 ]
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-] + MIDDLEWARE_CLASSES
+] + MIDDLEWARE
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',

@@ -29,7 +29,9 @@ class Semester(BasisModel):
 
 class Company(BasisModel):
     name = models.CharField(max_length=100)
-    student_contact = models.ForeignKey(User, related_name='companies', null=True)
+    student_contact = models.ForeignKey(
+        User, related_name='companies', null=True, on_delete=models.SET_NULL
+    )
     previous_contacts = models.ManyToManyField(User)
 
     description = models.TextField(blank=True)
@@ -56,13 +58,13 @@ class Company(BasisModel):
 
 
 class CompanyFile(models.Model):
-    company = models.ForeignKey(Company, related_name='files')
+    company = models.ForeignKey(Company, related_name='files', on_delete=models.CASCADE)
     file = FileField()
 
 
 class SemesterStatus(TimeStampModel):
-    company = models.ForeignKey(Company, related_name='semester_statuses')
-    semester = models.ForeignKey(Semester)
+    company = models.ForeignKey(Company, related_name='semester_statuses', on_delete=models.CASCADE)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
     contacted_status = ArrayField(models.CharField(choices=SEMESTER_STATUSES, max_length=64))
     contract = FileField(related_name='semester_status_contracts')
     statistics = FileField(related_name='semester_status_statistics')
@@ -74,7 +76,7 @@ class SemesterStatus(TimeStampModel):
 
 
 class CompanyContact(BasisModel):
-    company = models.ForeignKey(Company, related_name='company_contacts')
+    company = models.ForeignKey(Company, related_name='company_contacts', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100, blank=True)
     mail = models.EmailField(blank=True)

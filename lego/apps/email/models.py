@@ -45,7 +45,9 @@ class EmailAddress(models.Model):
 class EmailList(models.Model):
 
     name = models.CharField(max_length=64)
-    email = models.OneToOneField(EmailAddress, related_name='email_list', editable=False)
+    email = models.OneToOneField(
+        EmailAddress, related_name='email_list', editable=False, on_delete=models.CASCADE
+    )
 
     users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
 
