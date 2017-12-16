@@ -4,8 +4,10 @@
 
 Hei, {{ name }}!
 
-{{ author_name }} har kommentert på {{ target }}
+{{ author_name }} har kommentert på {{ target }}:
 
-Les mer på {{ frontend_url }}/
+{{ text }}
+
+Les mer på {{ url }}.
 
 {% endblock %}

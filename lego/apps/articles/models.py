@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from lego.apps.content.models import Content
@@ -13,3 +14,6 @@ class Article(Content, BasisModel, ObjectPermissionsModel):
 
     class Meta:
         abstract = False
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/articles/{self.id}/'
