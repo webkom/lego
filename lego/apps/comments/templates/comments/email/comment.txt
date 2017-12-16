@@ -8,6 +8,6 @@ Hei, {{ name }}!
 
 {{ text }}
 
-Les mer på {{ url }}/
+Les mer på {{ url }}.
 
 {% endblock %}

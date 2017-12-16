@@ -54,4 +54,4 @@ class GalleryPicture(models.Model):
         return f'{self.gallery.title}-#{self.pk}'
 
     def get_absolute_url(self):
-        return f'{settings.FRONTEND_URL}/photos/{self.gallery.id}/picture/{self.id}'
+        return f'{settings.FRONTEND_URL}/photos/{self.gallery.id}/picture/{self.id}/'

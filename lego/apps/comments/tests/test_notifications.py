@@ -10,8 +10,10 @@ from lego.apps.users.models import User
 
 @patch('lego.utils.email.django_send_mail')
 class CommentNotificationTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_comments.yaml',
-                'test_users.yaml', 'test_articles.yaml', 'initial_files.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_comments.yaml', 'test_users.yaml', 'test_articles.yaml',
+        'initial_files.yaml'
+    ]
 
     def setUp(self):
         self.author = User.objects.all().first()
@@ -22,10 +24,7 @@ class CommentNotificationTestCase(TestCase):
         self.comment.object_id = self.article.pk
         self.comment.save()
         self.notifier = CommentNotification(
-            user=self.recipient,
-            author=self.author,
-            text=self.comment.text,
-            target=self.article
+            user=self.recipient, author=self.author, text=self.comment.text, target=self.article
         )
 
     def assertEmailContains(self, send_mail_mock, content):
@@ -54,8 +53,10 @@ class CommentNotificationTestCase(TestCase):
 
 @patch('lego.utils.email.django_send_mail')
 class CommentReplyNotificationTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_comments.yaml',
-                'test_users.yaml', 'test_articles.yaml', 'initial_files.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_comments.yaml', 'test_users.yaml', 'test_articles.yaml',
+        'initial_files.yaml'
+    ]
 
     def setUp(self):
         self.author = User.objects.all().first()
@@ -66,10 +67,7 @@ class CommentReplyNotificationTestCase(TestCase):
         self.comment.object_id = self.article.pk
         self.comment.save()
         self.notifier = CommentReplyNotification(
-            user=self.recipient,
-            author=self.author,
-            text=self.comment.text,
-            target=self.article
+            user=self.recipient, author=self.author, text=self.comment.text, target=self.article
         )
 
     def assertEmailContains(self, send_mail_mock, content):
