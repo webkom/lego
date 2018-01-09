@@ -1,8 +1,8 @@
 from django.db.utils import IntegrityError
 from rest_framework import status
-from rest_framework.compat import set_rollback
 from rest_framework.response import Response
 from rest_framework.views import exception_handler as drf_exception_handler
+from rest_framework.views import set_rollback
 from structlog import get_logger
 
 log = get_logger()
