@@ -5,4 +5,4 @@ django-debug-toolbar==1.9
 tox==2.9.1
 flake8==3.5.0
 isort==4.2.15
-yapf==0.20.0
+yapf==0.20.1
