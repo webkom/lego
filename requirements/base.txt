@@ -21,7 +21,7 @@ bleach==2.1.2
 slackclient==1.1.0
 requests==2.18.4
 ldap3==2.4
-google-api-python-client==1.6.4
+google-api-python-client==1.6.5
 oauth2client
 premailer==3.1.1
 analytics-python==1.2.9
