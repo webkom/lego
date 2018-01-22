@@ -12,7 +12,7 @@ class Survey(BasisModel):
     title = models.CharField(max_length=100)
     active_from = models.DateTimeField(default=timezone.now)
     template_type = models.CharField(max_length=30, choices=EVENT_TYPES, null=True, blank=True)
-    event = models.OneToOneField('events.Event')
+    event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
 
     @property
     def is_template(self):
@@ -28,7 +28,7 @@ class Question(BasisModel):
         ordering = ['relative_index']
         unique_together = ('survey', 'relative_index')
 
-    survey = models.ForeignKey(Survey, related_name='questions')
+    survey = models.ForeignKey(Survey, related_name='questions', on_delete=models.CASCADE)
     question_type = models.PositiveSmallIntegerField(choices=QUESTION_TYPES)
     question_text = models.TextField(max_length=255)
     mandatory = models.BooleanField(default=False)
@@ -36,21 +36,21 @@ class Question(BasisModel):
 
 
 class Option(BasisModel):
-    question = models.ForeignKey(Question, related_name='options')
+    question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
     option_text = models.TextField(max_length=255)
 
 
 class Submission(BasisModel):
-    user = models.ForeignKey(User, related_name='surveys')
-    survey = models.ForeignKey(Survey, related_name='submissions')
+    user = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
+    survey = models.ForeignKey(Survey, related_name='submissions', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('survey', 'user')
 
 
 class Answer(BasisModel):
-    submission = models.ForeignKey(Submission, related_name='answers')
-    question = models.ForeignKey(Question, related_name='answers')
+    submission = models.ForeignKey(Submission, related_name='answers', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
     selected_options = models.ManyToManyField(Option, related_name='selected_in_answers',
                                               blank=True)
     answer_text = models.TextField(max_length=255, blank=True, null=True)

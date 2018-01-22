@@ -13,9 +13,27 @@ class OptionSerializer(BasisModelSerializer):
         fields = ('id', 'option_text')
 
 
+class OptionUpdateSerializer(BasisModelSerializer):
+    id = serializers.IntegerField(read_only=False)
+
+    class Meta:
+        model = Option
+        fields = ('id', 'option_text')
+
+
 class QuestionSerializer(BasisModelSerializer):
     question_type = serializers.ChoiceField(choices=QUESTION_TYPES)
     options = OptionSerializer(many=True, required=False, allow_null=True)
+
+    class Meta:
+        model = Question
+        fields = ('id', 'question_type', 'question_text', 'mandatory', 'options', 'relative_index')
+
+
+class QuestionUpdateSerializer(BasisModelSerializer):
+    question_type = serializers.ChoiceField(choices=QUESTION_TYPES)
+    options = OptionUpdateSerializer(many=True, required=False, allow_null=True)
+    id = serializers.IntegerField(read_only=False)
 
     class Meta:
         model = Question
@@ -95,7 +113,7 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
         fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type')
 
 
-class SurveyCreateAndUpdateSerializer(BasisModelSerializer):
+class SurveyCreateSerializer(BasisModelSerializer):
     questions = QuestionSerializer(many=True, required=False, allow_null=True)
 
     class Meta:
@@ -105,18 +123,37 @@ class SurveyCreateAndUpdateSerializer(BasisModelSerializer):
     def create(self, validated_data):
         questions = validated_data.pop('questions')
         survey = Survey.objects.create(**validated_data)
-        survey.save()
 
         for question in questions:
-            options = None
-            if 'options' in question:
-                options = question.pop('options')
+            options = question.pop('options') if 'options' in question else None
             new_question = Question.objects.create(survey=survey, **question)
-            new_question.save()
 
             if options is not None:
                 for option in options:
-                    new_option = Option.objects.create(question=new_question, **option)
-                    new_option.save()
+                    Option.objects.create(question=new_question, **option)
 
         return survey
+
+
+class SurveyUpdateSerializer(BasisModelSerializer):
+    questions = QuestionUpdateSerializer(many=True, required=False, allow_null=True)
+
+    class Meta:
+        model = Survey
+        fields = ('id', 'title', 'active_from', 'template_type', 'event', 'questions')
+
+    def update(self, instance, validated_data):
+        questions = validated_data.pop('questions')
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+
+        for question in questions:
+            options = question.pop('options') if 'options' in question else None
+            Question.objects.filter(id=question['id']).update(**question)
+
+            if options is not None:
+                for option in options:
+                    Option.objects.filter(id=option['id']).update(**option)
+
+        return instance
