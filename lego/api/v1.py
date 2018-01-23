@@ -13,8 +13,7 @@ from lego.apps.events.views import (
 )
 from lego.apps.events.webhooks import StripeWebhook
 from lego.apps.feed.views import (
-    CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet, PersonalFeedViewSet,
-    UserFeedViewSet
+    CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet, PersonalFeedViewSet
 )
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
@@ -124,7 +123,8 @@ router.register(r'files', FileViewSet)
 router.register(r'followers-user', FollowUserViewSet)
 router.register(r'followers-event', FollowEventViewSet)
 router.register(r'followers-company', FollowCompanyViewSet)
-router.register(r'feed-user', UserFeedViewSet, base_name='feed-user')
+# TODO: Disabled until comments have been fixed:
+# router.register(r'feed-user', UserFeedViewSet, base_name='feed-user')
 router.register(r'feed-personal', PersonalFeedViewSet, base_name='feed-personal')
 router.register(r'feed-notifications', NotificationFeedViewSet, base_name='feed-notifications')
 router.register(r'feed-group', GroupFeedViewSet, base_name='feed-group')
