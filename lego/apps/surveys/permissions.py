@@ -7,7 +7,7 @@ from lego.apps.permissions.permissions import PermissionHandler
 
 
 class SurveyPermissionHandler(PermissionHandler):
-    pass
+    default_keyword_permission = '/sudo/admin/surveys/{perm}/'
 
 
 class SubmissionPermissions(permissions.BasePermission):

@@ -37,7 +37,7 @@ class Question(BasisModel):
 
 class Option(BasisModel):
     question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
-    option_text = models.TextField(max_length=255)
+    option_text = models.TextField(max_length=255, default='')
 
 
 class Submission(BasisModel):
@@ -53,7 +53,7 @@ class Answer(BasisModel):
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
     selected_options = models.ManyToManyField(Option, related_name='selected_in_answers',
                                               blank=True)
-    answer_text = models.TextField(max_length=255, blank=True, null=True)
+    answer_text = models.TextField(max_length=255, blank=True, default="")
 
     def create(submission, question, **kwargs):
         selected_options = kwargs.pop('selected_options')

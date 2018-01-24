@@ -3,6 +3,7 @@ from rest_framework import exceptions, serializers
 from lego.apps.events.serializers.events import EventReadSerializer
 from lego.apps.surveys.constants import QUESTION_TYPES
 from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -42,7 +43,6 @@ class QuestionUpdateSerializer(BasisModelSerializer):
 
 class AnswerSerializer(BasisModelSerializer):
     question = QuestionSerializer()
-    selected_options = OptionSerializer(many=True, required=False)
 
     class Meta:
         model = Answer
@@ -66,6 +66,7 @@ class SurveyReadSerializer(BasisModelSerializer):
 
 class SubmissionReadSerializer(BasisModelSerializer):
     answers = AnswerSerializer(many=True)
+    user = PublicUserSerializer()
 
     class Meta:
         model = Submission

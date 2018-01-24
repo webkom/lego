@@ -1,5 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.surveys.permissions import SubmissionPermissions
 from lego.apps.surveys.serializers import (
@@ -8,7 +9,7 @@ from lego.apps.surveys.serializers import (
 )
 
 
-class SurveyViewSet(viewsets.ModelViewSet):
+class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Survey.objects.all().prefetch_related('questions', 'submissions')
 
     def get_serializer_class(self):
@@ -21,7 +22,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
         return SurveyReadSerializer
 
 
-class SubmissionViewSet(viewsets.ModelViewSet):
+class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     permission_classes = [SubmissionPermissions]
 
