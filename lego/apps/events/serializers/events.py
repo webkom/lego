@@ -16,6 +16,7 @@ from lego.apps.events.serializers.registrations import (
 )
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -64,6 +65,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     active_capacity = serializers.ReadOnlyField()
     waiting_registrations = RegistrationReadSerializer(many=True)
     text = ContentSerializerField()
+    created_by = PublicUserSerializer()
 
     class Meta:
         model = Event
@@ -73,7 +75,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             'unregistration_deadline', 'company', 'active_capacity', 'feedback_description',
             'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
             'payment_due_date', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged',
-            'heed_penalties'
+            'heed_penalties', 'created_by'
         )
         read_only = True
 
