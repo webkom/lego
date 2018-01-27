@@ -13,7 +13,7 @@ elasticsearch==5.4.0
 celery==4.1.0
 stripe==1.77.1
 statsd==3.2.2
-structlog==17.2.0
+structlog==18.1.0
 boto3==1.5.19
 cassandra-driver==3.12
 bs4==0.0.1
