@@ -441,9 +441,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     if penalties < 3 and earliest_reg < timezone.now():
                         if self.can_register(registration.user, to_pool):
                             return registration
-                else:
-                    if self.can_register(registration.user, to_pool):
-                        return registration
+                elif self.can_register(registration.user, to_pool):
+                    return registration
             return None
 
         if self.heed_penalties:
