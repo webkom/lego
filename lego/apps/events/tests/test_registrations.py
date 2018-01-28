@@ -384,7 +384,7 @@ class RegistrationTestCase(TestCase):
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
-            name='Webkom', capacity=0, event=event,
+            name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
         pool.permission_groups.set(permission_groups)
@@ -395,6 +395,7 @@ class RegistrationTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
+        self.assertNotEqual(event.waiting_registrations.count(), 0)
         prev = event.pop_from_waiting_list()
         for top in event.waiting_registrations:
             self.assertLessEqual(prev.registration_date, top.registration_date)
@@ -403,9 +404,11 @@ class RegistrationTestCase(TestCase):
     def test_popping_from_waiting_list_post_merge(self):
         """Test popping of first user in waiting list after merge"""
         event = Event.objects.get(title='NO_POOLS_WEBKOM')
+        event.merge_time = timezone.now() - timedelta(hours=12)
+        event.save()
         permission_groups = [AbakusGroup.objects.get(name='Webkom')]
         pool = Pool.objects.create(
-            name='Webkom', capacity=0, event=event,
+            name='Webkom', capacity=1, event=event,
             activation_date=(timezone.now() - timedelta(hours=24))
         )
         pool.permission_groups.set(permission_groups)
@@ -416,10 +419,51 @@ class RegistrationTestCase(TestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
+        self.assertNotEqual(event.waiting_registrations.count(), 0)
         prev = event.pop_from_waiting_list()
         for registration in event.waiting_registrations:
             self.assertLessEqual(prev.registration_date, registration.registration_date)
             prev = registration
+
+    def test_popping_from_waiting_list_with_to_pool(self):
+        """Test popping of first user in waiting list after merge"""
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
+        permission_groups = [AbakusGroup.objects.get(name='Webkom')]
+        pool = Pool.objects.create(
+            name='Webkom', capacity=1, event=event,
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
+        pool.permission_groups.set(permission_groups)
+        users = get_dummy_users(2)
+
+        for user in users:
+            permission_groups[0].add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        top = event.pop_from_waiting_list(pool)
+        self.assertIsNotNone(top)
+
+    def test_popping_from_waiting_list_with_to_pool_without_heed_penalties(self):
+        """Test popping of first user in waiting list after merge"""
+        event = Event.objects.get(title='NO_POOLS_WEBKOM')
+        event.heed_penalties = False
+        event.save()
+        permission_groups = [AbakusGroup.objects.get(name='Webkom')]
+        pool = Pool.objects.create(
+            name='Webkom', capacity=1, event=event,
+            activation_date=(timezone.now() - timedelta(hours=24))
+        )
+        pool.permission_groups.set(permission_groups)
+        users = get_dummy_users(2)
+
+        for user in users:
+            permission_groups[0].add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        top = event.pop_from_waiting_list(pool)
+        self.assertIsNotNone(top)
 
     def test_unregistering_from_waiting_list(self):
         """Test that user can unregister from waiting list"""
