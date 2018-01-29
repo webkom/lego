@@ -31,8 +31,9 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Joblisting
         fields = (
-            'id', 'title', 'text', 'company', 'responsible', 'description', 'deadline', 'job_type',
-            'workplaces', 'visible_from', 'visible_to', 'from_year', 'to_year', 'application_url'
+            'id', 'title', 'text', 'company', 'responsible', 'contact_mail', 'description',
+            'deadline', 'job_type', 'workplaces', 'visible_from', 'visible_to', 'from_year',
+            'to_year', 'application_url'
         )
 
 
@@ -43,9 +44,9 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Joblisting
         fields = (
-            'id', 'title', 'text', 'company', 'responsible', 'description', 'deadline',
-            'visible_from', 'visible_to', 'job_type', 'workplaces', 'from_year', 'to_year',
-            'application_url'
+            'id', 'title', 'text', 'company', 'responsible', 'contact_mail', 'description',
+            'deadline', 'visible_from', 'visible_to', 'job_type', 'workplaces', 'from_year',
+            'to_year', 'application_url'
         )
 
     def create(self, validated_data):
