@@ -3,7 +3,6 @@ from django.utils import timezone
 
 from lego.apps.events.constants import EVENT_TYPES
 from lego.apps.surveys.constants import QUESTION_TYPES
-from lego.apps.surveys.permissions import SurveyPermissionHandler
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -17,9 +16,6 @@ class Survey(BasisModel):
     @property
     def is_template(self):
         return self.template_type is not None
-
-    class Meta:
-        permission_handler = SurveyPermissionHandler()
 
 
 class Question(BasisModel):

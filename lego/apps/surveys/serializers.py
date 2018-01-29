@@ -84,23 +84,16 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
         survey = Survey.objects.get(pk=self.context['view'].kwargs['survey_pk'])
         answers = None if 'answers' not in validated_data else validated_data.pop('answers')
         submission = Submission.objects.create(survey=survey, **validated_data)
-        submission.save()
 
         if answers is not None:
             for answer in answers:
                 question = answer.pop('question')
 
-                if getattr(question, 'question_type') in [1, 2]:
-                    if getattr(question, 'question_type') is 1 and \
-                                    len(answer['selected_options']) > 1:
-                        raise exceptions.ValidationError('You cannot select multiple options for '
-                                                         'this type of question.')
+                if getattr(question, 'question_type') is 1 and len(answer['selected_options']) > 1:
+                    raise exceptions.ValidationError('You cannot select multiple options for '
+                                                     'this type of question.')
 
-                    Answer.create(submission, question, **answer)
-                else:
-                    new_answer = Answer.objects.create(submission=submission, question=question,
-                                                       **answer)
-                    new_answer.save()
+                Answer.objects.create(submission=submission, question=question, **answer)
 
         return submission
 
@@ -151,10 +144,16 @@ class SurveyUpdateSerializer(BasisModelSerializer):
 
         for question in questions:
             options = question.pop('options') if 'options' in question else None
-            Question.objects.filter(id=question['id']).update(**question)
+            if 'id' in question:
+                Question.objects.filter(id=question['id']).update(**question)
+            else:
+                new_question = Question.objects.create(survey=instance, **question)
 
             if options is not None:
                 for option in options:
-                    Option.objects.filter(id=option['id']).update(**option)
+                    if 'id' in option:
+                        Option.objects.filter(id=option['id']).update(**option)
+                    else:
+                        Option.objects.create(question=new_question, **option)
 
         return instance
