@@ -19,13 +19,12 @@ class Survey(BasisModel):
 
 
 class Question(BasisModel):
-
     class Meta:
         ordering = ['relative_index']
         unique_together = ('survey', 'relative_index')
 
     survey = models.ForeignKey(Survey, related_name='questions', on_delete=models.CASCADE)
-    question_type = models.PositiveSmallIntegerField(choices=QUESTION_TYPES)
+    question_type = models.CharField(max_length=64, choices=QUESTION_TYPES)
     question_text = models.TextField(max_length=255)
     mandatory = models.BooleanField(default=False)
     relative_index = models.IntegerField(default=1)
@@ -47,14 +46,14 @@ class Submission(BasisModel):
 class Answer(BasisModel):
     submission = models.ForeignKey(Submission, related_name='answers', on_delete=models.CASCADE)
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-    selected_options = models.ManyToManyField(Option, related_name='selected_in_answers',
-                                              blank=True)
+    selected_options = models.ManyToManyField(
+        Option, related_name='selected_in_answers', blank=True
+    )
     answer_text = models.TextField(max_length=255, blank=True, default="")
 
     def create(submission, question, **kwargs):
         selected_options = kwargs.pop('selected_options')
         answer = Answer.objects.create(submission=submission, question=question, **kwargs)
-        answer.save()
         for selected_option in selected_options:
             answer.selected_options.add(selected_option)
         answer.save()

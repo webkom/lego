@@ -14,8 +14,10 @@ def _get_detail_url(pk):
 
 
 class SurveyViewSetTestCase(APITestCase):
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_surveys.yaml',
-                'test_events.yaml', 'test_companies.yaml']
+    fixtures = [
+        'test_users.yaml', 'test_abakus_groups.yaml', 'test_surveys.yaml', 'test_events.yaml',
+        'test_companies.yaml'
+    ]
 
     def setUp(self):
         self.admin_user = User.objects.get(username='useradmin_test')

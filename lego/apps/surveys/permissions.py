@@ -6,7 +6,6 @@ from lego.apps.permissions.constants import EDIT
 
 
 class SurveyPermissions(permissions.BasePermission):
-
     def has_permission(self, request, view):
         from lego.apps.surveys.models import Survey
         user = request.user
@@ -17,21 +16,22 @@ class SurveyPermissions(permissions.BasePermission):
             survey = Survey.objects.get(id=view.kwargs['pk'])
             event = getattr(survey, 'event')
             user_attended_event = Registration.objects.filter(
-                event=event.id, user=user.id, presence=constants.PRESENT).exists()
+                event=event.id, user=user.id, presence=constants.PRESENT
+            ).exists()
 
             return user_attended_event
         return False
 
 
 class SubmissionPermissions(permissions.BasePermission):
-
     def has_permission(self, request, view):
         from lego.apps.surveys.models import Survey
         survey = Survey.objects.get(id=view.kwargs['survey_pk'])
         event = getattr(survey, 'event')
         user = request.user
         user_attended_event = Registration.objects.filter(
-            event=event.id, user=user.id, presence=constants.PRESENT).exists()
+            event=event.id, user=user.id, presence=constants.PRESENT
+        ).exists()
 
         if user.has_perm(EDIT, obj=Survey):
             return True

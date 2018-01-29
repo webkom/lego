@@ -8,7 +8,6 @@ from lego.utils.serializers import BasisModelSerializer
 
 
 class OptionSerializer(BasisModelSerializer):
-
     class Meta:
         model = Option
         fields = ('id', 'option_text')
@@ -50,7 +49,6 @@ class AnswerSerializer(BasisModelSerializer):
 
 
 class AnswerCreateAndUpdateSerializer(BasisModelSerializer):
-
     class Meta:
         model = Answer
         fields = ('id', 'question', 'answer_text', 'selected_options')
@@ -89,9 +87,12 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
             for answer in answers:
                 question = answer.pop('question')
 
-                if getattr(question, 'question_type') is 1 and len(answer['selected_options']) > 1:
-                    raise exceptions.ValidationError('You cannot select multiple options for '
-                                                     'this type of question.')
+                if getattr(question, 'question_type') is QUESTION_TYPES.SINGLE_CHOICE and \
+                        len(answer['selected_options']) > 1:
+                    raise exceptions.ValidationError(
+                        'You cannot select multiple options for '
+                        'this type of question.'
+                    )
 
                 Answer.objects.create(submission=submission, question=question, **answer)
 

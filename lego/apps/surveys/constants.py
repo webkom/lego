@@ -1,5 +1,9 @@
+SINGLE_CHOICE = 'single_choice'
+MULTIPLE_CHOICE = 'multiple_choice'
+TEXT_FIELD = 'text_field'
+
 QUESTION_TYPES = (
-    (1, 'single_choice'),
-    (2, 'multiple_choice'),
-    (3, 'text_field')
+    (SINGLE_CHOICE, SINGLE_CHOICE),
+    (MULTIPLE_CHOICE, MULTIPLE_CHOICE),
+    (TEXT_FIELD, TEXT_FIELD)
 )

@@ -13,17 +13,19 @@ def _get_detail_url(survey_pk, submission_pk):
     return reverse('api:v1:submission-detail', kwargs={'survey_pk': survey_pk, 'pk': submission_pk})
 
 
-def submission_data(user):
+def submission_data(user, survey=1):
     return {
         'user': user.id,
-        'survey': 1,
+        'survey': survey,
         'answers': [],
     }
 
 
 class SubmissionViewSetTestCase(APITestCase):
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_surveys.yaml',
-                'test_events.yaml', 'test_companies.yaml']
+    fixtures = [
+        'test_users.yaml', 'test_abakus_groups.yaml', 'test_surveys.yaml', 'test_events.yaml',
+        'test_companies.yaml'
+    ]
 
     def setUp(self):
         self.admin_user = User.objects.get(username='useradmin_test')
@@ -41,10 +43,9 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_attended(self):
-        """Users who attended the event should be able to create submissions"""
+        """Users who attended the event should be able to create submissions = answer the survey"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.post(_get_list_url(1), submission_data(self.attended_user))
-        print('testing create attended', response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_regular(self):
@@ -63,7 +64,9 @@ class SubmissionViewSetTestCase(APITestCase):
     def test_detail_attended_own(self):
         """Users who attended the event should be able to see their own submission"""
         self.client.force_authenticate(user=self.attended_user)
-        response = self.client.get(_get_detail_url(1, 1))
+        created = self.client.post(_get_list_url(1), submission_data(self.attended_user))
+        self.assertEqual(created.status_code, status.HTTP_201_CREATED)
+        response = self.client.get(_get_detail_url(1, created.json()['id']))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data)
 
