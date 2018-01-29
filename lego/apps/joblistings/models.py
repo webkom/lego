@@ -29,6 +29,7 @@ class Joblisting(Content, BasisModel):
     responsible = models.ForeignKey(
         CompanyContact, related_name='joblistings', null=True, on_delete=models.SET_NULL
     )
+    contact_mail = models.EmailField(blank=True)
     deadline = models.DateTimeField(null=True)
     visible_from = models.DateTimeField(auto_now_add=True)
     visible_to = models.DateTimeField()
