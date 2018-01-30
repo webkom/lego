@@ -64,7 +64,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     pools = serializers.SerializerMethodField()
     active_capacity = serializers.ReadOnlyField()
-    waiting_registrations = RegistrationReadSerializer(many=True)
+    waiting_registrations = serializers.SerializerMethodField()
     text = ContentSerializerField()
     created_by = PublicUserSerializer()
 
@@ -80,13 +80,22 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         )
         read_only = True
 
+    def user_should_see_regs(self, event, user):
+        return event.get_possible_pools(user, future=True, is_admitted=False).exists()
+
     def get_pools(self, obj):
         request = self.context.get('request', None)
         queryset = obj.pools.all()
         if request.user.is_authenticated:
-            self.context['should_see_regs'] = \
-                obj.get_possible_pools(request.user, future=True, is_admitted=False).exists()
+            self.context['should_see_regs'] = self.user_should_see_regs(obj, request.user)
         return PoolReadSerializer(queryset, context=self.context, many=True).data
+
+    def get_waiting_registrations(self, obj):
+        request = self.context.get('request', None)
+        if request.user.is_authenticated and self.user_should_see_regs(obj, request.user):
+            queryset = obj.waiting_registrations
+            return RegistrationReadSerializer(queryset, context=self.context, many=True).data
+        return 0
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
