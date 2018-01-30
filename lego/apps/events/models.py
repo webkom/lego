@@ -519,6 +519,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return sum([pool.spots_left() for pool in pools])
 
     @property
+    def is_abakom_only(self):
+        return self.require_auth and \
+               self.can_view_groups.count() == 1 and \
+               self.can_view_groups.filter(name="Abakom").exists()
+    @property
     def is_merged(self):
         if self.merge_time is None:
             return False
@@ -627,6 +632,13 @@ class Pool(BasisModel):
     @property
     def is_activated(self):
         return self.activation_date <= timezone.now()
+
+    def get_registrations(self, user):
+        if user.is_authenticated:
+            if self.event.can_register(user, self, future=True, is_admitted=False) or user.is_abakom_member: #TODO fix sånn at den gir deg regs i alle pools om du har tilgang på minst ett pool
+                return self.registrations.all()
+        return 'forbidden'
+
 
     def increment(self):
         self.counter += 1
