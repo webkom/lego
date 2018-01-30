@@ -27,9 +27,9 @@ class PoolReadSerializer(BasisModelSerializer):
         return pool
 
     def get_registrations(self, obj):
-        request = self.context.get('request', None)
-        queryset = obj.get_registrations(request.user)
-        if not queryset == 'forbidden':
+        queryset = obj.registrations.all()
+        should_see_regs = self.context.get('should_see_regs', None)
+        if should_see_regs:
             if obj.event.is_priced:
                 return RegistrationPaymentReadSerializer(queryset, context=self.context, many=True).data
             return RegistrationReadSerializer(queryset, context=self.context, many=True).data

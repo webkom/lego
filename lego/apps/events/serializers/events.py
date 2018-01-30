@@ -62,7 +62,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     company = CompanyField(queryset=Company.objects.all())
-    pools = PoolReadSerializer(many=True)
+    pools = serializers.SerializerMethodField()
     active_capacity = serializers.ReadOnlyField()
     waiting_registrations = RegistrationReadSerializer(many=True)
     text = ContentSerializerField()
@@ -79,6 +79,14 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             'heed_penalties', 'created_by'
         )
         read_only = True
+
+    def get_pools(self, obj):
+        request = self.context.get('request', None)
+        queryset = obj.pools.all()
+        if request.user.is_authenticated:
+            self.context['should_see_regs'] = \
+                obj.get_possible_pools(request.user, future=True, is_admitted=False).exists()
+        return PoolReadSerializer(queryset, context=self.context, many=True).data
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):

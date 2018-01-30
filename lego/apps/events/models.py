@@ -633,13 +633,6 @@ class Pool(BasisModel):
     def is_activated(self):
         return self.activation_date <= timezone.now()
 
-    def get_registrations(self, user):
-        if user.is_authenticated:
-            if self.event.can_register(user, self, future=True, is_admitted=False) or user.is_abakom_member: #TODO fix sånn at den gir deg regs i alle pools om du har tilgang på minst ett pool
-                return self.registrations.all()
-        return 'forbidden'
-
-
     def increment(self):
         self.counter += 1
         self.save(update_fields=['counter'])
