@@ -21,8 +21,8 @@ from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
     AdminRegistrationCreateAndUpdateSerializer, AdminUnregisterSerializer,
     RegistrationCreateAndUpdateSerializer, RegistrationPaymentReadSerializer,
-    RegistrationReadDetailedSerializer, RegistrationReadSerializer, RegistrationSearchSerializer,
-    StripeTokenSerializer
+    RegistrationReadDetailedSerializer, RegistrationReadSerializer,
+    RegistrationSearchReadSerializer, RegistrationSearchSerializer, StripeTokenSerializer
 )
 from lego.apps.events.tasks import (
     async_payment, async_register, async_unregister, check_for_bump_on_pool_creation_or_expansion,
@@ -274,5 +274,5 @@ class RegistrationSearchViewSet(
 
         reg.presence = constants.PRESENT
         reg.save()
-        data = RegistrationReadSerializer(reg).data
+        data = RegistrationSearchReadSerializer(reg).data
         return Response(data=data, status=status.HTTP_200_OK)

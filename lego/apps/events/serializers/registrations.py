@@ -60,6 +60,11 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
         fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback', )
 
 
+class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
+    class Meta(RegistrationPublicReadSerializer.Meta):
+        fields = RegistrationPublicReadSerializer.Meta.fields + ('presence', )
+
+
 class RegistrationSearchSerializer(serializers.Serializer):
     username = serializers.CharField()
 
