@@ -10,11 +10,6 @@ class EventPermissionHandler(PermissionHandler):
 
     perms_without_object = [CREATE, 'administrate']
 
-    authentication_map = {
-        VIEW: False,
-        LIST: False
-    }
-
     def has_perm(
             self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):

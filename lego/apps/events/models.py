@@ -585,6 +585,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
+    @property
+    def is_abakom_only(self):
+        return self.require_auth and self.can_view_groups.all().count() == 1 and self.can_view_groups.filter(name="Abakom").exists()
+
     def restricted_lookup(self):
         """
         Restricted Mail
