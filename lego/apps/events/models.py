@@ -523,6 +523,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.require_auth and \
                self.can_view_groups.count() == 1 and \
                self.can_view_groups.filter(name="Abakom").exists()
+
     @property
     def is_merged(self):
         if self.merge_time is None:

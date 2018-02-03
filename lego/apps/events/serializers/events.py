@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.fields import CharField, BooleanField
+from rest_framework.fields import BooleanField, CharField
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.fields import CompanyField
@@ -86,13 +86,13 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     def get_pools(self, obj):
         request = self.context.get('request', None)
         queryset = obj.pools.all()
-        if request.user.is_authenticated:
+        if request and request.user.is_authenticated:
             self.context['should_see_regs'] = self.user_should_see_regs(obj, request.user)
         return PoolReadSerializer(queryset, context=self.context, many=True).data
 
     def get_waiting_registrations(self, obj):
         request = self.context.get('request', None)
-        if request.user.is_authenticated and self.user_should_see_regs(obj, request.user):
+        if request and request.user.is_authenticated and self.user_should_see_regs(obj, request.user):
             queryset = obj.waiting_registrations
             return RegistrationReadSerializer(queryset, context=self.context, many=True).data
         return 0
@@ -152,7 +152,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             if is_abakom_only:
                 event.require_auth = True
                 event.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
-            else: event.require_auth = False
+            else:
+                event.require_auth = False
             event.save()
             return event
 

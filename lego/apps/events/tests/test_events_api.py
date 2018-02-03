@@ -35,6 +35,8 @@ _test_event_data = [
         '2012-09-01T13:20:30Z',
         'merge_time':
         '2012-01-01T13:20:30Z',
+        'is_abakom_only':
+         False,
         'pools': [
             {
                 'name': 'Initial Pool',
@@ -60,6 +62,8 @@ _test_event_data = [
         '2015-09-01T13:20:30Z',
         'merge_time':
         '2016-01-01T13:20:30Z',
+        'is_abakom_only':
+        True,
         'pools': [
             {
                 'name': 'Initial Pool 1',
@@ -240,7 +244,7 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(self.event_response.status_code, 201)
         res_event = self.event_response.data
         expect_event = _test_event_data[0]
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
             self.assertEqual(res_event[key], expect_event[key])
 
         expect_pools = camelize(expect_event['pools'])
@@ -264,8 +268,12 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         res_event = event_update_response.data
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
             self.assertEqual(res_event[key], expect_event[key])
+        event = Event.objects.get(id=self.event_id)
+        self.assertTrue(event.require_auth)
+        self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
+        self.assertEqual(1, event.can_view_groups.count())
 
     def test_event_partial_update(self):
         """Test patching event attributes"""
@@ -279,8 +287,11 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         res_event = event_update_response.data
         self.assertEqual(res_event['title'], 'PATCHED')
-        for key in ['description', 'text', 'start_time', 'end_time', 'merge_time']:
+        for key in ['description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
             self.assertEqual(res_event[key], expect_event[key])
+        event = Event.objects.get(id=self.event_id)
+        self.assertFalse(event.require_auth)
+        self.assertEqual(0, event.can_view_groups.count())
 
     def test_event_update_with_pool_creation(self):
         """Test updating event attributes and add a pool"""
@@ -290,8 +301,12 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         res_event = event_update_response.data
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
             self.assertEqual(res_event[key], expect_event[key])
+        event = Event.objects.get(id=self.event_id)
+        self.assertTrue(event.require_auth)
+        self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
+        self.assertEqual(1, event.can_view_groups.count())
 
         # These are not sorted due to id not present on new pool
         # camelize() because nested serializer (pool) camelizes output
@@ -310,8 +325,12 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         res_event = event_update_response.data
         expect_event = _test_event_data[1]
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
             self.assertEqual(res_event[key], expect_event[key])
+        event = Event.objects.get(id=self.event_id)
+        self.assertTrue(event.require_auth)
+        self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
+        self.assertEqual(1, event.can_view_groups.count())
 
         expect_pools = camelize(expect_event['pools'])
         res_pools = res_event['pools']
@@ -327,8 +346,11 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         res_event = event_update_response.data
         expect_event = _test_event_data[0]
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time']:
+        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
             self.assertEqual(res_event[key], expect_event[key])
+        event = Event.objects.get(id=self.event_id)
+        self.assertFalse(event.require_auth)
+        self.assertEqual(0, event.can_view_groups.count())
 
         self.assertEqual(res_event['pools'], [])
 
@@ -920,6 +942,7 @@ class RegistrationSearchTestCase(APITestCase):
         self.client.force_authenticate(self.webkom_user)
         event_data = _test_event_data[0]
         event_data['pools'][0]['permission_groups'] = [abakus_group.id]
+        # event_data['is_abakom_only'] = True
 
         self.event_response = self.client.post(_get_list_url(), event_data)
         self.event = Event.objects.get(id=self.event_response.data.pop('id', None))
