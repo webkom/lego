@@ -1,27 +1,35 @@
-from channels.handler import AsgiHandler
-from channels.routing import include, route
+from channels.routing import ProtocolTypeRouter, URLRouter
 from django.conf import settings
-from django.http import HttpResponse
-from rest_framework import status
+from django.conf.urls import url
+from structlog import get_logger
 
-from lego.apps.websockets.handlers import handle_connect, handle_disconnect, handle_message
+from lego.apps.websockets.auth import JWTAuthenticationMiddleware
+from lego.apps.websockets.consumers import GroupConsumer
 
-
-def http_consumer(message):
-    # Make standard HTTP response - access ASGI path attribute directly
-    response = HttpResponse(status=status.HTTP_403_FORBIDDEN)
-    # Encode that response into message format (ASGI)
-    for chunk in AsgiHandler.encode_response(response):
-        message.reply_channel.send(chunk)
+log = get_logger()
 
 
-websocket_routes = [
-    route('websocket.receive', handle_message),
-    route('websocket.connect', handle_connect),
-    route('websocket.disconnect', handle_disconnect)
-]
+class HTTPConsumer:
+    """
+    The HTTPConsumer disables the http protocol when the application is running in production.
+    Http is handled by uwsgi in production.
+    """
 
-routing = [include(websocket_routes)]
+    def __init__(self, *args, **kwargs):
+        pass
+
+    async def __call__(self, receive, send):
+        log.warn('http_disabled_daphne')
+        raise ValueError
+
+
+protocols = {
+    'websocket': JWTAuthenticationMiddleware(URLRouter([
+        url("^$", GroupConsumer),
+    ])),
+}
 
 if settings.WS_SERVER:
-    routing.append(route('http.request', http_consumer))
+    protocols['http'] = HTTPConsumer
+
+application = ProtocolTypeRouter(protocols)

@@ -116,10 +116,13 @@ STATICFILES_DIRS = (('assets', os.path.join(BASE_DIR, 'assets')), )
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
 MEDIA_URL = '/media/'
 
+ASGI_APPLICATION = 'lego.apps.websockets.routing.application'
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
-        'ROUTING': 'lego.apps.websockets.routing.routing'
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': ['redis://127.0.0.1:6379']
+        }
     }
 }
 
