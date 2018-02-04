@@ -29,7 +29,7 @@ protocols = {
     ])),
 }
 
-if settings.WS_SERVER:
+if settings.DAPHNE_SERVER:
     protocols['http'] = HTTPConsumer
 
 application = ProtocolTypeRouter(protocols)
