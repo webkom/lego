@@ -1,5 +1,7 @@
 import json
 
+from asgiref.sync import AsyncToSync
+from channels.layers import get_channel_layer
 from djangorestframework_camel_case.render import camelize
 
 
@@ -7,7 +9,15 @@ def notify_group(group, message):
     """
     Dumps the message to JSON and sends it to the specified channel.
 
-    :param group: channels.Group
-    :param message:
+    :param group: str
+    :param message: dict
     """
-    return group.send({'text': json.dumps(camelize(message))})
+    channel_layer = get_channel_layer()
+    payload = json.dumps(camelize(message))
+    return AsyncToSync(channel_layer.group_send)(
+        group,
+        {
+            'type': 'notification.message',
+            'text': payload
+        }
+    )
