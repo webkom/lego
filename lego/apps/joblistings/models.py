@@ -16,12 +16,14 @@ class Joblisting(Content, BasisModel):
     FULL_TIME = 'full_time'
     PART_TIME = 'part_time'
     SUMMER_JOB = 'summer_job'
+    MASTER_THESIS = 'master_thesis'
     OTHER = 'other'
 
     JOB_TYPE_CHOICES = (
         (FULL_TIME, FULL_TIME),
         (PART_TIME, PART_TIME),
         (SUMMER_JOB, SUMMER_JOB),
+        (MASTER_THESIS, MASTER_THESIS),
         (OTHER, OTHER),
     )
 
