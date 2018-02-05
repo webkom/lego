@@ -13,6 +13,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='joblisting',
             name='job_type',
-            field=models.CharField(choices=[('full_time', 'full_time'), ('part_time', 'part_time'), ('summer_job', 'summer_job'), ('master_thesis', 'master_thesis'), ('other', 'other')], max_length=20),
+            field=models.CharField(
+                choices=[
+                    ('full_time', 'full_time'), ('part_time', 'part_time'),
+                    ('summer_job', 'summer_job'), ('master_thesis',
+                                                   'master_thesis'), ('other', 'other')
+                ], max_length=20
+            ),
         ),
     ]
