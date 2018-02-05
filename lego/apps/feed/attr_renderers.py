@@ -65,3 +65,7 @@ def render_registration(registration):
         'waiting_list': pool is None and registration.unregistration_date is None,
         'registered': not (pool is None and registration.unregistration_date),
     }
+
+
+def render_restricted_mail(restrictedmail):
+    return {'id': restrictedmail.id}
