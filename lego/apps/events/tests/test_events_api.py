@@ -133,6 +133,10 @@ def _get_registration_search_url(event_pk):
     return reverse('api:v1:registration-search-list', kwargs={'event_pk': event_pk})
 
 
+def _get_upcoming_url():
+    return reverse('api:v1:event-upcoming')
+
+
 class ListEventsTestCase(APITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
@@ -982,3 +986,41 @@ class RegistrationSearchTestCase(APITestCase):
             }
         )
         self.assertEquals(res.status_code, 400)
+
+
+class UpcomingEventsTestCase(APITestCase):
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
+    ]
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+        date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
+        for event in Event.objects.all():
+            event.start_time = date + timedelta(days=10)
+            event.end_time = date + timedelta(days=10, hours=4)
+            event.save()
+
+    def test_with_abakus_user(self):
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_upcoming_url())
+        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(len(event_response.data), 2)
+
+    def test_filter_out_old(self):
+        event = Event.objects.filter(registrations__user=self.abakus_user).first()
+        event.start_time = timezone.now() - timedelta(days=10)
+        event.end_time = timezone.now() - timedelta(days=10)
+        event.save()
+
+        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_upcoming_url())
+        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(len(event_response.data), 1)
+        self.assertNotEqual(event_response.data[0]['id'], event.pk)
+
+    def test_unauthenticated(self):
+        event_response = self.client.get(_get_upcoming_url())
+        self.assertEqual(event_response.status_code, 401)
