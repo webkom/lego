@@ -31,9 +31,11 @@ class PoolReadSerializer(BasisModelSerializer):
         should_see_regs = self.context.get('should_see_regs', None)
         if should_see_regs:
             if obj.event.is_priced:
-                return RegistrationPaymentReadSerializer(queryset, context=self.context, many=True).data
+                return RegistrationPaymentReadSerializer(
+                    queryset, context=self.context, many=True
+                ).data
             return RegistrationReadSerializer(queryset, context=self.context, many=True).data
-        return 0
+        return -1
 
 
 class PoolAdministrateSerializer(PoolReadSerializer):

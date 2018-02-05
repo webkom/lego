@@ -36,7 +36,7 @@ _test_event_data = [
         'merge_time':
         '2012-01-01T13:20:30Z',
         'is_abakom_only':
-         False,
+        False,
         'pools': [
             {
                 'name': 'Initial Pool',
@@ -154,19 +154,24 @@ class ListEventsTestCase(APITestCase):
             event.end_time = date + timedelta(days=10, hours=4)
             event.save()
 
+    def test_with_unauth(self):
+        event_response = self.client.get(_get_list_url())
+        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(len(event_response.data['results']), 5)
+
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data['results']), 4)
+        self.assertEqual(len(event_response.data['results']), 5)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name='Webkom').add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data['results']), 5)
+        self.assertEqual(len(event_response.data['results']), 6)
 
 
 class RetrieveEventsTestCase(APITestCase):
@@ -177,26 +182,68 @@ class RetrieveEventsTestCase(APITestCase):
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-    def test_with_group_permission(self):
-        """Test that abakus user can retrieve event"""
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+    def test_without_authentication(self):
+        """Test that unauth user can retrieve event"""
+        event_response = self.client.get(_get_detail_url(2))
+        self.assertEqual(event_response.status_code, 200)
+
+    def test_with_authentication(self):
+        """Test that auth user can retrieve event"""
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(2))
         self.assertEqual(event_response.status_code, 200)
 
-    def test_without_group_permission(self):
-        """Test that plain user cannot retrieve event"""
-        self.client.force_authenticate(self.abakus_user)
-        event_response = self.client.get(_get_detail_url(2))
-        self.assertEqual(event_response.status_code, 404)
+    def test_unauth_cant_see_registrations(self):
+        event_response = self.client.get(_get_detail_url(1))
+        for pool in event_response.data['pools']:
+            self.assertEqual(pool['registrations'], -1)
 
-    def test_without_group_permission_webkom_only(self):
-        """Test that abakus user cannot retrieve webkom only event"""
-        event = Event.objects.get(title='NO_POOLS_WEBKOM')
+    def test_auth_cant_see_registrations(self):
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(1))
+        for pool in event_response.data['pools']:
+            self.assertEqual(pool['registrations'], -1)
+
+    def test_abakus_see_registrations(self):
+        """Tests that a user that is allowed to register for the event can see the registrations"""
         AbakusGroup.objects.get(name='Abakus').add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(1))
+        for pool in event_response.data['pools']:
+            self.assertNotEqual(pool['registrations'], -1)
+            self.assertIsInstance(pool['registrations'], list)
+
+    def test_creator_see_registrations(self):
+        self.client.force_authenticate(self.abakus_user)
+        event = Event.objects.get(id=1)
+        event.created_by = self.abakus_user
+        event.save()
+        event_response = self.client.get(_get_detail_url(1))
+        for pool in event_response.data['pools']:
+            self.assertNotEqual(pool['registrations'], -1)
+            self.assertIsInstance(pool['registrations'], list)
+
+    def test_without_auth_permission_abakom_only(self):
+        """Test that unauth user cannot retrieve abakom only event"""
+        event = Event.objects.get(title='ABAKOM_ONLY')
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 404)
+
+    def test_without_group_permission_abakom_only(self):
+        """Test that auth user cannot retrieve abakom only event"""
+        event = Event.objects.get(title='ABAKOM_ONLY')
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+        self.assertEqual(event_response.status_code, 404)
+
+    def test_with_group_permission_abakom_only(self):
+        """Test that abakom user can retrieve abakom only event"""
+        AbakusGroup.objects.get(name='Bedkom').add_user(self.abakus_user)
+        event = Event.objects.get(title='ABAKOM_ONLY')
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+        self.assertEqual(event_response.status_code, 200)
 
     def test_charge_status_hidden_when_not_priced(self):
         """Test that chargeStatus is hidden when getting nonpriced event"""
@@ -244,7 +291,15 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(self.event_response.status_code, 201)
         res_event = self.event_response.data
         expect_event = _test_event_data[0]
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
+        for key in [
+            'title',
+            'description',
+            'text',
+            'start_time',
+            'end_time',
+            'merge_time',
+            'is_abakom_only',
+        ]:
             self.assertEqual(res_event[key], expect_event[key])
 
         expect_pools = camelize(expect_event['pools'])
@@ -254,6 +309,11 @@ class CreateEventsTestCase(APITestCase):
             for key in ['name', 'capacity', 'activationDate', 'permissionGroups']:
                 self.assertEqual(res_pools[i][key], expect_pools[i][key])
 
+    def test_event_creation_without_auth(self):
+        self.client.logout()
+        response = self.client.post(_get_list_url(), _test_event_data[1])
+        self.assertEqual(response.status_code, 401)
+
     def test_event_creation_without_perm(self):
         user = User.objects.get(username='abakule')
         self.client.force_authenticate(user)
@@ -262,18 +322,42 @@ class CreateEventsTestCase(APITestCase):
 
     def test_event_update(self):
         """Test updating event attributes"""
-        expect_event = _test_event_data[1]
+        expect_event = _test_event_data[1].copy()
         expect_event.pop('pools')
         event_update_response = self.client.put(_get_detail_url(self.event_id), expect_event)
         self.assertEqual(event_update_response.status_code, 200)
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         res_event = event_update_response.data
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
+        for key in [
+            'title',
+            'description',
+            'text',
+            'start_time',
+            'end_time',
+            'merge_time',
+            'is_abakom_only',
+        ]:
             self.assertEqual(res_event[key], expect_event[key])
         event = Event.objects.get(id=self.event_id)
-        self.assertTrue(event.require_auth)
         self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
         self.assertEqual(1, event.can_view_groups.count())
+
+    def test_event_update_without_perm(self):
+        """Test updating event attributes without permissions is not allowed"""
+        user = User.objects.get(username='abakule')
+        self.client.force_authenticate(user)
+        try_event = _test_event_data[1].copy()
+        try_event.pop('pools')
+        event_update_response = self.client.put(_get_detail_url(self.event_id), try_event)
+        self.assertEqual(event_update_response.status_code, 403)
+
+    def test_event_update_without_auth(self):
+        """Test updating event attributes without auth is not allowed"""
+        self.client.logout()
+        try_event = _test_event_data[1].copy()
+        try_event.pop('pools')
+        event_update_response = self.client.put(_get_detail_url(self.event_id), try_event)
+        self.assertEqual(event_update_response.status_code, 401)
 
     def test_event_partial_update(self):
         """Test patching event attributes"""
@@ -287,10 +371,16 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         res_event = event_update_response.data
         self.assertEqual(res_event['title'], 'PATCHED')
-        for key in ['description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
+        for key in [
+            'description',
+            'text',
+            'start_time',
+            'end_time',
+            'merge_time',
+            'is_abakom_only',
+        ]:
             self.assertEqual(res_event[key], expect_event[key])
         event = Event.objects.get(id=self.event_id)
-        self.assertFalse(event.require_auth)
         self.assertEqual(0, event.can_view_groups.count())
 
     def test_event_update_with_pool_creation(self):
@@ -301,10 +391,17 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
         res_event = event_update_response.data
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
+        for key in [
+            'title',
+            'description',
+            'text',
+            'start_time',
+            'end_time',
+            'merge_time',
+            'is_abakom_only',
+        ]:
             self.assertEqual(res_event[key], expect_event[key])
         event = Event.objects.get(id=self.event_id)
-        self.assertTrue(event.require_auth)
         self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
         self.assertEqual(1, event.can_view_groups.count())
 
@@ -325,10 +422,17 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         res_event = event_update_response.data
         expect_event = _test_event_data[1]
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
+        for key in [
+            'title',
+            'description',
+            'text',
+            'start_time',
+            'end_time',
+            'merge_time',
+            'is_abakom_only',
+        ]:
             self.assertEqual(res_event[key], expect_event[key])
         event = Event.objects.get(id=self.event_id)
-        self.assertTrue(event.require_auth)
         self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
         self.assertEqual(1, event.can_view_groups.count())
 
@@ -346,12 +450,18 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(event_update_response.status_code, 200)
         res_event = event_update_response.data
         expect_event = _test_event_data[0]
-        for key in ['title', 'description', 'text', 'start_time', 'end_time', 'merge_time', 'is_abakom_only']:
+        for key in [
+            'title',
+            'description',
+            'text',
+            'start_time',
+            'end_time',
+            'merge_time',
+            'is_abakom_only',
+        ]:
             self.assertEqual(res_event[key], expect_event[key])
         event = Event.objects.get(id=self.event_id)
-        self.assertFalse(event.require_auth)
         self.assertEqual(0, event.can_view_groups.count())
-
         self.assertEqual(res_event['pools'], [])
 
 

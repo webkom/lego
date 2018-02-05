@@ -81,7 +81,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         read_only = True
 
     def user_should_see_regs(self, event, user):
-        return event.get_possible_pools(user, future=True, is_admitted=False).exists()
+        return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
+               user.is_abakom_member or \
+               event.created_by.id == user.id
 
     def get_pools(self, obj):
         request = self.context.get('request', None)
@@ -92,10 +94,12 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
 
     def get_waiting_registrations(self, obj):
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated and self.user_should_see_regs(obj, request.user):
+        if request and \
+                request.user.is_authenticated and \
+                self.user_should_see_regs(obj, request.user):
             queryset = obj.waiting_registrations
             return RegistrationReadSerializer(queryset, context=self.context, many=True).data
-        return 0
+        return -1
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
@@ -129,7 +133,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
     pools = PoolCreateAndUpdateSerializer(many=True, required=False)
     text = ContentSerializerField()
-    is_abakom_only = BooleanField()
+    is_abakom_only = BooleanField(required=False, default=False)
 
     class Meta:
         model = Event
@@ -137,7 +141,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             'id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
             'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
             'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time', 'merge_time',
-            'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned', 'heed_penalties', 'is_abakom_only'
+            'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned', 'heed_penalties',
+            'is_abakom_only'
         )
 
     def create(self, validated_data):
@@ -150,10 +155,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                 created_pool = Pool.objects.create(event=event, **pool)
                 created_pool.permission_groups.set(permission_groups)
             if is_abakom_only:
-                event.require_auth = True
                 event.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
-            else:
-                event.require_auth = False
             event.save()
             return event
 
@@ -179,10 +181,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
             if is_abakom_only and not instance.is_abakom_only:
-                instance.require_auth = True
                 instance.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
             elif not is_abakom_only and instance.is_abakom_only:
-                instance.require_auth = False
                 instance.can_view_groups.remove(AbakusGroup.objects.get(name="Abakom"))
             instance.save()
             return super().update(instance, validated_data)

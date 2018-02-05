@@ -520,8 +520,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def is_abakom_only(self):
-        return self.require_auth and \
-               self.can_view_groups.count() == 1 and \
+        return self.can_view_groups.count() == 1 and \
                self.can_view_groups.filter(name="Abakom").exists()
 
     @property
