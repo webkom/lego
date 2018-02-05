@@ -1,6 +1,6 @@
 from structlog import get_logger
 
-from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
+from lego.apps.permissions.constants import CREATE, DELETE, EDIT, LIST, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 
 log = get_logger()
@@ -9,6 +9,16 @@ log = get_logger()
 class EventPermissionHandler(PermissionHandler):
 
     perms_without_object = [CREATE, 'administrate']
+
+    def has_perm(
+            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
+        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        if obj:
+            user.permissions = self.check_keyword_permissions(user, perm, obj.__class__)
+        elif queryset:
+            user.permissions = self.check_keyword_permissions(user, perm, queryset.model)
+        return has_perm
 
 
 class RegistrationPermissionHandler(PermissionHandler):

@@ -8,14 +8,14 @@ from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
-from lego.apps.events.serializers.pools import (
-    PoolAdministrateSerializer, PoolCreateAndUpdateSerializer, PoolReadSerializer
-)
-from lego.apps.events.serializers.registrations import (
-    RegistrationReadDetailedSerializer, RegistrationReadSerializer
-)
+from lego.apps.events.serializers.pools import (PoolAdministrateSerializer,
+                                                PoolCreateAndUpdateSerializer, PoolReadSerializer,
+                                                PoolReadAuthSerializer)
+from lego.apps.events.serializers.registrations import (RegistrationReadDetailedSerializer,
+                                                        RegistrationReadSerializer)
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
+from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
@@ -63,7 +63,6 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
-    waiting_registrations = RegistrationReadSerializer(many=True)
     text = ContentSerializerField()
     created_by = PublicUserSerializer()
 
@@ -75,7 +74,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             'unregistration_deadline', 'company', 'active_capacity', 'feedback_description',
             'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
             'payment_due_date', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged',
-            'heed_penalties', 'created_by'
+            'heed_penalties', 'created_by', 'is_abakom_only'
         )
         read_only = True
 
@@ -85,10 +84,12 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     activation_time = ActivationTimeField()
     spots_left = SpotsLeftField()
     price = serializers.SerializerMethodField()
+    waiting_registrations = RegistrationReadSerializer(many=True)
+    pools = PoolReadAuthSerializer(many=True)
 
     class Meta(EventReadDetailedSerializer.Meta):
         fields = EventReadDetailedSerializer.Meta.fields + \
-                 ('price', 'activation_time', 'spots_left')
+                 ('price', 'activation_time', 'spots_left', 'waiting_registrations')
 
     def get_price(self, obj):
         request = self.context.get('request', None)
@@ -118,10 +119,11 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             'id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
             'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
             'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time', 'merge_time',
-            'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned', 'heed_penalties'
+            'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned', 'heed_penalties', 'is_abakom_only'
         )
 
     def create(self, validated_data):
+        is_abakom_only = validated_data.pop('is_abakom_only', False)
         pools = validated_data.pop('pools', [])
         with transaction.atomic():
             event = super().create(validated_data)
@@ -129,10 +131,15 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                 permission_groups = pool.pop('permission_groups')
                 created_pool = Pool.objects.create(event=event, **pool)
                 created_pool.permission_groups.set(permission_groups)
-
+            if is_abakom_only:
+                event.require_auth = True
+                abakom = AbakusGroup.objects.get(name="Abakom")
+                event.can_view_groups.add(abakom)
+                event.save()
             return event
 
     def update(self, instance, validated_data):
+        is_abakom_only = validated_data.pop('is_abakom_only', False)
         pools = validated_data.pop('pools', None)
         with transaction.atomic():
             if pools is not None:
@@ -152,7 +159,15 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     created_pool.permission_groups.set(permission_groups)
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
-
+            abakom = AbakusGroup.objects.get(name="Abakom")
+            if is_abakom_only and not instance.is_abakom_only:
+                instance.require_auth = True
+                instance.can_view_groups.add(abakom)
+                instance.save()
+            elif not is_abakom_only and instance.is_abakom_only:
+                instance.require_auth = False
+                instance.can_view_groups.remove(abakom)
+                instance.save()
             return super().update(instance, validated_data)
 
 

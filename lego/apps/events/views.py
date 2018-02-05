@@ -13,10 +13,11 @@ from lego.apps.events.exceptions import (
 )
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.serializers.events import (
-    EventAdministrateSerializer, EventCreateAndUpdateSerializer, EventReadSerializer,
-    EventReadUserDetailedSerializer
-)
+from lego.apps.events.serializers.events import (EventAdministrateSerializer,
+                                                 EventCreateAndUpdateSerializer,
+                                                 EventReadSerializer,
+                                                 EventReadDetailedSerializer,
+                                                 EventReadUserDetailedSerializer)
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
     AdminRegistrationCreateAndUpdateSerializer, AdminUnregisterSerializer,
@@ -62,7 +63,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action == 'list':
             return EventReadSerializer
         if self.action == 'retrieve':
-            return EventReadUserDetailedSerializer
+            if self.request.user.is_authenticated and self.request.user.permissions:
+                return EventReadUserDetailedSerializer
+            return EventReadDetailedSerializer
 
         return super().get_serializer_class()
 

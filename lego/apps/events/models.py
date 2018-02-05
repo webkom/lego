@@ -11,8 +11,7 @@ from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed, EventNotReady, NoSuchPool, NoSuchRegistration, RegistrationExists,
-    RegistrationsExistInPool
-)
+    RegistrationsExistInPool)
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
@@ -584,6 +583,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
+    @property
+    def is_abakom_only(self):
+        return self.require_auth and self.can_view_groups.all().count() == 1 and self.can_view_groups.filter(name="Abakom").exists()
+
     def restricted_lookup(self):
         """
         Restricted Mail
@@ -620,6 +623,10 @@ class Pool(BasisModel):
         if self.capacity == 0:
             return False
         return self.registrations.count() >= self.capacity
+
+    @property
+    def registration_count(self):
+        return self.registrations.count()
 
     def spots_left(self):
         return self.capacity - self.registrations.count()

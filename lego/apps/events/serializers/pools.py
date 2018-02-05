@@ -10,12 +10,18 @@ from lego.utils.serializers import BasisModelSerializer
 
 
 class PoolReadSerializer(BasisModelSerializer):
-    registrations = serializers.SerializerMethodField()
     permission_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta:
         model = Pool
-        fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups', 'registrations')
+        fields = ('id', 'name', 'capacity', 'activation_date', 'permission_groups',
+                  'registration_count')
+
+class PoolReadAuthSerializer(PoolReadSerializer):
+    registrations = serializers.SerializerMethodField()
+
+    class Meta(PoolReadSerializer.Meta):
+        fields = PoolReadSerializer.Meta.fields + ('registrations',)
         read_only = True
 
     def create(self, validated_data):
@@ -33,7 +39,7 @@ class PoolReadSerializer(BasisModelSerializer):
         return RegistrationReadSerializer(queryset, context=self.context, many=True).data
 
 
-class PoolAdministrateSerializer(PoolReadSerializer):
+class PoolAdministrateSerializer(PoolReadAuthSerializer):
     registrations = RegistrationReadDetailedSerializer(many=True)
 
 
