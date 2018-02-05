@@ -28,6 +28,7 @@ class AttrCache:
         'gallery.gallerypicture': attr_renderers.render_gallery_picture,
         'users.abakusgroup': attr_renderers.render_abakus_group,
         'events.registration': attr_renderers.render_registration,
+        'restricted.restrictedmail': attr_renderers.render_restricted_mail
     }
 
     RELATED_FIELDS = {'meetings.meetinginvitation': ['meeting']}
