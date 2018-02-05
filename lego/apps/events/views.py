@@ -2,7 +2,7 @@ from celery import chain
 from django.db import transaction
 from django.db.models import Prefetch
 from django.utils import timezone
-from rest_framework import decorators, mixins, status, viewsets, permissions
+from rest_framework import decorators, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
@@ -122,9 +122,13 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    @decorators.list_route(serializer_class=EventReadSerializer, permission_classes=[permissions.IsAuthenticated])
+    @decorators.list_route(
+        serializer_class=EventReadSerializer, permission_classes=[permissions.IsAuthenticated]
+    )
     def upcoming(self, request):
-        queryset = self.get_queryset().filter(registrations__user=request.user, start_time__gt=timezone.now())
+        queryset = self.get_queryset().filter(
+            registrations__user=request.user, start_time__gt=timezone.now()
+        )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
