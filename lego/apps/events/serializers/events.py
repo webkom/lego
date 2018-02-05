@@ -99,7 +99,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
                 self.user_should_see_regs(obj, request.user):
             queryset = obj.waiting_registrations
             return RegistrationReadSerializer(queryset, context=self.context, many=True).data
-        return -1
+        return obj.waiting_registrations.count()
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):

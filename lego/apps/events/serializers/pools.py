@@ -35,7 +35,7 @@ class PoolReadSerializer(BasisModelSerializer):
                     queryset, context=self.context, many=True
                 ).data
             return RegistrationReadSerializer(queryset, context=self.context, many=True).data
-        return -1
+        return obj.registrations.count()
 
 
 class PoolAdministrateSerializer(PoolReadSerializer):

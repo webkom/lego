@@ -196,13 +196,19 @@ class RetrieveEventsTestCase(APITestCase):
     def test_unauth_cant_see_registrations(self):
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertEqual(pool['registrations'], -1)
+            self.assertEqual(
+                pool['registrations'],
+                Pool.objects.get(id=pool['id']).registrations.count()
+            )
 
     def test_auth_cant_see_registrations(self):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertEqual(pool['registrations'], -1)
+            self.assertEqual(
+                pool['registrations'],
+                Pool.objects.get(id=pool['id']).registrations.count()
+            )
 
     def test_abakus_see_registrations(self):
         """Tests that a user that is allowed to register for the event can see the registrations"""
@@ -210,7 +216,10 @@ class RetrieveEventsTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertNotEqual(pool['registrations'], -1)
+            self.assertNotEqual(
+                pool['registrations'],
+                Pool.objects.get(id=pool['id']).registrations.count()
+            )
             self.assertIsInstance(pool['registrations'], list)
 
     def test_creator_see_registrations(self):
@@ -220,7 +229,10 @@ class RetrieveEventsTestCase(APITestCase):
         event.save()
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertNotEqual(pool['registrations'], -1)
+            self.assertNotEqual(
+                pool['registrations'],
+                Pool.objects.get(id=pool['id']).registrations.count()
+            )
             self.assertIsInstance(pool['registrations'], list)
 
     def test_without_auth_permission_abakom_only(self):
@@ -1052,7 +1064,6 @@ class RegistrationSearchTestCase(APITestCase):
         self.client.force_authenticate(self.webkom_user)
         event_data = _test_event_data[0]
         event_data['pools'][0]['permission_groups'] = [abakus_group.id]
-        # event_data['is_abakom_only'] = True
 
         self.event_response = self.client.post(_get_list_url(), event_data)
         self.event = Event.objects.get(id=self.event_response.data.pop('id', None))
