@@ -47,6 +47,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     company = models.ForeignKey(
         Company, related_name='events', null=True, on_delete=models.SET_NULL
     )
+    is_abakom_only = models.BooleanField(default=False)
 
     use_captcha = models.BooleanField(default=True)
     feedback_description = models.CharField(max_length=255, blank=True)
@@ -517,11 +518,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 .aggregate(spots_left=Sum('capacity') - Sum('registrations__count'))['spots_left']
 
         return sum([pool.spots_left() for pool in pools])
-
-    @property
-    def is_abakom_only(self):
-        return self.can_view_groups.count() == 1 and \
-               self.can_view_groups.filter(name="Abakom").exists()
 
     @property
     def is_merged(self):

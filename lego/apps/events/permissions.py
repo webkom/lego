@@ -15,7 +15,7 @@ class EventPermissionHandler(PermissionHandler):
 
     def filter_queryset(self, user, queryset, **kwargs):
         if not user.is_authenticated or not user.is_abakom_member:
-            return queryset.filter(can_view_groups=None)
+            return queryset.filter(is_abakom_only=False)
         return queryset
 
     def has_perm(

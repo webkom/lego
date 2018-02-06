@@ -350,9 +350,6 @@ class CreateEventsTestCase(APITestCase):
             'is_abakom_only',
         ]:
             self.assertEqual(res_event[key], expect_event[key])
-        event = Event.objects.get(id=self.event_id)
-        self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
-        self.assertEqual(1, event.can_view_groups.count())
 
     def test_event_update_without_perm(self):
         """Test updating event attributes without permissions is not allowed"""
@@ -413,9 +410,6 @@ class CreateEventsTestCase(APITestCase):
             'is_abakom_only',
         ]:
             self.assertEqual(res_event[key], expect_event[key])
-        event = Event.objects.get(id=self.event_id)
-        self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
-        self.assertEqual(1, event.can_view_groups.count())
 
         # These are not sorted due to id not present on new pool
         # camelize() because nested serializer (pool) camelizes output
@@ -444,9 +438,6 @@ class CreateEventsTestCase(APITestCase):
             'is_abakom_only',
         ]:
             self.assertEqual(res_event[key], expect_event[key])
-        event = Event.objects.get(id=self.event_id)
-        self.assertIn(AbakusGroup.objects.get(name="Abakom"), event.can_view_groups.all())
-        self.assertEqual(1, event.can_view_groups.count())
 
         expect_pools = camelize(expect_event['pools'])
         res_pools = res_event['pools']
