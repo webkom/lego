@@ -75,7 +75,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             'unregistration_deadline', 'company', 'active_capacity', 'feedback_description',
             'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
             'payment_due_date', 'use_captcha', 'waiting_registration_count', 'tags', 'is_merged',
-            'heed_penalties', 'created_by'
+            'heed_penalties', 'created_by', 'is_abakom_only'
         )
         read_only = True
 
