@@ -21,45 +21,9 @@ class EventPermissionHandler(PermissionHandler):
     def has_perm(
         self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
-        """
-        Check permission on a object.
-        """
-        if obj is None and queryset is None:
-            raise ValueError('You have to at least provide one parameter, obj or queryset.')
-        elif self.force_object_permission_check and self.skip_object_permission:
-            raise ValueError('You cannot force and skip the permission checks at the same time!')
-
-        require_auth = self.require_auth(perm, obj)
-        authenticated = self.is_authenticated(user)
-
-        if require_auth and not authenticated:
+        if perm == LIST or (perm == VIEW and not obj):
             return False
-
-        if obj is not None:
-            model = obj.__class__
-        else:
-            model = queryset.model
-        if model is None:
-            raise ValueError('The model is null, cannot continue.')
-
-        if perm in self.safe_methods:
-            if obj:
-                created_by = self.created_by(user, obj)
-                if created_by:
-                    return True
-
-                if isinstance(obj, ObjectPermissionsModel) and obj.is_abakom_only:
-                    return authenticated and user.is_abakom_member
-
-                return True
-
-        if check_keyword_permissions:
-            required_keyword_permissions = self.required_keyword_permissions(model, perm)
-            has_perms = user.has_perms(required_keyword_permissions)
-            if has_perms:
-                return True
-
-        return False
+        return super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 
 
 class RegistrationPermissionHandler(PermissionHandler):

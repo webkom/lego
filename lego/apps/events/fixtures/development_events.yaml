@@ -1119,6 +1119,7 @@
     title: Helgesamling
     cover: test_event_cover.png
     created_by: 3
+    is_abakom_only: True
   model: events.Event
   pk: 48
 - fields:

@@ -16,7 +16,6 @@ from lego.apps.events.serializers.registrations import (
 )
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
-from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
