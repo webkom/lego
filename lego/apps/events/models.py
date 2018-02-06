@@ -585,6 +585,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
+    @property
+    def waiting_registration_count(self):
+        return self.waiting_registrations.count()
+
     def restricted_lookup(self):
         """
         Restricted Mail
@@ -628,6 +632,10 @@ class Pool(BasisModel):
     @property
     def is_activated(self):
         return self.activation_date <= timezone.now()
+
+    @property
+    def registration_count(self):
+        return self.registrations.count()
 
     def increment(self):
         self.counter += 1

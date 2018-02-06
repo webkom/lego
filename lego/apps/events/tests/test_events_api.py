@@ -196,19 +196,13 @@ class RetrieveEventsTestCase(APITestCase):
     def test_unauth_cant_see_registrations(self):
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertEqual(
-                pool['registrations'],
-                Pool.objects.get(id=pool['id']).registrations.count()
-            )
+            self.assertIsNone(pool.get('registrations', None))
 
     def test_auth_cant_see_registrations(self):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertEqual(
-                pool['registrations'],
-                Pool.objects.get(id=pool['id']).registrations.count()
-            )
+            self.assertIsNone(pool.get('registrations', None))
 
     def test_abakus_see_registrations(self):
         """Tests that a user that is allowed to register for the event can see the registrations"""
@@ -216,11 +210,7 @@ class RetrieveEventsTestCase(APITestCase):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertNotEqual(
-                pool['registrations'],
-                Pool.objects.get(id=pool['id']).registrations.count()
-            )
-            self.assertIsInstance(pool['registrations'], list)
+            self.assertIsNotNone(pool.get('registrations', None))
 
     def test_creator_see_registrations(self):
         self.client.force_authenticate(self.abakus_user)
@@ -229,11 +219,7 @@ class RetrieveEventsTestCase(APITestCase):
         event.save()
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.data['pools']:
-            self.assertNotEqual(
-                pool['registrations'],
-                Pool.objects.get(id=pool['id']).registrations.count()
-            )
-            self.assertIsInstance(pool['registrations'], list)
+            self.assertIsNotNone(pool.get('registrations', None))
 
     def test_without_auth_permission_abakom_only(self):
         """Test that unauth user cannot retrieve abakom only event"""

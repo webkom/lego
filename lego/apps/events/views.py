@@ -15,8 +15,8 @@ from lego.apps.events.exceptions import (
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (
-    EventAdministrateSerializer, EventCreateAndUpdateSerializer, EventReadSerializer,
-    EventReadUserDetailedSerializer
+    EventAdministrateSerializer, EventCreateAndUpdateSerializer,
+    EventReadAuthUserDetailedSerializer, EventReadSerializer, EventReadUserDetailedSerializer
 )
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
@@ -57,12 +57,21 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             queryset = Event.objects.all()
         return queryset
 
+    def user_should_see_regs(self, event, user):
+        return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
+               user.is_abakom_member or \
+               event.created_by.id == user.id
+
     def get_serializer_class(self):
         if self.action in ['create', 'partial_update', 'update']:
             return EventCreateAndUpdateSerializer
         if self.action == 'list':
             return EventReadSerializer
         if self.action == 'retrieve':
+            user = self.request.user
+            event = Event.objects.get(id=self.kwargs.get('pk', None))
+            if event and user and user.is_authenticated and self.user_should_see_regs(event, user):
+                return EventReadAuthUserDetailedSerializer
             return EventReadUserDetailedSerializer
 
         return super().get_serializer_class()

@@ -9,7 +9,8 @@ from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
-    PoolAdministrateSerializer, PoolCreateAndUpdateSerializer, PoolReadSerializer
+    PoolAdministrateSerializer, PoolCreateAndUpdateSerializer, PoolReadAuthSerializer,
+    PoolReadSerializer
 )
 from lego.apps.events.serializers.registrations import (
     RegistrationReadDetailedSerializer, RegistrationReadSerializer
@@ -61,9 +62,8 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     company = CompanyField(queryset=Company.objects.all())
-    pools = serializers.SerializerMethodField()
+    pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
-    waiting_registrations = serializers.SerializerMethodField()
     text = ContentSerializerField()
     created_by = PublicUserSerializer()
 
@@ -74,31 +74,10 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             'comment_target', 'start_time', 'end_time', 'merge_time', 'pools',
             'unregistration_deadline', 'company', 'active_capacity', 'feedback_description',
             'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
-            'payment_due_date', 'use_captcha', 'waiting_registrations', 'tags', 'is_merged',
+            'payment_due_date', 'use_captcha', 'waiting_registration_count', 'tags', 'is_merged',
             'heed_penalties', 'created_by'
         )
         read_only = True
-
-    def user_should_see_regs(self, event, user):
-        return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
-               user.is_abakom_member or \
-               event.created_by.id == user.id
-
-    def get_pools(self, obj):
-        request = self.context.get('request', None)
-        queryset = obj.pools.all()
-        if request and request.user.is_authenticated:
-            self.context['should_see_regs'] = self.user_should_see_regs(obj, request.user)
-        return PoolReadSerializer(queryset, context=self.context, many=True).data
-
-    def get_waiting_registrations(self, obj):
-        request = self.context.get('request', None)
-        if request and \
-                request.user.is_authenticated and \
-                self.user_should_see_regs(obj, request.user):
-            queryset = obj.waiting_registrations
-            return RegistrationReadSerializer(queryset, context=self.context, many=True).data
-        return obj.waiting_registrations.count()
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
@@ -115,6 +94,14 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
         request = self.context.get('request', None)
         if request:
             return obj.get_price(user=request.user)
+
+
+class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
+    pools = PoolReadAuthSerializer(many=True)
+    waiting_registrations = RegistrationReadSerializer(many=True)
+
+    class Meta(EventReadUserDetailedSerializer.Meta):
+        fields = EventReadUserDetailedSerializer.Meta.fields + ('waiting_registrations', )
 
 
 class EventAdministrateSerializer(EventReadSerializer):
