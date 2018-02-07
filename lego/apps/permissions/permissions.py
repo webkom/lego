@@ -86,8 +86,11 @@ class PermissionHandler:
         elif self.skip_object_permission:
             return False
 
-        if obj is not None and isinstance(obj, ObjectPermissionsModel):
-            return True
+        if obj is not None:
+            if isinstance(obj, ObjectPermissionsModel):
+                return True
+            if getattr(obj, 'created_by') == user:
+                return True
 
         if queryset is not None and issubclass(queryset.model, ObjectPermissionsModel):
             return True
@@ -133,6 +136,9 @@ class PermissionHandler:
 
             if isinstance(obj, ObjectPermissionsModel):
                 return self.has_object_permissions(user, perm, obj)
+
+        elif kwargs.get('pass_if_obj_none'):
+            return True
 
         return False
 

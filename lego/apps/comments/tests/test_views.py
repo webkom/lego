@@ -294,7 +294,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         response = self.client.put(_get_detail_url(self.test_comment.pk), self.modified_comment)
         comment = Comment.objects.get(pk=self.test_comment.pk)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(comment, self.test_comment)
 
 
@@ -326,7 +326,7 @@ class DeleteUsersAPITestCase(APITestCase):
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.delete(_get_detail_url(self.test_comment_2.pk))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_owner(self):
         user = User.objects.get(username='pleb')

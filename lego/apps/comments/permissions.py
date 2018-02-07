@@ -7,7 +7,6 @@ class CommentPermissionHandler(PermissionHandler):
     def has_perm(
         self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
-
         can_access_target = False
         if user.is_authenticated and perm == CREATE:
             """
@@ -18,7 +17,9 @@ class CommentPermissionHandler(PermissionHandler):
             if request:
                 can_access_target = self.check_target_permission(user, request)
 
-        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, pass_if_obj_none=True, **kwargs
+        )
 
         if has_perm:
             if perm == CREATE:

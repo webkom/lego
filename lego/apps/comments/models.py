@@ -4,7 +4,6 @@ from django.db import models
 
 from lego.apps.comments.permissions import CommentPermissionHandler
 from lego.apps.content.fields import ContentField
-from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel
 
@@ -14,7 +13,7 @@ class CommentManager(BasisModelManager):
         return super().get_queryset().select_related('created_by')
 
 
-class Comment(BasisModel, ObjectPermissionsModel):
+class Comment(BasisModel):
 
     text = ContentField(allow_images=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

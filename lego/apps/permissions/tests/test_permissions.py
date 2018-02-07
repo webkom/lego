@@ -107,7 +107,7 @@ class PermissionTestCase(APITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_edit_own(self):
         request = self.factory.put('/permissiontest/', self.test_update_object)
@@ -138,4 +138,4 @@ class PermissionTestCase(APITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
