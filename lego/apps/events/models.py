@@ -501,7 +501,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.registrations.filter(user=user).exclude(pool=None).first()
 
     def get_price(self, user):
-        if user.is_abakus_member:
+        if user.is_authenticated and user.is_abakus_member:
             return self.price_member
         return self.price_guest
 
