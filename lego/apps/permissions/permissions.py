@@ -77,7 +77,7 @@ class PermissionHandler:
         authenticated = self.is_authenticated(user)
 
         if not require_auth:
-            return perm in self.safe_methods
+            return True
         elif require_auth and not authenticated:
             return False
 
@@ -136,9 +136,6 @@ class PermissionHandler:
 
             if isinstance(obj, ObjectPermissionsModel):
                 return self.has_object_permissions(user, perm, obj)
-
-        elif kwargs.get('pass_if_obj_none'):
-            return True
 
         return False
 

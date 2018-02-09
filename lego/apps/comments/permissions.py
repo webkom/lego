@@ -4,6 +4,11 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
 class CommentPermissionHandler(PermissionHandler):
+
+    # force_queryset_filtering forces the has_perm to be called with an object.
+    # This is required to enable users to edit comments they have created.
+    force_queryset_filtering = True
+
     def has_perm(
         self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
@@ -17,9 +22,7 @@ class CommentPermissionHandler(PermissionHandler):
             if request:
                 can_access_target = self.check_target_permission(user, request)
 
-        has_perm = super().has_perm(
-            user, perm, obj, queryset, check_keyword_permissions, pass_if_obj_none=True, **kwargs
-        )
+        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 
         if has_perm:
             if perm == CREATE:
