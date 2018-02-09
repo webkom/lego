@@ -299,6 +299,9 @@ class CreateEventsTestCase(APITestCase):
             'is_abakom_only',
         ]:
             self.assertEqual(res_event[key], expect_event[key])
+        created_event = Event.objects.get(id=self.event_id)
+        self.assertFalse(created_event.require_auth)
+        self.assertEqual(created_event.can_view_groups.count(), 0)
 
         expect_pools = camelize(expect_event['pools'])
         res_pools = res_event['pools']
@@ -336,6 +339,11 @@ class CreateEventsTestCase(APITestCase):
             'is_abakom_only',
         ]:
             self.assertEqual(res_event[key], expect_event[key])
+        updated_event = Event.objects.get(id=self.event_id)
+        abakom_group = AbakusGroup.objects.get(name="Abakom")
+        self.assertTrue(updated_event.require_auth)
+        self.assertEqual(updated_event.can_view_groups.count(), 1)
+        self.assertEqual(updated_event.can_view_groups.first(), abakom_group)
 
     def test_event_update_without_perm(self):
         """Test updating event attributes without permissions is not allowed"""

@@ -113,8 +113,10 @@ class PermissionHandler:
 
         if require_auth and not authenticated:
             return False
-        elif not require_auth:
-            return perm in self.safe_methods
+        elif not require_auth and perm in self.safe_methods:
+            return True
+        if not authenticated:
+            return False
 
         if obj is not None:
             model = obj.__class__
