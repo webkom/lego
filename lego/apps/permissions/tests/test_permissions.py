@@ -139,3 +139,14 @@ class PermissionTestCase(APITestCase):
         response = view(request, pk=self.test_object.pk)
 
         self.assertEqual(response.status_code, 404)
+
+    def test_edit_object_with_require_auth_false(self):
+        """
+        Editing an object with require_auth=False should not be possible
+        """
+        self.test_object.require_auth = False
+        self.test_object.save()
+        response = self.client.put(
+            f'/permissiontest/{self.test_object.id}/', self.test_update_object
+        )
+        self.assertEqual(response.status_code, 404)

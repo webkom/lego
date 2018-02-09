@@ -20,8 +20,9 @@ def find_event_groups(user):
     if not user.has_perm(LIST, queryset):
         permission_handler = get_permission_handler(queryset.model)
         queryset = permission_handler.filter_queryset(user, queryset)
+
     groups = []
-    for event in queryset.all():
+    for event in queryset:
         groups.append(group_for_event(event))
 
     return groups

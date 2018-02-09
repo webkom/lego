@@ -86,8 +86,11 @@ class PermissionHandler:
         elif self.skip_object_permission:
             return False
 
-        if obj is not None and isinstance(obj, ObjectPermissionsModel):
-            return True
+        if obj is not None:
+            if isinstance(obj, ObjectPermissionsModel):
+                return True
+            if getattr(obj, 'created_by') == user:
+                return True
 
         if queryset is not None and issubclass(queryset.model, ObjectPermissionsModel):
             return True
@@ -108,10 +111,10 @@ class PermissionHandler:
         require_auth = self.require_auth(perm, obj)
         authenticated = self.is_authenticated(user)
 
-        if not require_auth:
-            return True
-        elif require_auth and not authenticated:
+        if require_auth and not authenticated:
             return False
+        elif not require_auth:
+            return perm in self.safe_methods
 
         if obj is not None:
             model = obj.__class__
