@@ -47,7 +47,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     company = models.ForeignKey(
         Company, related_name='events', null=True, on_delete=models.SET_NULL
     )
-    is_abakom_only = models.BooleanField(default=False)
 
     use_captcha = models.BooleanField(default=True)
     feedback_description = models.CharField(max_length=255, blank=True)
@@ -588,6 +587,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def waiting_registration_count(self):
         return self.waiting_registrations.count()
+
+    @property
+    def is_abakom_only(self):
+        return self.require_auth and \
+               self.can_view_groups.count() == 1 and \
+               self.can_view_groups.filter(name="Abakom").exists()
 
     def restricted_lookup(self):
         """

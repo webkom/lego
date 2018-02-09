@@ -1,6 +1,6 @@
 from structlog import get_logger
 
-from lego.apps.permissions.constants import CREATE, DELETE, EDIT, LIST, VIEW
+from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 
 log = get_logger()
@@ -9,20 +9,6 @@ log = get_logger()
 class EventPermissionHandler(PermissionHandler):
 
     perms_without_object = [CREATE, 'administrate']
-    authentication_map = {VIEW: False, LIST: False}
-    force_queryset_filtering = True
-
-    def filter_queryset(self, user, queryset, **kwargs):
-        if not user.is_authenticated or not user.is_abakom_member:
-            return queryset.filter(is_abakom_only=False)
-        return queryset
-
-    def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
-    ):
-        if perm == LIST or (perm == VIEW and not obj):
-            return False
-        return super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
 
 
 class RegistrationPermissionHandler(PermissionHandler):

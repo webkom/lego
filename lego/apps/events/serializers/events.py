@@ -17,6 +17,7 @@ from lego.apps.events.serializers.registrations import (
 )
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
+from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
@@ -133,16 +134,24 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
     def create(self, validated_data):
         pools = validated_data.pop('pools', [])
+        is_abakom_only = validated_data.pop('is_abakom_only', False)
         with transaction.atomic():
             event = super().create(validated_data)
             for pool in pools:
                 permission_groups = pool.pop('permission_groups')
                 created_pool = Pool.objects.create(event=event, **pool)
                 created_pool.permission_groups.set(permission_groups)
+            if is_abakom_only:
+                event.require_auth = True
+                event.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
+            else:
+                event.require_auth = False
+            event.save()
             return event
 
     def update(self, instance, validated_data):
         pools = validated_data.pop('pools', None)
+        is_abakom_only = validated_data.pop('is_abakom_only', False)
         with transaction.atomic():
             if pools is not None:
                 existing_pools = list(instance.pools.all().values_list('id', flat=True))
@@ -161,6 +170,13 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     created_pool.permission_groups.set(permission_groups)
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
+            if is_abakom_only and not instance.is_abakom_only:
+                instance.require_auth = True
+                instance.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
+            elif not is_abakom_only and instance.is_abakom_only:
+                instance.require_auth = False
+                instance.can_view_groups.remove(AbakusGroup.objects.get(name="Abakom"))
+                instance.save()
             return super().update(instance, validated_data)
 
 

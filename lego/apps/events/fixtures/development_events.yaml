@@ -10,6 +10,7 @@
     price_member: 50
     price_guest: 100
     created_by: 3
+    require_auth: False
     cover: test_event_cover.png
   model: events.Event
   pk: 1
@@ -24,6 +25,7 @@
     title: Knowit AS
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 2
 - fields:
@@ -38,6 +40,7 @@
     title: Accenture
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 3
 - fields:
@@ -50,6 +53,7 @@
     title: 'Netlight '
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 4
 - fields:
@@ -62,6 +66,7 @@
     title: EY (tidligere Ernst & Young)
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 5
 - fields:
@@ -75,6 +80,7 @@
     cover: test_event_cover.png
     company: 2
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 6
 - fields:
@@ -88,6 +94,7 @@
     cover: test_event_cover.png
     company: 2
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 7
 - fields:
@@ -114,6 +121,7 @@
     cover: test_event_cover.png
     company: 1
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 8
 - fields:
@@ -126,6 +134,7 @@
     title: Capra Consulting
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 9
 - fields:
@@ -138,6 +147,7 @@
     title: 'DIPS '
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 10
 - fields:
@@ -156,6 +166,7 @@
     title: Immatrikuleringsball
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 11
 - fields:
@@ -170,6 +181,7 @@
     title: Mesan
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 12
 - fields:
@@ -182,6 +194,7 @@
     title: Deloitte AS
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 13
 - fields:
@@ -196,6 +209,7 @@
     title: Abakus' sommerfest 2016
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 14
 - fields:
@@ -209,6 +223,7 @@
     title: Eksamensfest
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 15
 - fields:
@@ -231,6 +246,7 @@
     title: Fadderpåmelding Kommunikasjonsteknologi
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 16
 - fields:
@@ -253,6 +269,7 @@
     title: Fadderpåmelding Datateknologi
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 17
 - fields:
@@ -273,6 +290,7 @@
     title: Eksamensgrilling
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 18
 - fields:
@@ -298,6 +316,7 @@
     title: 17. mai-frokost
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 19
 - fields:
@@ -316,6 +335,7 @@
     title: Eksamenskurs i Java
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 20
 - fields:
@@ -399,6 +419,7 @@
     title: Sikkerhet og Sårbarhet
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 21
 - fields:
@@ -416,6 +437,7 @@
     title: Eksamensforelesning i Krets- og digitalteknikk
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 22
 - fields:
@@ -437,6 +459,7 @@
     title: Fadderpåmelding for masterstudenter
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 23
 - fields:
@@ -458,6 +481,7 @@
     title: Fundator
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 24
 - fields:
@@ -479,6 +503,7 @@
     title: DNV GL
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 25
 - fields:
@@ -507,6 +532,7 @@
     title: Fagdag i Mobil utvikling
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 26
 - fields:
@@ -539,6 +565,7 @@
     title: Lightning Talks
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 27
 - fields:
@@ -551,6 +578,7 @@
       \n\r\n\r\nSted: Drivhuset\r\n\r\nTidspunkt: 18:00</p>"
     title: Abellan April 2016
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 28
 - fields:
@@ -577,6 +605,7 @@
     title: Casino Royale
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 29
 - fields:
@@ -603,6 +632,7 @@
     title: Infomøte for faddere
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 30
 - fields:
@@ -626,6 +656,7 @@
     title: Fiesta!
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 31
 - fields:
@@ -646,6 +677,7 @@
     cover: test_event_cover.png
     company: 1
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 32
 - fields:
@@ -671,6 +703,7 @@
     title: IT-Sikkerhet med Knowit
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 33
 - fields:
@@ -707,6 +740,7 @@
     title: KiD
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 34
 - fields:
@@ -742,6 +776,7 @@
     price_guest: 35000
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 35
 - fields:
@@ -761,6 +796,7 @@
     title: DnB
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 36
 - fields:
@@ -786,6 +822,7 @@
     title: Funksjonell programmering i Javascript med React og Redux  3 av 3
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 37
 - fields:
@@ -823,6 +860,7 @@
     title: Webutvikling101 3 av 3
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 38
 - fields:
@@ -862,6 +900,7 @@
     title: Lego Mindstorms med Itera
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
     tags:
     - øl
     - java
@@ -887,6 +926,7 @@
     title: Teknologivennefest
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
     tags:
     - øl
     - brus
@@ -914,6 +954,7 @@
     title: En reise hvor IT-infrastruktur blir kode
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
     tags:
     - web
     - microsoft
@@ -940,6 +981,7 @@
     title: Kaffekurs hos Dromedar Kaffebar
     created_by: 3
     cover: test_event_cover.png
+    require_auth: False
   model: events.Event
   pk: 42
 - fields:
@@ -968,6 +1010,7 @@
     title: StartIT
     created_by: 3
     cover: test_event_cover.png
+    require_auth: False
   model: events.Event
   pk: 43
 - fields:
@@ -994,6 +1037,7 @@
     title: Funksjonell programmering i Javascript med React og Redux 2 av 3
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 44
 - fields:
@@ -1032,6 +1076,7 @@
     title: Webutvikling101 2 av 3
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 45
 - fields:
@@ -1058,6 +1103,7 @@
     title: Acando
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 46
 - fields:
@@ -1093,6 +1139,7 @@
     title: 'HTML5 Pixel-Magic '
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 47
 - fields:
@@ -1119,7 +1166,9 @@
     title: Helgesamling
     cover: test_event_cover.png
     created_by: 3
-    is_abakom_only: True
+    can_view_groups:
+    - - Abakom
+    require_auth: True
   model: events.Event
   pk: 48
 - fields:
@@ -1175,6 +1224,7 @@
     title: Generalforsamling
     cover: test_event_cover.png
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 49
 - fields:
@@ -1211,5 +1261,6 @@
     cover: test_event_cover.png
     company: 1
     created_by: 3
+    require_auth: False
   model: events.Event
   pk: 50
