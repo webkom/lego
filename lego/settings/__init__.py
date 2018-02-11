@@ -2,7 +2,7 @@ import os
 import sys
 
 TESTING = 'test' in sys.argv[:2]
-DAPHNE_SERVER = 'daphne' in sys.argv
+WS_SERVER = 'runworker' in sys.argv or 'daphne' in sys.argv
 
 from .base import *  # noqa
 from .lego import *  # noqa
