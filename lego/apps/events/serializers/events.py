@@ -17,7 +17,6 @@ from lego.apps.events.serializers.registrations import (
 )
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
-from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
@@ -141,12 +140,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                 permission_groups = pool.pop('permission_groups')
                 created_pool = Pool.objects.create(event=event, **pool)
                 created_pool.permission_groups.set(permission_groups)
-            if is_abakom_only:
-                event.require_auth = True
-                event.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
-            else:
-                event.require_auth = False
-            event.save()
+            event.set_abakom_only(is_abakom_only)
             return event
 
     def update(self, instance, validated_data):
@@ -170,13 +164,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     created_pool.permission_groups.set(permission_groups)
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
-            if is_abakom_only and not instance.is_abakom_only:
-                instance.require_auth = True
-                instance.can_view_groups.add(AbakusGroup.objects.get(name="Abakom"))
-            elif not is_abakom_only and instance.is_abakom_only:
-                instance.require_auth = False
-                instance.can_view_groups.remove(AbakusGroup.objects.get(name="Abakom"))
-                instance.save()
+            instance.set_abakom_only(is_abakom_only)
             return super().update(instance, validated_data)
 
 
