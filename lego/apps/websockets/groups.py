@@ -1,6 +1,9 @@
+from channels import Group
+
+
 def group_for_user(user):
-    return f'user-{user.pk}'
+    return Group(f'user-{user.pk}')
 
 
 def group_for_event(event):
-    return f'event-{event.pk}'
+    return Group(f'event-{event.pk}')
