@@ -85,10 +85,14 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_PERSONAL
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        following_events = Event.objects.filter(
-            followers__follower_id=request.user.id,
-            end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
-        ).all()
+        permission_handler = get_permission_handler(Event)
+        following_events = permission_handler.filter_queryset(
+            request.user,
+            Event.objects.filter(
+                followers__follower_id=request.user.id,
+                end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
+            ).all()
+        )
 
         permission_handler = get_permission_handler(Meeting)
         meetings = permission_handler.filter_queryset(
@@ -109,7 +113,11 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_REGISTRATIONS
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        events = Event.objects.all().filter(end_time__gt=timezone.now())
+        permission_handler = get_permission_handler(Event)
+        events = permission_handler.filter_queryset(
+            request.user,
+            Event.objects.all().filter(end_time__gt=timezone.now())
+        )
 
         for event in events:
             reg_time = event.get_earliest_registration_time(request.user)
@@ -135,8 +143,12 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_EVENTS
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        events = Event.objects.all().filter(
-            end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
+        permission_handler = get_permission_handler(Event)
+        events = permission_handler.filter_queryset(
+            request.user,
+            Event.objects.all().filter(
+                end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
+            )
         )
 
         utils.add_events_to_ical_feed(feed, events)
