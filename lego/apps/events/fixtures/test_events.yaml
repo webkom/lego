@@ -9,8 +9,8 @@
     company: 1
     start_time: '2118-09-01T13:20:30+03:00'
     end_time: '2118-09-01T15:20:30+03:00'
-    can_view_groups:
-      - - Abakus
+    created_by: 2
+    require_auth: False
 
 - model: events.Event
   pk: 2
@@ -24,8 +24,8 @@
     start_time: '2118-09-02T13:20:30+03:00'
     end_time: '2118-09-02T15:20:30+03:00'
     pinned: true
-    can_view_groups:
-      - - Abakus
+    created_by: 1
+    require_auth: False
 
 - model: events.Event
   pk: 3
@@ -38,8 +38,8 @@
     company: 3
     start_time: '2118-09-03T13:20:30+03:00'
     end_time: '2118-09-03T15:20:30+03:00'
-    can_view_groups:
-      - - Webkom
+    created_by: 1
+    require_auth: False
 
 - model: events.Event
   pk: 4
@@ -51,15 +51,15 @@
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
-    can_view_groups:
-      - - Abakus
+    created_by: 1
+    require_auth: False
 
 - model: events.Event
   pk: 5
   fields:
     title: POOLS_AND_PRICED
-    description: TestIngress1
-    text: TestText1
+    description: TestIngress5
+    text: TestText5
     event_type: 0
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
@@ -69,8 +69,22 @@
     price_guest: 15000
     payment_due_date: '2011-09-01T13:20:30+03:00'
     created_by: 1
+    require_auth: False
+
+- model: events.Event
+  pk: 6
+  fields:
+    title: ABAKOM_ONLY
+    description: TestIngress6
+    text: TestText6
+    event_type: 0
+    location: R1
+    start_time: '2011-09-01T13:20:30+03:00'
+    end_time: '2012-09-01T13:20:30+03:00'
+    created_by: 3
+    require_auth: True
     can_view_groups:
-      - - Abakus
+    - - Abakom
 
 - model: events.Pool
   pk: 1

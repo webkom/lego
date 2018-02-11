@@ -584,6 +584,26 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             status__in=[constants.SUCCESS_REGISTER, constants.FAILURE_UNREGISTER]
         )
 
+    @property
+    def waiting_registration_count(self):
+        return self.waiting_registrations.count()
+
+    @property
+    def is_abakom_only(self):
+        return self.require_auth and \
+               self.can_view_groups.count() == 1 and \
+               self.can_view_groups.filter(name="Abakom").exists()
+
+    def set_abakom_only(self, abakom_only):
+        abakom_group = AbakusGroup.objects.get(name="Abakom")
+        if abakom_only:
+            self.require_auth = True
+            self.can_view_groups.add(abakom_group)
+        else:
+            self.require_auth = False
+            self.can_view_groups.remove(abakom_group)
+        self.save()
+
     def restricted_lookup(self):
         """
         Restricted Mail
@@ -627,6 +647,10 @@ class Pool(BasisModel):
     @property
     def is_activated(self):
         return self.activation_date <= timezone.now()
+
+    @property
+    def registration_count(self):
+        return self.registrations.count()
 
     def increment(self):
         self.counter += 1
