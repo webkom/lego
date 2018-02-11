@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from lego.apps.events.models import Event, Pool
 from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting
-from lego.apps.permissions.constants import EDIT, VIEW
+from lego.apps.permissions.constants import VIEW
 from lego.apps.users.models import AbakusGroup, User
 
 
