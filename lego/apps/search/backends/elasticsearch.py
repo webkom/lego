@@ -135,6 +135,9 @@ class ElasticsearchBackend(SearchBacked):
         self._clear()
 
     def search(self, query, content_types=None, filters=None):
+        """
+        TODO: Implement content type filtering
+        """
         if not filters:
             search_query = {
                 'query': {
@@ -165,7 +168,7 @@ class ElasticsearchBackend(SearchBacked):
                 }
             }
 
-        result = self._search(search_query, content_types)
+        result = self._search(search_query)
 
         def parse_result(hit):
             source = hit['_source']
