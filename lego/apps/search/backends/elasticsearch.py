@@ -69,14 +69,8 @@ class ElasticsearchBackend(SearchBacked):
             pass
         self.connection.indices.create(settings.SEARCH_INDEX)
 
-    def _search(self, payload, content_types=None):
-        types = None
-        if content_types:
-            types = ','.join(content_types)
-        return self.connection.search(settings.SEARCH_INDEX, doc_type=types, body=payload)
-
-    def _suggest(self, payload):
-        return self.connection.suggest(payload, index=settings.SEARCH_INDEX)
+    def _search(self, payload):
+        return self.connection.search(settings.SEARCH_INDEX, doc_type='document', body=payload)
 
     def _refresh_template(self, template_name='lego-search'):
         context = {'index': self._index_name()}
@@ -202,7 +196,12 @@ class ElasticsearchBackend(SearchBacked):
             }
         }
 
-        result = self._search(autocomplete_query, content_types)
+        if content_types:
+            autocomplete_query['suggest']['autocomplete']['completion']['contexts'] = {
+                'content_type': content_types
+            }
+
+        result = self._search(autocomplete_query)
 
         def parse_result(hit):
             source = hit['_source']
