@@ -3,10 +3,23 @@ import os
 
 import stripe
 from cassandra import ConsistencyLevel
+from django.db import connection
 
 from .base import CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS
 
 logging.disable(logging.CRITICAL)
+
+# Disable migrations for all apps:
+MIGRATION_MODULES = {
+    'auth': None,
+    'contenttypes': None,
+    'default': None,
+    'sessions': None,
+    'tests': None,
+}
+
+for app in INSTALLED_APPS:
+    MIGRATION_MODULES[app.split('.')[-1]] = None
 
 DEBUG = False
 SERVER_URL = 'http://127.0.0.1:8000'
@@ -15,6 +28,9 @@ SERVER_EMAIL = 'Abakus Webkom <webkom@abakus.no>'
 
 SECRET_KEY = 'secret'
 stripe.api_key = os.environ.get('STRIPE_TEST_KEY')
+
+# Work-around for a weird bug where the tests would crash with -v=3 (verbosity):
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'oauth2_provider.AccessToken'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
