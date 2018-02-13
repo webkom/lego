@@ -6,7 +6,7 @@ import stripe
 from cassandra import ConsistencyLevel
 
 from lego.settings import (
-    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE,
+    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, ELASTIC_APM, INSTALLED_APPS, MIDDLEWARE,
     PUSH_NOTIFICATIONS_SETTINGS
 )
 
@@ -47,7 +47,11 @@ THUMBOR_SECURITY_KEY = env('THUMBOR_SECURITY_KEY')
 # Sentry
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 SENTRY_DSN = env('SENTRY')
-RAVEN_CONFIG = {'dsn': SENTRY_DSN, 'release': env('RELEASE', default='latest')}
+RAVEN_CONFIG = {
+    'dsn': SENTRY_DSN,
+    'release': env('RELEASE', default='latest'),
+    'environment': ENVIRONMENT_NAME
+}
 INSTALLED_APPS += [
     'raven.contrib.django.raven_compat',
 ]
@@ -120,3 +124,7 @@ PUSH_NOTIFICATIONS_SETTINGS['APNS_USE_SANDBOX'] = env('APNS_USE_SANDBOX', defaul
 PUSH_NOTIFICATIONS_SETTINGS['APNS_CERTIFICATE'] = env('APNS_CERTIFICATE')
 PUSH_NOTIFICATIONS_SETTINGS['FCM_API_KEY'] = env('FCM_API_KEY', default=None)
 PUSH_NOTIFICATIONS_SETTINGS['GCM_API_KEY'] = env('GCM_API_KEY', default=None)
+
+# APM
+ELASTIC_APM['ENVIRONMENT'] = ENVIRONMENT_NAME
+ELASTIC_APM['SERVER_URL'] = env('ELASTIC_APM_URL')

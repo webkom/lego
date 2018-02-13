@@ -1,19 +1,6 @@
-version: '2'
+version: '3.5'
 
 services:
-  elasticsearch:
-    image: 'elasticsearch:5'
-    ports:
-     - '127.0.0.1:9200:9200'
-    environment:
-      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
-
-  kibana:
-    image: 'kibana:5'
-    ports:
-     - '127.0.0.1:5601:5601'
-    links:
-     - elasticsearch
 
   postgres:
     image: postgres:9.5
@@ -80,3 +67,34 @@ services:
       LDAP_TLS_KEY_FILENAME: "ldap.key"
       LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
       LDAP_TLS_ENFORCE: "false"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - HEAP_SIZE=1g
+    ports:
+      - "127.0.0.1:9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.1
+    links:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      - elasticsearch
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:6.2.1
+    environment:
+      - output.elasticsearch.hosts=['http://elasticsearch:9200']
+      - apm-server.host="0.0.0.0:8200"
+    command: apm-server -e -E apm-server.host="0.0.0.0:8200"
+    ports:
+      - "127.0.0.1:8200:8200"
+    depends_on:
+      - elasticsearch

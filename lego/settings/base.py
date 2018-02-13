@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'channels',
     'django_filters',
     'push_notifications',
+    'elasticapm.contrib.django',
     'lego.utils',
     'lego.apps.users',
     'lego.apps.permissions',
@@ -57,6 +58,12 @@ INSTALLED_APPS = [
     'lego.apps.email',
 ]
 
+ELASTIC_APM = {
+    'DEBUG': True,
+    'SERVICE_NAME': 'lego',
+    'SECRET_TOKEN': '',
+}
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = ('lego.apps.permissions.backends.LegoPermissionBackend', )
@@ -78,6 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 MIDDLEWARE = [
+    'elasticapm.contrib.django.middleware.TracingMiddleware',
     'lego.utils.middleware.StatsDBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
