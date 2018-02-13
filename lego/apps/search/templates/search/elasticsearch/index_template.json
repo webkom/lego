@@ -41,7 +41,7 @@
           "query": {
             "mapping": {
               "type": "text",
-              "index": "analyzed",
+              "index": true,
               "analyzer": "norwegian"
             },
             "match": "*",
@@ -57,10 +57,9 @@
           }
         }
       ],
-      "_all": {
-        "enabled": true
-      },
       "properties": {
+        "id_": { "type": "keyword" },
+        "type_": { "type": "keyword" },
         "autocomplete": {
           "type" : "completion",
           "analyzer" : "standard",

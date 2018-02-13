@@ -69,6 +69,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 INSTALLED_APPS += ('lego.apps.permissions.tests', )
 INSTALLED_APPS.remove('django_extensions')
 INSTALLED_APPS.remove('corsheaders')
+INSTALLED_APPS.remove('elasticapm.contrib.django')
 
 SLACK_TEAM = ''
 SLACK_TOKEN = ''
