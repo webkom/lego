@@ -18,7 +18,7 @@ class Survey(BasisModel):
         return self.template_type is not None
 
 
-class Question(BasisModel):
+class Question(models.Model):
     class Meta:
         ordering = ['relative_index']
         unique_together = ('survey', 'relative_index')
@@ -30,7 +30,7 @@ class Question(BasisModel):
     relative_index = models.IntegerField(default=1)
 
 
-class Option(BasisModel):
+class Option(models.Model):
     question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
     option_text = models.TextField(max_length=255, default='')
 

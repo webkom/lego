@@ -5,6 +5,7 @@
     unregistration_date: null
     user: 1
     status: 'SUCCESS_REGISTER'
+    presence: 'PRESENT'
     charge_status: 'succeeded'
   model: events.Registration
   pk: 1

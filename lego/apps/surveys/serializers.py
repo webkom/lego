@@ -1,3 +1,4 @@
+from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 
 from lego.apps.events.serializers.events import EventReadSerializer
@@ -87,7 +88,7 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
             for answer in answers:
                 question = answer.pop('question')
 
-                if getattr(question, 'question_type') is QUESTION_TYPES.SINGLE_CHOICE and \
+                if question.get('question_type', None) is QUESTION_TYPES.SINGLE_CHOICE and \
                         len(answer['selected_options']) > 1:
                     raise exceptions.ValidationError(
                         'You cannot select multiple options for '
@@ -137,20 +138,38 @@ class SurveyUpdateSerializer(BasisModelSerializer):
         model = Survey
         fields = ('id', 'title', 'active_from', 'template_type', 'event', 'questions')
 
+    @atomic
     def update(self, instance, validated_data):
         questions = validated_data.pop('questions')
-        for key, value in validated_data.items():
-            setattr(instance, key, value)
-        instance.save()
 
+        # Update the regular survey fields that aren't questions or options first
+        super().update(instance, validated_data)
+
+        # Delete questions that aren't in the received list
+        for old_question in instance.questions.all():
+            questions_with_ids = filter(lambda q: 'id' in q, questions)
+            existing_question_ids = map(lambda q: q['id'], questions_with_ids)
+            if old_question.id not in existing_question_ids:
+                old_question.delete()
+
+        # Add or update question, depending on whether the received option has an id
         for question in questions:
             options = question.pop('options') if 'options' in question else None
             if 'id' in question:
                 Question.objects.filter(id=question['id']).update(**question)
+                new_question = Question.objects.get(id=question['id'])
             else:
                 new_question = Question.objects.create(survey=instance, **question)
 
+            # Add or update option, depending on whether the received option has an id
             if options is not None:
+                # Delete options that aren't in the received list
+                for old_option in new_question.options.all():
+                    options_with_ids = filter(lambda o: 'id' in o, options)
+                    new_option_ids = map(lambda o: o['id'], options_with_ids)
+                    if old_option.id not in new_option_ids:
+                        old_option.delete()
+
                 for option in options:
                     if 'id' in option:
                         Option.objects.filter(id=option['id']).update(**option)
