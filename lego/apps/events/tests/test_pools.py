@@ -1,13 +1,13 @@
 from datetime import timedelta
 
-from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.models import Event, Pool
 from lego.apps.users.models import AbakusGroup
+from lego.utils.test_utils import BaseTestCase
 
 
-class PoolMethodTest(TestCase):
+class PoolMethodTest(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]
@@ -31,7 +31,7 @@ class PoolMethodTest(TestCase):
         self.assertEqual(len(event.pools.all()), number_of_pools - 1)
 
 
-class PoolCapacityTestCase(TestCase):
+class PoolCapacityTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]

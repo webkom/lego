@@ -1,13 +1,12 @@
 from unittest import mock
 
-from django.test import TestCase
-
 from lego.apps.files.exceptions import UnknownFileType
 from lego.apps.files.models import File
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class FileModelTestCase(TestCase):
+class FileModelTestCase(BaseTestCase):
 
     fixtures = ['test_users.yaml', 'test_files.yaml']
 

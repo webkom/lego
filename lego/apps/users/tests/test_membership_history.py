@@ -1,11 +1,11 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.users.constants import GROUP_OTHER
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class MembershipHistoryViewSetTestCase(APITestCase):
+class MembershipHistoryViewSetTestCase(BaseAPITestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 

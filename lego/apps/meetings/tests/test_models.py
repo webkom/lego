@@ -1,10 +1,9 @@
-from django.test import TestCase
-
 from lego.apps.meetings.models import Meeting
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class MeetingTestCase(TestCase):
+class MeetingTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):

@@ -1,5 +1,6 @@
 from unittest import mock
 
+from django.test import tag
 from stream_framework.feed_managers.base import add_operation, remove_operation
 
 from lego.apps.comments.models import Comment
@@ -12,6 +13,7 @@ from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.feed.verbs import CommentVerb
 
 
+@tag('feed')
 class ManagerTestCase(FeedTestBase):
 
     fixtures = [

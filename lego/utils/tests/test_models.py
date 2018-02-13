@@ -1,11 +1,10 @@
 from unittest import mock
 
-from django.test import TestCase
-
 from lego.utils.models import PersistentModel, TimeStampModel
+from lego.utils.test_utils import BaseTestCase
 
 
-class TimeStampModelTestCase(TestCase):
+class TimeStampModelTestCase(BaseTestCase):
     def setUp(self):
         self.instance = TimeStampModel()
 
@@ -17,7 +16,7 @@ class TimeStampModelTestCase(TestCase):
         mock_save.assert_called_once_with()
 
 
-class PersistentModelTestCase(TestCase):
+class PersistentModelTestCase(BaseTestCase):
     def setUp(self):
         self.instance = PersistentModel()
 

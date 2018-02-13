@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class TestPasswordChange(APITestCase):
+class TestPasswordChange(BaseAPITestCase):
 
     fixtures = ['test_users.yaml']
 

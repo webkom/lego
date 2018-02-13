@@ -1,11 +1,12 @@
-from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from lego.apps.permissions.tests.models import TestModel
 from lego.apps.permissions.tests.view import TestViewSet
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class PermissionTestCase(APITestCase):
+class PermissionTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     test_update_object = {'name': 'new_test_object'}

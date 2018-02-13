@@ -1,13 +1,12 @@
-from django.test import TestCase
-
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.notifications.constants import EMAIL, PUSH, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.users.models import AbakusGroup
+from lego.utils.test_utils import BaseTestCase
 
 
-class RestrictedMailModelTestCase(TestCase):
+class RestrictedMailModelTestCase(BaseTestCase):
 
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',

@@ -1,12 +1,11 @@
 from unittest import mock
 
-from django.test import TestCase
-
 from lego.apps.users.models import User
 from lego.utils import content_types
+from lego.utils.test_utils import BaseTestCase
 
 
-class ContentTypesTestCase(TestCase):
+class ContentTypesTestCase(BaseTestCase):
     def setUp(self):
         self.instance = mock.Mock()
         self.instance.pk = '10'

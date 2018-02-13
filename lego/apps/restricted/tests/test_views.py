@@ -1,11 +1,11 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class RestrictedViewTestCase(APITestCase):
+class RestrictedViewTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
         'test_restricted_mails.yaml'

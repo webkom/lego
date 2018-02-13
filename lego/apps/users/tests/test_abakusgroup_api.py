@@ -1,5 +1,4 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.users import constants
 from lego.apps.users.constants import LEADER
@@ -7,6 +6,7 @@ from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.abakus_groups import (
     DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
 )
+from lego.utils.test_utils import BaseAPITestCase
 
 _test_group_data = {
     'name': 'testgroup',
@@ -35,7 +35,7 @@ def _get_detail_url(pk):
     return reverse('api:v1:abakusgroup-detail', kwargs={'pk': pk})
 
 
-class ListAbakusGroupAPITestCase(APITestCase):
+class ListAbakusGroupAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -61,7 +61,7 @@ class ListAbakusGroupAPITestCase(APITestCase):
         self.successful_list(self.user)
 
 
-class RetrieveAbakusGroupAPITestCase(APITestCase):
+class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -116,7 +116,7 @@ class RetrieveAbakusGroupAPITestCase(APITestCase):
         self.assertEqual(keys, set(PublicAbakusGroupSerializer.Meta.fields))
 
 
-class CreateAbakusGroupAPITestCase(APITestCase):
+class CreateAbakusGroupAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -173,7 +173,7 @@ class CreateAbakusGroupAPITestCase(APITestCase):
         )
 
 
-class UpdateAbakusGroupAPITestCase(APITestCase):
+class UpdateAbakusGroupAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -223,7 +223,7 @@ class UpdateAbakusGroupAPITestCase(APITestCase):
         self.successful_update(self.leader)
 
 
-class InterestGroupAPITestCase(APITestCase):
+class InterestGroupAPITestCase(BaseAPITestCase):
     fixtures = ['initial_files.yaml', 'test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):

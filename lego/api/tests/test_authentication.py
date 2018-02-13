@@ -1,10 +1,10 @@
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class JSONWebTokenTestCase(APITestCase):
+class JSONWebTokenTestCase(BaseAPITestCase):
     fixtures = ['initial_files.yaml', 'test_users.yaml']
 
     def setUp(self):

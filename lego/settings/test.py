@@ -3,7 +3,6 @@ import os
 
 import stripe
 from cassandra import ConsistencyLevel
-from django.db import connection
 
 from .base import CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS
 

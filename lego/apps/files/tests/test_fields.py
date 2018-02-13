@@ -1,13 +1,13 @@
 from unittest import mock
 
-from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
 from lego.apps.files.fields import FileField
 from lego.apps.files.models import File
+from lego.utils.test_utils import BaseTestCase
 
 
-class FileFieldTestCase(TestCase):
+class FileFieldTestCase(BaseTestCase):
 
     fixtures = ['test_users.yaml', 'test_files.yaml']
 

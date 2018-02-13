@@ -1,15 +1,15 @@
 from datetime import timedelta
 
-from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup
+from lego.utils.test_utils import BaseTestCase
 
 from .utils import get_dummy_users
 
 
-class EventMethodTest(TestCase):
+class EventMethodTest(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]

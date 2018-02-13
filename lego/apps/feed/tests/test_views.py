@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.test import tag
 from rest_framework import status
 from rest_framework.test import APITestCase
 from stream_framework.storage.redis.connection import get_redis_connection
@@ -14,6 +15,7 @@ from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import User
 
 
+@tag('feed')
 class NotificationViewsTestCase(APITestCase, FeedTestBase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']

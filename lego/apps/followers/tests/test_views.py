@@ -1,11 +1,11 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class FollowEventViewTestCase(APITestCase):
+class FollowEventViewTestCase(BaseAPITestCase):
 
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
@@ -55,7 +55,7 @@ class FollowEventViewTestCase(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class FollowUserViewTestCase(APITestCase):
+class FollowUserViewTestCase(BaseAPITestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_followuser.yaml']
     url = '/api/v1/followers-user/'
@@ -102,7 +102,7 @@ class FollowUserViewTestCase(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class FollowCompanyViewTestCase(APITestCase):
+class FollowCompanyViewTestCase(BaseAPITestCase):
 
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',

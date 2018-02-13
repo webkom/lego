@@ -1,8 +1,9 @@
 from django.conf import settings
-from django.test import TestCase
+
+from lego.utils.test_utils import BaseTestCase
 
 
-class VersionRedirectTestCase(TestCase):
+class VersionRedirectTestCase(BaseTestCase):
     def test_redirect(self):
         response = self.client.get('/api/users/')
         self.assertEqual(response.status_code, 302)

@@ -2,17 +2,17 @@ from unittest import skipIf
 
 import stripe
 from celery import chain
-from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
 from lego.apps.events.tasks import async_payment, registration_payment_save
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 from .utils import create_token
 
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
-class StripePaymentTestCase(APITestCase):
+class StripePaymentTestCase(BaseAPITestCase):
     """
     Testing cards used:
     https://stripe.com/docs/testing#cards

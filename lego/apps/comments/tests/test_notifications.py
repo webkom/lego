@@ -1,15 +1,14 @@
 from unittest.mock import patch
 
-from django.test import TestCase
-
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
 from lego.apps.comments.notifications import CommentNotification, CommentReplyNotification
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
 @patch('lego.utils.email.django_send_mail')
-class CommentNotificationTestCase(TestCase):
+class CommentNotificationTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_comments.yaml', 'test_users.yaml', 'test_articles.yaml',
         'initial_files.yaml'
@@ -52,7 +51,7 @@ class CommentNotificationTestCase(TestCase):
 
 
 @patch('lego.utils.email.django_send_mail')
-class CommentReplyNotificationTestCase(TestCase):
+class CommentReplyNotificationTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_comments.yaml', 'test_users.yaml', 'test_articles.yaml',
         'initial_files.yaml'

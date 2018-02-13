@@ -4,14 +4,13 @@ from unittest import mock
 from django.contrib.auth import authenticate
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.users import MeSerializer
-from lego.utils.test_utils import fake_time
+from lego.utils.test_utils import BaseAPITestCase, fake_time
 
 _test_user_data = {
     'username': 'new_testuser',
@@ -41,7 +40,7 @@ def get_test_user():
     return user
 
 
-class ListUsersAPITestCase(APITestCase):
+class ListUsersAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -75,7 +74,7 @@ class ListUsersAPITestCase(APITestCase):
         self.successful_list(self.with_permission)
 
 
-class RetrieveUsersAPITestCase(APITestCase):
+class RetrieveUsersAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -111,7 +110,7 @@ class RetrieveUsersAPITestCase(APITestCase):
         self.successful_retrieve(self.with_perm)
 
 
-class CreateUsersAPITestCase(APITestCase):
+class CreateUsersAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_registration_data = {
@@ -223,7 +222,7 @@ class CreateUsersAPITestCase(APITestCase):
         self.assertTrue(authenticate(username='test_username', password='TestPassord'))
 
 
-class UpdateUsersAPITestCase(APITestCase):
+class UpdateUsersAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     modified_user = {
@@ -331,7 +330,7 @@ class UpdateUsersAPITestCase(APITestCase):
         self.successful_update(user, user)
 
 
-class DeleteUsersAPITestCase(APITestCase):
+class DeleteUsersAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_user_data = {
@@ -370,7 +369,7 @@ class DeleteUsersAPITestCase(APITestCase):
         self.successful_delete(self.with_perm)
 
 
-class RetrieveSelfTestCase(APITestCase):
+class RetrieveSelfTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]

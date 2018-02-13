@@ -1,13 +1,13 @@
 from unittest import mock
 
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.slack.utils import SlackException
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class SlackInviteTestCase(APITestCase):
+class SlackInviteTestCase(BaseAPITestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 

@@ -1,9 +1,8 @@
-from django.test import TestCase
-
 from lego.utils.renderers import JSONRenderer
+from lego.utils.test_utils import BaseTestCase
 
 
-class JSONRendererTestCase(TestCase):
+class JSONRendererTestCase(BaseTestCase):
     def setUp(self):
         self.renderer = JSONRenderer()
 

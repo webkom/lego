@@ -2,15 +2,16 @@ from unittest import mock
 
 from django.conf import settings
 from django.core import mail
-from django.test import TestCase, override_settings
+from django.test import override_settings
 
 from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.restricted.parser import EmailParser, ParserMessageType
 from lego.apps.restricted.tests.utils import read_file
+from lego.utils.test_utils import BaseTestCase
 
 
-class MessageProcessorTestCase(TestCase):
+class MessageProcessorTestCase(BaseTestCase):
 
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',

@@ -1,11 +1,10 @@
-from django.test import TestCase
-
 from lego.apps.notifications import constants
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class NotificationSettingTestCase(TestCase):
+class NotificationSettingTestCase(BaseTestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_notification_settings.yaml']
 

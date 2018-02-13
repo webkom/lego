@@ -1,4 +1,3 @@
-from django.test import TestCase
 from stream_framework.verbs.base import Comment as CommentVerb
 from stream_framework.verbs.base import Verb, register
 
@@ -6,9 +5,10 @@ from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
 from lego.apps.feed import activities, aggregator
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class AggregatorTestCase(TestCase):
+class AggregatorTestCase(BaseTestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 

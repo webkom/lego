@@ -1,14 +1,14 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_frontpage():
     return reverse('api:v1:frontpage-list')
 
 
-class FrontpageAPITestCase(APITestCase):
+class FrontpageAPITestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]

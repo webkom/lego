@@ -1,12 +1,11 @@
-from django.test import TestCase
-
 from lego.apps.permissions.constants import EDIT
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.tests.models import TestModel
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 
-class ObjectPermissionsModelTestCase(TestCase):
+class ObjectPermissionsModelTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
