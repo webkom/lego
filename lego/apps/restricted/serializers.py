@@ -19,7 +19,7 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 class RestrictedMailSerializer(RestrictedMailListSerializer):
     class Meta(RestrictedMailListSerializer.Meta):
         fields = RestrictedMailListSerializer.Meta.fields + (
-            'users', 'groups', 'events', 'meetings', 'raw_addresses'
+            'users', 'groups', 'events', 'meetings', 'raw_addresses', 'weekly', 'hide_sender'
         )
 
 

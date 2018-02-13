@@ -4,6 +4,7 @@ from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.notifications.constants import EMAIL, PUSH, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.restricted.models import RestrictedMail
+from lego.apps.users.models import AbakusGroup
 
 
 class RestrictedMailModelTestCase(TestCase):
@@ -46,8 +47,12 @@ class RestrictedMailModelTestCase(TestCase):
         """
         restricted_mail = RestrictedMail.objects.create(from_address='test@test.no', weekly=True)
 
-        unsubscribed_one, unsubscribed_two, no_setting, subscribed = get_dummy_users(4)
-        restricted_mail.users.add(unsubscribed_one, unsubscribed_two, no_setting, subscribed)
+        users = get_dummy_users(5)
+        notAlumni = users[:4]
+
+        unsubscribed_one, unsubscribed_two, no_setting, subscribed, alumni = users
+        for user in notAlumni:
+            AbakusGroup.objects.get(name="Students").add_user(user)
 
         NotificationSetting.objects.create(
             user=unsubscribed_one, notification_type=WEEKLY_MAIL, enabled=False
@@ -57,6 +62,9 @@ class RestrictedMailModelTestCase(TestCase):
         )
         NotificationSetting.objects.create(
             user=subscribed, notification_type=WEEKLY_MAIL, enabled=True, channels=[EMAIL]
+        )
+        NotificationSetting.objects.create(
+            user=alumni, notification_type=WEEKLY_MAIL, enabled=True, channels=[EMAIL]
         )
 
         recipients = restricted_mail.lookup_recipients()
