@@ -16,10 +16,9 @@ class CommentHandler(BaseHandler):
 
     def get_activity(self, comment, reply=False):
         return Activity(
-            actor=comment.created_by, verb=CommentReplyVerb if reply else CommentVerb,
-            object=comment, target=comment.content_object, time=comment.created_at, extra_context={
-                'content': comment.text
-            }
+            actor=comment.created_by, verb=CommentReplyVerb
+            if reply else CommentVerb, object=comment, target=comment.content_object,
+            time=comment.created_at, extra_context={'content': comment.text}
         )
 
     def handle_create(self, comment):

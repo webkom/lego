@@ -40,9 +40,7 @@ class EventHandler(BaseHandler):
     def get_activity(self, event):
         return Activity(
             actor=event.company, verb=EventCreateVerb, object=event, time=event.created_at,
-            extra_context={
-                'title': event.title
-            }
+            extra_context={'title': event.title}
         )
 
 

@@ -125,9 +125,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             registration_payment_save.s(registration.id)
         ).delay()
         payment_serializer = RegistrationPaymentReadSerializer(
-            registration, context={
-                'request': request
-            }
+            registration, context={'request': request}
         )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -200,9 +198,7 @@ class RegistrationViewSet(
             registration.save(update_fields=['status', 'feedback'])
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(
-            registration, context={
-                'user': registration.user
-            }
+            registration, context={'user': registration.user}
         )
         return Response(data=registration_serializer.data, status=status.HTTP_202_ACCEPTED)
 

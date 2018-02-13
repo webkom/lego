@@ -366,9 +366,7 @@ class CreateEventsTestCase(APITestCase):
         """Test patching event attributes"""
         expect_event = _test_event_data[0]
         event_update_response = self.client.patch(
-            _get_detail_url(self.event_id), {
-                'title': 'PATCHED'
-            }
+            _get_detail_url(self.event_id), {'title': 'PATCHED'}
         )
         self.assertEqual(event_update_response.status_code, 200)
         self.assertEqual(self.event_id, event_update_response.data.pop('id'))
@@ -584,9 +582,8 @@ class RegistrationsTestCase(APITestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'feedback': 'UPDATED'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'feedback': 'UPDATED'}
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['feedback'], 'UPDATED')
@@ -596,9 +593,8 @@ class RegistrationsTestCase(APITestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'presence': 'PRESENT'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'presence': 'PRESENT'}
         )
         self.assertEqual(res.status_code, 403)
 
@@ -609,9 +605,8 @@ class RegistrationsTestCase(APITestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'presence': 'PRESENT'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'presence': 'PRESENT'}
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['presence'], 'PRESENT')
@@ -624,9 +619,8 @@ class RegistrationsTestCase(APITestCase):
         AbakusGroup.objects.get(name='Abakus').add_user(self.other_user)
         self.client.force_authenticate(self.other_user)
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'feedback': 'UPDATED'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'feedback': 'UPDATED'}
         )
         self.assertEqual(res.status_code, 403)
 
@@ -638,9 +632,8 @@ class RegistrationsTestCase(APITestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(self.webkom_user)
         self.client.force_authenticate(self.webkom_user)
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'feedback': 'UPDATED_BY_ADMIN'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'feedback': 'UPDATED_BY_ADMIN'}
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['feedback'], 'UPDATED_BY_ADMIN')
@@ -672,9 +665,7 @@ class RegistrationsTestCase(APITestCase):
         event.feedback_required = True
         event.save()
         registration_response = self.client.post(
-            _get_registrations_list_url(event.id), {
-                'feedback': 'TEST'
-            }
+            _get_registrations_list_url(event.id), {'feedback': 'TEST'}
         )
         self.assertEqual(registration_response.status_code, 202)
 
@@ -685,9 +676,8 @@ class RegistrationsTestCase(APITestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'charge_status': 'manual'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'charge_status': 'manual'}
         )
         self.assertEqual(res.status_code, 200)
 
@@ -699,9 +689,8 @@ class RegistrationsTestCase(APITestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'charge_status': 'feil-data'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'charge_status': 'feil-data'}
         )
         self.assertEqual(res.status_code, 400)
 
@@ -710,9 +699,8 @@ class RegistrationsTestCase(APITestCase):
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         registration_response = self.client.post(_get_registrations_list_url(event.id), {})
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data['id']), {
-                'charge_status': 'manual'
-            }
+            _get_registrations_detail_url(event.id, registration_response.data['id']),
+            {'charge_status': 'manual'}
         )
         self.assertEqual(res.status_code, 403)
 
@@ -1087,9 +1075,7 @@ class RegistrationSearchTestCase(APITestCase):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {
-                'username': self.webkom_user.username
-            }
+            {'username': self.webkom_user.username}
         )
         self.assertEquals(res.status_code, 400)
 

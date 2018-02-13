@@ -244,9 +244,7 @@ class InviteToMeetingTestCase(APITestCase):
         webkom = AbakusGroup.objects.get(name='Webkom')
         res = self.client.post(
             _get_detail_url(self.meeting.id) + 'invite_group/',
-            {
-                'group': webkom.id
-            }
+            {'group': webkom.id}
         )
         self.assertEqual(res.status_code, 200)
         for user in webkom.users.all():
@@ -273,9 +271,7 @@ class UpdateInviteTestCase(APITestCase):
         self.client.force_authenticate(me)
         res = self.client.patch(
             _get_invitations_list_url(self.meeting.id) + str(me.id) + '/',
-            {
-                'status': constants.ATTENDING
-            }
+            {'status': constants.ATTENDING}
         )
         self.assertEqual(res.status_code, 200)
         invite.refresh_from_db()
@@ -291,9 +287,7 @@ class UpdateInviteTestCase(APITestCase):
         self.client.force_authenticate(other)
         res = self.client.patch(
             _get_invitations_list_url(self.meeting.id) + str(me.id) + '/',
-            {
-                'status': constants.ATTENDING
-            }
+            {'status': constants.ATTENDING}
         )
         self.assertEqual(res.status_code, 403)
         invite.refresh_from_db()
@@ -305,9 +299,7 @@ class UpdateInviteTestCase(APITestCase):
         self.client.force_authenticate(me)
         self.client.patch(
             _get_invitations_list_url(self.meeting.id) + str(me.id) + '/',
-            {
-                'user': self.pleb.id
-            }
+            {'user': self.pleb.id}
         )
         invite.refresh_from_db()
         self.assertEqual(invite.user, me)

@@ -23,9 +23,7 @@ class ActivityTestCase(TestCase):
         """Check that the objects gets stored as content_strings."""
         activity = Activity(
             actor=self.user, verb=CommentVerb, object=self.comment, target=self.article,
-            extra_context={
-                'content': self.comment.text
-            }
+            extra_context={'content': self.comment.text}
         )
 
         self.assertEqual(activity.actor, 'users.user-1')
@@ -39,9 +37,7 @@ class ActivityTestCase(TestCase):
         """Check the time storage. The time should be naive."""
         activity = Activity(
             time=self.test_time, actor=self.user, verb=CommentVerb, object=self.comment,
-            extra_context={
-                'content': self.comment.text
-            }
+            extra_context={'content': self.comment.text}
         )
 
         self.assertEqual(activity.time, make_naive(self.test_time))
