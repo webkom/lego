@@ -51,9 +51,7 @@ class Meeting(BasisModel):
 
     def invite_user(self, user, created_by=None):
         invitation, created = self.invitations.update_or_create(
-            user=user, meeting=self, defaults={
-                'created_by': created_by
-            }
+            user=user, meeting=self, defaults={'created_by': created_by}
         )
 
         track(user, 'meeting.invite', properties={'meeting_id': self.id})

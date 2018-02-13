@@ -30,10 +30,14 @@ def insert_abakus_groups(tree, parent=None):
         kwargs = value[0]
         if 'id' in kwargs:
             node = AbakusGroup.objects.update_or_create(
-                id=kwargs['id'], name=key, defaults={**kwargs, 'parent': parent}
+                id=kwargs['id'], name=key, defaults={
+                    **kwargs, 'parent': parent
+                }
             )[0]
         else:
             node = AbakusGroup.objects.update_or_create(
-                name=key, defaults={**kwargs, 'parent': parent}
+                name=key, defaults={
+                    **kwargs, 'parent': parent
+                }
             )[0]
         insert_abakus_groups(value[1], node)

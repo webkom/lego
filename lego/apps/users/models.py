@@ -120,7 +120,10 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     def add_user(self, user, **kwargs):
         membership, _ = Membership.objects.update_or_create(
-            user=user, abakus_group=self, defaults={"deleted": False, **kwargs}
+            user=user, abakus_group=self, defaults={
+                "deleted": False,
+                **kwargs
+            }
         )
         return membership
 

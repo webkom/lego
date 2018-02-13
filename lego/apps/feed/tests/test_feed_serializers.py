@@ -24,9 +24,7 @@ class FeedActivitySerializerTestCase(TestCase):
 
         self.activity = Activity(
             actor=self.user, verb=CommentVerb, object=self.comment, target=self.article,
-            extra_context={
-                'content': self.comment.text
-            }
+            extra_context={'content': self.comment.text}
         )
         self.aggregated_activity = AggregatedActivity(
             'test-group',

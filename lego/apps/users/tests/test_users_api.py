@@ -304,9 +304,8 @@ class UpdateUsersAPITestCase(APITestCase):
         """Try to change casing on the current username"""
         self.client.force_login(self.without_perm)
         response = self.client.patch(
-            _get_detail_url(self.without_perm.username), {
-                'username': self.without_perm.username.upper()
-            }
+            _get_detail_url(self.without_perm.username),
+            {'username': self.without_perm.username.upper()}
         )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
 
@@ -314,9 +313,7 @@ class UpdateUsersAPITestCase(APITestCase):
         """Try to change the is_abakus_member"""
         self.client.force_login(self.without_perm)
         response = self.client.patch(
-            _get_detail_url(self.without_perm.username), {
-                'is_abakus_member': True
-            }
+            _get_detail_url(self.without_perm.username), {'is_abakus_member': True}
         )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.data['is_abakus_member'], True)
