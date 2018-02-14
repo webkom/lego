@@ -143,7 +143,7 @@ class IcalAuthenticationTestCase(BaseAPITestCase):
             self.assertEqual(res.status_code, 401)
 
 
-class IcalPersonalTestCase(BaseAPITestCase:
+class IcalPersonalTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml',
         'test_users.yaml',

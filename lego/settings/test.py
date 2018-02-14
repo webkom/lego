@@ -8,17 +8,18 @@ from .base import CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS
 
 logging.disable(logging.CRITICAL)
 
-# Disable migrations for all apps:
-MIGRATION_MODULES = {
-    'auth': None,
-    'contenttypes': None,
-    'default': None,
-    'sessions': None,
-    'tests': None,
-}
+# Disable migrations for all apps (not on CI):
+if 'DRONE' not in os.environ:
+    MIGRATION_MODULES = {
+        'auth': None,
+        'contenttypes': None,
+        'default': None,
+        'sessions': None,
+        'tests': None,
+    }
 
-for app in INSTALLED_APPS:
-    MIGRATION_MODULES[app.split('.')[-1]] = None
+    for app in INSTALLED_APPS:
+        MIGRATION_MODULES[app.split('.')[-1]] = None
 
 DEBUG = False
 SERVER_URL = 'http://127.0.0.1:8000'
