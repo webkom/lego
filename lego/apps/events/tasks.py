@@ -3,7 +3,6 @@ from datetime import timedelta
 import stripe
 from django.db import IntegrityError, transaction
 from django.utils import timezone
-from redis.exceptions import LockError
 from structlog import get_logger
 
 from lego import celery_app

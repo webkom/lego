@@ -1,10 +1,10 @@
 from datetime import timedelta
 
-from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.postgres.fields import ArrayField
+from django.core.cache import cache
 from django.db import models, transaction
 from django.utils import timezone
 from django.utils.functional import cached_property

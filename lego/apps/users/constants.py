@@ -80,5 +80,8 @@ GROUP_TYPES = (
 )
 OPEN_GROUPS = (GROUP_INTEREST, )
 
-GRADE_CACHE_TTL = 3600*24*365
-GRADE_CACHE_KEY = lambda pk: f'user-{pk}-grade'
+GRADE_CACHE_TTL = 3600 * 24 * 365
+
+
+def GRADE_CACHE_KEY(pk):
+    return f'user-{pk}-grade'
