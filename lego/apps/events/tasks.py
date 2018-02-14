@@ -75,11 +75,6 @@ def async_register(self, registration_id, logger_context=None):
                 constants.SOCKET_REGISTRATION_SUCCESS, self.registration
             ))
         log.info('registration_success', registration_id=self.registration.id)
-    except LockError as e:
-        log.error(
-            'registration_cache_lock_error', exception=e, registration_id=self.registration.id
-        )
-        raise self.retry(exc=e, max_retries=3)
     except EventHasClosed as e:
         log.warn(
             'registration_tried_after_started', exception=e, registration_id=self.registration.id
