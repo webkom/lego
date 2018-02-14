@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
@@ -125,11 +126,15 @@ class AbakusGroup(MPTTModel, PersistentModel):
                 **kwargs
             }
         )
+        if self.is_grade:
+            user.cache_grade(self)
         return membership
 
     def remove_user(self, user):
         membership = Membership.objects.get(user=user, abakus_group=self)
         membership.delete()
+        if self.is_grade:
+            user.invalidate_grade()
 
     def natural_key(self):
         return self.name,
@@ -273,7 +278,18 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
 
     @property
     def grade(self):
-        return self.abakus_groups.filter(type=constants.GROUP_GRADE).first()
+        cache_ttl = cache.ttl(constants.GRADE_CACHE_KEY(self.pk))
+        if cache_ttl > 0:
+            return cache.get(constants.GRADE_CACHE_KEY(self.pk))
+        grade = self.abakus_groups.filter(type=constants.GROUP_GRADE).first()
+        self.cache_grade(grade)
+        return grade
+
+    def cache_grade(self, grade):
+        cache.set(constants.GRADE_CACHE_KEY(self.pk), grade, timeout=constants.GRADE_CACHE_TTL)
+
+    def invalidate_grade(self):
+        cache.delete(constants.GRADE_CACHE_KEY(self.pk))
 
     @property
     def profile_picture(self):
