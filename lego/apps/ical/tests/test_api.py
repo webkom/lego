@@ -58,10 +58,23 @@ def _get_ical_event_meta(ical_event):
     return re.split("-|@", ical_event['UID'])
 
 
+def _get_ical(url, client):
+    res = client.get(url)
+    return Calendar.from_ical(res.content)
+
+
+def _get_ical_events(url, client):
+    return _get_ical(url, client).subcomponents
+
+
 class IcalAuthenticationTestCase(APITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_meetings.yaml',
-        'test_companies.yaml', 'test_followevent.yaml'
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+        'test_events.yaml',
+        'test_meetings.yaml',
+        'test_companies.yaml',
+        'test_followevent.yaml',
     ]
 
     def setUp(self):
@@ -130,7 +143,7 @@ class IcalAuthenticationTestCase(APITestCase):
             self.assertEqual(res.status_code, 401)
 
 
-class GetICalTestCase(APITestCase):
+class IcalPersonalTestCase(APITestCase):
     fixtures = [
         'test_abakus_groups.yaml',
         'test_users.yaml',
@@ -139,12 +152,11 @@ class GetICalTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.get(username='test1')
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
+        self.url = _get_ical_personal_url(self.token)
 
-    def test_no_meetings(self):
-        self.client.force_authenticate(self.user)
-        res = self.client.get(_get_ical_personal_url(self.token))
-        icalendar = Calendar.from_ical(res.content)
-        self.assertEqual(len(icalendar.subcomponents), 0)
+    def test_empty_calendar(self):
+        ical_events = _get_ical_events(self.url, self.client)
+        self.assertEqual(len(ical_events), 0)
 
     def test_meeting_invitation(self):
         meeting = Meeting.objects.create(
@@ -153,51 +165,80 @@ class GetICalTestCase(APITestCase):
             start_time=timezone.now() + timedelta(hours=1),
             end_time=timezone.now() + timedelta(hours=4),
         )
+        ical_events = _get_ical_events(self.url, self.client)
+        self.assertEqual(len(ical_events), 0)
+
         meeting.invite_user(self.user)
 
-        res = self.client.get(_get_ical_personal_url(self.token))
-        icalendar = Calendar.from_ical(res.content)
-        self.assertEqual(len(icalendar.subcomponents), 1)
+        ical_events = _get_ical_events(self.url, self.client)
+        self.assertEqual(len(ical_events), 1)
 
-        eventType, pk, domain = _get_ical_event_meta(icalendar.subcomponents[0])
+        eventType, pk, domain = _get_ical_event_meta(ical_events[0])
         self.assertEqual(int(pk), meeting.pk)
 
-    def test_abakom_only_event(self):
-        res = self.client.get(_get_ical_events_url(self.token))
-        icalendar = Calendar.from_ical(res.content)
-        self.assertEqual(len(icalendar.subcomponents), 0)
-        event = Event.objects.create(
-            title='TestEvent',
+
+class IcalEventsTestCase(APITestCase):
+    fixtures = [
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+    ]
+
+    def setUp(self):
+        self.user = User.objects.get(username='test1')
+        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
+        self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
+        self.events_url = _get_ical_events_url(self.token)
+        self.registrations_url = _get_ical_registrations_url(self.token)
+        self.event = Event.objects.create(
+            title='AbakomEvent',
             event_type=0,
             start_time=timezone.now() + timedelta(hours=7),
             end_time=timezone.now() + timedelta(hours=10),
             require_auth=False,
         )
-        event.set_abakom_only(False)
+        self.pool = Pool.objects.create(
+            name='Webkom', capacity=1, event=self.event,
+            activation_date=(timezone.now() + timedelta(hours=3))
+        )
+        self.pool.permission_groups.add(AbakusGroup.objects.get(name='Abakom'))
+        self.event.set_abakom_only(True)
 
-        # User should see event
-        res = self.client.get(_get_ical_events_url(self.token))
-        icalendar = Calendar.from_ical(res.content)
-        self.assertEqual(len(icalendar.subcomponents), 1)
+    def test_non_abakom_user(self):
+        for url in [self.events_url, self.registrations_url]:
+            ical_events = _get_ical_events(url, self.client)
+            self.assertEqual(len(ical_events), 0)
 
-        eventType, pk, domain = _get_ical_event_meta(icalendar.subcomponents[0])
-        self.assertEqual(int(pk), event.pk)
+    def test_public_event_can_register(self):
+        self.event.set_abakom_only(False)
+        self.pool.permission_groups.add(AbakusGroup.objects.get(name='Abakus'))
+        for url in [self.events_url, self.registrations_url]:
 
-        event.set_abakom_only(True)
+            ical_events = _get_ical_events(url, self.client)
+            self.assertEqual(len(ical_events), 1)
 
-        # User should not see abakom event
-        res = self.client.get(_get_ical_events_url(self.token))
-        icalendar = Calendar.from_ical(res.content)
-        self.assertEqual(len(icalendar.subcomponents), 0)
+            eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+            self.assertEqual(int(pk), self.event.pk)
 
-        # User is not abakom, and should see the event
+    def test_public_event_can_view_not_register(self):
+        self.event.set_abakom_only(False)
+
+        ical_events = _get_ical_events(self.events_url, self.client)
+        self.assertEqual(len(ical_events), 1)
+
+        eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+        self.assertEqual(int(pk), self.event.pk)
+
+        ical_events = _get_ical_events(self.registrations_url, self.client)
+        self.assertEqual(len(ical_events), 0)
+
+    def test_abakom_user(self):
         AbakusGroup.objects.get(name='Abakom').add_user(self.user)
-        res = self.client.get(_get_ical_events_url(self.token))
-        icalendar = Calendar.from_ical(res.content)
-        self.assertEqual(len(icalendar.subcomponents), 1)
+        for url in [self.events_url, self.registrations_url]:
+            ical_events = _get_ical_events(url, self.client)
+            self.assertEqual(len(ical_events), 1)
 
-        eventType, pk, domain = _get_ical_event_meta(icalendar.subcomponents[0])
-        self.assertEqual(int(pk), event.pk)
+            eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+            self.assertEqual(int(pk), self.event.pk)
 
 
 class ICalTokenGenerateTestCase(APITestCase):
