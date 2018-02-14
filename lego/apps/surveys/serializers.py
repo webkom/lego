@@ -79,6 +79,7 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
         model = Submission
         fields = ('id', 'user', 'answers')
 
+    @atomic
     def create(self, validated_data):
         survey = Survey.objects.get(pk=self.context['view'].kwargs['survey_pk'])
         answers = None if 'answers' not in validated_data else validated_data.pop('answers')
@@ -88,14 +89,11 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
             for answer in answers:
                 question = answer.pop('question')
 
-                if question.get('question_type', None) is QUESTION_TYPES.SINGLE_CHOICE and \
-                        len(answer['selected_options']) > 1:
-                    raise exceptions.ValidationError(
-                        'You cannot select multiple options for '
-                        'this type of question.'
-                    )
+                if question.question_type is 'SINGLE_CHOICE' and \
+                        len(answer['selected_options']) is not 1:
+                    raise exceptions.ValidationError('You must select exactly one option')
 
-                Answer.objects.create(submission=submission, question=question, **answer)
+                Answer.create(submission=submission, question=question, **answer)
 
         return submission
 
@@ -116,6 +114,7 @@ class SurveyCreateSerializer(BasisModelSerializer):
         model = Survey
         fields = ('id', 'title', 'active_from', 'template_type', 'event', 'questions')
 
+    @atomic
     def create(self, validated_data):
         questions = validated_data.pop('questions')
         survey = Survey.objects.create(**validated_data)

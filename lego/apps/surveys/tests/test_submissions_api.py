@@ -13,12 +13,28 @@ def _get_detail_url(survey_pk, submission_pk):
     return reverse('api:v1:submission-detail', kwargs={'survey_pk': survey_pk, 'pk': submission_pk})
 
 
-def submission_data(user, survey=1):
-    return {
-        'user': user.id,
-        'survey': survey,
-        'answers': [],
+_answers = [
+    {
+        'question': 1,
+        'submission': 1,
+        'selectedOptions': [1],
+        'answerText': ''
+    }, {
+        'question': 2,
+        'submission': 1,
+        'selectedOptions': [3, 4, 5],
+        'answerText': ''
+    }, {
+        'question': 3,
+        'submission': 1,
+        'selectedOptions': [],
+        'answerText': 'Det var gøy'
     }
+]
+
+
+def submission_data(user, survey=1, include_answers=False):
+    return {'user': user.id, 'survey': survey, 'answers': _answers if include_answers else []}
 
 
 class SubmissionViewSetTestCase(APITestCase):
@@ -99,3 +115,19 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url(1))
         self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+
+    def test_create_answer(self):
+        """Check that every field is created successfully"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(1), submission_data(self.admin_user, 1, True))
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        expected = submission_data(self.admin_user, 1)
+        result = response.data
+        self.assertEqual(expected['user'], result['user'])
+
+        self.assertEqual(len(result['answers']), 3)
+        for i, answer in enumerate(result['answers']):
+            expected = _answers[i]
+            for key in ['question', 'answerText', 'selectedOptions']:
+                self.assertEqual(expected[key], answer[key])
