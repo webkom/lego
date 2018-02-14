@@ -16,7 +16,6 @@ class PenaltyNotification(Notification):
                 'weight': penalty.weight,
                 'event': penalty.source_event.title,
                 'reason': penalty.reason,
-                'total': self.user.number_of_penalties()
             },
             subject=f'Du har fått en ny prikk',
             plain_template='users/email/penalty.txt',

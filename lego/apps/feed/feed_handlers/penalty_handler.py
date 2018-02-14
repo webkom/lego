@@ -18,7 +18,6 @@ class PenaltyHandler(BaseHandler):
             time=penalty.created_at, extra_context={
                 'reason': penalty.reason,
                 'weight': penalty.weight,
-                'total': penalty.user.number_of_penalties()
             }
         )
 
