@@ -60,9 +60,16 @@ INSTALLED_APPS = [
 ]
 
 ELASTIC_APM = {
-    'DEBUG': True,
-    'SERVICE_NAME': 'lego',
-    'SECRET_TOKEN': '',
+    'DEBUG':
+    True,
+    'SERVICE_NAME':
+    'lego',
+    'SECRET_TOKEN':
+    '',
+    'TRANSACTIONS_IGNORE_PATTERNS': [
+        'lego.apps.health.views.HealthView',
+        'django.views.generic.base.TemplateView',
+    ],
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
