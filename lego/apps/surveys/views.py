@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.surveys.filters import SubmissionFilterSet
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.surveys.permissions import SubmissionPermissions, SurveyPermissions
 from lego.apps.surveys.serializers import (
@@ -26,6 +27,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     permission_classes = [SubmissionPermissions]
+    filter_class = SubmissionFilterSet
 
     def get_queryset(self):
         survey_id = self.kwargs['survey_pk']

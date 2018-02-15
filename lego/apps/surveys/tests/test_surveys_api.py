@@ -233,7 +233,6 @@ class SurveyViewSetTestCase(APITestCase):
 
         # Then test that old questions get deleted when not included, and that new ones are added
         response = self.client.patch(_get_detail_url(1), _test_surveys[2])
-        response.render()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response_questions = response.data['questions']
