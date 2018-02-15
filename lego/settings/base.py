@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'lego.apps.websockets',
     'lego.apps.joblistings',
     'lego.apps.email',
+    'lego.apps.surveys',
 ]
 
 ELASTIC_APM = {

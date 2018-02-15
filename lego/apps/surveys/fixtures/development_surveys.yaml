@@ -1,0 +1,133 @@
+- model: surveys.Survey
+  pk: 1
+  fields:
+    title: 'Undersøkelse etter Bekk Minisemninar'
+    event: 1
+
+- model: surveys.Survey
+  pk: 2
+  fields:
+    title: 'Hvordan var kurset?'
+    event: 2
+
+  # Survey 1
+
+- model: surveys.Question
+  pk: 1
+  fields:
+    question_text: 'Ville du dratt på noe lignende igjen?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 1
+    relative_index: 1
+
+- model: surveys.Question
+  pk: 2
+  fields:
+    question_text: 'Hvilke deler likte du?'
+    question_type: 'multiple_choice'
+    survey: 1
+    relative_index: 2
+
+- model: surveys.Question
+  pk: 3
+  fields:
+    question_text: 'Har du noen annen tilbakemelding?'
+    question_type: 'text_field'
+    survey: 1
+    relative_index: 3
+
+- model: surveys.Option
+  pk: 1
+  fields:
+    option_text: 'Ja'
+    question: 1
+
+- model: surveys.Option
+  pk: 2
+  fields:
+    option_text: 'Nei'
+    question: 1
+
+- model: surveys.Option
+  pk: 3
+  fields:
+    option_text: 'Introen'
+    question: 2
+
+- model: surveys.Option
+  pk: 4
+  fields:
+    option_text: 'Maten'
+    question: 2
+
+- model: surveys.Option
+  pk: 5
+  fields:
+    option_text: 'Folkene'
+    question: 2
+
+- model: surveys.Submission
+  pk: 1
+  fields:
+    user: 1
+    survey: 1
+
+- model: surveys.Submission
+  pk: 2
+  fields:
+    user: 2
+    survey: 1
+
+- model: surveys.Answer
+  pk: 1
+  fields:
+    submission: 1
+    question: 1
+    selected_options: [1]
+
+- model: surveys.Answer
+  pk: 2
+  fields:
+    submission: 1
+    question: 2
+    selected_options: [3, 5]
+
+- model: surveys.Answer
+  pk: 3
+  fields:
+    submission: 1
+    question: 3
+    answer_text: 'Det var hyggelig!'
+
+- model: surveys.Answer
+  pk: 4
+  fields:
+    submission: 2
+    question: 1
+    selected_options: [2]
+
+  # Survey 2
+
+- model: surveys.Question
+  pk: 4
+  fields:
+    question_text: 'Hvordan var det?'
+    mandatory: True
+    question_type: 'text_field'
+    survey: 2
+    relative_index: 1
+
+- model: surveys.Submission
+  pk: 3
+  fields:
+    user: 1
+    survey: 2
+
+- model: surveys.Answer
+  pk: 5
+  fields:
+    submission: 3
+    question: 4
+    answer_text: 'Jeg synes det var bra :)'
+
