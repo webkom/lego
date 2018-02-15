@@ -31,7 +31,7 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User
+from lego.apps.users.models import User, AbakusGroup, Membership
 from lego.utils.functions import verify_captcha
 
 
@@ -160,6 +160,7 @@ class PoolViewSet(
             raise APIRegistrationsExistsInPool
 
 
+
 class RegistrationViewSet(
     AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
@@ -174,9 +175,21 @@ class RegistrationViewSet(
             return RegistrationReadDetailedSerializer
         return super().get_serializer_class()
 
+    def sort_by_relevance(self, registrations):
+        current_user = self.user
+        current_user_memberships = Membership.objects.filter(user=current_user).all()
+        event = Event.objects.get(id=self.kwargs.get('event_pk', None))
+        users = User.objects.filter(id is not current_user.id and id in list(map(lambda reg: reg.user, registrations.all())))
+        user_memberships = map(lambda user: (user.id, Membership.objects.filter(user=user).all()), users.all())
+        shared_memberships = map(lambda user_id, memberships:
+                                 (user_id, len(list(filter(lambda membership: membership in current_user_memberships)))), user_memberships)
+
+        return registrations.sort(shared_memberships)
+
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        return Registration.objects.filter(event=event_id).prefetch_related('user')
+        registrations = Registration.objects.filter(event=event_id).prefetch_related('user')
+        return self.sort_by_relevance(registrations)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
