@@ -2,10 +2,12 @@ from rest_framework import viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
+from lego.apps.users import constants
 from lego.apps.users.filters import AbakusGroupFilterSet
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.abakus_groups import (
-    DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer
+    DetailedAbakusGroupSerializer, PublicAbakusGroupSerializer, PublicDetailedAbakusGroupSerializer,
+    PublicListAbakusGroupSerializer
 )
 
 
@@ -18,9 +20,12 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return PublicAbakusGroupSerializer
+            return PublicListAbakusGroupSerializer
 
-        if self.action == 'retrieve' and not self.request.user.has_perm(EDIT, self.get_object()):
+        abakus_group = self.get_object()
+        if self.action == 'retrieve' and not self.request.user.has_perm(EDIT, abakus_group):
+            if abakus_group.type in constants.PUBLIC_GROUPS:
+                return PublicDetailedAbakusGroupSerializer
             return PublicAbakusGroupSerializer
 
         return DetailedAbakusGroupSerializer
