@@ -14,15 +14,10 @@ class PenaltyHandler(BaseHandler):
 
     def get_activity(self, penalty):
         return Activity(
-            actor=penalty.source_event,
-            verb=PenaltyVerb,
-            object=penalty,
-            target=penalty.user,
-            time=penalty.created_at,
-            extra_context={
+            actor=penalty.source_event, verb=PenaltyVerb, object=penalty, target=penalty.user,
+            time=penalty.created_at, extra_context={
                 'reason': penalty.reason,
                 'weight': penalty.weight,
-                'total': penalty.user.number_of_penalties()
             }
         )
 

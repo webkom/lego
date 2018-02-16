@@ -6,13 +6,8 @@ from lego.apps.restricted.message import EmailMessage
 
 
 class MessageTestCase(TestCase):
-
     def setUp(self):
-        self.message = EmailMessage(
-            recipient='recipient',
-            sender='sender',
-            message=Message()
-        )
+        self.message = EmailMessage(recipient='recipient', sender='sender', message=Message())
 
     def test_create_message(self):
         """Test message properties"""

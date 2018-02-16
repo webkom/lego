@@ -1,8 +1,8 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.utils import timezone
@@ -14,19 +14,22 @@ from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
-from lego.apps.users.managers import (AbakusGroupManager, AbakusGroupManagerWithoutText,
-                                      AbakusUserManager, MembershipManager, UserPenaltyManager)
-from lego.apps.users.permissions import (AbakusGroupPermissionHandler, MembershipPermissionHandler,
-                                         UserPermissionHandler)
+from lego.apps.users.managers import (
+    AbakusGroupManager, AbakusGroupManagerWithoutText, AbakusUserManager, MembershipManager,
+    UserPenaltyManager
+)
+from lego.apps.users.permissions import (
+    AbakusGroupPermissionHandler, MembershipPermissionHandler, UserPermissionHandler
+)
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
-from .validators import email_blacklist_validator, student_username_validator, username_validator
+from .validators import email_blacklist_validator, username_validator
 
 
 class MembershipHistory(models.Model):
-    user = models.ForeignKey('users.User')
-    abakus_group = models.ForeignKey('users.AbakusGroup')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey('users.AbakusGroup', on_delete=models.CASCADE)
     role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     start_date = models.DateField(null=True)
     end_date = models.DateField()
@@ -35,8 +38,8 @@ class MembershipHistory(models.Model):
 class Membership(BasisModel):
     objects = MembershipManager()
 
-    user = models.ForeignKey('users.User')
-    abakus_group = models.ForeignKey('users.AbakusGroup')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey('users.AbakusGroup', on_delete=models.CASCADE)
 
     role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
     is_active = models.BooleanField(default=True, db_index=True)
@@ -49,11 +52,8 @@ class Membership(BasisModel):
     def delete(self, using=None, force=False):
         with transaction.atomic():
             MembershipHistory.objects.create(
-                user=self.user,
-                abakus_group=self.abakus_group,
-                role=self.role,
-                start_date=self.created_at,
-                end_date=timezone.now()
+                user=self.user, abakus_group=self.abakus_group, role=self.role,
+                start_date=self.created_at, end_date=timezone.now()
             )
             super(Membership, self).delete(using=using, force=True)
 
@@ -64,10 +64,13 @@ class Membership(BasisModel):
 class AbakusGroup(MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
-    parent = TreeForeignKey('self', blank=True, null=True, related_name='children')
+    parent = TreeForeignKey(
+        'self', blank=True, null=True, related_name='children', on_delete=models.SET_NULL
+    )
     logo = FileField(related_name='group_pictures')
-    type = models.CharField(max_length=10, choices=constants.GROUP_TYPES,
-                            default=constants.GROUP_OTHER)
+    type = models.CharField(
+        max_length=10, choices=constants.GROUP_TYPES, default=constants.GROUP_OTHER
+    )
     text = models.TextField(blank=True)
 
     permissions = ArrayField(
@@ -117,7 +120,10 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     def add_user(self, user, **kwargs):
         membership, _ = Membership.objects.update_or_create(
-            user=user, abakus_group=self, defaults={"deleted": False, **kwargs}
+            user=user, abakus_group=self, defaults={
+                "deleted": False,
+                **kwargs
+            }
         )
         return membership
 
@@ -143,19 +149,16 @@ class AbakusGroup(MPTTModel, PersistentModel):
 class PermissionsMixin(models.Model):
 
     abakus_groups = models.ManyToManyField(
-        AbakusGroup,
-        through='Membership',
-        through_fields=('user', 'abakus_group'),
-        blank=True,
+        AbakusGroup, through='Membership', through_fields=('user', 'abakus_group'), blank=True,
         help_text='The groups this user belongs to. A user will '
-                  'get all permissions granted to each of their groups.',
-        related_name='users',
+        'get all permissions granted to each of their groups.', related_name='users',
         related_query_name='user'
     )
 
     @cached_property
     def is_superuser(self):
         return '/sudo/' in self.get_all_permissions()
+
     is_staff = is_superuser
 
     @property
@@ -209,22 +212,16 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """
     username = models.CharField(
-        max_length=50,
-        unique=True,
-        db_index=True,
-        help_text='Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.',
-        validators=[username_validator, ReservedNameValidator()],
-        error_messages={
+        max_length=50, unique=True, db_index=True,
+        help_text='Required. 50 characters or fewer. Letters, digits and _ only.',
+        validators=[username_validator, ReservedNameValidator()], error_messages={
             'unique': 'A user with that username already exists.',
         }
     )
     student_username = models.CharField(
-        max_length=30,
-        unique=True,
-        null=True,
-        help_text='30 characters or fewer. Letters, digits and ./-/_ only.',
-        validators=[student_username_validator, ReservedNameValidator()],
-        error_messages={
+        max_length=30, unique=True, null=True,
+        help_text='30 characters or fewer. Letters, digits and _ only.',
+        validators=[username_validator, ReservedNameValidator()], error_messages={
             'unique': 'A user has already verified that student username.',
         }
     )
@@ -232,9 +229,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     last_name = models.CharField('last name', max_length=30, blank=True)
     allergies = models.CharField('allergies', max_length=30, blank=True)
     email = models.EmailField(
-        unique=True,
-        validators=[email_blacklist_validator],
-        error_messages={
+        unique=True, validators=[email_blacklist_validator], error_messages={
             'unique': 'A user with that email already exists.',
         }
     )
@@ -242,9 +237,8 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name='user_pictures')
     is_active = models.BooleanField(
-        default=True,
-        help_text='Designates whether this user should be treated as '
-                  'active. Unselect this instead of deleting accounts.'
+        default=True, help_text='Designates whether this user should be treated as '
+        'active. Unselect this instead of deleting accounts.'
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
 
@@ -329,10 +323,12 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
 
 class Penalty(BasisModel):
 
-    user = models.ForeignKey(User, related_name='penalties')
+    user = models.ForeignKey(User, related_name='penalties', on_delete=models.CASCADE)
     reason = models.CharField(max_length=1000)
     weight = models.IntegerField(default=1)
-    source_event = models.ForeignKey('events.Event', related_name='penalties')
+    source_event = models.ForeignKey(
+        'events.Event', related_name='penalties', on_delete=models.CASCADE
+    )
 
     objects = UserPenaltyManager()
 

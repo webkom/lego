@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.articles.models import Article
@@ -47,8 +47,7 @@ class ListArticlesTestCase(APITestCase):
 
 
 class RetrieveArticlesTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_articles.yaml',
-                'test_users.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_articles.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.abakus_user = User.objects.all().first()

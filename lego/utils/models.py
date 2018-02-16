@@ -54,10 +54,14 @@ class BasisModel(PersistentModel, TimeStampModel):
     Based on the PersistentModel and the TimeStampModel. Attach created_by and updated_by fields
     on all instances. A BasisModelSerializer is required when using this with rest-framework.
     """
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None,
-                                   editable=False, related_name="%(class)s_created", db_index=True)
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None,
-                                   editable=False, related_name="%(class)s_updated")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, default=None, editable=False,
+        related_name="%(class)s_created", db_index=True, on_delete=models.SET_NULL
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, default=None, editable=False,
+        related_name="%(class)s_updated", on_delete=models.SET_NULL
+    )
 
     objects = BasisModelManager()
 

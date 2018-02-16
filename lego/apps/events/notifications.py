@@ -1,5 +1,7 @@
-from lego.apps.notifications.constants import (EVENT_ADMIN_REGISTRATION, EVENT_BUMP,
-                                               EVENT_PAYMENT_OVERDUE, EVENT_PAYMENT_OVERDUE_CREATOR)
+from lego.apps.notifications.constants import (
+    EVENT_ADMIN_REGISTRATION, EVENT_ADMIN_UNREGISTRATION, EVENT_BUMP, EVENT_PAYMENT_OVERDUE,
+    EVENT_PAYMENT_OVERDUE_CREATOR
+)
 from lego.apps.notifications.notification import Notification
 
 
@@ -26,11 +28,9 @@ class EventBumpNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/bump.txt',
-            context={
+            template='events/push/bump.txt', context={
                 'event': event.title,
-            },
-            instance=event
+            }, instance=event
         )
 
 
@@ -58,11 +58,9 @@ class EventPaymentOverdueNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/payment_overdue.txt',
-            context={
+            template='events/push/payment_overdue.txt', context={
                 'event': event.title,
-            },
-            instance=event
+            }, instance=event
         )
 
 
@@ -83,7 +81,7 @@ class EventPaymentOverdueCreatorNotification(Notification):
                 'id': event.id,
             },
             subject=f'Følgende registrerte har ikke betalt påmeldingen til arrangementet'
-                    f' {event.title}',
+            f' {event.title}',
             plain_template='events/email/payment_overdue_author.txt',
             html_template='events/email/payment_overdue_author.html',
         )
@@ -114,9 +112,41 @@ class EventAdminRegistrationNotification(Notification):
         event = self.kwargs['event']
 
         return self._delay_push(
-            template='events/push/admin_registration.txt',
+            template='events/push/admin_registration.txt', context={
+                'event': event.title,
+            }, instance=event
+        )
+
+
+class EventAdminUnregistrationNotification(Notification):
+
+    name = EVENT_ADMIN_UNREGISTRATION
+
+    def generate_mail(self):
+        event = self.kwargs['event']
+        creator = self.kwargs['creator']
+        reason = self.kwargs['reason']
+
+        return self._delay_mail(
+            to_email=self.user.email,
             context={
                 'event': event.title,
+                'creator_name': creator.full_name,
+                'creator_email': creator.email,
+                'name': self.user.full_name,
+                'reason': reason,
+                'id': event.id,
             },
-            instance=event
+            subject=f'Du har blitt fjernet fra arrangementet {event.title}',
+            plain_template='events/email/admin_unregistration.txt',
+            html_template='events/email/admin_unregistration.html',
+        )
+
+    def generate_push(self):
+        event = self.kwargs['event']
+
+        return self._delay_push(
+            template='events/push/admin_unregistration.txt', context={
+                'event': event.title,
+            }, instance=event
         )

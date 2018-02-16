@@ -23,6 +23,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gallery',
             name='cover',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='gallery_covers', to='gallery.GalleryPicture'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                related_name='gallery_covers', to='gallery.GalleryPicture'
+            ),
         ),
     ]

@@ -11,9 +11,7 @@ class LegoPermissions(permissions.BasePermission):
     """
 
     def permission_handler(self, view):
-        handler = getattr(
-            view, 'permission_handler', None
-        )
+        handler = getattr(view, 'permission_handler', None)
         if not handler:
             handler = get_permission_handler(view.get_queryset().model)
 

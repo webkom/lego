@@ -25,8 +25,10 @@ class OauthViewsTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(len(response.data['results']),
-                         AccessToken.objects.filter(user=self.user).count())
+        self.assertEqual(
+            len(response.data['results']),
+            AccessToken.objects.filter(user=self.user).count()
+        )
         for token in response.data['results']:
             self.assertEqual(token['user'], self.user.id)
 
@@ -45,8 +47,10 @@ class OauthViewsTestCase(APITestCase):
 
 class OauthApplicationViewsTestCase(APITestCase):
 
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_applications.yaml',
-                'test_access_tokens.yaml']
+    fixtures = [
+        'test_users.yaml', 'test_abakus_groups.yaml', 'test_applications.yaml',
+        'test_access_tokens.yaml'
+    ]
 
     def setUp(self):
         self.user = User.objects.get(id=1)  # Normal user with no permissions
@@ -66,8 +70,7 @@ class OauthApplicationViewsTestCase(APITestCase):
         """Make sure permitted users can list applications."""
         self.client.force_login(self.user)
         Membership.objects.create(
-            user=self.user,
-            abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
+            user=self.user, abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
         )
 
         response = self.client.get(self.url)
@@ -77,8 +80,7 @@ class OauthApplicationViewsTestCase(APITestCase):
         """Make sure permitted users can create applications."""
         self.client.force_login(self.user)
         Membership.objects.create(
-            user=self.user,
-            abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
+            user=self.user, abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
         )
 
         application = {
@@ -97,10 +99,9 @@ class OauthApplicationViewsTestCase(APITestCase):
         """Make sure permitted users can delete applications."""
         self.client.force_login(self.user)
         Membership.objects.create(
-            user=self.user,
-            abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
+            user=self.user, abakus_group=AbakusGroup.objects.get(name='APIApplicationTest')
         )
-        response = self.client.delete('{base_url}{object_id}/'.format(
-            base_url=self.url, object_id=1
-        ))
+        response = self.client.delete(
+            '{base_url}{object_id}/'.format(base_url=self.url, object_id=1)
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

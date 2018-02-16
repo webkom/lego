@@ -17,17 +17,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'django_extensions',
     'oauth2_provider',
     'rest_framework',
     'corsheaders',
     'mptt',
     'channels',
-    'django_thumbor',
     'django_filters',
     'push_notifications',
-
+    'elasticapm.contrib.django',
     'lego.utils',
     'lego.apps.users',
     'lego.apps.permissions',
@@ -57,14 +55,26 @@ INSTALLED_APPS = [
     'lego.apps.restricted',
     'lego.apps.websockets',
     'lego.apps.joblistings',
-    'lego.apps.email'
+    'lego.apps.email',
+    'lego.apps.surveys',
 ]
+
+ELASTIC_APM = {
+    'DEBUG':
+    True,
+    'SERVICE_NAME':
+    'lego',
+    'SECRET_TOKEN':
+    '',
+    'TRANSACTIONS_IGNORE_PATTERNS': [
+        'lego.apps.health.views.HealthView',
+        'django.views.generic.base.TemplateView',
+    ],
+}
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
-AUTHENTICATION_BACKENDS = (
-    'lego.apps.permissions.backends.LegoPermissionBackend',
-)
+AUTHENTICATION_BACKENDS = ('lego.apps.permissions.backends.LegoPermissionBackend', )
 LOGIN_URL = '/authorization/login/'
 LOGOUT_URL = '/authorization/logout/'
 AUTH_PASSWORD_VALIDATORS = [
@@ -82,7 +92,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
+    'elasticapm.contrib.django.middleware.TracingMiddleware',
     'lego.utils.middleware.StatsDBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -100,9 +111,7 @@ MIDDLEWARE_CLASSES = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
-        ],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -150,25 +159,23 @@ STATICFILES_FINDERS = (
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'files', 'static')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    ('assets', os.path.join(BASE_DIR, 'assets')),
-)
+STATICFILES_DIRS = (('assets', os.path.join(BASE_DIR, 'assets')), )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media')
 MEDIA_URL = '/media/'
 
+ASGI_APPLICATION = 'lego.apps.websockets.routing.application'
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
-        'ROUTING': 'lego.apps.websockets.routing.routing'
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': ['redis://127.0.0.1:6379']
+        }
     }
 }
 
 STREAM_METRIC_CLASS = 'lego.apps.feed.feed_metrics.FeedMetrics'
-CASSANDRA_DRIVER_KWARGS = {
-    'protocol_version': 4,
-    'lazy_connect': True
-}
+CASSANDRA_DRIVER_KWARGS = {'protocol_version': 4, 'lazy_connect': True}
 
 LDAP_BASE_DN = 'dc=abakus,dc=no'
 
@@ -177,7 +184,9 @@ CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify'
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_USE_SANDBOX': False,
     'UPDATE_ON_DUPLICATE_REG_ID': True,
-    'APNS_TOPIC': 'no.abakus.abakus'
+    'APNS_TOPIC': 'no.abakus.abakus',
+    'GCM_ERROR_TIMEOUT': 30,
+    'FCM_ERROR_TIMEOUT': 30,
 }
 
 GSUITE_DELEGATED_ACCOUNT = os.environ.get('GSUITE_DELEGATED_ACCOUNT')

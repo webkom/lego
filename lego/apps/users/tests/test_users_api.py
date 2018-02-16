@@ -2,7 +2,7 @@ from datetime import timedelta
 from unittest import mock
 
 from django.contrib.auth import authenticate
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -156,8 +156,7 @@ class CreateUsersAPITestCase(APITestCase):
     def test_with_existing_email(self):
         token = self.create_token('test1@user.com')
         response = self.client.post(
-            _get_registration_token_url(token),
-            self._test_registration_data
+            _get_registration_token_url(token), self._test_registration_data
         )
         self.assertEqual(response.status_code, 409)
 
@@ -165,47 +164,41 @@ class CreateUsersAPITestCase(APITestCase):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data['username'] = 'test1'
-        response = self.client.post(
-            _get_registration_token_url(token),
-            invalid_data
-        )
+        response = self.client.post(_get_registration_token_url(token), invalid_data)
         self.assertEqual(response.status_code, 400)
 
     def test_with_invalid_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data['username'] = '$@@@@'
-        response = self.client.post(
-            _get_registration_token_url(token),
-            invalid_data
-        )
+        response = self.client.post(_get_registration_token_url(token), invalid_data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_with_email_as_username(self):
+        token = self.create_token(self.new_email_other)
+        invalid_data = self._test_registration_data.copy()
+        invalid_data['username'] = self.new_email_other
+        response = self.client.post(_get_registration_token_url(token), invalid_data)
         self.assertEqual(response.status_code, 400)
 
     def test_with_blank_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data['username'] = ''
-        response = self.client.post(
-            _get_registration_token_url(token),
-            invalid_data
-        )
+        response = self.client.post(_get_registration_token_url(token), invalid_data)
         self.assertEqual(response.status_code, 400)
 
     def test_with_blank_password(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data['password'] = ''
-        response = self.client.post(
-            _get_registration_token_url(token),
-            invalid_data
-        )
+        response = self.client.post(_get_registration_token_url(token), invalid_data)
         self.assertEqual(response.status_code, 400)
 
     def test_with_valid_data(self):
         token = self.create_token(self.new_email_other)
         response = self.client.post(
-            _get_registration_token_url(token),
-            self._test_registration_data
+            _get_registration_token_url(token), self._test_registration_data
         )
         self.assertEqual(response.status_code, 201)
 
@@ -280,9 +273,7 @@ class UpdateUsersAPITestCase(APITestCase):
 
     def test_update_with_invalid_email(self):
         self.client.force_login(self.with_perm)
-        response = self.client.patch(_get_detail_url(self.test_user), {
-            'email': 'cat@gmail'
-        })
+        response = self.client.patch(_get_detail_url(self.test_user), {'email': 'cat@gmail'})
 
         self.assertEqual(['Enter a valid email address.'], response.data['email'])
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -290,9 +281,7 @@ class UpdateUsersAPITestCase(APITestCase):
     def test_update_with_super_user_invalid_email(self):
         """It is not possible to set an email with our GSuite domain as the address domain."""
         self.client.force_login(self.with_perm)
-        response = self.client.patch(_get_detail_url(self.test_user), {
-            'email': 'webkom@abakus.no'
-        })
+        response = self.client.patch(_get_detail_url(self.test_user), {'email': 'webkom@abakus.no'})
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual(
@@ -303,25 +292,29 @@ class UpdateUsersAPITestCase(APITestCase):
     def test_update_username_used_by_other(self):
         """Try to change username to something used by another user with different casing"""
         self.client.force_login(self.without_perm)
-        response = self.client.patch(_get_detail_url(self.without_perm.username), {
-            'username': 'usEradmin_TeSt'  # Existing username with other casing
-        })
+        response = self.client.patch(
+            _get_detail_url(self.without_perm.username),
+            {
+                'username': 'usEradmin_TeSt'  # Existing username with other casing
+            }
+        )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_username_to_self(self):
         """Try to change casing on the current username"""
         self.client.force_login(self.without_perm)
-        response = self.client.patch(_get_detail_url(self.without_perm.username), {
-            'username': self.without_perm.username.upper()
-        })
+        response = self.client.patch(
+            _get_detail_url(self.without_perm.username),
+            {'username': self.without_perm.username.upper()}
+        )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
 
     def test_update_abakus_membership(self):
         """Try to change the is_abakus_member"""
         self.client.force_login(self.without_perm)
-        response = self.client.patch(_get_detail_url(self.without_perm.username), {
-            'is_abakus_member': True
-        })
+        response = self.client.patch(
+            _get_detail_url(self.without_perm.username), {'is_abakus_member': True}
+        )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.data['is_abakus_member'], True)
 
@@ -329,9 +322,7 @@ class UpdateUsersAPITestCase(APITestCase):
         """Try to change the is_abakus_member when user is not a student"""
         user = self.all_users.exclude(student_username__isnull=False).first()
         self.client.force_login(user)
-        response = self.client.patch(_get_detail_url(user.username), {
-            'is_abakus_member': True
-        })
+        response = self.client.patch(_get_detail_url(user.username), {'is_abakus_member': True})
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_not_failing_when_not_student(self):
@@ -380,8 +371,9 @@ class DeleteUsersAPITestCase(APITestCase):
 
 
 class RetrieveSelfTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -392,13 +384,7 @@ class RetrieveSelfTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         fields = (
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'full_name',
-            'email',
-            'is_active',
+            'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'is_active',
             'penalties'
         )
         for field in fields:
@@ -414,12 +400,14 @@ class RetrieveSelfTestCase(APITestCase):
     @mock.patch('django.utils.timezone.now', return_value=fake_time(2016, 10, 1))
     def test_own_penalties_serializer(self, mock_now):
         source = Event.objects.all().first()
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=20),
-                               user=self.user, reason='test', weight=1, source_event=source)
-        Penalty.objects.create(created_at=mock_now()-timedelta(days=19,
-                                                               hours=23,
-                                                               minutes=59),
-                               user=self.user, reason='test', weight=1, source_event=source)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=20), user=self.user, reason='test', weight=1,
+            source_event=source
+        )
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59), user=self.user,
+            reason='test', weight=1, source_event=source
+        )
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse('api:v1:user-me'))
 
@@ -427,4 +415,4 @@ class RetrieveSelfTestCase(APITestCase):
 
         self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
         self.assertEqual(len(response.data['penalties']), 1)
-        self.assertEqual(len(response.data['penalties'][0]), 6)
+        self.assertEqual(len(response.data['penalties'][0]), 7)

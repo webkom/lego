@@ -47,7 +47,4 @@ class SiteMetaViewSet(viewsets.ViewSet):
         for entity, (model, permission) in permission_entities.items():
             is_allowed[entity] = user.has_perm(permission, model)
 
-        return Response({
-            'site': site_meta,
-            'is_allowed': is_allowed
-        })
+        return Response({'site': site_meta, 'is_allowed': is_allowed})

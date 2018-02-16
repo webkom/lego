@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 
 class SemesterField(serializers.PrimaryKeyRelatedField):
-
     def use_pk_only_optimization(self):
         return False
 
@@ -13,7 +12,6 @@ class SemesterField(serializers.PrimaryKeyRelatedField):
 
 
 class CompanyField(serializers.PrimaryKeyRelatedField):
-
     def use_pk_only_optimization(self):
         return False
 
@@ -24,7 +22,6 @@ class CompanyField(serializers.PrimaryKeyRelatedField):
 
 
 class CompanyContactField(serializers.PrimaryKeyRelatedField):
-
     def use_pk_only_optimization(self):
         return False
 

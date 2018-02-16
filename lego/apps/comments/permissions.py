@@ -5,12 +5,15 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 class CommentPermissionHandler(PermissionHandler):
 
-    def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
-    ):
+    # force_queryset_filtering forces the has_perm to be called with an object.
+    # This is required to enable users to edit comments they have created.
+    force_queryset_filtering = True
 
+    def has_perm(
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+    ):
         can_access_target = False
-        if user.is_authenticated() and perm == CREATE:
+        if user.is_authenticated and perm == CREATE:
             """
             We need to validate the data tries to create. We have to do this manually because
             this happens before rest_framework parses the request.

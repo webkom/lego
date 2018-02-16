@@ -18,7 +18,6 @@ class ParserMessageType:
 
 
 class EmailParser:
-
     def __init__(self, raw_message, mail_from, message_type):
         self.raw_message = raw_message
         self.mail_from = mail_from

@@ -16,7 +16,6 @@ class PenaltyNotification(Notification):
                 'weight': penalty.weight,
                 'event': penalty.source_event.title,
                 'reason': penalty.reason,
-                'total': self.user.number_of_penalties()
             },
             subject=f'Du har fått en ny prikk',
             plain_template='users/email/penalty.txt',
@@ -27,10 +26,8 @@ class PenaltyNotification(Notification):
         penalty = self.kwargs['penalty']
 
         return self._delay_push(
-            template='users/push/penalty.txt',
-            context={
+            template='users/push/penalty.txt', context={
                 'weight': penalty.weight,
                 'event': penalty.source_event.title,
-            },
-            instance=penalty
+            }, instance=penalty
         )

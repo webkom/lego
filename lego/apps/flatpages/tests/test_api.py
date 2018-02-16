@@ -51,10 +51,7 @@ class PageAPITestCase(APITestCase):
             self.assertEqual(response.status_code, 403)
 
     def test_create_page(self):
-        page = {
-            'title': 'cat',
-            'content': 'hei'
-        }
+        page = {'title': 'cat', 'content': 'hei'}
 
         user = create_super_user()
         self.client.force_login(user)

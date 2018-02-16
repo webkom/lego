@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
@@ -15,13 +16,17 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     """
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-    cover = models.ForeignKey('gallery.GalleryPicture', related_name='gallery_covers',
-                              null=True, on_delete=models.SET_NULL)
+    cover = models.ForeignKey(
+        'gallery.GalleryPicture', related_name='gallery_covers', null=True,
+        on_delete=models.SET_NULL
+    )
     location = models.CharField(max_length=64)
     taken_at = models.DateField(null=True)
     photographers = models.ManyToManyField('users.User')
 
-    event = models.ForeignKey('events.Event', related_name='galleries', null=True)
+    event = models.ForeignKey(
+        'events.Event', related_name='galleries', null=True, on_delete=models.SET_NULL
+    )
 
 
 class GalleryPicture(models.Model):
@@ -29,7 +34,7 @@ class GalleryPicture(models.Model):
     Store the relation between the gallery and the file in remote storage.
     Inactive element are only visible for users with can_edit permissions.
     """
-    gallery = models.ForeignKey(Gallery, related_name='pictures')
+    gallery = models.ForeignKey(Gallery, related_name='pictures', on_delete=models.CASCADE)
     file = FileField(related_name='gallery_pictures')
     taggees = models.ManyToManyField('users.User', blank=True)
 
@@ -47,3 +52,6 @@ class GalleryPicture(models.Model):
 
     def __str__(self):
         return f'{self.gallery.title}-#{self.pk}'
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/photos/{self.gallery.id}/picture/{self.id}/'

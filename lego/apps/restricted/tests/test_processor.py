@@ -12,8 +12,10 @@ from lego.apps.restricted.tests.utils import read_file
 
 class MessageProcessorTestCase(TestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml', 'test_restricted_mails.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_restricted_mails.yaml'
+    ]
 
     def setUp(self):
         raw_message = read_file(f'{settings.BASE_DIR}/apps/restricted/fixtures/emails/valid.txt')
@@ -31,17 +33,13 @@ class MessageProcessorTestCase(TestCase):
         restricted_mail = RestrictedMail.objects.get(id=1)
         self.assertEquals('restricted@test.com', self.processor.get_sender(restricted_mail))
 
-    @override_settings(
-        RESTRICTED_ALLOW_ORIGINAL_SENDER=True, RESTRICTED_FROM='restricted@test.com'
-    )
+    @override_settings(RESTRICTED_ALLOW_ORIGINAL_SENDER=True, RESTRICTED_FROM='restricted@test.com')
     def test_get_sender(self):
         """Return the original sender when the settings allow it"""
         restricted_mail = RestrictedMail.objects.get(id=1)
         self.assertEquals('test@test.com', self.processor.get_sender(restricted_mail))
 
-    @override_settings(
-        RESTRICTED_ALLOW_ORIGINAL_SENDER=True, RESTRICTED_FROM='restricted@test.com'
-    )
+    @override_settings(RESTRICTED_ALLOW_ORIGINAL_SENDER=True, RESTRICTED_FROM='restricted@test.com')
     def test_get_sender_hidden(self):
         """Return the sender form the settings when the original sender hides the address"""
         restricted_mail = RestrictedMail.objects.get(id=1)
@@ -68,9 +66,9 @@ class MessageProcessorTestCase(TestCase):
         message = parser.parse()
         new_message = self.processor.rewrite_message(message, 'test@test.com')
 
-        self.assertCountEqual([
-            'From', 'Subject', 'Content-Type', 'MIME-Version', 'Sender'
-        ], new_message.keys())
+        self.assertCountEqual(
+            ['From', 'Subject', 'Content-Type', 'MIME-Version', 'Sender'], new_message.keys()
+        )
 
     def test_decorate(self):
         """Simple smoke-test, just make sure the function not raises an error"""

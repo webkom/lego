@@ -7,8 +7,9 @@ from lego.apps.users.models import Membership, MembershipHistory
 from lego.apps.users.serializers.membership_history import MembershipHistorySerializer
 
 
-class MembershipHistoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                               viewsets.GenericViewSet):
+class MembershipHistoryViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
 
     permission_classes = (permissions.IsAuthenticated, )
     serializer_class = MembershipHistorySerializer

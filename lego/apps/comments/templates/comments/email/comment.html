@@ -20,13 +20,19 @@
 
     <tr>
         <td class="content-block">
-            {{author_name}} har kommentert på {{ target }}.
+            {{author_name}} har kommentert på {{ target }}:
         </td>
     </tr>
 
     <tr>
         <td class="content-block">
-            Les mer på <a href="{{ frontend_url }}/">{{ frontend_url }}</a>.
+            {{ text|safe }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Les mer på <a href="{{ url }}">{{ url }}</a>.
         </td>
     </tr>
 

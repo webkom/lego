@@ -14,6 +14,7 @@ class Activity(SFActivity):
     Object - The object the feed activity represents, this could be a comment.
     Target - The object the activity relates to, this is typically the object that was commented on.
     """
+
     def __init__(self, actor, verb, object, target=None, time=None, extra_context=None):
         # Make time native if it is timezone aware.
         if time and is_aware(time):
@@ -76,9 +77,9 @@ class AggregatedActivity(SFAggregatedActivity):
 
 
 class NotificationActivity(AggregatedActivity):
-
-    def __init__(self, group, activities=None, created_at=None, updated_at=None,
-                 read_at=None, seen_at=None):
+    def __init__(
+        self, group, activities=None, created_at=None, updated_at=None, read_at=None, seen_at=None
+    ):
 
         super().__init__(
             group=group, activities=activities, created_at=created_at, updated_at=updated_at

@@ -4,12 +4,15 @@ from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.notifications.constants import EMAIL, PUSH, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.restricted.models import RestrictedMail
+from lego.apps.users.models import AbakusGroup
 
 
 class RestrictedMailModelTestCase(TestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml', 'test_restricted_mails.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_restricted_mails.yaml'
+    ]
 
     def test_lookup_recipients(self):
         """
@@ -18,10 +21,7 @@ class RestrictedMailModelTestCase(TestCase):
         restricted_mail = RestrictedMail.objects.get(id=1)
         recipients = restricted_mail.lookup_recipients()
 
-        self.assertCountEqual(recipients, [
-            'test1@user.com',
-            'test2@user.com'
-        ])
+        self.assertCountEqual(recipients, ['test1@user.com', 'test2@user.com'])
 
     def test_mark_used(self):
         """The used field is not None when the item is marked as used"""
@@ -47,24 +47,26 @@ class RestrictedMailModelTestCase(TestCase):
         """
         restricted_mail = RestrictedMail.objects.create(from_address='test@test.no', weekly=True)
 
-        unsubscribed_one, unsubscribed_two, no_setting, subscribed = get_dummy_users(4)
-        restricted_mail.users.add(unsubscribed_one, unsubscribed_two, no_setting, subscribed)
+        users = get_dummy_users(5)
+        notAlumni = users[:4]
 
-        NotificationSetting.objects.create(user=unsubscribed_one,
-                                           notification_type=WEEKLY_MAIL,
-                                           enabled=False)
-        NotificationSetting.objects.create(user=unsubscribed_two,
-                                           notification_type=WEEKLY_MAIL,
-                                           enabled=True,
-                                           channels=[PUSH])
-        NotificationSetting.objects.create(user=subscribed,
-                                           notification_type=WEEKLY_MAIL,
-                                           enabled=True,
-                                           channels=[EMAIL])
+        unsubscribed_one, unsubscribed_two, no_setting, subscribed, alumni = users
+        for user in notAlumni:
+            AbakusGroup.objects.get(name="Students").add_user(user)
+
+        NotificationSetting.objects.create(
+            user=unsubscribed_one, notification_type=WEEKLY_MAIL, enabled=False
+        )
+        NotificationSetting.objects.create(
+            user=unsubscribed_two, notification_type=WEEKLY_MAIL, enabled=True, channels=[PUSH]
+        )
+        NotificationSetting.objects.create(
+            user=subscribed, notification_type=WEEKLY_MAIL, enabled=True, channels=[EMAIL]
+        )
+        NotificationSetting.objects.create(
+            user=alumni, notification_type=WEEKLY_MAIL, enabled=True, channels=[EMAIL]
+        )
 
         recipients = restricted_mail.lookup_recipients()
 
-        self.assertListEqual(sorted(recipients), sorted([
-            no_setting.email,
-            subscribed.email
-        ]))
+        self.assertListEqual(sorted(recipients), sorted([no_setting.email, subscribed.email]))

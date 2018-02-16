@@ -7,7 +7,14 @@ from structlog import get_logger
 log = get_logger()
 
 
-def send_email(to_email, context, subject, plain_template, html_template, from_email=None,):
+def send_email(
+    to_email,
+    context,
+    subject,
+    plain_template,
+    html_template,
+    from_email=None,
+):
     """
     Render a plain and html message based on a context and send it using django.core.mail.
     """
@@ -23,19 +30,14 @@ def send_email(to_email, context, subject, plain_template, html_template, from_e
     log.info('send_mail', subject=subject, from_email=from_email, recipient_list=recipient_list)
 
     django_send_mail(
-        subject=subject,
-        message=plain_body,
-        from_email=from_email,
-        recipient_list=recipient_list,
-        html_message=transform(html_body),
-        fail_silently=False
+        subject=subject, message=plain_body, from_email=from_email, recipient_list=recipient_list,
+        html_message=transform(html_body), fail_silently=False
     )
 
 
 class EmailMessage:
-
     def __init__(
-            self, subject, to_email, plain_template, html_template, context=None, from_email=None
+        self, subject, to_email, plain_template, html_template, context=None, from_email=None
     ):
         self.subject = subject
         self.to_email = to_email
@@ -61,9 +63,7 @@ class EmailMessage:
         return self.context
 
     def build_context(self, **kwargs):
-        context = {
-            'title': self.subject
-        }
+        context = {'title': self.subject}
         context.update(self.system_context())
         context.update(self.custom_context())
         context.update(kwargs)
@@ -72,10 +72,6 @@ class EmailMessage:
     def send(self, **kwargs):
         context = self.build_context(**kwargs)
         return send_email(
-            self.to_email,
-            context,
-            self.subject,
-            self.plain_template,
-            self.html_template,
+            self.to_email, context, self.subject, self.plain_template, self.html_template,
             self.from_email
         )

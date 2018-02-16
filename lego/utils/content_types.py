@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 
+#  isort:skip
 """
 This utilities is used to retrieve model from a content string and opposite.
 A content string defines a model instance and we can use this to retrieve objects from the database.

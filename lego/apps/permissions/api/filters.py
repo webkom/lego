@@ -10,9 +10,7 @@ class LegoPermissionFilter(filters.BaseFilterBackend):
     """
 
     def permission_handler(self, view, queryset):
-        handler = getattr(
-            view, 'permission_handler', None
-        )
+        handler = getattr(view, 'permission_handler', None)
         if not handler:
             handler = get_permission_handler(queryset.model)
 

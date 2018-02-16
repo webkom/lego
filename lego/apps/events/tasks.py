@@ -8,13 +8,15 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (EventHasClosed, PoolCounterNotEqualToRegistrationCount,
-                                         WebhookDidNotFindRegistration)
+from lego.apps.events.exceptions import (
+    EventHasClosed, PoolCounterNotEqualToRegistrationCount, WebhookDidNotFindRegistration
+)
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.notifications import EventPaymentOverdueCreatorNotification
 from lego.apps.events.serializers.registrations import StripeObjectSerializer
-from lego.apps.events.websockets import (notify_event_registration, notify_user_payment,
-                                         notify_user_registration)
+from lego.apps.events.websockets import (
+    notify_event_registration, notify_user_payment, notify_user_registration
+)
 from lego.apps.feed.registry import get_handler
 from lego.utils.tasks import AbakusTask
 
@@ -103,9 +105,7 @@ def async_unregister(self, registration_id, logger_context=None):
             ))
         log.info('unregistration_success', registration_id=registration.id)
     except EventHasClosed as e:
-        log.warn(
-            'unregistration_tried_after_started', exception=e, registration_id=registration.id
-        )
+        log.warn('unregistration_tried_after_started', exception=e, registration_id=registration.id)
     except IntegrityError as e:
         log.error('unregistration_error', exception=e, registration_id=registration.id)
         registration.status = constants.FAILURE_UNREGISTER
@@ -124,11 +124,8 @@ def async_payment(self, registration_id, token, logger_context=None):
     event = self.registration.event
     try:
         response = stripe.Charge.create(
-            amount=event.get_price(self.registration.user),
-            currency='NOK',
-            source=token,
-            description=event.slug,
-            metadata={
+            amount=event.get_price(self.registration.user), currency='NOK', source=token,
+            description=event.slug, metadata={
                 'EVENT_ID': event.id,
                 'USER': self.registration.user.full_name,
                 'EMAIL': self.registration.user.email
@@ -208,9 +205,8 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
 def check_events_for_registrations_with_expired_penalties(self, logger_context=None):
     self.setup_logger(logger_context)
 
-    events_ids = Event.objects.filter(
-        start_time__gte=timezone.now()
-    ).exclude(registrations=None).values_list(flat=True)
+    events_ids = Event.objects.filter(start_time__gte=timezone.now()
+                                      ).exclude(registrations=None).values_list('id', flat=True)
     for event_id in events_ids:
         with transaction.atomic():
             locked_event = Event.objects.select_for_update().get(pk=event_id)
@@ -227,8 +223,8 @@ def check_events_for_registrations_with_expired_penalties(self, logger_context=N
 def bump_waiting_users_to_new_pool(self, logger_context=None):
     self.setup_logger(logger_context)
 
-    events_ids = Event.objects.filter(start_time__gte=timezone.now()).exclude(
-        registrations=None).values_list(flat=True)
+    events_ids = Event.objects.filter(start_time__gte=timezone.now()
+                                      ).exclude(registrations=None).values_list('id', flat=True)
     for event_id in events_ids:
         with transaction.atomic():
             locked_event = Event.objects.select_for_update().get(pk=event_id)
@@ -239,13 +235,9 @@ def bump_waiting_users_to_new_pool(self, logger_context=None):
                         now = timezone.now()
                         if not pool.is_activated and act < now + timedelta(minutes=35):
                             locked_event.early_bump(pool)
-                            log.info(
-                                'early_bump_executed', event_id=event_id, pool_id=pool.id
-                            )
+                            log.info('early_bump_executed', event_id=event_id, pool_id=pool.id)
                         elif pool.is_activated and act > now - timedelta(minutes=35):
-                            log.info(
-                                'early_bump_executed', event_id=event_id, pool_id=pool.id
-                            )
+                            log.info('early_bump_executed', event_id=event_id, pool_id=pool.id)
                             locked_event.early_bump(pool)
 
 
@@ -274,8 +266,7 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
 
     time = timezone.now()
     events = Event.objects.filter(
-        payment_due_date__lte=time, is_priced=True, use_stripe=True,
-        end_time__gte=time
+        payment_due_date__lte=time, is_priced=True, use_stripe=True, end_time__gte=time
     ).exclude(registrations=None).prefetch_related('registrations')
     for event in events:
         registrations_due = event.registrations.exclude(pool=None).exclude(
@@ -309,7 +300,7 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
 
     events_ids = Event.objects.filter(
         start_time__gte=timezone.now(), merge_time__gte=timezone.now()
-    ).values_list(flat=True)
+    ).values_list('id', flat=True)
 
     for event_id in events_ids:
         with transaction.atomic():
@@ -318,4 +309,6 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
                 registration_count = pool.registrations.count()
                 if pool.counter != registration_count:
                     log.critical('pool_counter_not_equal_registration_count', pool=pool)
-                    raise PoolCounterNotEqualToRegistrationCount(pool, locked_event)
+                    raise PoolCounterNotEqualToRegistrationCount(
+                        pool, registration_count, locked_event
+                    )

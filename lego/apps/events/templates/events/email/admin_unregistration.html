@@ -1,0 +1,40 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-bad">
+            Fjernet fra event
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            En administrator har fjernet deg fra arrangementet {{ event }} på grunn av:
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i>{{ reason }}</i>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Ta kontakt med {{ creator_name }} på {{ creator_email }} dersom du skulle være uenig i dette.
+        </td>
+    </tr>
+
+
+{% endblock %}

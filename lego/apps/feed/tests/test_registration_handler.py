@@ -10,9 +10,9 @@ from lego.apps.users.models import AbakusGroup, User
 
 
 class TestRegistrationHandler(FeedTestBase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
-                'test_companies.yaml', 'test_events.yaml'
-                ]
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         self.event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
@@ -37,9 +37,7 @@ class TestRegistrationHandler(FeedTestBase):
 
     def test_admin_reg(self):
         self.event.admin_register(
-            user=self.user,
-            pool=self.event.pools.first(),
-            admin_reason='test'
+            user=self.user, pool=self.event.pools.first(), admin_registration_reason='test'
         )
 
         self.assertEqual(self.activity_count(self.feed), 1)

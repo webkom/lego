@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from lego.apps.content.models import Content
@@ -24,3 +25,6 @@ class Quote(BasisModel, Content):
     def unapprove(self):
         self.approved = False
         self.save()
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/quotes/{self.id}/'

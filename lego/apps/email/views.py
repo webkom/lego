@@ -3,19 +3,18 @@ from rest_framework import mixins, viewsets
 from lego.apps.email.filters import EmailListFilterSet, EmailUserFilterSet
 from lego.apps.email.models import EmailList
 from lego.apps.email.permissions import UserEmailPermissionHandler
-from lego.apps.email.serializers import (EmailListCreateSerializer, EmailListDetailSerializer,
-                                         EmailListSerializer, UserEmailCreateSerializer,
-                                         UserEmailSerializer)
+from lego.apps.email.serializers import (
+    EmailListCreateSerializer, EmailListDetailSerializer, EmailListSerializer,
+    UserEmailCreateSerializer, UserEmailSerializer
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.users.models import User
 
 
-class EmailListViewSet(AllowedPermissionsMixin,
-                       mixins.CreateModelMixin,
-                       mixins.RetrieveModelMixin,
-                       mixins.UpdateModelMixin,
-                       mixins.ListModelMixin,
-                       viewsets.GenericViewSet):
+class EmailListViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     """
     Destroy are disabled. The external_sync don't support group destroy either!
     """
@@ -37,12 +36,10 @@ class EmailListViewSet(AllowedPermissionsMixin,
         return queryset
 
 
-class UserEmailViewSet(AllowedPermissionsMixin,
-                       mixins.CreateModelMixin,
-                       mixins.ListModelMixin,
-                       mixins.RetrieveModelMixin,
-                       mixins.UpdateModelMixin,
-                       viewsets.GenericViewSet):
+class UserEmailViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.ListModelMixin,
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+):
 
     queryset = User.objects.filter(internal_email__isnull=False)
     serializer_class = UserEmailSerializer

@@ -9,8 +9,6 @@ Du har fått en prikk med vekt {{ weight }} fra {{ event }} på grunn av:
 {{ reason }}
 
 
-Du har nå {{ total }} prikker totalt.
-
-Les mer på {{ frontend_url }}/users/me/penalties
+Du kan se alle prikkene dine på {{ frontend_url }}/users/me/
 
 {% endblock %}

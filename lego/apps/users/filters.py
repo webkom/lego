@@ -8,18 +8,16 @@ class MembershipFilterSet(FilterSet):
 
     class Meta:
         model = Membership
-        fields = ('group',)
+        fields = ('group', )
 
 
 class AbakusGroupFilterSet(FilterSet):
-
     class Meta:
         model = AbakusGroup
-        fields = ('type',)
+        fields = ('type', )
 
 
 class MembershipHistoryFilterSet(FilterSet):
-
     class Meta:
         model = MembershipHistory
         fields = ('user', 'abakus_group', 'role')

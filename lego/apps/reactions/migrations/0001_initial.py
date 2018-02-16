@@ -21,13 +21,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Reaction',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('object_id', models.PositiveIntegerField(db_index=True)),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
-                ('created_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reaction_created', to=settings.AUTH_USER_MODEL)),
+                (
+                    'content_type',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType'
+                    )
+                ),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='reaction_created', to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
             options={
                 'abstract': False,
@@ -37,13 +62,35 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ReactionType',
             fields=[
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('short_code', models.CharField(max_length=40, primary_key=True, serialize=False)),
                 ('unicode', models.CharField(db_index=True, max_length=24)),
-                ('created_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reactiontype_created', to=settings.AUTH_USER_MODEL)),
-                ('updated_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reactiontype_updated', to=settings.AUTH_USER_MODEL)),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='reactiontype_created', to=settings.AUTH_USER_MODEL
+                    )
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='reactiontype_updated', to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
             options={
                 'abstract': False,
@@ -53,11 +100,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='reaction',
             name='type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reactions.ReactionType'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='reactions.ReactionType'
+            ),
         ),
         migrations.AddField(
             model_name='reaction',
             name='updated_by',
-            field=models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reaction_updated', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, editable=False, null=True,
+                on_delete=django.db.models.deletion.CASCADE, related_name='reaction_updated',
+                to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

@@ -3,7 +3,7 @@ import os
 import stripe
 from cassandra import ConsistencyLevel
 
-from .base import INSTALLED_APPS, MIDDLEWARE_CLASSES
+from .base import INSTALLED_APPS, MIDDLEWARE
 from .rest_framework import REST_FRAMEWORK
 
 DEBUG = True
@@ -45,9 +45,9 @@ INTERNAL_IPS = ['127.0.0.1']
 INSTALLED_APPS += [
     'debug_toolbar',
 ]
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-] + MIDDLEWARE_CLASSES
+]
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',
@@ -90,16 +90,15 @@ STREAM_REDIS_CONFIG = {
 }
 
 ELASTICSEARCH = [
-    {'host': '127.0.0.1'},
+    {
+        'host': '127.0.0.1'
+    },
 ]
 
 LDAP_SERVER = '127.0.0.1:389'
 LDAP_USER = 'cn=admin,dc=abakus,dc=no'
 LDAP_PASSWORD = 'admin'
 
-CORS_ORIGIN_WHITELIST = list({
-    '127.0.0.1:3000',
-    'localhost:3000'
-})
+CORS_ORIGIN_WHITELIST = list({'127.0.0.1:3000', 'localhost:3000'})
 
 SEARCH_INDEX = 'lego-search'

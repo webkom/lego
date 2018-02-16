@@ -50,8 +50,8 @@ class Command(BaseCommand):
 
         event = Event.objects.create(
             title="Test", start_time=(timezone.now() + timedelta(days=1)),
-            end_time=(timezone.now() + timedelta(days=1)),
-            location="-", event_type=constants.COMPANY_PRESENTATION
+            end_time=(timezone.now() + timedelta(days=1)), location="-",
+            event_type=constants.COMPANY_PRESENTATION
         )
         event.title = f'{event.id}'
         event.save()
@@ -99,7 +99,7 @@ class Command(BaseCommand):
                 regs.append(reg)
             time = timezone.now() + timedelta(seconds=5)
             for reg in regs:
-                async_register.apply_async((reg.id,), eta=time)
+                async_register.apply_async((reg.id, ), eta=time)
 
             input('Start the celery workers: DONE?')
 

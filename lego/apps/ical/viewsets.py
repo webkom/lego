@@ -22,7 +22,7 @@ class ICalTokenViewset(viewsets.ViewSet):
     To regenerate go to [regenerate](regenerate/).
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     @decorators.list_route(methods=['PATCH'])
     def regenerate(self, request, *args, **kwargs):
@@ -47,7 +47,7 @@ class ICalViewset(viewsets.ViewSet):
     usage: [events/?token=yourtoken](events/?token=yourtoken)
     """
 
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, )
     authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [ICalTokenAuthentication]
 
     def list(self, request):
@@ -73,8 +73,8 @@ class ICalViewset(viewsets.ViewSet):
                         'path': f'{path}registrations/'
                     },
                 ],
-
-                'token': ICalTokenSerializer(token).data
+                'token':
+                ICalTokenSerializer(token).data
             }
         }
         return Response(data=data)
@@ -90,9 +90,7 @@ class ICalViewset(viewsets.ViewSet):
             request.user,
             Event.objects.filter(
                 followers__follower_id=request.user.id,
-                end_time__gt=timezone.now() - timedelta(
-                    days=constants.HISTORY_BACKWARDS_IN_DAYS
-                )
+                end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
             ).all()
         )
 
@@ -100,9 +98,7 @@ class ICalViewset(viewsets.ViewSet):
         meetings = permission_handler.filter_queryset(
             request.user,
             Meeting.objects.filter(
-                end_time__gt=timezone.now() - timedelta(
-                    days=constants.HISTORY_BACKWARDS_IN_DAYS
-                )
+                end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
             )
         )
 
@@ -120,9 +116,7 @@ class ICalViewset(viewsets.ViewSet):
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
             request.user,
-            Event.objects.all().filter(
-                end_time__gt=timezone.now()
-            )
+            Event.objects.all().filter(end_time__gt=timezone.now())
         )
 
         for event in events:
@@ -134,15 +128,11 @@ class ICalViewset(viewsets.ViewSet):
             ical_endtime = ical_starttime + timedelta(
                 minutes=constants.REGISTRATION_EVENT_LENGTH_IN_MINUTES
             )
-            price = event.get_price(request.user)
+            price = event.get_price(request.user) if event.is_priced else None
             title = f'Reg: {event.title}'
 
             utils.add_event_to_ical_feed(
-                feed,
-                event,
-                price=price,
-                title=title,
-                ical_starttime=ical_starttime,
+                feed, event, price=price, title=title, ical_starttime=ical_starttime,
                 ical_endtime=ical_endtime
             )
         return utils.render_ical_response(feed, calendar_type)
@@ -157,9 +147,7 @@ class ICalViewset(viewsets.ViewSet):
         events = permission_handler.filter_queryset(
             request.user,
             Event.objects.all().filter(
-                end_time__gt=timezone.now() - timedelta(
-                    days=constants.HISTORY_BACKWARDS_IN_DAYS
-                )
+                end_time__gt=timezone.now() - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
             )
         )
 

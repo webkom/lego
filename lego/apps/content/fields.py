@@ -1,12 +1,12 @@
 from bs4 import BeautifulSoup
 from django.core.exceptions import ValidationError
 from django.db.models import TextField
-from django_thumbor import generate_url
 from rest_framework import serializers
 
 from lego.apps.content.utils import sanitize_html
 from lego.apps.files.constants import IMAGE, READY
 from lego.apps.files.models import File
+from lego.apps.files.thumbor import generate_url
 
 
 class ContentField(TextField):
@@ -50,12 +50,7 @@ class ContentField(TextField):
                 raise ValidationError('Found img tag without the data-file-key property')
 
         if images:
-            files = File.objects.filter(
-                key__in=images,
-                public=True,
-                state=READY,
-                file_type=IMAGE
-            )
+            files = File.objects.filter(key__in=images, public=True, state=READY, file_type=IMAGE)
             diff = set(images) - set([file.key for file in files])
             if len(diff):
                 raise ValidationError(f'Images {diff} not found')

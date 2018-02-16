@@ -17,8 +17,12 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'lego.apps.permissions.api.filters.LegoPermissionFilter',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'lego.utils.pagination.CursorPagination',
-    'PAGE_SIZE': 30,
-    'EXCEPTION_HANDLER': 'lego.utils.exceptions.exception_handler',
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_PAGINATION_CLASS':
+    'lego.utils.pagination.CursorPagination',
+    'PAGE_SIZE':
+    30,
+    'EXCEPTION_HANDLER':
+    'lego.utils.exceptions.exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT':
+    'json',
 }

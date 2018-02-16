@@ -2,8 +2,9 @@ from django.utils import timezone
 from rest_framework import viewsets
 
 from lego.apps.joblistings.models import Joblisting
-from lego.apps.joblistings.serializer import (JoblistingCreateAndUpdateSerializer,
-                                              JoblistingDetailedSerializer, JoblistingSerializer)
+from lego.apps.joblistings.serializer import (
+    JoblistingCreateAndUpdateSerializer, JoblistingDetailedSerializer, JoblistingSerializer
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
@@ -21,6 +22,7 @@ class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == 'list':
-            return Joblisting.objects.filter(visible_from__lte=timezone.now(),
-                                             visible_to__gte=timezone.now())
+            return Joblisting.objects.filter(
+                visible_from__lte=timezone.now(), visible_to__gte=timezone.now()
+            )
         return Joblisting.objects.all()

@@ -10,8 +10,9 @@ from .utils import get_dummy_users
 
 
 class EventMethodTest(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
@@ -105,8 +106,9 @@ class EventMethodTest(TestCase):
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         AbakusGroup.objects.get(name='Webkom').add_user(user_three)
 
-        self.assertEqual(event.find_most_exclusive_pools(
-            [webkom_pool, abakus_pool])[0], webkom_pool)
+        self.assertEqual(
+            event.find_most_exclusive_pools([webkom_pool, abakus_pool])[0], webkom_pool
+        )
         self.assertEqual(len(event.find_most_exclusive_pools([webkom_pool, abakus_pool])), 1)
 
     def test_find_most_exclusive_when_equal(self):
@@ -160,7 +162,7 @@ class EventMethodTest(TestCase):
         AbakusGroup.objects.get(name='Webkom').add_user(user)
 
         earliest_reg = event.get_earliest_registration_time(user, [webkom_pool, abakus_pool])
-        self.assertEqual(earliest_reg, current_time-timedelta(hours=1))
+        self.assertEqual(earliest_reg, current_time - timedelta(hours=1))
 
     def test_number_of_waiting_registrations(self):
         """Test method counting the number of registrations in waiting list"""
@@ -174,9 +176,7 @@ class EventMethodTest(TestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
-        self.assertEqual(
-            event.waiting_registrations.count(), people_to_place_in_waiting_list
-        )
+        self.assertEqual(event.waiting_registrations.count(), people_to_place_in_waiting_list)
 
     def test_spots_left_for_user_before_merge(self):
         """Test that spots_left_for_user returns correct number of spots"""

@@ -3,12 +3,9 @@ from ldap3 import MODIFY_DELETE, MODIFY_REPLACE, Connection
 
 
 class LDAPLib:
-
     def __init__(self):
         self.connection = Connection(
-            server=settings.LDAP_SERVER,
-            user=settings.LDAP_USER,
-            password=settings.LDAP_PASSWORD,
+            server=settings.LDAP_SERVER, user=settings.LDAP_USER, password=settings.LDAP_PASSWORD,
             auto_bind=True
         )
 
@@ -46,13 +43,16 @@ class LDAPLib:
 
     def add_user(self, uid, first_name, last_name, email, password_hash):
         dn = ','.join((f'uid={uid}', self.user_base))
-        return self.connection.add(dn, ['inetOrgPerson', 'top'], {
-            'uid': uid,
-            'cn': first_name,
-            'sn': last_name,
-            'mail': email,
-            'userPassword': '{CRYPT}' + password_hash
-        })
+        return self.connection.add(
+            dn, ['inetOrgPerson', 'top'],
+            {
+                'uid': uid,
+                'cn': first_name,
+                'sn': last_name,
+                'mail': email,
+                'userPassword': '{CRYPT}' + password_hash
+            }
+        )
 
     def search_group(self, query):
         search_filter = f'(gidNumber={query})'
@@ -74,14 +74,10 @@ class LDAPLib:
         Make sure the organization unit exists in LDAP.
         """
         search_filter = f'(ou={name})'
-        result = self.connection.search(
-            settings.LDAP_BASE_DN, search_filter, attributes=['ou']
-        )
+        result = self.connection.search(settings.LDAP_BASE_DN, search_filter, attributes=['ou'])
         if not result:
             dn = ','.join((f'ou={name}', settings.LDAP_BASE_DN))
-            self.connection.add(
-                dn, ['organizationalUnit', 'top'], {'ou': name}
-            )
+            self.connection.add(dn, ['organizationalUnit', 'top'], {'ou': name})
 
     def delete_user(self, uid):
         dn = ','.join((f'uid={uid}', self.user_base))
@@ -98,21 +94,15 @@ class LDAPLib:
     def change_password(self, uid, password_hash):
         dn = ','.join((f'uid={uid}', self.user_base))
 
-        changes = {
-            'userPassword': [(MODIFY_REPLACE, ['{CRYPT}' + password_hash])]
-        }
+        changes = {'userPassword': [(MODIFY_REPLACE, ['{CRYPT}' + password_hash])]}
         self.connection.modify(dn, changes)
 
     def update_group_members(self, cn, members):
         dn = ','.join((f'cn={cn}', self.group_base))
 
         if members:
-            changes = {
-                'memberUid': [(MODIFY_REPLACE, members)]
-            }
+            changes = {'memberUid': [(MODIFY_REPLACE, members)]}
         else:
-            changes = {
-                'memberUid': [(MODIFY_DELETE, [])]
-            }
+            changes = {'memberUid': [(MODIFY_DELETE, [])]}
 
         self.connection.modify(dn, changes)

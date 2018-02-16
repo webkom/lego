@@ -1,6 +1,6 @@
 from unittest import mock
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from lego.apps.users.registrations import Registrations
@@ -41,10 +41,7 @@ class CreateRegistrationAPITestCase(APITestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
-    _test_registration_data = {
-        'email': 'new_test1@user.com',
-        'captcha_response': 'testCaptcha'
-    }
+    _test_registration_data = {'email': 'new_test1@user.com', 'captcha_response': 'testCaptcha'}
 
     def test_without_email(self, *args):
         response = self.client.post(_get_list_url())
@@ -52,10 +49,12 @@ class CreateRegistrationAPITestCase(APITestCase):
 
     @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=True)
     def test_with_invalid_email(self, *args):
-        response = self.client.post(_get_list_url(), {
-            'email': 'test1@@user.com',
-            'captcha_response': 'testCaptcha'
-        })
+        response = self.client.post(
+            _get_list_url(), {
+                'email': 'test1@@user.com',
+                'captcha_response': 'testCaptcha'
+            }
+        )
         self.assertEqual(response.status_code, 400)
 
     @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=False)

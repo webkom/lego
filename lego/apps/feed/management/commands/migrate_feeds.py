@@ -41,8 +41,7 @@ class Command(BaseCommand):
         os.environ['CQLENG_ALLOW_SCHEMA_MANAGEMENT'] = '1'
 
         create_keyspace_simple(
-            settings.STREAM_DEFAULT_KEYSPACE,
-            settings.STREAM_CASSANDRA_CONSISTENCY_LEVEL
+            settings.STREAM_DEFAULT_KEYSPACE, settings.STREAM_CASSANDRA_CONSISTENCY_LEVEL
         )
 
         # Create a table for all feeds

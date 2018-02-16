@@ -1,31 +1,37 @@
 from celery import chain
 from django.db import transaction
 from django.db.models import Prefetch
-from rest_framework import decorators, mixins, status, viewsets
+from django.utils import timezone
+from rest_framework import decorators, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (APINoSuchPool, APIPaymentExists,
-                                         APIRegistrationsExistsInPool, NoSuchPool,
-                                         RegistrationsExistInPool)
+from lego.apps.events.exceptions import (
+    APINoSuchPool, APINoSuchRegistration, APIPaymentExists, APIRegistrationExists,
+    APIRegistrationsExistsInPool, NoSuchPool, NoSuchRegistration, RegistrationExists,
+    RegistrationsExistInPool
+)
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.serializers.events import (EventAdministrateSerializer,
-                                                 EventCreateAndUpdateSerializer,
-                                                 EventReadSerializer,
-                                                 EventReadUserDetailedSerializer)
+from lego.apps.events.serializers.events import (
+    EventAdministrateSerializer, EventCreateAndUpdateSerializer,
+    EventReadAuthUserDetailedSerializer, EventReadSerializer, EventReadUserDetailedSerializer
+)
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
-from lego.apps.events.serializers.registrations import (AdminRegistrationCreateAndUpdateSerializer,
-                                                        RegistrationCreateAndUpdateSerializer,
-                                                        RegistrationPaymentReadSerializer,
-                                                        RegistrationReadDetailedSerializer,
-                                                        RegistrationReadSerializer,
-                                                        StripeTokenSerializer)
-from lego.apps.events.tasks import (async_payment, async_register, async_unregister,
-                                    check_for_bump_on_pool_creation_or_expansion,
-                                    registration_payment_save)
+from lego.apps.events.serializers.registrations import (
+    AdminRegistrationCreateAndUpdateSerializer, AdminUnregisterSerializer,
+    RegistrationCreateAndUpdateSerializer, RegistrationPaymentReadSerializer,
+    RegistrationReadDetailedSerializer, RegistrationReadSerializer,
+    RegistrationSearchReadSerializer, RegistrationSearchSerializer, StripeTokenSerializer
+)
+from lego.apps.events.tasks import (
+    async_payment, async_register, async_unregister, check_for_bump_on_pool_creation_or_expansion,
+    registration_payment_save
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.users.models import User
 from lego.utils.functions import verify_captcha
 
 
@@ -44,13 +50,17 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 'pools', 'pools__permission_groups',
                 Prefetch(
                     'pools__registrations', queryset=Registration.objects.select_related('user')
-                ),
-                Prefetch('registrations', queryset=Registration.objects.select_related('user')),
+                ), Prefetch('registrations', queryset=Registration.objects.select_related('user')),
                 'tags'
             )
         else:
             queryset = Event.objects.all()
         return queryset
+
+    def user_should_see_regs(self, event, user):
+        return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
+               user.is_abakom_member or \
+               event.created_by.id == user.id
 
     def get_serializer_class(self):
         if self.action in ['create', 'partial_update', 'update']:
@@ -58,6 +68,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action == 'list':
             return EventReadSerializer
         if self.action == 'retrieve':
+            user = self.request.user
+            event = Event.objects.get(id=self.kwargs.get('pk', None))
+            if event and user and user.is_authenticated and self.user_should_see_regs(event, user):
+                return EventReadAuthUserDetailedSerializer
             return EventReadUserDetailedSerializer
 
         return super().get_serializer_class()
@@ -83,7 +97,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get('pk', None)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
-            'pools', 'pools__permission_groups',
+            'pools',
+            'pools__permission_groups',
             Prefetch('pools__registrations', queryset=Registration.objects.select_related('user')),
             Prefetch('registrations', queryset=Registration.objects.select_related('user')),
         )
@@ -114,11 +129,21 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
+    @decorators.list_route(
+        serializer_class=EventReadSerializer, permission_classes=[permissions.IsAuthenticated]
+    )
+    def upcoming(self, request):
+        queryset = self.get_queryset().filter(
+            registrations__user=request.user, start_time__gt=timezone.now()
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
-class PoolViewSet(mixins.CreateModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  viewsets.GenericViewSet):
+
+class PoolViewSet(
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     queryset = Pool.objects.all()
     serializer_class = PoolCreateAndUpdateSerializer
 
@@ -135,12 +160,10 @@ class PoolViewSet(mixins.CreateModelMixin,
             raise APIRegistrationsExistsInPool
 
 
-class RegistrationViewSet(AllowedPermissionsMixin,
-                          mixins.CreateModelMixin,
-                          mixins.RetrieveModelMixin,
-                          mixins.UpdateModelMixin,
-                          mixins.DestroyModelMixin,
-                          viewsets.GenericViewSet):
+class RegistrationViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     serializer_class = RegistrationReadSerializer
     ordering = 'registration_date'
 
@@ -188,8 +211,9 @@ class RegistrationViewSet(AllowedPermissionsMixin,
         serializer = RegistrationReadSerializer(instance)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    @decorators.list_route(methods=['POST'],
-                           serializer_class=AdminRegistrationCreateAndUpdateSerializer)
+    @decorators.list_route(
+        methods=['POST'], serializer_class=AdminRegistrationCreateAndUpdateSerializer
+    )
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get('event_pk', None)
         event = Event.objects.get(id=event_id)
@@ -201,3 +225,70 @@ class RegistrationViewSet(AllowedPermissionsMixin,
             raise APINoSuchPool()
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
+
+    @decorators.list_route(methods=['POST'], serializer_class=AdminUnregisterSerializer)
+    def admin_unregister(self, request, *args, **kwargs):
+        event_id = self.kwargs.get('event_pk', None)
+        event = Event.objects.get(id=event_id)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            registration = event.admin_unregister(**serializer.validated_data)
+        except NoSuchRegistration:
+            raise APINoSuchRegistration()
+        except RegistrationExists:
+            raise APIRegistrationExists()
+        reg_data = RegistrationReadDetailedSerializer(registration).data
+        return Response(data=reg_data, status=status.HTTP_200_OK)
+
+
+class RegistrationSearchViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
+):
+    serializer_class = RegistrationSearchSerializer
+    ordering = 'registration_date'
+
+    def get_queryset(self):
+        event_id = self.kwargs.get('event_pk', None)
+        return Registration.objects.filter(event=event_id).prefetch_related('user')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.data['username']
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise ValidationError(
+                {
+                    'error': f'There is no user with username {username}',
+                    'error_code': 'no_user'
+                }
+            )
+
+        try:
+            reg = self.get_queryset().get(user=user)
+        except Registration.DoesNotExist:
+            raise ValidationError(
+                {
+                    'error': 'The registration does not exist',
+                    'error_code': 'not_registered'
+                }
+            )
+
+        if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
+            raise PermissionDenied()
+
+        if reg.presence != constants.UNKNOWN:
+            raise ValidationError(
+                {
+                    'error': f'User {reg.user.username} is already present.',
+                    'error_code': 'already_present'
+                }
+            )
+
+        reg.presence = constants.PRESENT
+        reg.save()
+        data = RegistrationSearchReadSerializer(reg).data
+        return Response(data=data, status=status.HTTP_200_OK)

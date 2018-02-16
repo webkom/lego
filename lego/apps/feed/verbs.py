@@ -129,3 +129,12 @@ class GroupJoinVerb(Verb):
 
 
 register(GroupJoinVerb)
+
+
+class AdminUnregistrationVerb(Verb):
+    id = 17
+    infinitive = 'admin_unregistration'
+    past_tense = infinitive
+
+
+register(AdminUnregistrationVerb)

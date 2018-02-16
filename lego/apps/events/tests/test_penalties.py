@@ -11,8 +11,9 @@ from .utils import get_dummy_users
 
 
 class PenaltyTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml',
-                'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
@@ -274,8 +275,9 @@ class PenaltyTestCase(TestCase):
             pool.save()
 
         users = get_dummy_users(5)
-        penalty_one = Penalty.objects.create(user=users[0], reason='test',
-                                             weight=1, source_event=event)
+        penalty_one = Penalty.objects.create(
+            user=users[0], reason='test', weight=1, source_event=event
+        )
         Penalty.objects.create(user=users[0], reason='test', weight=2, source_event=event)
         abakus_users = users[:5]
         waiting_users = [users[0], users[4]]
@@ -283,8 +285,7 @@ class PenaltyTestCase(TestCase):
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
         for user in users:
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertIsNone(event.registrations.get(user=waiting_users[0]).pool)
@@ -307,8 +308,7 @@ class PenaltyTestCase(TestCase):
 
         for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
-            registration = Registration.objects.get_or_create(event=event,
-                                                              user=user)[0]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
         self.assertIsNone(event.registrations.get(user=users[3]).pool)
@@ -411,3 +411,19 @@ class PenaltyTestCase(TestCase):
             event.penalty_weight_on_not_present + other_event.penalty_weight_on_not_present
         )
         self.assertEqual(penalties_after, other_event.penalty_weight_on_not_present)
+
+    def test_able_to_register_when_not_heed_penalties_with_penalties(self):
+        """Test that user is able to register when heed_penalties is false and user has penalties"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        other_event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        event.heed_penalties = False
+        event.save()
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(user)
+        Penalty.objects.create(user=user, reason='TEST', weight=3, source_event=other_event)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+
+        registration.refresh_from_db()
+        self.assertIsNotNone(registration.pool)

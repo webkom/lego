@@ -32,9 +32,8 @@ class LDAPTestCase(TestCase):
         filtered = self.ldap.filter_groups(AbakusGroup.objects.all()).values_list('name', flat=True)
         self.assertSetEqual(
             set(filtered),
-            set(AbakusGroup.objects.filter(
-                type=GROUP_COMMITTEE
-            ).values_list('name', flat=True)).union(['UserAdminTest'])
+            set(AbakusGroup.objects.filter(type=GROUP_COMMITTEE).values_list('name', flat=True)
+                ).union(['UserAdminTest'])
         )
 
     def test_search_user(self):

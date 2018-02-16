@@ -13,8 +13,9 @@ from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
-from lego.apps.users.serializers.users import (MeSerializer, PublicUserSerializer,
-                                               PublicUserWithGroupsSerializer)
+from lego.apps.users.serializers.users import (
+    MeSerializer, PublicUserSerializer, PublicUserWithGroupsSerializer
+)
 
 log = get_logger()
 
@@ -64,8 +65,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return super().get_permissions()
 
     @list_route(
-        methods=['GET'], permission_classes=[IsAuthenticated],
-        serializer_class=MeSerializer
+        methods=['GET'], permission_classes=[IsAuthenticated], serializer_class=MeSerializer
     )
     def me(self, request):
         """
@@ -89,9 +89,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.create_user(
-            email=token_email, **serializer.validated_data
-        )
+        user = User.objects.create_user(email=token_email, **serializer.validated_data)
 
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
         user_group.add_user(user)

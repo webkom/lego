@@ -14,10 +14,8 @@ class MeetingInvitationHandler(BaseHandler):
 
     def get_activity(self, meeting_invitation):
         return Activity(
-            actor=meeting_invitation.created_by,
-            verb=MeetingInvitationVerb,
-            object=meeting_invitation,
-            target=meeting_invitation.user,
+            actor=meeting_invitation.created_by, verb=MeetingInvitationVerb,
+            object=meeting_invitation, target=meeting_invitation.user,
             time=meeting_invitation.created_at
         )
 

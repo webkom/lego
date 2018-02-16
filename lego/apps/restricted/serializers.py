@@ -6,7 +6,6 @@ from lego.utils.serializers import BasisModelSerializer
 
 
 class RestrictedMailListSerializer(BasisModelSerializer):
-
     class Meta:
         model = RestrictedMail
         fields = ('id', 'from_address', 'hide_sender', 'used', 'created_at', 'weekly')
@@ -18,10 +17,9 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 
 
 class RestrictedMailSerializer(RestrictedMailListSerializer):
-
     class Meta(RestrictedMailListSerializer.Meta):
         fields = RestrictedMailListSerializer.Meta.fields + (
-            'users', 'groups', 'events', 'meetings', 'raw_addresses'
+            'users', 'groups', 'events', 'meetings', 'raw_addresses', 'weekly', 'hide_sender'
         )
 
 

@@ -17,7 +17,10 @@ def autocomplete(query, types, user):
     track(
         user,
         'search.autocomplete',
-        properties={'query': query, 'result_count': len(result)},
+        properties={
+            'query': query,
+            'result_count': len(result)
+        },
     )
 
     return result
@@ -35,7 +38,10 @@ def search(query, types, filters, user):
     track(
         user,
         'search.search',
-        properties={'query': query, 'result_count': len(result)},
+        properties={
+            'query': query,
+            'result_count': len(result)
+        },
     )
 
     return result

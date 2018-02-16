@@ -11,9 +11,19 @@ class APIPaymentExists(APIException):
     default_detail = 'Payment already exist.'
 
 
+class APINoSuchRegistration(APIException):
+    status_code = 400
+    default_detail = 'No such registration exists for this event.'
+
+
+class APIRegistrationExists(APIException):
+    status_code = 400
+    default_detail = 'A registration for this user already exists.'
+
+
 class APIRegistrationsExistsInPool(APIException):
     status_code = 409
-    default_detail = 'Registrations exists within this pool'
+    default_detail = 'Registrations exists within this pool.'
 
 
 class NoSuchPool(ValueError):
@@ -21,6 +31,14 @@ class NoSuchPool(ValueError):
 
 
 class EventHasClosed(ValueError):
+    pass
+
+
+class NoSuchRegistration(ValueError):
+    pass
+
+
+class RegistrationExists(ValueError):
     pass
 
 
@@ -33,9 +51,9 @@ class EventNotReady(ValueError):
 
 
 class PoolCounterNotEqualToRegistrationCount(ValueError):
-    def __init__(self, pool, event):
-        message = f'Pool {pool.id} for event {event.id} was supposed to have {pool.capacity} ' \
-                  f'registrations, but has {pool.counter}!'
+    def __init__(self, pool, registration_count, event):
+        message = f'Pool {pool.id} for event {event.id} was supposed to have ' \
+                  f'{pool.counter} registrations, but has {registration_count}!'
         super().__init__(message)
 
 

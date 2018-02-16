@@ -50,30 +50,34 @@ class Command(BaseCommand):
         if options['generate']:
             self.generate_groups()
 
-        self.load_fixtures([
-            'files/fixtures/initial_files.yaml',
-            'users/fixtures/initial_abakus_groups.yaml',
-            'tags/fixtures/initial_tags.yaml'
-        ])
+        self.load_fixtures(
+            [
+                'files/fixtures/initial_files.yaml', 'users/fixtures/initial_abakus_groups.yaml',
+                'tags/fixtures/initial_tags.yaml'
+            ]
+        )
 
         if getattr(settings, 'DEVELOPMENT', None) or options['development']:
             self.load_fixtures(['users/fixtures/development_users.yaml'])
             self.upload_development_files()
             log.info('Loading development fixtures:')
-            self.load_fixtures([
-                'users/fixtures/development_users.yaml',
-                'gallery/fixtures/development_galleries.yaml',
-                'users/fixtures/development_memberships.yaml',
-                'companies/fixtures/development_companies.yaml',
-                'events/fixtures/development_events.yaml',
-                'events/fixtures/development_pools.yaml',
-                'events/fixtures/development_registrations.yaml',
-                'articles/fixtures/development_articles.yaml',
-                'quotes/fixtures/development_quotes.yaml',
-                'oauth/fixtures/development_applications.yaml',
-                'reactions/fixtures/emojione_reaction_types.yaml',
-                'joblistings/fixtures/development_joblistings.yaml',
-            ])
+            self.load_fixtures(
+                [
+                    'users/fixtures/development_users.yaml',
+                    'gallery/fixtures/development_galleries.yaml',
+                    'users/fixtures/development_memberships.yaml',
+                    'companies/fixtures/development_companies.yaml',
+                    'events/fixtures/development_events.yaml',
+                    'events/fixtures/development_pools.yaml',
+                    'events/fixtures/development_registrations.yaml',
+                    'articles/fixtures/development_articles.yaml',
+                    'quotes/fixtures/development_quotes.yaml',
+                    'oauth/fixtures/development_applications.yaml',
+                    'reactions/fixtures/emojione_reaction_types.yaml',
+                    'joblistings/fixtures/development_joblistings.yaml',
+                    'surveys/fixtures/development_surveys.yaml',
+                ]
+            )
 
             self.update_event_dates()
 
@@ -94,22 +98,24 @@ class Command(BaseCommand):
             log.info(f'Uploading {file} file to bucket')
             file_path = os.path.join(assets_folder, file)
             storage.upload_file(uploads_bucket, file, file_path)
-            File.objects.get_or_create(pk=file, defaults={
-                'state': 'ready',
-                'file_type': 'image',
-                'token': 'token',
-                'user': user,
-                'public': True,
-            })
+            File.objects.get_or_create(
+                pk=file, defaults={
+                    'state': 'ready',
+                    'file_type': 'image',
+                    'token': 'token',
+                    'user': user,
+                    'public': True,
+                }
+            )
 
     def update_event_dates(self):
         date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
         for i, event in enumerate(Event.objects.all()):
-            event.start_time = date + timedelta(days=i-10)
-            event.end_time = date + timedelta(days=i-10, hours=4)
+            event.start_time = date + timedelta(days=i - 10)
+            event.end_time = date + timedelta(days=i - 10, hours=4)
             event.save()
             for j, pool in enumerate(event.pools.all()):
-                pool.activation_date = date.replace(hour=12, minute=0) + timedelta(days=i-j-16)
+                pool.activation_date = date.replace(hour=12, minute=0) + timedelta(days=i - j - 16)
                 pool.save()
 
     def generate_groups(self):
@@ -118,23 +124,29 @@ class Command(BaseCommand):
         load_test_abakus_groups()
         test_abakus_groups = AbakusGroup.objects.all()
         with open('lego/apps/users/fixtures/test_abakus_groups.yaml', 'w') as f:
-            f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
-                    " and `development_interest_groups.py`\n#\n")
+            f.write(
+                "#\n# THIS FILE IS HANDLED BY `load_fixtures`"
+                " and `development_interest_groups.py`\n#\n"
+            )
             data = serializers.serialize("yaml", test_abakus_groups)
             f.write(data)
 
         self.call_command('flush', '--noinput')  # Need to reset the pk counter to start pk on 1
         self.call_command('migrate')
-        self.load_fixtures([
-            'files/fixtures/initial_files.yaml',
-            'users/fixtures/development_users.yaml',
-        ])
+        self.load_fixtures(
+            [
+                'files/fixtures/initial_files.yaml',
+                'users/fixtures/development_users.yaml',
+            ]
+        )
         self.upload_development_files()
 
         load_abakus_groups()
         abakus_groups = AbakusGroup.objects.all()
         with open('lego/apps/users/fixtures/initial_abakus_groups.yaml', 'w') as f:
-            f.write("#\n# THIS FILE IS HANDLED BY `load_fixtures`"
-                    " and `initial_abakus_groups.py`\n#\n")
+            f.write(
+                "#\n# THIS FILE IS HANDLED BY `load_fixtures`"
+                " and `initial_abakus_groups.py`\n#\n"
+            )
             data = serializers.serialize("yaml", abakus_groups)
             f.write(data)

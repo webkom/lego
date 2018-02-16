@@ -33,7 +33,6 @@ class EmailListCreateSerializer(EmailListSerializer):
 
 
 class GSuiteAddressSerializer(serializers.ModelSerializer):
-
     def validate(self, attrs):
         internal_email = attrs.get('internal_email')
 

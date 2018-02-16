@@ -22,7 +22,9 @@ class File(TimeStampModel):
     state = models.CharField(max_length=24, choices=FILE_STATES, default=PENDING_UPLOAD)
     file_type = models.CharField(max_length=24, choices=FILE_TYPES)
     token = models.CharField(max_length=32)
-    user = models.ForeignKey('users.User', related_name='uploaded_files', null=True)
+    user = models.ForeignKey(
+        'users.User', related_name='uploaded_files', null=True, on_delete=models.SET_NULL
+    )
     bucket = getattr(settings, 'AWS_S3_BUCKET', None)
     public = models.BooleanField(default=False, null=False)
 
@@ -47,11 +49,8 @@ class File(TimeStampModel):
             )
             file_token = get_random_string(32)
             file = cls.objects.create(
-                key=key_storage_name,
-                file_type=cls.get_file_type(key_storage_name),
-                token=file_token,
-                user=user,
-                public=public
+                key=key_storage_name, file_type=cls.get_file_type(key_storage_name),
+                token=file_token, user=user, public=public
             )
             log.info('file_upload_new', user_key=key, file=key_storage_name)
             return file
@@ -64,9 +63,7 @@ class File(TimeStampModel):
         stale_threshold = timezone.now() - timedelta(hours=12)
         garbage = cls.objects.filter(state=PENDING_UPLOAD, created_at__lte=stale_threshold)
         result = garbage.delete()
-        log.info(
-            'file_purge_garbage', row_count=result[1], stale_threshold=stale_threshold
-        )
+        log.info('file_purge_garbage', row_count=result[1], stale_threshold=stale_threshold)
 
     @classmethod
     def get_file_type(cls, file_name):

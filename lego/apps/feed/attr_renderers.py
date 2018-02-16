@@ -1,4 +1,4 @@
-from django_thumbor import generate_url
+from lego.apps.files.thumbor import generate_url
 
 
 def render_user(user):
@@ -12,11 +12,7 @@ def render_user(user):
 
 
 def render_event(event):
-    return {
-        'id': event.id,
-        'title': event.title,
-        'event_type': event.event_type
-    }
+    return {'id': event.id, 'title': event.title, 'event_type': event.event_type}
 
 
 def render_meeting_invitation(meeting_invitation):
@@ -32,17 +28,11 @@ def render_meeting_invitation(meeting_invitation):
 
 
 def render_article(article):
-    return {
-        'id': article.id,
-        'title': article.title
-    }
+    return {'id': article.id, 'title': article.title}
 
 
 def render_announcement(announcement):
-    return {
-        'id': announcement.id,
-        'message': announcement.message
-    }
+    return {'id': announcement.id, 'message': announcement.message}
 
 
 def render_gallery_picture(gallery_picture):
@@ -75,3 +65,7 @@ def render_registration(registration):
         'waiting_list': pool is None and registration.unregistration_date is None,
         'registered': not (pool is None and registration.unregistration_date),
     }
+
+
+def render_restricted_mail(restrictedmail):
+    return {'id': restrictedmail.id}

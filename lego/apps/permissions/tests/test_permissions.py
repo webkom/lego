@@ -8,9 +8,7 @@ from lego.apps.users.models import AbakusGroup, User
 class PermissionTestCase(APITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
-    test_update_object = {
-        'name': 'new_test_object'
-    }
+    test_update_object = {'name': 'new_test_object'}
 
     def setUp(self):
         self.regular_users = User.objects.all()
@@ -140,4 +138,15 @@ class PermissionTestCase(APITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
+        self.assertEqual(response.status_code, 404)
+
+    def test_edit_object_with_require_auth_false(self):
+        """
+        Editing an object with require_auth=False should not be possible
+        """
+        self.test_object.require_auth = False
+        self.test_object.save()
+        response = self.client.put(
+            f'/permissiontest/{self.test_object.id}/', self.test_update_object
+        )
         self.assertEqual(response.status_code, 404)

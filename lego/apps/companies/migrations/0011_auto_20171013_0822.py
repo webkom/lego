@@ -36,7 +36,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='companyinterest',
             name='other_offers',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(choices=[('collaboration', 'collaboration'), ('readme', 'readme'), ('itdagene', 'itdagene'), ('labamba_sponsor', 'labamba_sponsor')], max_length=64), default=[], size=None),
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(
+                    choices=[
+                        ('collaboration', 'collaboration'), ('readme', 'readme'),
+                        ('itdagene', 'itdagene'), ('labamba_sponsor', 'labamba_sponsor')
+                    ], max_length=64
+                ), default=[], size=None
+            ),
             preserve_default=False,
         ),
         migrations.AddField(

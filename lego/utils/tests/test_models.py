@@ -6,7 +6,6 @@ from lego.utils.models import PersistentModel, TimeStampModel
 
 
 class TimeStampModelTestCase(TestCase):
-
     def setUp(self):
         self.instance = TimeStampModel()
 
@@ -19,7 +18,6 @@ class TimeStampModelTestCase(TestCase):
 
 
 class PersistentModelTestCase(TestCase):
-
     def setUp(self):
         self.instance = PersistentModel()
 

@@ -6,18 +6,16 @@ from lego.apps.users.models import Penalty, User
 
 
 class TestPenaltyHandler(FeedTestBase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml',
-                'test_companies.yaml', 'test_events.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
+    ]
 
     def setUp(self):
         self.events = Event.objects.all()
         self.handler = PenaltyHandler()
         self.user = User.objects.first()
         self.penalty = Penalty.objects.create(
-            user=self.user,
-            weight=1,
-            reason='test',
-            source_event=self.events.first()
+            user=self.user, weight=1, reason='test', source_event=self.events.first()
         )
 
     def test_create(self):
@@ -38,7 +36,5 @@ class TestPenaltyHandler(FeedTestBase):
         activity = self.all_activities(NotificationFeed(self.user.id))[0]
         self.assertIn('reason', activity.extra_context)
         self.assertIn('weight', activity.extra_context)
-        self.assertIn('total', activity.extra_context)
         self.assertEqual(activity.extra_context['reason'], self.penalty.reason)
         self.assertEqual(activity.extra_context['weight'], self.penalty.weight)
-        self.assertEqual(activity.extra_context['total'], self.user.number_of_penalties())

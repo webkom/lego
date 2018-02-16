@@ -1,4 +1,3 @@
-
 from lego.apps.notifications.constants import ANNOUNCEMENT
 from lego.apps.notifications.notification import Notification
 
@@ -36,9 +35,7 @@ class AnnouncementNotification(Notification):
         announcement = self.kwargs['announcement']
 
         return self._delay_push(
-            template='notifications/push/announcement.txt',
-            context={
+            template='notifications/push/announcement.txt', context={
                 'created_by': announcement.created_by,
-            },
-            instance=announcement
+            }, instance=announcement
         )

@@ -33,12 +33,14 @@ class FileViewSet(viewsets.GenericViewSet):
         except UnknownFileType:
             raise exceptions.ParseError
 
-        return Response({
-            'url': url,
-            'file_key': file_key,
-            'file_token': token,
-            'fields': fields
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                'url': url,
+                'file_key': file_key,
+                'file_token': token,
+                'fields': fields
+            }, status=status.HTTP_201_CREATED
+        )
 
     @decorators.detail_route(
         methods=['GET'],

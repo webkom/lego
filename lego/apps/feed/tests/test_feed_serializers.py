@@ -1,4 +1,3 @@
-
 from datetime import datetime
 
 from django.test import TestCase
@@ -24,23 +23,16 @@ class FeedActivitySerializerTestCase(TestCase):
         )
 
         self.activity = Activity(
-            actor=self.user,
-            verb=CommentVerb,
-            object=self.comment,
-            target=self.article,
-            extra_context={
-                'content': self.comment.text
-            }
+            actor=self.user, verb=CommentVerb, object=self.comment, target=self.article,
+            extra_context={'content': self.comment.text}
         )
         self.aggregated_activity = AggregatedActivity(
-            'test-group', [self.activity],
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            'test-group',
+            [self.activity], created_at=datetime.utcnow(), updated_at=datetime.utcnow()
         )
 
         self.aggregated_serializer = AggregatedActivitySerializer(
-            aggregated_activity_class=AggregatedActivity,
-            activity_class=Activity,
+            aggregated_activity_class=AggregatedActivity, activity_class=Activity,
             model=NotificationFeed.get_timeline_storage().model
         )
 

@@ -14,7 +14,7 @@ class NestedCompanyPermissionHandler(CompanyPermissionHandler):
     """
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         from lego.apps.companies.models import Company
         if obj is not None:

@@ -54,7 +54,7 @@ def send_email(self, logger_context=None, **kwargs):
         message.send()
     except SMTPException as e:
         log.error('email_task_exception', exc_info=True, extra=kwargs)
-        raise self.retry(exc=e, countdown=2 ** self.request.retries)
+        raise self.retry(exc=e, countdown=2**self.request.retries)
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
@@ -71,4 +71,4 @@ def send_push(self, logger_context=None, **kwargs):
         message.send()
     except NotificationError as e:
         log.error('push_task_exception', exec_info=True, extra=kwargs)
-        raise self.retry(exc=e, countdown=2 ** self.request.retries)
+        raise self.retry(exc=e, countdown=2**self.request.retries)

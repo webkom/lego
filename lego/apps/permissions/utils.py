@@ -1,5 +1,6 @@
 from lego.apps.permissions.permissions import PermissionHandler
 
+# isort:skip
 
 default_permission_handler = PermissionHandler()
 

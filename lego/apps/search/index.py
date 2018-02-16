@@ -51,8 +51,10 @@ class SearchIndex:
         """
         serializer_class = getattr(self, 'serializer_class')
         if serializer_class is None:
-            raise NotImplementedError('You must provide a \'get_serializer_class\' function or a '
-                                      f'serializer_class attribute for the {self} index')
+            raise NotImplementedError(
+                'You must provide a \'get_serializer_class\' function or a '
+                f'serializer_class attribute for the {self} index'
+            )
         return serializer_class
 
     def get_filter_fields(self):
@@ -69,8 +71,10 @@ class SearchIndex:
         """
         result_fields = getattr(self, 'result_fields')
         if result_fields is None:
-            raise NotImplementedError('You must provide a \'get_result_fields\' function or a '
-                                      f'result_fields attribute for the {self} index')
+            raise NotImplementedError(
+                'You must provide a \'get_result_fields\' function or a '
+                f'result_fields attribute for the {self} index'
+            )
         return result_fields
 
     def get_autocomplete_result_fields(self):
@@ -127,8 +131,10 @@ class SearchIndex:
             'pk': force_text(instance.pk),
             'data': {
                 'autocomplete': self.get_autocomplete(instance),
-                'filters': {k: v for k, v in get_filter_data(data).items() if v or not v == ''},
-                'fields': {k: v for k, v in data.items() if v or not v == ''}
+                'filters': {k: v
+                            for k, v in get_filter_data(data).items() if v or not v == ''},
+                'fields': {k: v
+                           for k, v in data.items() if v or not v == ''}
             }
         }
 
@@ -156,12 +162,12 @@ class SearchIndex:
             return prepared['content_type'], prepared['pk'], prepared['data']
 
         def update_bulk(result_set):
-            self.get_backend().update_many(map(prepare, result_set))
+            try:
+                self.get_backend().update_many(map(prepare, result_set))
+            except BulkIndexError as e:
+                log.critical(e)
 
-        try:
-            batch(self.get_queryset(), update_bulk)
-        except BulkIndexError as e:
-            log.critical(e)
+        batch(self.get_queryset(), update_bulk)
 
     def update_instance(self, instance):
         """
@@ -181,6 +187,5 @@ class SearchIndex:
         from lego.utils.content_types import instance_to_content_type_string
 
         self.get_backend().remove(
-            content_type=instance_to_content_type_string(self.get_model()),
-            pk=force_text(pk)
+            content_type=instance_to_content_type_string(self.get_model()), pk=force_text(pk)
         )

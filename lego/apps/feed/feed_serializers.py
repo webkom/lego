@@ -45,9 +45,9 @@ class AggregatedActivitySerializer(BaseAggregatedSerializer):
 
     def loads(self, serialized_aggregated):
         aggregated = self.aggregated_activity_class(
-            group=serialized_aggregated['group'],
-            activities=self.parse_serialized_activities(serialized_aggregated['activities']),
-            created_at=serialized_aggregated['created_at'],
+            group=serialized_aggregated['group'], activities=self.parse_serialized_activities(
+                serialized_aggregated['activities']
+            ), created_at=serialized_aggregated['created_at'],
             updated_at=serialized_aggregated['updated_at']
         )
         aggregated.minimized_activities = serialized_aggregated['minimized_activities'] or 0
@@ -66,6 +66,7 @@ class AggregatedActivitySerializer(BaseAggregatedSerializer):
         """
         Create activities based on the serializer data.
         """
+
         def create_object(activity):
             verb = get_verb_by_id(activity['verb']['id'])
             extra_context = activity['extra_context']

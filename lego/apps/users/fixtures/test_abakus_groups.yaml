@@ -92,11 +92,13 @@
 - model: users.abakusgroup
   pk: 19
   fields: {deleted: false, name: Bedkom, description: '', parent: 18, logo: null,
-    type: komite, text: '', permissions: '[]', lft: 3, rght: 4, tree_id: 15, level: 2}
+    type: komite, text: '', permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/",
+    "/sudo/admin/submissions/"]', lft: 3, rght: 4, tree_id: 15, level: 2}
 - model: users.abakusgroup
   pk: 20
   fields: {deleted: false, name: Fagkom, description: '', parent: 18, logo: null,
-    type: komite, text: '', permissions: '[]', lft: 5, rght: 6, tree_id: 15, level: 2}
+    type: komite, text: '', permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/",
+    "/sudo/admin/submissions/"]', lft: 5, rght: 6, tree_id: 15, level: 2}
 - model: users.abakusgroup
   pk: 21
   fields: {deleted: false, name: Webkom, description: '', parent: 18, logo: null,
@@ -142,3 +144,7 @@
       turopplevelser som er m\xE5let.\n\n Om du harforslag til tur eller lurer p\xE5
       om dette er noe du kan v\xE6re med p\xE5, ikke n\xF8l med \xE5 ta kontakt.",
     permissions: '[]', lft: 17, rght: 18, tree_id: 15, level: 2}
+- model: users.abakusgroup
+  pk: 25
+  fields: {deleted: false, name: Students, description: '', parent: null, logo: null,
+    type: annen, text: '', permissions: '[]', lft: 1, rght: 26, tree_id: 3, level: 0}

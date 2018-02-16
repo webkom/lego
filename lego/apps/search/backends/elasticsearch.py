@@ -39,8 +39,10 @@ class ElasticsearchBackend(SearchBacked):
         action = {
             '_op_type': 'index',
             '_index': self._index_name(),
-            '_type': content_type,
-            '_id': pk,
+            '_id': f'{content_type}-{pk}',
+            '_type': 'document',
+            'id_': pk,
+            'type_': content_type,
         }
         data.update(action)
         return data
@@ -52,8 +54,8 @@ class ElasticsearchBackend(SearchBacked):
         action = {
             '_op_type': 'delete',
             '_index': self._index_name(),
-            '_type': content_type,
-            '_id': pk,
+            '_id': f'{content_type}-{pk}',
+            '_type': 'document',
         }
         return action
 
@@ -67,19 +69,11 @@ class ElasticsearchBackend(SearchBacked):
             pass
         self.connection.indices.create(settings.SEARCH_INDEX)
 
-    def _search(self, payload, content_types=None):
-        types = None
-        if content_types:
-            types = ','.join(content_types)
-        return self.connection.search(settings.SEARCH_INDEX, doc_type=types, body=payload)
-
-    def _suggest(self, payload):
-        return self.connection.suggest(payload, index=settings.SEARCH_INDEX)
+    def _search(self, payload):
+        return self.connection.search(settings.SEARCH_INDEX, doc_type='document', body=payload)
 
     def _refresh_template(self, template_name='lego-search'):
-        context = {
-            'index': self._index_name()
-        }
+        context = {'index': self._index_name()}
         template = render_to_string('search/elasticsearch/index_template.json', context)
         try:
             self.connection.indices.delete_template(template_name)
@@ -110,7 +104,6 @@ class ElasticsearchBackend(SearchBacked):
         self._refresh_template()
 
     def update_many(self, tuple_list):
-
         def create_operation(data_tuple):
             content_type, pk, data = data_tuple
             data_fields = dict()
@@ -132,7 +125,6 @@ class ElasticsearchBackend(SearchBacked):
         return self._bulk(map(create_operation, tuple_list))
 
     def remove_many(self, tuple_list):
-
         def create_operation(data_tuple):
             content_type, pk = data_tuple
             return self._remove(content_type, pk)
@@ -143,14 +135,16 @@ class ElasticsearchBackend(SearchBacked):
         self._clear()
 
     def search(self, query, content_types=None, filters=None):
+        """
+        TODO: Implement content type filtering
+        """
         if not filters:
             search_query = {
                 'query': {
-                    'match': {
-                        '_all': {
-                            "query": query,
-                            "operator": "and"
-                        }
+                    'multi_match': {
+                        "query": query,
+                        "operator": "and",
+                        "fields": "*"
                     },
                 }
             }
@@ -159,75 +153,78 @@ class ElasticsearchBackend(SearchBacked):
                 'query': {
                     'bool': {
                         'must': {
-                            'match': {
-                                '_all': {
-                                    'query': query,
-                                    'operator': 'and'
-                                }
+                            'multi_match': {
+                                'query': query,
+                                'operator': 'and',
+                                "fields": "*"
                             }
                         },
-                        'filter': [
-                            {'terms': {f'{k}_filter': v}} for k, v in filters.items()
-                        ]
+                        'filter': [{
+                            'terms': {
+                                f'{k}_filter': v
+                            }
+                        } for k, v in filters.items()]
                     }
                 }
             }
 
-        result = self._search(search_query, content_types)
+        result = self._search(search_query)
 
         def parse_result(hit):
             source = hit['_source']
-            search_index = self.get_search_index(hit['_type'])
+            search_index = self.get_search_index(source['type_'])
             if search_index:
                 result_fields = [
                     field for field in search_index.get_result_fields() if field in source.keys()
                 ]
                 result = {field: source[field] for field in result_fields}
-                result.update({
-                    'id': hit['_id'],
-                    'content_type': hit['_type']
-                })
+                result.update({'id': source['id_'], 'content_type': source['type_']})
                 return result
 
         return filter(lambda hit: hit is not None, map(parse_result, result['hits']['hits']))
 
     def autocomplete(self, query, content_types=None):
         autocomplete_query = {
-            'autocomplete': {
-                'prefix': query,
-                'completion': {
-                    'field': 'autocomplete',
-                    'fuzzy': {
-                        'fuzziness': 0
-                    },
-                    'size': 10,
+            'suggest': {
+                'autocomplete': {
+                    'prefix': query,
+                    'completion': {
+                        'field': 'autocomplete',
+                        'fuzzy': {
+                            'fuzziness': 0
+                        },
+                        'size': 10,
+                    }
                 }
             }
         }
 
         if content_types:
-            autocomplete_query['autocomplete']['completion']['contexts'] = {
+            autocomplete_query['suggest']['autocomplete']['completion']['contexts'] = {
                 'content_type': content_types
             }
 
-        result = self._suggest(autocomplete_query)
+        result = self._search(autocomplete_query)
 
         def parse_result(hit):
             source = hit['_source']
-            search_index = self.get_search_index(hit['_type'])
+            search_index = self.get_search_index(hit['_source']['type_'])
             if search_index:
                 result_fields = [
                     field for field in search_index.get_autocomplete_result_fields()
                     if field in source.keys()
                 ]
                 result = {field: source[field] for field in result_fields}
-                result.update({
-                    'id': hit['_id'],
-                    'content_type': hit['_type'],
-                    'text': hit['text']
-                })
+                result.update(
+                    {
+                        'id': source['id_'],
+                        'content_type': source['type_'],
+                        'text': hit['text']
+                    }
+                )
                 return result
 
         return filter(
-            lambda hit: hit is not None, map(parse_result, result['autocomplete'][0]['options'])
+            lambda hit: hit is not None,
+            map(parse_result, result['suggest']['autocomplete'][0]['options'])
         )

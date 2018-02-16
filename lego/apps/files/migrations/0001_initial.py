@@ -11,18 +11,45 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='File',
             fields=[
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
-                ('key', models.CharField(max_length=200, primary_key=True, serialize=False, validators=[django.core.validators.RegexValidator('^[\\w-]+\\.[A-Za-z]{2,4}$', 'enter a valid key', 'invalid')])),
-                ('state', models.CharField(choices=[('pending_upload', 'pending_upload'), ('ready', 'ready')], default='pending_upload', max_length=24)),
-                ('file_type', models.CharField(choices=[('image', 'image'), ('document', 'document')], max_length=24)),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
+                (
+                    'key',
+                    models.CharField(
+                        max_length=200, primary_key=True, serialize=False, validators=[
+                            django.core.validators.RegexValidator(
+                                '^[\\w-]+\\.[A-Za-z]{2,4}$', 'enter a valid key', 'invalid'
+                            )
+                        ]
+                    )
+                ),
+                (
+                    'state',
+                    models.CharField(
+                        choices=[('pending_upload', 'pending_upload'), ('ready', 'ready')],
+                        default='pending_upload', max_length=24
+                    )
+                ),
+                (
+                    'file_type',
+                    models.CharField(
+                        choices=[('image', 'image'), ('document', 'document')], max_length=24
+                    )
+                ),
                 ('token', models.CharField(max_length=32)),
                 ('public', models.BooleanField(default=False)),
             ],

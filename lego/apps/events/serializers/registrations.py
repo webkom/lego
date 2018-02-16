@@ -3,19 +3,25 @@ from rest_framework import serializers
 from rest_framework_jwt.serializers import User
 
 from lego.apps.events import constants
-from lego.apps.events.fields import (ChargeStatusField, FeedbackField, PresenceField,
-                                     SetChargeStatusField)
+from lego.apps.events.fields import (
+    ChargeStatusField, FeedbackField, PresenceField, SetChargeStatusField
+)
 from lego.apps.events.models import Pool, Registration
 from lego.apps.users.serializers.users import AdministrateUserSerializer, PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
 
+class AdminUnregisterSerializer(serializers.Serializer):
+    user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
+    admin_unregistration_reason = serializers.CharField(required=True)
+
+
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(required=False)
-    admin_reason = serializers.CharField(required=True)
+    admin_registration_reason = serializers.CharField(required=True)
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
@@ -51,7 +57,16 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
     feedback = FeedbackField()
 
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback',)
+        fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback', )
+
+
+class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
+    class Meta(RegistrationPublicReadSerializer.Meta):
+        fields = RegistrationPublicReadSerializer.Meta.fields + ('presence', )
+
+
+class RegistrationSearchSerializer(serializers.Serializer):
+    username = serializers.CharField()
 
 
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
@@ -66,9 +81,11 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'event', 'presence', 'feedback', 'status',
-                  'registration_date', 'unregistration_date', 'admin_reason',
-                  'charge_id', 'charge_status', 'charge_amount', 'charge_amount_refunded')
+        fields = (
+            'id', 'user', 'pool', 'event', 'presence', 'feedback', 'status', 'registration_date',
+            'unregistration_date', 'admin_registration_reason', 'charge_id', 'charge_status',
+            'charge_amount', 'charge_amount_refunded'
+        )
         read_only = True
 
 

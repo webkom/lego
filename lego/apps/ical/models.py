@@ -10,11 +10,9 @@ def generate_new_token():
 
 
 class ICalToken(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
-    token = models.CharField(
-        max_length=64, default=generate_new_token, db_index=True
-    )
+    token = models.CharField(max_length=64, default=generate_new_token, db_index=True)
 
     def regenerate(self):
         """ Regenerate the ICalToken """

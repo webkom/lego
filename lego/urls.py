@@ -15,8 +15,8 @@ jwt_urlpatterns = [
 ]
 
 authorization_urlpatterns = [
-    url(r'^oauth2/', include('lego.apps.oauth.urls', namespace='oauth2_provider')),
-    url(r'', include(jwt_urlpatterns, namespace='jwt')),
+    url(r'^oauth2/', include('lego.apps.oauth.urls')),
+    url(r'', include((jwt_urlpatterns, 'jwt'), namespace='jwt')),
     url(r'^login/', login, {'template_name': 'authorization/login.html'}, name='login'),
     url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
 ]
@@ -24,11 +24,14 @@ authorization_urlpatterns = [
 urlpatterns = [
     url(r'^api/', include('lego.api.urls', namespace='api')),
     url(r'^authorization/', include(authorization_urlpatterns)),
-    url(r'^', include(health_urlpatterns, namespace='health')),
-    url(r'^api-docs/', include_docs_urls(
-        title=settings.SITE['name'], description=settings.SITE['slogan'],
-        patterns=api, schema_url='/api'
-    )),
+    url(r'^', include(health_urlpatterns)),
+    url(
+        r'^api-docs/',
+        include_docs_urls(
+            title=settings.SITE['name'], description=settings.SITE['slogan'], patterns=api,
+            schema_url='/api'
+        )
+    ),
     url(r'^$', TemplateView.as_view(template_name='landing.html'), name='landing_page'),
 ]
 

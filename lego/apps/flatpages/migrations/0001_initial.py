@@ -24,9 +24,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Page',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(db_index=True, default=django.utils.timezone.now, editable=False)),
-                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
+                    )
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now, editable=False
+                    )
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                ),
                 ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 ('slug', models.SlugField(null=True, unique=True)),
                 ('title', models.CharField(max_length=200, verbose_name='title')),
@@ -35,10 +48,35 @@ class Migration(migrations.Migration):
                 ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('created_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='page_created', to=settings.AUTH_USER_MODEL)),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='flatpages.Page')),
-                ('picture', lego.apps.files.models.FileField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='files.File')),
-                ('updated_by', models.ForeignKey(default=None, editable=False, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='page_updated', to=settings.AUTH_USER_MODEL)),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE, related_name='page_created',
+                        to=settings.AUTH_USER_MODEL
+                    )
+                ),
+                (
+                    'parent',
+                    mptt.fields.TreeForeignKey(
+                        blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
+                        related_name='children', to='flatpages.Page'
+                    )
+                ),
+                (
+                    'picture',
+                    lego.apps.files.models.FileField(
+                        null=True, on_delete=django.db.models.deletion.SET_NULL, to='files.File'
+                    )
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        default=None, editable=False, null=True,
+                        on_delete=django.db.models.deletion.CASCADE, related_name='page_updated',
+                        to=settings.AUTH_USER_MODEL
+                    )
+                ),
             ],
             options={
                 'abstract': False,

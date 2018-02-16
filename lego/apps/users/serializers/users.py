@@ -22,20 +22,9 @@ class DetailedUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'full_name',
-            'gender',
-            'email',
-            'email_address',
-            'email_lists_enabled',
-            'profile_picture',
-            'allergies',
-            'is_active',
-            'penalties',
-            'abakus_groups'
+            'id', 'username', 'first_name', 'last_name', 'full_name', 'gender', 'email',
+            'email_address', 'email_lists_enabled', 'profile_picture', 'allergies', 'is_active',
+            'penalties', 'abakus_groups'
         )
 
 
@@ -46,22 +35,16 @@ class PublicUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'full_name',
-            'gender',
-            'profile_picture'
+            'id', 'username', 'first_name', 'last_name', 'full_name', 'gender', 'profile_picture'
         )
-        read_only_fields = ('username',)
+        read_only_fields = ('username', )
 
 
 class PublicUserWithGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ('abakus_groups',)
+        fields = PublicUserSerializer.Meta.fields + ('abakus_groups', )
 
 
 class AdministrateUserSerializer(PublicUserSerializer):
@@ -143,22 +126,8 @@ class MeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'full_name',
-            'email',
-            'email_address',
-            'email_lists_enabled',
-            'profile_picture',
-            'gender',
-            'allergies',
-            'is_active',
-            'is_student',
-            'abakus_groups',
-            'is_abakus_member',
-            'is_abakom_member',
-            'penalties',
+            'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'email_address',
+            'email_lists_enabled', 'profile_picture', 'gender', 'allergies', 'is_active',
+            'is_student', 'abakus_groups', 'is_abakus_member', 'is_abakom_member', 'penalties',
             'ical_token'
         )

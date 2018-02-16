@@ -17,8 +17,9 @@ class StripePaymentTestCase(APITestCase):
     Testing cards used:
     https://stripe.com/docs/testing#cards
     """
-    fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_users.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml', 'test_users.yaml'
+    ]
 
     def setUp(self):
         self.abakus_user = User.objects.get(pk=1)
@@ -54,8 +55,7 @@ class StripePaymentTestCase(APITestCase):
         token = {'token': 'invalid'}
         registration = self.event.get_registration(self.abakus_user)
         chain(
-            async_payment.s(registration.id, token),
-            registration_payment_save.s(registration.id)
+            async_payment.s(registration.id, token), registration_payment_save.s(registration.id)
         ).delay()
 
         registration.refresh_from_db()

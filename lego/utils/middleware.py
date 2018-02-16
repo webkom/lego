@@ -17,7 +17,7 @@ development = getattr(settings, 'DEVELOPMENT', False)
 def method(request):
     method = request.method
     if method not in (
-            'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'OPTIONS', 'CONNECT', 'PATCH'
+        'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'OPTIONS', 'CONNECT', 'PATCH'
     ):
         return 'INVALID'
     return method
@@ -43,7 +43,7 @@ class LoggingMiddleware(MiddlewareMixin):
         else:
             context['request_id'] = self.generate_request_id()
 
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             context['current_user'] = request.user.id
         else:
             context['current_user'] = None
@@ -59,7 +59,6 @@ class LoggingMiddleware(MiddlewareMixin):
 
 
 class StatsDBeforeMiddleware(MiddlewareMixin):
-
     def process_request(self, request):
         statsd.incr(f'request.total.{method(request)}')
         request.statsd_before_middleware_event = timeit.default_timer()
@@ -79,7 +78,6 @@ class StatsDBeforeMiddleware(MiddlewareMixin):
 
 
 class StatsDAfterMiddleware(MiddlewareMixin):
-
     def process_request(self, request):
         request.statsd_after_middleware_event = timeit.default_timer()
 

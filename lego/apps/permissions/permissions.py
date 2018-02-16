@@ -86,8 +86,11 @@ class PermissionHandler:
         elif self.skip_object_permission:
             return False
 
-        if obj is not None and isinstance(obj, ObjectPermissionsModel):
-            return True
+        if obj is not None:
+            if isinstance(obj, ObjectPermissionsModel):
+                return True
+            if getattr(obj, 'created_by') == user:
+                return True
 
         if queryset is not None and issubclass(queryset.model, ObjectPermissionsModel):
             return True
@@ -95,7 +98,7 @@ class PermissionHandler:
         return self.force_queryset_filtering
 
     def has_perm(
-            self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
     ):
         """
         Check permission on a object.
@@ -108,9 +111,11 @@ class PermissionHandler:
         require_auth = self.require_auth(perm, obj)
         authenticated = self.is_authenticated(user)
 
-        if not require_auth:
+        if require_auth and not authenticated:
+            return False
+        elif not require_auth and perm in self.safe_methods:
             return True
-        elif require_auth and not authenticated:
+        if not authenticated:
             return False
 
         if obj is not None:
@@ -144,22 +149,22 @@ class PermissionHandler:
         """
         if issubclass(queryset.model, ObjectPermissionsModel):
             # Unauthenticated users can only see objects with no auth required.
-            if not user.is_authenticated():
+            if not user.is_authenticated:
                 return queryset.filter(require_auth=False)
 
             # User is authenticated, display objects created by user or object with group rights.
             groups = [abakus_group.pk for abakus_group in user.all_groups]
             return queryset.filter(
-                Q(can_edit_users__in=[user.pk]) | Q(can_edit_groups__in=groups) |
-                Q(can_view_groups__in=groups) | Q(created_by=user) | Q(require_auth=False)
+                Q(can_edit_users__in=[user.pk])
+                | Q(can_edit_groups__in=groups)
+                | Q(can_view_groups__in=groups) | Q(created_by=user)
+                | Q(require_auth=False)
             ).distinct()
 
         return queryset
 
     def require_auth(self, perm, obj=None, queryset=None):
-        require_auth = self.authentication_map.get(
-            perm, self.default_require_auth
-        )
+        require_auth = self.authentication_map.get(perm, self.default_require_auth)
         if not require_auth:
             return False
 
@@ -172,7 +177,7 @@ class PermissionHandler:
         return True
 
     def is_authenticated(self, user):
-        return user and user.is_authenticated()
+        return user and user.is_authenticated
 
     def keyword_permission(self, model, perm):
         """
@@ -193,9 +198,7 @@ class PermissionHandler:
         function is used otherwise.
         """
 
-        return self.permission_map.get(perm, [
-            self.keyword_permission(model, perm)
-        ])
+        return self.permission_map.get(perm, [self.keyword_permission(model, perm)])
 
     def created_by(self, user, obj):
         created_by = getattr(obj, 'created_by_id', None)

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from lego.apps.content.models import Content
@@ -8,8 +9,11 @@ from lego.utils.models import BasisModel
 
 class Article(Content, BasisModel, ObjectPermissionsModel):
 
-    author = models.ForeignKey('users.User')
+    author = models.ForeignKey('users.User', on_delete=models.CASCADE)
     cover = FileField(related_name='article_covers')
 
     class Meta:
         abstract = False
+
+    def get_absolute_url(self):
+        return f'{settings.FRONTEND_URL}/articles/{self.id}/'

@@ -7,6 +7,7 @@ from structlog import get_logger
 
 from lego.apps.notifications.constants import EMAIL, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
+from lego.apps.users.models import AbakusGroup
 from lego.utils.models import BasisModel
 
 log = get_logger()
@@ -65,6 +66,9 @@ class RestrictedMail(BasisModel):
                     users, raw_addresses = restricted_lookup()
                     all_users += list(users)
                     all_raw_addresses += list(raw_addresses)
+
+        if self.weekly:
+            all_users += (AbakusGroup.objects.get(name="Students").restricted_lookup()[0])
 
         recipients = set(all_raw_addresses)
 

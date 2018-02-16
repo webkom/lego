@@ -1,15 +1,15 @@
 import re
-from unittest import mock
+from datetime import timedelta
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from icalendar import Calendar
 from rest_framework.test import APITestCase
 
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Pool
 from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting
-from lego.apps.permissions.constants import EDIT, VIEW
+from lego.apps.permissions.constants import VIEW
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -45,24 +45,53 @@ def _get_all_ical_urls(token):
     ]
 
 
-NOW_FOR_TESTING = timezone.make_aware(
-    timezone.datetime(2009, 1, 1, 1),
-    timezone.get_current_timezone()
-)
+def _get_ical_event_meta(ical_event):
+    """
+    Splits the 'UID' tag on the format:
+    "event-12@abakus.no", into
+    ["event", 12, "abakus.no"]
+
+    usage:
+
+    eventType, pk, domain = _get_ical_event_meta(ical_event)
+    """
+    return re.split("-|@", ical_event['UID'])
 
 
-@mock.patch('django.utils.timezone.now', side_effect=lambda: NOW_FOR_TESTING)
-class RetreiveDateDependentICalTestCase(APITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml',
-                'test_meetings.yaml', 'test_companies.yaml',
-                'test_followevent.yaml']
+def _get_ical(url, client):
+    res = client.get(url)
+    return Calendar.from_ical(res.content)
+
+
+def _get_ical_events(url, client):
+    return _get_ical(url, client).subcomponents
+
+
+class IcalAuthenticationTestCase(APITestCase):
+    fixtures = [
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+        'test_events.yaml',
+        'test_meetings.yaml',
+        'test_companies.yaml',
+        'test_followevent.yaml',
+    ]
 
     def setUp(self):
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            end_time=timezone.now() + timedelta(hours=4)
+        )
+        Pool.objects.all().update(activation_date=timezone.now() + timedelta(hours=1))
+        Meeting.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            end_time=timezone.now() + timedelta(hours=4)
+        )
+
         self.meeting = Meeting.objects.get(id=1)
         self.user = User.objects.get(username='abakule')
         self.meeting.invite_user(self.user)
         AbakusGroup.objects.get(name='Abakus').add_user(self.user)
-        AbakusGroup.objects.get(name='Abakom').add_user(self.user)
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
 
     def help_test_ical_content_permission(self, ical_content, user):
@@ -72,17 +101,14 @@ class RetreiveDateDependentICalTestCase(APITestCase):
         Tests that the user can view every
         event/meeting in the ical result.
 
-        Splits the 'UID' tag on the format:
-        "event-12@abakus.no", into
-        ["event", 12, "abakus.no"]
         """
         icalendar = Calendar.from_ical(ical_content)
         for event in icalendar.subcomponents:
-            hits = re.split("-|@", event['UID'])
-            if hits[0] == "event":
-                self.assertTrue(user.has_perm(VIEW, Event.objects.get(id=hits[1])))
-            elif hits[0] == "meeting":
-                self.assertTrue(user.has_perm(EDIT, Meeting.objects.get(id=hits[1])))
+            eventType, pk, domain = _get_ical_event_meta(event)
+            if eventType == "event":
+                self.assertTrue(user.has_perm(VIEW, Event.objects.get(id=pk)))
+            elif eventType == "meeting":
+                self.assertTrue(user.has_perm(VIEW, Meeting.objects.get(id=pk)))
 
     def test_get_list(self, *args):
         res = self.client.get(_get_ical_list_url(self.token))
@@ -101,7 +127,7 @@ class RetreiveDateDependentICalTestCase(APITestCase):
 
     def test_get_ical_authenticated(self, *args):
         self.client.force_authenticate(self.user)
-        for url in _get_all_ical_urls(self.token):
+        for url in _get_all_ical_urls(''):
             res = self.client.get(url)
             self.assertEqual(res.status_code, 200)
             self.help_test_ical_content_permission(res.content, self.user)
@@ -117,21 +143,102 @@ class RetreiveDateDependentICalTestCase(APITestCase):
             self.assertEqual(res.status_code, 401)
 
 
-@mock.patch('django.utils.timezone.now', side_effect=lambda: NOW_FOR_TESTING)
-class RetreiveDateDependentICalTestCaseUser(RetreiveDateDependentICalTestCase):
+class IcalPersonalTestCase(APITestCase):
+    fixtures = [
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+    ]
+
     def setUp(self):
-        self.meeting = Meeting.objects.get(id=1)
-        self.user = User.objects.get(username='pleb')
-        self.meeting.invite_user(self.user)
+        self.user = User.objects.get(username='test1')
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
+        self.url = _get_ical_personal_url(self.token)
+
+    def test_empty_calendar(self):
+        ical_events = _get_ical_events(self.url, self.client)
+        self.assertEqual(len(ical_events), 0)
+
+    def test_meeting_invitation(self):
+        meeting = Meeting.objects.create(
+            title="testing",
+            report="TBA",
+            start_time=timezone.now() + timedelta(hours=1),
+            end_time=timezone.now() + timedelta(hours=4),
+        )
+        ical_events = _get_ical_events(self.url, self.client)
+        self.assertEqual(len(ical_events), 0)
+
+        meeting.invite_user(self.user)
+
+        ical_events = _get_ical_events(self.url, self.client)
+        self.assertEqual(len(ical_events), 1)
+
+        eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+        self.assertEqual(int(pk), meeting.pk)
 
 
-@mock.patch('django.utils.timezone.now', side_effect=lambda: NOW_FOR_TESTING)
-class RetreiveDateDependentICalTestCaseWebkom(RetreiveDateDependentICalTestCase):
+class IcalEventsTestCase(APITestCase):
+    fixtures = [
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+    ]
+
     def setUp(self):
-        self.user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(pk=11).add_user(self.user)
+        self.user = User.objects.get(username='test1')
+        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
+        self.events_url = _get_ical_events_url(self.token)
+        self.registrations_url = _get_ical_registrations_url(self.token)
+        self.event = Event.objects.create(
+            title='AbakomEvent',
+            event_type=0,
+            start_time=timezone.now() + timedelta(hours=7),
+            end_time=timezone.now() + timedelta(hours=10),
+            require_auth=False,
+        )
+        self.pool = Pool.objects.create(
+            name='Webkom', capacity=1, event=self.event,
+            activation_date=(timezone.now() + timedelta(hours=3))
+        )
+        self.pool.permission_groups.add(AbakusGroup.objects.get(name='Abakom'))
+        self.event.set_abakom_only(True)
+
+    def test_non_abakom_user(self):
+        for url in [self.events_url, self.registrations_url]:
+            ical_events = _get_ical_events(url, self.client)
+            self.assertEqual(len(ical_events), 0)
+
+    def test_public_event_can_register(self):
+        self.event.set_abakom_only(False)
+        self.pool.permission_groups.add(AbakusGroup.objects.get(name='Abakus'))
+        for url in [self.events_url, self.registrations_url]:
+
+            ical_events = _get_ical_events(url, self.client)
+            self.assertEqual(len(ical_events), 1)
+
+            eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+            self.assertEqual(int(pk), self.event.pk)
+
+    def test_public_event_can_view_not_register(self):
+        self.event.set_abakom_only(False)
+
+        ical_events = _get_ical_events(self.events_url, self.client)
+        self.assertEqual(len(ical_events), 1)
+
+        eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+        self.assertEqual(int(pk), self.event.pk)
+
+        ical_events = _get_ical_events(self.registrations_url, self.client)
+        self.assertEqual(len(ical_events), 0)
+
+    def test_abakom_user(self):
+        AbakusGroup.objects.get(name='Abakom').add_user(self.user)
+        for url in [self.events_url, self.registrations_url]:
+            ical_events = _get_ical_events(url, self.client)
+            self.assertEqual(len(ical_events), 1)
+
+            eventType, pk, domain = _get_ical_event_meta(ical_events[0])
+            self.assertEqual(int(pk), self.event.pk)
 
 
 class ICalTokenGenerateTestCase(APITestCase):

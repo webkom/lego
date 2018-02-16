@@ -1,6 +1,4 @@
 - fields:
-    can_view_groups:
-    - - Abakus
     description: TBA
     end_time: '2016-10-27T20:00:00+00:00'
     event_type: company_presentation
@@ -11,12 +9,12 @@
     is_priced: True
     price_member: 50
     price_guest: 100
+    created_by: 3
+    require_auth: False
     cover: test_event_cover.png
   model: events.Event
   pk: 1
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Know IT Objectnet AS er et teknologi - og proudktavhengig konsulentselkap
       med kontorer i Oslo
     end_time: '2016-10-25T23:59:00+00:00'
@@ -26,11 +24,11 @@
     text: "<p>TBA</p>"
     title: Knowit AS
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 2
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Accenture er et globalt konsulentselskap som leverer tjenester innenfor
       rådgivning, teknologi og outsourcing, med omkring 256 000 ansatte som arbeider
       for kunder i mer enn 120 land.
@@ -41,12 +39,11 @@
     text: "<p>TBA</p>"
     title: Accenture
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 3
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: 'Bedriftspresentasjon med Netlight '
     end_time: '2016-10-11T23:59:00+00:00'
     event_type: company_presentation
@@ -55,12 +52,11 @@
     text: "<p>TBA</p>"
     title: 'Netlight '
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 4
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: EY (tidligere Ernst & Young)
     end_time: '2016-10-06T23:59:00+00:00'
     event_type: company_presentation
@@ -69,11 +65,11 @@
     text: "<p>TBA</p>"
     title: EY (tidligere Ernst & Young)
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 5
 - fields:
-    can_view_groups:
-    - - Abakus
     description: TBA
     end_time: '2016-10-04T20:00:00+00:00'
     event_type: company_presentation
@@ -83,12 +79,11 @@
     title: Facebook
     cover: test_event_cover.png
     company: 2
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 6
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Velkommen til lunsjpresentasjon med Sopra Steria.
     end_time: '2016-09-19T23:00:00+00:00'
     event_type: company_presentation
@@ -98,11 +93,11 @@
     title: Sopra Steria
     cover: test_event_cover.png
     company: 2
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 7
 - fields:
-    can_view_groups:
-    - - Abakus
     description: "Årets BedEx går som vanlig til Oslo og varer i tre dager.\r\nPåmeldingen\
       \ er åpen for alle 5. klassinger"
     end_time: '2016-09-10T12:00:00+00:00'
@@ -125,11 +120,11 @@
     title: BedEx
     cover: test_event_cover.png
     company: 1
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 8
 - fields:
-    can_view_groups:
-    - - Abakus
     description: ' TBA'
     end_time: '2016-09-09T22:00:00+00:00'
     event_type: company_presentation
@@ -138,11 +133,11 @@
     text: "<p>TBA</p>"
     title: Capra Consulting
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 9
 - fields:
-    can_view_groups:
-    - - Abakus
     description: 'Bedriftspresentasjon med DIPS. '
     end_time: '2016-09-06T23:59:00+00:00'
     event_type: company_presentation
@@ -151,12 +146,11 @@
     text: "<p>TBA</p>"
     title: 'DIPS '
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 10
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Abakus feirer sine nye medlemmer & inviterer til storslått galla
       i Frimurerlogen, 3. september!
     end_time: '2016-09-03T23:59:00+00:00'
@@ -171,12 +165,11 @@
       \nAntrekk: Studentergalla\r\n\r\nPris per deltaker/pris per gjest: 330/450</p>"
     title: Immatrikuleringsball
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 11
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Mesan AS er et norsk IT-konsulentselskap som holder til i Oslo sentrum.
       Mesans målsetning er ikke å bli størst, men å være best i Norge på utvikling
       av skreddersydde løsninger innen privat og offentlig sektor.
@@ -187,12 +180,11 @@
     text: "<p>TBA</p>"
     title: Mesan
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 12
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: ' '
     end_time: '2016-08-30T21:00:00+00:00'
     event_type: company_presentation
@@ -201,12 +193,11 @@
     text: "<p>TBA</p>"
     title: Deloitte AS
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 13
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: 'Som tidligere blir det også i år sommerfest i Oslo for alle abakuler. '
     end_time: '2016-07-02T23:55:00+00:00'
     event_type: other
@@ -217,12 +208,11 @@
       \ og vi håper så mange som mulig kommer!\r\n\r\nSe FB-event [her](https://www.facebook.com/events/145740885823144/).</p>"
     title: Abakus' sommerfest 2016
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 14
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: "Etter nok en lang og slitsom eksamensperiode fortjener alle og enhver\
       \ en storslått eksamensfest!\r\n"
     end_time: '2016-06-11T23:59:00+00:00'
@@ -232,12 +222,11 @@
     text: "<p>Mer informasjon kommer.</p>"
     title: Eksamensfest
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 15
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
       å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
       til høsten. De skal vise frem Trondheim fra byens beste side gjennom sosiale
@@ -256,12 +245,11 @@
       \ lyst til å være fadder i år!</p>"
     title: Fadderpåmelding Kommunikasjonsteknologi
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 16
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Det er på tide med årets fadderpåmelding! En fadder har som oppgave
       å ta imot de nye studentene som starter på Data- og Kommunikasjonsteknologi
       til høsten. De skal vise frem Trondheim frem fra sin beste side igjennom sosiale
@@ -280,11 +268,11 @@
       Vi håper så mange som mulig har lyst til å være fadder i år!</p>"
     title: Fadderpåmelding Datateknologi
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 17
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Lei av å lese til eksamen sa du? Ta deg en time fri fra lesesalen
       og grill med Abakus!
     end_time: '2016-05-20T15:00:00+00:00'
@@ -301,11 +289,11 @@
       \ Påminnelse vil postes i Abakus-gruppa på Facebook.</p>"
     title: Eksamensgrilling
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 18
 - fields:
-    can_view_groups:
-    - - Abakus
     description: "Abakus inviterer i år igjen til 17. mai-frokost i Kjelhuset for\
       \ å feire vår grunnlovsdag.\r\n\r\n"
     end_time: '2016-05-17T11:30:00+00:00'
@@ -327,11 +315,11 @@
       \n\r\nVel møtt!</p>"
     title: 17. mai-frokost
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 19
 - fields:
-    can_view_groups:
-    - - Abakus
     description: 'Fagstaben i TDT4100 Objektorientert Programmering holder et uoffisielt
       eksamenskurs i Java. '
     end_time: '2016-05-15T16:00:00+00:00'
@@ -346,12 +334,11 @@
       generelle tips til programmeringsmetodikk, og gå gjennom eksempler og oppgaver. '</p>"
     title: Eksamenskurs i Java
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 20
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Dataforeningen arrangerer i samarbeid med Abakus og Online studentkveld
       i forbindelse med "Sikkerhet og Sårbarhet 2016".
     end_time: '2016-05-09T21:30:00+00:00'
@@ -431,12 +418,11 @@
       \ while reducing costs.</p>"
     title: Sikkerhet og Sårbarhet
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 21
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Uoffisielt repetisjonskurs i Krets- og Digitalteknikk med fokus på
       eksamensoppgaver og pensum.
     end_time: '2016-05-07T16:00:00+00:00'
@@ -450,11 +436,11 @@
       åpent for alle.</p>"
     title: Eksamensforelesning i Krets- og digitalteknikk
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 22
 - fields:
-    can_view_groups:
-    - - Abakus
     description: "Det er på tide med årets fadderpåmelding for masterstudenter! En\
       \ fadder har som oppgave å ta imot de studentene som starter på 2-årig master\
       \ til høsten. De skal vise frem Trondheim fra sin beste side gjennom sosiale\
@@ -472,11 +458,11 @@
       \ du trenger. \r\n\r\nbackup håper mange har lyst til å være faddere i år!</p>"
     title: Fadderpåmelding for masterstudenter
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 23
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Fundator AS arrangerer fagsamling her i Trondheim fredag den 29.
       april fra kl. 8:30 til kl 16:00. Vi har satt av 10 plasser til studenter fra
       3.-5. klasse datateknologi og kommunikasjonteknologi med interesse for konsulentbransjen.
@@ -494,12 +480,11 @@
       \ og samarbeidspartnere.\r\n \r\nVelkommen!</p>"
     title: Fundator
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 24
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Velkommen til lunsjpresentasjon med DNV GL. Etter presentasjonen
       på 45 minutter vil det bli mingling på skolen med servering av pizza og brus.
     end_time: '2016-04-28T15:00:00+00:00'
@@ -517,12 +502,11 @@
       \ åpner 12:10 og presentasjonen starter 12:15._</p>"
     title: DNV GL
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 25
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: "Velkommen til Abakus sin fagdag på mobil plattform. \r\n\r\nEttersom\
       \ mer og mer av folks internett-vaner og aktiviteter skjer på mobilen ønsker\
       \ vi å sette fokus på hvordan vi best mulig kan utvikle løsninger til dette\
@@ -547,11 +531,11 @@
       \ underveis og pizza etter arrangementet. \r\n\r\n\r\n\r\nBilde: http://bizzarecreations.in/mobile-development/</p>"
     title: Fagdag i Mobil utvikling
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 26
 - fields:
-    can_view_groups:
-    - - Abakus
     description: '**Velkommen til Lightning Talks! IDI inviterer, i samarbeid med
       Fagkom fra Online og Abakus, studenter og ansatte til en hyggelig kveld sammen.**'
     end_time: '2016-04-25T20:00:00+00:00'
@@ -580,12 +564,11 @@
       \ god stemning!\r\n\r\n\r\n\r\n</p>"
     title: Lightning Talks
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 27
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Da er det på tide med årets andre (og semesterets siste) AbelLan.
     end_time: '2016-04-24T07:00:00+00:00'
     event_type: other
@@ -594,12 +577,11 @@
     text: "<p>Detaljert informasjon kommer på [Facebook](https://www.facebook.com/events/718813778259009/).\r\
       \n\r\n\r\nSted: Drivhuset\r\n\r\nTidspunkt: 18:00</p>"
     title: Abellan April 2016
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 28
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Det er igjen duket for Casino Royale. Det betyr finstasen på, poker,
       rulett, klassiske blackjack og nytt i år... eget nybegynnerbord. Alt finner
       sted på Håndverkeren.
@@ -622,11 +604,11 @@
       \ er tillat. </p>"
     title: Casino Royale
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 29
 - fields:
-    can_view_groups:
-    - - Abakus
     description: "Et nytt semester går mot slutten og fadderperioden 2016 nærmer seg\
       \ med stormskritt.\r\n"
     end_time: '2016-04-18T12:00:00+00:00'
@@ -649,12 +631,11 @@
       \ i S2.\r\n</p>"
     title: Infomøte for faddere
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 30
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: 'Få mennesker kan feste hardere, lengre og mer høylytt enn meksikanere,
       men blant de få er definitivt Labamba og abakulene! '
     end_time: '2016-04-16T01:00:00+00:00'
@@ -674,11 +655,11 @@
       \ 25 kroner\r\n\r\nViva la fiesta!</p>"
     title: Fiesta!
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 31
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Nå har vi lyst å dele en av fagdagene med resten av bransjen, og
       vi har et begrenset antall gratis plasser for studenter. Søknadsfrist 15. Mars!
     end_time: '2016-04-15T21:00:00+00:00'
@@ -695,12 +676,11 @@
     title: BEKK
     cover: test_event_cover.png
     company: 1
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 32
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Har du lyst til å sette opp en egen server i skyen med basic sikkerhetsoppsett?
       Knowit kommer for å snakker om kjente sikkerhetstiltak og guider deg gjennom
       oppsettet
@@ -722,12 +702,11 @@
       \n\r\n\r\n\r\n\r\n\r\n\r\n</p>"
     title: IT-Sikkerhet med Knowit
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 33
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: "Vil du lære mer om kunstig intelligens?\r\n=======================================\r\
       \n\r\n**Næringslivsnettverket KiD med Accenture, Telenor og NTNU vil gi en innføring\
       \ i kunstig intelligens gjennom korte inspirasjonsforedrag og kreativ idémyldring.\
@@ -760,12 +739,11 @@
       \n</p>"
     title: KiD
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 34
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Lørdag 9. april inviterer Abakus til Vaargalla!
     end_time: '2016-04-10T08:00:00+00:00'
     event_type: event
@@ -797,12 +775,11 @@
     price_member: 27000
     price_guest: 35000
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 35
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: 'Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den? '
     end_time: '2016-04-07T20:00:00+00:00'
     event_type: company_presentation
@@ -818,12 +795,11 @@
       \ er kl. 17:00, ventelisten åpner 17:10 og presentasjonen starter 17:15._</p>"
     title: DnB
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 36
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
       eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
       hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
@@ -845,12 +821,11 @@
       \ på del 2 vil få prioritet på del 3</p>"
     title: Funksjonell programmering i Javascript med React og Redux  3 av 3
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 37
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme
       igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen
       mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene
@@ -884,11 +859,11 @@
       \ versjonsnummer, v5.7.1</p>"
     title: Webutvikling101 3 av 3
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 38
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Hvem tar flagget først? Du eller din studievenn? Itera kjører Capture
       the ”flag” med Java og Lego Mindstorms! [Promovideo](https://vimeo.com/160542061)
     end_time: '2016-04-05T20:00:00+00:00'
@@ -924,6 +899,8 @@
       \ mail til arrangør hvis det er ledige plasser.</p>"
     title: Lego Mindstorms med Itera
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
     tags:
     - øl
     - java
@@ -931,9 +908,6 @@
   model: events.Event
   pk: 39
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Lei av å avstandsbeundre den søte jenta fra maskin? Eller han kjekke
       hunken på Emil? Keen på å bli bedre kjent med den kule gjengen på bakerste rad
       i forelesning? Dette er sjansen til å ta grep og bli bedre kjent på tvers av
@@ -951,6 +925,8 @@
       \n\r\n\r\nAntrekk:\r\nRødt!</p>"
     title: Teknologivennefest
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
     tags:
     - øl
     - brus
@@ -958,8 +934,6 @@
   model: events.Event
   pk: 40
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Et praktisk kurs hvor vi lærer hvordan man setter opp IT-infrastruktur
       i skyløsningen Microsoft Azure. Vi skal se på tre ulike metoder for å opprette
       virtuelle maskiner (VM), og konfigurere VM-en til en webserver. Første metode
@@ -979,6 +953,8 @@
       \ kun det som står under \"Forberedelser\". </p>"
     title: En reise hvor IT-infrastruktur blir kode
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
     tags:
     - web
     - microsoft
@@ -986,8 +962,6 @@
   model: events.Event
   pk: 41
 - fields:
-    can_view_groups:
-    - - Abakus
     description: 'Dersom du er glad i kaffe og har lyst til å lære hvordan du kan
       lage bedre kaffe hjemme, da er denne kaffekvelden hos Dromedar noe for deg.
       Det blir et kurs med fokus på svart kaffe, hvor man kan få smake på forskjellige
@@ -1005,13 +979,12 @@
       \ går i Dromedar sitt kursrom på dromedar moxness. Legg merke til at kurset\
       \ starter 16.00 (ikke 16.15). </p>"
     title: Kaffekurs hos Dromedar Kaffebar
+    created_by: 3
     cover: test_event_cover.png
+    require_auth: False
   model: events.Event
   pk: 42
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: StartIT er et faglig arrangement sponset av Abakus, som spesielt
       promoterer innovasjon innen IT. I år er det mange spennende foredrag man kan
       bli med på!
@@ -1035,13 +1008,12 @@
       \ men forhåpentligvis vil kvelden tenne en liten flamme. Dette gir alle mulighet\
       \ til å knytte viktige kontakter for fremtiden.</p>"
     title: StartIT
+    created_by: 3
     cover: test_event_cover.png
+    require_auth: False
   model: events.Event
   pk: 43
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Har du kodet en del javascript fra før, kanskje gjennom en sommerjobb
       eller på hobbybasis? Keen på lære mer om funksjonell programmering? Har du kanskje
       hørt om React eller Redux, men ikke helt kommet rundt til å lære deg det ennå?
@@ -1064,12 +1036,11 @@
       \ & 3</p>"
     title: Funksjonell programmering i Javascript med React og Redux 2 av 3
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 44
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: "Er du nysgjerrig på webutvikling og lurer på hvordan du skal komme\
       \ igang? Har du hørt snakk om HTML, CSS og JavaScript, men usikker på hva sammenhengen\
       \ mellom dem er? Har du kanskje testa ut webutvikling, men ikke fått knappene\
@@ -1104,11 +1075,11 @@
       \ Hvis alt er i orden skal den svare med versjonsnummer, v5.7.1</p>"
     title: Webutvikling101 2 av 3
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 45
 - fields:
-    can_view_groups:
-    - - Abakus
     description: "Acando er et konsulentselskap som bistår offentlige og private kunder\
       \ i å lykkes. Vi er ofte engasjert i utfordrende og virksomhetskritiske leveranser\
       \ og prosjekter hvor vår innsats kan bli et være eller ikke være for våre kunder.\
@@ -1131,12 +1102,11 @@
       \ åpner 17:10 og bussen kjører 17:15._</p>"
     title: Acando
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 46
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Har du lyst å leke deg med video i nettleser?  Vil du lære å lage
       din egen videospiller og koble den til webkameraet ditt? Kantega ønsker velkommen
       til kodeworkshop med solide doser HTML5-magi. Det bare fantasien din som setter
@@ -1168,11 +1138,11 @@
       \n</p>"
     title: 'HTML5 Pixel-Magic '
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 47
 - fields:
-    can_view_groups:
-    - - Abakus
     description: Da er det klart for å samle Abakus sine komiteer for en Helgesamling
       uten like!
     end_time: '2016-03-06T12:00:00+00:00'
@@ -1195,12 +1165,13 @@
       \ er bare å glede seg!</p>"
     title: Helgesamling
     cover: test_event_cover.png
+    created_by: 3
+    can_view_groups:
+    - - Abakom
+    require_auth: True
   model: events.Event
   pk: 48
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     description: Velkommen til Abakus årlige generalforsamling! På Abakus' ordinære
       generalforsamling skal regnskap og årsberetning for 2015 legges frem. Forslag
       til statuttendringer vil legges frem og det skal velges totalt 6 stillinger.
@@ -1252,12 +1223,11 @@
       \ hs@abakus.no Vel møtt!</p>"
     title: Generalforsamling
     cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 49
 - fields:
-    can_view_groups:
-    - - Abakus
-    - - Webkom
     tags:
     - java
     - javascript
@@ -1290,5 +1260,7 @@
     title: BEKK
     cover: test_event_cover.png
     company: 1
+    created_by: 3
+    require_auth: False
   model: events.Event
   pk: 50

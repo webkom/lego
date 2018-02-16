@@ -14,12 +14,9 @@ class EmailAddress(models.Model):
     """
 
     email = models.CharField(
-        max_length=128,
-        primary_key=True,
-        validators=[
-            RegexValidator(regex=EmailValidator.user_regex),
-            ReservedNameValidator()
-        ]
+        max_length=128, primary_key=True,
+        validators=[RegexValidator(regex=EmailValidator.user_regex),
+                    ReservedNameValidator()]
     )
 
     def is_assigned(self, new_owner=None):
@@ -48,7 +45,9 @@ class EmailAddress(models.Model):
 class EmailList(models.Model):
 
     name = models.CharField(max_length=64)
-    email = models.OneToOneField(EmailAddress, related_name='email_list', editable=False)
+    email = models.OneToOneField(
+        EmailAddress, related_name='email_list', editable=False, on_delete=models.CASCADE
+    )
 
     users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
 

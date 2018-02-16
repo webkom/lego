@@ -50,11 +50,7 @@ class LDAPSystem(ExternalSystem):
 
     def add_user(self, user):
         self.ldap.add_user(
-            user.username,
-            user.first_name,
-            user.last_name,
-            user.email,
-            user.crypt_password_hash
+            user.username, user.first_name, user.last_name, user.email, user.crypt_password_hash
         )
 
     def update_user(self, user):
@@ -78,9 +74,7 @@ class LDAPSystem(ExternalSystem):
 
     def add_group(self, group):
         members = list(group.memberships.distinct('user').values_list('user__username', flat=True))
-        self.ldap.add_group(
-            group.id, group.name.lower()
-        )
+        self.ldap.add_group(group.id, group.name.lower())
         self.ldap.update_group_members(group.name.lower(), members)
 
     def update_group(self, group):

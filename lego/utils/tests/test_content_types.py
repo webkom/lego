@@ -7,7 +7,6 @@ from lego.utils import content_types
 
 
 class ContentTypesTestCase(TestCase):
-
     def setUp(self):
         self.instance = mock.Mock()
         self.instance.pk = '10'
@@ -18,24 +17,13 @@ class ContentTypesTestCase(TestCase):
         self.assertEqual(content_types.instance_to_string(self.instance), 'utils.mock-10')
 
     def test_split_string(self):
-        self.assertEquals(
-            content_types.split_string('test.model-1'),
-            ('test.model', '1')
-        )
+        self.assertEquals(content_types.split_string('test.model-1'), ('test.model', '1'))
 
-        self.assertEquals(
-            content_types.split_string('test.model-1-2'),
-            ('test.model', '1-2')
-        )
+        self.assertEquals(content_types.split_string('test.model-1-2'), ('test.model', '1-2'))
 
     def test_string_to_model_cls(self):
-        self.assertEquals(
-            content_types.string_to_model_cls('users.user'),
-            User
-        )
+        self.assertEquals(content_types.string_to_model_cls('users.user'), User)
 
         self.assertRaises(
-            content_types.VALIDATION_EXCEPTIONS,
-            content_types.string_to_model_cls,
-            'unknown.model'
+            content_types.VALIDATION_EXCEPTIONS, content_types.string_to_model_cls, 'unknown.model'
         )

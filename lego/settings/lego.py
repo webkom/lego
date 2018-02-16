@@ -14,30 +14,21 @@ LOGIN_REDIRECT_URL = f'/api/{API_VERSION}/'
 
 EMAIL_SUBJECT_PREFIX = u'[{}] '.format(SITE['name'])
 
-ADMINS = (
-    ('Webkom', 'webkom@abakus.no'),
-)
+ADMINS = (('Webkom', 'webkom@abakus.no'), )
 
 MANAGERS = ADMINS
 
 PENALTY_DURATION = timedelta(days=20)
 # Tuples for ignored (month, day) intervals
-PENALTY_IGNORE_SUMMER = (
-    (6, 1), (8, 15)
-)
-PENALTY_IGNORE_WINTER = (
-    (12, 1), (1, 10)
-)
+PENALTY_IGNORE_SUMMER = ((6, 1), (8, 15))
+PENALTY_IGNORE_WINTER = ((12, 1), (1, 10))
 
 REGISTRATION_CONFIRMATION_TIMEOUT = 60 * 60 * 24
 STUDENT_CONFIRMATION_TIMEOUT = 60 * 60 * 24
 
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
 
-HEALTH_CHECK_REMOTE_IPS = [
-    '10.',
-    '127.0.0.'
-]
+HEALTH_CHECK_REMOTE_IPS = ['10.', '127.0.0.']
 
 LDAP_GROUPS = [
     'Ababand',

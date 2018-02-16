@@ -21,10 +21,7 @@ class AggregatorTestCase(TestCase):
     def test_get_group(self):
         """Check the default group generation."""
         activity = activities.Activity(
-            actor=self.user,
-            verb=CommentVerb,
-            object=self.comment,
-            target=self.article
+            actor=self.user, verb=CommentVerb, object=self.comment, target=self.article
         )
 
         group = self.aggregator.get_group(activity)
@@ -43,10 +40,7 @@ class AggregatorTestCase(TestCase):
         register(TestVerb)
 
         activity = activities.Activity(
-            actor=self.user,
-            verb=TestVerb,
-            object=self.comment,
-            target=self.article
+            actor=self.user, verb=TestVerb, object=self.comment, target=self.article
         )
 
         group = self.aggregator.get_group(activity)

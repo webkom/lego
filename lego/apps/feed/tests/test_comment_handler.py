@@ -58,8 +58,7 @@ class TestCommentHandler(FeedTestBase):
         follow = FollowEvent.objects.filter(pk=2).first()
 
         comment = Comment.objects.filter(
-            content_type=ContentType.objects.get_for_model(Event),
-            object_id=follow.target.id
+            content_type=ContentType.objects.get_for_model(Event), object_id=follow.target.id
         ).first()
 
         follower_feed = PersonalFeed(follow.follower.id)

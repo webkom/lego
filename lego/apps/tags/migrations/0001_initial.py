@@ -12,14 +12,24 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('tag', models.CharField(max_length=64, primary_key=True, serialize=False, validators=[django.core.validators.RegexValidator(re.compile('^[-a-zA-Z0-9_]+\\Z', 32), "Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens.", 'invalid')])),
+                (
+                    'tag',
+                    models.CharField(
+                        max_length=64, primary_key=True, serialize=False, validators=[
+                            django.core.validators.RegexValidator(
+                                re.compile('^[-a-zA-Z0-9_]+\\Z', 32),
+                                "Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens.",
+                                'invalid'
+                            )
+                        ]
+                    )
+                ),
             ],
         ),
     ]

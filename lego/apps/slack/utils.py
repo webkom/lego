@@ -13,7 +13,6 @@ class SlackException(Exception):
 
 
 class SlackInvite:
-
     def __init__(self):
         self.token = settings.SLACK_TOKEN
         self.team_name = settings.SLACK_TEAM
@@ -24,12 +23,14 @@ class SlackInvite:
         )
 
     def _post(self, email):
-        response = requests.post(self._url(), data={
-            'email': email,
-            'token': self.token,
-            'set_active': 'true',
-            '_attempts': 1
-        })
+        response = requests.post(
+            self._url(), data={
+                'email': email,
+                'token': self.token,
+                'set_active': 'true',
+                '_attempts': 1
+            }
+        )
         if not response.ok:
             raise SlackException('invitation_failed')
         data = response.json()

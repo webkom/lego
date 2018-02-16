@@ -14,13 +14,11 @@ class NotificationSetting(models.Model):
     to adjust this.
     """
 
-    user = models.ForeignKey('users.User')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     notification_type = models.CharField(max_length=64, choices=NOTIFICATION_CHOICES)
     enabled = models.BooleanField(default=True)
     channels = ArrayField(
-        models.CharField(max_length=64, choices=CHANNEL_CHOICES),
-        default=CHANNELS,
-        null=True
+        models.CharField(max_length=64, choices=CHANNEL_CHOICES), default=CHANNELS, null=True
     )
 
     class Meta:
