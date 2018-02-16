@@ -31,8 +31,38 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User, AbakusGroup, Membership
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.functions import verify_captcha
+
+
+def sort_registrations_by_relevance(registrations, current_user):
+    current_users_memberships = map(
+        lambda mem: mem.abakus_group.id,
+        Membership.objects.filter(user=current_user).all()
+    )
+    registered_users = User.objects.filter(id__in=map(lambda reg: reg.user.id, registrations.all()))
+    user_memberships = list(
+        map(
+            lambda user: (user.id, Membership.objects.filter(user=user).all()),
+            registered_users.all()
+        )
+    )
+    shared_memberships = \
+        dict(
+            map(
+                lambda user_membership:
+                (user_membership[0],
+                 len(list(filter(lambda membership: membership.abakus_group.id in current_users_memberships, user_membership[1])))),
+                user_memberships
+            )
+        )
+    sorted_ids = map(
+        lambda reg: reg.id, sorted(registrations, key=lambda reg: -shared_memberships[reg.user.id])
+    )
+    print('sorted_ids', sorted_ids)
+    # Somehow use these sorted_ids to sort a queryset, or use this sorting somewhere else
+
+    return registrations
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -48,14 +78,17 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         elif self.action == 'retrieve':
             queryset = Event.objects.prefetch_related(
                 'pools', 'pools__permission_groups',
-                Prefetch(
-                    'pools__registrations', queryset=Registration.objects.select_related('user')
-                ), Prefetch('registrations', queryset=Registration.objects.select_related('user')),
-                'tags'
+                Prefetch('pools__registrations', queryset=self.get_registrations()),
+                Prefetch('registrations', queryset=self.get_registrations()), 'tags'
             )
         else:
             queryset = Event.objects.all()
         return queryset
+
+    def get_registrations(self, user):
+        user = self.request.user
+        registrations = Registration.objects.select_related('user')
+        return sort_registrations_by_relevance(registrations, user)
 
     def user_should_see_regs(self, event, user):
         return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
@@ -160,7 +193,6 @@ class PoolViewSet(
             raise APIRegistrationsExistsInPool
 
 
-
 class RegistrationViewSet(
     AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
@@ -175,21 +207,9 @@ class RegistrationViewSet(
             return RegistrationReadDetailedSerializer
         return super().get_serializer_class()
 
-    def sort_by_relevance(self, registrations):
-        current_user = self.user
-        current_user_memberships = Membership.objects.filter(user=current_user).all()
-        event = Event.objects.get(id=self.kwargs.get('event_pk', None))
-        users = User.objects.filter(id is not current_user.id and id in list(map(lambda reg: reg.user, registrations.all())))
-        user_memberships = map(lambda user: (user.id, Membership.objects.filter(user=user).all()), users.all())
-        shared_memberships = map(lambda user_id, memberships:
-                                 (user_id, len(list(filter(lambda membership: membership in current_user_memberships)))), user_memberships)
-
-        return registrations.sort(shared_memberships)
-
     def get_queryset(self):
         event_id = self.kwargs.get('event_pk', None)
-        registrations = Registration.objects.filter(event=event_id).prefetch_related('user')
-        return self.sort_by_relevance(registrations)
+        return Registration.objects.filter(event=event_id).prefetch_related('user')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
