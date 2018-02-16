@@ -36,31 +36,29 @@ from lego.utils.functions import verify_captcha
 
 
 def sort_registrations_by_relevance(registrations, current_user):
-    current_users_memberships = map(
-        lambda mem: mem.abakus_group.id,
-        Membership.objects.filter(user=current_user).all()
-    )
-    registered_users = User.objects.filter(id__in=map(lambda reg: reg.user.id, registrations.all()))
-    user_memberships = list(
-        map(
-            lambda user: (user.id, Membership.objects.filter(user=user).all()),
-            registered_users.all()
-        )
-    )
-    shared_memberships = \
-        dict(
-            map(
-                lambda user_membership:
-                (user_membership[0],
-                 len(list(filter(lambda membership: membership.abakus_group.id in current_users_memberships, user_membership[1])))),
-                user_memberships
-            )
-        )
+    # n = len(registrations)
+    registrations_list = registrations.all()  # 0 queries
+    current_user_groups = current_user.abakus_groups.all()  # 0 queries
+    registered_users = map(lambda reg: reg.user, registrations_list)  # 1 query
+    shared_memberships = dict(map(
+        lambda registered_user: (
+            registered_user.id,
+            len(list(filter(
+                lambda group: group in current_user_groups,
+                registered_user.abakus_groups.all()
+            )))
+        ),
+        registered_users
+    ))  # 2n + 1 queries
+    print('shared_memberships', shared_memberships)  # {1: 3, 2: 2, 3: 4, ...}
     sorted_ids = map(
-        lambda reg: reg.id, sorted(registrations, key=lambda reg: -shared_memberships[reg.user.id])
-    )
-    print('sorted_ids', sorted_ids)
-    # Somehow use these sorted_ids to sort a queryset, or use this sorting somewhere else
+        lambda reg: reg.id,
+        sorted(registrations_list, key=lambda reg: -shared_memberships[reg.user.id])
+    )  # 0 queries
+    print('sorted_ids', [*sorted_ids])  # [3, 1, 2, ...]
+
+    # total: 2n + 2 queries
+    # TODO: Somehow use these sorted_ids to sort a queryset, or use this sorting somewhere else
 
     return registrations
 
@@ -85,9 +83,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             queryset = Event.objects.all()
         return queryset
 
-    def get_registrations(self, user):
+    def get_registrations(self):
         user = self.request.user
-        registrations = Registration.objects.select_related('user')
+        event = self.kwargs['pk']
+        registrations = Registration.objects.filter(event=event)
         return sort_registrations_by_relevance(registrations, user)
 
     def user_should_see_regs(self, event, user):
