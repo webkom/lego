@@ -22,6 +22,9 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action == 'list':
             return PublicListAbakusGroupSerializer
 
+        if self.action == 'create':
+            return DetailedAbakusGroupSerializer
+
         abakus_group = self.get_object()
         if self.action == 'retrieve' and not self.request.user.has_perm(EDIT, abakus_group):
             if abakus_group.type in constants.PUBLIC_GROUPS:
