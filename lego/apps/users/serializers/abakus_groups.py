@@ -43,3 +43,19 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
             'logo',
             'type',
         )
+
+
+class PublicListAbakusGroupSerializer(PublicAbakusGroupSerializer):
+    logo = ImageField(required=False, options={'height': 400, 'width': 400})
+
+    class Meta:
+        model = AbakusGroup
+        fields = PublicAbakusGroupSerializer.Meta.fields + ('number_of_users', )
+
+
+class PublicDetailedAbakusGroupSerializer(PublicListAbakusGroupSerializer):
+    logo = ImageField(required=False, options={'height': 400, 'width': 400})
+
+    class Meta:
+        model = AbakusGroup
+        fields = PublicListAbakusGroupSerializer.Meta.fields + ('text', )
