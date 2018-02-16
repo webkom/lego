@@ -1,4 +1,4 @@
-from django.utils.datetime_safe import datetime
+from django.utils import timezone
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
@@ -28,7 +28,7 @@ class FrontpageViewSet(viewsets.ViewSet):
 
         events_handler = get_permission_handler(Event)
         queryset_events_base = Event.objects.all()\
-            .filter(end_time__gt=datetime.now()).order_by('-pinned', 'start_time')\
+            .filter(end_time__gt=timezone.now()).order_by('-pinned', 'start_time')\
             .prefetch_related('pools', 'pools__registrations', 'company', 'tags')
 
         if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
