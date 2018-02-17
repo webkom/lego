@@ -2,7 +2,6 @@ from rest_framework import exceptions, serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
-from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.penalties import PenaltySerializer
@@ -52,10 +51,8 @@ class AdministrateUserSerializer(PublicUserSerializer):
     Used by the events app when listing user registrations.
     """
 
-    grade = AbakusGroupField()
-
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ('grade', 'allergies')
+        fields = PublicUserSerializer.Meta.fields + ('abakus_groups', 'allergies',)
 
 
 class SearchUserSerializer(serializers.ModelSerializer):

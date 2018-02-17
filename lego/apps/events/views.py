@@ -31,7 +31,9 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User
+from lego.apps.users.constants import GROUP_GRADE
+from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.utils.functions import verify_captcha
 
 
@@ -96,14 +98,29 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @decorators.detail_route(methods=['GET'], serializer_class=EventAdministrateSerializer)
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get('pk', None)
+        grades = AbakusGroup.objects.filter(type=GROUP_GRADE)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
-            'pools',
             'pools__permission_groups',
-            Prefetch('pools__registrations', queryset=Registration.objects.select_related('user')),
+            Prefetch('pools__registrations', queryset=Registration.objects.select_related(
+                'user'
+            ).prefetch_related('user__abakus_groups')),
             Prefetch('registrations', queryset=Registration.objects.select_related('user')),
         )
-        serializer = self.get_serializer(queryset.first())
-        return Response(serializer.data)
+        event = queryset.first()
+        event_data = self.get_serializer(event).data
+
+        grade = grades.first()
+        grade_data = PublicAbakusGroupSerializer(grade).data
+        for pool in event_data.get('pools', []):
+            for registration in pool.get('registrations', []):
+                user = registration.get('user', {})
+                abakus_groups = user.get('abakus_groups', [])
+                user['abakus_groups'] = None
+                for id in abakus_groups:
+                    if id == grade_data.get('id', None):
+                        user['abakus_groups'] = grade_data
+
+        return Response(event_data)
 
     @decorators.detail_route(methods=['POST'], serializer_class=StripeTokenSerializer)
     def payment(self, request, *args, **kwargs):
