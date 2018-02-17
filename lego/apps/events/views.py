@@ -98,7 +98,6 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @decorators.detail_route(methods=['GET'], serializer_class=EventAdministrateSerializer)
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get('pk', None)
-        grades = AbakusGroup.objects.filter(type=GROUP_GRADE)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
             'pools__permission_groups',
             Prefetch('pools__registrations', queryset=Registration.objects.select_related(
@@ -109,16 +108,18 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event = queryset.first()
         event_data = self.get_serializer(event).data
 
-        grade = grades.first()
-        grade_data = PublicAbakusGroupSerializer(grade).data
+        grades = AbakusGroup.objects.filter(type=GROUP_GRADE)
+        grade_data = PublicAbakusGroupSerializer(grades, many=True).data
+        grade_dict = {item['id']: item for item in grade_data}
         for pool in event_data.get('pools', []):
             for registration in pool.get('registrations', []):
                 user = registration.get('user', {})
                 abakus_groups = user.get('abakus_groups', [])
                 user['abakus_groups'] = None
                 for id in abakus_groups:
-                    if id == grade_data.get('id', None):
-                        user['abakus_groups'] = grade_data
+                    grade = grade_dict.get(id, None)
+                    if grade:
+                        user['abakus_groups'] = grade
 
         return Response(event_data)
 
