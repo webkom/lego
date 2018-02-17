@@ -1,6 +1,6 @@
 from celery import chain
 from django.db import transaction
-from django.db.models import Prefetch, Q, Count
+from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
 from rest_framework import decorators, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -58,8 +58,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_registrations(self):
         user = self.request.user
-        event = self.kwargs['pk']
-        registrations = Registration.objects.filter(event=event).select_related('user')
+        registrations = Registration.objects.select_related('user')
         current_user_groups = user.abakus_groups.all()
         shared = registrations.annotate(
             shared_memberships=Count(Q(user__abakus_groups__in=current_user_groups))
