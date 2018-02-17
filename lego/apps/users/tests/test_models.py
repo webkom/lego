@@ -12,7 +12,7 @@ from lego.utils.test_utils import fake_time
 
 
 class AbakusGroupTestCase(TestCase):
-    fixtures = ['test_abakus_groups.yaml']
+    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
         self.non_committee = AbakusGroup(name='testgroup')
@@ -21,6 +21,22 @@ class AbakusGroupTestCase(TestCase):
     def test_natural_key(self):
         found_group = AbakusGroup.objects.get_by_natural_key(self.non_committee.name)
         self.assertEqual(self.non_committee, found_group)
+
+    def test_set_grade_cache(self):
+        grade = AbakusGroup.objects.create(name="Grade", type=constants.GROUP_GRADE)
+        user = User.objects.get(pk=1)
+
+        self.assertEqual(user.grade, None)
+        grade.add_user(user)
+        self.assertEqual(user.grade, grade)
+
+    def test_invalidate_grade_cache(self):
+        grade = AbakusGroup.objects.create(name="Grade", type=constants.GROUP_GRADE)
+        user = User.objects.get(pk=1)
+
+        grade.add_user(user)
+        grade.remove_user(user)
+        self.assertEqual(user.grade, None)
 
 
 class AbakusGroupHierarchyTestCase(TestCase):
