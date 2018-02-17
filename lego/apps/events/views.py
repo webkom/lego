@@ -58,12 +58,11 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_registrations(self):
         user = self.request.user
-        registrations = Registration.objects.select_related('user')
         current_user_groups = user.abakus_groups.all()
-        shared = registrations.annotate(
+        registrations = Registration.objects.select_related('user').annotate(
             shared_memberships=Count(Q(user__abakus_groups__in=current_user_groups))
         ).order_by('-shared_memberships', 'user_id')
-        return shared
+        return registrations
 
     def user_should_see_regs(self, event, user):
         return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
