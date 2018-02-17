@@ -33,7 +33,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
+from lego.apps.users.serializers.abakus_groups import AbakusGroupNameSerializer
 from lego.utils.functions import verify_captcha
 
 
@@ -109,7 +109,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_data = self.get_serializer(event).data
 
         grades = AbakusGroup.objects.filter(type=GROUP_GRADE)
-        grade_data = PublicAbakusGroupSerializer(grades, many=True).data
+        grade_data = AbakusGroupNameSerializer(grades, many=True).data
         grade_dict = {item['id']: item for item in grade_data}
         for pool in event_data.get('pools', []):
             for registration in pool.get('registrations', []):
