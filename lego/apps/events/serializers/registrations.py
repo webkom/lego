@@ -20,8 +20,14 @@ class AdminUnregisterSerializer(serializers.Serializer):
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
-    feedback = serializers.CharField(required=False)
-    admin_registration_reason = serializers.CharField(required=True)
+    feedback = serializers.CharField(
+        required=False,
+        max_length=Registration._meta.get_field('feedback').max_length,
+    )
+    admin_registration_reason = serializers.CharField(
+        required=True,
+        max_length=Registration._meta.get_field('admin_registration_reason').max_length,
+    )
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
