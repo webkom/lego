@@ -695,6 +695,7 @@ class Registration(BasisModel):
 
     class Meta:
         unique_together = ('user', 'event')
+        ordering = ['registration_date']
         permission_handler = RegistrationPermissionHandler()
 
     def __str__(self):
