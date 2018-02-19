@@ -45,7 +45,7 @@ class MeetingBulkInvite(serializers.Serializer):
     )
 
 
-class MeetingSerializer(BasisModelSerializer):
+class MeetingDetailSerializer(BasisModelSerializer):
     invitations = MeetingInvitationSerializer(many=True, read_only=True)
     report = ContentSerializerField()
     report_author = PublicUserField(queryset=User.objects.all(), allow_null=True, required=False)
@@ -63,3 +63,14 @@ class MeetingSerializer(BasisModelSerializer):
         owner = validated_data['current_user']
         meeting.invite_user(owner, owner)
         return meeting
+
+
+class MeetingListSerializer(BasisModelSerializer):
+    report_author = PublicUserField(queryset=User.objects.all(), allow_null=True, required=False)
+    created_by = PublicUserField(read_only=True)
+
+    class Meta:
+        model = Meeting
+        fields = (
+            'id', 'created_by', 'title', 'location', 'start_time', 'end_time', 'report_author'
+        )

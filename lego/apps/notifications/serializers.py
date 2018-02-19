@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.events.serializers.events import EventReadSerializer
-from lego.apps.meetings.serializers import MeetingSerializer
+from lego.apps.meetings.serializers import MeetingDetailSerializer
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
@@ -31,7 +31,7 @@ class AnnouncementListSerializer(BasisModelSerializer):
     users = PublicUserSerializer(many=True, read_only=True)
     groups = PublicAbakusGroupSerializer(many=True, read_only=True)
     events = EventReadSerializer(many=True, read_only=True)
-    meetings = MeetingSerializer(many=True, read_only=True)
+    meetings = MeetingDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Announcement
