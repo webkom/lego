@@ -55,11 +55,10 @@ class ContentModelTestCase(BaseTestCase):
     def test_parse_content(self):
         content = '<p>some <b>cool</b> text telling you to come to this party</p>' \
                   '<p>psst.. We got free <strike>dranks!</strike>drinks</p>'
-        article = Article(
+        article = Article.objects.create(
             title='test content', description='test description', text=content,
-            author=User.objects.get(username='webkom')
+            current_user=User.objects.get(username='webkom')
         )
-        article.save()
         article.refresh_from_db()
         self.assertEqual(article.text, content)
 
@@ -68,11 +67,10 @@ class ContentModelTestCase(BaseTestCase):
             <p>some <b>cool</b> text telling you to come to this party</p>
             <p><script>window.alert("I am a virus")</script></p>
         """
-        article = Article(
+        article = Article.objects.create(
             title='test content', description='test description', text=content,
-            author=User.objects.get(username='webkom')
+            current_user=User.objects.get(username='webkom')
         )
-        article.save()
         article.refresh_from_db()
         self.assertTrue('<script>' not in article.text)
 
@@ -81,11 +79,10 @@ class ContentModelTestCase(BaseTestCase):
             <p>some <b>cool</b> text telling you to come to this party</p>
             <p style="color: red;">psst.. We got free <strike>dranks!</strike>drinks</p>
         """
-        article = Article(
+        article = Article.objects.create(
             title='test content', description='test description', text=content,
-            author=User.objects.get(username='webkom')
+            current_user=User.objects.get(username='webkom')
         )
-        article.save()
         article.refresh_from_db()
         self.assertTrue('style="color: red;"' not in article.text)
 
@@ -96,11 +93,10 @@ class ContentModelTestCase(BaseTestCase):
             <p>psst.. We got free <strike>dranks!</strike>drinks</p>
         """
 
-        article = Article(
+        article = Article.objects.create(
             title='test content', description='test description', text=content,
-            author=User.objects.get(username='webkom')
+            current_user=User.objects.get(username='webkom')
         )
-        article.save()
         article.refresh_from_db()
         self.assertFalse('src' in article.text)
 
@@ -115,7 +111,7 @@ class ContentModelTestCase(BaseTestCase):
         with self.assertRaises(ValidationError):
             Article.objects.create(
                 title='test content', description='test description', text=content,
-                author=User.objects.get(username='webkom')
+                current_user=User.objects.get(username='webkom')
             )
 
     def test_parse_content_handle_missing_files(self):
@@ -129,5 +125,5 @@ class ContentModelTestCase(BaseTestCase):
         with self.assertRaises(ValidationError):
             Article.objects.create(
                 title='test content', description='test description', text=content,
-                author=User.objects.get(username='webkom')
+                current_user=User.objects.get(username='webkom')
             )
