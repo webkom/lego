@@ -31,8 +31,36 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.functions import verify_captcha
+
+
+def sort_registrations_by_relevance(registrations, current_user):
+    # n = len(registrations)
+    registrations_list = registrations.all()  # 0 queries
+    current_user_groups = current_user.abakus_groups.all()  # 0 queries
+    registered_users = map(lambda reg: reg.user, registrations_list)  # 1 query
+    shared_memberships = dict(map(
+        lambda registered_user: (
+            registered_user.id,
+            len(list(filter(
+                lambda group: group in current_user_groups,
+                registered_user.abakus_groups.all()
+            )))
+        ),
+        registered_users
+    ))  # 2n + 1 queries
+    print('shared_memberships', shared_memberships)  # {1: 3, 2: 2, 3: 4, ...}
+    sorted_ids = map(
+        lambda reg: reg.id,
+        sorted(registrations_list, key=lambda reg: -shared_memberships[reg.user.id])
+    )  # 0 queries
+    print('sorted_ids', [*sorted_ids])  # [3, 1, 2, ...]
+
+    # total: 2n + 2 queries
+    # TODO: Somehow use these sorted_ids to sort a queryset, or use this sorting somewhere else
+
+    return registrations
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -48,14 +76,18 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         elif self.action == 'retrieve':
             queryset = Event.objects.prefetch_related(
                 'pools', 'pools__permission_groups',
-                Prefetch(
-                    'pools__registrations', queryset=Registration.objects.select_related('user')
-                ), Prefetch('registrations', queryset=Registration.objects.select_related('user')),
-                'tags'
+                Prefetch('pools__registrations', queryset=self.get_registrations()),
+                Prefetch('registrations', queryset=self.get_registrations()), 'tags'
             )
         else:
             queryset = Event.objects.all()
         return queryset
+
+    def get_registrations(self):
+        user = self.request.user
+        event = self.kwargs['pk']
+        registrations = Registration.objects.filter(event=event)
+        return sort_registrations_by_relevance(registrations, user)
 
     def user_should_see_regs(self, event, user):
         return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
