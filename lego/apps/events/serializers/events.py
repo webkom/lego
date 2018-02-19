@@ -17,6 +17,8 @@ from lego.apps.events.serializers.registrations import (
 )
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
+from lego.apps.users.constants import GROUP_GRADE
+from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
@@ -187,3 +189,24 @@ class EventSearchSerializer(serializers.ModelSerializer):
             'pinned'
         )
         read_only = True
+
+
+def populate_event_registration_users_with_grade(event_dict):
+    """
+    Populates every user in registrations in a serialized event with `grade`.
+    Mainly used in the administrate endpoint
+    :param event_dict:
+    :return:
+    """
+    grades = AbakusGroup.objects.filter(type=GROUP_GRADE).values('id', 'name')
+    grade_dict = {item['id']: item for item in grades}
+    for pool in event_dict.get('pools', []):
+        for registration in pool.get('registrations', []):
+            user = registration.get('user', {})
+            abakus_groups = user.get('abakus_groups', [])
+            user['grade'] = None
+            for id in abakus_groups:
+                grade = grade_dict.get(id, None)
+                if grade:
+                    user['grade'] = grade
+    return event_dict

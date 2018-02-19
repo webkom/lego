@@ -16,7 +16,8 @@ from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (
     EventAdministrateSerializer, EventCreateAndUpdateSerializer,
-    EventReadAuthUserDetailedSerializer, EventReadSerializer, EventReadUserDetailedSerializer
+    EventReadAuthUserDetailedSerializer, EventReadSerializer, EventReadUserDetailedSerializer,
+    populate_event_registration_users_with_grade
 )
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
@@ -31,8 +32,7 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.constants import GROUP_GRADE
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import User
 from lego.utils.functions import verify_captcha
 
 
@@ -107,19 +107,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         event = queryset.first()
         event_data = self.get_serializer(event).data
-
-        grades = AbakusGroup.objects.filter(type=GROUP_GRADE).values('id', 'name')
-        grade_dict = {item['id']: item for item in grades}
-        for pool in event_data.get('pools', []):
-            for registration in pool.get('registrations', []):
-                user = registration.get('user', {})
-                abakus_groups = user.pop('abakus_groups', [])
-                user['grade'] = None
-                for id in abakus_groups:
-                    grade = grade_dict.get(id, None)
-                    if grade:
-                        user['grade'] = grade
-
+        event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 
     @decorators.detail_route(methods=['POST'], serializer_class=StripeTokenSerializer)
