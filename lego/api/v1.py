@@ -109,6 +109,7 @@ router.register(
     base_name='student-confirmation-perform'
 )
 router.register(r'users', UsersViewSet)
+router.register(r'penalties', PenaltyViewSet)
 router.register(
     r'password-reset-request', PasswordResetRequestViewSet, base_name='password-reset-request'
 )
@@ -119,7 +120,6 @@ router.register(r'password-change', ChangePasswordViewSet, base_name='password-c
 router.register(r'reactions', ReactionViewSet)
 router.register(r'reaction-types', ReactionTypeViewSet)
 router.register(r'restricted-mail', RestrictedMailViewSet, base_name='restricted-mail')
-router.register(r'penalties', PenaltyViewSet)
 router.register(r'files', FileViewSet)
 router.register(r'followers-user', FollowUserViewSet)
 router.register(r'followers-event', FollowEventViewSet)

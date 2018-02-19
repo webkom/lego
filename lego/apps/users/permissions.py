@@ -98,3 +98,7 @@ class MembershipPermissionHandler(PermissionHandler):
                 return data.get('user') == user.id
 
         return False
+
+class PenaltyPermissionHandler(PermissionHandler):
+    print('handling penalty perms')
+    permission_map = {VIEW: []}
