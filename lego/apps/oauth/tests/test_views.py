@@ -1,11 +1,11 @@
 from oauth2_provider.models import AccessToken
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import AbakusGroup, Membership, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class OauthViewsTestCase(APITestCase):
+class OauthViewsTestCase(BaseAPITestCase):
 
     fixtures = ['test_users.yaml', 'test_applications.yaml', 'test_access_tokens.yaml']
 
@@ -45,7 +45,7 @@ class OauthViewsTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class OauthApplicationViewsTestCase(APITestCase):
+class OauthApplicationViewsTestCase(BaseAPITestCase):
 
     fixtures = [
         'test_users.yaml', 'test_abakus_groups.yaml', 'test_applications.yaml',

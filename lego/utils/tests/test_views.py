@@ -1,10 +1,10 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class SiteMetaViewSetTestCase(APITestCase):
+class SiteMetaViewSetTestCase(BaseAPITestCase):
 
     fixtures = ['test_users.yaml']
 

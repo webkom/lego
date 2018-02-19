@@ -1,12 +1,11 @@
-from rest_framework.test import APITestCase
-
 import lego.apps.events.tests.test_events_api as event_api
 from lego.apps.events.models import Event
 from lego.apps.tags.models import Tag
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class TagsTestCase(APITestCase):
+class TagsTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_tags_data.yaml', 'initial_tags.yaml']
 
     def setUp(self):

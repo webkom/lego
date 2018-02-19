@@ -1,16 +1,16 @@
 from datetime import timedelta
 
-from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.exceptions import EventNotReady
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 from .utils import get_dummy_users
 
 
-class RegistrationMethodTest(TestCase):
+class RegistrationMethodTest(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]
@@ -42,7 +42,7 @@ class RegistrationMethodTest(TestCase):
         self.assertEqual(self.event.get_price(registration.user), 15000)
 
 
-class RegistrationTestCase(TestCase):
+class RegistrationTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]

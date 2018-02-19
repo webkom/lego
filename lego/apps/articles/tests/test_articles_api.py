@@ -1,9 +1,9 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
@@ -14,7 +14,7 @@ def _get_detail_url(pk):
     return reverse('api:v1:article-detail', kwargs={'pk': pk})
 
 
-class ListArticlesTestCase(APITestCase):
+class ListArticlesTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_articles.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -46,7 +46,7 @@ class ListArticlesTestCase(APITestCase):
         self.assertEqual(len(response.data['results']), 2)
 
 
-class RetrieveArticlesTestCase(APITestCase):
+class RetrieveArticlesTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_articles.yaml', 'test_users.yaml']
 
     def setUp(self):

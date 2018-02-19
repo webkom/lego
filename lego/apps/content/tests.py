@@ -1,11 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.test import testcases
 from django.utils.text import slugify
 
 from lego.apps.articles.models import Article
 from lego.apps.content.models import SlugModel
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
 class ExampleSlugContent(SlugModel):
@@ -13,7 +13,7 @@ class ExampleSlugContent(SlugModel):
     title = models.CharField(max_length=255)
 
 
-class SlugModelTestCase(testcases.TestCase):
+class SlugModelTestCase(BaseTestCase):
     def test_slug(self):
         item = ExampleSlugContent(title='CORRECTSLUG')
         self.assertIsNone(item.slug)
@@ -46,7 +46,7 @@ class SlugModelTestCase(testcases.TestCase):
         )
 
 
-class ContentModelTestCase(testcases.TestCase):
+class ContentModelTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'initial_files.yaml', 'development_users.yaml',
         'test_articles.yaml'

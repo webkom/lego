@@ -1,9 +1,10 @@
-from django.test import Client, TestCase
+from django.test import Client
 
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class APIDocsTestCase(TestCase):
+class APIDocsTestCase(BaseTestCase):
     """
     Make sure the api docs works like expected.
     """

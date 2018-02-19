@@ -1,11 +1,12 @@
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from django.test.client import RequestFactory
 
 from lego.apps.health.permissions import HealthPermission
+from lego.utils.test_utils import BaseTestCase
 
 
 @override_settings(HEALTH_CHECK_REMOTE_IPS=['129.241.', '127.0.0.'])
-class HealthPermissionTestCase(TestCase):
+class HealthPermissionTestCase(BaseTestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.permission_class = HealthPermission()

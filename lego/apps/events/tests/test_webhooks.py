@@ -2,12 +2,13 @@ from unittest import mock
 
 from django.test import override_settings
 from rest_framework import status
-from rest_framework.test import APITestCase
 from stripe import SignatureVerificationError
+
+from lego.utils.test_utils import BaseAPITestCase
 
 
 @override_settings(STRIPE_WEBHOOK_SECRET='test_secret')
-class StripeWebhookTestCase(APITestCase):
+class StripeWebhookTestCase(BaseAPITestCase):
     def setUp(self):
         self.url = '/api/v1/webhooks-stripe/'
 

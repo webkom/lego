@@ -1,7 +1,7 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 _test_company_data = [{'name': 'TEST'}, {'name': 'TEST2'}]
 
@@ -42,7 +42,7 @@ def _get_company_contacts_detail_url(company_pk, pk):
     return reverse('api:v1:company-contact-detail', kwargs={'company_pk': company_pk, 'pk': pk})
 
 
-class ListCompaniesTestCase(APITestCase):
+class ListCompaniesTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -62,7 +62,7 @@ class ListCompaniesTestCase(APITestCase):
         self.assertEqual(len(company_response.data['results']), 3)
 
 
-class RetrieveCompaniesTestCase(APITestCase):
+class RetrieveCompaniesTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -81,7 +81,7 @@ class RetrieveCompaniesTestCase(APITestCase):
         self.assertEqual(company_response.status_code, 200)
 
 
-class CreateCompaniesTestCase(APITestCase):
+class CreateCompaniesTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -113,7 +113,7 @@ class CreateCompaniesTestCase(APITestCase):
         self.assertEqual(company_response.data['name'], _test_company_data[1]['name'])
 
 
-class DeleteCompaniesTestCase(APITestCase):
+class DeleteCompaniesTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -135,7 +135,7 @@ class DeleteCompaniesTestCase(APITestCase):
         self.assertEqual(company_response.status_code, 404)
 
 
-class CreateSemesterStatusTestCase(APITestCase):
+class CreateSemesterStatusTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -175,7 +175,7 @@ class CreateSemesterStatusTestCase(APITestCase):
         )
 
 
-class DeleteSemesterStatusTestCase(APITestCase):
+class DeleteSemesterStatusTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -194,7 +194,7 @@ class DeleteSemesterStatusTestCase(APITestCase):
         self.assertEqual(response.status_code, 204)
 
 
-class CreateCompanyContactsTestCase(APITestCase):
+class CreateCompanyContactsTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -234,7 +234,7 @@ class CreateCompanyContactsTestCase(APITestCase):
         self.assertEqual(company_response.data['name'], _test_company_contact_data[0]['name'])
 
 
-class DeleteCompanyContacsTestCase(APITestCase):
+class DeleteCompanyContacsTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml']
 
     def setUp(self):

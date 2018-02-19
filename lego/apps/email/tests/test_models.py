@@ -1,11 +1,11 @@
 from django.db import IntegrityError
-from django.test import TestCase
 
 from lego.apps.email.models import EmailAddress, EmailList
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 
-class EmailAddressTestCase(TestCase):
+class EmailAddressTestCase(BaseTestCase):
 
     fixtures = ['test_email_addresses.yaml', 'test_email_lists.yaml']
 
@@ -27,7 +27,7 @@ class EmailAddressTestCase(TestCase):
         self.assertFalse(address.is_assigned())
 
 
-class EmailListTestCase(TestCase):
+class EmailListTestCase(BaseTestCase):
 
     fixtures = [
         'initial_files.yaml', 'initial_abakus_groups.yaml', 'test_email_addresses.yaml',

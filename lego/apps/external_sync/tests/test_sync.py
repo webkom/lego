@@ -1,12 +1,11 @@
 from unittest import mock
 
-from django.test import TestCase
-
 from lego.apps.external_sync.sync import Sync
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 
-class SyncTestCase(TestCase):
+class SyncTestCase(BaseTestCase):
     """
     This is a simple smoke test, it just makes sure all methods on the system classes is being
     called.

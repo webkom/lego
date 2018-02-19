@@ -1,10 +1,9 @@
-from rest_framework.test import APITestCase
-
 from lego.apps.flatpages.models import Page
 from lego.apps.users.tests.utils import create_normal_user, create_super_user
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class PageAPITestCase(APITestCase):
+class PageAPITestCase(BaseAPITestCase):
     fixtures = ['test_pages.yaml']
 
     def setUp(self):

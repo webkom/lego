@@ -1,17 +1,17 @@
 from datetime import timedelta
 from unittest import mock
 
-from django.test import TestCase, override_settings
+from django.test import override_settings
 
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.apps.users.registrations import Registrations
-from lego.utils.test_utils import fake_time
+from lego.utils.test_utils import BaseTestCase, fake_time
 
 
-class AbakusGroupTestCase(TestCase):
+class AbakusGroupTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml']
 
     def setUp(self):
@@ -23,7 +23,7 @@ class AbakusGroupTestCase(TestCase):
         self.assertEqual(self.non_committee, found_group)
 
 
-class AbakusGroupHierarchyTestCase(TestCase):
+class AbakusGroupHierarchyTestCase(BaseTestCase):
     fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml']
 
     def setUp(self):
@@ -81,7 +81,7 @@ class AbakusGroupHierarchyTestCase(TestCase):
         self.assertEqual(set(AbakusGroup.objects.all()), union)
 
 
-class UserTestCase(TestCase):
+class UserTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_files.yaml']
 
     def setUp(self):
@@ -185,7 +185,7 @@ class UserTestCase(TestCase):
         self.assertNotEqual(token['member'], False)
 
 
-class MembershipTestCase(TestCase):
+class MembershipTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -211,7 +211,7 @@ class MembershipTestCase(TestCase):
         self.assertEqual(self.test_membership, found_membership)
 
 
-class PenaltyTestCase(TestCase):
+class PenaltyTestCase(BaseTestCase):
     fixtures = [
         'test_users.yaml', 'test_abakus_groups.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]

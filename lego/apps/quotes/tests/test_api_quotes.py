@@ -1,9 +1,9 @@
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.quotes.models import Quote
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
@@ -30,7 +30,7 @@ def _get_unapprove_url(pk):
     return reverse('api:v1:quote-unapprove', kwargs={'pk': pk})
 
 
-class QuoteViewSetTestCase(APITestCase):
+class QuoteViewSetTestCase(BaseAPITestCase):
     fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_quotes.yaml']
 
     def setUp(self):

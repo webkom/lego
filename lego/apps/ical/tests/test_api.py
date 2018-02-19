@@ -4,13 +4,13 @@ from datetime import timedelta
 from django.urls import reverse
 from django.utils import timezone
 from icalendar import Calendar
-from rest_framework.test import APITestCase
 
 from lego.apps.events.models import Event, Pool
 from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting
 from lego.apps.permissions.constants import VIEW
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_token_url():
@@ -67,7 +67,7 @@ def _get_ical_events(url, client):
     return _get_ical(url, client).subcomponents
 
 
-class IcalAuthenticationTestCase(APITestCase):
+class IcalAuthenticationTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml',
         'test_users.yaml',
@@ -143,7 +143,7 @@ class IcalAuthenticationTestCase(APITestCase):
             self.assertEqual(res.status_code, 401)
 
 
-class IcalPersonalTestCase(APITestCase):
+class IcalPersonalTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml',
         'test_users.yaml',
@@ -177,7 +177,7 @@ class IcalPersonalTestCase(APITestCase):
         self.assertEqual(int(pk), meeting.pk)
 
 
-class IcalEventsTestCase(APITestCase):
+class IcalEventsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml',
         'test_users.yaml',
@@ -241,7 +241,7 @@ class IcalEventsTestCase(APITestCase):
             self.assertEqual(int(pk), self.event.pk)
 
 
-class ICalTokenGenerateTestCase(APITestCase):
+class ICalTokenGenerateTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -256,7 +256,7 @@ class ICalTokenGenerateTestCase(APITestCase):
         self.assertEqual(res.data['token'], token.token)
 
 
-class ICalTokenRegenerateTestCase(APITestCase):
+class ICalTokenRegenerateTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):

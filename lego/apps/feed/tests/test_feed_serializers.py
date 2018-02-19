@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.test import TestCase
 from stream_framework.verbs.base import Comment as CommentVerb
 
 from lego.apps.articles.models import Article
@@ -9,9 +8,10 @@ from lego.apps.feed.activities import Activity, AggregatedActivity
 from lego.apps.feed.feed_serializers import AggregatedActivitySerializer
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class FeedActivitySerializerTestCase(TestCase):
+class FeedActivitySerializerTestCase(BaseTestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 

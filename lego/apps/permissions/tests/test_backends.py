@@ -1,11 +1,10 @@
-from django.test import TestCase
-
 from lego.apps.events.models import Event
 from lego.apps.permissions.constants import EDIT, LIST
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 
-class AbakusBackendTestCase(TestCase):
+class AbakusBackendTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):

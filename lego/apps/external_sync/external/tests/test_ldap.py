@@ -1,14 +1,15 @@
 from unittest import mock
 from unittest.mock import call
 
-from django.test import TestCase, override_settings
+from django.test import override_settings
 
 from lego.apps.external_sync.external import ldap
 from lego.apps.users.constants import GROUP_COMMITTEE
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 
-class LDAPTestCase(TestCase):
+class LDAPTestCase(BaseTestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 

@@ -1,16 +1,16 @@
 from datetime import timedelta
 
-from django.test import TestCase
 from django.utils import timezone
 
 from lego.apps.events.exceptions import RegistrationExists
 from lego.apps.events.models import Event, Registration
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseTestCase
 
 from .utils import get_dummy_users
 
 
-class AdminRegistrationTestCase(TestCase):
+class AdminRegistrationTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'
     ]

@@ -1,3 +1,5 @@
+from django.test import tag
+
 from lego.apps.events.models import Event
 from lego.apps.feed.feed_handlers import PenaltyHandler
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
@@ -5,6 +7,7 @@ from lego.apps.feed.tests.feed_test_base import FeedTestBase
 from lego.apps.users.models import Penalty, User
 
 
+@tag('feed')
 class TestPenaltyHandler(FeedTestBase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml'

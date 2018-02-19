@@ -1,10 +1,10 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase
 
 from lego.apps.permissions.validators import KeywordPermissionValidator
+from lego.utils.test_utils import BaseTestCase
 
 
-class KeywordPermissionValidatorTestCase(TestCase):
+class KeywordPermissionValidatorTestCase(BaseTestCase):
     def test_regex_validator_non_letters(self):
         validator = KeywordPermissionValidator()
         self.assertRaises(ValidationError, validator.__call__, '/1234/')

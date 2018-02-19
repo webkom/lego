@@ -6,7 +6,6 @@ import stripe
 from django.urls import reverse
 from django.utils import timezone
 from djangorestframework_camel_case.render import camelize
-from rest_framework.test import APITestCase, APITransactionTestCase
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import WebhookDidNotFindRegistration
@@ -14,6 +13,7 @@ from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
 
 from .utils import create_token
 
@@ -141,7 +141,7 @@ def _get_upcoming_url():
     return reverse('api:v1:event-upcoming')
 
 
-class ListEventsTestCase(APITestCase):
+class ListEventsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -174,7 +174,7 @@ class ListEventsTestCase(APITestCase):
         self.assertEqual(len(event_response.data['results']), 6)
 
 
-class RetrieveEventsTestCase(APITestCase):
+class RetrieveEventsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -270,7 +270,7 @@ class RetrieveEventsTestCase(APITestCase):
                     self.assertIsNone(reg['chargeStatus'])
 
 
-class CreateEventsTestCase(APITestCase):
+class CreateEventsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -460,7 +460,7 @@ class CreateEventsTestCase(APITestCase):
         self.assertEqual(res_event['pools'], [])
 
 
-class PoolsTestCase(APITestCase):
+class PoolsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -513,7 +513,7 @@ class PoolsTestCase(APITestCase):
 
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
-class RegistrationsTransactionTestCase(APITransactionTestCase):
+class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -559,7 +559,7 @@ class RegistrationsTransactionTestCase(APITransactionTestCase):
 
 
 @mock.patch('lego.apps.events.views.verify_captcha', return_value=True)
-class RegistrationsTestCase(APITestCase):
+class RegistrationsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -705,7 +705,7 @@ class RegistrationsTestCase(APITestCase):
         self.assertEqual(res.status_code, 403)
 
 
-class EventAdministrateTestCase(APITestCase):
+class EventAdministrateTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -729,7 +729,7 @@ class EventAdministrateTestCase(APITestCase):
         self.assertEqual(event_response.status_code, 403)
 
 
-class CreateAdminRegistrationTestCase(APITestCase):
+class CreateAdminRegistrationTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -842,7 +842,7 @@ class CreateAdminRegistrationTestCase(APITestCase):
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
 
-class AdminUnregistrationTestCase(APITestCase):
+class AdminUnregistrationTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]
@@ -904,7 +904,7 @@ class AdminUnregistrationTestCase(APITestCase):
 
 
 @skipIf(not stripe.api_key, 'No API Key set. Set STRIPE_TEST_KEY in ENV to run test.')
-class StripePaymentTestCase(APITestCase):
+class StripePaymentTestCase(BaseAPITestCase):
     """
     Testing cards used:
     https://stripe.com/docs/testing#cards
@@ -974,7 +974,7 @@ class StripePaymentTestCase(APITestCase):
             stripe_webhook_event(event_id=stripe_event.id, event_type='charge.refunded')
 
 
-class CapacityExpansionTestCase(APITestCase):
+class CapacityExpansionTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
     ]
@@ -1023,7 +1023,7 @@ class CapacityExpansionTestCase(APITestCase):
         self.assertEquals(self.event.waiting_registrations.count(), 1)
 
 
-class RegistrationSearchTestCase(APITestCase):
+class RegistrationSearchTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
     ]
@@ -1103,7 +1103,7 @@ class RegistrationSearchTestCase(APITestCase):
         self.assertEquals(res.status_code, 400)
 
 
-class UpcomingEventsTestCase(APITestCase):
+class UpcomingEventsTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_companies.yaml', 'test_users.yaml', 'test_events.yaml'
     ]

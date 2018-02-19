@@ -1,14 +1,13 @@
 from unittest.mock import patch
 
-from django.test import TestCase
-
 from lego.apps.meetings.models import Meeting
 from lego.apps.meetings.notifications import MeetingInvitationNotification
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
 @patch('lego.utils.email.django_send_mail')
-class MeetingInvitationNotificationTestCase(TestCase):
+class MeetingInvitationNotificationTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml', 'initial_files.yaml'
     ]

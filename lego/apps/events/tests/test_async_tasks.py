@@ -1,9 +1,7 @@
 from datetime import timedelta
 from unittest import mock
 
-from django.test import TestCase
 from django.utils import timezone
-from rest_framework.test import APITestCase
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
@@ -16,9 +14,10 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
+from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
-class PoolActivationTestCase(APITestCase):
+class PoolActivationTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
     ]
@@ -213,7 +212,7 @@ class PoolActivationTestCase(APITestCase):
         check_that_pool_counters_match_registration_number()
 
 
-class PenaltyExpiredTestCase(TestCase):
+class PenaltyExpiredTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
     ]
@@ -347,7 +346,7 @@ class PenaltyExpiredTestCase(TestCase):
         self.assertEqual(self.event.number_of_registrations, 2)
 
 
-class PaymentDueTestCase(TestCase):
+class PaymentDueTestCase(BaseTestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_events.yaml', 'test_companies.yaml'
     ]

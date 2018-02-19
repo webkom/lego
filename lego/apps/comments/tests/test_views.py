@@ -1,11 +1,11 @@
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.articles.models import Article
 from lego.apps.comments.models import Comment
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
@@ -16,7 +16,7 @@ def _get_detail_url(pk):
     return reverse('api:v1:comment-detail', kwargs={'pk': pk})
 
 
-class CreateCommentsAPITestCase(APITestCase):
+class CreateCommentsAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):
@@ -233,7 +233,7 @@ class CreateCommentsAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class UpdateCommentsAPITestCase(APITestCase):
+class UpdateCommentsAPITestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml',
         'test_users.yaml',
@@ -298,7 +298,7 @@ class UpdateCommentsAPITestCase(APITestCase):
         self.assertEqual(comment, self.test_comment)
 
 
-class DeleteUsersAPITestCase(APITestCase):
+class DeleteUsersAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_articles.yaml']
 
     def setUp(self):

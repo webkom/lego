@@ -1,9 +1,9 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 test_meeting_data = [
     {
@@ -28,7 +28,7 @@ def _get_invitations_list_url(pk):
     return reverse('api:v1:meeting-invitations-list', kwargs={'meeting_pk': pk})
 
 
-class CreateMeetingTestCase(APITestCase):
+class CreateMeetingTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -50,7 +50,7 @@ class CreateMeetingTestCase(APITestCase):
         self.assertEqual(res.status_code, 403)
 
 
-class RetrieveMeetingTestCase(APITestCase):
+class RetrieveMeetingTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -104,7 +104,7 @@ class RetrieveMeetingTestCase(APITestCase):
             self.assertEqual(len(no_answer), 1)
 
 
-class DeleteMeetingTestCase(APITestCase):
+class DeleteMeetingTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -135,7 +135,7 @@ class DeleteMeetingTestCase(APITestCase):
         self.assertEqual(res.status_code, 404)
 
 
-class InviteToMeetingTestCase(APITestCase):
+class InviteToMeetingTestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml', 'initial_files.yaml'
     ]
@@ -252,7 +252,7 @@ class InviteToMeetingTestCase(APITestCase):
             self.assertTrue(present)
 
 
-class UpdateInviteTestCase(APITestCase):
+class UpdateInviteTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -305,7 +305,7 @@ class UpdateInviteTestCase(APITestCase):
         self.assertEqual(invite.user, me)
 
 
-class UnauthorizedTestCase(APITestCase):
+class UnauthorizedTestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):

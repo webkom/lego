@@ -1,13 +1,13 @@
 from unittest import mock
 
 from django.contrib.auth.models import AnonymousUser
-from django.test import TestCase
 
 from lego.apps.contact.send import send_message
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class SendTestCase(TestCase):
+class SendTestCase(BaseTestCase):
 
     fixtures = [
         'initial_files.yaml', 'initial_abakus_groups.yaml', 'development_users.yaml',

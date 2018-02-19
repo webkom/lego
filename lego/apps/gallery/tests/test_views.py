@@ -1,14 +1,14 @@
 from unittest import mock
 
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.gallery.models import GalleryPicture
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 @mock.patch('lego.apps.files.fields.storage.generate_signed_url', return_value='signed_url')
-class GalleryViewSetTestCase(APITestCase):
+class GalleryViewSetTestCase(BaseAPITestCase):
 
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_files.yaml', 'test_galleries.yaml',

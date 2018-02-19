@@ -1,12 +1,12 @@
 from unittest import mock
 
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class ContactViewSetTestCase(APITestCase):
+class ContactViewSetTestCase(BaseAPITestCase):
 
     fixtures = [
         'initial_files.yaml', 'initial_abakus_groups.yaml', 'development_users.yaml',

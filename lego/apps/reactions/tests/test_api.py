@@ -1,10 +1,10 @@
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.articles.models import Article
 from lego.apps.reactions.models import Reaction, ReactionType
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
@@ -15,7 +15,7 @@ def _get_detail_url(pk):
     return reverse('api:v1:reaction-detail', kwargs={'pk': pk})
 
 
-class CreateReactionsAPITestCase(APITestCase):
+class CreateReactionsAPITestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_reaction_types.yaml',
         'test_articles.yaml'
@@ -66,7 +66,7 @@ class CreateReactionsAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 400)
 
 
-class DeleteReactionsAPITestCase(APITestCase):
+class DeleteReactionsAPITestCase(BaseAPITestCase):
     fixtures = [
         'test_abakus_groups.yaml', 'test_users.yaml', 'test_reaction_types.yaml',
         'test_articles.yaml'

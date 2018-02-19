@@ -1,9 +1,9 @@
 from unittest import mock
 
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.users.registrations import Registrations
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
@@ -14,7 +14,7 @@ def _get_registration_token_url(token):
     return f'{_get_list_url()}?token={token}'
 
 
-class RetrieveRegistrationAPITestCase(APITestCase):
+class RetrieveRegistrationAPITestCase(BaseAPITestCase):
     def test_without_token(self):
         response = self.client.get(_get_list_url())
         self.assertEqual(response.status_code, 400)
@@ -37,7 +37,7 @@ class RetrieveRegistrationAPITestCase(APITestCase):
         self.assertEqual(response.data.get('email'), 'test1@user.com')
 
 
-class CreateRegistrationAPITestCase(APITestCase):
+class CreateRegistrationAPITestCase(BaseAPITestCase):
 
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 

@@ -1,11 +1,10 @@
 from email.message import Message
 
-from django.test import TestCase
-
 from lego.apps.restricted.message import EmailMessage
+from lego.utils.test_utils import BaseTestCase
 
 
-class MessageTestCase(TestCase):
+class MessageTestCase(BaseTestCase):
     def setUp(self):
         self.message = EmailMessage(recipient='recipient', sender='sender', message=Message())
 

@@ -1,14 +1,14 @@
 from email.message import Message
 
 from django.conf import settings
-from django.test import TestCase
 
 from lego.apps.restricted.parser import EmailParser, ParserMessageType
+from lego.utils.test_utils import BaseTestCase
 
 from .utils import read_file
 
 
-class EmailParserTestCase(TestCase):
+class EmailParserTestCase(BaseTestCase):
     def test_parse_valid_email(self):
         """Try to parse a valid message, make sure we add the correct properties to the message."""
         raw_message = read_file(f'{settings.BASE_DIR}/apps/restricted/fixtures/emails/valid.txt')

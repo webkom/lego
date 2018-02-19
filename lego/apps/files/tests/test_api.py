@@ -1,12 +1,12 @@
 from unittest import mock
 
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseAPITestCase
 
 
-class ListArticlesTestCase(APITestCase):
+class ListArticlesTestCase(BaseAPITestCase):
     fixtures = ['test_users.yaml']
 
     url = '/api/v1/files/'

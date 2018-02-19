@@ -1,11 +1,11 @@
 from unittest import mock
 
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
+from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_request_url():
@@ -24,7 +24,7 @@ def _get_student_confirmation_token_perform_url(token):
     return f'{_get_list_perform_url()}?token={token}'
 
 
-class RetrieveStudentConfirmationAPITestCase(APITestCase):
+class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):
@@ -84,7 +84,7 @@ class RetrieveStudentConfirmationAPITestCase(APITestCase):
         self.assertEqual(response.data.get('member'), True)
 
 
-class CreateStudentConfirmationAPITestCase(APITestCase):
+class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
 
     _test_student_confirmation_data = {
@@ -205,7 +205,7 @@ class CreateStudentConfirmationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, 204)
 
 
-class UpdateStudentConfirmationAPITestCase(APITestCase):
+class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
     fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml', 'test_users.yaml']
 
     def setUp(self):

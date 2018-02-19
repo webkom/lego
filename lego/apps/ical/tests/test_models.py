@@ -1,10 +1,9 @@
-from django.test import TestCase
-
 from lego.apps.ical.models import ICalToken
 from lego.apps.users.models import User
+from lego.utils.test_utils import BaseTestCase
 
 
-class TokenTestCase(TestCase):
+class TokenTestCase(BaseTestCase):
     fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
 
     def setUp(self):

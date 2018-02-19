@@ -2,10 +2,10 @@ from datetime import timedelta
 
 from django.urls import reverse
 from django.utils import timezone
-from rest_framework.test import APITestCase
 
 from lego.apps.joblistings.models import Joblisting
 from lego.apps.users.models import AbakusGroup, User
+from lego.utils.test_utils import BaseAPITestCase
 
 _test_joblistings_data = [
     {
@@ -67,7 +67,7 @@ def _get_detail_url(pk):
     return reverse('api:v1:joblisting-detail', kwargs={'pk': pk})
 
 
-class ListJoblistingsTestCase(APITestCase):
+class ListJoblistingsTestCase(BaseAPITestCase):
     fixtures = [
         'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
         'test_abakus_groups.yaml'
@@ -105,7 +105,7 @@ class ListJoblistingsTestCase(APITestCase):
         self.assertEqual(len(joblisting_response.data['results']), 2)
 
 
-class RetrieveJoblistingsTestCase(APITestCase):
+class RetrieveJoblistingsTestCase(BaseAPITestCase):
     fixtures = [
         'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
         'test_abakus_groups.yaml'
@@ -136,7 +136,7 @@ class RetrieveJoblistingsTestCase(APITestCase):
         self.assertEqual(joblisting_response.status_code, 200)
 
 
-class CreateJoblistingsTestCase(APITestCase):
+class CreateJoblistingsTestCase(BaseAPITestCase):
     fixtures = [
         'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
         'test_abakus_groups.yaml'
@@ -166,7 +166,7 @@ class CreateJoblistingsTestCase(APITestCase):
         self.assertEqual(res.status_code, 403)
 
 
-class EditJoblistingsTestCase(APITestCase):
+class EditJoblistingsTestCase(BaseAPITestCase):
     fixtures = [
         'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
         'test_abakus_groups.yaml'
@@ -205,7 +205,7 @@ class EditJoblistingsTestCase(APITestCase):
         self.assertEqual(res.status_code, 403)
 
 
-class DeleteJoblistingsTestCase(APITestCase):
+class DeleteJoblistingsTestCase(BaseAPITestCase):
     fixtures = [
         'development_joblistings.yaml', 'test_users.yaml', 'development_companies.yaml',
         'test_abakus_groups.yaml'
