@@ -61,8 +61,11 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_registrations(self, user):
         current_user_groups = user.all_groups
+        query = Q()
+        for group in current_user_groups:
+            query |= Q(user__abakus_groups=group)
         registrations = Registration.objects.select_related('user').annotate(
-            shared_memberships=Count(Q(user__abakus_groups__in=current_user_groups))
+            shared_memberships=Count('user__abakus_groups', filter=query)
         ).order_by('-shared_memberships', 'user_id')
         return registrations
 
