@@ -41,24 +41,28 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = 'start_time'
 
     def get_queryset(self):
+        user = self.request.user
         if self.action == 'list':
             queryset = Event.objects.prefetch_related(
                 'pools', 'pools__registrations', 'company', 'tags'
             )
         elif self.action == 'retrieve':
-            reg_queryset = self.get_registrations()
             queryset = Event.objects.prefetch_related(
-                'pools', 'pools__permission_groups',
-                Prefetch('pools__registrations', queryset=reg_queryset),
-                Prefetch('registrations', queryset=reg_queryset), 'tags'
+                'pools', 'pools__permission_groups', 'tags'
             )
+            if user and user.is_authenticated:
+                reg_queryset = self.get_registrations(user)
+                queryset = Event.objects.prefetch_related(
+                    'can_edit_users', 'can_edit_groups',
+                    Prefetch('pools__registrations', queryset=reg_queryset),
+                    Prefetch('registrations', queryset=reg_queryset)
+                )
         else:
             queryset = Event.objects.all()
         return queryset
 
-    def get_registrations(self):
-        user = self.request.user
-        current_user_groups = user.abakus_groups.all()
+    def get_registrations(self, user):
+        current_user_groups = user.all_groups
         registrations = Registration.objects.select_related('user').annotate(
             shared_memberships=Count(Q(user__abakus_groups__in=current_user_groups))
         ).order_by('-shared_memberships', 'user_id')
