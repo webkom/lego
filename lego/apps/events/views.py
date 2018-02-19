@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
-    APINoSuchPool, APINoSuchRegistration, APIPaymentExists, APIRegistrationExists,
+    APIEventNotFound, APINoSuchPool, APINoSuchRegistration, APIPaymentExists, APIRegistrationExists,
     APIRegistrationsExistsInPool, NoSuchPool, NoSuchRegistration, RegistrationExists,
     RegistrationsExistInPool
 )
@@ -216,13 +216,18 @@ class RegistrationViewSet(
     )
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get('event_pk', None)
-        event = Event.objects.get(id=event_id)
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            raise APIEventNotFound()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
             registration = event.admin_register(**serializer.validated_data)
         except NoSuchPool:
             raise APINoSuchPool()
+        except RegistrationExists:
+            raise APIRegistrationExists()
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
 
