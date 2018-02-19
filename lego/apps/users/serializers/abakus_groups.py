@@ -46,7 +46,6 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
 
 
 class AbakusGroupNameSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AbakusGroup
         fields = ('id', 'name')

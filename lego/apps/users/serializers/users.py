@@ -52,7 +52,10 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ('abakus_groups', 'allergies',)
+        fields = PublicUserSerializer.Meta.fields + (
+            'abakus_groups',
+            'allergies',
+        )
 
 
 class SearchUserSerializer(serializers.ModelSerializer):

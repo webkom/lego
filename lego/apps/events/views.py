@@ -33,7 +33,6 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.serializers.abakus_groups import AbakusGroupNameSerializer
 from lego.utils.functions import verify_captcha
 
 
@@ -100,26 +99,26 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_id = self.kwargs.get('pk', None)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
             'pools__permission_groups',
-            Prefetch('pools__registrations', queryset=Registration.objects.select_related(
-                'user'
-            ).prefetch_related('user__abakus_groups')),
+            Prefetch(
+                'pools__registrations', queryset=Registration.objects.select_related('user')
+                .prefetch_related('user__abakus_groups')
+            ),
             Prefetch('registrations', queryset=Registration.objects.select_related('user')),
         )
         event = queryset.first()
         event_data = self.get_serializer(event).data
 
-        grades = AbakusGroup.objects.filter(type=GROUP_GRADE)
-        grade_data = AbakusGroupNameSerializer(grades, many=True).data
-        grade_dict = {item['id']: item for item in grade_data}
+        grades = AbakusGroup.objects.filter(type=GROUP_GRADE).values('id', 'name')
+        grade_dict = {item['id']: item for item in grades}
         for pool in event_data.get('pools', []):
             for registration in pool.get('registrations', []):
                 user = registration.get('user', {})
-                abakus_groups = user.get('abakus_groups', [])
-                user['abakus_groups'] = None
+                abakus_groups = user.pop('abakus_groups', [])
+                user['grade'] = None
                 for id in abakus_groups:
                     grade = grade_dict.get(id, None)
                     if grade:
-                        user['abakus_groups'] = grade
+                        user['grade'] = grade
 
         return Response(event_data)
 
