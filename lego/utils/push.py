@@ -2,7 +2,6 @@ from django.template.loader import render_to_string
 from push_notifications.models import APNSDevice, GCMDevice
 from structlog import get_logger
 
-from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.utils.content_types import instance_to_string
 
 log = get_logger()
@@ -16,9 +15,7 @@ class PushMessage:
         self.instance = instance
 
     def _get_unread_count(self):
-        feed = NotificationFeed(self.user.pk)
-        data = feed.get_notification_data()
-        return data.get('unread_count', 0)
+        return 0
 
     def send(self):
         """

@@ -12,9 +12,6 @@ from lego.apps.events.views import (
     EventViewSet, PoolViewSet, RegistrationSearchViewSet, RegistrationViewSet
 )
 from lego.apps.events.webhooks import StripeWebhook
-from lego.apps.feed.views import (
-    CompanyFeedViewSet, GroupFeedViewSet, NotificationFeedViewSet, PersonalFeedViewSet
-)
 from lego.apps.files.views import FileViewSet
 from lego.apps.flatpages.views import PageViewSet
 from lego.apps.followers.views import FollowCompanyViewSet, FollowEventViewSet, FollowUserViewSet
@@ -125,12 +122,6 @@ router.register(r'files', FileViewSet)
 router.register(r'followers-user', FollowUserViewSet)
 router.register(r'followers-event', FollowEventViewSet)
 router.register(r'followers-company', FollowCompanyViewSet)
-# TODO: Disabled until comments have been fixed:
-# router.register(r'feed-user', UserFeedViewSet, base_name='feed-user')
-router.register(r'feed-personal', PersonalFeedViewSet, base_name='feed-personal')
-router.register(r'feed-notifications', NotificationFeedViewSet, base_name='feed-notifications')
-router.register(r'feed-group', GroupFeedViewSet, base_name='feed-group')
-router.register(r'feed-company', CompanyFeedViewSet, base_name='feed-company')
 router.register(r'slack-invite', SlackInviteViewSet, base_name='slack-invite')
 router.register(r'calendar-ical', ICalViewset, base_name='calendar-ical')
 router.register(r'calendar-token', ICalTokenViewset, base_name='calendar-token')

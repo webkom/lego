@@ -1,7 +1,6 @@
 import os
 
 import stripe
-from cassandra import ConsistencyLevel
 
 from .base import INSTALLED_APPS, MIDDLEWARE
 from .rest_framework import REST_FRAMEWORK
@@ -77,18 +76,6 @@ THUMBOR_SECURITY_KEY = 'lego-dev'
 
 CELERY_BROKER_URL = 'redis://127.0.0.1'
 CELERY_TASK_ALWAYS_EAGER = True
-
-STREAM_CASSANDRA_HOSTS = ['127.0.0.1']
-STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.ONE
-STREAM_DEFAULT_KEYSPACE = 'stream_framework'
-STREAM_REDIS_CONFIG = {
-    'default': {
-        'host': '127.0.0.1',
-        'port': 6379,
-        'db': 0,
-        'password': None
-    },
-}
 
 ELASTICSEARCH = [
     {

@@ -2,7 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 
-from lego.apps.feed.tasks import add_to_feeds
+from lego.apps.action_handlers import handle_event
 from lego.utils.models import BasisModel
 
 from .constants import CHANNEL_CHOICES, CHANNELS, NOTIFICATION_CHOICES, NOTIFICATION_TYPES
@@ -91,10 +91,9 @@ class Announcement(BasisModel):
 
     def send(self):
         if self.sent:
-            # Message is sent already, nothing todo!
+            # Message is sent already, nothing to do!
             return
 
-        add_to_feeds.delay(self, action='send')
-
+        handle_event(self, 'send')
         self.sent = timezone.now()
         self.save()

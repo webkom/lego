@@ -7,6 +7,7 @@ from redis.exceptions import LockError
 from structlog import get_logger
 
 from lego import celery_app
+from lego.apps.action_handlers import handle_event
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed, PoolCounterNotEqualToRegistrationCount, WebhookDidNotFindRegistration
@@ -17,7 +18,6 @@ from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (
     notify_event_registration, notify_user_payment, notify_user_registration
 )
-from lego.apps.feed.registry import get_handler
 from lego.utils.tasks import AbakusTask
 
 log = get_logger()
@@ -258,7 +258,7 @@ def notify_user_when_payment_soon_overdue(self, logger_context=None):
                     'registration_notified_overdue_payment', event_id=event.id,
                     registration_id=registration.id
                 )
-                get_handler(Registration).handle_payment_overdue(registration)
+                handle_event(registration, 'payment_overdue')
 
 
 @celery_app.task(serializer='json', bind=True, base=AbakusTask)

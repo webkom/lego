@@ -1,27 +1,17 @@
-from lego.apps.feed.activities import Activity
-from lego.apps.feed.feed_handlers.base_handler import BaseHandler
-from lego.apps.feed.feed_manager import feed_manager
-from lego.apps.feed.feeds.notification_feed import NotificationFeed
-from lego.apps.feed.feeds.personal_feed import PersonalFeed
-from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import AnnouncementVerb
+from lego.apps.action_handlers.handler import Handler
+from lego.apps.action_handlers.registry import register_handler
+from lego.apps.feeds.activity import Activity
+from lego.apps.feeds.fanout_manager import fanout_manager
+from lego.apps.feeds.models import NotificationFeed, PersonalFeed
+from lego.apps.feeds.verbs import AnnouncementVerb
 from lego.apps.notifications.models import Announcement
 from lego.apps.notifications.notifications import AnnouncementNotification
 
 
-class AnnouncementHandler(BaseHandler):
+class AnnouncementHandler(Handler):
 
     model = Announcement
-    manager = feed_manager
-
-    def handle_create(self, announcement):
-        pass
-
-    def handle_update(self, announcement):
-        pass
-
-    def handle_delete(self, announcement):
-        pass
+    manager = fanout_manager
 
     def handle_send(self, announcement):
         if not announcement.created_by:
