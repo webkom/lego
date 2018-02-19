@@ -50,7 +50,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             queryset = Event.objects.prefetch_related('pools', 'pools__permission_groups', 'tags')
             if user and user.is_authenticated:
                 reg_queryset = self.get_registrations(user)
-                queryset = Event.objects.prefetch_related(
+                queryset = queryset.prefetch_related(
                     'can_edit_users', 'can_edit_groups',
                     Prefetch('pools__registrations', queryset=reg_queryset),
                     Prefetch('registrations', queryset=reg_queryset)
