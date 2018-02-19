@@ -13,6 +13,7 @@ from lego.apps.events.exceptions import WebhookDidNotFindRegistration
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.events.tests.utils import get_dummy_users
+from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.models import AbakusGroup, User
 
 from .utils import create_token
@@ -268,6 +269,35 @@ class RetrieveEventsTestCase(APITestCase):
                 else:
                     self.assertIsNone(reg['feedback'])
                     self.assertIsNone(reg['chargeStatus'])
+
+    def test_event_registration_sort_order_default(self):
+        """Test sorting order of registrations"""
+        self.client.force_authenticate(self.abakus_user)
+        event = Event.objects.get(pk=5)
+        reg1, reg2, reg3 = event.registrations.all().order_by('id')[:3]
+
+        event_response = self.client.get(_get_detail_url(5))
+        registration_ids = [reg['id'] for reg in event_response.data['pools'][0]['registrations']]
+        self.assertEqual(registration_ids, [reg1.id, reg2.id, reg3.id])
+
+    def test_event_registration_sort_order_rearranged(self):
+        """Test sorting order of registrations"""
+        auth_user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name='Webkom').add_user(auth_user)
+        self.client.force_authenticate(auth_user)
+        event = Event.objects.get(pk=5)
+        group1 = AbakusGroup.objects.create(name='DummyGroup1', type=GROUP_GRADE)
+        group2 = AbakusGroup.objects.create(name='DummyGroup2', type=GROUP_GRADE)
+        reg1, reg2, reg3 = event.registrations.all().order_by('id')[:3]
+        group1.add_user(auth_user)
+        group1.add_user(reg3.user)
+        group1.add_user(reg1.user)
+        group2.add_user(auth_user)
+        group2.add_user(reg3.user)
+
+        event_response = self.client.get(_get_detail_url(5))
+        registration_ids = [reg['id'] for reg in event_response.data['pools'][0]['registrations']]
+        self.assertEqual(registration_ids, [reg3.id, reg1.id, reg2.id])
 
 
 class CreateEventsTestCase(APITestCase):
