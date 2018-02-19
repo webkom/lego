@@ -1,5 +1,6 @@
 from rest_framework import routers
 
+from lego.apps.admissions.views import AdmissionViewSet, CommitteeViewSet
 from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import (
@@ -149,3 +150,5 @@ router.register(r'surveys', SurveyViewSet)
 router.register(
     r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet, base_name='submission'
 )
+router.register(r'admissions', AdmissionViewSet, base_name='admission')
+router.register(r'admissions/committees', CommitteeViewSet, base_name='committee')

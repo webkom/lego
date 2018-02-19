@@ -1,0 +1,7 @@
+- model: admissions.Committee
+  pk: 1
+  fields:
+    name: Webkom
+    description: Vi er en morsom gjeng som progger.
+    response_label: Skriv litt om din motivasjon og kunnskaper
+    group: 21 # Webkom
