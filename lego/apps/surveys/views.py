@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.surveys.filters import SubmissionFilterSet
@@ -37,3 +38,11 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return SubmissionCreateAndUpdateSerializer
         return SubmissionReadSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            SubmissionReadSerializer(serializer.instance).data, status=status.HTTP_201_CREATED
+        )
