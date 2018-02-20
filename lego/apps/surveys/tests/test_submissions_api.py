@@ -124,10 +124,11 @@ class SubmissionViewSetTestCase(APITestCase):
 
         expected = submission_data(self.admin_user, 1)
         result = response.data
-        self.assertEqual(expected['user'], result['user'])
+        self.assertEqual(expected['user'], result['user'].get('id', None))
 
         self.assertEqual(len(result['answers']), 3)
         for i, answer in enumerate(result['answers']):
             expected = _answers[i]
-            for key in ['question', 'answerText', 'selectedOptions']:
+            self.assertEqual(expected['question'], answer['question'].get('id', None))
+            for key in ['answerText', 'selectedOptions']:
                 self.assertEqual(expected[key], answer[key])
