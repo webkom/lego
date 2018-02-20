@@ -213,8 +213,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
             belong to. The user should then not be allowed to post a comment on this article
         """
 
-        article = Article(text='hello world', author=self.without_permission)
-        article.save()
+        article = Article.objects.create(text='hello world', current_user=self.without_permission)
         article.can_view_groups.add(group)
 
         content_type = ContentType.objects.get_for_model(Article)
