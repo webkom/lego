@@ -52,7 +52,7 @@ class CompanyInterestPermissionHandler(PermissionHandler):
     Allow creation of CompanyInterest without a valid user.
     """
     default_keyword_permission = '/sudo/admin/companyinterest/{perm}'
-
+    safe_methods = [CREATE]
     authentication_map = {
         CREATE: False,
     }
