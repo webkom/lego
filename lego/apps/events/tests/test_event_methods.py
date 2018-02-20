@@ -3,6 +3,10 @@ from datetime import timedelta
 from django.utils import timezone
 
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.serializers.events import (
+    EventAdministrateSerializer, populate_event_registration_users_with_grade
+)
+from lego.apps.users.constants import GROUP_GRADE, GROUP_OTHER
 from lego.apps.users.models import AbakusGroup
 from lego.utils.test_utils import BaseTestCase
 
@@ -37,6 +41,48 @@ class EventMethodTest(BaseTestCase):
         event.refresh_from_db()
         for pool in event.pools.all():
             self.assertEqual(pool.counter, pool.registrations.count())
+
+    def test_populate_event_registration_users_with_grade(self):
+        """Test that grades get correctly populated in registration users"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        pool = event.pools.first()
+        grade = AbakusGroup.objects.create(name='DummyGrade', type=GROUP_GRADE)
+        other_abakus_group = AbakusGroup.objects.create(name='DummyGroup', type=GROUP_OTHER)
+        grade_values = {'id': grade.id, 'name': 'DummyGrade'}
+        reg1, reg2 = event.registrations.filter(pool=pool)[:2]
+        grade.add_user(reg1.user)
+        other_abakus_group.add_user(reg1.user)
+        other_abakus_group.add_user(reg2.user)
+        event_dict = EventAdministrateSerializer(event).data
+
+        populated_event = populate_event_registration_users_with_grade(event_dict)
+
+        for populated_pool in populated_event['pools']:
+            if pool.id == populated_pool['id']:
+                for populated_registration in populated_pool['registrations']:
+                    user_grade = populated_registration['user']['grade']
+                    if reg1.id == populated_registration['id']:
+                        self.assertEqual(user_grade, grade_values)
+                    else:
+                        self.assertEqual(user_grade, None)
+
+    def test_populate_event_registration_users_with_grade_without_grades(self):
+        """Test that grade is None for registration users when they are not in grade"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        pool = event.pools.first()
+        other_abakus_group = AbakusGroup.objects.create(name='DummyGroup', type=GROUP_OTHER)
+        reg1, reg2 = event.registrations.filter(pool=pool)[:2]
+        other_abakus_group.add_user(reg1.user)
+        other_abakus_group.add_user(reg2.user)
+        event_dict = EventAdministrateSerializer(event).data
+
+        populated_event = populate_event_registration_users_with_grade(event_dict)
+
+        for populated_pool in populated_event['pools']:
+            if pool.id == populated_pool['id']:
+                for populated_registration in populated_pool['registrations']:
+                    user_grade = populated_registration['user']['grade']
+                    self.assertEqual(user_grade, None)
 
     def test_calculate_full_pools(self):
         """Test calculation of open and full pools for usage in registering method"""

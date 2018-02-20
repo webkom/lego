@@ -16,7 +16,8 @@ from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (
     EventAdministrateSerializer, EventCreateAndUpdateSerializer,
-    EventReadAuthUserDetailedSerializer, EventReadSerializer, EventReadUserDetailedSerializer
+    EventReadAuthUserDetailedSerializer, EventReadSerializer, EventReadUserDetailedSerializer,
+    populate_event_registration_users_with_grade
 )
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
@@ -97,13 +98,17 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get('pk', None)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
-            'pools',
             'pools__permission_groups',
-            Prefetch('pools__registrations', queryset=Registration.objects.select_related('user')),
+            Prefetch(
+                'pools__registrations', queryset=Registration.objects.select_related('user')
+                .prefetch_related('user__abakus_groups')
+            ),
             Prefetch('registrations', queryset=Registration.objects.select_related('user')),
         )
-        serializer = self.get_serializer(queryset.first())
-        return Response(serializer.data)
+        event = queryset.first()
+        event_data = self.get_serializer(event).data
+        event_data = populate_event_registration_users_with_grade(event_data)
+        return Response(event_data)
 
     @decorators.detail_route(methods=['POST'], serializer_class=StripeTokenSerializer)
     def payment(self, request, *args, **kwargs):
