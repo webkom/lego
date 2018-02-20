@@ -79,7 +79,7 @@ class MembershipPermissionHandler(PermissionHandler):
         from lego.apps.users.models import AbakusGroup
         abakus_group = AbakusGroup.objects.get(id=abakus_group_pk)
 
-        if abakus_group.type == constants.GROUP_COMMITTEE:
+        if abakus_group.type in constants.PUBLIC_GROUPS:
             if perm == LIST:
                 return True
 
