@@ -629,6 +629,9 @@ class Pool(BasisModel):
 
     counter = models.PositiveSmallIntegerField(default=0)
 
+    class Meta:
+        ordering = ['id']
+
     def delete(self, *args, **kwargs):
         if not self.registrations.exists():
             super().delete(*args, **kwargs)

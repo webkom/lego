@@ -1,6 +1,6 @@
 from celery import chain
 from django.db import transaction
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
 from rest_framework import decorators, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -42,21 +42,33 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = 'start_time'
 
     def get_queryset(self):
+        user = self.request.user
         if self.action == 'list':
             queryset = Event.objects.prefetch_related(
                 'pools', 'pools__registrations', 'company', 'tags'
             )
         elif self.action == 'retrieve':
-            queryset = Event.objects.prefetch_related(
-                'pools', 'pools__permission_groups',
-                Prefetch(
-                    'pools__registrations', queryset=Registration.objects.select_related('user')
-                ), Prefetch('registrations', queryset=Registration.objects.select_related('user')),
-                'tags'
-            )
+            queryset = Event.objects.prefetch_related('pools', 'pools__permission_groups', 'tags')
+            if user and user.is_authenticated:
+                reg_queryset = self.get_registrations(user)
+                queryset = queryset.prefetch_related(
+                    'can_edit_users', 'can_edit_groups',
+                    Prefetch('pools__registrations', queryset=reg_queryset),
+                    Prefetch('registrations', queryset=reg_queryset)
+                )
         else:
             queryset = Event.objects.all()
         return queryset
+
+    def get_registrations(self, user):
+        current_user_groups = user.all_groups
+        query = Q()
+        for group in current_user_groups:
+            query |= Q(user__abakus_groups=group)
+        registrations = Registration.objects.select_related('user').annotate(
+            shared_memberships=Count('user__abakus_groups', filter=query)
+        ).order_by('-shared_memberships', 'user_id')
+        return registrations
 
     def user_should_see_regs(self, event, user):
         return event.get_possible_pools(user, future=True, is_admitted=False).exists() or \
