@@ -30,7 +30,7 @@ elastic-apm==2.0.1
 
 # channels
 channels==2.0.2
-channels_redis==2.0.3
+channels_redis==2.1.0
 daphne==2.0.3
 
 djangorestframework==3.7.7
