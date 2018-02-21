@@ -13,10 +13,6 @@ class Survey(BasisModel):
     template_type = models.CharField(max_length=30, choices=EVENT_TYPES, null=True, blank=True)
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
 
-    @property
-    def is_template(self):
-        return self.template_type is not None
-
 
 class Question(models.Model):
     class Meta:

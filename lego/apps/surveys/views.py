@@ -1,4 +1,5 @@
 from rest_framework import status, viewsets
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -12,8 +13,10 @@ from lego.apps.surveys.serializers import (
 
 
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Survey.objects.all().prefetch_related('questions', 'submissions')
+    queryset = Survey.objects.all().prefetch_related('questions', 'submissions'
+                                                     ).exclude(template_type__isnull=False)
     permission_classes = [SurveyPermissions]
+    serializer_class = SurveyReadSerializer
 
     def get_serializer_class(self):
         if self.action in ['create']:
@@ -22,7 +25,27 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return SurveyUpdateSerializer
         elif self.action in ['retrieve']:
             return SurveyReadDetailedSerializer
-        return SurveyReadSerializer
+
+        return super().get_serializer_class()
+
+    @list_route(methods=['GET'])
+    def templates(self, request):
+        queryset = Survey.objects.all().prefetch_related('questions').filter(
+            template_type__isnull=False
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @list_route(
+        methods=['GET'], url_name='templates', url_path='templates/(?P<template_type>\w+)',
+        serializer_class=SurveyReadDetailedSerializer
+    )
+    def get_template(self, request, template_type=None):
+        queryset = Survey.objects.all().prefetch_related('questions').get(
+            template_type=template_type
+        )
+        serializer = self.get_serializer(queryset)
+        return Response(serializer.data)
 
 
 class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
