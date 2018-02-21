@@ -34,7 +34,7 @@ from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
-from lego.apps.surveys.views import SubmissionViewSet, SurveyViewSet
+from lego.apps.surveys.views import SubmissionViewSet, SurveyViewSet, SurveyTemplateViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.membership_history import MembershipHistoryViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
@@ -148,4 +148,10 @@ router.register(r'membership-history', MembershipHistoryViewSet, base_name='memb
 router.register(r'surveys', SurveyViewSet)
 router.register(
     r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet, base_name='submission'
+)
+router.register(
+    r'surveys/templates', SurveyTemplateViewSet, base_name='template'
+)
+router.register(
+    r'surveys/templates/(?P<template_type>\w+)', SurveyTemplateViewSet, base_name='template'
 )
