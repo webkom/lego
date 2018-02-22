@@ -1,11 +1,11 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
-from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.surveys.filters import SubmissionFilterSet
 from lego.apps.surveys.models import Submission, Survey
-from lego.apps.surveys.permissions import SubmissionPermissions, SurveyPermissions
+from lego.apps.surveys.permissions import SubmissionPermissions, SurveyPermissions, SurveyTemplatePermissions
 from lego.apps.surveys.serializers import (
     SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer, SurveyCreateSerializer,
     SurveyReadDetailedSerializer, SurveyReadSerializer, SurveyUpdateSerializer
@@ -13,10 +13,9 @@ from lego.apps.surveys.serializers import (
 
 
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = Survey.objects.all().prefetch_related('questions', 'submissions'
-                                                     ).exclude(template_type__isnull=False)
+    queryset = Survey.objects.all().prefetch_related('questions', 'submissions')
     permission_classes = [SurveyPermissions]
-    serializer_class = SurveyReadSerializer
+    filter_backends = (DjangoFilterBackend,)
 
     def get_serializer_class(self):
         if self.action in ['create']:
@@ -24,26 +23,30 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         elif self.action in ['update', 'partial_update']:
             return SurveyUpdateSerializer
         elif self.action in ['retrieve']:
+            print('detail serializer', self.kwargs)
             return SurveyReadDetailedSerializer
-
-        return super().get_serializer_class()
+        print('list serializer')
+        return SurveyReadSerializer
 
 
 class SurveyTemplateViewSet(SurveyViewSet):
     queryset = Survey.objects.all().prefetch_related('questions').filter(template_type__isnull=False)
+    permission_classes = [SurveyTemplatePermissions]
 
     def get_queryset(self):
         if self.action in ['retrieve']:
-            queryset = self.queryset
-            print('template detail', self.queryset, 'asd', self.kwargs)
             template_type = self.kwargs['pk']
-            return queryset.get(template_type=template_type)
+            queryset = super().get_queryset().filter(template_type=template_type)
+            print('template detail', template_type, queryset)
+            return queryset
+        return super().get_queryset()
 
 
 class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     permission_classes = [SubmissionPermissions]
     filter_class = SubmissionFilterSet
+    filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
         survey_id = self.kwargs['survey_pk']

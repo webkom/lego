@@ -150,8 +150,8 @@ router.register(
     r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet, base_name='submission'
 )
 router.register(
-    r'surveys/templates', SurveyTemplateViewSet, base_name='template'
+    r'survey-templates', SurveyTemplateViewSet, base_name='template'
 )
 router.register(
-    r'surveys/templates/(?P<template_type>\w+)', SurveyTemplateViewSet, base_name='template'
+    r'survey-templates/(?P<template_type>\w+)', SurveyTemplateViewSet, base_name='template'
 )
