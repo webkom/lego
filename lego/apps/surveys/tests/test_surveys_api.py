@@ -197,13 +197,13 @@ class SurveyViewSetTestCase(APITestCase):
     def test_edit_regular(self):
         """Regular users should not be able to edit surveys"""
         self.client.force_authenticate(user=self.regular_user)
-        response = self.client.patch(_get_list_url(), self.survey_data)
+        response = self.client.patch(_get_detail_url(1), self.survey_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_edit_attended(self):
         """Users who attended an event users should not be able to edit surveys"""
         self.client.force_authenticate(user=self.attended_user)
-        response = self.client.patch(_get_list_url(), self.survey_data)
+        response = self.client.patch(_get_detail_url(1), self.survey_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # Edit cases

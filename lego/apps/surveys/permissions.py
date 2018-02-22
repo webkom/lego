@@ -40,6 +40,8 @@ class SubmissionPermissions(permissions.BasePermission):
             event=event.id, user=user.id, presence=constants.PRESENT
         ).exists()
 
+        if view.action in ['update', 'partial_update']:
+            return False
         if user.has_perm(EDIT, obj=Survey):
             return True
         if view.action in ['create']:

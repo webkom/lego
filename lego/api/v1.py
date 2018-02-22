@@ -149,4 +149,4 @@ router.register(r'surveys', SurveyViewSet)
 router.register(
     r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet, base_name='submission'
 )
-router.register(r'survey-templates', SurveyTemplateViewSet, base_name='template')
+router.register(r'survey-templates', SurveyTemplateViewSet, base_name='survey-template')
