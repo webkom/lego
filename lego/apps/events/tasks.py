@@ -127,8 +127,9 @@ def async_payment(self, registration_id, token, logger_context=None):
             amount=event.get_price(self.registration.user), currency='NOK', source=token,
             description=event.slug, metadata={
                 'EVENT_ID': event.id,
+                'USER_ID': self.registration.user.id,
                 'USER': self.registration.user.full_name,
-                'EMAIL': self.registration.user.email
+                'EMAIL': self.registration.user.email,
             }
         )
         log.info('stripe_payment_success', registration_id=self.registration.id)
