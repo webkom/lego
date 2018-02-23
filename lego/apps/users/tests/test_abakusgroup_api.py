@@ -51,9 +51,12 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
 
         for group in response.data['results']:
             keys = set(group.keys())
-            self.assertEqual(
-                keys, set(PublicAbakusGroupSerializer.Meta.fields + ('numberOfUsers', ))
-            )
+
+            # Serializer fields is camelized, transform contact_email
+            fields = list(PublicAbakusGroupSerializer.Meta.fields)
+            fields.remove('contact_email')
+
+            self.assertEqual(keys, set(fields + ['numberOfUsers', 'contactEmail']))
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())

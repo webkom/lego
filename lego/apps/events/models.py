@@ -47,6 +47,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     company = models.ForeignKey(
         Company, related_name='events', null=True, on_delete=models.SET_NULL
     )
+    responsible_group = models.ForeignKey(
+        'users.AbakusGroup', on_delete=models.SET_NULL, null=True, related_name='events'
+    )
 
     use_captcha = models.BooleanField(default=True)
     feedback_description = models.CharField(max_length=255, blank=True)

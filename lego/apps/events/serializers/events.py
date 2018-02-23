@@ -18,6 +18,7 @@ from lego.apps.events.serializers.registrations import (
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.constants import GROUP_GRADE
+from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
@@ -64,6 +65,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comment_target = CharField(read_only=True)
     cover = ImageField(required=False, options={'height': 500})
     company = CompanyField(queryset=Company.objects.all())
+    responsible_group = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), required=False, allow_null=True
+    )
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
@@ -74,10 +78,10 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = (
             'id', 'title', 'description', 'cover', 'text', 'event_type', 'location', 'comments',
             'comment_target', 'start_time', 'end_time', 'merge_time', 'pools',
-            'unregistration_deadline', 'company', 'active_capacity', 'feedback_description',
-            'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
-            'payment_due_date', 'use_captcha', 'waiting_registration_count', 'tags', 'is_merged',
-            'heed_penalties', 'created_by', 'is_abakom_only'
+            'unregistration_deadline', 'company', 'responsible_group', 'active_capacity',
+            'feedback_description', 'feedback_required', 'is_priced', 'price_member', 'price_guest',
+            'use_stripe', 'payment_due_date', 'use_captcha', 'waiting_registration_count', 'tags',
+            'is_merged', 'heed_penalties', 'created_by', 'is_abakom_only'
         )
         read_only = True
 
@@ -119,6 +123,9 @@ class EventAdministrateSerializer(EventReadSerializer):
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     cover = ImageField(required=False, options={'height': 500})
+    responsible_group = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), required=False, allow_null=True
+    )
     pools = PoolCreateAndUpdateSerializer(many=True, required=False)
     text = ContentSerializerField()
     is_abakom_only = BooleanField(required=False, default=False)
@@ -126,11 +133,11 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'title', 'cover', 'description', 'text', 'company', 'feedback_description',
-            'feedback_required', 'event_type', 'location', 'is_priced', 'price_member',
-            'price_guest', 'use_stripe', 'payment_due_date', 'start_time', 'end_time', 'merge_time',
-            'use_captcha', 'tags', 'pools', 'unregistration_deadline', 'pinned', 'heed_penalties',
-            'is_abakom_only'
+            'id', 'title', 'cover', 'description', 'text', 'company', 'responsible_group',
+            'feedback_description', 'feedback_required', 'event_type', 'location', 'is_priced',
+            'price_member', 'price_guest', 'use_stripe', 'payment_due_date', 'start_time',
+            'end_time', 'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline',
+            'pinned', 'heed_penalties', 'is_abakom_only'
         )
 
     def create(self, validated_data):

@@ -64,6 +64,7 @@ class Membership(BasisModel):
 class AbakusGroup(MPTTModel, PersistentModel):
     name = models.CharField(max_length=80, unique=True, db_index=True)
     description = models.CharField(blank=True, max_length=200)
+    contact_email = models.EmailField(blank=True)
     parent = TreeForeignKey(
         'self', blank=True, null=True, related_name='children', on_delete=models.SET_NULL
     )

@@ -33,10 +33,7 @@ class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Article
-        fields = (
-            'id', 'title', 'cover', 'author', 'description', 'tags', 'content', 'pinned',
-            'created_at'
-        )
+        fields = ('id', 'title', 'cover', 'description', 'tags', 'content', 'pinned', 'created_at')
 
 
 class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):

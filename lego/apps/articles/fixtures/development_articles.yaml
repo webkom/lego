@@ -14,7 +14,6 @@
   pk: 1
   fields:
     title: Ny komité i Abakus
-    author: 1
     cover: test_article_cover.png
     description:
       Etter langt å lenge har HS endelig blitt enig.
@@ -39,7 +38,6 @@
   pk: 2
   fields:
     title: Dette er en syk artikkel
-    author: 1
     cover: test_article_cover.png
     description:
       Eller hur hur hur hur.
