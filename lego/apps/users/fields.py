@@ -11,7 +11,7 @@ class AbakusGroupField(serializers.PrimaryKeyRelatedField):
         return False
 
     def to_representation(self, value):
-        return {'id': value.id, 'name': value.name}
+        return {'id': value.id, 'name': value.name, 'contact_email': value.contact_email}
 
 
 class AbakusGroupListField(serializers.ManyRelatedField):
