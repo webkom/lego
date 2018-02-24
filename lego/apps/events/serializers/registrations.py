@@ -61,9 +61,10 @@ class RegistrationPublicReadSerializer(BasisModelSerializer):
 
 class RegistrationReadSerializer(RegistrationPublicReadSerializer):
     feedback = FeedbackField()
+    shared_memberships = serializers.IntegerField(required=False)
 
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback', )
+        fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback', 'shared_memberships')
 
 
 class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):

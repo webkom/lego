@@ -68,7 +68,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             query |= Q(user__abakus_groups=group)
         registrations = Registration.objects.select_related('user').annotate(
             shared_memberships=Count('user__abakus_groups', filter=query)
-        ).order_by('-shared_memberships', 'user_id')
+        )
         return registrations
 
     def user_should_see_regs(self, event, user):

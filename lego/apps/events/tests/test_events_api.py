@@ -271,17 +271,17 @@ class RetrieveEventsTestCase(BaseAPITestCase):
                     self.assertIsNone(reg['chargeStatus'])
 
     def test_event_registration_sort_order_default(self):
-        """Test sorting order of registrations"""
+        """Test registrations shared_memberships without any shared groups"""
         self.client.force_authenticate(self.abakus_user)
-        event = Event.objects.get(pk=5)
-        reg1, reg2, reg3 = event.registrations.all().order_by('id')[:3]
 
         event_response = self.client.get(_get_detail_url(5))
-        registration_ids = [reg['id'] for reg in event_response.data['pools'][0]['registrations']]
-        self.assertEqual(registration_ids, [reg1.id, reg2.id, reg3.id])
+        memberships = [
+            reg['sharedMemberships'] for reg in event_response.data['pools'][0]['registrations']
+        ]
+        self.assertEqual(memberships, [0, 0, 0])
 
     def test_event_registration_sort_order_rearranged(self):
-        """Test sorting order of registrations"""
+        """Test registrations shared_memberships"""
         auth_user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(auth_user)
         self.client.force_authenticate(auth_user)
@@ -296,8 +296,10 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         group2.add_user(reg3.user)
 
         event_response = self.client.get(_get_detail_url(5))
-        registration_ids = [reg['id'] for reg in event_response.data['pools'][0]['registrations']]
-        self.assertEqual(registration_ids, [reg3.id, reg1.id, reg2.id])
+        memberships = [
+            reg['sharedMemberships'] for reg in event_response.data['pools'][0]['registrations']
+        ]
+        self.assertEqual(memberships, [1, 0, 2])  # reg1 = 1, reg2 = 0, reg3 = 2
 
 
 class CreateEventsTestCase(BaseAPITestCase):
