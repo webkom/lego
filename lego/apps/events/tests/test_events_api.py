@@ -270,7 +270,7 @@ class RetrieveEventsTestCase(BaseAPITestCase):
                     self.assertIsNone(reg['feedback'])
                     self.assertIsNone(reg['chargeStatus'])
 
-    def test_event_registration_sort_order_default(self):
+    def test_event_registration_no_shared_memberships(self):
         """Test registrations shared_memberships without any shared groups"""
         self.client.force_authenticate(self.abakus_user)
 
@@ -280,7 +280,7 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         ]
         self.assertEqual(memberships, [0, 0, 0])
 
-    def test_event_registration_sort_order_rearranged(self):
+    def test_event_registration_shared_membership_count(self):
         """Test registrations shared_memberships"""
         auth_user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name='Webkom').add_user(auth_user)
@@ -289,17 +289,29 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         group1 = AbakusGroup.objects.create(name='DummyGroup1', type=GROUP_GRADE)
         group2 = AbakusGroup.objects.create(name='DummyGroup2', type=GROUP_GRADE)
         reg1, reg2, reg3 = event.registrations.all().order_by('id')[:3]
+
         group1.add_user(auth_user)
         group1.add_user(reg3.user)
         group1.add_user(reg1.user)
         group2.add_user(auth_user)
         group2.add_user(reg3.user)
 
+        shared_memberships_count = {
+            reg1.id: 1,
+            reg2.id: 0,
+            reg3.id: 2,
+        }
+
         event_response = self.client.get(_get_detail_url(5))
-        memberships = [
-            reg['sharedMemberships'] for reg in event_response.data['pools'][0]['registrations']
-        ]
-        self.assertEqual(memberships, [1, 0, 2])  # reg1 = 1, reg2 = 0, reg3 = 2
+
+        registrations = event_response.data['pools'][0]['registrations']
+
+        for reg in registrations:
+            reg_id = reg['id']
+            self.assertEqual(
+                reg['sharedMemberships'], shared_memberships_count[reg_id],
+                f'Wrong count for registration id "{reg_id}"'
+            )
 
 
 class CreateEventsTestCase(BaseAPITestCase):
