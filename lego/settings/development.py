@@ -11,7 +11,7 @@ DEVELOPMENT = True
 
 SERVER_URL = 'http://127.0.0.1:8000'
 FRONTEND_URL = 'http://127.0.0.1:3000'
-SERVER_EMAIL = 'Abakus Webkom <webkom@abakus.no>'
+SERVER_EMAIL = 'Abakus <no-reply@abakus.no>'
 
 SECRET_KEY = 'secret'
 
