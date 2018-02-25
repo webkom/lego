@@ -12,10 +12,9 @@ SITE = {
 API_VERSION = 'v1'
 LOGIN_REDIRECT_URL = f'/api/{API_VERSION}/'
 
-EMAIL_SUBJECT_PREFIX = u'[{}] '.format(SITE['name'])
+EMAIL_SUBJECT_PREFIX = '[Abakus] '
 
 ADMINS = (('Webkom', 'webkom@abakus.no'), )
-
 MANAGERS = ADMINS
 
 PENALTY_DURATION = timedelta(days=20)
