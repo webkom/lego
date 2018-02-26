@@ -6,8 +6,8 @@ from lego.apps.meetings.authentication import MeetingInvitationTokenAuthenticati
 from lego.apps.meetings.filters import MeetingFilterSet
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.serializers import (
-    MeetingBulkInvite, MeetingGroupInvite, MeetingInvitationSerializer,
-    MeetingInvitationUpdateSerializer, MeetingDetailSerializer, MeetingUserInvite, MeetingListSerializer
+    MeetingBulkInvite, MeetingDetailSerializer, MeetingGroupInvite, MeetingInvitationSerializer,
+    MeetingInvitationUpdateSerializer, MeetingListSerializer, MeetingUserInvite
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
