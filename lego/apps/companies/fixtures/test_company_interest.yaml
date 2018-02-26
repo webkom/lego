@@ -1,0 +1,56 @@
+- model: companies.Semester
+  pk: 1
+  fields:
+    semester: 'spring'
+    year: 2017
+
+- model: companies.Semester
+  pk: 2
+  fields:
+    semester: 'autumn'
+    year: 2017
+
+- model: companies.Semester
+  pk: 3
+  fields:
+    semester: 'spring'
+    year: 2018
+
+- model: companies.Semester
+  pk: 4
+  fields:
+    semester: 'autumn'
+    year: 2018
+
+- model: companies.CompanyInterest
+  pk: 1
+  fields:
+    company_name: 'BEKK'
+    contact_person: 'Bekksen'
+    mail: 'bekk@bekksen.no'
+    semesters: [1,4]
+    events: ['company_presentation', 'course', 'lunch_presentation']
+    other_offers: ['labamba_sponsor']
+    comment: 'webkom webkom'
+
+- model: companies.CompanyInterest
+  pk: 2
+  fields:
+    company_name: 'Itera'
+    contact_person: 'Iteraz'
+    mail: 'bekk@itera.no'
+    semesters: [1, 2, 3, 4]
+    events: ['company_presentation', 'course']
+    other_offers: ['itdagene']
+    comment: 'webkom webkom webkom'
+
+- model: companies.CompanyInterest
+  pk: 1
+  fields:
+    company_name: 'Capra'
+    contact_person: 'Caprius'
+    mail: 'caprius@capra.no'
+    semesters: [2,3]
+    events: ['bedex', 'other']
+    other_offers: ['collaboration', 'readme']
+    comment: 'webkom'
