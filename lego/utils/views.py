@@ -9,7 +9,7 @@ from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST
 from lego.apps.quotes.models import Quote
-from lego.apps.users.models import AbakusGroup, User, Penalty
+from lego.apps.users.models import AbakusGroup, Penalty, User
 
 
 class SiteMetaViewSet(viewsets.ViewSet):

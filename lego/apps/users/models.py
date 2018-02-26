@@ -19,7 +19,7 @@ from lego.apps.users.managers import (
     UserPenaltyManager
 )
 from lego.apps.users.permissions import (
-    AbakusGroupPermissionHandler, MembershipPermissionHandler, UserPermissionHandler, PenaltyPermissionHandler
+    AbakusGroupPermissionHandler, MembershipPermissionHandler, UserPermissionHandler
 )
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator

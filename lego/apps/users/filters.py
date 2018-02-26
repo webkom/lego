@@ -26,4 +26,4 @@ class MembershipHistoryFilterSet(FilterSet):
 class PenaltyFilterSet(FilterSet):
     class Meta:
         model = Penalty
-        fields =('user', 'source_event')
+        fields = ('user', 'source_event')
