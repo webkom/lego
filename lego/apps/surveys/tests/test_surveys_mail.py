@@ -1,5 +1,7 @@
 from unittest.mock import patch
+
 from django.conf import settings
+
 from lego.apps.surveys.models import Survey
 from lego.apps.surveys.notifications import SurveyNotification
 from lego.apps.users.models import User
@@ -8,8 +10,10 @@ from lego.utils.test_utils import BaseTestCase
 
 @patch('lego.utils.email.django_send_mail')
 class SurveyMailTestCase(BaseTestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
-                'test_surveys.yaml']
+    fixtures = [
+        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
+        'test_surveys.yaml'
+    ]
 
     def setUp(self):
         self.survey = Survey.objects.first()
@@ -27,7 +31,8 @@ class SurveyMailTestCase(BaseTestCase):
         self.assertEmailContains(send_mail_mock, opening)
 
     def test_generate_email_event(self, send_mail_mock):
-        event = 'Du har en ny undersøkelse å svare på for arrangement ' + self.survey.event.title + '.'
+        event = 'Du har en ny undersøkelse å svare på for arrangement ' + self.survey.event.title \
+                + '.'
         self.assertEmailContains(send_mail_mock, event)
 
     def test_generate_email_url(self, send_mail_mock):
