@@ -1,0 +1,14 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei, {{ name }}!
+
+Du har en ny undersøkelse å svare på for arrangement {{ event }}.
+
+Å ikke svare på undersøkelsen innen fristen vil medføre en prikk.
+
+
+Du kan svare på undersøkelsen ved å gå til {{ frontend_url }}/surveys/{{ survey }}/answer
+
+{% endblock %}

@@ -7,7 +7,7 @@ from .models import NotificationSetting
 log = get_logger()
 
 
-class Notification:
+class  Notification:
     """
     Lookup notifications settings and use this to notify the user on activated channels.
     """
