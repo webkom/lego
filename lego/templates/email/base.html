@@ -1,9 +1,11 @@
+{% load staticfiles %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Oxygen Welcome</title>
+  <title>{{ title }} | {{ site }}</title>
 
   <style type="text/css">
     /* Take care of image borders and formatting, client hacks */
@@ -41,6 +43,10 @@
       line-height: 21px;
     }
 
+    tr {
+        margin-bottom: 10px;
+    }
+
     a {
       color: #676767;
       text-decoration: none !important;
@@ -60,7 +66,7 @@
       font-size: 32px;
       font-weight: 700;
       line-height: normal;
-      padding: 35px 0 0;
+      padding: 35px 0 10px;
       color: #4d4d4d;
     }
 
@@ -130,6 +136,10 @@
       width: 228px;
     }
 
+    .content-block {
+      padding: 0 0 20px;
+    }
+
   </style>
 
   <style type="text/css" media="screen">
@@ -181,16 +191,20 @@
 
       td[class="header-lg"] {
         font-size: 24px !important;
-        padding-bottom: 5px !important;
+        padding-bottom: 10px !important;
       }
 
       td[class="header-md"] {
         font-size: 18px !important;
-        padding-bottom: 5px !important;
+        padding-bottom: 10px !important;
       }
 
       td[class="content-padding"] {
         padding: 5px 0 30px !important;
+      }
+
+      td[class="content-block"] {
+        padding: 0 0 30px !important;
       }
 
        td[class="button"] {
@@ -233,10 +247,10 @@
                 <table cellpadding="0" cellspacing="0" width="600" class="w320">
                   <tr>
                     <td class="pull-left mobile-header-padding-left" style="vertical-align: middle;">
-                      <a href=""><img width="137" height="47" src="{{ settings.SERVER_URL }}/static/assets/img/logo.png" alt="logo"></a>
+                      <a href=""><img width="150" height="30" src="http://127.0.0.1:8000/static/assets/img/logo.png" alt="logo"></a>
                     </td>
                     <td class="pull-right mobile-header-padding-right" style="color: #4d4d4d;">
-                      <a href=""><img width="38" height="47" src="http://s3.amazonaws.com/swu-filepicker/LMPMj7JSRoCWypAvzaN3_social_09.gif" alt="facebook" /></a>
+                      <a href="https://www.facebook.com/groups/398146436914007/"><img width="38" height="47" src="http://s3.amazonaws.com/swu-filepicker/LMPMj7JSRoCWypAvzaN3_social_09.gif" alt="facebook" /></a>
                     </td>
                   </tr>
                 </table>
@@ -257,23 +271,35 @@
         <table cellspacing="0" cellpadding="0" width="600" class="w320">
           <tr>
             <td class="header-lg">
-              Welcome to Awesome Inc!
+              {{ title }}
             </td>
           </tr>
+          {% block content %}{% endblock %}
+        <tr>
+            <td class="content-block">
+                {{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
+            </td>
+        </tr>
+
+        <tr>
+            <td class="content-block">
+                <b>Tid:</b> {{ meeting_start_time }}
+            </td>
+        </tr>
           <tr>
-            <td class="free-text">
-              Thank you for signing up with awesome co! We hope you enjoy your time with us. Check out some of our newest offers below or the button to view your new account.
+            <td class="content-block">
+              &mdash; {{ from }}
             </td>
           </tr>
           <tr>
             <td class="button">
               <div><!--[if mso]>
-                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#ff6f6f">
+                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
                   <w:anchorlock/>
                   <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">My Account</center>
                 </v:roundrect>
               <![endif]--><a class="button-mobile" href="http://"
-              style="background-color:#ff6f6f;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">My Account</a></div>
+              style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">My Account</a></div>
             </td>
           </tr>
         </table>
@@ -286,9 +312,9 @@
         <table cellpadding="0" cellspacing="0" width="600" class="w320">
           <tr>
             <td style="padding: 25px 0 25px">
-              <strong>Abakus</strong><br />
-              Sem Sælands vei 7-9 <br />
-              Wonderland <br /><br />
+              <strong>Abakus Linjeforening</strong><br />
+                <a mailto="abakus@abakus.no">abakus@abakus.no</a> <br />
+                <a href="{{ frontend_url }}">abakus.no</a> <br /><br />
             </td>
           </tr>
         </table>
