@@ -1,310 +1,300 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta name="viewport" content="width=device-width" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>{{ title }} | {{ site }}</title>
-<style type="text/css">
-/* -------------------------------------
-GLOBAL
-A very basic CSS reset
-------------------------------------- */
-* {
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  box-sizing: border-box;
-  font-size: 14px;
-}
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Oxygen Welcome</title>
 
-img {
-  max-width: 100%;
-}
+  <style type="text/css">
+    /* Take care of image borders and formatting, client hacks */
+    img { max-width: 600px; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}
+    a img { border: none; }
+    table { border-collapse: collapse !important;}
+    #outlook a { padding:0; }
+    .ReadMsgBody { width: 100%; }
+    .ExternalClass { width: 100%; }
+    .backgroundTable { margin: 0 auto; padding: 0; width: 100% !important; }
+    table td { border-collapse: collapse; }
+    .ExternalClass * { line-height: 115%; }
+    .container-for-gmail-android { min-width: 600px; }
 
-body {
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-size-adjust: none;
-  width: 100% !important;
-  height: 100%;
-  line-height: 1.6em;
-  /* 1.6em * 14px = 22.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-  /*line-height: 22px;*/
-}
 
-/* Let's make sure all tables have defaults */
-table td {
-  vertical-align: top;
-}
+    /* General styling */
+    * {
+      font-family: Helvetica, Arial, sans-serif;
+    }
 
-/* -------------------------------------
-    BODY & CONTAINER
-------------------------------------- */
-body {
-  background-color: #f6f6f6;
-}
+    body {
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: none;
+      width: 100% !important;
+      margin: 0 !important;
+      height: 100%;
+      color: #676767;
+    }
 
-.body-wrap {
-  background-color: #f6f6f6;
-  width: 100%;
-}
+    td {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #777777;
+      text-align: center;
+      line-height: 21px;
+    }
 
-.container {
-  display: block !important;
-  max-width: 600px !important;
-  margin: 0 auto !important;
-  /* makes it centered */
-  clear: both !important;
-}
+    a {
+      color: #676767;
+      text-decoration: none !important;
+    }
 
-.content {
-  max-width: 600px;
-  margin: 0 auto;
-  display: block;
-  padding: 20px;
-}
+    .pull-left {
+      text-align: left;
+    }
 
-/* -------------------------------------
-    HEADER, FOOTER, MAIN
-------------------------------------- */
-.main {
-  background-color: #fff;
-  border: 1px solid #e9e9e9;
-  border-radius: 3px;
-}
+    .pull-right {
+      text-align: right;
+    }
 
-.content-wrap {
-  padding: 20px;
-}
+    .header-lg,
+    .header-md,
+    .header-sm {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: normal;
+      padding: 35px 0 0;
+      color: #4d4d4d;
+    }
 
-.content-block {
-  padding: 0 0 20px;
-}
+    .header-md {
+      font-size: 24px;
+    }
 
-.header {
-  width: 100%;
-  margin-bottom: 20px;
-}
+    .header-sm {
+      padding: 5px 0;
+      font-size: 18px;
+      line-height: 1.3;
+    }
 
-.footer {
-  width: 100%;
-  clear: both;
-  color: #999;
-  padding: 20px;
-}
-.footer p, .footer a, .footer td {
-  color: #999;
-  font-size: 12px;
-}
+    .content-padding {
+      padding: 20px 0 30px;
+    }
 
-/* -------------------------------------
-    TYPOGRAPHY
-------------------------------------- */
-h1, h2, h3 {
-  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  color: #000;
-  margin: 40px 0 0;
-  line-height: 1.2em;
-  font-weight: 400;
-}
+    .mobile-header-padding-right {
+      width: 290px;
+      text-align: right;
+      padding-left: 10px;
+    }
 
-h1 {
-  font-size: 32px;
-  font-weight: 500;
-  /* 1.2em * 32px = 38.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-  /*line-height: 38px;*/
-}
+    .mobile-header-padding-left {
+      width: 290px;
+      text-align: left;
+      padding-left: 10px;
+    }
 
-h2 {
-  font-size: 24px;
-  /* 1.2em * 24px = 28.8px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-  /*line-height: 29px;*/
-}
+    .free-text {
+      width: 100% !important;
+      padding: 10px 60px 0px;
+    }
 
-h3 {
-  font-size: 18px;
-  /* 1.2em * 18px = 21.6px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-  /*line-height: 22px;*/
-}
+    .block-rounded {
+      border-radius: 5px;
+      border: 1px solid #e5e5e5;
+      vertical-align: top;
+    }
 
-h4 {
-  font-size: 14px;
-  font-weight: 600;
-}
+    .button {
+      padding: 30px 0;
+    }
 
-p, ul, ol {
-  margin-bottom: 10px;
-  font-weight: normal;
-}
-p li, ul li, ol li {
-  margin-left: 5px;
-  list-style-position: inside;
-}
+    .info-block {
+      padding: 0 20px;
+      width: 260px;
+    }
 
-/* -------------------------------------
-    LINKS & BUTTONS
-------------------------------------- */
-a {
-  color: #348eda;
-  text-decoration: underline;
-}
+    .block-rounded {
+      width: 260px;
+    }
 
-.btn-primary {
-  text-decoration: none;
-  color: #FFF;
-  background-color: #348eda;
-  border: solid #348eda;
-  border-width: 10px 20px;
-  line-height: 2em;
-  /* 2em * 14px = 28px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-  /*line-height: 28px;*/
-  font-weight: bold;
-  text-align: center;
-  cursor: pointer;
-  display: inline-block;
-  border-radius: 5px;
-  text-transform: capitalize;
-}
+    .info-img {
+      width: 258px;
+      border-radius: 5px 5px 0 0;
+    }
 
-/* -------------------------------------
-    OTHER STYLES THAT MIGHT BE USEFUL
-------------------------------------- */
-.last {
-  margin-bottom: 0;
-}
+    .force-width-gmail {
+      min-width:600px;
+      height: 0px !important;
+      line-height: 1px !important;
+      font-size: 1px !important;
+    }
 
-.first {
-  margin-top: 0;
-}
+    .button-width {
+      width: 228px;
+    }
 
-.aligncenter {
-  text-align: center;
-}
+  </style>
 
-.alignright {
-  text-align: right;
-}
+  <style type="text/css" media="screen">
+    @import url(http://fonts.googleapis.com/css?family=Oxygen:400,700);
+  </style>
 
-.alignleft {
-  text-align: left;
-}
+  <style type="text/css" media="screen">
+    @media screen {
+      /* Thanks Outlook 2013! */
+      * {
+        font-family: 'Oxygen', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
+      }
+    }
+  </style>
 
-.clear {
-  clear: both;
-}
+  <style type="text/css" media="only screen and (max-width: 480px)">
+    /* Mobile styles */
+    @media only screen and (max-width: 480px) {
 
-/* -------------------------------------
-    ALERTS
-    Change the class depending on warning email, good email or bad email
-------------------------------------- */
-.alert {
-  font-size: 16px;
-  color: #fff;
-  font-weight: 500;
-  padding: 20px;
-  text-align: center;
-  border-radius: 3px 3px 0 0;
-}
-.alert a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 16px;
-}
-.alert.alert-warning {
-  background-color: #FF9F00;
-}
-.alert.alert-bad {
-  background-color: #D0021B;
-}
-.alert.alert-good {
-  background-color: #68B90F;
-}
-.alert.alert-info {
-    background-color: #0e84b5;
-}
+      table[class*="container-for-gmail-android"] {
+        min-width: 290px !important;
+        width: 100% !important;
+      }
 
-/* -------------------------------------
-    RESPONSIVE AND MOBILE FRIENDLY STYLES
-------------------------------------- */
-@media only screen and (max-width: 640px) {
-  body {
-    padding: 0 !important;
-  }
+      table[class="w320"] {
+        width: 320px !important;
+      }
 
-  h1, h2, h3, h4 {
-    font-weight: 800 !important;
-    margin: 20px 0 5px !important;
-  }
+      img[class="force-width-gmail"] {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
 
-  h1 {
-    font-size: 22px !important;
-  }
+      a[class="button-width"],
+      a[class="button-mobile"] {
+        width: 248px !important;
+      }
 
-  h2 {
-    font-size: 18px !important;
-  }
+      td[class*="mobile-header-padding-left"] {
+        width: 160px !important;
+        padding-left: 0 !important;
+      }
 
-  h3 {
-    font-size: 16px !important;
-  }
+      td[class*="mobile-header-padding-right"] {
+        width: 160px !important;
+        padding-right: 0 !important;
+      }
 
-  .container {
-    padding: 0 !important;
-    width: 100% !important;
-  }
+      td[class="header-lg"] {
+        font-size: 24px !important;
+        padding-bottom: 5px !important;
+      }
 
-  .content {
-    padding: 0 !important;
-  }
+      td[class="header-md"] {
+        font-size: 18px !important;
+        padding-bottom: 5px !important;
+      }
 
-  .content-wrap {
-    padding: 10px !important;
-  }
+      td[class="content-padding"] {
+        padding: 5px 0 30px !important;
+      }
 
-}
-</style>
+       td[class="button"] {
+        padding: 5px !important;
+      }
 
+      td[class*="free-text"] {
+        padding: 10px 18px 30px !important;
+      }
+
+      td[class="info-block"] {
+        display: block !important;
+        width: 280px !important;
+        padding-bottom: 40px !important;
+      }
+
+      td[class="info-img"],
+      img[class="info-img"] {
+        width: 278px !important;
+      }
+    }
+  </style>
 </head>
 
-<body itemscope itemtype="http://schema.org/EmailMessage">
-
-<table class="body-wrap">
-	<tr>
-		<td></td>
-		<td class="container" width="600">
-			<div class="content">
-				<table class="main" width="100%" cellpadding="0" cellspacing="0" itemprop="action" itemscope itemtype="http://schema.org/ConfirmAction">
-
-                    {% block alert %}{% endblock %}
-
-                    <tr>
-						<td class="content-wrap">
-							<meta itemprop="name" content="{{ title }}"/>
-							<table width="100%" cellpadding="0" cellspacing="0">
-
-                                {% block content %}{% endblock %}
-
-								<tr>
-									<td class="content-block">
-										&mdash; {{ from }}
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
-				<div class="footer">
-					<table width="100%">
-						<tr>
-							<td class="aligncenter content-block">
-                               Denne e-posten ble sendt fra {{ system_name }}, systemet som driver <a href="{{ frontend_url }}">{{ frontend_url }}</a>.
-                            </td>
-						</tr>
-					</table>
-				</div></div>
-		</td>
-		<td></td>
-	</tr>
+<body bgcolor="#ffffff">
+<table align="center" cellpadding="0" cellspacing="0" class="container-for-gmail-android" width="100%">
+  <tr>
+    <td align="left" valign="top" width="100%" style="background:repeat-x url(http://s3.amazonaws.com/swu-filepicker/4E687TRe69Ld95IDWyEg_bg_top_02.jpg) #ffffff;">
+      <center>
+      <img src="http://s3.amazonaws.com/swu-filepicker/SBb2fQPrQ5ezxmqUTgCr_transparent.png" class="force-width-gmail">
+        <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#ffffff" background="http://s3.amazonaws.com/swu-filepicker/4E687TRe69Ld95IDWyEg_bg_top_02.jpg" style="background-color:transparent">
+          <tr>
+            <td width="100%" height="80" valign="top" style="text-align: center; vertical-align:middle;">
+            <!--[if gte mso 9]>
+            <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;height:80px; v-text-anchor:middle;">
+              <v:fill type="tile" src="http://s3.amazonaws.com/swu-filepicker/4E687TRe69Ld95IDWyEg_bg_top_02.jpg" color="#ffffff" />
+              <v:textbox inset="0,0,0,0">
+            <![endif]-->
+              <center>
+                <table cellpadding="0" cellspacing="0" width="600" class="w320">
+                  <tr>
+                    <td class="pull-left mobile-header-padding-left" style="vertical-align: middle;">
+                      <a href=""><img width="137" height="47" src="{{ settings.SERVER_URL }}/static/assets/img/logo.png" alt="logo"></a>
+                    </td>
+                    <td class="pull-right mobile-header-padding-right" style="color: #4d4d4d;">
+                      <a href=""><img width="38" height="47" src="http://s3.amazonaws.com/swu-filepicker/LMPMj7JSRoCWypAvzaN3_social_09.gif" alt="facebook" /></a>
+                    </td>
+                  </tr>
+                </table>
+              </center>
+              <!--[if gte mso 9]>
+              </v:textbox>
+            </v:rect>
+            <![endif]-->
+            </td>
+          </tr>
+        </table>
+      </center>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="100%" style="background-color: #f7f7f7;" class="content-padding">
+      <center>
+        <table cellspacing="0" cellpadding="0" width="600" class="w320">
+          <tr>
+            <td class="header-lg">
+              Welcome to Awesome Inc!
+            </td>
+          </tr>
+          <tr>
+            <td class="free-text">
+              Thank you for signing up with awesome co! We hope you enjoy your time with us. Check out some of our newest offers below or the button to view your new account.
+            </td>
+          </tr>
+          <tr>
+            <td class="button">
+              <div><!--[if mso]>
+                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#ff6f6f">
+                  <w:anchorlock/>
+                  <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">My Account</center>
+                </v:roundrect>
+              <![endif]--><a class="button-mobile" href="http://"
+              style="background-color:#ff6f6f;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">My Account</a></div>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="100%" style="background-color: #ffffff;  border-top: 1px solid #e5e5e5;">
+      <center>
+        <table cellpadding="0" cellspacing="0" width="600" class="w320">
+          <tr>
+            <td style="padding: 25px 0 25px">
+              <strong>Abakus</strong><br />
+              Sem Sælands vei 7-9 <br />
+              Wonderland <br /><br />
+            </td>
+          </tr>
+        </table>
+      </center>
+    </td>
+  </tr>
 </table>
-
 </body>
 </html>
