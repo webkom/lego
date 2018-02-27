@@ -16,6 +16,7 @@ from lego.apps.permissions.utils import get_permission_handler
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     filter_class = MeetingFilterSet
+    serializer_class = MeetingDetailSerializer
 
     def get_queryset(self):
         permission_handler = get_permission_handler(Meeting)
@@ -32,7 +33,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return MeetingListSerializer
-        return MeetingDetailSerializer
+        return super().get_serializer_class()
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
     def invite_user(self, request, *args, **kwargs):
