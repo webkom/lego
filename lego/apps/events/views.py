@@ -152,7 +152,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     )
     def upcoming(self, request):
         queryset = self.get_queryset().filter(
-            registrations__user=request.user, start_time__gt=timezone.now()
+            registrations__status=constants.SUCCESS_REGISTER, registrations__user=request.user,
+            start_time__gt=timezone.now()
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
