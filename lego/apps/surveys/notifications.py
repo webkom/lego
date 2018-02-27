@@ -17,7 +17,7 @@ class SurveyNotification(Notification):
                 'event': survey.event.title,
                 'active_from': survey.active_from,
             },
-            subject=f'Undersøkelse etter Abakus-arrangement',
+            subject=f'Spørreundersøkelse for {survey.event.title}',
             plain_template='surveys/email/survey.txt',
             html_template='surveys/email/survey.html',
         )

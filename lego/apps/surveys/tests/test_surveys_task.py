@@ -16,10 +16,12 @@ class SurveyMailTestCase(BaseTestCase):
 
     def test_sent_true(self):
         active_surveys = self.surveys.filter(active_from__lte=timezone.now())
+        self.assertEqual(len(active_surveys), 2)
+
         for survey in active_surveys:
             self.assertEqual(survey.sent, False)
 
         send_survey_mail()
-        sent_surveys = self.surveys.filter(active_from__lte=timezone.now())
-        for survey in sent_surveys:
+        for survey in active_surveys:
+            survey.refresh_from_db()
             self.assertEqual(survey.sent, True)

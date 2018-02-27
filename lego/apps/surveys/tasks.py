@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.utils import timezone
 from structlog import get_logger
 
@@ -17,14 +16,10 @@ def send_survey_mail(self, logger_context=None):
     self.setup_logger(logger_context)
 
     surveys = Survey.objects.filter(active_from__lte=timezone.now(), sent=False)
-    print('surveys in send_mail', surveys.all())
     for survey in surveys.all():
-        with transaction.atomic():
-            print('survey id', survey.id, survey.sent)
-            for registration in survey.event.registrations.filter(presence=PRESENT):
-                notification = SurveyNotification(registration.user, survey=survey)
-                notification.notify()
-                track(registration.user, 'survey.create', properties={'survey_id': survey.id})
-            survey.sent = True
-            survey.save()
-            print('survey after saving', survey.sent)
+        for registration in survey.event.registrations.filter(presence=PRESENT):
+            notification = SurveyNotification(registration.user, survey=survey)
+            notification.notify()
+            track(registration.user, 'survey.create', properties={'survey_id': survey.id})
+        survey.sent = True
+        survey.save()
