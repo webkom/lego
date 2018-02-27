@@ -37,7 +37,7 @@
 
     td {
       font-family: Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       color: #777777;
       text-align: center;
       line-height: 21px;
@@ -61,23 +61,16 @@
     }
 
     .header-lg,
-    .header-md,
-    .header-sm {
+    .header-md {
       font-size: 32px;
       font-weight: 700;
       line-height: normal;
-      padding: 35px 0 10px;
+      padding: 5px 0 20px;
       color: #4d4d4d;
     }
 
     .header-md {
       font-size: 24px;
-    }
-
-    .header-sm {
-      padding: 5px 0;
-      font-size: 18px;
-      line-height: 1.3;
     }
 
     .content-padding {
@@ -96,27 +89,12 @@
       padding-left: 10px;
     }
 
-    .free-text {
-      width: 100% !important;
-      padding: 10px 60px 0px;
-    }
-
-    .block-rounded {
-      border-radius: 5px;
-      border: 1px solid #e5e5e5;
-      vertical-align: top;
-    }
-
     .button {
-      padding: 30px 0;
+      padding: 7px 0 20px;
     }
 
     .info-block {
       padding: 0 20px;
-      width: 260px;
-    }
-
-    .block-rounded {
       width: 260px;
     }
 
@@ -137,7 +115,7 @@
     }
 
     .content-block {
-      padding: 0 0 20px;
+      padding: 0 0 10px;
     }
 
   </style>
@@ -191,12 +169,12 @@
 
       td[class="header-lg"] {
         font-size: 24px !important;
-        padding-bottom: 10px !important;
+        padding-bottom: 20px !important;
       }
 
       td[class="header-md"] {
         font-size: 18px !important;
-        padding-bottom: 10px !important;
+        padding-bottom: 20px !important;
       }
 
       td[class="content-padding"] {
@@ -204,15 +182,11 @@
       }
 
       td[class="content-block"] {
-        padding: 0 0 30px !important;
+        padding: 0 0 10px !important;
       }
 
        td[class="button"] {
         padding: 5px !important;
-      }
-
-      td[class*="free-text"] {
-        padding: 10px 18px 30px !important;
       }
 
       td[class="info-block"] {
@@ -275,33 +249,6 @@
             </td>
           </tr>
           {% block content %}{% endblock %}
-        <tr>
-            <td class="content-block">
-                {{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
-            </td>
-        </tr>
-
-        <tr>
-            <td class="content-block">
-                <b>Tid:</b> {{ meeting_start_time }}
-            </td>
-        </tr>
-          <tr>
-            <td class="content-block">
-              &mdash; {{ from }}
-            </td>
-          </tr>
-          <tr>
-            <td class="button">
-              <div><!--[if mso]>
-                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
-                  <w:anchorlock/>
-                  <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">My Account</center>
-                </v:roundrect>
-              <![endif]--><a class="button-mobile" href="http://"
-              style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">My Account</a></div>
-            </td>
-          </tr>
         </table>
       </center>
     </td>
