@@ -66,7 +66,7 @@ router.register(
     r'companies/(?P<company_pk>\d+)/files', CompanyFilesViewSet, base_name='company-files'
 )
 router.register(r'company-interests', CompanyInterestViewSet, base_name='company-interest')
-router.register(r'company-semesters', SemesterViewSet)
+router.register(r'company-semesters', SemesterViewSet, base_name='company-semester')
 router.register(r'events', EventViewSet, base_name='event')
 router.register(r'events/(?P<event_pk>\d+)/pools', PoolViewSet)
 router.register(

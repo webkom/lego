@@ -25,7 +25,7 @@ TRANSLATED_EVENTS = {
     COURSE: 'Kurs',
     LUNCH_PRESENTATION: 'Lunsjpresentasjon',
     BEDEX: 'Bedex',
-    OTHER: 'Annet',
+    OTHER: 'Alternativt arrangement',
 }
 
 COLLABORATION = 'collaboration'
