@@ -6,8 +6,8 @@ from lego.apps.meetings.authentication import MeetingInvitationTokenAuthenticati
 from lego.apps.meetings.filters import MeetingFilterSet
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.serializers import (
-    MeetingBulkInvite, MeetingGroupInvite, MeetingInvitationSerializer,
-    MeetingInvitationUpdateSerializer, MeetingSerializer, MeetingUserInvite
+    MeetingBulkInvite, MeetingDetailSerializer, MeetingGroupInvite, MeetingInvitationSerializer,
+    MeetingInvitationUpdateSerializer, MeetingListSerializer, MeetingUserInvite
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
@@ -16,7 +16,7 @@ from lego.apps.permissions.utils import get_permission_handler
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     filter_class = MeetingFilterSet
-    serializer_class = MeetingSerializer
+    serializer_class = MeetingDetailSerializer
 
     def get_queryset(self):
         permission_handler = get_permission_handler(Meeting)
@@ -29,6 +29,11 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if ordering in ['start_time', '-start_time']:
             return ordering
         return 'start_time'
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return MeetingListSerializer
+        return super().get_serializer_class()
 
     @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
     def invite_user(self, request, *args, **kwargs):
