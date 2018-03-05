@@ -1,0 +1,40 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-warning">
+            Vennligst svar på denne spørreundersøkelsen fra Abakus
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei, {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Du har en ny undersøkelse å svare på for arrangement {{ event }}.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i>Å ikke svare på undersøkelsen innen fristen vil medføre en prikk.</i>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
+          <a href="{{ frontend_url }}/surveys/{{ survey }}/answer" class="btn-primary" itemprop="url">Gå til undersøkelsen</a>
+        </td>
+    </tr>
+
+
+{% endblock %}
