@@ -4,8 +4,6 @@ pipeline:
     when:
       event: push
     environment:
-      - CASS_DRIVER_NO_CYTHON=1
-      - CASS_DRIVER_NO_EXTENSIONS=1
       - LANG=C.UTF-8
     commands:
       - make ci_settings
@@ -18,7 +16,6 @@ pipeline:
       - LANG=C.UTF-8
       - DATABASE=database
       - CACHE=cache
-      - CASSANDRA=cassandra
     group: testing
     commands:
       - tox -e missing-migrations
@@ -31,7 +28,6 @@ pipeline:
       - LANG=C.UTF-8
       - DATABASE=database
       - CACHE=cache
-      - CASSANDRA=cassandra
     group: testing
     commands:
       - tox -e tests
@@ -108,5 +104,3 @@ services:
       - POSTGRES_USER=lego
   cache:
     image: redis
-  cassandra:
-    image: cassandra:3
