@@ -5,12 +5,7 @@ import environ
 import stripe
 
 from lego.settings import (
-<<<<<<< HEAD
-    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE,
-    PUSH_NOTIFICATIONS_SETTINGS
-=======
-    BASE_DIR, CHANNEL_LAYERS, ELASTIC_APM, INSTALLED_APPS, MIDDLEWARE, PUSH_NOTIFICATIONS_SETTINGS
->>>>>>> Create the base for a new feed, action_handlers and feeds app
+    BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE, PUSH_NOTIFICATIONS_SETTINGS
 )
 
 from .secure import *  # noqa

@@ -13,7 +13,7 @@ class FeedViewSet(viewsets.GenericViewSet):
     Generic viewset base for all types of feeds.
     """
 
-    ordering = '-activity_id'
+    ordering = '-updated_at'
     serializer_class = AggregatedFeedSerializer
 
     def attach_metadata(self, data):

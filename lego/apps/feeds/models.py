@@ -10,7 +10,6 @@ class FeedBase(models.Model):
     """
     FeedBase contains all the base components of a feed
     """
-    activity_id = models.PositiveIntegerField(primary_key=True)
     feed_id = models.CharField(max_length=64, db_index=True)
     group = models.CharField(max_length=128)
 
@@ -18,7 +17,7 @@ class FeedBase(models.Model):
     minimized_activities = models.PositiveIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     max_aggregated_activities_length = 10
 
@@ -31,7 +30,7 @@ class FeedBase(models.Model):
 
     @property
     def verb(self):
-        return str(verbs[2])
+        return verbs[2].infinitive
 
     @property
     def activities(self):
@@ -58,6 +57,25 @@ class NotificationFeedBase(FeedBase, MarkerModelMixin):
 
     class Meta(FeedBase.Meta):
         abstract = True
+
+
+class TimelineStorage(models.Model):
+    """
+    Timeline storage stores the location of activities inside the aggregated feed.
+    """
+
+    activity_id = models.CharField(max_length=20, db_index=True)
+    feed = models.CharField(max_length=32, db_index=True)
+    aggregated_id = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('activity_id', 'feed')
+
+    @classmethod
+    def aggregated_ids(cls, activity_id, feed):
+        return cls.objects.filter(activity_id=activity_id, feed=feed._meta.model_name).values_list(
+            'aggregated_id', flat=True
+        )
 
 
 """

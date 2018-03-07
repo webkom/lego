@@ -1,5 +1,9 @@
 from django.utils import timezone
 
+from lego.apps.feeds.serializers import FeedActivitySerializer
+
+from . import verbs
+
 
 class Activity:
 
@@ -13,7 +17,11 @@ class Activity:
     target_content_type = None
 
     def __init__(self, actor, verb, object, target=None, time=None, extra_context=None):
-        self.verb = verb
+        if isinstance(verb, int):
+            self.verb = verbs.verbs[verb]
+        else:
+            self.verb = verb
+
         self.time = time or timezone.now()
 
         self._set_instance_fields('actor', actor)
@@ -23,7 +31,7 @@ class Activity:
         self.extra_context = extra_context or {}
 
     @property
-    def serialization_id(self):
+    def activity_id(self):
         """
         serialization_id is used to keep items locally sorted and unique
 
@@ -92,3 +100,19 @@ class Activity:
 
     def __hash__(self):
         return hash(self.serialization_id)
+
+    def serialize(self):
+        serializer = FeedActivitySerializer(self)
+        return serializer.data
+
+    @classmethod
+    def deserialize(cls, data):
+        serializer = FeedActivitySerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        return cls(
+            actor=serializer.validated_data['actor'], verb=serializer.validated_data['verb'],
+            object=serializer.validated_data['object'],
+            target=serializer.validated_data.get('target'), time=serializer.validated_data['time'],
+            extra_context=serializer.validated_data['extra_context']
+        )
