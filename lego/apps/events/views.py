@@ -43,7 +43,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if self.action == 'list':
+        if self.action in ['list', 'upcoming']:
             queryset = Event.objects.select_related('company').prefetch_related(
                 'pools', 'pools__registrations', 'tags'
             )
