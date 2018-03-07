@@ -80,8 +80,7 @@ schedule = {
 }
 
 app.conf.update(
-    beat_schedule=schedule, result_backend=None, task_track_started=True, task_serializer='pickle',
+    beat_schedule=schedule, result_backend=None, task_track_started=True, task_serializer='json',
     worker_disable_rate_limits=True, task_ignore_result=True, task_acks_late=False,
-    worker_hijack_root_logger=False, worker_redirect_stdouts=False,
-    accept_content=['pickle', 'json']
+    worker_hijack_root_logger=False, worker_redirect_stdouts=False, accept_content=['json']
 )

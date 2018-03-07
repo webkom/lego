@@ -15,9 +15,7 @@ from lego.settings import (
 
 from .secure import *  # noqa
 
-env = environ.Env(
-    DEBUG=(bool, False), ALLOWED_HOSTS=(list, ['api.abakus.no'])
-)
+env = environ.Env(DEBUG=(bool, False), ALLOWED_HOSTS=(list, ['api.abakus.no']))
 environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
 DEBUG = env('DEBUG')
