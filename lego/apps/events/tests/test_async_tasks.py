@@ -360,64 +360,64 @@ class PaymentDueTestCase(BaseTestCase):
         self.event.save()
         self.registration = self.event.registrations.first()
 
-    @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_user_notification_when_overdue_payment_and_in_waiting_list(self, mock_get_handler):
+    @mock.patch('lego.apps.events.tasks.handle_event')
+    def test_user_notification_when_overdue_payment_and_in_waiting_list(self, mock_handle_event):
         """Tests that payment notification is not added when registration is in waiting list"""
 
         self.registration.pool = None
         self.registration.save()
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler(Registration).handle_payment_overdue.assert_not_called()
+        mock_handle_event.assert_not_called()
 
-    @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_user_notification_when_overdue_payment(self, mock_get_handler):
+    @mock.patch('lego.apps.events.tasks.handle_event')
+    def test_user_notification_when_overdue_payment(self, mock_handle_event):
         """Tests that notification is added when registration has not paid"""
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler(Registration).handle_payment_overdue.assert_called_once_with(
-            self.registration
+        mock_handle_event.assert_called_once_with(
+            self.registration, 'payment_overdue'
         )
 
-    @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_user_notification_when_time_limit_passed(self, mock_get_handler):
+    @mock.patch('lego.apps.events.tasks.handle_event')
+    def test_user_notification_when_time_limit_passed(self, mock_handle_event):
         """Test that notification is added a second time when time limit (1 day) has passed"""
         self.registration.last_notified_overdue_payment = timezone.now() - timedelta(days=1)
         self.registration.save()
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler(Registration).handle_payment_overdue.assert_called_once_with(
-            self.registration
+        mock_handle_event.assert_called_once_with(
+            self.registration, 'payment_overdue'
         )
 
-    @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_no_notification_when_recently_notified(self, mock_get_handler):
+    @mock.patch('lego.apps.events.tasks.handle_event')
+    def test_no_notification_when_recently_notified(self, mock_handle_event):
         """Test that notification is not added when registration is within time limit"""
 
         self.registration.last_notified_overdue_payment = timezone.now()
         self.registration.save()
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler.assert_not_called()
+        mock_handle_event.assert_not_called()
 
-    @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_no_notification_when_user_has_paid(self, mock_get_handler):
+    @mock.patch('lego.apps.events.tasks.handle_event')
+    def test_no_notification_when_user_has_paid(self, mock_handle_event):
         """Test that notification is not added when user has paid"""
 
         self.registration.charge_status = constants.PAYMENT_SUCCESS
         self.registration.save()
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler.assert_not_called()
+        mock_handle_event.assert_not_called()
 
-    @mock.patch('lego.apps.events.tasks.get_handler')
-    def test_no_notification_when_event_is_not_due(self, mock_get_handler):
+    @mock.patch('lego.apps.events.tasks.handle_event')
+    def test_no_notification_when_event_is_not_due(self, mock_handle_event):
         """Test that notification is not added when event is not overdue"""
 
         self.event.payment_due_date = timezone.now() - timedelta(days=3)
         self.event.save()
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_get_handler.assert_not_called()
+        mock_handle_event.assert_not_called()
 
     @mock.patch('lego.apps.events.tasks.EventPaymentOverdueCreatorNotification')
     def test_creator_notification_when_event_is_past_due_date(self, mock_notification):

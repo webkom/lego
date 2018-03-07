@@ -19,12 +19,12 @@ class Verb:
         return self.infinitive
 
 
-verbs = []
+verbs = {}
 
 
 def register(verb):
     global verbs
-    verbs.append(verb)
+    verbs[verb.id] = verb
 
 
 class EventRegisterVerb(Verb):

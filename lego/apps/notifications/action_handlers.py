@@ -1,7 +1,7 @@
 from lego.apps.action_handlers.handler import Handler
 from lego.apps.action_handlers.registry import register_handler
 from lego.apps.feeds.activity import Activity
-from lego.apps.feeds.fanout_manager import fanout_manager
+from lego.apps.feeds.feed_manager import feed_manager
 from lego.apps.feeds.models import NotificationFeed, PersonalFeed
 from lego.apps.feeds.verbs import AnnouncementVerb
 from lego.apps.notifications.models import Announcement
@@ -11,7 +11,7 @@ from lego.apps.notifications.notifications import AnnouncementNotification
 class AnnouncementHandler(Handler):
 
     model = Announcement
-    manager = fanout_manager
+    manager = feed_manager
 
     def handle_send(self, announcement):
         if not announcement.created_by:

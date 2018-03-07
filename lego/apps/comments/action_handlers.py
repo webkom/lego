@@ -1,16 +1,14 @@
+from lego.apps.action_handlers.handler import Handler
+from lego.apps.action_handlers.registry import register_handler
 from lego.apps.comments.models import Comment
 from lego.apps.comments.notifications import CommentNotification, CommentReplyNotification
-from lego.apps.feed.activities import Activity
-from lego.apps.feed.feed_handlers.base_handler import BaseHandler
-from lego.apps.feed.feed_manager import feed_manager
-from lego.apps.feed.feeds.notification_feed import NotificationFeed
-from lego.apps.feed.feeds.personal_feed import PersonalFeed
-from lego.apps.feed.feeds.user_feed import UserFeed
-from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import CommentReplyVerb, CommentVerb
+from lego.apps.feeds.activity import Activity
+from lego.apps.feeds.feed_manager import feed_manager
+from lego.apps.feeds.models import NotificationFeed, PersonalFeed, UserFeed
+from lego.apps.feeds.verbs import CommentReplyVerb, CommentVerb
 
 
-class CommentHandler(BaseHandler):
+class CommentHandler(Handler):
     model = Comment
     manager = feed_manager
 
@@ -21,37 +19,31 @@ class CommentHandler(BaseHandler):
             time=comment.created_at, extra_context={'content': comment.text}
         )
 
-    def handle_create(self, comment):
-        activity = self.get_activity(comment)
-        author = comment.created_by
-        for feeds, recipients in self.get_feeds_and_recipients(comment):
+    def handle_create(self, instance, **kwargs):
+        activity = self.get_activity(instance)
+        author = instance.created_by
+        for feeds, recipients in self.get_feeds_and_recipients(instance):
             self.manager.add_activity(activity, [recipient.pk for recipient in recipients], feeds)
             if NotificationFeed in feeds:
                 for recipient in recipients:
                     notification = CommentNotification(
-                        user=recipient, target=comment.content_object, author=author,
-                        text=comment.text
+                        user=recipient, target=instance.content_object, author=author,
+                        text=instance.text
                     )
                     notification.notify()
 
-        if comment.parent and comment.parent.created_by != author:
-            parent_author = comment.parent.created_by
-            reply_activity = self.get_activity(comment, reply=True)
+        if instance.parent and instance.parent.created_by != author:
+            parent_author = instance.parent.created_by
+            reply_activity = self.get_activity(instance, reply=True)
             self.manager.add_activity(reply_activity, [parent_author.pk], [NotificationFeed])
             reply_notification = CommentReplyNotification(
-                user=parent_author, target=comment.content_object, author=author
+                user=parent_author, target=instance.content_object, author=author
             )
             reply_notification.notify()
 
-    def handle_update(self, comment):
-        """
-        No support for comment updates...
-        """
-        pass
-
-    def handle_delete(self, comment):
-        activity = self.get_activity(comment)
-        for feeds, recipients in self.get_feeds_and_recipients(comment):
+    def handle_delete(self, instance, **kwargs):
+        activity = self.get_activity(instance)
+        for feeds, recipients in self.get_feeds_and_recipients(instance):
             self.manager.remove_activity(
                 activity,
                 [recipient.pk for recipient in recipients], feeds

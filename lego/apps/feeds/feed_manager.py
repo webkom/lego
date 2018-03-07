@@ -1,4 +1,4 @@
-class FanoutManager:
+class FeedManager:
 
     fanout_chunk_size = 100
 
@@ -8,5 +8,8 @@ class FanoutManager:
     def remove_activity(self, activity, recipients, feed_classes):
         pass
 
+    def retrieve_feed(self, feed_class, feed_id):
+        return feed_class.objects.filter(feed_id=str(feed_id))
 
-fanout_manager = FanoutManager()
+
+feed_manager = FeedManager()

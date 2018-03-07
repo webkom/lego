@@ -16,8 +16,6 @@ class Command(BaseCommand):
         management.call_command('migrate', verbosity=self.verbosity)
         self.stdout.write('Migrating search...')
         management.call_command('migrate_search', verbosity=self.verbosity)
-        self.stdout.write('Migrating feeds...')
-        management.call_command('migrate_feeds', verbosity=self.verbosity)
         self.stdout.write('Rebuilding indices...')
         management.call_command('rebuild_index', verbosity=self.verbosity)
         self.stdout.write('Loading fixtures...')

@@ -18,3 +18,10 @@ def get_handler(model):
         return handler_registry[model]
     except KeyError:
         pass
+
+
+def get_handler_by_instance(instance):
+    try:
+        return handler_registry[instance._meta.model]
+    except KeyError:
+        pass

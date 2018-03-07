@@ -8,6 +8,5 @@ class FeedsConfig(AppConfig):
     def ready(self):
         super().ready()
         """
-        Import signals to start listening for events
         """
         from .verbs import verbs  # noqa

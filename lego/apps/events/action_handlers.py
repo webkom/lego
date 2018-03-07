@@ -1,45 +1,83 @@
-from lego.apps.events.models import Registration
+from lego.apps.action_handlers.handler import Handler
+from lego.apps.action_handlers.registry import register_handler
+from lego.apps.events.models import Event, Registration
 from lego.apps.events.notifications import (
     EventAdminRegistrationNotification, EventAdminUnregistrationNotification, EventBumpNotification,
     EventPaymentOverdueNotification
 )
-from lego.apps.feed.activities import Activity
-from lego.apps.feed.feed_handlers.base_handler import BaseHandler
-from lego.apps.feed.feed_manager import feed_manager
-from lego.apps.feed.feeds.notification_feed import NotificationFeed
-from lego.apps.feed.feeds.personal_feed import PersonalFeed
-from lego.apps.feed.feeds.user_feed import UserFeed
-from lego.apps.feed.registry import register_handler
-from lego.apps.feed.verbs import (
-    AdminRegistrationVerb, AdminUnregistrationVerb, EventRegisterVerb, PaymentOverdueVerb,
-    RegistrationBumpVerb
+from lego.apps.feeds.activity import Activity
+from lego.apps.feeds.feed_manager import feed_manager
+from lego.apps.feeds.models import NotificationFeed, PersonalFeed, UserFeed
+from lego.apps.feeds.verbs import (
+    AdminRegistrationVerb, AdminUnregistrationVerb, EventCreateVerb, EventRegisterVerb,
+    PaymentOverdueVerb, RegistrationBumpVerb
 )
 
 
-class RegistrationHandler(BaseHandler):
+class EventHandler(Handler):
+
+    model = Event
+    manager = feed_manager
+
+    def handle_create(self, instance, **kwargs):
+        activity = self.get_activity(instance)
+        for feeds, recipients in self.get_feeds_and_recipients(instance):
+            self.manager.add_activity(activity, recipients, feeds)
+
+    def handle_update(self, instance, **kwargs):
+        pass
+
+    def handle_delete(self, instance, **kwargs):
+        activity = self.get_activity(instance)
+        for feeds, recipients in self.get_feeds_and_recipients(instance):
+            self.manager.remove_activity(activity, recipients, feeds)
+
+    def get_feeds_and_recipients(self, event):
+        result = []
+        if event.company_id:
+            result.append(
+                (
+                    [PersonalFeed],
+                    list(event.company.followers.values_list('follower__id', flat=True))
+                )
+            )
+        return result
+
+    def get_activity(self, event):
+        return Activity(
+            actor=event.company, verb=EventCreateVerb, object=event, time=event.created_at,
+            extra_context={'title': event.title}
+        )
+
+
+register_handler(EventHandler)
+
+
+class RegistrationHandler(Handler):
+
     model = Registration
     manager = feed_manager
 
-    def handle_create(self, registration):
-        activity = self.get_activity(registration)
-        for feeds, recipients in self.get_feeds_and_recipients(registration):
+    def handle_create(self, instance, **kwargs):
+        activity = self.get_activity(instance)
+        for feeds, recipients in self.get_feeds_and_recipients(instance):
             self.manager.add_activity(activity, recipients, feeds)
 
-    def handle_update(self, registration):
-        registered = registration.unregistration_date is not None
+    def handle_update(self, instance, **kwargs):
+        registered = instance.unregistration_date is not None
         if registered:
             feed_function = self.manager.add_activity
         else:
             feed_function = self.manager.remove_activity
 
-        if registration.unregistration_date is not None:
-            activity = self.get_activity(registration)
-            for feeds, recipients in self.get_feeds_and_recipients(registration):
+        if instance.unregistration_date is not None:
+            activity = self.get_activity(instance)
+            for feeds, recipients in self.get_feeds_and_recipients(instance):
                 feed_function(activity, recipients, feeds)
 
-    def handle_delete(self, registration):
-        activity = self.get_activity(registration)
-        for feeds, recipients in self.get_feeds_and_recipients(registration):
+    def handle_delete(self, instance, **kwargs):
+        activity = self.get_activity(instance)
+        for feeds, recipients in self.get_feeds_and_recipients(instance):
             self.manager.remove_activity(activity, recipients, feeds)
 
     def get_activity(self, registration):

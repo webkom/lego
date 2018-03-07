@@ -1,10 +1,8 @@
 from rest_framework import serializers
 
-from lego.apps.feed.fields import FeedDateTimeField
-
 
 class FeedActivitySerializer(serializers.Serializer):
-    time = FeedDateTimeField()
+    time = serializers.DateTimeField()
     extra_context = serializers.DictField(default={})
     actor = serializers.CharField()
     object = serializers.CharField()
@@ -12,10 +10,10 @@ class FeedActivitySerializer(serializers.Serializer):
 
 
 class AggregatedFeedSerializer(serializers.Serializer):
-    id = serializers.IntegerField(source='serialization_id')
-    verb = serializers.CharField(source='verb.infinitive')
-    created_at = FeedDateTimeField()
-    updated_at = FeedDateTimeField()
+    id = serializers.IntegerField(source='activity_id')
+    verb = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
     last_activity = FeedActivitySerializer()
     activities = FeedActivitySerializer(many=True)
     activity_count = serializers.IntegerField()
@@ -27,6 +25,10 @@ class MarkSerializer(serializers.Serializer):
     read = serializers.BooleanField(default=False)
 
 
-class NotificationFeedSerializer(AggregatedFeedSerializer):
+class FeedMarkerMixinSerializer:
     read = serializers.BooleanField(source='is_read')
     seen = serializers.BooleanField(source='is_seen')
+
+
+class AggregatedMarkedFeedSerializer(AggregatedFeedSerializer, FeedMarkerMixinSerializer):
+    pass
