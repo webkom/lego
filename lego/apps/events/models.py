@@ -6,7 +6,7 @@ from django.db import models, transaction
 from django.db.models import Count, Sum
 from django.utils import timezone
 
-from lego.apps.action_handlers import handle_event
+from lego.apps.action_handlers.events import handle_event
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants

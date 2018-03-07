@@ -6,7 +6,7 @@ from django.utils import timezone
 from structlog import get_logger
 
 from lego import celery_app
-from lego.apps.action_handlers import handle_event
+from lego.apps.action_handlers.events import handle_event
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed, PoolCounterNotEqualToRegistrationCount, WebhookDidNotFindRegistration

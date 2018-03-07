@@ -13,7 +13,9 @@ class Handler:
     def run(self, instance, action, **kwargs):
         func = getattr(self, f'handle_{action}', None)
         if func:
-            func(instance, **kwargs)
+            return func(instance, **kwargs)
+
+        raise ValueError('Action handler called with nn invalid action')
 
     def handle_create(self, instance, **kwargs):
         pass

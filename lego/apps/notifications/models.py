@@ -2,7 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 
-from lego.apps.action_handlers import handle_event
+from lego.apps.action_handlers.events import handle_event
 from lego.utils.models import BasisModel
 
 from .constants import CHANNEL_CHOICES, CHANNELS, NOTIFICATION_CHOICES, NOTIFICATION_TYPES

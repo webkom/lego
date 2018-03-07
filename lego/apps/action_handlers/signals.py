@@ -1,7 +1,7 @@
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
-from . import handle_create, handle_delete, handle_update
+from .events import handle_create, handle_delete, handle_update
 
 
 @receiver(post_save)
