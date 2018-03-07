@@ -17,7 +17,7 @@ class CompanyInterestHandler(Handler):
     model = CompanyInterest
     manager = feed_manager
 
-    def handle_interest(self, instance):
+    def handle_create(self, instance, **kwargs):
 
         activity = Activity(
             actor=instance, verb=CompanyInterestVerb, object=instance, time=instance.created_at,

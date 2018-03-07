@@ -374,9 +374,7 @@ class PaymentDueTestCase(BaseTestCase):
         """Tests that notification is added when registration has not paid"""
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_handle_event.assert_called_once_with(
-            self.registration, 'payment_overdue'
-        )
+        mock_handle_event.assert_called_once_with(self.registration, 'payment_overdue')
 
     @mock.patch('lego.apps.events.tasks.handle_event')
     def test_user_notification_when_time_limit_passed(self, mock_handle_event):
@@ -385,9 +383,7 @@ class PaymentDueTestCase(BaseTestCase):
         self.registration.save()
 
         notify_user_when_payment_soon_overdue.delay()
-        mock_handle_event.assert_called_once_with(
-            self.registration, 'payment_overdue'
-        )
+        mock_handle_event.assert_called_once_with(self.registration, 'payment_overdue')
 
     @mock.patch('lego.apps.events.tasks.handle_event')
     def test_no_notification_when_recently_notified(self, mock_handle_event):
