@@ -1,0 +1,60 @@
+- model: surveys.Survey
+  pk: 1
+  fields:
+    title: 'Template: company_presentation'
+    event: 1
+    template_type: 'company_presentation'
+
+- model: surveys.Survey
+  pk: 2
+  fields:
+    title: 'Template: lunch_presentation'
+    event: 2
+    template_type: 'lunch_presentation'
+
+
+  # company_presentation
+
+- model: surveys.Question
+  pk: 1
+  fields:
+    question_text: 'Var bedpressen bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 1
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 1
+  fields:
+    option_text: 'Ja'
+    question: 1
+
+- model: surveys.Option
+  pk: 2
+  fields:
+    option_text: 'Nei'
+    question: 1
+
+  # lunch_presentation
+
+- model: surveys.Question
+  pk: 2
+  fields:
+    question_text: 'Var lunsjpressen bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 2
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 3
+  fields:
+    option_text: 'Ja'
+    question: 2
+
+- model: surveys.Option
+  pk: 4
+  fields:
+    option_text: 'Nei'
+    question: 2

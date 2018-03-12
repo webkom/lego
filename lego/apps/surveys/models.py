@@ -10,13 +10,11 @@ from lego.utils.models import BasisModel
 class Survey(BasisModel):
     title = models.CharField(max_length=100)
     active_from = models.DateTimeField(default=timezone.now)
-    template_type = models.CharField(max_length=30, choices=EVENT_TYPES, null=True, blank=True)
+    template_type = models.CharField(
+        max_length=30, choices=EVENT_TYPES, null=True, blank=True, unique=True
+    )
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
-
-    @property
-    def is_template(self):
-        return self.template_type is not None
 
 
 class Question(models.Model):

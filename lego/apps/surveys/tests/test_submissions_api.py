@@ -116,6 +116,24 @@ class SubmissionViewSetTestCase(APITestCase):
         response = self.client.get(_get_list_url(1))
         self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
 
+    def test_edit_admin(self):
+        """Not even Admin users should be able to edit submissions"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(_get_detail_url(1, 1), submission_data(self.admin_user))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_edit_regular(self):
+        """Regular users should not be able to edit submissions"""
+        self.client.force_authenticate(user=self.regular_user)
+        response = self.client.patch(_get_detail_url(1, 1), submission_data(self.regular_user))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_edit_attended(self):
+        """Users who attended an event users should not be able to edit submissions"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.patch(_get_detail_url(1, 1), submission_data(self.attended_user))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_create_answer(self):
         """Check that every field is created successfully"""
         self.client.force_authenticate(user=self.admin_user)

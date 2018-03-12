@@ -23,6 +23,13 @@ class SurveyPermissions(permissions.BasePermission):
         return False
 
 
+class SurveyTemplatePermissions(permissions.BasePermission):
+    def has_permission(self, request, view):
+        from lego.apps.surveys.models import Survey
+        user = request.user
+        return bool(user.has_perm(EDIT, obj=Survey))
+
+
 class SubmissionPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         from lego.apps.surveys.models import Survey
@@ -33,6 +40,8 @@ class SubmissionPermissions(permissions.BasePermission):
             event=event.id, user=user.id, presence=constants.PRESENT
         ).exists()
 
+        if view.action in ['update', 'partial_update']:
+            return False
         if user.has_perm(EDIT, obj=Survey):
             return True
         if view.action in ['create']:

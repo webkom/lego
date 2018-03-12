@@ -1,0 +1,240 @@
+- model: surveys.Survey
+  pk: 1
+  fields:
+    title: 'Template: company_presentation'
+    event: 1
+    template_type: 'company_presentation'
+
+- model: surveys.Survey
+  pk: 2
+  fields:
+    title: 'Template: lunch_presentation'
+    event: 2
+    template_type: 'lunch_presentation'
+
+- model: surveys.Survey
+  pk: 3
+  fields:
+    title: 'Template: course'
+    event: 3
+    template_type: 'course'
+
+- model: surveys.Survey
+  pk: 4
+  fields:
+    title: 'Template: kid_event'
+    event: 4
+    template_type: 'kid_event'
+
+- model: surveys.Survey
+  pk: 5
+  fields:
+    title: 'Template: party'
+    event: 5
+    template_type: 'party'
+
+- model: surveys.Survey
+  pk: 6
+  fields:
+    title: 'Template: social'
+    event: 6
+    template_type: 'social'
+
+- model: surveys.Survey
+  pk: 7
+  fields:
+    title: 'Template: other'
+    event: 7
+    template_type: 'other'
+
+- model: surveys.Survey
+  pk: 8
+  fields:
+    title: 'Template: event'
+    event: 8
+    template_type: 'event'
+
+  # company_presentation
+
+- model: surveys.Question
+  pk: 1
+  fields:
+    question_text: 'Var bedpressen bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 1
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 1
+  fields:
+    option_text: 'Ja'
+    question: 1
+
+- model: surveys.Option
+  pk: 2
+  fields:
+    option_text: 'Nei'
+    question: 1
+
+  # lunch_presentation
+
+- model: surveys.Question
+  pk: 2
+  fields:
+    question_text: 'Var lunsjpressen bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 2
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 3
+  fields:
+    option_text: 'Ja'
+    question: 2
+
+- model: surveys.Option
+  pk: 4
+  fields:
+    option_text: 'Nei'
+    question: 2
+
+  # course
+
+- model: surveys.Question
+  pk: 3
+  fields:
+    question_text: 'Var kurset bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 3
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 5
+  fields:
+    option_text: 'Ja'
+    question: 3
+
+- model: surveys.Option
+  pk: 6
+  fields:
+    option_text: 'Nei'
+    question: 3
+
+  # kid_event
+
+- model: surveys.Question
+  pk: 4
+  fields:
+    question_text: 'Var KID-arrangementet bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 4
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 7
+  fields:
+    option_text: 'Ja'
+    question: 4
+
+- model: surveys.Option
+  pk: 8
+  fields:
+    option_text: 'Nei'
+    question: 4
+
+  # party
+
+- model: surveys.Question
+  pk: 5
+  fields:
+    question_text: 'Var festen bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 5
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 9
+  fields:
+    option_text: 'Ja'
+    question: 5
+
+- model: surveys.Option
+  pk: 10
+  fields:
+    option_text: 'Nei'
+    question: 5
+
+  # social
+
+- model: surveys.Question
+  pk: 6
+  fields:
+    question_text: 'Var sosialarrangementet bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 6
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 11
+  fields:
+    option_text: 'Ja'
+    question: 6
+
+- model: surveys.Option
+  pk: 12
+  fields:
+    option_text: 'Nei'
+    question: 6
+
+  # other
+
+- model: surveys.Question
+  pk: 7
+  fields:
+    question_text: 'Var arrangementet (other) bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 7
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 13
+  fields:
+    option_text: 'Ja'
+    question: 7
+
+- model: surveys.Option
+  pk: 14
+  fields:
+    option_text: 'Nei'
+    question: 7
+
+  # event
+
+- model: surveys.Question
+  pk: 8
+  fields:
+    question_text: 'Var arrangementet (event) bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 8
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 15
+  fields:
+    option_text: 'Ja'
+    question: 8
+
+- model: surveys.Option
+  pk: 16
+  fields:
+    option_text: 'Nei'
+    question: 8
+
