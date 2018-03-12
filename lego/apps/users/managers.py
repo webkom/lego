@@ -32,6 +32,7 @@ class AbakusUserManager(UserManager, PersistentModelManager):
         return self._create_user(username, email, password, **extra_fields)
 
     def get_by_natural_key(self, username):
+        username = username or ""
         return self.get(
             Q(username__iexact=username.lower()) | Q(email__iexact=username.lower())
         )

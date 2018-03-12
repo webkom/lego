@@ -32,6 +32,7 @@ authorization_urlpatterns = [
 urlpatterns = [
     url(r"^api/", include("lego.api.urls", namespace="api")),
     url(r"^authorization/", include(authorization_urlpatterns)),
+    url(r"^verification/", include("social_django.urls", namespace="social")),
     url(r"^", include(health_urlpatterns)),
     url(
         r"^api-docs/",

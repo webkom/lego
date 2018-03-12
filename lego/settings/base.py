@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "channels",
     "django_filters",
     "push_notifications",
+    "social_django",
     "lego.utils",
     "lego.apps.action_handlers",
     "lego.apps.users",
@@ -62,7 +63,10 @@ INSTALLED_APPS = [
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 AUTH_USER_MODEL = "users.User"
-AUTHENTICATION_BACKENDS = ("lego.apps.permissions.backends.LegoPermissionBackend",)
+AUTHENTICATION_BACKENDS = (
+    "lego.apps.permissions.backends.LegoPermissionBackend",
+    "lego.apps.permissions.backends.FeideBackend",
+)
 LOGIN_URL = "/authorization/login/"
 LOGOUT_URL = "/authorization/logout/"
 AUTH_PASSWORD_VALIDATORS = [
@@ -169,3 +173,15 @@ if os.environ.get("GSUITE_CREDENTIALS"):
     )
 else:
     GSUITE_CREDENTIALS = None
+
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_URL_NAMESPACE = "social"
+
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.associate_user",
+)
