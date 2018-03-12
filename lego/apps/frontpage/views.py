@@ -28,7 +28,7 @@ class FrontpageViewSet(viewsets.ViewSet):
 
         events_handler = get_permission_handler(Event)
         queryset_events_base = Event.objects.all()\
-            .filter(end_time__gt=timezone.now()).order_by('-pinned', 'start_time')\
+            .filter(end_time__gt=timezone.now()).order_by('-pinned', 'start_time', 'id')\
             .prefetch_related('pools', 'pools__registrations', 'company', 'tags')
 
         if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
