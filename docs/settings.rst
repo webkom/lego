@@ -40,9 +40,7 @@ Lego consists of many services, each with different responsibilities and scaling
 +------------------+-------------------------------------------+--------------------+
 | Restricted Mail  | python manage.py restricted_email         | Yes                |
 +------------------+-------------------------------------------+--------------------+
-| Websocket Server | daphne lego.asgi:channel_layer -b 0.0.0.0 | Yes                |
-+------------------+-------------------------------------------+--------------------+
-| Websocket Worker | python manage.py runworker                | Yes                |
+| Websocket Server | daphne lego.asgi:application -b 0.0.0.0   | Yes                |
 +------------------+-------------------------------------------+--------------------+
 
 Lego also depends on multiple external services:

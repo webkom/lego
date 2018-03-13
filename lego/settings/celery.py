@@ -21,7 +21,7 @@ logger = get_logger()
 @eventlet_pool_started.connect()
 @worker_process_init.connect()
 @beat_init.connect()
-def cassandra_init(*args, **kwargs):
+def celery_init(*args, **kwargs):
     """
     Initialize a clean Cassandra connection.
     """
@@ -42,6 +42,10 @@ def cassandra_init(*args, **kwargs):
     from lego.apps.stats import analytics_client
     analytics_client.default_client = None
     analytics_client.setup_analytics()
+
+    from lego.utils import metrics
+    metrics.pusher = None
+    metrics.setup_pusher()
 
 
 @app.on_configure.connect()

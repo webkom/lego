@@ -99,10 +99,8 @@ LDAP_SERVER = env('LDAP_SERVER')
 LDAP_USER = env('LDAP_USER')
 LDAP_PASSWORD = env('LDAP_PASSWORD')
 
-# STATSD
-STATSD_HOST = env('STATSD_HOST')
-STATSD_PORT = env('STATSD_PORT')
-STATSD_PREFIX = env('STATSD_PREFIX', default='lego')
+# Prometheus
+PUSHGATEWAY = env('PUSHGATEWAY', default=None)
 
 # Analytics
 ANALYTICS_HOST = env('ANALYTICS_HOST', default=None)
