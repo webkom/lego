@@ -1,7 +1,9 @@
+from prometheus_client import Summary
 from rest_framework import filters
 
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.stats.statsd_client import statsd
+
+PERMISSIONS_FILTER_SUMMARY = Summary('permissions_filter', 'Permissions filter queryset')
 
 
 class LegoPermissionFilter(filters.BaseFilterBackend):
@@ -16,7 +18,7 @@ class LegoPermissionFilter(filters.BaseFilterBackend):
 
         return handler
 
-    @statsd.timer('permissions.api_filter_queryset')
+    @PERMISSIONS_FILTER_SUMMARY.time()
     def filter_queryset(self, request, queryset, view):
 
         has_keyword_permissions = getattr(request, 'user_has_perm', False)

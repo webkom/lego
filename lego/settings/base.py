@@ -94,18 +94,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 MIDDLEWARE = [
     'elasticapm.contrib.django.middleware.TracingMiddleware',
-    'lego.utils.middleware.StatsDBeforeMiddleware',
+    'lego.utils.middleware.prometheus.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'lego.utils.middleware.CORSPatchMiddleware',
+    'lego.utils.middleware.cors.CORSPatchMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'lego.utils.middleware.LoggingMiddleware',
-    'lego.utils.middleware.StatsDAfterMiddleware',
+    'lego.utils.middleware.logging.LoggingMiddleware',
+    'lego.utils.middleware.prometheus.PrometheusAfterMiddleware',
 ]
 
 TEMPLATES = [
@@ -174,7 +174,6 @@ CHANNEL_LAYERS = {
     }
 }
 
-STREAM_METRIC_CLASS = 'lego.apps.feed.feed_metrics.FeedMetrics'
 CASSANDRA_DRIVER_KWARGS = {'protocol_version': 4, 'lazy_connect': True}
 
 LDAP_BASE_DN = 'dc=abakus,dc=no'

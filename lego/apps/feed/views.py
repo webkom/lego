@@ -6,7 +6,6 @@ from lego.apps.feed.feeds.group_feed import GroupFeed
 from lego.apps.feed.feeds.notification_feed import NotificationFeed
 from lego.apps.feed.feeds.personal_feed import PersonalFeed
 from lego.apps.feed.feeds.user_feed import UserFeed
-from lego.apps.stats.statsd_client import statsd
 
 from .attr_cache import AttrCache
 from .serializers import AggregatedFeedSerializer, MarkSerializer, NotificationFeedSerializer
@@ -23,7 +22,6 @@ class FeedViewSet(viewsets.GenericViewSet):
     serializer_class = AggregatedFeedSerializer
     ordering = '-activity_id'
 
-    @statsd.timer('feed.attr_cache_context')
     def attach_metadata(self, data):
         """
         Map over the feed here to attach more information to each element.

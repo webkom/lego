@@ -44,6 +44,12 @@ else:
             default_keyspace=settings.STREAM_DEFAULT_KEYSPACE, **settings.CASSANDRA_DRIVER_KWARGS
         )
 
+    @postfork
+    def prometheus_pusher_init():
+        from lego.utils import metrics
+        metrics.pusher = None
+        metrics.setup_pusher()
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
 
