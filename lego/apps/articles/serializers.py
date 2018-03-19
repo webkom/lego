@@ -39,7 +39,8 @@ class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     cover = ImageField(required=False, options={'height': 300})
+    author = PublicUserSerializer(read_only=True, source='created_by')
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'cover', 'description', 'tags', 'created_at', 'pinned')
+        fields = ('id', 'title', 'cover', 'author', 'description', 'tags', 'created_at', 'pinned')
