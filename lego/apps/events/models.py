@@ -261,15 +261,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration.unregister(
             is_merged=self.is_merged, admin_unregistration_reason=admin_unregistration_reason
         )
+        if not admin_unregistration_reason and \
+                self.heed_penalties and self.passed_unregistration_deadline:
+            if not registration.user.penalties.filter(source_event=self).exists():
+                Penalty.objects.create(
+                    user=registration.user, reason=f'Meldte seg av {self.title} for sent.',
+                    weight=1, source_event=self
+                )
         if pool_id:
-            if not admin_unregistration_reason and\
-                    self.heed_penalties and self.passed_unregistration_deadline:
-                if not registration.user.penalties.filter(source_event=self).exists():
-                    Penalty.objects.create(
-                        user=registration.user, reason=f'Meldte seg av {self.title} for sent.',
-                        weight=1, source_event=self
-                    )
-
             with transaction.atomic():
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
                 locked_pool = locked_event.pools.get(id=pool_id)

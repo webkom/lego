@@ -339,6 +339,24 @@ class PenaltyTestCase(BaseTestCase):
         self.assertEqual(penalties_before, 0)
         self.assertEqual(penalties_after, event.penalty_weight)
 
+    def test_penalties_created_on_unregister_from_waiting_list(self):
+        """Test that user gets penalties on unregister from waiting list"""
+        event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
+        event.unregistration_deadline = timezone.now() - timedelta(days=1)
+        event.save()
+
+        registration = event.registrations.first()
+        registration.pool = None
+        registration.save()
+        penalties_before = registration.user.number_of_penalties()
+
+        event.unregister(registration)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertGreater(penalties_after, penalties_before)
+        self.assertEqual(penalties_before, 0)
+        self.assertEqual(penalties_after, event.penalty_weight)
+
     def test_penalties_created_when_not_present_and_not_heed_penalties(self):
         """Test that user does not get penalties when not present and event not heeding penalties"""
         event = Event.objects.get(title='POOLS_WITH_REGISTRATIONS')
