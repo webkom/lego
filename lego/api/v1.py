@@ -35,6 +35,7 @@ from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.surveys.views import SubmissionViewSet, SurveyTemplateViewSet, SurveyViewSet
+from lego.apps.tags.views import TagViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.membership_history import MembershipHistoryViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
@@ -150,3 +151,4 @@ router.register(
     r'surveys/(?P<survey_pk>\d+)/submissions', SubmissionViewSet, base_name='submission'
 )
 router.register(r'survey-templates', SurveyTemplateViewSet, base_name='survey-template')
+router.register(r'tags', TagViewSet)

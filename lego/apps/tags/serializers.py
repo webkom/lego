@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer
 
 from lego.apps.tags.models import Tag
 from lego.apps.tags.validators import validate_tag
+from lego.utils.validators import ReservedNameValidator
 
 
 class TagSerializer(ModelSerializer):
@@ -20,7 +21,26 @@ class TagSerializer(ModelSerializer):
     def get_validators(self):
         validators = super().get_validators()
         validators.append(validate_tag)
+        validators.append(ReservedNameValidator(reserved_names=['popular']))
         return validators
+
+
+class TagListSerializer(serializers.ModelSerializer):
+
+    usages = serializers.IntegerField()
+
+    class Meta:
+        model = Tag
+        fields = ('tag', 'usages')
+
+
+class TagDetailSerializer(serializers.ModelSerializer):
+
+    usages = serializers.IntegerField()
+
+    class Meta:
+        model = Tag
+        fields = ('tag', 'usages', 'related_counts')
 
 
 class TagSerializerMixin(serializers.Serializer):
