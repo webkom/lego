@@ -1,11 +1,8 @@
 from django.contrib.auth.backends import ModelBackend
 from django.db import models
-from prometheus_client import Summary
 
 from lego.apps.permissions.keyword import KeywordPermissions
 from lego.apps.permissions.utils import get_permission_handler
-
-HAS_PERM_SUMMARY = Summary('permissions_has_perm', 'Lego permission backend has_perm')
 
 
 class LegoPermissionBackend(ModelBackend):
@@ -21,7 +18,6 @@ class LegoPermissionBackend(ModelBackend):
     def has_module_perms(self, user_obj, app_label):
         return False
 
-    @HAS_PERM_SUMMARY.time()
     def has_perm(self, user_obj, perm, obj=None):
         if not user_obj.is_anonymous and not user_obj.is_active:
             return False

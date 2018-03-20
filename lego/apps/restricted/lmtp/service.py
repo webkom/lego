@@ -3,7 +3,6 @@ import smtpd
 
 from django.conf import settings
 from django.utils import timezone
-from prometheus_client import Summary
 from structlog import get_logger
 
 from lego.apps.restricted.exceptions import (
@@ -18,8 +17,6 @@ from .parser import LMTPEmailParser
 
 smtpd.__version__ = 'Lego LMTP'
 log = get_logger()
-
-LMTP_PROCESS_MESSAGE_SUMMARY = Summary('lmtp_process_message', 'LMTP server processing message')
 
 
 class LMTPService(BaseCommand, smtpd.SMTPServer):
@@ -52,7 +49,6 @@ class LMTPService(BaseCommand, smtpd.SMTPServer):
         channel.Channel(self, conn, addr)
         log.debug('lmtp_message_accept', address=addr)
 
-    @LMTP_PROCESS_MESSAGE_SUMMARY.time()
     def process_message(self, peer, mailfrom, recipients, data, **kwargs):
         parser = LMTPEmailParser(data, mailfrom, ParserMessageType.BYTES)
 

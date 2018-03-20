@@ -43,10 +43,6 @@ def celery_init(*args, **kwargs):
     analytics_client.default_client = None
     analytics_client.setup_analytics()
 
-    from lego.utils import metrics
-    metrics.pusher = None
-    metrics.setup_pusher()
-
 
 @app.on_configure.connect()
 def on_configure(*args, **kwargs):

@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'channels',
     'django_filters',
     'push_notifications',
-    'elasticapm.contrib.django',
     'lego.utils',
     'lego.apps.users',
     'lego.apps.permissions',
@@ -59,19 +58,6 @@ INSTALLED_APPS = [
     'lego.apps.surveys',
 ]
 
-ELASTIC_APM = {
-    'DEBUG':
-    True,
-    'SERVICE_NAME':
-    'lego',
-    'SECRET_TOKEN':
-    '',
-    'TRANSACTIONS_IGNORE_PATTERNS': [
-        'lego.apps.health.views.HealthView',
-        'django.views.generic.base.TemplateView',
-    ],
-}
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = ('lego.apps.permissions.backends.LegoPermissionBackend', )
@@ -93,8 +79,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 MIDDLEWARE = [
-    'elasticapm.contrib.django.middleware.TracingMiddleware',
-    'lego.utils.middleware.prometheus.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'lego.utils.middleware.cors.CORSPatchMiddleware',
@@ -105,7 +89,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'lego.utils.middleware.logging.LoggingMiddleware',
-    'lego.utils.middleware.prometheus.PrometheusAfterMiddleware',
 ]
 
 TEMPLATES = [
