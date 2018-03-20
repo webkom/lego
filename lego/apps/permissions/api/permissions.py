@@ -1,13 +1,7 @@
-from prometheus_client import Summary
 from rest_framework import permissions
 
 from lego.apps.permissions.actions import action_to_permission
 from lego.apps.permissions.utils import get_permission_handler
-
-API_PERMISSIONS_SUMMARY = Summary('permissions_api_backend', 'API permissions backend', ['method'])
-
-HAS_PERMISSION_TIMER = API_PERMISSIONS_SUMMARY.labels('has_permission')
-HAS_OBJECT_PERMISSION_TIMER = API_PERMISSIONS_SUMMARY.labels('has_object_permission')
 
 
 class LegoPermissions(permissions.BasePermission):
@@ -22,7 +16,6 @@ class LegoPermissions(permissions.BasePermission):
 
         return handler
 
-    @HAS_PERMISSION_TIMER.time()
     def has_permission(self, request, view):
         # Workaround to ensure DjangoModelPermissions are not applied
         # to the root view when using DefaultRouter.
@@ -55,7 +48,6 @@ class LegoPermissions(permissions.BasePermission):
 
         return has_perm
 
-    @HAS_OBJECT_PERMISSION_TIMER.time()
     def has_object_permission(self, request, view, obj):
         if getattr(request, 'user_has_perm', False):
             return True

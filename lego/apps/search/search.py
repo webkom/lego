@@ -1,16 +1,9 @@
-from prometheus_client import Summary
-
 from lego.apps.stats.utils import track
 
 from . import backend
 from .permissions import has_permission
 
-SEARCH_SUMMARY = Summary('search_query', 'Search backend processing query', ['method'])
-AUTOCOMPLETE_TIMER = SEARCH_SUMMARY.labels('autocomplete')
-SEARCH_TIMER = SEARCH_SUMMARY.labels('search')
 
-
-@AUTOCOMPLETE_TIMER.time()
 def autocomplete(query, types, user):
     result = backend.current_backend.autocomplete(query, types)
 
@@ -31,7 +24,6 @@ def autocomplete(query, types, user):
     return result
 
 
-@SEARCH_TIMER.time()
 def search(query, types, filters, user):
     result = backend.current_backend.search(query, types, filters)
 

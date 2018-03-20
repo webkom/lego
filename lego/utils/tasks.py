@@ -1,7 +1,6 @@
 from smtplib import SMTPException
 
 import celery
-from prometheus_client import Summary
 from push_notifications import NotificationError
 from structlog import get_logger
 
@@ -11,9 +10,6 @@ from .email import EmailMessage
 from .push import PushMessage
 
 log = get_logger()
-
-SEND_EMAIL_SUMMARY = Summary('task_send_email', 'Generic celery task for sending emails')
-SEND_PUSH_SUMMARY = Summary('task_send_push', 'Generic celery task for sending push notifications')
 
 
 class AbakusTask(celery.Task):
@@ -44,7 +40,6 @@ class AbakusTask(celery.Task):
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
-@SEND_EMAIL_SUMMARY.time()
 def send_email(self, logger_context=None, **kwargs):
     """
     Generic task to send emails with retries.
@@ -61,7 +56,6 @@ def send_email(self, logger_context=None, **kwargs):
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
-@SEND_EMAIL_SUMMARY.time()
 def send_push(self, logger_context=None, **kwargs):
     """
     Generic task to send push messages.
