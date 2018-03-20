@@ -86,7 +86,6 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     Used by new companies to register interest in Abakus and our services.
     """
     queryset = CompanyInterest.objects.all()
-    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == 'list':
