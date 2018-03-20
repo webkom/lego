@@ -44,4 +44,4 @@ class TagViewSet(
 
     @decorators.list_route(methods=['GET'])
     def popular(self, request):
-        return Response(self.get_queryset().order_by('-usages').values('tag', 'usages')[:15])
+        return Response(list(self.get_queryset().order_by('-usages').values('tag', 'usages')[:15]))
