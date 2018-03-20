@@ -9,6 +9,7 @@ from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST
 from lego.apps.quotes.models import Quote
+from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, Penalty, User
 
 
@@ -39,6 +40,7 @@ class SiteMetaViewSet(viewsets.ViewSet):
             'bdb': (Company, CREATE),
             'announcements': (Announcement, CREATE),
             'penalties': (Penalty, CREATE),
+            'surveys': (Survey, CREATE),
             'groups': (AbakusGroup, CREATE),
             'email': (EmailList, CREATE),
             'users': (User, CREATE),
