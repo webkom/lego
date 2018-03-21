@@ -1,6 +1,7 @@
 from urllib.parse import unquote
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.validators import URLValidator
 from rest_framework import serializers
 
 from lego.apps.files.constants import IMAGE
@@ -8,6 +9,8 @@ from lego.apps.files.thumbor import generate_url
 
 from .models import File
 from .storage import storage
+
+url_validator = URLValidator()
 
 
 class FileField(serializers.PrimaryKeyRelatedField):
@@ -23,6 +26,7 @@ class FileField(serializers.PrimaryKeyRelatedField):
     def __init__(self, allowed_types=None, **kwargs):
         super().__init__(**kwargs)
         self.allowed_types = allowed_types
+        self.access_granted = False
 
     def get_queryset(self):
         if not self.allowed_types:
@@ -35,16 +39,35 @@ class FileField(serializers.PrimaryKeyRelatedField):
     def to_representation(self, value):
         return storage.generate_signed_url(File.bucket, value.pk)
 
-    def to_internal_value(self, data):
+    def run_validation(self, data=None):
+        if data is None:
+            data = ''
+
+        # Remove urls, url is not valid as a file
+        self.access_granted = False
         try:
-            key, token = data.split(':')
-        except ValueError:
-            self.fail('incorrect_token')
+            url_validator(str(data))
+        except ValidationError:
+            pass
+        else:
+            data = getattr(self.parent.instance, f'{self.source}_id')
+            self.access_granted = True
+
+        return super().run_validation(data)
+
+    def to_internal_value(self, data):
+        if self.access_granted:
+            key, token = data, None
+        else:
+            try:
+                key, token = data.split(':')
+            except ValueError:
+                self.fail('incorrect_token')
 
         try:
             file = self.get_queryset().get(key=key)
 
-            if file.token != token:
+            if file.token != token and not self.access_granted:
                 self.fail('incorrect_token')
 
             return file
