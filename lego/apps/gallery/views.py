@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from lego.apps.gallery.filters import GalleryFilterSet
 from lego.apps.gallery.pagination import GalleryPicturePagination
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.permissions.constants import EDIT, OBJECT_PERMISSIONS_FIELDS
+from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
 
 from .models import Gallery, GalleryPicture
 from .serializers import (
@@ -43,7 +43,9 @@ class GalleryPictureViewSet(viewsets.ModelViewSet):
     """
     Nested viewset used to manage pictures in a gallery.
     """
-    queryset = GalleryPicture.objects.all().select_related('file')
+    queryset = GalleryPicture.objects.all().select_related('file').prefetch_related(
+        'comments', 'taggees'
+    )
     serializer_class = GalleryPictureSerializer
     pagination_class = GalleryPicturePagination
 
@@ -51,8 +53,6 @@ class GalleryPictureViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         gallery_id = self.kwargs.get('gallery_pk', None)
         if gallery_id:
-            queryset = queryset.filter(gallery_id=gallery_id)
-            if self.request.user.has_perm(EDIT, queryset):
-                return queryset
-            return queryset.filter(active=True)
+            return queryset.filter(gallery_id=gallery_id)
+
         return GalleryPicture.objects.none()
