@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from lego.apps.gallery.filters import GalleryFilterSet
 from lego.apps.gallery.pagination import GalleryPicturePagination
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.permissions.constants import EDIT, OBJECT_PERMISSION_FIELDS
+from lego.apps.permissions.constants import EDIT, OBJECT_PERMISSIONS_FIELDS
 
 from .models import Gallery, GalleryPicture
 from .serializers import (
@@ -22,7 +22,7 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if self.action != 'list':
             return super().get_queryset().prefetch_related(
-                'photographers', *OBJECT_PERMISSION_FIELDS
+                'photographers', *OBJECT_PERMISSIONS_FIELDS
             )
 
         return super().get_queryset().annotate(picture_count=Count('pictures')
@@ -33,7 +33,7 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return GalleryListSerializer
 
         if self.action in ['create', 'partial_update', 'update', 'retrieve']:
-            if self.request.user.is_authenticated:
+            if self.request and self.request.user.is_authenticated:
                 return GalleryAdminSerializer
 
         return super().get_serializer_class()

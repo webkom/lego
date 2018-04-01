@@ -8,7 +8,7 @@ from lego.apps.files.fields import FileField, ImageField
 from lego.apps.gallery.fields import GalleryCoverField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
-from lego.utils.serializers import BasisModelObjectPermissionSerializer, BasisModelSerializer
+from lego.utils.serializers import BasisModelSerializer, ObjectPermissionsSerializerMixin
 
 from .models import Gallery, GalleryPicture
 
@@ -71,7 +71,7 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
         return {'gallery': gallery, **attrs}
 
 
-class GallerySerializer(BasisModelObjectPermissionSerializer):
+class GallerySerializer(BasisModelSerializer):
 
     cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
     photographers = PublicUserField(many=True, queryset=User.objects.all())
@@ -93,10 +93,10 @@ class GallerySerializer(BasisModelObjectPermissionSerializer):
         read_only_fields = ('created_at', 'pictures')
 
 
-class GalleryAdminSerializer(GallerySerializer):
+class GalleryAdminSerializer(ObjectPermissionsSerializerMixin, GallerySerializer):
     class Meta:
         model = Gallery
-        fields = GallerySerializer.Meta.fields + BasisModelObjectPermissionSerializer.Meta.fields
+        fields = GallerySerializer.Meta.fields + ObjectPermissionsSerializerMixin.Meta.fields
         read_only_fields = GallerySerializer.Meta.read_only_fields
 
 

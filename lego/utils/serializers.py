@@ -39,7 +39,7 @@ class BasisModelSerializer(serializers.ModelSerializer):
         super().save(**kwargs)
 
 
-class BasisModelObjectPermissionSerializer(BasisModelSerializer):
+class ObjectPermissionsSerializerMixin(serializers.Serializer):
     class Meta:
         fields = (
             'can_edit_users',
