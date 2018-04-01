@@ -32,6 +32,22 @@ class GalleryViewSetTestCase(BaseAPITestCase):
             'active': True
         }
 
+    def test_list_galleries_denied_user(self, mock_signer):
+        """Permitted user should not be able to se the gallery."""
+        self.client.force_login(self.denied_user)
+
+        response = self.client.get(f'{self.url}')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(0, len(response.data['results']))
+
+    def test_list_galleries_permitted_user(self, mock_signer):
+        """Permitted user should see the gallery."""
+        self.client.force_login(self.permitted_user)
+
+        response = self.client.get(f'{self.url}')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(response.data['results']))
+
     def test_detail_gallery_permitted_user(self, mock_signer):
         """Permitted user should be able to see all pictures."""
         self.client.force_login(self.permitted_user)
