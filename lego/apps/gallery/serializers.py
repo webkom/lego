@@ -40,7 +40,7 @@ class GalleryListSerializer(BasisModelSerializer):
         fields = ('id', 'title', 'cover', 'location', 'taken_at', 'created_at', 'picture_count')
 
     def get_picture_count(self, gallery):
-        return gallery.pictures.count()
+        return gallery.picture_count
 
 
 class GalleryPictureSerializer(serializers.ModelSerializer):

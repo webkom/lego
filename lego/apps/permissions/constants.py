@@ -4,3 +4,9 @@ CREATE = 'create'
 VIEW = 'view'
 EDIT = 'edit'
 DELETE = 'delete'
+
+OBJECT_PERMISSION_FIELDS = (
+    'can_view_groups',
+    'can_edit_groups',
+    'can_edit_users',
+)

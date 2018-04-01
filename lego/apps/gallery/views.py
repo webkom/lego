@@ -1,9 +1,10 @@
+from django.db.models import Count
 from rest_framework import viewsets
 
 from lego.apps.gallery.filters import GalleryFilterSet
 from lego.apps.gallery.pagination import GalleryPicturePagination
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.permissions.constants import EDIT
+from lego.apps.permissions.constants import EDIT, OBJECT_PERMISSION_FIELDS
 
 from .models import Gallery, GalleryPicture
 from .serializers import GalleryListSerializer, GalleryPictureSerializer, GallerySerializer
@@ -18,8 +19,12 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action != 'list':
-            return super().get_queryset().prefetch_related('photographers')
-        return super().get_queryset()
+            return super().get_queryset().prefetch_related(
+                'photographers', *OBJECT_PERMISSION_FIELDS
+            )
+
+        return super().get_queryset().annotate(picture_count=Count('pictures')
+                                               ).select_related('cover')
 
     def get_serializer_class(self):
         if self.action == 'list':
