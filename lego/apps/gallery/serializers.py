@@ -89,8 +89,15 @@ class GallerySerializer(BasisModelObjectPermissionSerializer):
             'event',
             'photographers',
             'cover',
-        ) + BasisModelObjectPermissionSerializer.Meta.fields
+        )
         read_only_fields = ('created_at', 'pictures')
+
+
+class GalleryAdminSerializer(GallerySerializer):
+    class Meta:
+        model = Gallery
+        fields = GallerySerializer.Meta.fields + BasisModelObjectPermissionSerializer.Meta.fields
+        read_only_fields = GallerySerializer.Meta.read_only_fields
 
 
 class GallerySearchSerializer(serializers.ModelSerializer):
