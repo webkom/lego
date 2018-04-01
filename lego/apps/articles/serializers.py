@@ -7,7 +7,7 @@ from lego.apps.files.fields import ImageField
 from lego.apps.reactions.serializers import GroupedReactionSerializer, ReactionSerializer
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.users import PublicUserSerializer
-from lego.utils.serializers import BasisModelSerializer
+from lego.utils.serializers import BasisModelSerializer, ObjectPermissionsSerializerMixin
 
 
 class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -25,6 +25,12 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             'id', 'title', 'cover', 'author', 'description', 'comments', 'comment_target',
             'reactions', 'reactions_grouped', 'tags', 'content', 'created_at', 'pinned'
         )
+
+
+class DetailedArticleAdminSerializer(ObjectPermissionsSerializerMixin, DetailedArticleSerializer):
+    class Meta:
+        model = Article
+        fields = DetailedArticleSerializer.Meta.fields + ObjectPermissionsSerializerMixin.Meta.fields
 
 
 class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
