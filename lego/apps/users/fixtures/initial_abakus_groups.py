@@ -60,16 +60,26 @@ initial_tree = {
                     }, {}],
                     'Bedkom': [
                         {
-                            'type': GROUP_COMMITTEE,
-                            'logo_id': 'abakus_bedkom.png',
-                            'permissions': ['/sudo/admin/companyinterest/']
+                            'type':
+                            GROUP_COMMITTEE,
+                            'logo_id':
+                            'abakus_bedkom.png',
+                            'permissions': [
+                                '/sudo/admin/companyinterest/', '/sudo/admin/surveys/',
+                                '/sudo/admin/submissions/'
+                            ]
                         }, {}
                     ],
                     'Fagkom': [
                         {
-                            'type': GROUP_COMMITTEE,
-                            'logo_id': 'abakus_fagkom.png',
-                            'permissions': ['/sudo/admin/companyinterest/']
+                            'type':
+                            GROUP_COMMITTEE,
+                            'logo_id':
+                            'abakus_fagkom.png',
+                            'permissions': [
+                                '/sudo/admin/companyinterest/', '/sudo/admin/surveys/',
+                                '/sudo/admin/submissions/'
+                            ]
                         }, {}
                     ],
                     'Koskom': [{
