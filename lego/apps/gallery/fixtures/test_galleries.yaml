@@ -7,3 +7,5 @@
     taken_at: '2017-01-01'
     can_view_groups:
       - 1
+    can_edit_users:
+      - 1
