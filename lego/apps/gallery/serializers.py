@@ -8,7 +8,7 @@ from lego.apps.files.fields import FileField, ImageField
 from lego.apps.gallery.fields import GalleryCoverField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
-from lego.utils.serializers import BasisModelSerializer
+from lego.utils.serializers import BasisModelSerializer, ObjectPermissionsSerializerMixin
 
 from .models import Gallery, GalleryPicture
 
@@ -40,7 +40,7 @@ class GalleryListSerializer(BasisModelSerializer):
         fields = ('id', 'title', 'cover', 'location', 'taken_at', 'created_at', 'picture_count')
 
     def get_picture_count(self, gallery):
-        return gallery.pictures.count()
+        return gallery.picture_count
 
 
 class GalleryPictureSerializer(serializers.ModelSerializer):
@@ -91,6 +91,13 @@ class GallerySerializer(BasisModelSerializer):
             'cover',
         )
         read_only_fields = ('created_at', 'pictures')
+
+
+class GalleryAdminSerializer(ObjectPermissionsSerializerMixin, GallerySerializer):
+    class Meta:
+        model = Gallery
+        fields = GallerySerializer.Meta.fields + ObjectPermissionsSerializerMixin.Meta.fields
+        read_only_fields = GallerySerializer.Meta.read_only_fields
 
 
 class GallerySearchSerializer(serializers.ModelSerializer):

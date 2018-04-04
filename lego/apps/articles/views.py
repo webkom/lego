@@ -2,14 +2,18 @@ from rest_framework import viewsets
 
 from lego.apps.articles.filters import ArticleFilterSet
 from lego.apps.articles.models import Article
-from lego.apps.articles.serializers import DetailedArticleSerializer, PublicArticleSerializer
+from lego.apps.articles.serializers import (
+    DetailedArticleAdminSerializer, DetailedArticleSerializer, PublicArticleSerializer
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
 
 
 class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Article.objects.all()
     ordering = '-created_at'
+    serializer_class = DetailedArticleSerializer
     filter_class = ArticleFilterSet
 
     def get_queryset(self):
@@ -19,12 +23,13 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return queryset
 
         return queryset.prefetch_related(
-            'comments',
-            'comments__created_by',
+            'comments', 'comments__created_by', *OBJECT_PERMISSIONS_FIELDS
         )
 
     def get_serializer_class(self):
         if self.action == 'list':
             return PublicArticleSerializer
+        if self.request and self.request.user.is_authenticated:
+            return DetailedArticleAdminSerializer
 
-        return DetailedArticleSerializer
+        return super().get_serializer_class()

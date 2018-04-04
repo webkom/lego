@@ -1,6 +1,8 @@
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from rest_framework import serializers
 
+from lego.apps.users.fields import AbakusGroupField, PublicUserField
+from lego.apps.users.models import AbakusGroup, User
 from lego.utils.content_types import string_to_instance
 
 
@@ -35,3 +37,23 @@ class BasisModelSerializer(serializers.ModelSerializer):
         request = self.context['request']
         kwargs['current_user'] = request.user
         super().save(**kwargs)
+
+
+class ObjectPermissionsSerializerMixin(serializers.Serializer):
+    class Meta:
+        fields = (
+            'can_edit_users',
+            'can_view_groups',
+            'can_edit_groups',
+            'require_auth',
+        )
+
+    can_edit_users = PublicUserField(
+        queryset=User.objects.all(), allow_null=True, required=False, many=True
+    )
+    can_edit_groups = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), allow_null=True, required=False, many=True
+    )
+    can_view_groups = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), allow_null=True, required=False, many=True
+    )
