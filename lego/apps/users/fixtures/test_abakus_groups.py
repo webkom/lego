@@ -112,12 +112,26 @@ test_tree = {
                         '/sudo/admin/joblistings/',
                     ]
                 }, {
-                    'Bedkom': [{
-                        'type': GROUP_COMMITTEE
-                    }, {}],
-                    'Fagkom': [{
-                        'type': GROUP_COMMITTEE
-                    }, {}],
+                    'Bedkom': [
+                        {
+                            'type':
+                            GROUP_COMMITTEE,
+                            'permissions': [
+                                '/sudo/admin/companyinterest/', '/sudo/admin/surveys/',
+                                '/sudo/admin/submissions/'
+                            ]
+                        }, {}
+                    ],
+                    'Fagkom': [
+                        {
+                            'type':
+                            GROUP_COMMITTEE,
+                            'permissions': [
+                                '/sudo/admin/companyinterest/', '/sudo/admin/surveys/',
+                                '/sudo/admin/submissions/'
+                            ]
+                        }, {}
+                    ],
                     'Webkom': [{
                         'type': GROUP_COMMITTEE,
                         'permissions': ['/sudo/'],
@@ -184,6 +198,7 @@ test_tree = {
             ]
         }
     ],
+    'Students': [{}, {}],
 }
 
 
