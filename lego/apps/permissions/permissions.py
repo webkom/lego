@@ -207,7 +207,14 @@ class PermissionHandler:
     def has_object_permissions(self, user, perm, obj):
         if perm in self.safe_methods:
             # Check can_view
-            return _check_intersection(user.all_groups, obj.can_view_groups.all())
+            if _check_intersection(
+                user.all_groups,
+                obj.can_view_groups.all() | obj.can_edit_groups.all()
+            ):
+                return True
+            elif user in obj.can_edit_users.all():
+                return True
+            return False
         else:
             # Check can_edit
             if _check_intersection(user.all_groups, obj.can_edit_groups.all()):

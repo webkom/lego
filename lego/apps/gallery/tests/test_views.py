@@ -21,8 +21,6 @@ class GalleryViewSetTestCase(BaseAPITestCase):
         self.denied_user = User.objects.get(username='pleb')
         self.url = '/api/v1/galleries/'
 
-        self.admin_group = AbakusGroup.objects.get(name='GalleryAdminTest')
-        self.admin_group.add_user(self.permitted_user)
         self.read_group = AbakusGroup.objects.get(name='GalleryTest')
         self.read_group.add_user(self.read_only_user)
 
@@ -91,12 +89,39 @@ class GalleryViewSetTestCase(BaseAPITestCase):
         response = self.client.post(f'{self.url}1/pictures/', self.add_picture_data)
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
+    def test_add_picture_no_user(self, mock_signer):
+        response = self.client.post(f'{self.url}1/pictures/', self.add_picture_data)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
     def test_delete_picture_permitted(self, mock_signer):
         """The permitted user is able to delete pictures."""
         self.client.force_login(self.permitted_user)
 
         response = self.client.delete(f'{self.url}1/pictures/1/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+    def test_view_picture_denied_user(self, mock_signer):
+        """The permitted user is not able to view picture"""
+        self.client.force_login(self.denied_user)
+        response = self.client.get(f'{self.url}1/pictures/1/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_get_picture_no_user(self, mock_signer):
+        """The picture is not available for non-authed users"""
+        response = self.client.get(f'{self.url}1/pictures/1/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_get_picture_permitted(self, mock_signer):
+        """The permitted user is able to view the image."""
+        self.client.force_login(self.permitted_user)
+        response = self.client.get(f'{self.url}1/pictures/1/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_get_picture_permitted_read_only(self, mock_signer):
+        """The permitted user is able to delete pictures."""
+        self.client.force_login(self.read_only_user)
+        response = self.client.get(f'{self.url}1/pictures/1/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_edit_picture_permitted(self, mock_signer):
         """The permitted user is able to update pictures"""
@@ -127,8 +152,6 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
         self.denied_user = User.objects.get(username='pleb')
         self.url = '/api/v1/galleries/'
 
-        self.admin_group = AbakusGroup.objects.get(name='GalleryAdminTest')
-        self.admin_group.add_user(self.permitted_user)
         self.read_group = AbakusGroup.objects.get(name='GalleryTest')
         self.read_group.add_user(self.read_only_user)
 
@@ -179,8 +202,25 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(1, len(response.data['results']))
 
+    def test_active_picture_non_allowed_user(self, mock_signer):
+        self.client.force_login(self.denied_user)
+        response = self.client.get(f'{self.url}1/pictures/1/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_inactive_picture_non_allowed_user(self, mock_signer):
+        self.client.force_login(self.denied_user)
+        response = self.client.get(f'{self.url}1/pictures/2/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_active_picture_non_allowed_no_user(self, mock_signer):
+        response = self.client.get(f'{self.url}1/pictures/1/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_inactive_picture_non_allowed_no_user(self, mock_signer):
+        response = self.client.get(f'{self.url}1/pictures/2/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
     def test_detail_gallery_denied(self, mock_signer):
-        """Users should be able to fetch gallery."""
         self.client.force_login(self.denied_user)
 
         response = self.client.get(f'{self.url}1/')
@@ -207,10 +247,8 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
     def test_add_picture_no_user(self, mock_signer):
         """Non logged in user is not be able to add images."""
-        self.client.force_login(self.read_only_user)
-
         response = self.client.post(f'{self.url}1/pictures/', self.add_picture_data)
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_delete_picture_no_user(self, mock_signer):
         """Non logged i user is not able to delete pictures."""
@@ -223,6 +261,18 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
         response = self.client.delete(f'{self.url}1/pictures/1/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+    def test_edit_picture_permitted2(self, mock_signer):
+        """The permitted user is able to update pictures"""
+        self.client.force_login(self.read_only_user)
+
+        response = self.client.patch(
+            f'{self.url}1/pictures/1/', {
+                'active': True,
+                'description': 'Test description'
+            }
+        )
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_edit_picture_permitted(self, mock_signer):
         """The permitted user is able to update pictures"""
