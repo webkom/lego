@@ -1,5 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -27,6 +28,15 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         elif self.action in ['retrieve']:
             return SurveyReadDetailedSerializer
         return SurveyReadSerializer
+
+    @list_route(methods=['GET'])
+    def mine(self, request):
+        """
+        Read-only endpoint used to retrieve all surveys the user has created
+        """
+        queryset = self.get_queryset().filter(created_by=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class SurveyTemplateViewSet(

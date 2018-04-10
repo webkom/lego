@@ -60,7 +60,7 @@ class SurveyReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'event', 'template_type')
+        fields = ('id', 'title', 'active_from', 'event', 'template_type', 'created_by')
 
 
 class SubmissionReadSerializer(BasisModelSerializer):
