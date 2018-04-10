@@ -249,6 +249,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     REQUIRED_FIELDS = ['email']
 
     backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
+    unanswered_surveys = ArrayField(models.IntegerField(), default=[])
 
     class Meta:
         permission_handler = UserPermissionHandler()
@@ -292,6 +293,22 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
             # Return the internal address if all requirements for a GSuite account are met.
             return internal_address
         return self.email
+
+    def update_unanswered_surveys(self):
+        # TODO: optimize and test properly
+        from lego.apps.surveys.models import Survey
+        active_surveys = Survey.objects.filter(active_from__lte=timezone.now())\
+            .filter(template_type__isnull=True)
+        unanswered_surveys = filter(
+            lambda survey:
+                len(survey.submissions.all()) != survey.event.registrations.filter(
+                    presence='PRESENT'
+                )
+                and survey.event.registrations.filter(user=self).exists(),
+            active_surveys.all()
+        )
+        self.unanswered_surveys = list(map(lambda survey: survey.id, unanswered_surveys))
+        self.save()
 
     @profile_picture.setter
     def profile_picture(self, value):

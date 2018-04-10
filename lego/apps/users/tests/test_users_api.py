@@ -5,7 +5,9 @@ from django.contrib.auth import authenticate
 from django.urls import reverse
 from rest_framework import status
 
-from lego.apps.events.models import Event
+from lego.apps.events.constants import PRESENT
+from lego.apps.events.models import Event, Registration
+from lego.apps.surveys.models import Survey
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
@@ -18,6 +20,25 @@ _test_user_data = {
     'last_name': 'test_user',
     'email': 'new@testuser.com',
     'gender': 'male'
+}
+
+_test_event = {
+    'title': 'Event1',
+    'description': 'Ingress1',
+    'text': 'Ingress1',
+    'event_type': 'event',
+    'location': 'F252',
+    'start_time': '2011-09-01T13:20:30Z',
+    'end_time': '2012-09-01T13:20:30Z',
+    'merge_time': '2012-01-01T13:20:30Z'
+}
+
+_test_pool = {
+    'event': 1,
+    'name': 'Initial Pool',
+    'capacity': 10,
+    'activation_date': '2012-09-01T10:20:30Z',
+    'permission_groups': [1]
 }
 
 
@@ -384,7 +405,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
         fields = (
             'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'is_active',
-            'penalties'
+            'penalties', 'unanswered_surveys'
         )
         for field in fields:
             if field == 'penalties':
@@ -415,3 +436,19 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.assertEqual(len(self.user.penalties.valid()), len(response.data['penalties']))
         self.assertEqual(len(response.data['penalties']), 1)
         self.assertEqual(len(response.data['penalties'][0]), 7)
+
+    def test_unanswered_surveys(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(reverse('api:v1:user-me'))
+        self.assertEqual([], response.data['unanswered_surveys'])
+
+        event = Event.objects.create(**_test_event)
+        print('event', event, event.id)
+        Registration.objects.create(event=event, user=self.user, presence=PRESENT)
+        Survey.objects.create(event=event)
+
+        response = self.client.get(reverse('api:v1:user-me'))
+        print('response', response, response.data)
+        print('regs', Registration.objects.get(user=self.user, pool=None).event.id)
+        self.assertEqual([event.id], response.data['unanswered_surveys'])

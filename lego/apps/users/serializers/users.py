@@ -129,5 +129,5 @@ class MeSerializer(serializers.ModelSerializer):
             'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'email_address',
             'email_lists_enabled', 'profile_picture', 'gender', 'allergies', 'is_active',
             'is_student', 'abakus_groups', 'is_abakus_member', 'is_abakom_member', 'penalties',
-            'ical_token'
+            'ical_token', 'unanswered_surveys'
         )

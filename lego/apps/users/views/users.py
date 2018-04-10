@@ -71,6 +71,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         Read-only endpoint used to retrieve information about the authenticated user.
         """
+        request.user.update_unanswered_surveys()
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
