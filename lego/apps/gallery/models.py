@@ -27,6 +27,7 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     event = models.ForeignKey(
         'events.Event', related_name='galleries', null=True, on_delete=models.SET_NULL
     )
+    public_metadata = models.BooleanField(default=False)
 
 
 class GalleryPicture(models.Model):

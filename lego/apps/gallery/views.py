@@ -1,5 +1,8 @@
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 
 from lego.apps.gallery.filters import GalleryFilterSet
 from lego.apps.gallery.pagination import GalleryPicturePagination
@@ -8,7 +11,8 @@ from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
 
 from .models import Gallery, GalleryPicture
 from .serializers import (
-    GalleryAdminSerializer, GalleryListSerializer, GalleryPictureSerializer, GallerySerializer
+    GalleryAdminSerializer, GalleryListSerializer, GalleryMetadataSerializer,
+    GalleryPictureSerializer, GallerySerializer
 )
 
 
@@ -27,6 +31,15 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         return super().get_queryset().annotate(picture_count=Count('pictures')
                                                ).select_related('cover')
+
+    @detail_route(
+        methods=['get'], serializer_class=GalleryMetadataSerializer,
+        queryset=Gallery.objects.filter(public_metadata=True), permission_classes=[]
+    )
+    def metadata(self, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs['pk'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.action == 'list':
