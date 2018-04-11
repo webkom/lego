@@ -15,7 +15,7 @@ log = get_logger()
 def send_survey_mail(self, logger_context=None):
     self.setup_logger(logger_context)
 
-    surveys = Survey.objects.filter(active_from__lte=timezone.now(), sent=False)
+    surveys = Survey.objects.filter(active_from__lte=timezone.now(), sent=False, template_type=None)
     for survey in surveys.all():
         for registration in survey.event.registrations.filter(presence=PRESENT):
             notification = SurveyNotification(registration.user, survey=survey)

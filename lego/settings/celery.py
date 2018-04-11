@@ -95,7 +95,7 @@ schedule = {
         'schedule': crontab(hour='*', minute=0)
     },
     'notify_user_about_new_survey': {
-        'task': 'lego.apps.surveys.tasks.survey_mail',
+        'task': 'lego.apps.surveys.tasks.send_survey_mail',
         'schedule': crontab(minute='*/10')
     }
 }
