@@ -4,10 +4,9 @@
 
 Hei, {{ name }}!
 
-Du har en ny undersøkelse å svare på for arrangement {{ event }}.
+Du har en ny undersøkelse å svare på for arrangementet {{ event }}. 
 
-Å ikke svare på undersøkelsen innen fristen vil medføre en prikk.
-
+Du vil ikke ha mulighet til å melde deg på et nytt arrangement på abakus.no før dette er gjort.
 
 Du kan svare på undersøkelsen ved å gå til {{ frontend_url }}/surveys/{{ survey }}/answer
 
