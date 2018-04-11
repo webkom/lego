@@ -1,5 +1,6 @@
 from django.db import models
 
+from lego.apps.content.fields import ContentField
 from lego.apps.content.models import SlugModel
 from lego.apps.files.models import FileField
 from lego.apps.flatpages.permissions import PagePermissionHandler
@@ -8,7 +9,7 @@ from lego.utils.models import BasisModel
 
 class Page(BasisModel, SlugModel):
     title = models.CharField('title', max_length=200)
-    content = models.TextField('content')
+    content = ContentField(allow_images=True)
     picture = FileField()
     slug_field = 'title'
 
