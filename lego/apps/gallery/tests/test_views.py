@@ -287,3 +287,33 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
         self.assertTrue(GalleryPicture.objects.get(id=2).active)
+
+
+class GalleryViewSetMetadataTestCase(BaseAPITestCase):
+
+    fixtures = [
+        'test_abakus_groups.yaml',
+        'test_users.yaml',
+        'test_galleries.yaml',
+    ]
+
+    def setUp(self):
+        self.url = '/api/v1/galleries/'
+        self.gallery = Gallery.objects.get(pk=1)
+
+    def test_public_metadata(self):
+        self.gallery.public_metadata = True
+        self.gallery.save()
+        response = self.client.get(f'{self.url}1/metadata/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        data = response.json()
+        self.assertEqual(self.gallery.pk, data['id'])
+        self.assertEqual(self.gallery.title, data['title'])
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_public_metadata_disabled(self):
+        self.gallery.public_metadata = False
+        self.gallery.save()
+        response = self.client.get(f'{self.url}1/metadata/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)

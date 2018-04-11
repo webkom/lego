@@ -80,15 +80,8 @@ class GallerySerializer(BasisModelSerializer):
     class Meta:
         model = Gallery
         fields = (
-            'id',
-            'title',
-            'description',
-            'location',
-            'taken_at',
-            'created_at',
-            'event',
-            'photographers',
-            'cover',
+            'id', 'title', 'description', 'location', 'taken_at', 'created_at', 'event',
+            'photographers', 'cover', 'public_metadata'
         )
         read_only_fields = ('created_at', 'pictures')
 
@@ -108,4 +101,18 @@ class GallerySearchSerializer(serializers.ModelSerializer):
             'title',
             'location',
             'description',
+        )
+
+
+class GalleryMetadataSerializer(serializers.ModelSerializer):
+
+    cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
+
+    class Meta:
+        model = Gallery
+        fields = (
+            'id',
+            'title',
+            'description',
+            'cover',
         )
