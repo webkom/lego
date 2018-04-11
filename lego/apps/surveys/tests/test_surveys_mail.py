@@ -31,7 +31,8 @@ class SurveyMailTestCase(BaseTestCase):
         self.assertEmailContains(send_mail_mock, opening)
 
     def test_generate_email_event(self, send_mail_mock):
-        event = 'Du har en ny undersøkelse å svare på for arrangement ' + self.survey.event.title \
+        event = 'Du har en ny undersøkelse å svare på for arrangementet ' \
+                + self.survey.event.title \
                 + '.'
         self.assertEmailContains(send_mail_mock, event)
 
