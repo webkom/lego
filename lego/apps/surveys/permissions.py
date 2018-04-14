@@ -51,5 +51,5 @@ class SubmissionPermissions(permissions.BasePermission):
                    survey.submissions.get(id=view.kwargs['pk']).user_id is user.id
         if request.query_params.get('user', False):
             return user_attended_event and int(request.query_params.get('user', False)) is \
-                   int(user.id) and survey.submissions.filter(user=user).exists()
+                   int(user.id)
         return False

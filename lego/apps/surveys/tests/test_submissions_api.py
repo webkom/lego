@@ -52,6 +52,7 @@ class SubmissionViewSetTestCase(APITestCase):
         self.attending_group.add_user(self.attended_user)
         self.regular_user = User.objects.get(username='abakule')
 
+    # Create
     def test_create_admin(self):
         """Admin users should be able to create submissions"""
         self.client.force_authenticate(user=self.admin_user)
@@ -70,6 +71,7 @@ class SubmissionViewSetTestCase(APITestCase):
         response = self.client.post(_get_list_url(1), submission_data(self.regular_user))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    # Detail
     def test_detail_admin(self):
         """Admin users should be able to see detailed submissions"""
         self.client.force_authenticate(user=self.admin_user)
@@ -98,6 +100,34 @@ class SubmissionViewSetTestCase(APITestCase):
         response = self.client.get(_get_detail_url(1, 1))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    # Check if user has answered survey
+    def test_answered_admin(self):
+        """Admin users should be able to check if they have answered a survey"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.get(_get_list_url(1) + '?user=' + str(self.admin_user.id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data)
+
+    def test_answered_attended_other(self):
+        """Users who attended the event should be able to check if they have answered a survey"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.get(_get_list_url(1) + '?user=' + str(self.attended_user.id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data)
+        self.assertFalse(response.data.get('results', False))
+
+        self.client.post(_get_list_url(1), submission_data(self.attended_user))
+        response = self.client.get(_get_list_url(1) + '?user=' + str(self.attended_user.id))
+        self.assertTrue(response.data.get('results', False))
+
+    def test_answered_regular(self):
+        """Users should not be able to check if they have answered a survey if they haven't
+        attended the event"""
+        self.client.force_authenticate(user=self.regular_user)
+        response = self.client.get(_get_list_url(1) + '?user=' + str(self.regular_user.id))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    # List
     def test_list_admin(self):
         """Users with permissions should be able to see submissions list view"""
         self.client.force_authenticate(user=self.admin_user)
@@ -116,6 +146,7 @@ class SubmissionViewSetTestCase(APITestCase):
         response = self.client.get(_get_list_url(1))
         self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
 
+    # Edit
     def test_edit_admin(self):
         """Not even Admin users should be able to edit submissions"""
         self.client.force_authenticate(user=self.admin_user)
@@ -134,6 +165,7 @@ class SubmissionViewSetTestCase(APITestCase):
         response = self.client.patch(_get_detail_url(1, 1), submission_data(self.attended_user))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    # Create
     def test_create_answer(self):
         """Check that every field is created successfully"""
         self.client.force_authenticate(user=self.admin_user)
