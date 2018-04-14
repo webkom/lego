@@ -6,6 +6,7 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.fields import CompanyField
 from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
+from lego.apps.events.constants import PRESENT
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
@@ -84,6 +85,29 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             'is_merged', 'heed_penalties', 'created_by', 'is_abakom_only', 'registration_count'
         )
         read_only = True
+
+
+class EventForSurveySerializer(EventReadSerializer):
+    cover = ImageField(required=False, options={'height': 500})
+    thumbnail = ImageField(
+        source='cover', required=False, options={
+            'height': 500,
+            'width': 500,
+            'smart': True
+        }
+    )
+    attended_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', 'title', 'cover', 'event_type', 'thumbnail', 'registration_count',
+            'waiting_registration_count', 'attended_count'
+        )
+        read_only = True
+
+    def get_attended_count(self, event):
+        return event.registrations.filter(presence=PRESENT).count()
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):

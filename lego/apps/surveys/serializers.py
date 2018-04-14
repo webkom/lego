@@ -1,7 +1,7 @@
 from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 
-from lego.apps.events.serializers.events import EventReadSerializer
+from lego.apps.events.serializers.events import EventForSurveySerializer
 from lego.apps.surveys.constants import QUESTION_TYPES
 from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -56,7 +56,7 @@ class AnswerCreateAndUpdateSerializer(BasisModelSerializer):
 
 
 class SurveyReadSerializer(BasisModelSerializer):
-    event = EventReadSerializer()
+    event = EventForSurveySerializer()
 
     class Meta:
         model = Survey
@@ -100,7 +100,7 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
 
 class SurveyReadDetailedSerializer(BasisModelSerializer):
     questions = QuestionSerializer(many=True)
-    event = EventReadSerializer()
+    event = EventForSurveySerializer()
 
     class Meta:
         model = Survey
