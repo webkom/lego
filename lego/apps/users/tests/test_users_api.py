@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from django.urls import reverse
 from rest_framework import status
 
-from lego.apps.events.constants import PRESENT
+from lego.apps.events import constants as event_constants
 from lego.apps.events.models import Event, Registration
 from lego.apps.surveys.models import Survey
 from lego.apps.users import constants
@@ -441,11 +441,16 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(reverse('api:v1:user-me'))
-        self.assertEqual([], response.data['unanswered_surveys'])
+        self.assertEqual(len(response.data['unanswered_surveys']), 0)
 
         event = Event.objects.create(**_test_event)
-        Registration.objects.create(event=event, user=self.user, presence=PRESENT)
+        Registration.objects.create(event=event, user=self.user, presence=event_constants.PRESENT)
         survey = Survey.objects.create(event=event)
+        other_event = Event.objects.create(**_test_event)
+        Survey.objects.create(event=other_event)
+        Registration.objects.create(
+            event=other_event, user=self.user, presence=event_constants.UNKNOWN
+        )
 
         response = self.client.get(reverse('api:v1:user-me'))
         self.assertEqual([survey.id], response.data['unanswered_surveys'])

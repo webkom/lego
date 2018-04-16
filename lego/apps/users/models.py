@@ -23,7 +23,7 @@ from lego.apps.users.permissions import (
 )
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
-
+from lego.apps.events import constants as event_constants
 from .validators import email_blacklist_validator, username_validator
 
 
@@ -249,7 +249,6 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     REQUIRED_FIELDS = ['email']
 
     backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
-    unanswered_surveys = ArrayField(models.IntegerField(), default=[])
 
     class Meta:
         permission_handler = UserPermissionHandler()
@@ -294,21 +293,19 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
             return internal_address
         return self.email
 
-    def update_unanswered_surveys(self):
+    @property
+    def unanswered_surveys(self):
         # TODO: optimize and test properly
         from lego.apps.surveys.models import Survey
-        active_surveys = Survey.objects.filter(active_from__lte=timezone.now())\
-            .filter(template_type__isnull=True)
-        unanswered_surveys = filter(
-            lambda survey:
-                len(survey.submissions.all()) != survey.event.registrations.filter(
-                    presence='PRESENT'
-                )
-                and survey.event.registrations.filter(user=self).exists(),
-            active_surveys.all()
+        from lego.apps.events.models import Registration
+        registrations = Registration.objects.filter(
+            user_id=self.id, presence=event_constants.PRESENT
         )
-        self.unanswered_surveys = list(map(lambda survey: survey.id, unanswered_surveys))
-        self.save()
+        unanswered_surveys = Survey.objects.filter(
+            event__registrations__in=registrations, active_from__lte=timezone.now(),
+            template_type__isnull=True
+        ).prefetch_related('event__registrations')
+        return list(unanswered_surveys.values_list('id', flat=True))
 
     @profile_picture.setter
     def profile_picture(self, value):
