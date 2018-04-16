@@ -39,6 +39,10 @@ class EventHasClosed(ValueError):
     pass
 
 
+class UnansweredSurveyException(ValueError):
+    pass
+
+
 class NoSuchRegistration(ValueError):
     pass
 

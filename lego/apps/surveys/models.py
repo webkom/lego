@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from lego.apps.events.constants import EVENT_TYPES
+from lego.apps.events.constants import EVENT_TYPES, PRESENT
 from lego.apps.surveys.constants import QUESTION_TYPES
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
@@ -15,6 +15,16 @@ class Survey(BasisModel):
     )
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
+
+    def unanswered_surveys(user):
+        from lego.apps.surveys.models import Survey
+        from lego.apps.events.models import Registration
+        registrations = Registration.objects.filter(user_id=user.id, presence=PRESENT)
+        unanswered_surveys = Survey.objects.filter(
+            event__registrations__in=registrations, active_from__lte=timezone.now(),
+            template_type__isnull=True
+        ).prefetch_related('event__registrations')
+        return list(unanswered_surveys.values_list('id', flat=True))
 
 
 class Question(models.Model):

@@ -11,12 +11,13 @@ from lego.apps.content.models import Content
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed, EventNotReady, NoSuchPool, NoSuchRegistration, RegistrationExists,
-    RegistrationsExistInPool
+    RegistrationsExistInPool, UnansweredSurveyException
 )
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 
@@ -196,6 +197,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         user = registration.user
         penalties = 0
+
+        unanswered_surveys = Survey.unanswered_surveys(user)
+        if len(unanswered_surveys) > 0:
+            raise UnansweredSurveyException()
+
         if self.heed_penalties:
             penalties = user.number_of_penalties()
         current_time = timezone.now()

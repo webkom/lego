@@ -23,7 +23,7 @@ from lego.apps.users.permissions import (
 )
 from lego.utils.models import BasisModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
-from lego.apps.events import constants as event_constants
+
 from .validators import email_blacklist_validator, username_validator
 
 
@@ -292,20 +292,6 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
             # Return the internal address if all requirements for a GSuite account are met.
             return internal_address
         return self.email
-
-    @property
-    def unanswered_surveys(self):
-        # TODO: optimize and test properly
-        from lego.apps.surveys.models import Survey
-        from lego.apps.events.models import Registration
-        registrations = Registration.objects.filter(
-            user_id=self.id, presence=event_constants.PRESENT
-        )
-        unanswered_surveys = Survey.objects.filter(
-            event__registrations__in=registrations, active_from__lte=timezone.now(),
-            template_type__isnull=True
-        ).prefetch_related('event__registrations')
-        return list(unanswered_surveys.values_list('id', flat=True))
 
     @profile_picture.setter
     def profile_picture(self, value):
