@@ -444,11 +444,8 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.assertEqual([], response.data['unanswered_surveys'])
 
         event = Event.objects.create(**_test_event)
-        print('event', event, event.id)
         Registration.objects.create(event=event, user=self.user, presence=PRESENT)
-        Survey.objects.create(event=event)
+        survey = Survey.objects.create(event=event)
 
         response = self.client.get(reverse('api:v1:user-me'))
-        print('response', response, response.data)
-        print('regs', Registration.objects.get(user=self.user, pool=None).event.id)
-        self.assertEqual([event.id], response.data['unanswered_surveys'])
+        self.assertEqual([survey.id], response.data['unanswered_surveys'])
