@@ -17,7 +17,6 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadDetailedSerializer, RegistrationReadSerializer
 )
 from lego.apps.files.fields import ImageField
-from lego.apps.surveys.models import Survey
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.fields import AbakusGroupField
@@ -139,7 +138,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
 
     def get_unanswered_surveys(self, obj):
         request = self.context.get('request', None)
-        return Survey.unanswered_surveys(request.user)
+        return request.user.unanswered_surveys()
 
 
 class EventAdministrateSerializer(EventReadSerializer):

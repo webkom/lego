@@ -17,7 +17,6 @@ from lego.apps.events.permissions import EventPermissionHandler, RegistrationPer
 from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
-from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 
@@ -198,7 +197,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         user = registration.user
         penalties = 0
 
-        unanswered_surveys = Survey.unanswered_surveys(user)
+        unanswered_surveys = user.unanswered_surveys()
         if len(unanswered_surveys) > 0:
             raise UnansweredSurveyException()
 

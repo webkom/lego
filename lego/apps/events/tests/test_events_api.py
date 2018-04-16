@@ -12,7 +12,7 @@ from lego.apps.events.exceptions import UnansweredSurveyException, WebhookDidNot
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import stripe_webhook_event
 from lego.apps.events.tests.utils import get_dummy_users
-from lego.apps.surveys.models import Survey
+from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
@@ -314,7 +314,7 @@ class RetrieveEventsTestCase(BaseAPITestCase):
                 f'Wrong count for registration id "{reg_id}"'
             )
 
-    def test_unanswered_surveys(self):
+    def unanswered_surveys_setup(self):
         user = User.objects.all().first()
         AbakusGroup.objects.get(name='Webkom').add_user(user)
         AbakusGroup.objects.get(pk=1).add_user(user)
@@ -324,30 +324,46 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event = Event.objects.get(pk=response.data.get('id'))
         event.start_time = timezone.now() + timedelta(hours=3)
         event.save()
+        return user, event
+
+    def test_unanswered_surveys_when_none_exist(self):
+        user, event = self.unanswered_surveys_setup()
 
         # Test that not attending an event means you don't get an unanswered survey
         Survey.objects.create(event=event)
         Registration.objects.create(event=event, user=user, presence=constants.UNKNOWN)
+        Registration.objects.create(
+            event=event, user=User.objects.get(pk=2), presence=constants.PRESENT
+        )
         self.client.get(_get_detail_url(event.id))
-        unanswered_surveys = Survey.unanswered_surveys(user=user)
+        unanswered_surveys = user.unanswered_surveys()
         self.assertEqual(len(unanswered_surveys), 0)
 
+        # Test that having no unanswered surveys means you can register for events
         event.register(Registration.objects.get_or_create(event=event, user=user)[0])
         self.assertEqual(event.number_of_registrations, 1)
 
-        # Test that attending an event means you do get an unanswered survey
-        other_response = self.client.post(_get_list_url(), _test_event_data[0])
-        other_event = Event.objects.get(pk=other_response.data.get('id'))
+    def test_unanswered_surveys(self):
+        user, event = self.unanswered_surveys_setup()
 
-        Registration.objects.create(event=other_event, user=user, presence=constants.PRESENT)
-        survey = Survey.objects.create(event=other_event)
-        self.client.get(_get_detail_url(other_event.id))
-        unanswered_surveys = Survey.unanswered_surveys(user=user)
+        # Test that attending an event means you do get an unanswered survey
+        Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
+        survey = Survey.objects.create(event=event)
+        self.client.get(_get_detail_url(event.id))
+        unanswered_surveys = user.unanswered_surveys()
         self.assertEqual([survey.id], unanswered_surveys)
 
         # Test that having an unanswered survey means you can't register for events
         with self.assertRaises(UnansweredSurveyException):
-            event.register(Registration.objects.get_or_create(event=other_event, user=user)[0])
+            event.register(Registration.objects.get_or_create(event=event, user=user)[0])
+
+        # Test that answering the survey lets you register again
+        Submission.objects.create(user=user, survey=survey)
+        self.client.get(_get_detail_url(event.id))
+        unanswered_surveys = user.unanswered_surveys()
+        self.assertEqual(len(unanswered_surveys), 0)
+        event.register(Registration.objects.get_or_create(event=event, user=user)[0])
+        self.assertEqual(event.number_of_registrations, 1)
 
 
 class CreateEventsTestCase(BaseAPITestCase):

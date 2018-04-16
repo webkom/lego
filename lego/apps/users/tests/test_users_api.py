@@ -392,7 +392,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
         fields = (
             'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'is_active',
-            'penalties', 'unanswered_surveys'
+            'penalties'
         )
         for field in fields:
             if field == 'penalties':
