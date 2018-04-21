@@ -41,6 +41,7 @@ class SubmissionPermissions(permissions.BasePermission):
         user_attended_event = Registration.objects.filter(
             event=event.id, user=user.id, presence=constants.PRESENT
         ).exists()
+        print('survey perms')
 
         if view.action in ['update', 'partial_update']:
             return False
@@ -50,7 +51,7 @@ class SubmissionPermissions(permissions.BasePermission):
             return user_attended_event
         if view.action in ['list']:
             received_token = request.GET.get('token')
-            return (survey.token and received_token == survey.token)
+            return survey.token and received_token == survey.token
         elif view.action in ['retrieve']:
             return user_attended_event and\
                    survey.submissions.get(id=view.kwargs['pk']).user_id is user.id

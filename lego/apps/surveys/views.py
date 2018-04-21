@@ -1,8 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.surveys.authentication import SurveyAuthentication
 from lego.apps.surveys.filters import SubmissionFilterSet
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.surveys.permissions import (
@@ -18,6 +20,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Survey.objects.all().prefetch_related('questions', 'submissions')
     permission_classes = [SurveyPermissions]
     filter_backends = (DjangoFilterBackend, )
+    authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [SurveyAuthentication]
 
     def get_serializer_class(self):
         if self.action in ['create']:
@@ -51,6 +54,8 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = [SubmissionPermissions]
     filter_class = SubmissionFilterSet
     filter_backends = (DjangoFilterBackend, )
+
+    # authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [SurveyAuthentication]
 
     def get_queryset(self):
         survey_id = self.kwargs['survey_pk']

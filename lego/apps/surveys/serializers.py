@@ -1,4 +1,3 @@
-from django.core import signing
 from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 

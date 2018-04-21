@@ -20,7 +20,7 @@ class Survey(BasisModel):
     )
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
-    token = models.CharField(max_length=64, default=generate_new_token)
+    token = models.CharField(max_length=64, default=generate_new_token, unique=True)
 
 
 class Question(models.Model):
