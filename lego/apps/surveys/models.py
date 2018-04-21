@@ -15,6 +15,7 @@ class Survey(BasisModel):
     )
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
+    token = models.CharField(max_length=255, null=True)
 
 
 class Question(models.Model):

@@ -19,7 +19,9 @@ class SurveyPermissions(permissions.BasePermission):
                 event=event.id, user=user.id, presence=constants.PRESENT
             ).exists()
 
-            return user_attended_event
+            received_token = request.GET.get('token')
+
+            return user_attended_event or (survey.token and received_token == survey.token)
         return False
 
 
@@ -46,8 +48,11 @@ class SubmissionPermissions(permissions.BasePermission):
             return True
         if view.action in ['create']:
             return user_attended_event
-        if view.action in ['retrieve']:
-            return user_attended_event and \
+        if view.action in ['list']:
+            received_token = request.GET.get('token')
+            return (survey.token and received_token == survey.token)
+        elif view.action in ['retrieve']:
+            return user_attended_event and\
                    survey.submissions.get(id=view.kwargs['pk']).user_id is user.id
         if request.query_params.get('user', False):
             return user_attended_event and int(request.query_params.get('user', False)) is \

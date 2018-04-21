@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -279,3 +280,19 @@ class SurveyViewSetTestCase(APITestCase):
                     key is 'id' and key not in expected
                 ):  # Because id is undefined for new questions
                     self.assertEqual(expected[key], option[key])
+
+    def test_survey_token(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        survey = Survey.objects.get(id=response.data['id'])
+        print('data', response.data)
+        token = survey.token
+        print('token', token)
+
+        self.client.force_authenticate(user=self.regular_user)
+        response = self.client.get(_get_detail_url(survey.id))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        response = self.client.get(_get_detail_url(survey.id) + '?token=' + token)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data)

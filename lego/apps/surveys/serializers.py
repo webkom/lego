@@ -1,3 +1,4 @@
+from django.core import signing
 from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 
@@ -104,7 +105,8 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type')
+        # TODO: make new admin serializer for token
+        fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type', 'token')
 
 
 class SurveyCreateSerializer(BasisModelSerializer):
@@ -117,7 +119,9 @@ class SurveyCreateSerializer(BasisModelSerializer):
     @atomic
     def create(self, validated_data):
         questions = validated_data.pop('questions')
-        survey = Survey.objects.create(**validated_data)
+        request = self.context.get('request', None)
+        token = signing.dumps({'user_id': request.user.id, 'survey_id': validated_data.get('id')})
+        survey = Survey.objects.create(**validated_data, token=token)
 
         for question in questions:
             options = question.pop('options') if 'options' in question else None
