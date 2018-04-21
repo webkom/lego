@@ -119,9 +119,11 @@ class SurveyCreateSerializer(BasisModelSerializer):
     @atomic
     def create(self, validated_data):
         questions = validated_data.pop('questions')
+        """
         request = self.context.get('request', None)
         token = signing.dumps({'user_id': request.user.id, 'survey_id': validated_data.get('id')})
-        survey = Survey.objects.create(**validated_data, token=token)
+        """
+        survey = Survey.objects.create(**validated_data)
 
         for question in questions:
             options = question.pop('options') if 'options' in question else None
