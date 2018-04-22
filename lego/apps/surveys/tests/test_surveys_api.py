@@ -113,6 +113,7 @@ class SurveyViewSetTestCase(APITestCase):
         'test_users.yaml', 'test_abakus_groups.yaml', 'test_surveys.yaml', 'test_events.yaml',
         'test_companies.yaml'
     ]
+    print('asd')
 
     def setUp(self):
         self.admin_user = User.objects.get(username='useradmin_test')
@@ -285,9 +286,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
         survey = Survey.objects.get(id=response.data['id'])
-        print('data', response.data)
         token = survey.token
-        print('token', token)
 
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_detail_url(survey.id))
