@@ -22,6 +22,19 @@ class Survey(BasisModel):
     sent = models.BooleanField(default=False)
     token = models.CharField(max_length=64, default=generate_new_token, unique=True)
 
+    def aggregate_submissions(self):
+        result = {}
+        submissions = Submission.objects.filter(survey=self)
+        for question in self.questions.all():
+            options = {}
+            for option in question.options.all():
+                number_of_selections = submissions.filter(
+                    answers__selected_options__in=[option.id]
+                ).count()
+                options[str(option.id)] = number_of_selections
+            result[str(question.id)] = options
+        return result
+
 
 class Question(models.Model):
     class Meta:

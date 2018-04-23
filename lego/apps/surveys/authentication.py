@@ -1,22 +1,15 @@
-from rest_framework import authentication
+from rest_framework import authentication, exceptions
 
 from lego.apps.surveys.models import Survey
-from lego.apps.users.models import User
 
 
-class SurveyAuthentication(authentication.BaseAuthentication):
-    def authenticate(self, request):
+class SurveyTokenAuthentication(authentication.TokenAuthentication):
+    keyword = 'Token'
 
-        raw_token = request.GET.get('token')
-        if not raw_token:
-            return
-
+    def authenticate_credentials(self, key):
         try:
-            Survey.objects.get(token=raw_token)
-            return User.objects.get(
-                pk=1
-            ), raw_token  # TODO: Select a prod user for this or solve differently
+            survey = Survey.objects.get(token=key)
         except Survey.DoesNotExist:
-            pass
+            raise exceptions.AuthenticationFailed('Invalid token')
 
-        return
+        return None, survey

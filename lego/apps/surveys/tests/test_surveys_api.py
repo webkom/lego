@@ -288,9 +288,9 @@ class SurveyViewSetTestCase(APITestCase):
         survey = Survey.objects.get(id=response.data['id'])
         token = survey.token
 
-        self.client.force_authenticate(user=self.regular_user)
+        self.client.force_authenticate(user=None)
         response = self.client.get(_get_detail_url(survey.id))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.client.get(_get_detail_url(survey.id) + '?token=' + token)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
