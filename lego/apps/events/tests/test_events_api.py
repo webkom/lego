@@ -326,10 +326,10 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event.save()
         return user, event
 
-    def test_unanswered_surveys_when_none_exist(self):
+    def test_not_attending_means_no_unanswered_survey(self):
+        """Test that not attending an event means you don't get an unanswered survey"""
         user, event = self.unanswered_surveys_setup()
 
-        # Test that not attending an event means you don't get an unanswered survey
         Survey.objects.create(event=event)
         Registration.objects.create(event=event, user=user, presence=constants.UNKNOWN)
         Registration.objects.create(
@@ -339,29 +339,48 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         unanswered_surveys = user.unanswered_surveys()
         self.assertEqual(len(unanswered_surveys), 0)
 
-        # Test that having no unanswered surveys means you can register for events
+    def test_no_unanswered_surveys_means_you_can_register(self):
+        """Test that having no unanswered surveys means you can register for events"""
+        user, event = self.unanswered_surveys_setup()
+
+        self.client.get(_get_detail_url(event.id))
         event.register(Registration.objects.get_or_create(event=event, user=user)[0])
         self.assertEqual(event.number_of_registrations, 1)
 
-    def test_unanswered_surveys(self):
+    def test_attending_means_you_get_unanswered_survey(self):
+        """Test that attending an event means you do get an unanswered survey"""
         user, event = self.unanswered_surveys_setup()
 
-        # Test that attending an event means you do get an unanswered survey
         Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
         survey = Survey.objects.create(event=event)
         self.client.get(_get_detail_url(event.id))
         unanswered_surveys = user.unanswered_surveys()
         self.assertEqual([survey.id], unanswered_surveys)
 
-        # Test that having an unanswered survey means you can't register for events
+    def unanswered_surveys_wont_let_you_register(self):
+        """Test that having an unanswered survey means you can't register for events"""
+        user, event = self.unanswered_surveys_setup()
+
+        Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
+        Survey.objects.create(event=event)
+        self.client.get(_get_detail_url(event.id))
+
         with self.assertRaises(UnansweredSurveyException):
             event.register(Registration.objects.get_or_create(event=event, user=user)[0])
 
-        # Test that answering the survey lets you register again
+    def test_answering_survey_lets_you_register(self):
+        """Test that answering the survey lets you register again"""
+        user, event = self.unanswered_surveys_setup()
+
+        Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
+        survey = Survey.objects.create(event=event)
+        self.client.get(_get_detail_url(event.id))
+
         Submission.objects.create(user=user, survey=survey)
         self.client.get(_get_detail_url(event.id))
         unanswered_surveys = user.unanswered_surveys()
         self.assertEqual(len(unanswered_surveys), 0)
+
         event.register(Registration.objects.get_or_create(event=event, user=user)[0])
         self.assertEqual(event.number_of_registrations, 1)
 
