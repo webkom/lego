@@ -349,3 +349,22 @@ class EventMethodTest(BaseTestCase):
         event.bump_on_pool_creation_or_expansion()
 
         self.assertEquals(event.waiting_registrations.count(), 1)
+
+    def test_bump_on_pool_expansion_or_creation_when_no_change_post_merge(self):
+        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
+        users = get_dummy_users(event.total_capacity + 1)
+        event.merge_time = timezone.now() - timedelta(hours=1)
+        event.save()
+
+        for user in users:
+            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEquals(event.waiting_registrations.count(), 1)
+
+        last_user = users[-1]
+        AbakusGroup.objects.get(name='Webkom').add_user(last_user)
+        event.bump_on_pool_creation_or_expansion()
+
+        self.assertEquals(event.waiting_registrations.count(), 1)

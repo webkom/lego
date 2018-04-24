@@ -353,7 +353,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         open_pools = [pool for pool in self.pools.all() if not pool.is_full]
         for pool in open_pools:
             for reg in self.waiting_registrations:
-                if pool.is_full:
+                if self.is_full or pool.is_full:
                     break
                 if self.heed_penalties and reg.user.number_of_penalties() >= 3:
                     continue
