@@ -20,6 +20,14 @@ _test_user_data = {
     'gender': 'male'
 }
 
+_test_pool = {
+    'event': 1,
+    'name': 'Initial Pool',
+    'capacity': 10,
+    'activation_date': '2012-09-01T10:20:30Z',
+    'permission_groups': [1]
+}
+
 
 def _get_list_url():
     return reverse('api:v1:user-list')

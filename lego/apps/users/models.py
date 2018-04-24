@@ -10,6 +10,7 @@ from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
+from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
@@ -320,6 +321,18 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
 
     def announcement_lookup(self):
         return [self]
+
+    def unanswered_surveys(self):
+        from lego.apps.surveys.models import Survey
+        from lego.apps.events.models import Registration
+        registrations = Registration.objects.filter(user_id=self.id, presence=PRESENT)
+        unanswered_surveys = Survey.objects.filter(
+            event__registrations__in=registrations, active_from__lte=timezone.now(),
+            template_type__isnull=True
+        ).exclude(submissions__user__in=[self]).prefetch_related(
+            'event__registrations', 'submissions__user'
+        )
+        return list(unanswered_surveys.values_list('id', flat=True))
 
 
 class Penalty(BasisModel):

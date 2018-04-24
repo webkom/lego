@@ -120,9 +120,16 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
 class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
     pools = PoolReadAuthSerializer(many=True)
     waiting_registrations = RegistrationReadSerializer(many=True)
+    unanswered_surveys = serializers.SerializerMethodField()
 
     class Meta(EventReadUserDetailedSerializer.Meta):
-        fields = EventReadUserDetailedSerializer.Meta.fields + ('waiting_registrations', )
+        fields = EventReadUserDetailedSerializer.Meta.fields + (
+            'waiting_registrations', 'unanswered_surveys'
+        )
+
+    def get_unanswered_surveys(self, obj):
+        request = self.context.get('request', None)
+        return request.user.unanswered_surveys()
 
 
 class EventAdministrateSerializer(EventReadSerializer):
