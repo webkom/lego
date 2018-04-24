@@ -88,21 +88,12 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
 
 
 class EventForSurveySerializer(EventReadSerializer):
-    cover = ImageField(required=False, options={'height': 500})
-    thumbnail = ImageField(
-        source='cover', required=False, options={
-            'height': 500,
-            'width': 500,
-            'smart': True
-        }
-    )
     attended_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
-        fields = (
-            'id', 'title', 'cover', 'event_type', 'thumbnail', 'registration_count',
-            'waiting_registration_count', 'attended_count', 'tags'
+        fields = EventReadSerializer.Meta.fields + (
+            'registration_count', 'waiting_registration_count', 'attended_count'
         )
         read_only = True
 
