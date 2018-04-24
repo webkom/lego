@@ -1,3 +1,5 @@
+from random import shuffle
+
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -28,9 +30,13 @@ class Survey(BasisModel):
         for question in self.questions.all():
             options = {}
             if question.question_type == TEXT_FIELD:
-                options[str(list(options.keys())[0])] = map(
-                    lambda answer: answer.answer_text, Answer.objects.filter(question=question)
+                text_answers = list(
+                    map(
+                        lambda answer: answer.answer_text, Answer.objects.filter(question=question)
+                    )
                 )
+                shuffle(text_answers)
+                options['answers'] = text_answers
             else:
                 for option in question.options.all():
                     number_of_selections = submissions.filter(
