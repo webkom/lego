@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from lego.apps.events.constants import EVENT_TYPES
-from lego.apps.surveys.constants import QUESTION_TYPES
+from lego.apps.surveys.constants import QUESTION_TYPES, TEXT_FIELD
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -26,12 +26,17 @@ class Survey(BasisModel):
         result = {}
         submissions = Submission.objects.filter(survey=self)
         for question in self.questions.all():
-            options = {}
-            for option in question.options.all():
-                number_of_selections = submissions.filter(
-                    answers__selected_options__in=[option.id]
-                ).count()
-                options[str(option.id)] = number_of_selections
+            options = {'questionType': question.question_type}
+            if question.question_type == TEXT_FIELD:
+                options[str(option.id)] = map(lambda answer: answer.answer_text,
+                                              Answer.objects.filter(question=question)
+                                              )
+            else:
+                for option in question.options.all():
+                    number_of_selections = submissions.filter(
+                        answers__selected_options__in=[option.id]
+                    ).count()
+                    options[str(option.id)] = number_of_selections
             result[str(question.id)] = options
         return result
 

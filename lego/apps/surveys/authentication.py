@@ -7,9 +7,12 @@ class SurveyTokenAuthentication(authentication.TokenAuthentication):
     keyword = 'Token'
 
     def authenticate_credentials(self, key):
+        print('in here')
         try:
             survey = Survey.objects.get(token=key)
+            print('token good')
         except Survey.DoesNotExist:
+            print('token bad')
             raise exceptions.AuthenticationFailed('Invalid token')
 
         return None, survey

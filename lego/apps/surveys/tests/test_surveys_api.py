@@ -14,6 +14,10 @@ def _get_detail_url(pk):
     return reverse('api:v1:survey-detail', kwargs={'pk': pk})
 
 
+def _get_token_url(pk):
+    return reverse('api:v1:survey-results-detail', kwargs={'pk': pk})
+
+
 _test_surveys = [
     # 0: To test editing regular survey fields. Usually to edit the fixture surveys.
     {
@@ -113,7 +117,6 @@ class SurveyViewSetTestCase(APITestCase):
         'test_users.yaml', 'test_abakus_groups.yaml', 'test_surveys.yaml', 'test_events.yaml',
         'test_companies.yaml'
     ]
-    print('asd')
 
     def setUp(self):
         self.admin_user = User.objects.get(username='useradmin_test')
@@ -169,6 +172,19 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data)
+
+    # Detail data
+    def test_detail_admin_data(self):
+        """Admin users should should get tokens when fetching detail"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertTrue('token' in response.data)
+
+    def test_detail_attended(self):
+        """Users who attended the event should not get tokens when fetching detail"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertFalse('token' in response.data)
 
     # Fetch list
     def test_list_admin(self):
@@ -289,9 +305,13 @@ class SurveyViewSetTestCase(APITestCase):
         token = survey.token
 
         self.client.force_authenticate(user=None)
-        response = self.client.get(_get_detail_url(survey.id))
+        response = self.client.get(_get_token_url(survey.id))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        response = self.client.get(_get_detail_url(survey.id) + '?token=' + token)
+        print('url', _get_token_url(survey.id))
+        response = self.client.get(
+            _get_token_url(survey.id), {}, {'HTTP_AUTHORIZATION': 'Token' + token}
+        )
+        print('response', response['HTTP_AUTHORIZATION'] if 'HTTP_AUTHORIZATION' in response else False)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data)

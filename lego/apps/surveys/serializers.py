@@ -105,7 +105,13 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Survey
         # TODO: make new admin serializer for token
-        fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type', 'token')
+        fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type')
+
+
+class SurveyReadDetailedAdminSerializer(SurveyReadDetailedSerializer):
+    class Meta:
+        model = Survey
+        fields = SurveyReadDetailedSerializer.Meta.fields + ('token', )
 
 
 class SurveyCreateSerializer(BasisModelSerializer):

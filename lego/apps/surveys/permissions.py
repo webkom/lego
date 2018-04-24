@@ -51,7 +51,10 @@ class SubmissionPermissions(permissions.BasePermission):
 
 class SurveyTokenPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
+        print('in survey token permission')
         if view.action not in ['retrieve']:
+            print('no retriovio seniorita')
             return False
         survey = Survey.objects.get(id=view.kwargs['pk'])
-        return survey.id is request.auth.id
+        print('survey?', survey, request.auth)
+        return request.auth and survey.id is request.auth.id

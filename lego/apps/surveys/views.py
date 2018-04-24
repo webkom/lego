@@ -3,6 +3,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.constants import EDIT
 from lego.apps.surveys.authentication import SurveyTokenAuthentication
 from lego.apps.surveys.filters import SubmissionFilterSet
 from lego.apps.surveys.models import Submission, Survey
@@ -11,8 +12,8 @@ from lego.apps.surveys.permissions import (
 )
 from lego.apps.surveys.serializers import (
     SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer, SurveyCreateSerializer,
-    SurveyReadDetailedSerializer, SurveyReadSerializer, SurveyUpdateSerializer
-)
+    SurveyReadDetailedSerializer, SurveyReadSerializer, SurveyUpdateSerializer,
+    SurveyReadDetailedAdminSerializer)
 
 
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -26,7 +27,9 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         elif self.action in ['update', 'partial_update']:
             return SurveyUpdateSerializer
         elif self.action in ['retrieve']:
-            return SurveyReadDetailedSerializer
+            user = self.request.user
+            is_admin = user.has_perm(EDIT, obj=Survey)
+            return SurveyReadDetailedAdminSerializer if is_admin else SurveyReadDetailedSerializer
         return SurveyReadSerializer
 
 
@@ -78,7 +81,6 @@ class SurveyTokenViewset(viewsets.GenericViewSet):
     def retrieve(self, request, pk):
         survey = self.get_object()
         serialized_survey = SurveyReadDetailedSerializer(survey).data
-        print('###', type(serialized_survey), serialized_survey)
-        print('$$$', survey.aggregate_submissions())
         serialized_survey['results'] = survey.aggregate_submissions()
+        serialized_survey['submissionCount'] = survey.submissions.count()
         return Response(data=serialized_survey)
