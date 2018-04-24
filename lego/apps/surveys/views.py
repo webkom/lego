@@ -12,8 +12,9 @@ from lego.apps.surveys.permissions import (
 )
 from lego.apps.surveys.serializers import (
     SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer, SurveyCreateSerializer,
-    SurveyReadDetailedSerializer, SurveyReadSerializer, SurveyUpdateSerializer,
-    SurveyReadDetailedAdminSerializer)
+    SurveyReadDetailedAdminSerializer, SurveyReadDetailedSerializer, SurveyReadSerializer,
+    SurveyUpdateSerializer
+)
 
 
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

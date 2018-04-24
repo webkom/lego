@@ -26,17 +26,18 @@ class Survey(BasisModel):
         result = {}
         submissions = Submission.objects.filter(survey=self)
         for question in self.questions.all():
-            options = {'questionType': question.question_type}
+            options = {}
             if question.question_type == TEXT_FIELD:
-                options[str(option.id)] = map(lambda answer: answer.answer_text,
-                                              Answer.objects.filter(question=question)
-                                              )
+                options[str(list(options.keys())[0])] = map(
+                    lambda answer: answer.answer_text, Answer.objects.filter(question=question)
+                )
             else:
                 for option in question.options.all():
                     number_of_selections = submissions.filter(
                         answers__selected_options__in=[option.id]
                     ).count()
                     options[str(option.id)] = number_of_selections
+            options['questionType'] = question.question_type
             result[str(question.id)] = options
         return result
 

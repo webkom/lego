@@ -180,7 +180,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(_get_detail_url(1))
         self.assertTrue('token' in response.data)
 
-    def test_detail_attended(self):
+    def test_detail_attended_data(self):
         """Users who attended the event should not get tokens when fetching detail"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_detail_url(1))
@@ -298,20 +298,25 @@ class SurveyViewSetTestCase(APITestCase):
                 ):  # Because id is undefined for new questions
                     self.assertEqual(expected[key], option[key])
 
-    def test_survey_token(self):
+    def test_survey_results_without_token(self):
+        """Test that trying to access the public survey results without a token fails"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        survey = Survey.objects.get(id=response.data['id'])
+
+        self.client.force_authenticate(user=None)
+        response = self.client.get(_get_token_url(survey.id))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_survey_results_with_token(self):
+        """Test that you can access the public survey results with a token"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
         survey = Survey.objects.get(id=response.data['id'])
         token = survey.token
 
         self.client.force_authenticate(user=None)
-        response = self.client.get(_get_token_url(survey.id))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-        print('url', _get_token_url(survey.id))
-        response = self.client.get(
-            _get_token_url(survey.id), {}, {'HTTP_AUTHORIZATION': 'Token' + token}
-        )
-        print('response', response['HTTP_AUTHORIZATION'] if 'HTTP_AUTHORIZATION' in response else False)
+        header = {'HTTP_AUTHORIZATION': 'Token {}'.format(token)}
+        response = self.client.get(_get_token_url(survey.id), {}, **header)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data)
