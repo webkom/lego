@@ -102,7 +102,7 @@ class EventForSurveySerializer(EventReadSerializer):
         model = Event
         fields = (
             'id', 'title', 'cover', 'event_type', 'thumbnail', 'registration_count',
-            'waiting_registration_count', 'attended_count'
+            'waiting_registration_count', 'attended_count', 'tags'
         )
         read_only = True
 
