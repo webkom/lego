@@ -37,3 +37,15 @@ class MarkerModelMixin:
         storage = RedisListStorage(feed_id)
         unseen, unread = storage.count('unseen', 'unread')
         return {'unseen_count': unseen, 'unread_count': unread}
+
+    @property
+    def is_seen(self):
+        storage = RedisListStorage(self.feed_id)
+        unseen = storage.get('unseen')
+        return self.id not in unseen
+
+    @property
+    def is_read(self):
+        storage = RedisListStorage(self.feed_id)
+        unread = storage.get('unread')
+        return self.id not in unread

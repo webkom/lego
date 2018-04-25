@@ -112,9 +112,6 @@ class AggregatedFeedBase(FeedBase):
 
 class NotificationFeedBase(FeedBase, MarkerModelMixin):
 
-    seen_at = models.DateTimeField(null=True)
-    read_at = models.DateTimeField(null=True)
-
     objects = AggregatedFeedManager()
 
     class Meta(FeedBase.Meta):

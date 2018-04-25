@@ -137,7 +137,7 @@ class PersonalFeedViewSet(FeedViewSet):
         return feed_manager.retrieve_feed(PersonalFeed, self.request.user.id)
 
 
-class NotificationsViewSet(FeedViewSet, FeedMarkerViewSet):
+class NotificationsViewSet(FeedMarkerViewSet, FeedViewSet):
     """
     Notifications feed based on request.user
     """

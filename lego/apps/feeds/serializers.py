@@ -27,10 +27,6 @@ class MarkSerializer(serializers.Serializer):
     read = serializers.BooleanField(default=False)
 
 
-class FeedMarkerMixinSerializer:
+class AggregatedMarkedFeedSerializer(AggregatedFeedSerializer):
     read = serializers.BooleanField(source='is_read')
     seen = serializers.BooleanField(source='is_seen')
-
-
-class AggregatedMarkedFeedSerializer(AggregatedFeedSerializer, FeedMarkerMixinSerializer):
-    pass
