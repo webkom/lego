@@ -1,7 +1,5 @@
 from django_redis import get_redis_connection
 
-redis = get_redis_connection('default')
-
 
 class RedisListStorage:
     """
@@ -16,6 +14,14 @@ class RedisListStorage:
         self.base_key = key
         self.max_length = kwargs.get('max_length', self.max_length)
         self.data_type = kwargs.get('data_type', self.data_type)
+
+    @property
+    def redis(self):
+        try:
+            return self._redis
+        except AttributeError:
+            self._redis = get_redis_connection('default')
+            return self._redis
 
     def get_key(self, list_name):
         return self.key_format.format(key=self.base_key, list=list_name)
@@ -32,7 +38,7 @@ class RedisListStorage:
 
     def add(self, **kwargs):
         if kwargs:
-            pipe = redis.pipeline()
+            pipe = self.redis.pipeline()
             for list_name, values in kwargs.items():
                 if values:
                     key = self.get_key(list_name)
@@ -44,7 +50,7 @@ class RedisListStorage:
 
     def remove(self, **kwargs):
         if kwargs:
-            pipe = redis.pipeline()
+            pipe = self.redis.pipeline()
             for list_name, values in kwargs.items():
                 key = self.get_key(list_name)
                 for value in values:
@@ -55,7 +61,7 @@ class RedisListStorage:
     def count(self, *args):
         if args:
             keys = self.get_keys(args)
-            pipe = redis.pipeline()
+            pipe = self.redis.pipeline()
             for key in keys:
                 pipe.llen(key)
             return self.to_result(pipe.execute())
@@ -63,7 +69,7 @@ class RedisListStorage:
     def get(self, *args):
         if args:
             keys = self.get_keys(args)
-            pipe = redis.pipeline()
+            pipe = self.redis.pipeline()
             for key in keys:
                 pipe.lrange(key, 0, -1)
             results = pipe.execute()
@@ -73,4 +79,4 @@ class RedisListStorage:
     def flush(self, *args):
         if args:
             keys = self.get_keys(args)
-            redis.delete(*keys)
+            self.redis.delete(*keys)
