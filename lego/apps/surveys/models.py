@@ -88,7 +88,7 @@ class Answer(BasisModel):
     selected_options = models.ManyToManyField(
         Option, related_name='selected_in_answers', blank=True
     )
-    answer_text = models.TextField(max_length=255, blank=True, default="")
+    answer_text = models.TextField(default='', blank=True)
     hide_from_public = models.BooleanField(default=False)
 
     def create(submission, question, **kwargs):
