@@ -44,9 +44,7 @@ $ yapf -ir lego  # Format with yapf
 
 To check if it is formatted properly, run:
 ```bash
-$ tox -e yapf
-$ tox -e flake8
-$ tox -e isort
+$ tox -e isort -e flake8 -e yapf
 ```
 
 ## Deployment
