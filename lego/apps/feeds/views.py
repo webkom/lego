@@ -84,6 +84,12 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        feed = self.get_queryset().model
+        seen = serializer.validated_data['seen']
+        read = serializer.validated_data['read']
+        feed.mark_all(self.request.user.id, seen, read)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @decorators.detail_route(serializer_class=MarkSerializer, methods=['POST'])
@@ -93,12 +99,18 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        feed = self.get_queryset().model
+        seen = serializer.validated_data['seen']
+        read = serializer.validated_data['read']
+        feed.mark_all(self.request.user.id, str(pk), seen, read)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @decorators.list_route(methods=['GET'])
     def notification_data(self, request):
         feed = self.get_queryset().model
-        return Response(feed.get_notification_data('1'))
+        return Response(feed.get_notification_data(self.request.user.id))
 
 
 class UserFeedViewSet(FeedViewSet):

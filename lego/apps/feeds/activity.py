@@ -110,8 +110,10 @@ class Activity:
         serializer = FeedActivitySerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
+        verb_id = serializer.validated_data['verb']['id']
+
         return cls(
-            actor=serializer.validated_data['actor'], verb=serializer.validated_data['verb'],
+            actor=serializer.validated_data['actor'], verb=verb_id,
             object=serializer.validated_data['object'],
             target=serializer.validated_data.get('target'), time=serializer.validated_data['time'],
             extra_context=serializer.validated_data['extra_context']

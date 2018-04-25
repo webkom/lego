@@ -26,10 +26,12 @@ class FeedManager:
         """
         Divide the fanout task into multiple celery tasks
         """
-
-        recipient_chunks = chunks(list(recipients), self.fanout_chunk_size)
-        for chunk in recipient_chunks:
-            feed_fanout.delay(operation, activity.serialize(), chunk, feed._meta.model_name)
+        if recipients:
+            recipient_chunks = chunks(list(recipients), self.fanout_chunk_size)
+            for chunk in recipient_chunks:
+                feed_fanout.delay(operation, activity.serialize(), chunk, feed._meta.model_name)
+        else:
+            feed_fanout.delay(operation, activity.serialize(), [], feed._meta.model_name)
 
 
 feed_manager = FeedManager()

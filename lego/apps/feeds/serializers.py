@@ -6,9 +6,9 @@ class FeedActivitySerializer(serializers.Serializer):
     verb = serializers.IntegerField(source='verb.id')
     time = serializers.DateTimeField()
     extra_context = serializers.DictField(default={})
-    actor = serializers.CharField()
+    actor = serializers.CharField(required=False, allow_null=True)
     object = serializers.CharField()
-    target = serializers.CharField(required=False)
+    target = serializers.CharField(required=False, allow_null=True)
 
 
 class AggregatedFeedSerializer(serializers.Serializer):
