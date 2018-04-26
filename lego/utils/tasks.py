@@ -5,6 +5,7 @@ from push_notifications import NotificationError
 from structlog import get_logger
 
 from lego import celery_app
+from lego.apps.users.models import User
 
 from .email import EmailMessage
 from .push import PushMessage
@@ -56,11 +57,15 @@ def send_email(self, logger_context=None, **kwargs):
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
-def send_push(self, logger_context=None, **kwargs):
+def send_push(self, user, target=None, logger_context=None, **kwargs):
     """
     Generic task to send push messages.
     """
     self.setup_logger(logger_context)
+
+    recipient = User.objects.get(id=user)
+    kwargs['user'] = recipient
+    kwargs['target'] = target
 
     message = PushMessage(**kwargs)
 

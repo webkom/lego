@@ -3,17 +3,16 @@ from push_notifications.models import APNSDevice, GCMDevice
 from structlog import get_logger
 
 from lego.apps.feeds.models import NotificationFeed
-from lego.utils.content_types import instance_to_string
 
 log = get_logger()
 
 
 class PushMessage:
-    def __init__(self, user, template, context, instance=None):
+    def __init__(self, user, template, context, target=None):
         self.user = user
         self.template = template
         self.context = context
-        self.instance = instance
+        self.target = target
 
     def _get_unread_count(self):
         feed = NotificationFeed
@@ -28,8 +27,8 @@ class PushMessage:
 
         message = render_to_string(self.template, self.context).strip()
         extra = dict()
-        if self.instance:
-            extra['target'] = instance_to_string(self.instance)
+        if self.target:
+            extra['target'] = self.target
 
         gcm_devices = GCMDevice.objects.filter(user=self.user, active=True)
         apns_devices = APNSDevice.objects.filter(user=self.user, active=True)

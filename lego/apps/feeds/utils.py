@@ -37,7 +37,7 @@ def add_to_feed(activity, feed, recipients):
 
     existing_aggregated_activities = feed.objects.find_matching_groups(
         group, group_search_offset, recipients
-    ).select_for_update()
+    )
 
     # Populate existing aggregated activities
     for aggregated_activity in existing_aggregated_activities:

@@ -13,6 +13,7 @@ class FeedActivitySerializer(serializers.Serializer):
 
 class AggregatedFeedSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    ordering_key = serializers.CharField()
     verb = serializers.CharField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
