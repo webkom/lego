@@ -88,6 +88,7 @@ class Answer(BasisModel):
         Option, related_name='selected_in_answers', blank=True
     )
     answer_text = models.TextField(max_length=255, blank=True, default="")
+    hide_from_public = models.BooleanField(default=False)
 
     def create(submission, question, **kwargs):
         selected_options = kwargs.pop('selected_options')
@@ -95,3 +96,11 @@ class Answer(BasisModel):
         for selected_option in selected_options:
             answer.selected_options.add(selected_option)
         answer.save()
+
+    def hide(self):
+        self.hide_from_public = True
+        self.save()
+
+    def show(self):
+        self.hide_from_public = False
+        self.save()

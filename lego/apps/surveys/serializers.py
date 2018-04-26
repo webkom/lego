@@ -46,7 +46,9 @@ class AnswerSerializer(BasisModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('id', 'submission', 'question', 'answer_text', 'selected_options')
+        fields = (
+            'id', 'submission', 'question', 'answer_text', 'selected_options', 'hide_from_public'
+        )
 
 
 class AnswerCreateAndUpdateSerializer(BasisModelSerializer):

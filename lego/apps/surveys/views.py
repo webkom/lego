@@ -1,13 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, status, viewsets
+from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.surveys.authentication import SurveyTokenAuthentication
+from lego.apps.surveys.constants import TEXT_FIELD
 from lego.apps.surveys.filters import SubmissionFilterSet
-from lego.apps.surveys.models import Submission, Survey
+from lego.apps.surveys.models import Answer, Submission, Survey
 from lego.apps.surveys.permissions import (
     SubmissionPermissions, SurveyPermissions, SurveyTokenPermissions
 )
@@ -94,6 +95,35 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(
             SubmissionReadSerializer(serializer.instance).data, status=status.HTTP_201_CREATED
+        )
+
+    def validate_answer(self, request, **kwargs):
+        submission = Submission.objects.get(pk=kwargs['pk'])
+        answer_pk = request.query_params.get('answer')
+        if answer_pk is None:
+            raise exceptions.NotAcceptable('No answer specified')
+        try:
+            answer = submission.answers.get(pk=answer_pk)
+        except Answer.DoesNotExist:
+            raise exceptions.NotFound('Answer not found')
+        if answer.question.question_type != TEXT_FIELD:
+            raise exceptions.NotAcceptable('Only text answers can be hidden')
+        return submission, answer
+
+    @detail_route(methods=['GET'])
+    def hide(self, request, **kwargs):
+        submission, answer = self.validate_answer(request, **kwargs)
+        answer.hide()
+        return Response(
+            data=SubmissionReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
+        )
+
+    @detail_route(methods=['GET'])
+    def show(self, request, **kwargs):
+        submission, answer = self.validate_answer(request, **kwargs)
+        answer.show()
+        return Response(
+            data=SubmissionReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
         )
 
 
