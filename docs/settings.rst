@@ -50,6 +50,5 @@ Lego also depends on multiple external services:
 * Elasticsearch - Search backend
 * S3 / Minio - Filestorage
 * Thumbor - Image resizer
-* Cassandra - Feed backend
 * LDAP (Optional) - Sync users to an external system
 * Google GSuite (Optional) - Email provider
