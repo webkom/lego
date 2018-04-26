@@ -20,7 +20,7 @@ class AnnouncementNotification(Notification):
             to_email=self.user.email_address,
             context={
                 'name': self.user.full_name,
-                'created_by': announcement.created_by,
+                'created_by': announcement.created_by.full_name,
                 'message': announcement.message
             },
             subject=f'Viktig melding fra {announcement.created_by.full_name}',
@@ -36,6 +36,6 @@ class AnnouncementNotification(Notification):
 
         return self._delay_push(
             template='notifications/push/announcement.txt', context={
-                'created_by': announcement.created_by,
+                'created_by': announcement.created_by.full_name,
             }, instance=announcement
         )
