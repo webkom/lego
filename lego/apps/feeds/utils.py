@@ -30,7 +30,7 @@ def add_to_feed(activity, feed, recipients):
     Lookup groupings and add the activity to the feed.
     """
     # Search the last x elements for a matching group
-    recipients = set(recipients)
+    recipients = set(map(str, recipients))
     timeline_ids = set()
     group_search_offset = 20
     group = aggregator.get_group(activity)
