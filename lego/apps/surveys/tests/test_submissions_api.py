@@ -218,29 +218,29 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertFalse(answer['hideFromPublic'])
 
     def test_hide_attended(self):
-        """Attended users should not be able to hide or show"""
-        self.client.force_authenticate(user=self.admin_user)
-        response = self.client.get(_get_detail_url(1, 1) + 'hide/?answer=1')
+        """Attended users should not be able to hide or show answers"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.get(_get_detail_url(1, 1) + 'hide/?answer=3')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        response = self.client.get(_get_detail_url(1, 1) + 'show/?answer=1')
+        response = self.client.get(_get_detail_url(1, 1) + 'show/?answer=3')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_hide_regular(self):
-        """Regular users should not be able to hide or show"""
+        """Regular users should not be able to hide or show answers"""
         self.client.force_authenticate(user=self.regular_user)
-        response = self.client.get(_get_detail_url(1, 1) + 'hide/?answer=1')
+        response = self.client.get(_get_detail_url(1, 1) + 'hide/?answer=3')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        response = self.client.get(_get_detail_url(1, 1) + 'show/?answer=1')
+        response = self.client.get(_get_detail_url(1, 1) + 'show/?answer=3')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_hide_own(self):
-        """Even whoever made the answer should not be able to hide or show"""
+        """Even whoever made the answer should not be able to hide or show answers"""
         submission = Submission.objects.get(pk=1)
         creator = submission.created_by
         self.client.force_authenticate(user=creator)
-        response = self.client.get(_get_detail_url(1, 1) + 'hide/?answer=1')
+        response = self.client.get(_get_detail_url(1, 1) + 'hide/?answer=3')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        response = self.client.get(_get_detail_url(1, 1) + 'show/?answer=1')
+        response = self.client.get(_get_detail_url(1, 1) + 'show/?answer=3')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_hide_without_answer(self):

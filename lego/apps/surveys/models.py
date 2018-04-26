@@ -32,7 +32,8 @@ class Survey(BasisModel):
             if question.question_type == TEXT_FIELD:
                 text_answers = list(
                     map(
-                        lambda answer: answer.answer_text, Answer.objects.filter(question=question)
+                        lambda answer: answer.answer_text,
+                        Answer.objects.filter(question=question).exclude(hide_from_public=True)
                     )
                 )
                 shuffle(text_answers)
