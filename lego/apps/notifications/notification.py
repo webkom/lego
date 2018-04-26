@@ -1,5 +1,6 @@
 from structlog import get_logger
 
+from lego.utils.content_types import instance_to_string
 from lego.utils.tasks import send_email, send_push
 
 from .models import NotificationSetting
@@ -47,8 +48,15 @@ class Notification:
         """
         Helper for push messages. Does the work in a celery task.
         """
+        target = None
+        if instance:
+            target = instance_to_string(instance)
+
         return send_push.delay(
-            user=self.user, template=template, context=context, instance=instance
+            user=self.user.id,
+            target=target,
+            template=template,
+            context=context,
         )
 
     def generate_mail(self):

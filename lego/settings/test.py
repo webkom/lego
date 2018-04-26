@@ -2,9 +2,8 @@ import logging
 import os
 
 import stripe
-from cassandra import ConsistencyLevel
 
-from .base import CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS
+from .base import CHANNEL_LAYERS, INSTALLED_APPS
 
 logging.disable(logging.CRITICAL)
 
@@ -53,20 +52,6 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
-}
-
-STREAM_CASSANDRA_HOSTS = [os.environ.get('CASSANDRA') or '127.0.0.1']
-STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.ONE
-STREAM_DEFAULT_KEYSPACE = 'test_stream_framework'
-CASSANDRA_DRIVER_KWARGS['lazy_connect'] = bool(os.environ.get('CASS_LAZY'))
-
-STREAM_REDIS_CONFIG = {
-    'default': {
-        'host': CACHE,
-        'port': 6379,
-        'db': 10,
-        'password': None
-    },
 }
 
 ELASTICSEARCH = [

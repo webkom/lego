@@ -6,6 +6,7 @@ from django.db import models, transaction
 from django.db.models import Count, Sum
 from django.utils import timezone
 
+from lego.apps.action_handlers.events import handle_event
 from lego.apps.companies.models import Company
 from lego.apps.content.models import Content
 from lego.apps.events import constants
@@ -14,7 +15,6 @@ from lego.apps.events.exceptions import (
     RegistrationsExistInPool, UnansweredSurveyException
 )
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
-from lego.apps.feed.registry import get_handler
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
@@ -109,7 +109,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 registration.add_to_waiting_list(
                     feedback=feedback, admin_registration_reason=admin_registration_reason
                 )
-            get_handler(Registration).handle_admin_registration(registration)
+            handle_event(registration, 'admin_registration')
             return registration
 
     def admin_unregister(self, user, admin_unregistration_reason):
@@ -118,7 +118,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if not registration:
                 raise NoSuchRegistration()
             self.unregister(registration, admin_unregistration_reason=admin_unregistration_reason)
-            get_handler(Registration).handle_admin_unregistration(registration)
+            handle_event(registration, 'admin_unregistration')
             return registration
 
     def get_absolute_url(self):
@@ -324,7 +324,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                             break
                 first_waiting.pool = new_pool
                 first_waiting.save(update_fields=['pool'])
-                get_handler(Registration).handle_bump(first_waiting)
+                handle_event(first_waiting, 'bump')
 
     def early_bump(self, opening_pool):
         """
@@ -342,7 +342,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if self.can_register(reg.user, opening_pool, future=True):
                 reg.pool = opening_pool
                 reg.save()
-                get_handler(Registration).handle_bump(reg)
+                handle_event(reg, 'bump')
         self.check_for_bump_or_rebalance(opening_pool)
 
     def bump_on_pool_creation_or_expansion(self):
@@ -365,7 +365,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if self.can_register(reg.user, pool, future=True):
                     reg.pool = pool
                     reg.save()
-                    get_handler(Registration).handle_bump(reg)
+                    handle_event(reg, 'bump')
             self.check_for_bump_or_rebalance(pool)
 
     def try_to_rebalance(self, open_pool):

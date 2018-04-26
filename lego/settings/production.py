@@ -3,18 +3,14 @@ from urllib.parse import urlparse
 
 import environ
 import stripe
-from cassandra import ConsistencyLevel
 
 from lego.settings import (
-    BASE_DIR, CASSANDRA_DRIVER_KWARGS, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE,
-    PUSH_NOTIFICATIONS_SETTINGS
+    BASE_DIR, CHANNEL_LAYERS, INSTALLED_APPS, MIDDLEWARE, PUSH_NOTIFICATIONS_SETTINGS
 )
 
 from .secure import *  # noqa
 
-env = environ.Env(
-    DEBUG=(bool, False), ALLOWED_HOSTS=(list, ['api.abakus.no']), CASSANDRA_HOSTS=(list, [])
-)
+env = environ.Env(DEBUG=(bool, False), ALLOWED_HOSTS=(list, ['api.abakus.no']))
 environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
 DEBUG = env('DEBUG')
@@ -62,21 +58,7 @@ MIDDLEWARE = [
 # Celery
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
-# Stream Framework
-STREAM_CASSANDRA_HOSTS = env('CASSANDRA_HOSTS')
-STREAM_CASSANDRA_CONSISTENCY_LEVEL = ConsistencyLevel.TWO
-STREAM_DEFAULT_KEYSPACE = env('CASSANDRA_KEYSPACE')
-CASSANDRA_DRIVER_KWARGS['lazy_connect'] = False
-
-STREAM_REDIS_CONFIG = {
-    'default': {
-        'host': env('REDIS_STREAM_HOST'),
-        'port': env('REDIS_STREAM_PORT', default=6379),
-        'db': env('REDIS_STREAM_DB'),
-        'password': env('REDIS_STREAM_PASSWORD', default=None)
-    }
-}
-
+# Channels
 CHANNEL_LAYERS['default']['CONFIG'] = {'hosts': [env('CHANNELS_REDIS_URL')]}
 
 # Elasticsearch

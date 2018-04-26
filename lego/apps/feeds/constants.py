@@ -1,0 +1,2 @@
+ADD = 'add'
+REMOVE = 'remove'

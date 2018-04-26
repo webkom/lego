@@ -1,21 +1,14 @@
 from __future__ import absolute_import
 
 import os
-import sys
 
 import celery  # noqa
-from cassandra.cqlengine import connection
-from cassandra.cqlengine.connection import cluster as cql_cluster
-from cassandra.cqlengine.connection import session as cql_session
 from celery.schedules import crontab
 from celery.signals import beat_init, eventlet_pool_started, setup_logging, worker_process_init
-from django.conf import settings
-from structlog import get_logger
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lego.settings')
 
 app = celery.Celery('lego')
-logger = get_logger()
 
 
 @eventlet_pool_started.connect()
@@ -23,22 +16,8 @@ logger = get_logger()
 @beat_init.connect()
 def celery_init(*args, **kwargs):
     """
-    Initialize a clean Cassandra connection.
+    Initialize a clean threads
     """
-    try:
-        if cql_cluster is not None:
-            cql_cluster.shutdown()
-        if cql_session is not None:
-            cql_session.shutdown()
-        connection.setup(
-            hosts=settings.STREAM_CASSANDRA_HOSTS,
-            consistency=settings.STREAM_CASSANDRA_CONSISTENCY_LEVEL,
-            default_keyspace=settings.STREAM_DEFAULT_KEYSPACE, **settings.CASSANDRA_DRIVER_KWARGS
-        )
-    except Exception:  # noqa
-        logger.exception('celery_cassandra_signal_failure')
-        sys.exit(1)
-
     from lego.apps.stats import analytics_client
     analytics_client.default_client = None
     analytics_client.setup_analytics()
@@ -101,8 +80,7 @@ schedule = {
 }
 
 app.conf.update(
-    beat_schedule=schedule, result_backend=None, task_track_started=True, task_serializer='pickle',
+    beat_schedule=schedule, result_backend=None, task_track_started=True, task_serializer='json',
     worker_disable_rate_limits=True, task_ignore_result=True, task_acks_late=False,
-    worker_hijack_root_logger=False, worker_redirect_stdouts=False,
-    accept_content=['pickle', 'json']
+    worker_hijack_root_logger=False, worker_redirect_stdouts=False, accept_content=['json']
 )

@@ -3,10 +3,10 @@ from datetime import timedelta
 import stripe
 from django.db import IntegrityError, transaction
 from django.utils import timezone
-from redis.exceptions import LockError
 from structlog import get_logger
 
 from lego import celery_app
+from lego.apps.action_handlers.events import handle_event
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed, PoolCounterNotEqualToRegistrationCount, WebhookDidNotFindRegistration
@@ -17,7 +17,6 @@ from lego.apps.events.serializers.registrations import StripeObjectSerializer
 from lego.apps.events.websockets import (
     notify_event_registration, notify_user_payment, notify_user_registration
 )
-from lego.apps.feed.registry import get_handler
 from lego.utils.tasks import AbakusTask
 
 log = get_logger()
@@ -75,11 +74,6 @@ def async_register(self, registration_id, logger_context=None):
                 constants.SOCKET_REGISTRATION_SUCCESS, self.registration
             ))
         log.info('registration_success', registration_id=self.registration.id)
-    except LockError as e:
-        log.error(
-            'registration_cache_lock_error', exception=e, registration_id=self.registration.id
-        )
-        raise self.retry(exc=e, max_retries=3)
     except EventHasClosed as e:
         log.warn(
             'registration_tried_after_started', exception=e, registration_id=self.registration.id
@@ -258,7 +252,7 @@ def notify_user_when_payment_soon_overdue(self, logger_context=None):
                     'registration_notified_overdue_payment', event_id=event.id,
                     registration_id=registration.id
                 )
-                get_handler(Registration).handle_payment_overdue(registration)
+                handle_event(registration, 'payment_overdue')
 
 
 @celery_app.task(serializer='json', bind=True, base=AbakusTask)
