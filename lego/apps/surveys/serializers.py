@@ -43,13 +43,18 @@ class QuestionUpdateSerializer(BasisModelSerializer):
 
 class AnswerSerializer(BasisModelSerializer):
     question = QuestionSerializer()
+
+    class Meta:
+        model = Answer
+        fields = ('id', 'submission', 'question', 'answer_text', 'selected_options')
+
+
+class AnswerAdminSerializer(AnswerSerializer):
     hide_from_public = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Answer
-        fields = (
-            'id', 'submission', 'question', 'answer_text', 'selected_options', 'hide_from_public'
-        )
+        fields = AnswerSerializer.Meta.fields + ('hide_from_public', )
 
 
 class AnswerCreateAndUpdateSerializer(BasisModelSerializer):
@@ -73,6 +78,10 @@ class SubmissionReadSerializer(BasisModelSerializer):
     class Meta:
         model = Submission
         fields = ('id', 'user', 'survey', 'answers')
+
+
+class SubmissionAdminReadSerializer(SubmissionReadSerializer):
+    answers = AnswerAdminSerializer(many=True)
 
 
 class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):

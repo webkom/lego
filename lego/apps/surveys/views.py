@@ -13,9 +13,9 @@ from lego.apps.surveys.permissions import (
     SubmissionPermissions, SurveyPermissions, SurveyTokenPermissions
 )
 from lego.apps.surveys.serializers import (
-    SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer, SurveyCreateSerializer,
-    SurveyReadDetailedAdminSerializer, SurveyReadDetailedSerializer, SurveyReadSerializer,
-    SurveyUpdateSerializer
+    SubmissionAdminReadSerializer, SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer,
+    SurveyCreateSerializer, SurveyReadDetailedAdminSerializer, SurveyReadDetailedSerializer,
+    SurveyReadSerializer, SurveyUpdateSerializer
 )
 
 
@@ -87,6 +87,8 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SubmissionCreateAndUpdateSerializer
+        if self.request and self.request.user.has_perm(EDIT, obj=Survey):
+            return SubmissionAdminReadSerializer
         return SubmissionReadSerializer
 
     def create(self, request, *args, **kwargs):

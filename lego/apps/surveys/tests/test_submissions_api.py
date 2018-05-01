@@ -195,6 +195,8 @@ class SubmissionViewSetTestCase(APITestCase):
 
         response = self.client.post(_get_detail_url(1, 1) + 'hide/?answer=' + str(answer_pk))
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+        response = self.client.get(_get_detail_url(1, 1))
         self.assertTrue(response.data)
         response_answers = response.data['answers']
         answer = next(x for x in response_answers if x['id'] == answer_pk)
@@ -211,6 +213,8 @@ class SubmissionViewSetTestCase(APITestCase):
 
         response = self.client.post(_get_detail_url(1, 1) + 'show/?answer=' + str(answer_pk))
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+        response = self.client.get(_get_detail_url(1, 1))
         self.assertTrue(response.data)
         response_answers = response.data['answers']
         answer = next(x for x in response_answers if x['id'] == answer_pk)
