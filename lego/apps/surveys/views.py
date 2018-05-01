@@ -110,7 +110,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise exceptions.NotAcceptable('Only text answers can be hidden')
         return submission, answer
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['POST'])
     def hide(self, request, **kwargs):
         submission, answer = self.validate_answer(request, **kwargs)
         answer.hide()
@@ -118,7 +118,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             data=SubmissionReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
         )
 
-    @detail_route(methods=['GET'])
+    @detail_route(methods=['POST'])
     def show(self, request, **kwargs):
         submission, answer = self.validate_answer(request, **kwargs)
         answer.show()

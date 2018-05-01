@@ -43,6 +43,7 @@ class QuestionUpdateSerializer(BasisModelSerializer):
 
 class AnswerSerializer(BasisModelSerializer):
     question = QuestionSerializer()
+    hide_from_public = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Answer
