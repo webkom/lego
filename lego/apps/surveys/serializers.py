@@ -108,6 +108,8 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
 
 
 class SurveyReadDetailedAdminSerializer(SurveyReadDetailedSerializer):
+    token = serializers.CharField(read_only=True)
+
     class Meta:
         model = Survey
         fields = SurveyReadDetailedSerializer.Meta.fields + ('token', )

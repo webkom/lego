@@ -313,6 +313,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
         survey = Survey.objects.get(id=response.data['id'])
+        survey.generate_token()
         token = survey.token
 
         self.client.force_authenticate(user=None)
@@ -326,6 +327,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
         survey = Survey.objects.get(id=response.data['id'])
+        survey.generate_token()
         token = survey.token
         self.client.force_authenticate(user=None)
         header = {'HTTP_AUTHORIZATION': 'Token {}'.format(token)}
@@ -333,3 +335,27 @@ class SurveyViewSetTestCase(APITestCase):
 
         self.assertEqual(response.data['results'], survey.aggregate_submissions())
         self.assertEqual(response.data['submissionCount'], survey.submissions.count())
+
+    def test_survey_sharing(self):
+        """Test that you can get a token for sharing an event"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        self.assertFalse('token' in response.data)
+
+        url = _get_detail_url(response.data['id']) + 'share/'
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertTrue(response.data)
+        self.assertNotEquals(response.data['token'], None)
+
+    def test_survey_hiding(self):
+        """Test that you can remove a token to unshare an event"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        survey = Survey.objects.get(id=response.data['id'])
+        survey.generate_token()
+
+        response = self.client.post(_get_detail_url(response.data['id']) + 'hide/')
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertTrue(response.data)
+        self.assertEquals(response.data['token'], None)

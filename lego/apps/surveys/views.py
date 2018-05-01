@@ -1,5 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -32,6 +33,28 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             is_admin = user.has_perm(EDIT, obj=Survey)
             return SurveyReadDetailedAdminSerializer if is_admin else SurveyReadDetailedSerializer
         return SurveyReadSerializer
+
+    @detail_route(methods=['POST'])
+    def share(self, *args, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        survey = Survey.objects.get(pk=kwargs['pk'])
+        survey.generate_token()
+        serializer = SurveyReadDetailedAdminSerializer(survey)
+        return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    @detail_route(methods=['POST'])
+    def hide(self, *args, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        survey = Survey.objects.get(pk=kwargs['pk'])
+        survey.delete_token()
+        serializer = SurveyReadDetailedAdminSerializer(survey)
+        return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class SurveyTemplateViewSet(
