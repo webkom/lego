@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -11,6 +12,10 @@ def _get_list_url():
 
 def _get_detail_url(pk):
     return reverse('api:v1:survey-detail', kwargs={'pk': pk})
+
+
+def _get_token_url(pk):
+    return reverse('api:v1:survey-results-detail', kwargs={'pk': pk})
 
 
 _test_surveys = [
@@ -168,6 +173,19 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data)
 
+    # Detail data
+    def test_detail_admin_data(self):
+        """Admin users should should get tokens when fetching detail"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertTrue('token' in response.data)
+
+    def test_detail_attended_data(self):
+        """Users who attended the event should not get tokens when fetching detail"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertFalse('token' in response.data)
+
     # Fetch list
     def test_list_admin(self):
         """Users with permissions should be able to see surveys list view"""
@@ -279,3 +297,39 @@ class SurveyViewSetTestCase(APITestCase):
                     key is 'id' and key not in expected
                 ):  # Because id is undefined for new questions
                     self.assertEqual(expected[key], option[key])
+
+    def test_survey_results_without_token(self):
+        """Test that trying to access the public survey results without a token fails"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        survey = Survey.objects.get(id=response.data['id'])
+
+        self.client.force_authenticate(user=None)
+        response = self.client.get(_get_token_url(survey.id))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_survey_results_with_token(self):
+        """Test that you can access the public survey results with a token"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        survey = Survey.objects.get(id=response.data['id'])
+        token = survey.token
+
+        self.client.force_authenticate(user=None)
+        header = {'HTTP_AUTHORIZATION': 'Token {}'.format(token)}
+        response = self.client.get(_get_token_url(survey.id), {}, **header)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data)
+
+    def test_survey_results_data(self):
+        """Test that you can access the public survey results with a token"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        survey = Survey.objects.get(id=response.data['id'])
+        token = survey.token
+        self.client.force_authenticate(user=None)
+        header = {'HTTP_AUTHORIZATION': 'Token {}'.format(token)}
+        response = self.client.get(_get_token_url(survey.id), {}, **header)
+
+        self.assertEqual(response.data['results'], survey.aggregate_submissions())
+        self.assertEqual(response.data['submissionCount'], survey.submissions.count())

@@ -1,10 +1,17 @@
+from random import shuffle
+
 from django.db import models
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 
 from lego.apps.events.constants import EVENT_TYPES
-from lego.apps.surveys.constants import QUESTION_TYPES
+from lego.apps.surveys.constants import QUESTION_TYPES, TEXT_FIELD
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
+
+
+def generate_new_token():
+    return get_random_string(length=64)
 
 
 class Survey(BasisModel):
@@ -15,6 +22,30 @@ class Survey(BasisModel):
     )
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
+    token = models.CharField(max_length=64, default=generate_new_token, unique=True)
+
+    def aggregate_submissions(self):
+        result = {}
+        submissions = Submission.objects.filter(survey=self)
+        for question in self.questions.all():
+            options = {}
+            if question.question_type == TEXT_FIELD:
+                text_answers = list(
+                    map(
+                        lambda answer: answer.answer_text, Answer.objects.filter(question=question)
+                    )
+                )
+                shuffle(text_answers)
+                options['answers'] = text_answers
+            else:
+                for option in question.options.all():
+                    number_of_selections = submissions.filter(
+                        answers__selected_options__in=[option.id]
+                    ).count()
+                    options[str(option.id)] = number_of_selections
+            options['questionType'] = question.question_type
+            result[str(question.id)] = options
+        return result
 
 
 class Question(models.Model):
