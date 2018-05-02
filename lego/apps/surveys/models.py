@@ -22,7 +22,7 @@ class Survey(BasisModel):
     )
     event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
-    token = models.CharField(max_length=64, default=generate_new_token, unique=True)
+    token = models.CharField(max_length=64, default=None, unique=True, null=True, blank=True)
 
     def aggregate_submissions(self):
         result = {}
@@ -46,6 +46,14 @@ class Survey(BasisModel):
             options['questionType'] = question.question_type
             result[str(question.id)] = options
         return result
+
+    def generate_token(self):
+        self.token = generate_new_token()
+        self.save()
+
+    def delete_token(self):
+        self.token = None
+        self.save()
 
 
 class Question(models.Model):
