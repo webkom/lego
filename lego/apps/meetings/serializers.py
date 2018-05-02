@@ -57,9 +57,10 @@ class MeetingDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Meeting
-        fields = ('id', 'created_by', 'title', 'location', 'start_time',
-                  'end_time', 'report', 'report_author', 'invitations',
-                  'comments', 'comment_target')
+        fields = (
+            'id', 'created_by', 'title', 'location', 'start_time', 'end_time', 'report',
+            'report_author', 'invitations', 'comments', 'comment_target'
+        )
         read_only = True
 
     def create(self, validated_data):
