@@ -114,18 +114,28 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'])
     def hide(self, request, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
         submission, answer = self.validate_answer(request, **kwargs)
         answer.hide()
         return Response(
-            data=SubmissionReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
+            data=SubmissionAdminReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
         )
 
     @detail_route(methods=['POST'])
     def show(self, request, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
         submission, answer = self.validate_answer(request, **kwargs)
         answer.show()
         return Response(
-            data=SubmissionReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
+            data=SubmissionAdminReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
         )
 
 
