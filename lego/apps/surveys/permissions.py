@@ -40,7 +40,7 @@ class SubmissionPermissions(permissions.BasePermission):
             return True
         if view.action in ['create']:
             return user_attended_event
-        elif view.action in ['retrieve']:
+        if view.action in ['retrieve']:
             return user_attended_event and\
                    survey.submissions.get(id=view.kwargs['pk']).user_id is user.id
         if request.query_params.get('user', False):

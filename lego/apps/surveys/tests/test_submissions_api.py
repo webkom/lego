@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from lego.apps.surveys.models import Submission
 from lego.apps.users.models import AbakusGroup, User
 
 
@@ -182,3 +183,78 @@ class SubmissionViewSetTestCase(APITestCase):
             self.assertEqual(expected['question'], answer['question'].get('id', None))
             for key in ['answerText', 'selectedOptions']:
                 self.assertEqual(expected[key], answer[key])
+
+    # Hide
+    def test_hide_admin(self):
+        """Calling the hide() endpoint should successfully set hide_from_public"""
+        self.client.force_authenticate(user=self.admin_user)
+        answer_pk = 3
+        submission = Submission.objects.get(pk=1)
+        answer = submission.answers.get(pk=answer_pk)
+        self.assertFalse(answer.hide_from_public)
+
+        response = self.client.post(_get_detail_url(1, 1) + 'hide/?answer=' + str(answer_pk))
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+        response = self.client.get(_get_detail_url(1, 1))
+        self.assertTrue(response.data)
+        response_answers = response.data['answers']
+        answer = next(x for x in response_answers if x['id'] == answer_pk)
+        self.assertTrue('hideFromPublic' in answer)
+        self.assertTrue(answer['hideFromPublic'])
+
+    def test_show_admin(self):
+        """Calling the show() endpoint should successfully set hide_from_public"""
+        self.client.force_authenticate(user=self.admin_user)
+        answer_pk = 3
+        submission = Submission.objects.get(pk=1)
+        answer = submission.answers.get(pk=answer_pk)
+        answer.hide()
+
+        response = self.client.post(_get_detail_url(1, 1) + 'show/?answer=' + str(answer_pk))
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+        response = self.client.get(_get_detail_url(1, 1))
+        self.assertTrue(response.data)
+        response_answers = response.data['answers']
+        answer = next(x for x in response_answers if x['id'] == answer_pk)
+        self.assertTrue('hideFromPublic' in answer)
+        self.assertFalse(answer['hideFromPublic'])
+
+    def test_hide_attended(self):
+        """Attended users should not be able to hide or show answers"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.post(_get_detail_url(1, 1) + 'hide/?answer=3')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response = self.client.post(_get_detail_url(1, 1) + 'show/?answer=3')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_hide_regular(self):
+        """Regular users should not be able to hide or show answers"""
+        self.client.force_authenticate(user=self.regular_user)
+        response = self.client.post(_get_detail_url(1, 1) + 'hide/?answer=3')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        response = self.client.post(_get_detail_url(1, 1) + 'show/?answer=3')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_hide_own(self):
+        """Even whoever made the answer should not be able to hide or show answers"""
+        submission = Submission.objects.get(pk=1)
+        creator = submission.created_by
+        self.client.force_authenticate(user=creator)
+        response = self.client.post(_get_detail_url(1, 1) + 'hide/?answer=3')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        response = self.client.post(_get_detail_url(1, 1) + 'show/?answer=3')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_hide_without_answer(self):
+        """Calling the hide() endpoint without an answer query param shouldn't work"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_detail_url(1, 1) + 'hide/')
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+
+    def test_hide_with_invalid_answer(self):
+        """Calling the hide() endpoint with an incorrect answer pk should be 404"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_detail_url(1, 1) + 'hide/?answer=123')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

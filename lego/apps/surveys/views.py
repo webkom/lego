@@ -1,20 +1,21 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, status, viewsets
+from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.surveys.authentication import SurveyTokenAuthentication
+from lego.apps.surveys.constants import TEXT_FIELD
 from lego.apps.surveys.filters import SubmissionFilterSet
-from lego.apps.surveys.models import Submission, Survey
+from lego.apps.surveys.models import Answer, Submission, Survey
 from lego.apps.surveys.permissions import (
     SubmissionPermissions, SurveyPermissions, SurveyTokenPermissions
 )
 from lego.apps.surveys.serializers import (
-    SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer, SurveyCreateSerializer,
-    SurveyReadDetailedAdminSerializer, SurveyReadDetailedSerializer, SurveyReadSerializer,
-    SurveyUpdateSerializer
+    SubmissionAdminReadSerializer, SubmissionCreateAndUpdateSerializer, SubmissionReadSerializer,
+    SurveyCreateSerializer, SurveyReadDetailedAdminSerializer, SurveyReadDetailedSerializer,
+    SurveyReadSerializer, SurveyUpdateSerializer
 )
 
 
@@ -86,6 +87,8 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return SubmissionCreateAndUpdateSerializer
+        if self.request and self.request.user.has_perm(EDIT, obj=Survey):
+            return SubmissionAdminReadSerializer
         return SubmissionReadSerializer
 
     def create(self, request, *args, **kwargs):
@@ -94,6 +97,45 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(
             SubmissionReadSerializer(serializer.instance).data, status=status.HTTP_201_CREATED
+        )
+
+    def validate_answer(self, request, **kwargs):
+        submission = Submission.objects.get(pk=kwargs['pk'])
+        answer_pk = request.query_params.get('answer')
+        if answer_pk is None:
+            raise exceptions.NotAcceptable('No answer specified')
+        try:
+            answer = submission.answers.get(pk=answer_pk)
+        except Answer.DoesNotExist:
+            raise exceptions.NotFound('Answer not found')
+        if answer.question.question_type != TEXT_FIELD:
+            raise exceptions.NotAcceptable('Only text answers can be hidden')
+        return submission, answer
+
+    @detail_route(methods=['POST'])
+    def hide(self, request, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        submission, answer = self.validate_answer(request, **kwargs)
+        answer.hide()
+        return Response(
+            data=SubmissionAdminReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
+        )
+
+    @detail_route(methods=['POST'])
+    def show(self, request, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        submission, answer = self.validate_answer(request, **kwargs)
+        answer.show()
+        return Response(
+            data=SubmissionAdminReadSerializer(submission).data, status=status.HTTP_202_ACCEPTED
         )
 
 
