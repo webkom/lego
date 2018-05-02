@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core import signing
@@ -7,9 +8,10 @@ from django.db import models
 from lego.apps.comments.models import Comment
 from lego.apps.content.fields import ContentField
 from lego.apps.meetings import constants
-from lego.apps.meetings.permissions import (
-    MeetingInvitationPermissionHandler, MeetingPermissionHandler
-)
+
+from lego.apps.meetings.permissions import (MeetingInvitationPermissionHandler,
+                                            MeetingPermissionHandler)
+from lego.apps.comments.models import Comment
 from lego.apps.stats.utils import track
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
