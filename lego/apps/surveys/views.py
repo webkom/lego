@@ -78,6 +78,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     permission_classes = [SubmissionPermissions]
     filter_class = SubmissionFilterSet
+    pagination_class = None
     filter_backends = (DjangoFilterBackend, )
 
     def get_queryset(self):
