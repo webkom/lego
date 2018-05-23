@@ -73,6 +73,10 @@ class RestrictedMail(BasisModel):
         recipients = set(all_raw_addresses)
 
         for user in all_users:
+            if not user.email_lists_enabled:
+                # Don't send emails to users that don't want mail.
+                continue
+
             if self.weekly:
                 if EMAIL not in NotificationSetting.active_channels(user, WEEKLY_MAIL):
                     continue
