@@ -140,7 +140,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         """
         Restricted Mail
         """
-        memberships = self.memberships
+        memberships = self.memberships.filter(email_lists_enabled=True)
         return [membership.user for membership in memberships], []
 
     def announcement_lookup(self):
