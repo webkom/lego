@@ -329,9 +329,8 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         unanswered_surveys = Survey.objects.filter(
             event__registrations__in=registrations, active_from__lte=timezone.now(),
             template_type__isnull=True
-        ).exclude(submissions__user__in=[self]).prefetch_related(
-            'event__registrations', 'submissions__user'
-        )
+        ).exclude(submissions__user__in=[self]
+                  ).prefetch_related('event__registrations', 'submissions__user')
         return list(unanswered_surveys.values_list('id', flat=True))
 
 
