@@ -44,7 +44,7 @@ django-ipware==2.1.0
 django-push-notifications==1.6.0
 
 # Ical-export
-django-ical==1.4
+django-ical==1.5
 icalendar==4.0
 
 # Docs
