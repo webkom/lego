@@ -58,10 +58,11 @@ class Command(BaseCommand):
             abakus_groups__in=groups, date_bumped__lte=timezone.now() - timedelta_since_prev_bump
         ).prefetch_related('abakus_groups')
 
-    def verify_no_duplicate_memberships(self, users, student_groups):
-        users_with_multiple_memberships = self.get_students_in_groups(student_groups).annotate(
-            Count('id')
-        ).order_by().filter(id__count__gt=1)
+    def verify_no_duplicate_memberships(self, student_groups):
+        students = self.get_students_in_groups(student_groups)
+        log.info(f"Student count: {students.count()}")
+        users_with_multiple_memberships = students.annotate(Count('id')
+                                                            ).order_by().filter(id__count__gt=1)
 
         if users_with_multiple_memberships.count() is 0:
             return
@@ -77,6 +78,13 @@ class Command(BaseCommand):
     def get_groups(self, names):
         return [self.get_group(name) for name in names]
 
+    def change_user_grade(self, user, from_grade, to_grade):
+        with transaction.atomic():
+            from_grade.remove_user(user)
+            if to_grade:
+                to_grade.add_user(user)
+            User.objects.filter(pk=user.pk).update(date_bumped=timezone.now())
+
     def run(self, *args, **options):
         is_dryrun = not options['no_dryrun']
 
@@ -88,31 +96,20 @@ class Command(BaseCommand):
         komtek_groups = self.get_groups(komtek_groups_names)
         other_student_groups = self.get_groups(other_student_groups_names)
 
-        student_groups = komtek_groups + data_groups
-
-        all_active_students = self.get_students_in_groups(student_groups)
-        log.info(f"Student count: {all_active_students.count()}")
-
-        self.verify_no_duplicate_memberships(
-            all_active_students, student_groups + other_student_groups
-        )
+        self.verify_no_duplicate_memberships(data_groups + komtek_groups + other_student_groups)
 
         for groups in [data_groups, komtek_groups]:
             for grade_index in range(len(groups)):
-                group = groups[grade_index]
-                next_group = None if grade_index + 1 is len(groups) else groups[grade_index + 1]
-                next_group_name = next_group.name if next_group else None
-                students_in_group = self.get_students_in_group(group)
+                from_group = groups[grade_index]
+                to_group = None if grade_index + 1 is len(groups) else groups[grade_index + 1]
+                to_group_name = to_group.name if to_group else None
+                students_in_group = self.get_students_in_group(from_group)
                 log.info(
                     "{:3d} users ready to be bumped from \"{}\" to \"{}\"".format(
-                        students_in_group.count(), group.name, next_group_name
+                        students_in_group.count(), from_group.name, to_group_name
                     )
                 )
                 if is_dryrun:
                     continue
                 for user in students_in_group:
-                    with transaction.atomic():
-                        group.remove_user(user)
-                        if next_group:
-                            next_group.add_user(user)
-                        User.objects.filter(pk=user.pk).update(date_bumped=timezone.now())
+                    self.change_user_grade(user, from_group, to_group)
