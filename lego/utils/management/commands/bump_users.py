@@ -33,7 +33,7 @@ komtek_groups_names = [
     f'5. klasse {KOMTEK_LONG}',
 ]
 
-timedelta_since_prev_bump = timedelta(minutes=1)
+timedelta_since_prev_bump = timedelta(days=5 * 31)
 
 
 class Command(BaseCommand):

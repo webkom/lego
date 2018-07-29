@@ -244,7 +244,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
 
-    date_bumped = models.DateTimeField('date bumped', default=timezone.now)
+    date_bumped = models.DateTimeField('date bumped', null=True, default=None)
 
     objects = AbakusUserManager()
 
