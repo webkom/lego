@@ -56,7 +56,7 @@ class PasswordResetPerformViewSet(viewsets.GenericViewSet):
         email = PasswordReset.validate_reset_token(token)
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
             raise ValidationError({"email": "User with that email does not exist"})
 
