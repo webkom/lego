@@ -37,7 +37,7 @@ django-autoslug==1.9.3
 django-oauth-toolkit==1.1.0
 django-filter==1.1.0
 django-cors-headers==2.4.0
-django-mptt==0.9.0
+django-mptt==0.9.1
 django-environ==0.4.5
 django-redis==4.9.0
 django-ipware==2.1.0
