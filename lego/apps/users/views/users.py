@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import status, viewsets
-from rest_framework.decorators import list_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -8,13 +8,13 @@ from structlog import get_logger
 
 from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.permissions.constants import EDIT
+from lego.apps.permissions.constants import CREATE, EDIT
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import (
-    MeSerializer, PublicUserSerializer, PublicUserWithGroupsSerializer
+    ChangeGradeSerializer, MeSerializer, PublicUserSerializer, PublicUserWithGroupsSerializer
 )
 
 log = get_logger()
@@ -120,3 +120,28 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         payload = serializer.data
         payload['is_abakus_member'] = is_abakus_member
         return Response(data=payload, status=status.HTTP_200_OK)
+
+    @detail_route(
+        methods=['POST'], permission_classes=[IsAuthenticated],
+        serializer_class=ChangeGradeSerializer
+    )
+    def change_grade(self, request, *args, **kwargs):
+        """
+        Attempts to change the grade of the user based selected input
+        """
+        if not request.user.has_perm(CREATE, AbakusGroup):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.get_object()
+        newGrade = serializer.validated_data['group']
+
+        with transaction.atomic():
+            grade = user.grade
+            if grade is not None:
+                grade.remove_user(user)
+            if newGrade is not None:
+                newGrade.add_user(user)
+
+        return Response(MeSerializer(user).data)
