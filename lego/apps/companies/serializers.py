@@ -145,7 +145,7 @@ class CompanyInterestSerializer(serializers.ModelSerializer):
 class CompanyInterestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInterest
-        fields = ('id', 'company_name', 'contact_person', 'mail')
+        fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'created_at')
 
 
 class CompanySearchSerializer(serializers.ModelSerializer):
