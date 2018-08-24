@@ -7,7 +7,7 @@ pyyaml==3.12
 raven==6.9.0
 redis==2.10.6
 hiredis==0.2.0
-certifi==2018.8.13
+certifi==2018.8.24
 elasticsearch==6.2.0
 celery==4.2.0
 stripe==1.82.2
