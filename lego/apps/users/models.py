@@ -229,7 +229,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     )
     first_name = models.CharField('first name', max_length=50, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
-    allergies = models.CharField('allergies', max_length=30, blank=True)
+    allergies = models.CharField('allergies', max_length=100, blank=True)
     email = models.EmailField(
         unique=True, validators=[email_blacklist_validator], error_messages={
             'unique': 'A user with that email already exists.',
