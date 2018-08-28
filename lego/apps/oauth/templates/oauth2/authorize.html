@@ -13,7 +13,7 @@
                                 <img class="logo" src="{% static "assets/img/logo.png" %}">
                             </figure>
 
-                            <h2 class="subtitle has-text-centered">Authorize application</h2>
+                            <h2 class="subtitle has-text-centered">Tillat applikasjonen å bruke dine brukerdata</h2>
 
                             {% if not error %}
 
@@ -21,12 +21,12 @@
                                     {% csrf_token %}
 
                                     <h1 class="title has-text-centered">{{ application.name }}</h1>
-                                    <p class="has-text-centered">by <a href="mailto:{{ application.user.email }}">{{ application.user.full_name }}</a></p>
+                                    <p class="has-text-centered">opprettet av <a href="mailto:{{ application.user.email }}">{{ application.user.full_name }}</a></p>
                                     <br/>
-                                    <h2 class="subtitle">{{ application.description }}</h2>
+                                    <h2 class="subtitle has-text-centered">{{ application.description }}</h2>
 
                                     <div class="content">
-                                        <p>The application requires the following scopes:</p>
+                                        <p>Applikasjonen krever tilgang til følgende:</p>
                                         <ul class="list">
                                         {% for scope in scopes_descriptions %}
                                             <li>{{ scope }}</li>
@@ -44,8 +44,8 @@
                                     <div class="content">
                                         <p class="has-text-centered">
                                             <strong>
-                                                Never grant access to an application you don't trust.
-                                                Contact <a href="mailto:{{ SITE.contact_email }}">{{ SITE.owner }}</a> for more information.
+                                                Aldri gi tilgang til applikasjoner du ikke stoler på.
+                                                Kontakt <a href="mailto:{{ SITE.contact_email }}">{{ SITE.owner }}</a> for mer informasjon.
                                             </strong>
                                         </p>
                                     </div>
