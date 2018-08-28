@@ -123,7 +123,8 @@ OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth.APIApplication'
 OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 86400 * 7,
     'SCOPES': {
-        'user': 'Grants access to the user profile'
+        'user':
+        'Grants access to the user profile. IMPORTANT: Currently grants access to everything'
     }
 }
 
