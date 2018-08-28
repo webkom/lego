@@ -13,7 +13,7 @@
                                 <img class="logo" src="{% static "assets/img/logo.png" %}">
                             </figure>
 
-                            <h2 class="subtitle has-text-centered">Tillat applikasjonen å bruke dine brukerdata</h2>
+                            <h2 class="subtitle has-text-centered">Tillat applikasjonen å bruke din informasjon fra abakus.no</h2>
 
                             {% if not error %}
 
@@ -27,9 +27,9 @@
 
                                     <div class="content">
                                         <p>Applikasjonen krever tilgang til følgende:</p>
-                                        <ul class="list">
+                                        <ul class="list has-text-centered">
                                         {% for scope in scopes_descriptions %}
-                                            <li>{{ scope }}</li>
+                                            <li class="has-text-centered">{{ scope }}</li>
                                         {% endfor %}
                                         </ul>
                                     </div>
@@ -52,10 +52,10 @@
 
                                     <div class="control is-grouped is-pulled-right">
                                         <p class="control">
-                                            <input type="submit" class="button is-outlined is-danger" value="Cancel" />
+                                            <input type="submit" class="button is-outlined is-danger" value="Avbryt" />
                                         </p>
                                         <p class="control">
-                                            <input type="submit" class="button is-outlined is-pulled-right" name="allow" value="Authorize" />
+                                            <input type="submit" class="button is-outlined is-pulled-right" name="allow" value="Godta" />
                                         </p>
                                     </div>
 
