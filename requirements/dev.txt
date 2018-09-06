@@ -1,7 +1,7 @@
 -r base.txt
 -r docs.txt
 
-django-debug-toolbar==1.9
+django-debug-toolbar==1.10
 tox==3.2.1
 
 -r flake8.txt
