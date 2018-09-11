@@ -2,7 +2,7 @@
 -r docs.txt
 
 django-debug-toolbar==1.9
-tox==3.2.1
+tox==3.3.0
 
 -r flake8.txt
 -r isort.txt
