@@ -1,6 +1,6 @@
 from rest_framework import permissions, viewsets
 
-from lego.apps.companies.filters import SemesterFilterSet, CompanyInterestFilterSet
+from lego.apps.companies.filters import CompanyInterestFilterSet, SemesterFilterSet
 from lego.apps.companies.models import (
     Company, CompanyContact, CompanyFile, CompanyInterest, Semester, SemesterStatus
 )
@@ -11,7 +11,6 @@ from lego.apps.companies.serializers import (
     SemesterStatusDetailSerializer, SemesterStatusSerializer
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from django_filters import rest_framework as filters
 
 
 class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -87,15 +86,10 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     Used by new companies to register interest in Abakus and our services.
     """
     ordering = '-created_at'
+    queryset = CompanyInterest.objects.all()
+    filter_class = CompanyInterestFilterSet
 
     def get_serializer_class(self):
         if self.action == 'list':
             return CompanyInterestListSerializer
         return CompanyInterestSerializer
-
-    def get_queryset(self):
-        queryset = CompanyInterest.objects.all()
-        company_name = self.request.query_params.get('company_name', None)
-        if company_name is not None:
-            queryset = queryset.filter(company_name=company_name)
-        return queryset

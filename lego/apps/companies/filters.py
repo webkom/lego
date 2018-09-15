@@ -1,6 +1,6 @@
-from django_filters import BooleanFilter, CharFilter, FilterSet, NumberFilter
+from django_filters import BooleanFilter, FilterSet
 
-from lego.apps.companies.models import Semester, CompanyInterest
+from lego.apps.companies.models import CompanyInterest, Semester
 
 
 class SemesterFilterSet(FilterSet):
@@ -10,10 +10,8 @@ class SemesterFilterSet(FilterSet):
         model = Semester
         fields = ('company_interest', )
 
-class CompanyInterestFilterSet(FilterSet):
-    semester = CharFilter('semester')
-    year = NumberFilter('year')
 
+class CompanyInterestFilterSet(FilterSet):
     class Meta:
         model = CompanyInterest
-        fields = ('semester', 'year')
+        fields = ('semesters', )
