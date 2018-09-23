@@ -6,7 +6,6 @@ from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
@@ -22,7 +21,8 @@ from lego.apps.users.managers import (
 from lego.apps.users.permissions import (
     AbakusGroupPermissionHandler, MembershipPermissionHandler, UserPermissionHandler
 )
-from lego.utils.models import BasisModel, PersistentModel
+from lego.utils.decorators import abakus_cached_property
+from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
 from .validators import email_blacklist_validator, username_validator
@@ -106,7 +106,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
             return membership.user
         return None
 
-    @cached_property
+    @abakus_cached_property
     def memberships(self):
         descendants = self.get_descendants(True)
         return Membership.objects.filter(
@@ -116,7 +116,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
             abakus_group__in=descendants,
         )
 
-    @cached_property
+    @abakus_cached_property
     def number_of_users(self):
         return self.memberships.distinct('user').count()
 
@@ -148,7 +148,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         return [membership.user for membership in memberships]
 
 
-class PermissionsMixin(models.Model):
+class PermissionsMixin(CachedModel):
 
     abakus_groups = models.ManyToManyField(
         AbakusGroup, through='Membership', through_fields=('user', 'abakus_group'), blank=True,
@@ -157,7 +157,7 @@ class PermissionsMixin(models.Model):
         related_query_name='user'
     )
 
-    @cached_property
+    @abakus_cached_property
     def is_superuser(self):
         return '/sudo/' in self.get_all_permissions()
 
@@ -184,7 +184,7 @@ class PermissionsMixin(models.Model):
     class Meta:
         abstract = True
 
-    @cached_property
+    @abakus_cached_property
     def memberships(self):
         return Membership.objects.filter(
             deleted=False,
@@ -192,7 +192,7 @@ class PermissionsMixin(models.Model):
             user=self,
         )
 
-    @cached_property
+    @abakus_cached_property
     def all_groups(self):
         groups = set()
 
