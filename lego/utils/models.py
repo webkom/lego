@@ -3,10 +3,33 @@ from django.db import models
 from django.db.models.signals import post_delete, pre_delete
 from django.utils import timezone
 
+from lego.utils.decorators import abakus_cached_property
+
 from .managers import BasisModelManager, PersistentModelManager
 
 
-class TimeStampModel(models.Model):
+class CachedModel(models.Model):
+    class Meta:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._cached_properties = {}
+        for model_class in self.__class__.__mro__:
+            class_items = model_class.__dict__.items()
+            for k, v in class_items:
+                if isinstance(v, abakus_cached_property):
+                    self._cached_properties[k] = v
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        for cached_property, decorator in self._cached_properties.items():
+            if cached_property in self.__dict__:
+                if decorator.delete_on_save:
+                    del self.__dict__[cached_property]
+
+
+class TimeStampModel(CachedModel):
     """
     Attach created_at and updated_at fields automatically on all model instances.
     """
@@ -21,7 +44,7 @@ class TimeStampModel(models.Model):
         super().save(*args, **kwargs)
 
 
-class PersistentModel(models.Model):
+class PersistentModel(CachedModel):
     """
     Hide 'deleted' models from default queryset. Replaces the manager to accomplish this.
     Remember to inherit from PersistentModelManager when you replaces a manager on a child-class.
