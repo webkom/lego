@@ -175,6 +175,11 @@ class PermissionsMixin(CachedModel):
         # from first_true @ https://docs.python.org/3/library/itertools.html
         return bool(next(filter(lambda group: group.is_committee, self.all_groups), False))
 
+    @property
+    def has_grade_group(self):
+        # from first_true @ https://docs.python.org/3/library/itertools.html
+        return bool(next(filter(lambda group: group.is_grade, self.all_groups), False))
+
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
     has_module_perms = DjangoPermissionMixin.has_module_perms
