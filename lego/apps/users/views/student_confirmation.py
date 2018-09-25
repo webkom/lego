@@ -90,9 +90,7 @@ class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
         user.student_username = student_confirmation['student_username']
         course = student_confirmation['course'].lower()
 
-        has_grade_group = user.has_grade_group
-
-        if not has_grade_group:
+        if not user.has_grade_group:
             if course == constants.DATA:
                 grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
                 grade_group.add_user(user)
