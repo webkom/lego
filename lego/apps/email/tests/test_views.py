@@ -146,6 +146,19 @@ class UserEmailTestCase(BaseAPITestCase):
         )
         self.assertEquals(status.HTTP_201_CREATED, response.status_code)
 
+    def test_set_address_on_capitalized_internal_email(self):
+        """Set an address that is capitalized to make sure it is lowercased in input sanitation"""
+        response = self.client.post(
+            self.url, {
+                'user': 2,
+                'internal_email': 'TestEmail123',
+                'internal_email_enabled': True,
+            }
+        )
+        self.assertEquals(status.HTTP_201_CREATED, response.status_code)
+        self.assertEquals('testemail123', response.json()['internalEmail'])
+        self.assertEquals('testemail123', User.objects.get(pk=2).internal_email.email)
+
     def test_set_address_to_assigned(self):
         """Not possible to set an assigned email"""
         response = self.client.post(
