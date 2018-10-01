@@ -1,4 +1,4 @@
-django==2.0.6
+django==2.1.2
 ipython==7.0.1
 
 psycopg2==2.7.3.2
