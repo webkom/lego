@@ -16,6 +16,7 @@ from lego.apps.events.exceptions import (
 )
 from lego.apps.events.permissions import EventPermissionHandler, RegistrationPermissionHandler
 from lego.apps.files.models import FileField
+from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
@@ -109,6 +110,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 registration.add_to_waiting_list(
                     feedback=feedback, admin_registration_reason=admin_registration_reason
                 )
+            # Make the user follow the event
+            FollowEvent.objects.get_or_create(follower=user, target=self)
             handle_event(registration, 'admin_registration')
             return registration
 
@@ -218,6 +221,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.get_earliest_registration_time(user, possible_pools, penalties) > current_time:
             raise ValueError('Not open yet')
 
+        # Make the user follow the event
+        FollowEvent.objects.get_or_create(follower=user, target=self)
+
         if penalties >= 3:
             return registration.add_to_waiting_list()
 
@@ -279,6 +285,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
                 locked_pool = locked_event.pools.get(id=pool_id)
                 locked_event.check_for_bump_or_rebalance(locked_pool)
+                follow_event_item = FollowEvent.objects.filter(
+                    follower=registration.user, target=locked_event
+                ).first()
+                if follow_event_item:
+                    follow_event_item.delete()
 
     def check_for_bump_or_rebalance(self, open_pool):
         """
