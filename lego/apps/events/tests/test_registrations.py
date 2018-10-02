@@ -328,11 +328,10 @@ class RegistrationTestCase(BaseTestCase):
         registrations_before = event.number_of_registrations
         pool_registrations_before = pool.registrations.count()
         event.unregister(registration)
-        event_follow_does_not_exists = FollowEvent.objects.filter(
-            follower=registration.user, target=event
-        ).exists()
+        event_follow_exists = FollowEvent.objects.filter(follower=registration.user,
+                                                         target=event).exists()
 
-        self.assertEqual(event_follow_does_not_exists, False)
+        self.assertEqual(event_follow_exists, False)
         self.assertEqual(event.number_of_registrations, registrations_before - 1)
         self.assertEqual(pool.registrations.count(), pool_registrations_before - 1)
 
@@ -559,11 +558,10 @@ class RegistrationTestCase(BaseTestCase):
         registration_to_unregister = Registration.objects.get(event=event, user=user_to_unregister)
 
         event.unregister(registration_to_unregister)
-        event_follow_does_not_exists = FollowEvent.objects.filter(
-            follower=user_to_unregister, target=event
-        ).exists()
+        event_follow_exists = FollowEvent.objects.filter(follower=user_to_unregister,
+                                                         target=event).exists()
 
-        self.assertEqual(event_follow_does_not_exists, False)
+        self.assertEqual(event_follow_exists, False)
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
         self.assertEqual(pool_one.registrations.count(), pool_one_size_before + 1)
