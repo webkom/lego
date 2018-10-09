@@ -1,0 +1,13 @@
+- model: podcasts.Podcast
+  pk: 1
+  fields:
+    source: www.noe.com
+    title: Tittel på første podcast
+    description: Description på første podcast
+
+- model: podcasts.Podcast
+  pk: 2
+  fields:
+    source: www.noeannet.com
+    title: Tittel på andre podcast
+    description: Description på andre podcast
