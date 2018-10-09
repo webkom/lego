@@ -210,13 +210,14 @@ class EventSearchSerializer(serializers.ModelSerializer):
         }
     )
     text = ContentSerializerField()
+    activation_time = ActivationTimeField()
 
     class Meta:
         model = Event
         fields = (
             'id', 'title', 'description', 'cover', 'text', 'event_type', 'location', 'start_time',
             'thumbnail', 'end_time', 'total_capacity', 'company', 'registration_count', 'tags',
-            'pinned'
+            'activation_time', 'pinned'
         )
         read_only = True
 
