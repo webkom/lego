@@ -13,7 +13,8 @@ _test_company_interest_data = [
         'events': ['company_presentation', 'course', 'lunch_presentation'],
         'other_offers': ['collaboration', 'readme'],
         'comment': 'webkom'
-    }, {
+    },
+    {
         'id': 1,
         'company_name': 'BEKKerino',
         'contact_person': 'Bill Gutes',

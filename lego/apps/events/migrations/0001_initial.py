@@ -42,10 +42,10 @@ class Migration(migrations.Migration):
                     'event_type',
                     models.CharField(
                         choices=[
-                            ('company_presentation',
-                             'company_presentation'), ('lunch_presentation', 'lunch_presentation'),
-                            ('course', 'course'), ('kid_event', 'kid_event'), ('party', 'party'),
-                            ('social', 'social'), ('other', 'other'), ('event', 'event')
+                            ('company_presentation', 'company_presentation'),
+                            ('lunch_presentation', 'lunch_presentation'), ('course', 'course'),
+                            ('kid_event', 'kid_event'), ('party', 'party'), ('social', 'social'),
+                            ('other', 'other'), ('event', 'event')
                         ], max_length=50
                     )
                 ),
@@ -127,12 +127,12 @@ class Migration(migrations.Migration):
                     'status',
                     models.CharField(
                         choices=[
-                            ('PENDING_REGISTER',
-                             'PENDING_REGISTER'), ('SUCCESS_REGISTER', 'SUCCESS_REGISTER'),
-                            ('FAILURE_REGISTER',
-                             'FAILURE_REGISTER'), ('PENDING_UNREGISTER', 'PENDING_UNREGISTER'),
-                            ('SUCCESS_UNREGISTER',
-                             'SUCCESS_UNREGISTER'), ('FAILURE_UNREGISTER', 'FAILURE_UNREGISTER')
+                            ('PENDING_REGISTER', 'PENDING_REGISTER'),
+                            ('SUCCESS_REGISTER', 'SUCCESS_REGISTER'),
+                            ('FAILURE_REGISTER', 'FAILURE_REGISTER'),
+                            ('PENDING_UNREGISTER', 'PENDING_UNREGISTER'),
+                            ('SUCCESS_UNREGISTER', 'SUCCESS_UNREGISTER'),
+                            ('FAILURE_UNREGISTER', 'FAILURE_UNREGISTER')
                         ], default='PENDING_REGISTER', max_length=20
                     )
                 ),
