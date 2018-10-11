@@ -113,8 +113,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
             'pools__permission_groups',
             Prefetch(
-                'pools__registrations', queryset=Registration.objects.select_related('user')
-                .prefetch_related('user__abakus_groups')
+                'pools__registrations', queryset=Registration.objects.select_related('user').
+                prefetch_related('user__abakus_groups')
             ),
             Prefetch('registrations', queryset=Registration.objects.select_related('user')),
         )

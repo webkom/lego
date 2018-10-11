@@ -8,6 +8,10 @@ from lego.utils.models import BasisModel
 from .constants import CHANNEL_CHOICES, CHANNELS, NOTIFICATION_CHOICES, NOTIFICATION_TYPES
 
 
+def _default_channels():
+    return CHANNELS
+
+
 class NotificationSetting(models.Model):
     """
     All notifications is enabled by default. We need to create an instance of this model
@@ -18,7 +22,8 @@ class NotificationSetting(models.Model):
     notification_type = models.CharField(max_length=64, choices=NOTIFICATION_CHOICES)
     enabled = models.BooleanField(default=True)
     channels = ArrayField(
-        models.CharField(max_length=64, choices=CHANNEL_CHOICES), default=CHANNELS, null=True
+        models.CharField(max_length=64, choices=CHANNEL_CHOICES), default=_default_channels,
+        null=True
     )
 
     class Meta:

@@ -36,6 +36,15 @@ class RetrieveRegistrationAPITestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('email'), 'test1@user.com')
 
+    def test_with_valid_token_and_capitalized_email(self):
+        response = self.client.get(
+            _get_registration_token_url(
+                Registrations.generate_registration_token('Test1@User.CoM')
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('email'), 'Test1@User.CoM')
+
 
 class CreateRegistrationAPITestCase(BaseAPITestCase):
 
@@ -56,6 +65,16 @@ class CreateRegistrationAPITestCase(BaseAPITestCase):
             }
         )
         self.assertEqual(response.status_code, 400)
+
+    @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=True)
+    def test_with_capitalized_email(self, mock_verify_captcha):
+        response = self.client.post(
+            _get_list_url(), {
+                'email': 'Test1@User.CoM',
+                'captcha_response': 'testCaptcha'
+            }
+        )
+        self.assertEqual(response.status_code, 202)
 
     @mock.patch('lego.apps.users.serializers.registration.verify_captcha', return_value=False)
     def test_with_invalid_captcha(self, *args):

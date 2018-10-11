@@ -31,9 +31,9 @@ def add_event_to_ical_feed(
     feed.add_item(
         title=event.title if title is None else title, unique_id=f'event-{event.id}@abakus.no',
         link=event.get_absolute_url(), description=desc_template.render(desc_context),
-        start_datetime=event.start_time
-        if ical_starttime is None else ical_starttime, end_datetime=event.end_time
-        if ical_endtime is None else ical_endtime, location=event.location
+        start_datetime=event.start_time if ical_starttime is None else ical_starttime,
+        end_datetime=event.end_time if ical_endtime is None else ical_endtime,
+        location=event.location
     )
 
 

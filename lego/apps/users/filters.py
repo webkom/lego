@@ -4,7 +4,7 @@ from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, P
 
 
 class MembershipFilterSet(FilterSet):
-    group = CharFilter(name='abakus_group')
+    group = CharFilter(field_name='abakus_group')
 
     class Meta:
         model = Membership

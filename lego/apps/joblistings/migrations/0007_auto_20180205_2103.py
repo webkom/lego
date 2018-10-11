@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 choices=[
                     ('full_time', 'full_time'), ('part_time', 'part_time'),
-                    ('summer_job', 'summer_job'), ('master_thesis',
-                                                   'master_thesis'), ('other', 'other')
+                    ('summer_job', 'summer_job'), ('master_thesis', 'master_thesis'),
+                    ('other', 'other')
                 ], max_length=20
             ),
         ),

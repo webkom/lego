@@ -214,6 +214,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         grade.add_user(self.user_with_student_confirmation)
         self.user_with_student_confirmation = User.objects.get(username='test1')
         self.user_without_student_confirmation = User.objects.get(username='test2')
+        self.user_with_grade_group_but_no_student_confirmation = User.objects.get(username='pleb')
 
     def create_token(
         self, student_username='newstudentusername', course=constants.DATA, member=True
@@ -271,6 +272,36 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         self.assertEqual(user.is_abakus_member, False)
         member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
         self.assertEqual(member_group in user_groups, False)
+
+    def test_with_already_in_grade_group_but_not_abakus(self):
+        AbakusGroup.objects.get(name='Users').add_user(
+            self.user_with_grade_group_but_no_student_confirmation
+        )
+        AbakusGroup.objects.get(name='2. klasse Kommunikasjonsteknologi').add_user(
+            self.user_with_grade_group_but_no_student_confirmation
+        )
+        self.client.force_authenticate(self.user_with_grade_group_but_no_student_confirmation)
+        token = self.create_token(course=constants.KOMTEK, member=True)
+        response = self.client.post(_get_student_confirmation_token_perform_url(token))
+        self.assertEqual(response.status_code, 200)
+
+        user = self.user_with_grade_group_but_no_student_confirmation
+        user_groups = user.all_groups
+        self.assertEqual(user.student_username, 'newstudentusername')
+        self.assertEqual(user.is_staff, False)
+
+        # Test course groups
+        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
+        self.assertEqual(course_group in user_groups, True)
+        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
+        self.assertEqual(grade_group in user_groups, False)
+        grade_group = AbakusGroup.objects.get(name='2. klasse Kommunikasjonsteknologi')
+        self.assertEqual(grade_group in user_groups, True)
+
+        # Test member group
+        self.assertEqual(user.is_abakus_member, True)
+        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+        self.assertEqual(member_group in user_groups, True)
 
     def test_with_abakus_member_checked(self):
         AbakusGroup.objects.get(name='Users').add_user(self.user_without_student_confirmation)

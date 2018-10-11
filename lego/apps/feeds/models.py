@@ -13,7 +13,7 @@ class FeedBase(models.Model):
     feed_id = models.CharField(max_length=64, db_index=True)
     group = models.CharField(max_length=128)
 
-    activity_store = JSONField(default=[])
+    activity_store = JSONField(default=list)
     minimized_activities = models.PositiveIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
