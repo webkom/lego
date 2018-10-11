@@ -47,7 +47,8 @@ _test_event_data = [
                 'permission_groups': [1]
             }
         ]
-    }, {
+    },
+    {
         'title':
         'Event2',
         'description':
@@ -72,7 +73,8 @@ _test_event_data = [
                 'capacity': 10,
                 'activation_date': '2012-09-01T10:20:30Z',
                 'permission_groups': [2]
-            }, {
+            },
+            {
                 'name': 'Initial Pool 2',
                 'capacity': 20,
                 'activation_date': '2012-09-01T10:20:30Z',
@@ -88,12 +90,14 @@ _test_pools_data = [
         'capacity': 10,
         'activation_date': '2012-09-01T10:20:30Z',
         'permission_groups': [1]
-    }, {
+    },
+    {
         'name': 'TESTPOOL2',
         'capacity': 20,
         'activation_date': '2012-09-02T11:20:30Z',
         'permission_groups': [10]
-    }, {
+    },
+    {
         'name': 'TESTPOOL3',
         'capacity': 30,
         'activation_date': '2012-09-02T12:20:30Z',

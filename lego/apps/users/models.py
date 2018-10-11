@@ -6,7 +6,6 @@ from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.functional import cached_property
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
@@ -22,7 +21,8 @@ from lego.apps.users.managers import (
 from lego.apps.users.permissions import (
     AbakusGroupPermissionHandler, MembershipPermissionHandler, UserPermissionHandler
 )
-from lego.utils.models import BasisModel, PersistentModel
+from lego.utils.decorators import abakus_cached_property
+from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
 from .validators import email_blacklist_validator, username_validator
@@ -77,7 +77,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
-        verbose_name='permissions', default=[]
+        verbose_name='permissions', default=list
     )
 
     objects = AbakusGroupManagerWithoutText()
@@ -106,7 +106,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
             return membership.user
         return None
 
-    @cached_property
+    @abakus_cached_property
     def memberships(self):
         descendants = self.get_descendants(True)
         return Membership.objects.filter(
@@ -116,7 +116,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
             abakus_group__in=descendants,
         )
 
-    @cached_property
+    @abakus_cached_property
     def number_of_users(self):
         return self.memberships.distinct('user').count()
 
@@ -148,7 +148,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         return [membership.user for membership in memberships]
 
 
-class PermissionsMixin(models.Model):
+class PermissionsMixin(CachedModel):
 
     abakus_groups = models.ManyToManyField(
         AbakusGroup, through='Membership', through_fields=('user', 'abakus_group'), blank=True,
@@ -157,7 +157,7 @@ class PermissionsMixin(models.Model):
         related_query_name='user'
     )
 
-    @cached_property
+    @abakus_cached_property
     def is_superuser(self):
         return '/sudo/' in self.get_all_permissions()
 
@@ -175,6 +175,11 @@ class PermissionsMixin(models.Model):
         # from first_true @ https://docs.python.org/3/library/itertools.html
         return bool(next(filter(lambda group: group.is_committee, self.all_groups), False))
 
+    @property
+    def has_grade_group(self):
+        # from first_true @ https://docs.python.org/3/library/itertools.html
+        return bool(next(filter(lambda group: group.is_grade, self.all_groups), False))
+
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
     has_module_perms = DjangoPermissionMixin.has_module_perms
@@ -184,7 +189,7 @@ class PermissionsMixin(models.Model):
     class Meta:
         abstract = True
 
-    @cached_property
+    @abakus_cached_property
     def memberships(self):
         return Membership.objects.filter(
             deleted=False,
@@ -192,7 +197,7 @@ class PermissionsMixin(models.Model):
             user=self,
         )
 
-    @cached_property
+    @abakus_cached_property
     def all_groups(self):
         groups = set()
 
@@ -229,7 +234,7 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     )
     first_name = models.CharField('first name', max_length=50, blank=True)
     last_name = models.CharField('last name', max_length=30, blank=True)
-    allergies = models.CharField('allergies', max_length=30, blank=True)
+    allergies = models.CharField('allergies', max_length=100, blank=True)
     email = models.EmailField(
         unique=True, validators=[email_blacklist_validator], error_messages={
             'unique': 'A user with that email already exists.',
@@ -243,6 +248,8 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         'active. Unselect this instead of deleting accounts.'
     )
     date_joined = models.DateTimeField('date joined', default=timezone.now)
+
+    date_bumped = models.DateTimeField('date bumped', null=True, default=None)
 
     objects = AbakusUserManager()
 

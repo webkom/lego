@@ -2,9 +2,12 @@ from rest_framework import exceptions, serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
+from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
+from lego.apps.users.serializers.memberships import MembershipSerializer
 from lego.apps.users.serializers.penalties import PenaltySerializer
+from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
@@ -90,6 +93,7 @@ class MeSerializer(serializers.ModelSerializer):
     """
 
     abakus_groups = PublicAbakusGroupSerializer(many=True)
+    memberships = MembershipSerializer(many=True)
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
     ical_token = serializers.SerializerMethodField('get_user_ical_token')
     penalties = serializers.SerializerMethodField('get_valid_penalties')
@@ -129,5 +133,11 @@ class MeSerializer(serializers.ModelSerializer):
             'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'email_address',
             'email_lists_enabled', 'profile_picture', 'gender', 'allergies', 'is_active',
             'is_student', 'abakus_groups', 'is_abakus_member', 'is_abakom_member', 'penalties',
-            'ical_token'
+            'ical_token', 'memberships'
         )
+
+
+class ChangeGradeSerializer(serializers.Serializer):
+    group = PrimaryKeyRelatedFieldNoPKOpt(
+        allow_null=True, queryset=AbakusGroup.objects.all().filter(type=constants.GROUP_GRADE)
+    )

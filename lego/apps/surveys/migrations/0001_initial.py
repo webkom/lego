@@ -145,10 +145,10 @@ class Migration(migrations.Migration):
                     'template_type',
                     models.CharField(
                         blank=True, choices=[
-                            ('company_presentation',
-                             'company_presentation'), ('lunch_presentation', 'lunch_presentation'),
-                            ('course', 'course'), ('kid_event', 'kid_event'), ('party', 'party'),
-                            ('social', 'social'), ('other', 'other'), ('event', 'event')
+                            ('company_presentation', 'company_presentation'),
+                            ('lunch_presentation', 'lunch_presentation'), ('course', 'course'),
+                            ('kid_event', 'kid_event'), ('party', 'party'), ('social', 'social'),
+                            ('other', 'other'), ('event', 'event')
                         ], max_length=30, null=True
                     )
                 ),

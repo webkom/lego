@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from lego.apps.events.exceptions import EventNotReady
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.followers.models import FollowEvent
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseTestCase
 
@@ -101,7 +102,7 @@ class RegistrationTestCase(BaseTestCase):
         self.assertEqual(event.number_of_registrations, 4)
 
     def test_can_register_with_automatic_pool_selection(self):
-        """Test that registrating user selects correct pool"""
+        """Test that registrating user selects correct pool and that user follows the event"""
         user = get_dummy_users(1)[0]
         event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
         pool = event.pools.get(name='Abakusmember')
@@ -112,6 +113,9 @@ class RegistrationTestCase(BaseTestCase):
         event.register(registration)
         self.assertEqual(pool.registrations.count(), 1)
         self.assertEqual(pool_2.registrations.count(), 0)
+
+        event_follow_exists = FollowEvent.objects.filter(follower=user, target=event).exists()
+        self.assertEqual(event_follow_exists, True)
 
     def test_registrations_picks_correct_pool(self):
         """Test that multiple registrations selects correct pools"""
@@ -324,7 +328,10 @@ class RegistrationTestCase(BaseTestCase):
         registrations_before = event.number_of_registrations
         pool_registrations_before = pool.registrations.count()
         event.unregister(registration)
+        event_follow_exists = FollowEvent.objects.filter(follower=registration.user,
+                                                         target=event).exists()
 
+        self.assertEqual(event_follow_exists, False)
         self.assertEqual(event.number_of_registrations, registrations_before - 1)
         self.assertEqual(pool.registrations.count(), pool_registrations_before - 1)
 
@@ -530,9 +537,13 @@ class RegistrationTestCase(BaseTestCase):
         for user in abakus_users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
             event.admin_register(user, pool=pool_one, admin_registration_reason='test')
+            event_follow_exists = FollowEvent.objects.filter(follower=user, target=event).exists()
+            self.assertEqual(event_follow_exists, True)
         for user in webkom_users:
             AbakusGroup.objects.get(name='Webkom').add_user(user)
             event.admin_register(user, pool=pool_two, admin_registration_reason='test')
+            event_follow_exists = FollowEvent.objects.filter(follower=user, target=event).exists()
+            self.assertEqual(event_follow_exists, True)
 
         AbakusGroup.objects.get(name='Abakus').add_user(users[5])
         registration = Registration.objects.get_or_create(event=event, user=users[5])[0]
@@ -547,7 +558,10 @@ class RegistrationTestCase(BaseTestCase):
         registration_to_unregister = Registration.objects.get(event=event, user=user_to_unregister)
 
         event.unregister(registration_to_unregister)
+        event_follow_exists = FollowEvent.objects.filter(follower=user_to_unregister,
+                                                         target=event).exists()
 
+        self.assertEqual(event_follow_exists, False)
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)
         self.assertEqual(pool_one.registrations.count(), pool_one_size_before + 1)

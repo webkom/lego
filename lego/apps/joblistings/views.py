@@ -1,6 +1,7 @@
 from django.utils import timezone
 from rest_framework import viewsets
 
+from lego.apps.joblistings.filters import JoblistingFilterSet
 from lego.apps.joblistings.models import Joblisting
 from lego.apps.joblistings.serializer import (
     JoblistingCreateAndUpdateSerializer, JoblistingDetailedSerializer, JoblistingSerializer
@@ -10,6 +11,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     pagination_class = None
+    filter_class = JoblistingFilterSet
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:

@@ -3,7 +3,7 @@ from libthumbor import CryptoURL
 from structlog import get_logger
 
 log = get_logger()
-log = log.bind(service='thumbor')
+log = log.bind()
 
 THUMBOR_SERVER = getattr(settings, 'THUMBOR_SERVER', 'http://localhost:8888').rstrip('/')
 THUMBOR_SECURITY_KEY = getattr(settings, 'THUMBOR_SECURITY_KEY', 'MY_SECURE_KEY')
