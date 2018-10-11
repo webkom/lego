@@ -77,7 +77,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
-        verbose_name='permissions', default=[]
+        verbose_name='permissions', default=list
     )
 
     objects = AbakusGroupManagerWithoutText()

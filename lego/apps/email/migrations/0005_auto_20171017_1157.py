@@ -20,23 +20,16 @@ class Migration(migrations.Migration):
                 base_field=models.CharField(
                     choices=[
                         ('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'),
-                        ('treasurer',
-                         'treasurer'), ('recruiting',
-                                        'recruiting'), ('development',
-                                                        'development'), ('editor', 'editor'),
-                        ('retiree',
-                         'retiree'), ('media_relations',
-                                      'media_relations'), ('active_retiree',
-                                                           'active_retiree'), ('alumni', 'alumni'),
+                        ('treasurer', 'treasurer'), ('recruiting', 'recruiting'),
+                        ('development', 'development'), ('editor', 'editor'),
+                        ('retiree', 'retiree'), ('media_relations', 'media_relations'),
+                        ('active_retiree', 'active_retiree'), ('alumni', 'alumni'),
                         ('webmaster',
-                         'webmaster'), ('interest_group_admin',
-                                        'interest_group_admin'), ('alumni_admin', 'alumni_admin'),
-                        ('retiree_email',
-                         'retiree_email'), ('company_admin',
-                                            'company_admin'), ('dugnad_admin', 'dugnad_admin'),
-                        ('trip_admin',
-                         'trip_admin'), ('sponsor_admin',
-                                         'sponsor_admin'), ('social_admin', 'social_admin')
+                         'webmaster'), ('interest_group_admin', 'interest_group_admin'),
+                        ('alumni_admin', 'alumni_admin'), ('retiree_email', 'retiree_email'),
+                        ('company_admin', 'company_admin'), ('dugnad_admin', 'dugnad_admin'),
+                        ('trip_admin', 'trip_admin'), ('sponsor_admin', 'sponsor_admin'),
+                        ('social_admin', 'social_admin')
                     ], max_length=64
                 ), default=list, size=None
             ),
