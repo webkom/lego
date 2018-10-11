@@ -48,9 +48,9 @@ class Migration(migrations.Migration):
                 (
                     'username',
                     models.CharField(
-                        db_index=True, error_messages={
-                            'unique': 'A user with that username already exists.'
-                        }, help_text=
+                        db_index=True,
+                        error_messages={'unique':
+                                        'A user with that username already exists.'}, help_text=
                         'Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
                         max_length=30, unique=True, validators=[
                             django.core.validators.RegexValidator(

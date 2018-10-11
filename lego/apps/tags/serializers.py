@@ -16,12 +16,12 @@ class TagSerializer(ModelSerializer):
         return instance.tag
 
     def to_internal_value(self, data):
-        return data
+        return {'tag': data}
 
     def get_validators(self):
         validators = super().get_validators()
-        validators.append(validate_tag)
-        validators.append(ReservedNameValidator(reserved_names=['popular']))
+        validators.append(lambda t: validate_tag(t['tag']))
+        validators.append(lambda t: ReservedNameValidator(reserved_names=['popular'])(t['tag']))
         return validators
 
 
@@ -52,7 +52,7 @@ class TagSerializerMixin(serializers.Serializer):
     tags = TagSerializer(many=True, required=False, default=[])
 
     def create(self, validated_data):
-        tags = [tag.lower() for tag in validated_data.pop('tags', [])]
+        tags = [tag['tag'].lower() for tag in validated_data.pop('tags', [])]
 
         with transaction.atomic():
             instance = super().create(validated_data)
@@ -72,7 +72,7 @@ class TagSerializerMixin(serializers.Serializer):
             instance = super().update(instance, validated_data)
 
             if tags is not None:
-                tags = [tag.lower() for tag in tags]
+                tags = [tag['tag'].lower() for tag in tags]
                 for tag in tags:
                     Tag.objects.get_or_create(pk=tag)
 

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
@@ -17,8 +17,8 @@ jwt_urlpatterns = [
 authorization_urlpatterns = [
     url(r'^oauth2/', include('lego.apps.oauth.urls')),
     url(r'', include((jwt_urlpatterns, 'jwt'), namespace='jwt')),
-    url(r'^login/', login, {'template_name': 'authorization/login.html'}, name='login'),
-    url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
+    url(r'^login/', LoginView.as_view(template_name='authorization/login.html'), name='login'),
+    url(r'^logout/', LogoutView.as_view(next_page='/'), name='logout'),
 ]
 
 urlpatterns = [
