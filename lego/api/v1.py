@@ -27,6 +27,7 @@ from lego.apps.notifications.views import (
     AnnouncementViewSet, APNSDeviceViewSet, GCMDeviceViewSet, NotificationSettingsViewSet
 )
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
+from lego.apps.pinned.views import PinnedViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
@@ -150,3 +151,4 @@ router.register(r'tags', TagViewSet)
 router.register(r'feed-user/(?P<user_pk>\d+)', UserFeedViewSet, base_name='feed-user')
 router.register(r'feed-personal', PersonalFeedViewSet, base_name='feed-personal')
 router.register(r'feed-notifications', NotificationsViewSet, base_name='feed-notifications')
+router.register(r'pinned', PinnedViewSet, base_name='pinned')

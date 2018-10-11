@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'lego.apps.joblistings',
     'lego.apps.email',
     'lego.apps.surveys',
+    'lego.apps.pinned',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
