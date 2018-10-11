@@ -26,6 +26,22 @@ class APIRegistrationExists(APIException):
     default_detail = 'A registration for this user already exists.'
 
 
+class APIRegistrationsExists(APIException):
+    status_code = 400
+    default_detail = 'Noen av brukerne er allerede registrert'
+
+    def __init__(self, users=None, *args, **kwargs):
+        detail = {
+            'detail':
+            self.default_detail,
+            'users': [
+                f"Brukeren \"{user.full_name} ({user.username})\" er allerede registrert"
+                for user in users
+            ]
+        }
+        super().__init__(*args, detail=detail, **kwargs)
+
+
 class APIRegistrationsExistsInPool(APIException):
     status_code = 409
     default_detail = 'Registrations exists within this pool.'

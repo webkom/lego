@@ -18,7 +18,7 @@ class AdminUnregisterSerializer(serializers.Serializer):
 
 
 class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
-    user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
+    users = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all(), many=True)
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(
         required=False,

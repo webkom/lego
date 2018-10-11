@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound, APINoSuchPool, APINoSuchRegistration, APIPaymentExists, APIRegistrationExists,
-    APIRegistrationsExistsInPool, NoSuchPool, NoSuchRegistration, RegistrationExists,
-    RegistrationsExistInPool
+    APIRegistrationsExists, APIRegistrationsExistsInPool, NoSuchPool, NoSuchRegistration,
+    RegistrationExists, RegistrationsExistInPool
 )
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
@@ -240,12 +240,23 @@ class RegistrationViewSet(
             raise APIEventNotFound()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        users = serializer.validated_data.pop('users')
+
+        error_users = []
         try:
-            registration = event.admin_register(**serializer.validated_data)
+            with transaction.atomic():
+                for user in users:
+                    try:
+                        registration = event.admin_register(**serializer.validated_data, user=user)
+                    except RegistrationExists:
+                        error_users.append(user)
+
+                if len(error_users) != 0:
+                    raise APIRegistrationsExists(users=error_users)
+
         except NoSuchPool:
             raise APINoSuchPool()
-        except RegistrationExists:
-            raise APIRegistrationExists()
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
 

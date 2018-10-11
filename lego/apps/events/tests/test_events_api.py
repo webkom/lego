@@ -866,7 +866,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/', {
-                'user': self.user.id,
+                'users': [self.user.id],
                 'pool': self.pool.id,
                 'admin_registration_reason': 'test'
             }
@@ -884,7 +884,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/', {
-                'user': self.user.id,
+                'users': [self.user.id],
                 'pool': self.pool.id,
                 'admin_registration_reason': 'test'
             }
@@ -903,7 +903,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/', {
-                'user': self.user.id,
+                'users': [self.user.id],
                 'pool': nonexistant_pool_id,
                 'admin_registration_reason': 'test'
             }
@@ -917,7 +917,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.request_user)
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/', {
-                'user': self.user.id,
+                'users': [self.user.id],
                 'pool': self.pool.id,
                 'feedback': 'TEST',
                 'admin_registration_reason': 'test'
@@ -932,7 +932,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.request_user)
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/', {
-                'user': self.user.id,
+                'users': [self.user.id],
                 'pool': self.pool.id,
                 'feedback': 'TEST',
                 'admin_registration_reason': ''
@@ -948,7 +948,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
 
         registration_response = self.client.post(
             f'{_get_registrations_list_url(self.event.id)}admin_register/', {
-                'user': self.user.id,
+                'users': [self.user.id],
                 'admin_registration_reason': 'test'
             }
         )
