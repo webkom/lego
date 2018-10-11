@@ -20,9 +20,8 @@ class TagSerializer(ModelSerializer):
 
     def get_validators(self):
         validators = super().get_validators()
-        # TODO FIXME
-        # validators.append(validate_tag)
-        # validators.append(ReservedNameValidator(reserved_names=['popular']))
+        validators.append(lambda t: validate_tag(t['tag']))
+        validators.append(lambda t: ReservedNameValidator(reserved_names=['popular'])(t['tag']))
         return validators
 
 
