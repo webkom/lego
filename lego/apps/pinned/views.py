@@ -5,7 +5,10 @@ from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.pinned.models import PinnedArticle, PinnedEvent
-from lego.apps.pinned.serializers import PinnedArticleSerializer, PinnedEventSerializer
+from lego.apps.pinned.serializers import (
+    CreatePinnedArticleSerializer, CreatePinnedEventSerializer, PinnedArticleSerializer,
+    PinnedEventSerializer
+)
 
 
 class PinnedViewSet(AllowedPermissionsMixin, viewsets.ViewSet):
@@ -23,7 +26,7 @@ class PinnedViewSet(AllowedPermissionsMixin, viewsets.ViewSet):
 
         events = PinnedEventSerializer(queryset_events, many=True).data
         articles = PinnedArticleSerializer(queryset_articles, many=True).data
-        return Response({'events': events, 'articles': articles})
+        return Response({'pinned_events': events, 'pinned_articles': articles})
 
     @list_route(methods=['GET'])
     def all(self, request, pk=None):
@@ -33,20 +36,22 @@ class PinnedViewSet(AllowedPermissionsMixin, viewsets.ViewSet):
 
         events = PinnedEventSerializer(queryset_events, many=True).data
         articles = PinnedArticleSerializer(queryset_articles, many=True).data
-        return Response({'events': events, 'articles': articles})
+        return Response({'pinned_events': events, 'pinned_articles': articles})
 
     @list_route(methods=['POST'])
     def pin_event(self, request, pk=None):
-        serializer = PinnedEventSerializer(data=request.data, context={
-            'request': self.request,
-        })
+        serializer = CreatePinnedEventSerializer(
+            data=request.data, context={
+                'request': self.request,
+            }
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     @list_route(methods=['POST'])
     def pin_article(self, request, pk=None):
-        serializer = PinnedArticleSerializer(
+        serializer = CreatePinnedArticleSerializer(
             data=request.data, context={
                 'request': self.request,
             }
