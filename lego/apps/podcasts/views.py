@@ -6,13 +6,12 @@ from lego.apps.podcasts.serializers import \
     PodcastCreateAndUpdateSerializer, \
     PodcastSerializer, \
     DetailedPodcastSerializer
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
-class PodcastViewSet(viewsets.ModelViewSet):
+class PodcastViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     ordering = 'created_at'
-
-    permission_classes = (permissions.AllowAny,)
 
     queryset = Podcast.objects.all()
 

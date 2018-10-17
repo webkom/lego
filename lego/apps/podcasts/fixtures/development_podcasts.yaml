@@ -1,263 +1,71 @@
 - model: podcasts.Podcast
-  pk: 1
-  fields:
-    source: https://soundcloud.com/user-279926342/teaser-til-podcast
-    title: 1. Tittel på første podcast
-    description: Description på første podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 2
-  fields:
-    source: https://soundcloud.com/user-279926342/1-podcast
-    title: 2. Tittel på andre podcast
-    description: Description på andre podcast
-    authors:
-      - 1
-      - 2
-      - 3
-
-- model: podcasts.Podcast
-  pk: 3
-  fields:
-    source: https://soundcloud.com/user-279926342/2-abaradet-og-abakus-sin-organisering
-    title: 3. Tittel på tredje podcast
-    description: Description på tredje podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 4
-  fields:
-    source: https://soundcloud.com/user-279926342/3-tinder
-    title: 4. Tittel på fjerde podcast
-    description: Description på fjerde podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 5
-  fields:
-    source: https://soundcloud.com/user-279926342/4-tips-og-triks-for-eksamensperioden
-    title: 5. Tittel på femte podcast
-    description: Description på femte podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 6
-  fields:
-    source: https://soundcloud.com/user-279926342/5-fadderperiode-og-tekniske-problemer
-    title: 6. Tittel på sjette podcast
-    description: Description på sjette podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 7
-  fields:
-    source: https://soundcloud.com/user-279926342/6-baksiden-av-readme-og-abaradet
-    title: 7. Tittel på syvende podcast
-    description: Description på syvende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 8
-  fields:
-    source: https://soundcloud.com/user-279926342/7-vaeret-og-labamba
-    title: 8. Tittel på åttende podcast
-    description: Description på åttende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 9
-  fields:
-    source: https://soundcloud.com/user-279926342/uka
-    title: 9. Tittel på niende podcast
-    description: Description på niende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 10
-  fields:
-    source: https://soundcloud.com/user-279926342/9-lego-nye-abakusno
-    title: 10. Tittel på tiende podcast
-    description: Description på tiende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 11
-  fields:
-    source: https://soundcloud.com/user-279926342/11-oppsummering-av-2017
-    title: 11. Tittel på ellevte podcast
-    description: Description på ellevte podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 12
-  fields:
-    source: https://soundcloud.com/user-279926342/12-forberedelser-til-are
-    title: 12. Tittel på tolvte podcast
-    description: Description på tolvte podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 13
-  fields:
-    source: https://soundcloud.com/user-279926342/are-2018-the-aftermath
-    title: 13. Tittel på trettende podcast
-    description: Description på trettende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 14
-  fields:
-    source: https://soundcloud.com/user-279926342/14-impro-lyden-av-glos-og-mgp-joik
-    title: 14. Tittel på fjortene podcast
-    description: Description på fjortene podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 15
-  fields:
-    source: https://soundcloud.com/user-279926342/15-vors-for-genfors
-    title: 15. Tittel på femtenede podcast
-    description: Description på femtenede podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 16
-  fields:
-    source: https://soundcloud.com/user-279926342/16-kjaerestegaranti
-    title: 16. Tittel på sekstende podcast
-    description: Description på sekstende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 17
-  fields:
-    source: https://soundcloud.com/user-279926342/podcast-hotel
-    title: 17. Tittel på syttende podcast
-    description: Description på syttende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 18
-  fields:
-    source: https://soundcloud.com/user-279926342/18-psykisk-helse
-    title: 18. Tittel på attende podcast
-    description: Description på attende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
-  pk: 19
-  fields:
-    source: https://soundcloud.com/user-279926342/verden
-    title: 19. Tittel på nittende podcast
-    description: Description på nittende podcast
-    authors:
-    - 1
-    - 2
-    - 3
-
-- model: podcasts.Podcast
   pk: 20
   fields:
     source: https://soundcloud.com/user-279926342/20-slutten-pa-en-aera
-    title: 20. Tittel på tyvende podcast
-    description: Description på tyvende podcast
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     authors:
     - 1
     - 2
+    - 3
+    thanks:
     - 3
 
 - model: podcasts.Podcast
   pk: 21
   fields:
     source: https://soundcloud.com/user-279926342/21-semesterstart-med-itdagene
-    title: 21. Tittel på tjueførste podcast
-    description: Description på tjueførste podcast
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     authors:
     - 1
     - 2
+    - 3
+    thanks:
     - 3
 
 - model: podcasts.Podcast
   pk: 22
   fields:
     source: https://soundcloud.com/user-279926342/22-ny-gjeng-ny-gjeng
-    title: 22. Tittel på tjueandre podcast
-    description: Description på tjueandre podcast
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     authors:
     - 1
     - 2
+    - 3
+    thanks:
     - 3
 
 - model: podcasts.Podcast
   pk: 23
   fields:
     source: https://soundcloud.com/user-279926342/23-singelguide-til-abakulen
-    title: 23. Tittel på tjuetredje podcast
-    description: Description på tjuedredje podcast
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     authors:
     - 1
     - 2
+    - 3
+    thanks:
     - 3
 
 - model: podcasts.Podcast
   pk: 24
   fields:
     source: https://soundcloud.com/user-279926342/24-du-vil-aldri-tro-hva-disse-guttene-sa-pa-lufta
-    title: 24. Tittel på tjuefjerde podcast
-    description: Description på tjuefjerde podcast
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     authors:
     - 1
     - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 25
+  fields:
+    source: https://soundcloud.com/user-279926342/25-hunspanderer-og-ada
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
     - 3
