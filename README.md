@@ -10,7 +10,7 @@ We use GitHub issues and project boards for simple project management.
 
 ## Getting started
 
-LEGO requires python3.6, virtualenv, docker and docker-compose. Services like Postgres, Redis,
+LEGO requires `python3.6`, `virtualenv`, `docker` and `docker-compose`. Services like Postgres, Redis,
 Elasticsearch, Thumbor and Minio run inside docker.
 
 
