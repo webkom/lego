@@ -108,11 +108,13 @@ initial_tree = {
                             'text': 'hei'
                         }, {}
                     ],
-                    'Hovedstyret':
-                    [{
-                        'logo_id': 'abakus_hs.png',
-                        'permissions': ['/sudo/admin/'],
-                    }, {}]
+                    'Hovedstyret': [
+                        {
+                            'logo_id': 'abakus_hs.png',
+                            'permissions': ['/sudo/admin/'],
+                            'contact_email': "hs@abakus.no"
+                        }, {}
+                    ]
                 }
             ],
             'Interessegrupper':
