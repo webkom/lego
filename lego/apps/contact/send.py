@@ -9,14 +9,12 @@ def send_message(title, message, user, anonymous):
     """
     anonymous = anonymous if user.is_authenticated else True
     abakus_group = AbakusGroup.objects.get(name='Hovedstyret')
-    users = [membership.user for membership in abakus_group.memberships.select_related('user')]
-    emails = [user.email_address for user in users]
 
     from_name = 'Anonymous' if anonymous else user.full_name
     from_email = 'Unknown' if anonymous else user.email_address
 
     send_email.delay(
-        to_email=emails, context={
+        to_email=abakus_group.contact_email, context={
             'title': title,
             'message': message,
             'from_name': from_name,
