@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated
@@ -17,11 +18,13 @@ class PinnedViewSet(AllowedPermissionsMixin, viewsets.ViewSet):
 
     def list(self, request):
         queryset_events = PinnedEvent.objects.filter(
-            target_groups__in=self.request.user.all_groups
+            target_groups__in=self.request.user.all_groups, pinned_from__lte=timezone.now(),
+            pinned_to__gte=timezone.now()
         ).distinct()
 
         queryset_articles = PinnedArticle.objects.filter(
-            target_groups__in=self.request.user.all_groups
+            target_groups__in=self.request.user.all_groups, pinned_from__lte=timezone.now(),
+            pinned_to__gte=timezone.now()
         ).distinct()
 
         events = PinnedEventSerializer(queryset_events, many=True).data

@@ -18,18 +18,18 @@ class PinnedEventSerializer(BasisModelSerializer):
 
     class Meta:
         model = PinnedEvent
-        fields = ('id', 'created_at', 'author', 'event', 'target_groups')
+        fields = (
+            'id', 'created_at', 'author', 'event', 'target_groups', 'pinned_from', 'pinned_to'
+        )
 
 
 class CreatePinnedEventSerializer(BasisModelSerializer):
-    author = PublicUserSerializer(read_only=True, source='created_by')
-
     event = PrimaryKeyRelatedFieldNoPKOpt(queryset=Event.objects.all())
     target_groups = PrimaryKeyRelatedFieldNoPKOpt(many=True, queryset=AbakusGroup.objects.all())
 
     class Meta:
         model = PinnedEvent
-        fields = ('id', 'created_at', 'author', 'event', 'target_groups')
+        fields = ('event', 'target_groups', 'pinned_from', 'pinned_to')
 
 
 class PinnedArticleSerializer(BasisModelSerializer):
@@ -41,15 +41,15 @@ class PinnedArticleSerializer(BasisModelSerializer):
 
     class Meta:
         model = PinnedArticle
-        fields = ('id', 'created_at', 'author', 'article', 'target_groups')
+        fields = (
+            'id', 'created_at', 'author', 'article', 'target_groups', 'pinned_from', 'pinned_to'
+        )
 
 
 class CreatePinnedArticleSerializer(BasisModelSerializer):
-    author = PublicUserSerializer(read_only=True, source='created_by')
-
     article = PrimaryKeyRelatedFieldNoPKOpt(queryset=Article.objects.all())
     target_groups = PrimaryKeyRelatedFieldNoPKOpt(many=True, queryset=AbakusGroup.objects.all())
 
     class Meta:
         model = PinnedArticle
-        fields = ('id', 'created_at', 'author', 'article', 'target_groups')
+        fields = ('article', 'target_groups', 'pinned_from', 'pinned_to')

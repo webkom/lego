@@ -9,6 +9,9 @@ from lego.utils.models import BasisModel
 
 
 class PinnedEvent(BasisModel):
+    pinned_from = models.DateField()
+    pinned_to = models.DateField()
+
     event = models.ForeignKey(
         Event, related_name='group_pins', on_delete=models.SET_NULL, null=True
     )
@@ -16,6 +19,9 @@ class PinnedEvent(BasisModel):
 
 
 class PinnedArticle(BasisModel):
+    pinned_from = models.DateField()
+    pinned_to = models.DateField()
+
     article = models.ForeignKey(
         Article, related_name='group_pins', on_delete=models.SET_NULL, null=True
     )
