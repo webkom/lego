@@ -198,6 +198,10 @@ class PermissionsMixin(CachedModel):
         )
 
     @abakus_cached_property
+    def past_memberships(self):
+        return MembershipHistory.objects.filter(user=self).select_related('abakus_group')
+
+    @abakus_cached_property
     def all_groups(self):
         groups = set()
 
