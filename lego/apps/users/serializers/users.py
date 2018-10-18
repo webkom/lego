@@ -5,7 +5,7 @@ from lego.apps.ical.models import ICalToken
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
-from lego.apps.users.serializers.memberships import MembershipSerializer
+from lego.apps.users.serializers.memberships import MembershipSerializer, PastMembershipSerializer
 from lego.apps.users.serializers.penalties import PenaltySerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 
@@ -13,6 +13,7 @@ from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 class DetailedUserSerializer(serializers.ModelSerializer):
 
     abakus_groups = PublicAbakusGroupSerializer(many=True)
+    past_memberships = PastMembershipSerializer(many=True)
     penalties = serializers.SerializerMethodField('get_valid_penalties')
     profile_picture = ImageField(required=False, options={'height': 200, 'width': 200})
 
@@ -26,7 +27,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'username', 'first_name', 'last_name', 'full_name', 'gender', 'email',
             'email_address', 'email_lists_enabled', 'profile_picture', 'allergies', 'is_active',
-            'penalties', 'abakus_groups'
+            'penalties', 'abakus_groups', 'past_memberships'
         )
 
 
@@ -44,9 +45,13 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 class PublicUserWithGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
+    past_memberships = PastMembershipSerializer(many=True)
+    memberships = MembershipSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ('abakus_groups', )
+        fields = PublicUserSerializer.Meta.fields + (
+            'abakus_groups', 'past_memberships', 'memberships'
+        )
 
 
 class AdministrateUserSerializer(PublicUserSerializer):
@@ -99,6 +104,7 @@ class MeSerializer(serializers.ModelSerializer):
     penalties = serializers.SerializerMethodField('get_valid_penalties')
     is_student = serializers.SerializerMethodField()
     is_abakus_member = serializers.BooleanField()
+    past_memberships = PastMembershipSerializer(many=True)
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -133,7 +139,7 @@ class MeSerializer(serializers.ModelSerializer):
             'id', 'username', 'first_name', 'last_name', 'full_name', 'email', 'email_address',
             'email_lists_enabled', 'profile_picture', 'gender', 'allergies', 'is_active',
             'is_student', 'abakus_groups', 'is_abakus_member', 'is_abakom_member', 'penalties',
-            'ical_token', 'memberships'
+            'ical_token', 'memberships', 'past_memberships'
         )
 
 

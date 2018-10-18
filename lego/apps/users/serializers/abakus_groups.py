@@ -11,8 +11,17 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AbakusGroup
         fields = (
-            'id', 'name', 'description', 'contact_email', 'parent', 'permissions', 'type', 'text',
-            'logo', 'number_of_users'
+            'id',
+            'name',
+            'description',
+            'contact_email',
+            'parent',
+            'permissions',
+            'type',
+            'text',
+            'logo',
+            'number_of_users',
+            'show_badge',
         )
 
     def create(self, validated_data):
@@ -43,6 +52,7 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
             'parent',
             'logo',
             'type',
+            'show_badge',
         )
 
 

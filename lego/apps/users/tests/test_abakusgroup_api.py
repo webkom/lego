@@ -57,8 +57,9 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
             # Serializer fields is camelized, transform contact_email
             fields = list(PublicAbakusGroupSerializer.Meta.fields)
             fields.remove('contact_email')
+            fields.remove('show_badge')
 
-            self.assertEqual(keys, set(fields + ['numberOfUsers', 'contactEmail']))
+            self.assertEqual(keys, set(fields + ['numberOfUsers', 'contactEmail', 'showBadge']))
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())

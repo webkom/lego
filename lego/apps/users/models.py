@@ -83,6 +83,8 @@ class AbakusGroup(MPTTModel, PersistentModel):
     objects = AbakusGroupManagerWithoutText()
     objects_with_text = AbakusGroupManager()
 
+    show_badge = models.BooleanField(default=True)
+
     class Meta:
         permission_handler = AbakusGroupPermissionHandler()
 
@@ -196,6 +198,10 @@ class PermissionsMixin(CachedModel):
             is_active=True,
             user=self,
         )
+
+    @abakus_cached_property
+    def past_memberships(self):
+        return MembershipHistory.objects.filter(user=self).select_related('abakus_group')
 
     @abakus_cached_property
     def all_groups(self):
