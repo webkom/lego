@@ -17,7 +17,9 @@ class MembershipHistoryViewSet(
     ordering = 'id'
 
     def get_queryset(self):
-        queryset = MembershipHistory.objects.all().select_related('user', 'abakus_group')
+        queryset = MembershipHistory.objects.filter(
+            abakus_group__deleted=False,
+        ).select_related('user', 'abakus_group')
 
         if not self.request.user.has_perm(EDIT, Membership):
             return queryset.filter(abakus_group__type__in=(GROUP_COMMITTEE, GROUP_INTEREST))

@@ -137,13 +137,40 @@ class UserTestCase(BaseTestCase):
 
     def test_add_remove_user(self):
         abakus = AbakusGroup.objects.get(name='Abakus')
+        self.assertEqual(self.user.memberships.count(), 0)
+        self.assertEqual(self.user.past_memberships.count(), 0)
 
         abakus.add_user(self.user)
         self.assertEqual(abakus.number_of_users, 1)
+        self.assertEqual(self.user.memberships.count(), 1)
 
         abakus = AbakusGroup.objects.get(name='Abakus')
         abakus.remove_user(self.user)
         self.assertEqual(abakus.number_of_users, 0)
+        self.assertEqual(self.user.memberships.count(), 0)
+        self.assertEqual(self.user.past_memberships.count(), 1)
+
+    def test_add_user_delete_group(self):
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        self.assertEqual(self.user.memberships.count(), 0)
+        self.assertEqual(self.user.past_memberships.count(), 0)
+
+        abakus.add_user(self.user)
+        self.assertEqual(abakus.number_of_users, 1)
+        self.assertEqual(self.user.memberships.count(), 1)
+
+        abakus = AbakusGroup.objects.get(name='Abakus')
+        abakus.remove_user(self.user)
+        self.assertEqual(self.user.memberships.count(), 0)
+        self.assertEqual(self.user.past_memberships.count(), 1)
+
+        abakus.add_user(self.user)
+        self.assertEqual(self.user.memberships.count(), 1)
+        self.assertEqual(self.user.past_memberships.count(), 1)
+
+        abakus.delete()
+        self.assertEqual(self.user.memberships.count(), 0)
+        self.assertEqual(self.user.past_memberships.count(), 0)
 
     def test_add_user_to_two_groups(self):
         AbakusGroup.objects.get(name='Abakus').add_user(self.user)
