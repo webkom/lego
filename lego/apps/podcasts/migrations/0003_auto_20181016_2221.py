@@ -15,11 +15,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='podcast',
             name='thanks',
-            field=models.ManyToManyField(blank=True, related_name='thanks', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(
+                blank=True, related_name='thanks', to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
             model_name='podcast',
             name='authors',
-            field=models.ManyToManyField(blank=True, related_name='authors', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(
+                blank=True, related_name='authors', to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

@@ -1,12 +1,10 @@
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 
-
-from lego.apps.podcasts.models import Podcast
-from lego.apps.podcasts.serializers import \
-    PodcastCreateAndUpdateSerializer, \
-    PodcastSerializer, \
-    DetailedPodcastSerializer
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.podcasts.models import Podcast
+from lego.apps.podcasts.serializers import (
+    DetailedPodcastSerializer, PodcastCreateAndUpdateSerializer, PodcastSerializer
+)
 
 
 class PodcastViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -22,4 +20,3 @@ class PodcastViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         elif self.action == 'retrieve':
             return DetailedPodcastSerializer
         return PodcastSerializer
-
