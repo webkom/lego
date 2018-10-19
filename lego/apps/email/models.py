@@ -54,6 +54,10 @@ class EmailList(models.Model):
     group_roles = ArrayField(models.CharField(max_length=64, choices=ROLES), default=list)
     groups = models.ManyToManyField('users.AbakusGroup', related_name='email_lists', blank=True)
 
+    require_internal_address = models.BooleanField(
+        default=False, help_text='Only allow users with emails from our internal domain, @abakus.no'
+    )
+
     @property
     def email_address(self):
         return f'{self.email_id}@{settings.GSUITE_DOMAIN}'
@@ -82,5 +86,8 @@ class EmailList(models.Model):
                     role__in=self.group_roles,
                 )
             members += [membership.user.email_address for membership in memberships]
+
+        if self.require_internal_address:
+            members = filter(lambda m: m.endswith(settings.GSUITE_DOMAIN), members)
 
         return list(set(members))
