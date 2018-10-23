@@ -1,8 +1,8 @@
 -r base.txt
 -r docs.txt
 
-django-debug-toolbar==1.9
-tox==3.0.0
+django-debug-toolbar==1.10
+tox==3.5.2
 
 -r flake8.txt
 -r isort.txt

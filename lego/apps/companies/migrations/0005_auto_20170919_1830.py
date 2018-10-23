@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
                 base_field=models.CharField(
                     choices=[
                         ('company_presentation', 'company_presentation'), ('course', 'course'),
-                        ('lunch_presentation', 'lunch_presentation'), ('bedex',
-                                                                       'bedex'), ('other', 'other')
+                        ('lunch_presentation', 'lunch_presentation'), ('bedex', 'bedex'),
+                        ('other', 'other')
                     ], max_length=64
                 ), size=None
             ),

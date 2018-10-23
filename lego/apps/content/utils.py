@@ -6,8 +6,8 @@ def sanitize_html(value, allow_images=True):
     Remove dangerous tags from HTML.
     """
     tags = [
-        'p', 'b', 'i', 'u', 'h1', 'h2', 'code', 'pre', 'blockquote', 'strong', 'strike', 'ul',
-        'cite', 'li', 'em', 'hr', 'div', 'a', 'figure', 'figcaption', 'input', 'ol'
+        'p', 'b', 'i', 'u', 'h1', 'h2', 'h3', 'code', 'pre', 'blockquote', 'strong', 'strike', 'ul',
+        'cite', 'li', 'em', 'hr', 'div', 'a', 'figure', 'figcaption', 'input', 'ol', 'br'
     ]
     if allow_images:
         tags.append('img')

@@ -20,6 +20,7 @@ class EmailAddressField(serializers.PrimaryKeyRelatedField):
         Create email if not exists.
         """
         try:
+            data = data.lower()
             email_address, _ = self.get_queryset().get_or_create(pk=data)
             return email_address
         except ObjectDoesNotExist:

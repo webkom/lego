@@ -65,14 +65,16 @@ _test_surveys = [
                 'mandatory': False,
                 'relativeIndex': 1,
                 'options': []
-            }, {
+            },
+            {
                 'id': 3,
                 'questionType': 'single_choice',
                 'questionText': 'Hva var best?',
                 'mandatory': True,
                 'relativeIndex': 2,
                 "options": [],
-            }, {
+            },
+            {
                 'questionType': 'multiple_choice',
                 'questionText': 'Hva likte du?',
                 'mandatory': False,

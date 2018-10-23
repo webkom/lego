@@ -14,6 +14,12 @@ class FrontpageViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.AllowAny, )
 
+    def get_serializer_context(self):
+        """
+        Extra context provided to the serializer class.
+        """
+        return {'request': self.request, 'format': self.format_kwarg, 'view': self}
+
     def list(self, request):
         articles_handler = get_permission_handler(Article)
         articles_queryset_base = Article.objects.all()\
@@ -36,8 +42,12 @@ class FrontpageViewSet(viewsets.ViewSet):
         else:
             queryset_events = events_handler.filter_queryset(request.user, queryset_events_base)
 
-        articles = PublicArticleSerializer(queryset_articles[:10], many=True).data
-        events = EventSearchSerializer(queryset_events, many=True).data
+        articles = PublicArticleSerializer(
+            queryset_articles[:10], context=self.get_serializer_context(), many=True
+        ).data
+        events = EventSearchSerializer(
+            queryset_events, context=self.get_serializer_context(), many=True
+        ).data
         ret = {
             'articles': articles,
             'events': events,

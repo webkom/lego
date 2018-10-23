@@ -90,18 +90,13 @@ class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
         user.student_username = student_confirmation['student_username']
         course = student_confirmation['course'].lower()
 
-        if course == constants.DATA:
-            course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
-            course_group.add_user(user)
-
-            grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
-            grade_group.add_user(user)
-        else:
-            course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
-            course_group.add_user(user)
-
-            grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
-            grade_group.add_user(user)
+        if not user.has_grade_group:
+            if course == constants.DATA:
+                grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
+                grade_group.add_user(user)
+            else:
+                grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
+                grade_group.add_user(user)
 
         if student_confirmation['member']:
             member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)

@@ -68,7 +68,7 @@
     rght: 20, tree_id: 2, level: 2}
 - model: users.abakusgroup
   pk: 13
-  fields: {deleted: false, name: Hovedstyret, description: '', contact_email: '',
+  fields: {deleted: false, name: Hovedstyret, description: '', contact_email: hs@abakus.no,
     parent: 3, logo: abakus_hs.png, type: annen, text: '', permissions: '["/sudo/admin/"]',
     lft: 21, rght: 22, tree_id: 2, level: 2}
 - model: users.abakusgroup

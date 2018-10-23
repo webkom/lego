@@ -10,7 +10,7 @@ We use GitHub issues and project boards for simple project management.
 
 ## Getting started
 
-LEGO requires python3.6, virtualenv, docker and docker-compose. Services like Postgres, Redis,
+LEGO requires `python3.7`, `virtualenv`, `docker` and `docker-compose`. Services like Postgres, Redis,
 Elasticsearch, Thumbor and Minio run inside docker.
 
 
@@ -23,6 +23,16 @@ $ pip install -r requirements/dev.txt
 $ docker-compose up -d
 $ python manage.py initialize_development
 $ python manage.py runserver
+```
+### Debugging
+If you get an error while installing requirements, you might be missing some dependencies on your system.
+```bash
+$ apt-get install libpq-dev python3-dev
+```
+
+If you get an error while running initialize_development mentioning `elasticsearch`, you probably need run the following code, and then start over from `docker-compose up -d`. [Read why and how to make it permanent on Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
+```bash
+$ sysctl -w vm.max_map_count=262144
 ```
 
 ## Code Style
