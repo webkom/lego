@@ -99,7 +99,8 @@ test_tree = {
                 '/sudo/admin/meetings/create', '/sudo/admin/meetinginvitations/create',
                 '/sudo/admin/registrations/create/', '/sudo/admin/events/payment/'
             ]
-        }, {
+        },
+        {
             'Abakom': [
                 {
                     'description':
@@ -111,7 +112,8 @@ test_tree = {
                         '/sudo/admin/companies/',
                         '/sudo/admin/joblistings/',
                     ]
-                }, {
+                },
+                {
                     'Bedkom': [
                         {
                             'type':
@@ -139,7 +141,8 @@ test_tree = {
                 }
             ],
             'Interessegrupper': [
-                {}, {
+                {},
+                {
                     'AbaBrygg': [
                         {
                             'permissions': [],

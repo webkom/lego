@@ -109,8 +109,8 @@ class Migration(migrations.Migration):
                             choices=[
                                 ('company_presentation', 'company_presentation'),
                                 ('course', 'course'), ('lunch_presentation', 'lunch_presentation'),
-                                ('bedex', 'bedex'), ('anniversary',
-                                                     'anniversary'), ('other', 'other')
+                                ('bedex', 'bedex'), ('anniversary', 'anniversary'),
+                                ('other', 'other')
                             ], max_length=64
                         ), size=None
                     )

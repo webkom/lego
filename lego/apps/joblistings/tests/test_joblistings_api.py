@@ -23,7 +23,8 @@ _test_joblistings_data = [
         'workplaces': [{
             'town': 'Oslo'
         }]
-    }, {
+    },
+    {
         'title': 'EY',
         'company': 2,
         'description': 'En bedrift.',
@@ -38,7 +39,8 @@ _test_joblistings_data = [
         'workplaces': [{
             'town': 'Trondheim'
         }]
-    }, {
+    },
+    {
         'title': 'Itera',
         'company': 1,
         'description': 'En bedrift.',

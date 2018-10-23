@@ -37,7 +37,8 @@ initial_tree = {
                 '/sudo/admin/registrations/create/', '/sudo/admin/events/payment/',
                 '/sudo/admin/comments/create'
             ]
-        }, {
+        },
+        {
             'Abakom': [
                 {
                     'description':
@@ -49,7 +50,8 @@ initial_tree = {
                         '/sudo/admin/companies/',
                         '/sudo/admin/joblistings/',
                     ]
-                }, {
+                },
+                {
                     'Arrkom': [{
                         'type': GROUP_COMMITTEE,
                         'logo_id': 'abakus_arrkom.png'
@@ -106,11 +108,13 @@ initial_tree = {
                             'text': 'hei'
                         }, {}
                     ],
-                    'Hovedstyret':
-                    [{
-                        'logo_id': 'abakus_hs.png',
-                        'permissions': ['/sudo/admin/'],
-                    }, {}]
+                    'Hovedstyret': [
+                        {
+                            'logo_id': 'abakus_hs.png',
+                            'permissions': ['/sudo/admin/'],
+                            'contact_email': "hs@abakus.no"
+                        }, {}
+                    ]
                 }
             ],
             'Interessegrupper':
@@ -120,9 +124,11 @@ initial_tree = {
         }
     ],
     'Students': [
-        {}, {
+        {},
+        {
             'Datateknologi': [
-                {}, {
+                {},
+                {
                     '1. klasse Datateknologi': [{
                         'type': GROUP_GRADE
                     }, {}],
@@ -141,7 +147,8 @@ initial_tree = {
                 }
             ],
             'Kommunikasjonsteknologi': [
-                {}, {
+                {},
+                {
                     '1. klasse Kommunikasjonsteknologi': [{
                         'type': GROUP_GRADE
                     }, {}],
