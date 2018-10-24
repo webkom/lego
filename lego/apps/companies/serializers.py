@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import CharField
-
+from django.utils import timezone
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.models import (
     Company, CompanyContact, CompanyFile, CompanyInterest, Semester, SemesterStatus
@@ -23,7 +23,8 @@ class SemesterStatusSerializer(serializers.ModelSerializer):
         fields = ('id', 'semester', 'contacted_status')
 
     def create(self, validated_data):
-        company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
+        company = Company.objects.get(
+            pk=self.context['view'].kwargs['company_pk'])
         validated_data['company'] = company
         return super().create(validated_data)
 
@@ -51,7 +52,8 @@ class CompanyContactSerializer(BasisModelSerializer):
         fields = ('id', 'name', 'role', 'mail', 'phone', 'mobile')
 
     def create(self, validated_data):
-        company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
+        company = Company.objects.get(
+            pk=self.context['view'].kwargs['company_pk'])
         validated_data['company'] = company
         return super().create(validated_data)
 
@@ -64,7 +66,8 @@ class CompanyFileSerializer(serializers.ModelSerializer):
         fields = ('id', 'file')
 
     def create(self, validated_data):
-        company = Company.objects.get(pk=self.context['view'].kwargs['company_pk'])
+        company = Company.objects.get(
+            pk=self.context['view'].kwargs['company_pk'])
         validated_data['company'] = company
         return super().create(validated_data)
 
@@ -79,20 +82,33 @@ class CompanyListSerializer(BasisModelSerializer):
         }
     )
 
+    event_count = serializers.SerializerMethodField()
+
+    def get_event_count(self, obj):
+        return obj.events.filter(start_time__gt=timezone.now()).count()
+
+    joblisting_count = serializers.SerializerMethodField()
+
+    def get_joblisting_count(self, obj):
+        return obj.joblistings.filter(visible_to__gte=timezone.now()).count()
+
     class Meta:
         model = Company
         fields = (
-            'id', 'name', 'description', 'website', 'company_type', 'address', 'logo', 'thumbnail'
+            'id', 'name', 'description', 'event_count', 'joblisting_count',
+            'website', 'company_type', 'address', 'logo', 'thumbnail'
         )
 
 
 class CompanyAdminListSerializer(BasisModelSerializer):
     semester_statuses = SemesterStatusSerializer(many=True, read_only=True)
-    student_contact = PublicUserField(required=False, queryset=User.objects.all())
+    student_contact = PublicUserField(
+        required=False, queryset=User.objects.all())
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'semester_statuses', 'student_contact', 'admin_comment', 'active')
+        fields = ('id', 'name', 'semester_statuses',
+                  'student_contact', 'admin_comment', 'active')
 
 
 class CompanyDetailSerializer(BasisModelSerializer):
@@ -109,8 +125,10 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
 
-    student_contact = PublicUserField(required=False, allow_null=True, queryset=User.objects.all())
-    semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
+    student_contact = PublicUserField(
+        required=False, allow_null=True, queryset=User.objects.all())
+    semester_statuses = SemesterStatusDetailSerializer(
+        many=True, read_only=True)
     company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
     logo = ImageField(required=False, options={'height': 500})
@@ -145,7 +163,8 @@ class CompanyInterestSerializer(serializers.ModelSerializer):
 class CompanyInterestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInterest
-        fields = ('id', 'company_name', 'contact_person', 'mail', 'semesters', 'created_at')
+        fields = ('id', 'company_name', 'contact_person',
+                  'mail', 'semesters', 'created_at')
 
 
 class CompanySearchSerializer(serializers.ModelSerializer):
@@ -155,4 +174,5 @@ class CompanySearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('id', 'name', 'description', 'website', 'company_type', 'address')
+        fields = ('id', 'name', 'description',
+                  'website', 'company_type', 'address')

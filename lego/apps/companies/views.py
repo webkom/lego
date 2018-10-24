@@ -31,6 +31,7 @@ class CompanyViewSet(
 ):
     queryset = Company.objects.all()
     permission_classes = (permissions.IsAuthenticated, )
+    ordering = 'name'
 
     def get_serializer_class(self):
         if self.action == 'list':
