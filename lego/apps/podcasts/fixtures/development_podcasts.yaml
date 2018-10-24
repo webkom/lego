@@ -1,0 +1,71 @@
+- model: podcasts.Podcast
+  pk: 20
+  fields:
+    source: https://soundcloud.com/user-279926342/20-slutten-pa-en-aera
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 21
+  fields:
+    source: https://soundcloud.com/user-279926342/21-semesterstart-med-itdagene
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 22
+  fields:
+    source: https://soundcloud.com/user-279926342/22-ny-gjeng-ny-gjeng
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 23
+  fields:
+    source: https://soundcloud.com/user-279926342/23-singelguide-til-abakulen
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 24
+  fields:
+    source: https://soundcloud.com/user-279926342/24-du-vil-aldri-tro-hva-disse-guttene-sa-pa-lufta
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 25
+  fields:
+    source: https://soundcloud.com/user-279926342/25-hunspanderer-og-ada
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3

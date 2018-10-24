@@ -27,6 +27,7 @@ from lego.apps.notifications.views import (
     AnnouncementViewSet, APNSDeviceViewSet, GCMDeviceViewSet, NotificationSettingsViewSet
 )
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
+from lego.apps.podcasts.views import PodcastViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
@@ -122,6 +123,7 @@ router.register(
     r'password-reset-request', PasswordResetRequestViewSet, base_name='password-reset-request'
 )
 router.register(r'penalties', PenaltyViewSet)
+router.register(r'podcasts', PodcastViewSet, base_name="podcasts")
 router.register(r'quotes', QuoteViewSet)
 router.register(r'reaction-types', ReactionTypeViewSet)
 router.register(r'reactions', ReactionViewSet)

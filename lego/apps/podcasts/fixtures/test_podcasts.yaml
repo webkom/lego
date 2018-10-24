@@ -1,0 +1,35 @@
+- model: podcasts.Podcast
+  pk: 1
+  fields:
+    source: https://soundcloud.com/user-279926342/20-slutten-pa-en-aera
+    description: Officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 2
+  fields:
+    source: https://soundcloud.com/user-279926342/20-slutten-pa-en-aera
+    description: Officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
+
+- model: podcasts.Podcast
+  pk: 3
+  fields:
+    source: https://soundcloud.com/user-279926342/20-slutten-pa-en-aera
+    description: Officia deserunt mollit anim id est laborum.
+    authors:
+    - 1
+    - 2
+    - 3
+    thanks:
+    - 3
