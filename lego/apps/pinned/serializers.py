@@ -1,8 +1,8 @@
-from lego.apps.articles.models import Article
+from rest_framework import serializers
+
 from lego.apps.articles.serializers import PublicArticleSerializer
-from lego.apps.events.models import Event
 from lego.apps.events.serializers.events import EventSearchSerializer
-from lego.apps.pinned.models import PinnedArticle, PinnedEvent
+from lego.apps.pinned.models import Pinned
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -17,19 +17,10 @@ class PinnedEventSerializer(BasisModelSerializer):
     target_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta:
-        model = PinnedEvent
+        model = Pinned
         fields = (
             'id', 'created_at', 'author', 'event', 'target_groups', 'pinned_from', 'pinned_to'
         )
-
-
-class CreatePinnedEventSerializer(BasisModelSerializer):
-    event = PrimaryKeyRelatedFieldNoPKOpt(queryset=Event.objects.all())
-    target_groups = PrimaryKeyRelatedFieldNoPKOpt(many=True, queryset=AbakusGroup.objects.all())
-
-    class Meta:
-        model = PinnedEvent
-        fields = ('event', 'target_groups', 'pinned_from', 'pinned_to')
 
 
 class PinnedArticleSerializer(BasisModelSerializer):
@@ -40,16 +31,22 @@ class PinnedArticleSerializer(BasisModelSerializer):
     target_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta:
-        model = PinnedArticle
+        model = Pinned
         fields = (
             'id', 'created_at', 'author', 'article', 'target_groups', 'pinned_from', 'pinned_to'
         )
 
 
-class CreatePinnedArticleSerializer(BasisModelSerializer):
-    article = PrimaryKeyRelatedFieldNoPKOpt(queryset=Article.objects.all())
+class CreatePinnedSerializer(BasisModelSerializer):
     target_groups = PrimaryKeyRelatedFieldNoPKOpt(many=True, queryset=AbakusGroup.objects.all())
 
+    def validate(self, data):
+        if 'event' not in data and 'article' not in data:
+            raise serializers.ValidationError('either event or article must be defined')
+        if data.get('event') and data.get('article'):
+            raise serializers.ValidationError('both event and article cant be defined')
+        return data
+
     class Meta:
-        model = PinnedArticle
-        fields = ('article', 'target_groups', 'pinned_from', 'pinned_to')
+        model = Pinned
+        fields = ('article', 'event', 'target_groups', 'pinned_from', 'pinned_to')
