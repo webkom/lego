@@ -14,7 +14,6 @@ class PodcastViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Podcast.objects.all()
 
     def get_serializer_class(self):
-        print(self.action)
         if self.action in ['create', 'update', 'partial_update']:
             return PodcastCreateAndUpdateSerializer
         elif self.action == 'retrieve':
