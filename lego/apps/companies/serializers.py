@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
@@ -79,10 +80,20 @@ class CompanyListSerializer(BasisModelSerializer):
         }
     )
 
+    event_count = serializers.SerializerMethodField()
+    joblisting_count = serializers.SerializerMethodField()
+
+    def get_event_count(self, obj):
+        return obj.events.filter(start_time__gt=timezone.now()).count()
+
+    def get_joblisting_count(self, obj):
+        return obj.joblistings.filter(visible_to__gte=timezone.now()).count()
+
     class Meta:
         model = Company
         fields = (
-            'id', 'name', 'description', 'website', 'company_type', 'address', 'logo', 'thumbnail'
+            'id', 'name', 'description', 'event_count', 'joblisting_count', 'website',
+            'company_type', 'address', 'logo', 'thumbnail'
         )
 
 
