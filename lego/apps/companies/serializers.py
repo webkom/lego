@@ -81,11 +81,10 @@ class CompanyListSerializer(BasisModelSerializer):
     )
 
     event_count = serializers.SerializerMethodField()
+    joblisting_count = serializers.SerializerMethodField()
 
     def get_event_count(self, obj):
         return obj.events.filter(start_time__gt=timezone.now()).count()
-
-    joblisting_count = serializers.SerializerMethodField()
 
     def get_joblisting_count(self, obj):
         return obj.joblistings.filter(visible_to__gte=timezone.now()).count()
