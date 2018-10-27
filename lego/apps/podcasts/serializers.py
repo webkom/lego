@@ -36,4 +36,4 @@ class PodcastCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Podcast
-        fields = ('source', 'description', 'authors', 'thanks')
+        fields = ('id', 'source', 'description', 'authors', 'thanks')
