@@ -6,7 +6,7 @@ from lego.apps.users.models import AbakusGroup, Membership
 
 
 class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
-    logo = ImageField(required=False, options={'height': 400, 'width': 400})
+    logo = ImageField(required=False, allow_null=True, options={'height': 400, 'width': 400})
 
     class Meta:
         model = AbakusGroup
