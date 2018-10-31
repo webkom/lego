@@ -160,7 +160,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             'feedback_description', 'feedback_required', 'event_type', 'location', 'is_priced',
             'price_member', 'price_guest', 'use_stripe', 'payment_due_date', 'start_time',
             'end_time', 'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline',
-            'pinned', 'heed_penalties', 'is_abakom_only'
+            'heed_penalties', 'is_abakom_only'
         )
 
     def create(self, validated_data):
@@ -215,8 +215,7 @@ class EventSearchSerializer(serializers.ModelSerializer):
         model = Event
         fields = (
             'id', 'title', 'description', 'cover', 'text', 'event_type', 'location', 'start_time',
-            'thumbnail', 'end_time', 'total_capacity', 'company', 'registration_count', 'tags',
-            'pinned'
+            'thumbnail', 'end_time', 'total_capacity', 'company', 'registration_count', 'tags'
         )
         read_only = True
 

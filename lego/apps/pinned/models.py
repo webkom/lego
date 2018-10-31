@@ -11,9 +11,9 @@ class Pinned(BasisModel):
     pinned_to = models.DateField()
 
     event = models.ForeignKey(
-        Event, related_name='pins', on_delete=models.SET_NULL, null=True, blank=True
+        Event, related_name='pins', on_delete=models.CASCADE, null=True, blank=True
     )
     article = models.ForeignKey(
-        Article, related_name='pins', on_delete=models.SET_NULL, null=True, blank=True
+        Article, related_name='pins', on_delete=models.CASCADE, null=True, blank=True
     )
     target_groups = models.ManyToManyField(AbakusGroup)

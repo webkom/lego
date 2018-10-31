@@ -20,7 +20,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Article
         fields = (
             'id', 'title', 'cover', 'author', 'description', 'comments', 'comment_target', 'tags',
-            'content', 'created_at', 'pinned'
+            'content', 'created_at'
         )
 
 
@@ -36,7 +36,7 @@ class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'cover', 'description', 'tags', 'content', 'pinned', 'created_at')
+        fields = ('id', 'title', 'cover', 'description', 'tags', 'content', 'created_at')
 
 
 class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -46,4 +46,4 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'cover', 'author', 'description', 'tags', 'created_at', 'pinned')
+        fields = ('id', 'title', 'cover', 'author', 'description', 'tags', 'created_at')

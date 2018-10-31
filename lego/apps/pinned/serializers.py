@@ -10,30 +10,24 @@ from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
 
-class PinnedEventSerializer(BasisModelSerializer):
+class ListPinnedSerializer(BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source='created_by')
 
     event = EventSearchSerializer()
-    target_groups = PublicAbakusGroupSerializer(many=True)
-
-    class Meta:
-        model = Pinned
-        fields = (
-            'id', 'created_at', 'author', 'event', 'target_groups', 'pinned_from', 'pinned_to'
-        )
-
-
-class PinnedArticleSerializer(BasisModelSerializer):
-    author = PublicUserSerializer(read_only=True, source='created_by')
-
     article = PublicArticleSerializer()
 
     target_groups = PublicAbakusGroupSerializer(many=True)
 
+    content_type = serializers.SerializerMethodField()
+
+    def get_content_type(self, obj):
+        return 'event' if obj.event is not None else 'article'
+
     class Meta:
         model = Pinned
         fields = (
-            'id', 'created_at', 'author', 'article', 'target_groups', 'pinned_from', 'pinned_to'
+            'id', 'created_at', 'author', 'article', 'event', 'target_groups', 'pinned_from',
+            'pinned_to', 'content_type'
         )
 
 

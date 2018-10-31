@@ -50,7 +50,6 @@ class Content(SlugModel):
     comments = GenericRelation(Comment)
     reactions = GenericRelation(Reaction)
     tags = ManyToManyField(Tag, blank=True)
-    pinned = models.BooleanField(default=False)
 
     slug_field = 'title'
 
