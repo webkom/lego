@@ -9,7 +9,7 @@ from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.pinned.models import Pinned
-from lego.apps.pinned.serializers import ListPinnedSerializer
+from lego.apps.pinned.serializers import FrontpagePinnedSerializer
 
 
 class FrontpageViewSet(viewsets.ViewSet):
@@ -17,19 +17,24 @@ class FrontpageViewSet(viewsets.ViewSet):
     permission_classes = (permissions.AllowAny, )
 
     def list(self, request):
-        queryset_pinned_events = Pinned.objects.filter(
-            target_groups__in=self.request.user.all_groups, pinned_from__lte=timezone.now(),
-            pinned_to__gte=timezone.now()
-        ).exclude(event__isnull=True).select_related('event').distinct().order_by('pinned_from')
+        queryset_pinned = Pinned.objects.filter(
+            pinned_from__lte=timezone.now(),
+            pinned_to__gte=timezone.now(),
+            target_groups__in=self.request.user.all_groups,
+        ).distinct()
 
-        queryset_pinned_articles = Pinned.objects.filter(
-            target_groups__in=self.request.user.all_groups, pinned_from__lte=timezone.now(),
-            pinned_to__gte=timezone.now()
-        ).exclude(article__isnull=True
-                  ).select_related('article').distinct().order_by('pinned_from')
+        queryset_pinned_events = queryset_pinned.exclude(
+            event__isnull=True
+        ).order_by('pinned_from').select_related('event', 'event__company').prefetch_related(
+            'event__pools', 'event__pools__registrations', 'event__tags'
+        )
 
-        pinned_events = ListPinnedSerializer(queryset_pinned_events, many=True).data
-        pinned_articles = ListPinnedSerializer(queryset_pinned_articles, many=True).data
+        queryset_pinned_articles = queryset_pinned.exclude(
+            article__isnull=True
+        ).order_by('pinned_from').select_related('article').prefetch_related('article__tags')
+
+        pinned_events = FrontpagePinnedSerializer(queryset_pinned_events, many=True).data
+        pinned_articles = FrontpagePinnedSerializer(queryset_pinned_articles, many=True).data
 
         articles_handler = get_permission_handler(Article)
         articles_queryset_base = Article.objects.all()\

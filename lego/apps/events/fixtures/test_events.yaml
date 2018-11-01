@@ -23,7 +23,6 @@
     company: 2
     start_time: '2118-09-02T13:20:30+03:00'
     end_time: '2118-09-02T15:20:30+03:00'
-    pinned: true
     created_by: 1
     require_auth: False
 
