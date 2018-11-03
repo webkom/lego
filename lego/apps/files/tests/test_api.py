@@ -29,18 +29,18 @@ class ListArticlesTestCase(BaseAPITestCase):
         key = 'myfile.png'
         try:
             self.client.post(f'{self.url}', data={'key': key})
-        except Exception as e:
+        except Exception:
             pass
         mock_create_file.assert_not_called()
 
         try:
             self.client.post(f'{self.url}', data={'key': key, 'public': True})
-        except Exception as e:
+        except Exception:
             pass
         mock_create_file.assert_called_with(key, self.user, True)
 
         try:
             self.client.post(f'{self.url}', data={'key': key, 'public': False})
-        except Exception as e:
+        except Exception:
             pass
         mock_create_file.assert_called_with(key, self.user, False)

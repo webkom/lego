@@ -63,7 +63,7 @@ class Notification:
         """
         Create and sent the email message.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def generate_push(self):
         """
