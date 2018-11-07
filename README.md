@@ -35,6 +35,18 @@ If you get an error while running initialize_development mentioning `elasticsear
 $ sysctl -w vm.max_map_count=262144
 ```
 
+If you get ld: library not found for -lssl
+```
+export LDFLAGS="-L/usr/local/opt/openssl/lib"
+```
+
+When changing the user fixtures one must load new fixtures
+```
+./manage.py load_fixtures --generate
+```
+
+After changes
+
 ## Code Style
 
 This codebase uses the PEP 8 code style. We enforce this with isort, yapf & flake8.
@@ -55,6 +67,28 @@ $ yapf -ir lego  # Format with yapf
 To check if it is formatted properly, run:
 ```bash
 $ tox -e isort -e flake8 -e yapf
+```
+
+### Tests
+
+If you want to run a specific test class you can run
+```bash
+$ ./manage.py test lego.apps.[APP] --keepdb
+```
+By adding the `--keepdb` the next time it will go a lot faster to run the tests multiple times.
+
+If you want to check your test coverage, you can do the following
+```bash
+# Install the packages needed
+$ pip install -r requirments/coverage.txt
+
+# Run a full test run with coverage. This will run all tests in LEGO.
+$ coverage run --source=lego ./manage.py test
+
+# Then you can output the full coverage report
+$ coverage report
+# or a small one that only contains the things you are interested in
+$ coverage report | grep [some string]
 ```
 
 ## Deployment

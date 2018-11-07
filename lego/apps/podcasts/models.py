@@ -10,7 +10,7 @@ class Podcast(BasisModel):
     authors = models.ManyToManyField('users.User', related_name="authors", blank=True)
     thanks = models.ManyToManyField('users.User', related_name="thanks", blank=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.source
 
     class Meta:
