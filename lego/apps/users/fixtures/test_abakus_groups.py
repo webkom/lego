@@ -57,6 +57,9 @@ test_tree = {
             ]
         }, {}
     ],
+    'PodcastAdminTest': [{
+        'permissions': ['/sudo/admin/podcasts/']
+    }, {}],
     'ReactionTest': [{
         'permissions': ['/sudo/admin/reactions/create/']
     }, {}],
