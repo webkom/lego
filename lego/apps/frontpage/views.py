@@ -9,7 +9,8 @@ from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User
+from lego.apps.polls.models import Poll
+from lego.apps.polls.serializers import DetailedPollSerializer
 
 
 class FrontpageViewSet(viewsets.ViewSet):
@@ -47,8 +48,7 @@ class FrontpageViewSet(viewsets.ViewSet):
             queryset_articles = articles_queryset_base
         else:
             queryset_articles = articles_handler.filter_queryset(
-                request.user, articles_queryset_base
-            )
+                request.user, articles_queryset_base)
 
         events_handler = get_permission_handler(Event)
         queryset_events_base = (
@@ -78,19 +78,24 @@ class FrontpageViewSet(viewsets.ViewSet):
             )
         )
 
-        if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
+        if events_handler.has_perm(
+                request.user, LIST, queryset=queryset_events_base):
             queryset_events = queryset_events_base
         else:
             queryset_events = events_handler.filter_queryset(
-                request.user, queryset_events_base
-            )
+                request.user, queryset_events_base)
+
+        queryset_poll = Poll.objects.filter(tags__in=['frontpage']).latest()
 
         articles = PublicArticleSerializer(
-            queryset_articles[:10], context=get_serializer_context(), many=True
-        ).data
+            queryset_articles[:10],
+            context=self.get_serializer_context(),
+            many=True).data
         events = EventSearchSerializer(
-            queryset_events, context=get_serializer_context(), many=True
-        ).data
-        ret = {"articles": articles, "events": events}
+            queryset_events, context=self.get_serializer_context(),
+            many=True).data
+        poll = DetailedPollSerializer(
+            queryset_poll, context=self.get_serializer_context()).data
+        ret = {'articles': articles, 'events': events, 'poll': poll}
 
         return Response(ret)
