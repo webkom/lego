@@ -41,6 +41,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
     unregistration_deadline = models.DateTimeField(null=True)
+    registration_deadline_hours = models.PositiveIntegerField(
+        default=constants.REGISTRATION_CLOSE_TIME
+    )
+
+    @property
+    def registration_close_time(self):
+        return self.start_time - timedelta(hours=self.registration_deadline_hours)
 
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
@@ -61,7 +68,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     price_guest = models.PositiveIntegerField(default=0)
     payment_due_date = models.DateTimeField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
-
     is_ready = models.BooleanField(default=True)
 
     class Meta:
@@ -207,7 +213,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.heed_penalties:
             penalties = user.number_of_penalties()
         current_time = timezone.now()
-        if self.start_time - timedelta(hours=constants.REGISTRATION_CLOSE_TIME) < current_time:
+        if self.registration_close_time < current_time:
             raise EventHasClosed()
 
         all_pools = self.pools.all()

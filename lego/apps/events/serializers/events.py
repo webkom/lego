@@ -74,16 +74,18 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     text = ContentSerializerField()
     created_by = PublicUserSerializer()
 
+    registration_close_time = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Event
         fields = (
             'id', 'title', 'description', 'cover', 'text', 'event_type', 'location', 'comments',
             'comment_target', 'start_time', 'end_time', 'merge_time', 'pools',
-            'unregistration_deadline', 'company', 'responsible_group', 'active_capacity',
-            'feedback_description', 'feedback_required', 'is_priced', 'price_member', 'price_guest',
-            'use_stripe', 'payment_due_date', 'use_captcha', 'waiting_registration_count', 'tags',
-            'is_merged', 'heed_penalties', 'created_by', 'is_abakom_only', 'registration_count',
-            'survey'
+            'registration_close_time', 'registration_deadline_hours', 'unregistration_deadline',
+            'company', 'responsible_group', 'active_capacity', 'feedback_description',
+            'feedback_required', 'is_priced', 'price_member', 'price_guest', 'use_stripe',
+            'payment_due_date', 'use_captcha', 'waiting_registration_count', 'tags', 'is_merged',
+            'heed_penalties', 'created_by', 'is_abakom_only', 'registration_count', 'survey'
         )
         read_only = True
 
@@ -153,6 +155,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     text = ContentSerializerField()
     is_abakom_only = BooleanField(required=False, default=False)
 
+    registration_close_time = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Event
         fields = (
@@ -160,7 +164,8 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             'feedback_description', 'feedback_required', 'event_type', 'location', 'is_priced',
             'price_member', 'price_guest', 'use_stripe', 'payment_due_date', 'start_time',
             'end_time', 'merge_time', 'use_captcha', 'tags', 'pools', 'unregistration_deadline',
-            'pinned', 'heed_penalties', 'is_abakom_only'
+            'pinned', 'heed_penalties', 'is_abakom_only', 'registration_deadline_hours',
+            'registration_close_time'
         )
 
     def create(self, validated_data):
