@@ -115,7 +115,7 @@ TEMPLATES = [
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=31),
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'lego.apps.jwt.handlers.response_handler'
 }
 
