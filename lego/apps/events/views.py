@@ -303,6 +303,28 @@ class RegistrationSearchViewSet(
         if not get_permission_handler(Event).has_perm(request.user, 'EDIT', obj=reg.event):
             raise PermissionDenied()
 
+        if reg.status != constants.SUCCESS_REGISTER:
+            raise ValidationError(
+                {
+                    'error':
+                    f'User {reg.user.username} is _not_ properly registerd. '
+                    f'The registration status for the user is: {reg.status}',
+                    'error_code':
+                    'already_present'
+                }
+            )
+
+        if reg.pool is None:
+            raise ValidationError(
+                {
+                    'error':
+                    f'User {reg.user.username} is on the waiting list... '
+                    'You can set the presence manualy on the \'Påmeldinger\' tab',
+                    'error_code':
+                    'already_present'
+                }
+            )
+
         if reg.presence != constants.UNKNOWN:
             raise ValidationError(
                 {
