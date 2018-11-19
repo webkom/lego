@@ -39,7 +39,7 @@ django-cors-headers==2.4.0
 django-mptt==0.9.1
 django-filter==2.0.0
 django-environ==0.4.5
-django-redis==4.9.0
+django-redis==4.9.1
 django-ipware==2.1.0
 django-push-notifications==1.6.0
 
