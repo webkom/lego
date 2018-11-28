@@ -6,4 +6,4 @@ tox==3.5.3
 
 -r flake8.txt
 -r isort.txt
--r yapf.txt
+-r black.txt

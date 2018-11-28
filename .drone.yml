@@ -52,7 +52,7 @@ pipeline:
     commands:
       - tox -e flake8
 
-  yapf:
+  black:
     image: abakus/lego-testbase
     pull: true
     when:
@@ -61,7 +61,7 @@ pipeline:
       - LANG=C.UTF-8
     group: testing
     commands:
-      - tox -e yapf
+      - tox -e black
 
   docs:
     image: abakus/lego-testbase
