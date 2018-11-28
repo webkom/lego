@@ -11,4 +11,4 @@ class MembershipHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MembershipHistory
-        fields = ('id', 'user', 'abakus_group', 'role', 'start_date', 'end_date')
+        fields = ("id", "user", "abakus_group", "role", "start_date", "end_date")

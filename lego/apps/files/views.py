@@ -1,4 +1,11 @@
-from rest_framework import decorators, exceptions, permissions, renderers, status, viewsets
+from rest_framework import (
+    decorators,
+    exceptions,
+    permissions,
+    renderers,
+    status,
+    viewsets,
+)
 from rest_framework.response import Response
 
 from lego.apps.files.exceptions import UnknownFileType
@@ -15,7 +22,7 @@ class FileViewSet(viewsets.GenericViewSet):
     renderer_classes = [renderers.JSONRenderer]
     queryset = File.objects.all()
     serializer_class = FileUploadSerializer
-    lookup_field = 'key'
+    lookup_field = "key"
     lookup_value_regex = KEY_REGEX_RAW
 
     def create(self, request, *args, **kwargs):
@@ -25,25 +32,23 @@ class FileViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        key = serializer.validated_data['key']
-        public = serializer.validated_data.get('public', None)
+        key = serializer.validated_data["key"]
+        public = serializer.validated_data.get("public", None)
 
         try:
-            file_key, url, fields, token = prepare_file_upload(key, request.user, public)
+            file_key, url, fields, token = prepare_file_upload(
+                key, request.user, public
+            )
         except UnknownFileType:
             raise exceptions.ParseError
 
         return Response(
-            {
-                'url': url,
-                'file_key': file_key,
-                'file_token': token,
-                'fields': fields
-            }, status=status.HTTP_201_CREATED
+            {"url": url, "file_key": file_key, "file_token": token, "fields": fields},
+            status=status.HTTP_201_CREATED,
         )
 
     @decorators.detail_route(
-        methods=['GET'],
+        methods=["GET"],
         permission_classes=[permissions.AllowAny],
         authentication_classes=[],
     )

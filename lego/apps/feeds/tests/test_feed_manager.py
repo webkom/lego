@@ -10,7 +10,7 @@ from lego.apps.users.models import User
 
 class FeedManagerTestCase(TransactionTestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.manager = feed_manager
@@ -24,16 +24,22 @@ class FeedManagerTestCase(TransactionTestCase):
 
         # Add first activity
         activity = Activity(
-            actor=user, verb=MeetingInvitationVerb, object=meeting_invitation,
-            target=meeting_invitation.user, time=meeting_invitation.created_at
+            actor=user,
+            verb=MeetingInvitationVerb,
+            object=meeting_invitation,
+            target=meeting_invitation.user,
+            time=meeting_invitation.created_at,
         )
         self.manager.add_activity(activity, [user.id], [NotificationFeed])
         self.assertEqual(1, NotificationFeed.objects.count())
 
         # Add second activity in the same group
         activity1 = Activity(
-            actor=user, verb=MeetingInvitationVerb, object=meeting_invitation2,
-            target=meeting_invitation.user, time=meeting_invitation.created_at
+            actor=user,
+            verb=MeetingInvitationVerb,
+            object=meeting_invitation2,
+            target=meeting_invitation.user,
+            time=meeting_invitation.created_at,
         )
         self.manager.add_activity(activity1, [user.id], [NotificationFeed])
         self.assertEqual(1, NotificationFeed.objects.count())

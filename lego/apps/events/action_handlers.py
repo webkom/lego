@@ -2,15 +2,21 @@ from lego.apps.action_handlers.handler import Handler
 from lego.apps.action_handlers.registry import register_handler
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.notifications import (
-    EventAdminRegistrationNotification, EventAdminUnregistrationNotification, EventBumpNotification,
-    EventPaymentOverdueNotification
+    EventAdminRegistrationNotification,
+    EventAdminUnregistrationNotification,
+    EventBumpNotification,
+    EventPaymentOverdueNotification,
 )
 from lego.apps.feeds.activity import Activity
 from lego.apps.feeds.feed_manager import feed_manager
 from lego.apps.feeds.models import NotificationFeed, PersonalFeed, UserFeed
 from lego.apps.feeds.verbs import (
-    AdminRegistrationVerb, AdminUnregistrationVerb, EventCreateVerb, EventRegisterVerb,
-    PaymentOverdueVerb, RegistrationBumpVerb
+    AdminRegistrationVerb,
+    AdminUnregistrationVerb,
+    EventCreateVerb,
+    EventRegisterVerb,
+    PaymentOverdueVerb,
+    RegistrationBumpVerb,
 )
 
 
@@ -38,15 +44,20 @@ class EventHandler(Handler):
             result.append(
                 (
                     [PersonalFeed],
-                    list(event.company.followers.values_list('follower__id', flat=True))
+                    list(
+                        event.company.followers.values_list("follower__id", flat=True)
+                    ),
                 )
             )
         return result
 
     def get_activity(self, event):
         return Activity(
-            actor=event.company, verb=EventCreateVerb, object=event, time=event.created_at,
-            extra_context={'title': event.title}
+            actor=event.company,
+            verb=EventCreateVerb,
+            object=event,
+            time=event.created_at,
+            extra_context={"title": event.title},
         )
 
 
@@ -82,16 +93,20 @@ class RegistrationHandler(Handler):
 
     def get_activity(self, registration):
         return Activity(
-            verb=EventRegisterVerb, actor=registration.user, target=registration.event,
-            object=registration, time=registration.created_at, extra_context={}
+            verb=EventRegisterVerb,
+            actor=registration.user,
+            target=registration.event,
+            object=registration,
+            time=registration.created_at,
+            extra_context={},
         )
 
     def get_feeds_and_recipients(self, registration):
         result = []
 
-        followers = registration.user.followers \
-            .exclude(follower_id=registration.user_id) \
-            .values_list('follower_id', flat=True)
+        followers = registration.user.followers.exclude(
+            follower_id=registration.user_id
+        ).values_list("follower_id", flat=True)
 
         result.append(([PersonalFeed], followers))
         result.append(([UserFeed], [registration.user_id]))
@@ -110,45 +125,58 @@ class RegistrationHandler(Handler):
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
         # Send notification
-        notification = EventPaymentOverdueNotification(registration.user, event=registration.event)
+        notification = EventPaymentOverdueNotification(
+            registration.user, event=registration.event
+        )
         notification.notify()
 
     def handle_bump(self, registration):
         activity = Activity(
-            actor=registration.event, verb=RegistrationBumpVerb, object=registration,
-            target=registration.user
+            actor=registration.event,
+            verb=RegistrationBumpVerb,
+            object=registration,
+            target=registration.user,
         )
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
         # Send Notification
-        notification = EventBumpNotification(registration.user, event=registration.event)
+        notification = EventBumpNotification(
+            registration.user, event=registration.event
+        )
         notification.notify()
 
     def handle_admin_registration(self, registration):
         activity = Activity(
-            actor=registration.event, verb=AdminRegistrationVerb, object=registration,
-            target=registration.user
+            actor=registration.event,
+            verb=AdminRegistrationVerb,
+            object=registration,
+            target=registration.user,
         )
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
         # Send Notification
         notification = EventAdminRegistrationNotification(
-            registration.user, event=registration.event,
-            reason=registration.admin_registration_reason
+            registration.user,
+            event=registration.event,
+            reason=registration.admin_registration_reason,
         )
         notification.notify()
 
     def handle_admin_unregistration(self, registration):
         activity = Activity(
-            actor=registration.event, verb=AdminUnregistrationVerb, object=registration,
-            target=registration.user
+            actor=registration.event,
+            verb=AdminUnregistrationVerb,
+            object=registration,
+            target=registration.user,
         )
         self.manager.add_activity(activity, [registration.user_id], [NotificationFeed])
 
         # Send Notification
         notification = EventAdminUnregistrationNotification(
-            registration.user, event=registration.event,
-            reason=registration.admin_unregistration_reason, creator=registration.event.created_by
+            registration.user,
+            event=registration.event,
+            reason=registration.admin_unregistration_reason,
+            creator=registration.event.created_by,
         )
         notification.notify()
 

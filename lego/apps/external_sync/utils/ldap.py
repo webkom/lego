@@ -1,22 +1,25 @@
 from django.conf import settings
+
 from ldap3 import MODIFY_DELETE, MODIFY_REPLACE, Connection
 
 
 class LDAPLib:
     def __init__(self):
         self.connection = Connection(
-            server=settings.LDAP_SERVER, user=settings.LDAP_USER, password=settings.LDAP_PASSWORD,
-            auto_bind=True
+            server=settings.LDAP_SERVER,
+            user=settings.LDAP_USER,
+            password=settings.LDAP_PASSWORD,
+            auto_bind=True,
         )
 
-        self.user_base = ','.join(('ou=users', settings.LDAP_BASE_DN))
-        self.group_base = ','.join(('ou=groups', settings.LDAP_BASE_DN))
+        self.user_base = ",".join(("ou=users", settings.LDAP_BASE_DN))
+        self.group_base = ",".join(("ou=groups", settings.LDAP_BASE_DN))
 
-        self.user_attributes = ['uid', 'cn', 'sn']
-        self.group_attributes = ['gidNumber', 'cn']
+        self.user_attributes = ["uid", "cn", "sn"]
+        self.group_attributes = ["gidNumber", "cn"]
 
     def get_all_users(self):
-        search_filter = '(cn=*)'
+        search_filter = "(cn=*)"
         result = self.connection.search(
             self.user_base, search_filter, attributes=self.user_attributes
         )
@@ -25,7 +28,7 @@ class LDAPLib:
         return []
 
     def get_all_groups(self):
-        search_filter = '(cn=*)'
+        search_filter = "(cn=*)"
         result = self.connection.search(
             self.group_base, search_filter, attributes=self.group_attributes
         )
@@ -34,7 +37,7 @@ class LDAPLib:
         return []
 
     def search_user(self, query):
-        search_filter = f'(uid={query})'
+        search_filter = f"(uid={query})"
         result = self.connection.search(
             self.user_base, search_filter, attributes=self.user_attributes
         )
@@ -42,20 +45,21 @@ class LDAPLib:
             return self.connection.entries[0]
 
     def add_user(self, uid, first_name, last_name, email, password_hash):
-        dn = ','.join((f'uid={uid}', self.user_base))
+        dn = ",".join((f"uid={uid}", self.user_base))
         return self.connection.add(
-            dn, ['inetOrgPerson', 'top'],
+            dn,
+            ["inetOrgPerson", "top"],
             {
-                'uid': uid,
-                'cn': first_name,
-                'sn': last_name,
-                'mail': email,
-                'userPassword': '{CRYPT}' + password_hash
-            }
+                "uid": uid,
+                "cn": first_name,
+                "sn": last_name,
+                "mail": email,
+                "userPassword": "{CRYPT}" + password_hash,
+            },
         )
 
     def search_group(self, query):
-        search_filter = f'(gidNumber={query})'
+        search_filter = f"(gidNumber={query})"
         result = self.connection.search(
             self.group_base, search_filter, attributes=self.group_attributes
         )
@@ -63,46 +67,47 @@ class LDAPLib:
             return self.connection.entries[0]
 
     def add_group(self, gid, name):
-        dn = ','.join((f'cn={name}', self.group_base))
-        return self.connection.add(dn, ['posixGroup', 'top'], {
-            'gidNumber': gid,
-            'cn': name,
-        })
+        dn = ",".join((f"cn={name}", self.group_base))
+        return self.connection.add(
+            dn, ["posixGroup", "top"], {"gidNumber": gid, "cn": name}
+        )
 
     def update_organization_unit(self, name):
         """
         Make sure the organization unit exists in LDAP.
         """
-        search_filter = f'(ou={name})'
-        result = self.connection.search(settings.LDAP_BASE_DN, search_filter, attributes=['ou'])
+        search_filter = f"(ou={name})"
+        result = self.connection.search(
+            settings.LDAP_BASE_DN, search_filter, attributes=["ou"]
+        )
         if not result:
-            dn = ','.join((f'ou={name}', settings.LDAP_BASE_DN))
-            self.connection.add(dn, ['organizationalUnit', 'top'], {'ou': name})
+            dn = ",".join((f"ou={name}", settings.LDAP_BASE_DN))
+            self.connection.add(dn, ["organizationalUnit", "top"], {"ou": name})
 
     def delete_user(self, uid):
-        dn = ','.join((f'uid={uid}', self.user_base))
+        dn = ",".join((f"uid={uid}", self.user_base))
         return self.connection.delete(dn)
 
     def delete_group(self, cn):
-        dn = ','.join((f'cn={cn}', self.group_base))
+        dn = ",".join((f"cn={cn}", self.group_base))
         return self.connection.delete(dn)
 
     def check_password(self, uid, password_hash):
-        dn = ','.join((f'uid={uid}', self.user_base))
-        return self.connection.compare(dn, 'userPassword', '{CRYPT}' + password_hash)
+        dn = ",".join((f"uid={uid}", self.user_base))
+        return self.connection.compare(dn, "userPassword", "{CRYPT}" + password_hash)
 
     def change_password(self, uid, password_hash):
-        dn = ','.join((f'uid={uid}', self.user_base))
+        dn = ",".join((f"uid={uid}", self.user_base))
 
-        changes = {'userPassword': [(MODIFY_REPLACE, ['{CRYPT}' + password_hash])]}
+        changes = {"userPassword": [(MODIFY_REPLACE, ["{CRYPT}" + password_hash])]}
         self.connection.modify(dn, changes)
 
     def update_group_members(self, cn, members):
-        dn = ','.join((f'cn={cn}', self.group_base))
+        dn = ",".join((f"cn={cn}", self.group_base))
 
         if members:
-            changes = {'memberUid': [(MODIFY_REPLACE, members)]}
+            changes = {"memberUid": [(MODIFY_REPLACE, members)]}
         else:
-            changes = {'memberUid': [(MODIFY_DELETE, [])]}
+            changes = {"memberUid": [(MODIFY_DELETE, [])]}
 
         self.connection.modify(dn, changes)

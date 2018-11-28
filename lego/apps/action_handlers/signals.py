@@ -6,11 +6,11 @@ from .events import handle_create, handle_delete, handle_update
 
 @receiver(post_save)
 def post_save_callback(**kwargs):
-    instance = kwargs.get('instance')
+    instance = kwargs.get("instance")
     if not instance:
         return
 
-    if kwargs.get('created'):
+    if kwargs.get("created"):
         handle_create(instance)
     else:
         handle_update(instance)
@@ -18,4 +18,4 @@ def post_save_callback(**kwargs):
 
 @receiver(post_delete)
 def post_delete_callback(**kwargs):
-    handle_delete(kwargs.get('instance'))
+    handle_delete(kwargs.get("instance"))

@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0010_auto_20171021_2118'),
-    ]
+    dependencies = [("users", "0010_auto_20171021_2118")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='email_lists_enabled',
+            model_name="user",
+            name="email_lists_enabled",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

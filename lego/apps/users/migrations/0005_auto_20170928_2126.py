@@ -7,26 +7,24 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0004_abakusgroup_logo'),
-    ]
+    dependencies = [("users", "0004_abakusgroup_logo")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='abakusgroup',
-            name='is_interest_group',
+        migrations.RemoveField(model_name="abakusgroup", name="is_interest_group"),
+        migrations.AddField(
+            model_name="abakusgroup", name="text", field=models.TextField(blank=True)
         ),
         migrations.AddField(
-            model_name='abakusgroup',
-            name='text',
-            field=models.TextField(blank=True),
-        ),
-        migrations.AddField(
-            model_name='abakusgroup',
-            name='type',
+            model_name="abakusgroup",
+            name="type",
             field=models.CharField(
-                choices=[('komite', 'komite'), ('interesse', 'interesse'), ('annen', 'annen')],
-                default='annen', max_length=10
+                choices=[
+                    ("komite", "komite"),
+                    ("interesse", "interesse"),
+                    ("annen", "annen"),
+                ],
+                default="annen",
+                max_length=10,
             ),
         ),
     ]

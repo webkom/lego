@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0016_auto_20180223_1614'),
-    ]
+    dependencies = [("events", "0016_auto_20180223_1614")]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='registration_close_time',
+            model_name="event",
+            name="registration_close_time",
             field=models.PositiveIntegerField(default=2),
-        ),
+        )
     ]

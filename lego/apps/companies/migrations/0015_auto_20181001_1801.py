@@ -6,22 +6,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('companies', '0014_auto_20171210_1610'),
-    ]
+    dependencies = [("companies", "0014_auto_20171210_1610")]
 
     operations = [
         migrations.AlterField(
-            model_name='companyinterest',
-            name='events',
+            model_name="companyinterest",
+            name="events",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(
                     choices=[
-                        ('company_presentation', 'company_presentation'), ('course', 'course'),
-                        ('lunch_presentation', 'lunch_presentation'), ('bedex', 'bedex'),
-                        ('other', 'other'), ('sponsor', 'sponsor')
-                    ], max_length=64
-                ), size=None
+                        ("company_presentation", "company_presentation"),
+                        ("course", "course"),
+                        ("lunch_presentation", "lunch_presentation"),
+                        ("bedex", "bedex"),
+                        ("other", "other"),
+                        ("sponsor", "sponsor"),
+                    ],
+                    max_length=64,
+                ),
+                size=None,
             ),
-        ),
+        )
     ]

@@ -14,84 +14,89 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='NotificationFeed',
+            name="NotificationFeed",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('feed_id', models.CharField(db_index=True, max_length=64)),
-                ('group', models.CharField(max_length=128)),
-                ('activity_store', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('minimized_activities', models.PositiveIntegerField(default=0)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('seen_at', models.DateTimeField(null=True)),
-                ('read_at', models.DateTimeField(null=True)),
+                ("feed_id", models.CharField(db_index=True, max_length=64)),
+                ("group", models.CharField(max_length=128)),
+                ("activity_store", django.contrib.postgres.fields.jsonb.JSONField()),
+                ("minimized_activities", models.PositiveIntegerField(default=0)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("seen_at", models.DateTimeField(null=True)),
+                ("read_at", models.DateTimeField(null=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
             bases=(models.Model, lego.apps.feeds.marker.MarkerModelMixin),
         ),
         migrations.CreateModel(
-            name='PersonalFeed',
+            name="PersonalFeed",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('feed_id', models.CharField(db_index=True, max_length=64)),
-                ('group', models.CharField(max_length=128)),
-                ('activity_store', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('minimized_activities', models.PositiveIntegerField(default=0)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("feed_id", models.CharField(db_index=True, max_length=64)),
+                ("group", models.CharField(max_length=128)),
+                ("activity_store", django.contrib.postgres.fields.jsonb.JSONField()),
+                ("minimized_activities", models.PositiveIntegerField(default=0)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='TimelineStorage',
+            name="TimelineStorage",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('activity_id', models.CharField(db_index=True, max_length=20)),
-                ('feed', models.CharField(db_index=True, max_length=32)),
-                ('aggregated_id', models.PositiveIntegerField()),
+                ("activity_id", models.CharField(db_index=True, max_length=20)),
+                ("feed", models.CharField(db_index=True, max_length=32)),
+                ("aggregated_id", models.PositiveIntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='UserFeed',
+            name="UserFeed",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('feed_id', models.CharField(db_index=True, max_length=64)),
-                ('group', models.CharField(max_length=128)),
-                ('activity_store', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('minimized_activities', models.PositiveIntegerField(default=0)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("feed_id", models.CharField(db_index=True, max_length=64)),
+                ("group", models.CharField(max_length=128)),
+                ("activity_store", django.contrib.postgres.fields.jsonb.JSONField()),
+                ("minimized_activities", models.PositiveIntegerField(default=0)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.AlterUniqueTogether(
-            name='timelinestorage',
-            unique_together={('activity_id', 'feed')},
+            name="timelinestorage", unique_together={("activity_id", "feed")}
         ),
     ]

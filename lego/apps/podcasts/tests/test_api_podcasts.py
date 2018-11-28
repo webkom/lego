@@ -6,34 +6,34 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
-    return reverse('api:v1:podcasts-list')
+    return reverse("api:v1:podcasts-list")
 
 
 def _get_detail_url(pk):
-    return reverse('api:v1:podcasts-detail', kwargs={'pk': pk})
+    return reverse("api:v1:podcasts-detail", kwargs={"pk": pk})
 
 
 class PodcastViewSetTestCase(BaseAPITestCase):
-    fixtures = ['test_users.yaml', 'test_abakus_groups.yaml', 'test_podcasts.yaml']
+    fixtures = ["test_users.yaml", "test_abakus_groups.yaml", "test_podcasts.yaml"]
 
     def setUp(self):
         """Create test users"""
-        self.authenticated_user = User.objects.get(username='test1')
-        self.group = AbakusGroup.objects_with_text.get(name='PodcastAdminTest')
+        self.authenticated_user = User.objects.get(username="test1")
+        self.group = AbakusGroup.objects_with_text.get(name="PodcastAdminTest")
         self.group.add_user(self.authenticated_user)
 
-        self.unauthenticated_user = User.objects.get(username='test2')
+        self.unauthenticated_user = User.objects.get(username="test2")
 
-        self.author1 = User.objects.get(username='test1')
-        self.author2 = User.objects.get(username='test1')
-        self.thanks1 = User.objects.get(username='test1')
-        self.thanks2 = User.objects.get(username='test1')
+        self.author1 = User.objects.get(username="test1")
+        self.author2 = User.objects.get(username="test1")
+        self.thanks1 = User.objects.get(username="test1")
+        self.thanks2 = User.objects.get(username="test1")
 
         self.podcast_data = {
-            'source': 'www.testsource.com',
-            'description': 'TestDescription',
-            'authors': [self.author1.pk, self.author2.pk],
-            'thanks': [self.thanks1.pk, self.thanks2.pk]
+            "source": "www.testsource.com",
+            "description": "TestDescription",
+            "authors": [self.author1.pk, self.author2.pk],
+            "thanks": [self.thanks1.pk, self.thanks2.pk],
         }
 
     def test_create_podcast_authenticated(self):

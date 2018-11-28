@@ -9,8 +9,11 @@ from lego.utils.test_utils import BaseTestCase
 class RestrictedMailModelTestCase(BaseTestCase):
 
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
-        'test_restricted_mails.yaml'
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_companies.yaml",
+        "test_events.yaml",
+        "test_restricted_mails.yaml",
     ]
 
     def test_lookup_recipients(self):
@@ -20,7 +23,7 @@ class RestrictedMailModelTestCase(BaseTestCase):
         restricted_mail = RestrictedMail.objects.get(id=1)
         recipients = restricted_mail.lookup_recipients()
 
-        self.assertCountEqual(recipients, ['test1@user.com', 'test2@user.com'])
+        self.assertCountEqual(recipients, ["test1@user.com", "test2@user.com"])
 
     def test_mark_used(self):
         """The used field is not None when the item is marked as used"""
@@ -32,19 +35,23 @@ class RestrictedMailModelTestCase(BaseTestCase):
 
     def test_lookup(self):
         """Get the restricted mail with a valid lookup"""
-        restricted_mail = RestrictedMail.get_restricted_mail('test@abakus.no', 'token')
+        restricted_mail = RestrictedMail.get_restricted_mail("test@abakus.no", "token")
         self.assertEqual(restricted_mail.id, 1)
 
     def test_invalid_lookup(self):
         """Return none when an invalid lookup is performed"""
-        restricted_mail = RestrictedMail.get_restricted_mail('test@abakus.no', 'invalid_token')
+        restricted_mail = RestrictedMail.get_restricted_mail(
+            "test@abakus.no", "invalid_token"
+        )
         self.assertIsNone(restricted_mail)
 
     def test_lookup_recipients_for_weekly_mail(self):
         """
         Lookup recipients for weekly mail, make sure unsubscribed users are removed
         """
-        restricted_mail = RestrictedMail.objects.create(from_address='test@test.no', weekly=True)
+        restricted_mail = RestrictedMail.objects.create(
+            from_address="test@test.no", weekly=True
+        )
 
         users = get_dummy_users(5)
         notAlumni = users[:4]
@@ -57,10 +64,16 @@ class RestrictedMailModelTestCase(BaseTestCase):
             user=unsubscribed_one, notification_type=WEEKLY_MAIL, enabled=False
         )
         NotificationSetting.objects.create(
-            user=unsubscribed_two, notification_type=WEEKLY_MAIL, enabled=True, channels=[PUSH]
+            user=unsubscribed_two,
+            notification_type=WEEKLY_MAIL,
+            enabled=True,
+            channels=[PUSH],
         )
         NotificationSetting.objects.create(
-            user=subscribed, notification_type=WEEKLY_MAIL, enabled=True, channels=[EMAIL]
+            user=subscribed,
+            notification_type=WEEKLY_MAIL,
+            enabled=True,
+            channels=[EMAIL],
         )
         NotificationSetting.objects.create(
             user=alumni, notification_type=WEEKLY_MAIL, enabled=True, channels=[EMAIL]
@@ -68,4 +81,6 @@ class RestrictedMailModelTestCase(BaseTestCase):
 
         recipients = restricted_mail.lookup_recipients()
 
-        self.assertListEqual(sorted(recipients), sorted([no_setting.email, subscribed.email]))
+        self.assertListEqual(
+            sorted(recipients), sorted([no_setting.email, subscribed.email])
+        )

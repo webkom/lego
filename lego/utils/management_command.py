@@ -19,10 +19,15 @@ class BaseCommand(DjangoBaseCommand):
         -v 1 INFO
         -v 2 DEBUG
         """
-        self.verbosity = getattr(self, 'verbosity', options['verbosity'])
-        log_levels = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG, 3: logging.DEBUG}
+        self.verbosity = getattr(self, "verbosity", options["verbosity"])
+        log_levels = {
+            0: logging.WARNING,
+            1: logging.INFO,
+            2: logging.DEBUG,
+            3: logging.DEBUG,
+        }
 
-        root_log = logging.getLogger('')
+        root_log = logging.getLogger("")
         for handler in root_log.handlers:
             handler.setLevel(log_levels[self.verbosity])
 
@@ -39,7 +44,7 @@ class BaseCommand(DjangoBaseCommand):
             return self.run(*args, **options)
 
         except Exception:
-            log.exception('Fatal exception, exiting...')
+            log.exception("Fatal exception, exiting...")
             sys.exit(1)
 
     def _handle_sigterm(self, signum, frame):
@@ -50,7 +55,7 @@ class BaseCommand(DjangoBaseCommand):
         self._handle_sigterm(signum, frame)
 
     def run(self, *args, **options):
-        raise NotImplementedError('Please implement the .run method')
+        raise NotImplementedError("Please implement the .run method")
 
     def close(self):
         pass

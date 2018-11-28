@@ -7,13 +7,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('quotes', '0001_initial'),
-    ]
+    dependencies = [("quotes", "0001_initial")]
 
-    operations = [
-        migrations.AlterModelOptions(
-            name='quote',
-            options={},
-        ),
-    ]
+    operations = [migrations.AlterModelOptions(name="quote", options={})]

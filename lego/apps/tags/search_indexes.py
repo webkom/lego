@@ -9,8 +9,8 @@ class TagIndex(SearchIndex):
 
     queryset = Tag.objects.all()
     serializer_class = TagSearchSerializer
-    result_fields = ('tag', )
-    autocomplete_result_fields = ('tag', )
+    result_fields = ("tag",)
+    autocomplete_result_fields = ("tag",)
 
     def get_autocomplete(self, instance):
         return [instance.tag]

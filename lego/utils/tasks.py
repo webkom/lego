@@ -1,11 +1,10 @@
 from smtplib import SMTPException
 
 import celery
-from push_notifications import NotificationError
-from structlog import get_logger
-
 from lego import celery_app
 from lego.apps.users.models import User
+from push_notifications import NotificationError
+from structlog import get_logger
 
 from .email import EmailMessage
 from .push import PushMessage
@@ -27,16 +26,18 @@ class AbakusTask(celery.Task):
     def apply_async(self, args=None, kwargs=None, *arguments, **keyword_arguments):
         logger = log.bind()
         logger_context = dict(logger._context._dict)
-        kwargs['logger_context'] = logger_context
+        kwargs["logger_context"] = logger_context
 
-        async_result = super().apply_async(args, kwargs, *arguments, **keyword_arguments)
-        log.info('async_task_created', task_id=async_result.id, task_name=self.name)
+        async_result = super().apply_async(
+            args, kwargs, *arguments, **keyword_arguments
+        )
+        log.info("async_task_created", task_id=async_result.id, task_name=self.name)
         return async_result
 
     def setup_logger(self, logger_context):
         logger_context = logger_context or {}
-        logger_context['task_name'] = self.name
-        logger_context['task_id'] = self.request.id
+        logger_context["task_name"] = self.name
+        logger_context["task_id"] = self.request.id
         self.logger = log.new(**logger_context)
 
 
@@ -52,8 +53,8 @@ def send_email(self, logger_context=None, **kwargs):
     try:
         message.send()
     except SMTPException as e:
-        log.error('email_task_exception', exc_info=True, extra=kwargs)
-        raise self.retry(exc=e, countdown=2**self.request.retries)
+        log.error("email_task_exception", exc_info=True, extra=kwargs)
+        raise self.retry(exc=e, countdown=2 ** self.request.retries)
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
@@ -64,13 +65,13 @@ def send_push(self, user, target=None, logger_context=None, **kwargs):
     self.setup_logger(logger_context)
 
     recipient = User.objects.get(id=user)
-    kwargs['user'] = recipient
-    kwargs['target'] = target
+    kwargs["user"] = recipient
+    kwargs["target"] = target
 
     message = PushMessage(**kwargs)
 
     try:
         message.send()
     except NotificationError as e:
-        log.error('push_task_exception', exec_info=True, extra=kwargs)
-        raise self.retry(exc=e, countdown=2**self.request.retries)
+        log.error("push_task_exception", exec_info=True, extra=kwargs)
+        raise self.retry(exc=e, countdown=2 ** self.request.retries)

@@ -25,149 +25,126 @@ E.g. Abakus: [
 """
 
 initial_tree = {
-    'Users': [{
-        'description': 'Brukere på Abakus.no'
-    }, {}],
-    'Abakus': [
+    "Users": [{"description": "Brukere på Abakus.no"}, {}],
+    "Abakus": [
         {
-            'description':
-            'Medlemmer av Abakus',
-            'permissions': [
-                '/sudo/admin/meetings/create', '/sudo/admin/meetinginvitations/create',
-                '/sudo/admin/registrations/create/', '/sudo/admin/events/payment/',
-                '/sudo/admin/comments/create'
-            ]
+            "description": "Medlemmer av Abakus",
+            "permissions": [
+                "/sudo/admin/meetings/create",
+                "/sudo/admin/meetinginvitations/create",
+                "/sudo/admin/registrations/create/",
+                "/sudo/admin/events/payment/",
+                "/sudo/admin/comments/create",
+            ],
         },
         {
-            'Abakom': [
+            "Abakom": [
                 {
-                    'description':
-                    'Medlemmer av Abakom',
-                    'permissions': [
-                        '/sudo/admin/events/',
-                        '/sudo/admin/pools/',
-                        '/sudo/admin/registrations/',
-                        '/sudo/admin/companies/',
-                        '/sudo/admin/joblistings/',
-                    ]
+                    "description": "Medlemmer av Abakom",
+                    "permissions": [
+                        "/sudo/admin/events/",
+                        "/sudo/admin/pools/",
+                        "/sudo/admin/registrations/",
+                        "/sudo/admin/companies/",
+                        "/sudo/admin/joblistings/",
+                    ],
                 },
                 {
-                    'Arrkom': [{
-                        'type': GROUP_COMMITTEE,
-                        'logo_id': 'abakus_arrkom.png'
-                    }, {}],
-                    'backup': [{
-                        'type': GROUP_COMMITTEE,
-                        'logo_id': 'abakus_backup.png'
-                    }, {}],
-                    'Bedkom': [
-                        {
-                            'type':
-                            GROUP_COMMITTEE,
-                            'logo_id':
-                            'abakus_bedkom.png',
-                            'permissions': [
-                                '/sudo/admin/companyinterest/', '/sudo/admin/surveys/',
-                                '/sudo/admin/submissions/'
-                            ]
-                        }, {}
+                    "Arrkom": [
+                        {"type": GROUP_COMMITTEE, "logo_id": "abakus_arrkom.png"},
+                        {},
                     ],
-                    'Fagkom': [
-                        {
-                            'type':
-                            GROUP_COMMITTEE,
-                            'logo_id':
-                            'abakus_fagkom.png',
-                            'permissions': [
-                                '/sudo/admin/companyinterest/', '/sudo/admin/surveys/',
-                                '/sudo/admin/submissions/'
-                            ]
-                        }, {}
+                    "backup": [
+                        {"type": GROUP_COMMITTEE, "logo_id": "abakus_backup.png"},
+                        {},
                     ],
-                    'Koskom': [{
-                        'type': GROUP_COMMITTEE,
-                        'logo_id': 'abakus_koskom.png'
-                    }, {}],
-                    'LaBamba': [{
-                        'type': GROUP_COMMITTEE,
-                        'logo_id': 'abakus_labamba.png'
-                    }, {}],
-                    'PR': [{
-                        'type': GROUP_COMMITTEE,
-                        'logo_id': 'abakus_pr.png'
-                    }, {}],
-                    'readme': [{
-                        'type': GROUP_COMMITTEE,
-                        'logo_id': 'abakus_readme.png'
-                    }, {}],
-                    'Webkom': [
+                    "Bedkom": [
                         {
-                            'type': GROUP_COMMITTEE,
-                            'logo_id': 'abakus_webkom.png',
-                            'permissions': ['/sudo/'],
-                            'text': 'hei'
-                        }, {}
+                            "type": GROUP_COMMITTEE,
+                            "logo_id": "abakus_bedkom.png",
+                            "permissions": [
+                                "/sudo/admin/companyinterest/",
+                                "/sudo/admin/surveys/",
+                                "/sudo/admin/submissions/",
+                            ],
+                        },
+                        {},
                     ],
-                    'Hovedstyret': [
+                    "Fagkom": [
                         {
-                            'logo_id': 'abakus_hs.png',
-                            'permissions': ['/sudo/admin/'],
-                            'contact_email': "hs@abakus.no"
-                        }, {}
-                    ]
-                }
+                            "type": GROUP_COMMITTEE,
+                            "logo_id": "abakus_fagkom.png",
+                            "permissions": [
+                                "/sudo/admin/companyinterest/",
+                                "/sudo/admin/surveys/",
+                                "/sudo/admin/submissions/",
+                            ],
+                        },
+                        {},
+                    ],
+                    "Koskom": [
+                        {"type": GROUP_COMMITTEE, "logo_id": "abakus_koskom.png"},
+                        {},
+                    ],
+                    "LaBamba": [
+                        {"type": GROUP_COMMITTEE, "logo_id": "abakus_labamba.png"},
+                        {},
+                    ],
+                    "PR": [{"type": GROUP_COMMITTEE, "logo_id": "abakus_pr.png"}, {}],
+                    "readme": [
+                        {"type": GROUP_COMMITTEE, "logo_id": "abakus_readme.png"},
+                        {},
+                    ],
+                    "Webkom": [
+                        {
+                            "type": GROUP_COMMITTEE,
+                            "logo_id": "abakus_webkom.png",
+                            "permissions": ["/sudo/"],
+                            "text": "hei",
+                        },
+                        {},
+                    ],
+                    "Hovedstyret": [
+                        {
+                            "logo_id": "abakus_hs.png",
+                            "permissions": ["/sudo/admin/"],
+                            "contact_email": "hs@abakus.no",
+                        },
+                        {},
+                    ],
+                },
             ],
-            'Interessegrupper':
-            [{
-                'description': 'Super-gruppe for alle interessegrupper i Abakus'
-            }, {}]
-        }
+            "Interessegrupper": [
+                {"description": "Super-gruppe for alle interessegrupper i Abakus"},
+                {},
+            ],
+        },
     ],
-    'Students': [
+    "Students": [
         {},
         {
-            'Datateknologi': [
+            "Datateknologi": [
                 {},
                 {
-                    '1. klasse Datateknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '2. klasse Datateknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '3. klasse Datateknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '4. klasse Datateknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '5. klasse Datateknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                }
+                    "1. klasse Datateknologi": [{"type": GROUP_GRADE}, {}],
+                    "2. klasse Datateknologi": [{"type": GROUP_GRADE}, {}],
+                    "3. klasse Datateknologi": [{"type": GROUP_GRADE}, {}],
+                    "4. klasse Datateknologi": [{"type": GROUP_GRADE}, {}],
+                    "5. klasse Datateknologi": [{"type": GROUP_GRADE}, {}],
+                },
             ],
-            'Kommunikasjonsteknologi': [
+            "Kommunikasjonsteknologi": [
                 {},
                 {
-                    '1. klasse Kommunikasjonsteknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '2. klasse Kommunikasjonsteknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '3. klasse Kommunikasjonsteknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '4. klasse Kommunikasjonsteknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                    '5. klasse Kommunikasjonsteknologi': [{
-                        'type': GROUP_GRADE
-                    }, {}],
-                }
-            ]
-        }
-    ]
+                    "1. klasse Kommunikasjonsteknologi": [{"type": GROUP_GRADE}, {}],
+                    "2. klasse Kommunikasjonsteknologi": [{"type": GROUP_GRADE}, {}],
+                    "3. klasse Kommunikasjonsteknologi": [{"type": GROUP_GRADE}, {}],
+                    "4. klasse Kommunikasjonsteknologi": [{"type": GROUP_GRADE}, {}],
+                    "5. klasse Kommunikasjonsteknologi": [{"type": GROUP_GRADE}, {}],
+                },
+            ],
+        },
+    ],
 }
 
 

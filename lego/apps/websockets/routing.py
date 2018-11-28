@@ -1,10 +1,10 @@
-from channels.routing import ProtocolTypeRouter, URLRouter
 from django.conf import settings
 from django.conf.urls import url
-from structlog import get_logger
 
+from channels.routing import ProtocolTypeRouter, URLRouter
 from lego.apps.websockets.auth import JWTAuthenticationMiddleware
 from lego.apps.websockets.consumers import GroupConsumer
+from structlog import get_logger
 
 log = get_logger()
 
@@ -19,17 +19,15 @@ class HTTPConsumer:
         pass
 
     async def __call__(self, receive, send):
-        log.warn('http_disabled_daphne')
+        log.warn("http_disabled_daphne")
         raise ValueError
 
 
 protocols = {
-    'websocket': JWTAuthenticationMiddleware(URLRouter([
-        url("^$", GroupConsumer),
-    ])),
+    "websocket": JWTAuthenticationMiddleware(URLRouter([url("^$", GroupConsumer)]))
 }
 
 if settings.DAPHNE_SERVER:
-    protocols['http'] = HTTPConsumer
+    protocols["http"] = HTTPConsumer
 
 application = ProtocolTypeRouter(protocols)

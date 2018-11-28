@@ -15,7 +15,7 @@ def disable_on_test(signal_handler):
 
     @wraps(signal_handler)
     def wrapper(*args, **kwargs):
-        if kwargs.get('raw') or settings.TESTING:
+        if kwargs.get("raw") or settings.TESTING:
             return
         return signal_handler(*args, **kwargs)
 
@@ -32,7 +32,7 @@ def call_handler(instance, action, **kwargs):
     """
 
     if registry.handler_exists(instance):
-        if action == 'delete':
+        if action == "delete":
             handler = registry.get_handler_by_instance(instance)
             return handler.run(instance, action, **kwargs)
 
@@ -46,12 +46,12 @@ def handle_event(instance, action, **kwargs):
 
 
 def handle_create(instance):
-    return handle_event(instance, 'create')
+    return handle_event(instance, "create")
 
 
 def handle_update(instance):
-    return handle_event(instance, 'update')
+    return handle_event(instance, "update")
 
 
 def handle_delete(instance):
-    return handle_event(instance, 'delete')
+    return handle_event(instance, "delete")

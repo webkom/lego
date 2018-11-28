@@ -14,16 +14,19 @@ class EmailAddress(models.Model):
     """
 
     email = models.CharField(
-        max_length=128, primary_key=True,
-        validators=[RegexValidator(regex=EmailValidator.user_regex),
-                    ReservedNameValidator()]
+        max_length=128,
+        primary_key=True,
+        validators=[
+            RegexValidator(regex=EmailValidator.user_regex),
+            ReservedNameValidator(),
+        ],
     )
 
     def is_assigned(self, new_owner=None):
         """
         Use the new_owner to make the validation pass with the same as the current owner.
         """
-        fields = ['email_list', 'user', 'abakusgroup']
+        fields = ["email_list", "user", "abakusgroup"]
 
         def check_reverse(field):
             try:
@@ -46,21 +49,29 @@ class EmailList(models.Model):
 
     name = models.CharField(max_length=64)
     email = models.OneToOneField(
-        EmailAddress, related_name='email_list', editable=False, on_delete=models.CASCADE
+        EmailAddress,
+        related_name="email_list",
+        editable=False,
+        on_delete=models.CASCADE,
     )
 
-    users = models.ManyToManyField('users.User', related_name='email_lists', blank=True)
+    users = models.ManyToManyField("users.User", related_name="email_lists", blank=True)
 
-    group_roles = ArrayField(models.CharField(max_length=64, choices=ROLES), default=list)
-    groups = models.ManyToManyField('users.AbakusGroup', related_name='email_lists', blank=True)
+    group_roles = ArrayField(
+        models.CharField(max_length=64, choices=ROLES), default=list
+    )
+    groups = models.ManyToManyField(
+        "users.AbakusGroup", related_name="email_lists", blank=True
+    )
 
     require_internal_address = models.BooleanField(
-        default=False, help_text='Only allow users with emails from our internal domain, @abakus.no'
+        default=False,
+        help_text="Only allow users with emails from our internal domain, @abakus.no",
     )
 
     @property
     def email_address(self):
-        return f'{self.email_id}@{settings.GSUITE_DOMAIN}'
+        return f"{self.email_id}@{settings.GSUITE_DOMAIN}"
 
     def members(self):
         """
@@ -76,8 +87,7 @@ class EmailList(models.Model):
         for group in groups:
             if not self.group_roles:
                 memberships = group.memberships.filter(
-                    email_lists_enabled=True,
-                    user__email_lists_enabled=True,
+                    email_lists_enabled=True, user__email_lists_enabled=True
                 )
             else:
                 memberships = group.memberships.filter(

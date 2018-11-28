@@ -11,43 +11,42 @@ from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
 
-other_student_groups_names = [
-    'Students',
-    DATA_LONG,
-    KOMTEK_LONG,
-]
+other_student_groups_names = ["Students", DATA_LONG, KOMTEK_LONG]
 
 data_groups_names = [
-    f'1. klasse {DATA_LONG}',
-    f'2. klasse {DATA_LONG}',
-    f'3. klasse {DATA_LONG}',
-    f'4. klasse {DATA_LONG}',
-    f'5. klasse {DATA_LONG}',
+    f"1. klasse {DATA_LONG}",
+    f"2. klasse {DATA_LONG}",
+    f"3. klasse {DATA_LONG}",
+    f"4. klasse {DATA_LONG}",
+    f"5. klasse {DATA_LONG}",
 ]
 
 komtek_groups_names = [
-    f'1. klasse {KOMTEK_LONG}',
-    f'2. klasse {KOMTEK_LONG}',
-    f'3. klasse {KOMTEK_LONG}',
-    f'4. klasse {KOMTEK_LONG}',
-    f'5. klasse {KOMTEK_LONG}',
+    f"1. klasse {KOMTEK_LONG}",
+    f"2. klasse {KOMTEK_LONG}",
+    f"3. klasse {KOMTEK_LONG}",
+    f"4. klasse {KOMTEK_LONG}",
+    f"5. klasse {KOMTEK_LONG}",
 ]
 
 timedelta_since_prev_bump = timedelta(days=5 * 31)
 
 
 class Command(BaseCommand):
-    help = 'Bumps users to the next grade'
+    help = "Bumps users to the next grade"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--no-dryrun', action='store_true', dest='no_dryrun', help='Do the work. No dry run'
+            "--no-dryrun",
+            action="store_true",
+            dest="no_dryrun",
+            help="Do the work. No dry run",
         )
 
     def get_group(self, name):
         group = AbakusGroup.objects.filter(name=name).first()
         if not group:
-            raise ValueError(f"Cold not find group with name \"{name}\"")
+            raise ValueError(f'Cold not find group with name "{name}"')
         return group
 
     def get_students_in_group(self, group):
@@ -55,22 +54,27 @@ class Command(BaseCommand):
 
     def get_students_in_groups(self, groups):
         return User.all_objects.filter(
-            abakus_groups__in=groups, date_bumped__lte=timezone.now() - timedelta_since_prev_bump
-        ).prefetch_related('abakus_groups')
+            abakus_groups__in=groups,
+            date_bumped__lte=timezone.now() - timedelta_since_prev_bump,
+        ).prefetch_related("abakus_groups")
 
     def verify_no_duplicate_memberships(self, student_groups):
         students = self.get_students_in_groups(student_groups)
         log.info(f"Student count: {students.count()}")
-        users_with_multiple_memberships = students.annotate(Count('id')
-                                                            ).order_by().filter(id__count__gt=1)
+        users_with_multiple_memberships = (
+            students.annotate(Count("id")).order_by().filter(id__count__gt=1)
+        )
 
         if users_with_multiple_memberships.count() is 0:
             return
 
         for user in users_with_multiple_memberships:
             log.error(
-                "User \"{}\" has multiple student memberships: {}".format(
-                    user, user.abakus_groups.filter(pk__in=[group.pk for group in student_groups])
+                'User "{}" has multiple student memberships: {}'.format(
+                    user,
+                    user.abakus_groups.filter(
+                        pk__in=[group.pk for group in student_groups]
+                    ),
                 )
             )
         raise ValueError("Found duplicate student memberships")
@@ -86,7 +90,7 @@ class Command(BaseCommand):
             User.objects.filter(pk=user.pk).update(date_bumped=timezone.now())
 
     def run(self, *args, **options):
-        is_dryrun = not options['no_dryrun']
+        is_dryrun = not options["no_dryrun"]
 
         if is_dryrun:
             log.info("Running in dryrun mode")
@@ -96,16 +100,20 @@ class Command(BaseCommand):
         komtek_groups = self.get_groups(komtek_groups_names)
         other_student_groups = self.get_groups(other_student_groups_names)
 
-        self.verify_no_duplicate_memberships(data_groups + komtek_groups + other_student_groups)
+        self.verify_no_duplicate_memberships(
+            data_groups + komtek_groups + other_student_groups
+        )
 
         for groups in [data_groups, komtek_groups]:
             for grade_index in range(len(groups)):
                 from_group = groups[grade_index]
-                to_group = None if grade_index + 1 is len(groups) else groups[grade_index + 1]
+                to_group = (
+                    None if grade_index + 1 is len(groups) else groups[grade_index + 1]
+                )
                 to_group_name = to_group.name if to_group else None
                 students_in_group = self.get_students_in_group(from_group)
                 log.info(
-                    "{:3d} users ready to be bumped from \"{}\" to \"{}\"".format(
+                    '{:3d} users ready to be bumped from "{}" to "{}"'.format(
                         students_in_group.count(), from_group.name, to_group_name
                     )
                 )

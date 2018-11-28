@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('surveys', '0003_merge_20180312_1608'),
-    ]
+    dependencies = [("surveys", "0003_merge_20180312_1608")]
 
     operations = [
         migrations.AddField(
-            model_name='survey',
-            name='token',
-            field=models.CharField(blank=True, default=None, max_length=64, null=True, unique=True),
-        ),
+            model_name="survey",
+            name="token",
+            field=models.CharField(
+                blank=True, default=None, max_length=64, null=True, unique=True
+            ),
+        )
     ]

@@ -9,6 +9,6 @@ class JSONRenderer(CamelCaseJSONRenderer):
 
     def render(self, data, *args, **kwargs):
         if data is None:
-            return bytes('{}'.encode('utf-8'))
+            return bytes("{}".encode("utf-8"))
 
         return super().render(data, *args, **kwargs)

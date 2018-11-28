@@ -6,8 +6,13 @@ from lego.apps.meetings.authentication import MeetingInvitationTokenAuthenticati
 from lego.apps.meetings.filters import MeetingFilterSet
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.serializers import (
-    MeetingBulkInvite, MeetingDetailSerializer, MeetingGroupInvite, MeetingInvitationSerializer,
-    MeetingInvitationUpdateSerializer, MeetingListSerializer, MeetingUserInvite
+    MeetingBulkInvite,
+    MeetingDetailSerializer,
+    MeetingGroupInvite,
+    MeetingInvitationSerializer,
+    MeetingInvitationUpdateSerializer,
+    MeetingListSerializer,
+    MeetingUserInvite,
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
@@ -21,38 +26,39 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         permission_handler = get_permission_handler(Meeting)
         return permission_handler.filter_queryset(
-            self.request.user, Meeting.objects.prefetch_related('invitations', 'invitations__user')
+            self.request.user,
+            Meeting.objects.prefetch_related("invitations", "invitations__user"),
         )
 
     def get_ordering(self):
-        ordering = self.request.query_params.get('ordering', None)
-        if ordering in ['start_time', '-start_time']:
+        ordering = self.request.query_params.get("ordering", None)
+        if ordering in ["start_time", "-start_time"]:
             return ordering
-        return 'start_time'
+        return "start_time"
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return MeetingListSerializer
         return super().get_serializer_class()
 
-    @decorators.detail_route(methods=['POST'], serializer_class=MeetingUserInvite)
+    @decorators.detail_route(methods=["POST"], serializer_class=MeetingUserInvite)
     def invite_user(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
         meeting.invite_user(user, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.detail_route(methods=['POST'], serializer_class=MeetingBulkInvite)
+    @decorators.detail_route(methods=["POST"], serializer_class=MeetingBulkInvite)
     def bulk_invite(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        users = serializer.validated_data['users']
-        groups = serializer.validated_data['groups']
+        users = serializer.validated_data["users"]
+        groups = serializer.validated_data["groups"]
         if not len(users) and not len(groups):
-            raise ValidationError({'error': 'No users or groups given'})
+            raise ValidationError({"error": "No users or groups given"})
 
         for user in users:
             meeting.invite_user(user, request.user)
@@ -60,28 +66,28 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             meeting.invite_group(group, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.detail_route(methods=['POST'], serializer_class=MeetingGroupInvite)
+    @decorators.detail_route(methods=["POST"], serializer_class=MeetingGroupInvite)
     def invite_group(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        group = serializer.validated_data['group']
+        group = serializer.validated_data["group"]
         meeting.invite_group(group, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class MeetingInvitationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    queryset = MeetingInvitation.objects.select_related('user')
-    lookup_field = 'user__id'
+    queryset = MeetingInvitation.objects.select_related("user")
+    lookup_field = "user__id"
 
     def get_serializer_class(self):
-        if self.action in ('update', 'partial_update'):
+        if self.action in ("update", "partial_update"):
             return MeetingInvitationUpdateSerializer
         return MeetingInvitationSerializer
 
     def get_queryset(self):
-        return MeetingInvitation.objects.filter(meeting=self.kwargs['meeting_pk'])
+        return MeetingInvitation.objects.filter(meeting=self.kwargs["meeting_pk"])
 
 
 class MeetingInvitationTokenViewSet(viewsets.ViewSet):
@@ -95,10 +101,11 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
 
     To reject: [reject/?token=yourtoken](reject/)
     """
-    authentication_classes = (MeetingInvitationTokenAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
 
-    @decorators.list_route(methods=['POST'])
+    authentication_classes = (MeetingInvitationTokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @decorators.list_route(methods=["POST"])
     def accept(self, request):
         invitation = request.token_invitation
         invitation.accept()
@@ -108,7 +115,7 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
         invitation = request.token_invitation
         return Response(data=MeetingInvitationSerializer(invitation).data)
 
-    @decorators.list_route(methods=['POST'])
+    @decorators.list_route(methods=["POST"])
     def reject(self, request):
         invitation = request.token_invitation
         invitation.reject()

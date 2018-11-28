@@ -5,14 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0017_user_date_bumped'),
-    ]
+    dependencies = [("users", "0017_user_date_bumped")]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='allergies',
-            field=models.CharField(blank=True, max_length=100, verbose_name='allergies'),
-        ),
+            model_name="user",
+            name="allergies",
+            field=models.CharField(
+                blank=True, max_length=100, verbose_name="allergies"
+            ),
+        )
     ]

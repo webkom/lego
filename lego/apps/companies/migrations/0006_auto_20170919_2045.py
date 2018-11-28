@@ -9,17 +9,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('companies', '0005_auto_20170919_1631'),
-    ]
+    dependencies = [("companies", "0005_auto_20170919_1631")]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='student_contact',
+            model_name="company",
+            name="student_contact",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.CASCADE, related_name='companies',
-                to=settings.AUTH_USER_MODEL
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="companies",
+                to=settings.AUTH_USER_MODEL,
             ),
-        ),
+        )
     ]

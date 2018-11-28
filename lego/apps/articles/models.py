@@ -7,10 +7,10 @@ from lego.utils.models import BasisModel
 
 
 class Article(Content, BasisModel, ObjectPermissionsModel):
-    cover = FileField(related_name='article_covers')
+    cover = FileField(related_name="article_covers")
 
     class Meta:
         abstract = False
 
     def get_absolute_url(self):
-        return f'{settings.FRONTEND_URL}/articles/{self.id}/'
+        return f"{settings.FRONTEND_URL}/articles/{self.id}/"

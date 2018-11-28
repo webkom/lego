@@ -7,47 +7,52 @@ from lego.apps.users.models import AbakusGroup, User
 
 
 def _get_list_url():
-    return reverse('api:v1:survey-template-list')
+    return reverse("api:v1:survey-template-list")
 
 
 def _get_detail_url(template_type):
-    return reverse('api:v1:survey-template-detail', kwargs={'template_type': template_type})
+    return reverse(
+        "api:v1:survey-template-detail", kwargs={"template_type": template_type}
+    )
 
 
 def _get_create_url():
-    return reverse('api:v1:survey-list')
+    return reverse("api:v1:survey-list")
 
 
 def _get_edit_url(pk):
-    return reverse('api:v1:survey-detail', kwargs={'pk': pk})
+    return reverse("api:v1:survey-detail", kwargs={"pk": pk})
 
 
 class SurveyTemplateViewSetTestCase(APITestCase):
     fixtures = [
-        'test_users.yaml', 'test_abakus_groups.yaml', 'test_survey_templates.yaml',
-        'test_events.yaml', 'test_companies.yaml'
+        "test_users.yaml",
+        "test_abakus_groups.yaml",
+        "test_survey_templates.yaml",
+        "test_events.yaml",
+        "test_companies.yaml",
     ]
 
     def setUp(self):
-        self.admin_user = User.objects.get(username='useradmin_test')
-        self.admin_group = AbakusGroup.objects.get(name='Bedkom')
+        self.admin_user = User.objects.get(username="useradmin_test")
+        self.admin_group = AbakusGroup.objects.get(name="Bedkom")
         self.admin_group.add_user(self.admin_user)
-        self.regular_user = User.objects.get(username='abakule')
+        self.regular_user = User.objects.get(username="abakule")
 
         self.taken_template_type = COMPANY_PRESENTATION
         self.free_template_type = PARTY
 
         self.taken_template_data = {
-            'title': 'Survey',
-            'event': 5,
-            'questions': [],
-            'template_type': self.taken_template_type
+            "title": "Survey",
+            "event": 5,
+            "questions": [],
+            "template_type": self.taken_template_type,
         }
         self.free_template_data = {
-            'title': 'Survey',
-            'event': 5,
-            'questions': [],
-            'template_type': self.free_template_type
+            "title": "Survey",
+            "event": 5,
+            "questions": [],
+            "template_type": self.free_template_type,
         }
 
     # Create

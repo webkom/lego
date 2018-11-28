@@ -13,7 +13,7 @@ register(CommentVerb)
 
 class Verb:
     id = 0
-    infinitive = ''
+    infinitive = ""
 
     def __str__(self):
         return self.infinitive
@@ -29,7 +29,7 @@ def register(verb):
 
 class EventRegisterVerb(Verb):
     id = 1
-    infinitive = 'event_register'
+    infinitive = "event_register"
 
 
 register(EventRegisterVerb)
@@ -37,7 +37,7 @@ register(EventRegisterVerb)
 
 class EventCreateVerb(Verb):
     id = 2
-    infinitive = 'event_create'
+    infinitive = "event_create"
 
 
 register(EventCreateVerb)
@@ -45,7 +45,7 @@ register(EventCreateVerb)
 
 class RegistrationBumpVerb(Verb):
     id = 3
-    infinitive = 'registration_bump'
+    infinitive = "registration_bump"
 
 
 register(RegistrationBumpVerb)
@@ -53,7 +53,7 @@ register(RegistrationBumpVerb)
 
 class PenaltyVerb(Verb):
     id = 4
-    infinitive = 'penalty'
+    infinitive = "penalty"
 
 
 register(PenaltyVerb)
@@ -61,7 +61,7 @@ register(PenaltyVerb)
 
 class AdminRegistrationVerb(Verb):
     id = 5
-    infinitive = 'admin_registration'
+    infinitive = "admin_registration"
 
 
 register(AdminRegistrationVerb)
@@ -69,7 +69,7 @@ register(AdminRegistrationVerb)
 
 class PaymentOverdueVerb(Verb):
     id = 6
-    infinitive = 'payment_overdue'
+    infinitive = "payment_overdue"
 
 
 register(PaymentOverdueVerb)
@@ -77,8 +77,8 @@ register(PaymentOverdueVerb)
 
 class MeetingInvitationVerb(Verb):
     id = 7
-    infinitive = 'meeting_invitation'
-    aggregation_group = '{verb}-{actor_id}-{actor_content_type}-{date}'
+    infinitive = "meeting_invitation"
+    aggregation_group = "{verb}-{actor_id}-{actor_content_type}-{date}"
 
 
 register(MeetingInvitationVerb)
@@ -86,8 +86,8 @@ register(MeetingInvitationVerb)
 
 class RestrictedMailSent(Verb):
     id = 8
-    infinitive = 'restricted_mail_sent'
-    aggregation_group = '{verb}-{object_content_type}-{object_id}'
+    infinitive = "restricted_mail_sent"
+    aggregation_group = "{verb}-{object_content_type}-{object_id}"
 
 
 register(RestrictedMailSent)
@@ -95,8 +95,8 @@ register(RestrictedMailSent)
 
 class AnnouncementVerb(Verb):
     id = 9
-    infinitive = 'announcement'
-    aggregation_group = '{verb}-{object_content_type}-{object_id}'
+    infinitive = "announcement"
+    aggregation_group = "{verb}-{object_content_type}-{object_id}"
 
 
 register(AnnouncementVerb)
@@ -104,7 +104,7 @@ register(AnnouncementVerb)
 
 class CompanyInterestVerb(Verb):
     id = 10
-    infinitive = 'company_interest'
+    infinitive = "company_interest"
 
 
 register(CompanyInterestVerb)
@@ -112,7 +112,7 @@ register(CompanyInterestVerb)
 
 class CommentVerb(Verb):
     id = 11
-    infinitive = 'comment'
+    infinitive = "comment"
 
 
 register(CommentVerb)
@@ -120,7 +120,7 @@ register(CommentVerb)
 
 class CommentReplyVerb(Verb):
     id = 12
-    infinitive = 'comment_reply'
+    infinitive = "comment_reply"
 
 
 register(CommentReplyVerb)
@@ -128,8 +128,8 @@ register(CommentReplyVerb)
 
 class GroupJoinVerb(Verb):
     id = 13
-    infinitive = 'group_join'
-    aggregation_group = '{verb}-{object_content_type}-{object_id}'
+    infinitive = "group_join"
+    aggregation_group = "{verb}-{object_content_type}-{object_id}"
 
 
 register(GroupJoinVerb)
@@ -137,7 +137,7 @@ register(GroupJoinVerb)
 
 class AdminUnregistrationVerb(Verb):
     id = 14
-    infinitive = 'admin_unregistration'
+    infinitive = "admin_unregistration"
 
 
 register(AdminUnregistrationVerb)

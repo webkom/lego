@@ -8,6 +8,7 @@ class BaseTestCase(TestCase):
     Normally we don't want to hit Cassandra in tests, so we mock out add_activity in most tests
     to avoid this. If you want to test something using Cassandra, override FeedTestBase instead.
     """
+
     pass
 
 
@@ -26,5 +27,5 @@ class ViewTestCase(BaseTestCase):
 
 def fake_time(y, m, d):
     dt = timezone.datetime(y, m, d)
-    dt = timezone.pytz.timezone('UTC').localize(dt)
+    dt = timezone.pytz.timezone("UTC").localize(dt)
     return dt

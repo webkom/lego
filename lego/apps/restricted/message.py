@@ -12,7 +12,7 @@ class EmailMessage:
         self.from_email = sender
         self.msg = message
         self.encoding = None
-        self.msg['To'] = recipient
+        self.msg["To"] = recipient
 
     def recipients(self):
         return [self.recipient]

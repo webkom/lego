@@ -11,7 +11,7 @@ class SyncTestCase(BaseTestCase):
     called.
     """
 
-    @mock.patch('lego.apps.external_sync.sync.LDAPSystem')
+    @mock.patch("lego.apps.external_sync.sync.LDAPSystem")
     def setUp(self, ldap_mock):
         self.users = User.objects.all()
         self.groups = AbakusGroup.objects.all()

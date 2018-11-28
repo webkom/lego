@@ -1,1 +1,1 @@
-default_app_config = 'lego.apps.stats.apps.StatsConfig'
+default_app_config = "lego.apps.stats.apps.StatsConfig"

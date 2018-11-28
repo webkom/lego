@@ -5,7 +5,7 @@ from lego.apps.permissions.utils import get_permission_handler
 
 class CompanyPermissionHandler(PermissionHandler):
 
-    default_keyword_permission = '/sudo/admin/companies/{perm}/'
+    default_keyword_permission = "/sudo/admin/companies/{perm}/"
 
 
 class NestedCompanyPermissionHandler(CompanyPermissionHandler):
@@ -14,9 +14,16 @@ class NestedCompanyPermissionHandler(CompanyPermissionHandler):
     """
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
         from lego.apps.companies.models import Company
+
         if obj is not None:
             obj = obj.company
 
@@ -30,11 +37,9 @@ class NestedCompanyPermissionHandler(CompanyPermissionHandler):
 
 class SemesterPermissionHandler(PermissionHandler):
 
-    default_keyword_permission = '/sudo/admin/companies/{perm}/'
+    default_keyword_permission = "/sudo/admin/companies/{perm}/"
 
-    authentication_map = {
-        LIST: False,
-    }
+    authentication_map = {LIST: False}
 
 
 class CompanyContactPermissionHandler(NestedCompanyPermissionHandler):
@@ -51,8 +56,7 @@ class CompanyInterestPermissionHandler(PermissionHandler):
     """
     Allow creation of CompanyInterest without a valid user.
     """
-    default_keyword_permission = '/sudo/admin/companyinterest/{perm}'
+
+    default_keyword_permission = "/sudo/admin/companyinterest/{perm}"
     safe_methods = [CREATE]
-    authentication_map = {
-        CREATE: False,
-    }
+    authentication_map = {CREATE: False}

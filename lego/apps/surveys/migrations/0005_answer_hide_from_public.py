@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('surveys', '0004_survey_token'),
-    ]
+    dependencies = [("surveys", "0004_survey_token")]
 
     operations = [
         migrations.AddField(
-            model_name='answer',
-            name='hide_from_public',
+            model_name="answer",
+            name="hide_from_public",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

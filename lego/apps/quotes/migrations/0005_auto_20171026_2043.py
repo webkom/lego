@@ -9,14 +9,12 @@ import lego.apps.content.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('quotes', '0004_auto_20171026_2017'),
-    ]
+    dependencies = [("quotes", "0004_auto_20171026_2017")]
 
     operations = [
         migrations.AlterField(
-            model_name='quote',
-            name='text',
+            model_name="quote",
+            name="text",
             field=lego.apps.content.fields.ContentField(allow_images=False),
-        ),
+        )
     ]

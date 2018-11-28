@@ -7,19 +7,20 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('meetings', '0001_initial'),
-    ]
+    dependencies = [("meetings", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='meetinginvitation',
-            name='status',
+            model_name="meetinginvitation",
+            name="status",
             field=models.CharField(
                 choices=[
-                    ('NO_ANSWER', 'NO_ANSWER'), ('ATTENDING', 'ATTENDING'),
-                    ('NOT_ATTENDING', 'NOT_ATTENDING')
-                ], default='NO_ANSWER', max_length=50
+                    ("NO_ANSWER", "NO_ANSWER"),
+                    ("ATTENDING", "ATTENDING"),
+                    ("NOT_ATTENDING", "NOT_ATTENDING"),
+                ],
+                default="NO_ANSWER",
+                max_length=50,
             ),
-        ),
+        )
     ]

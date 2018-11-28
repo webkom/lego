@@ -15,6 +15,7 @@ class SlugModel(models.Model):
     which is defined by setting self.slug_field to the name
     of the field.
     """
+
     slug_length = 50
     slug_field = None
     slug = models.SlugField(null=True, unique=True, max_length=slug_length)
@@ -24,15 +25,15 @@ class SlugModel(models.Model):
 
     def generate_slug(self):
         content = getattr(self, self.slug_field)
-        slug = slugify(f'{self.pk}-{content}')
+        slug = slugify(f"{self.pk}-{content}")
         if len(slug) <= self.slug_length:
             return slug
 
-        if slug[self.slug_length] == '-':
-            return slug[0:self.slug_length]
+        if slug[self.slug_length] == "-":
+            return slug[0 : self.slug_length]
 
-        slug = slug[0:self.slug_length]
-        slice_index = slug.rindex('-')
+        slug = slug[0 : self.slug_length]
+        slice_index = slug.rindex("-")
         return slug[0:slice_index]
 
     def save(self, *args, **kwargs):
@@ -52,16 +53,20 @@ class Content(SlugModel):
     tags = ManyToManyField(Tag, blank=True)
     pinned = models.BooleanField(default=False)
 
-    slug_field = 'title'
+    slug_field = "title"
 
     @property
     def reactions_grouped(self):
         grouped = {}
         for reaction in self.reactions.all():
             if reaction.type_id not in grouped:
-                grouped[reaction.type_id] = {'type': reaction.type_id, 'count': 0, 'users': []}
-            grouped[reaction.type_id]['count'] += 1
-            grouped[reaction.type_id]['users'].append(reaction.created_by)
+                grouped[reaction.type_id] = {
+                    "type": reaction.type_id,
+                    "count": 0,
+                    "users": [],
+                }
+            grouped[reaction.type_id]["count"] += 1
+            grouped[reaction.type_id]["users"].append(reaction.created_by)
         return grouped.values()
 
     class Meta:
@@ -72,4 +77,4 @@ class Content(SlugModel):
 
     @property
     def comment_target(self):
-        return f'{self._meta.app_label}.{self._meta.model_name}-{self.pk}'
+        return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"

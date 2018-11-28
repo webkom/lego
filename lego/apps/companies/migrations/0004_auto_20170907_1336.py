@@ -7,19 +7,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('companies', '0003_auto_20170830_1646'),
-    ]
+    dependencies = [("companies", "0003_auto_20170830_1646")]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='active',
-            field=models.BooleanField(default=True),
+            model_name="company", name="active", field=models.BooleanField(default=True)
         ),
         migrations.AddField(
-            model_name='company',
-            name='admin_comment',
+            model_name="company",
+            name="admin_comment",
             field=models.CharField(blank=True, max_length=100),
         ),
     ]

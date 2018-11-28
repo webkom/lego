@@ -20,33 +20,33 @@ class Command(BaseCommand):
 
     (not necessaily applied though)
     """
-    help = 'Detect if any apps have missing migration files'
+
+    help = "Detect if any apps have missing migration files"
 
     def run(self, *args, **kwargs):
 
         changed = set()
 
-        log.info('Checking DB migrations')
+        log.info("Checking DB migrations")
         for db in settings.DATABASES.keys():
 
             try:
                 executor = MigrationExecutor(connections[db])
             except OperationalError:
-                log.critical('Unable to check migrations, cannot connect to database')
+                log.critical("Unable to check migrations, cannot connect to database")
                 sys.exit(1)
 
             autodetector = MigrationAutodetector(
-                executor.loader.project_state(),
-                ProjectState.from_apps(apps),
+                executor.loader.project_state(), ProjectState.from_apps(apps)
             )
 
             changed.update(autodetector.changes(graph=executor.loader.graph).keys())
 
         if changed:
             log.critical(
-                'Apps with model changes but no corresponding '
-                f'migration file: {list(changed)}'
+                "Apps with model changes but no corresponding "
+                f"migration file: {list(changed)}"
             )
             sys.exit(1)
         else:
-            log.info('All migration files present')
+            log.info("All migration files present")

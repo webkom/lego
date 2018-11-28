@@ -7,18 +7,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0008_event_pinned'),
-    ]
+    dependencies = [("events", "0008_event_pinned")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='pool',
-            name='unregistration_deadline',
-        ),
+        migrations.RemoveField(model_name="pool", name="unregistration_deadline"),
         migrations.AddField(
-            model_name='event',
-            name='unregistration_deadline',
+            model_name="event",
+            name="unregistration_deadline",
             field=models.DateTimeField(null=True),
         ),
     ]

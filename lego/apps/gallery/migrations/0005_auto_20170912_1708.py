@@ -8,14 +8,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gallery', '0004_auto_20170910_2120'),
-    ]
+    dependencies = [("gallery", "0004_auto_20170910_2120")]
 
     operations = [
         migrations.AlterField(
-            model_name='gallerypicture',
-            name='taggees',
+            model_name="gallerypicture",
+            name="taggees",
             field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
-        ),
+        )
     ]

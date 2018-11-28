@@ -12,20 +12,25 @@ from lego.apps.permissions.utils import get_permission_handler
 
 class FrontpageViewSet(viewsets.ViewSet):
 
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.AllowAny,)
 
     def get_serializer_context(self):
         """
         Extra context provided to the serializer class.
         """
-        return {'request': self.request, 'format': self.format_kwarg, 'view': self}
+        return {"request": self.request, "format": self.format_kwarg, "view": self}
 
     def list(self, request):
         articles_handler = get_permission_handler(Article)
-        articles_queryset_base = Article.objects.all()\
-            .order_by('-pinned', '-created_at').prefetch_related('tags')
+        articles_queryset_base = (
+            Article.objects.all()
+            .order_by("-pinned", "-created_at")
+            .prefetch_related("tags")
+        )
 
-        if articles_handler.has_perm(request.user, LIST, queryset=articles_queryset_base):
+        if articles_handler.has_perm(
+            request.user, LIST, queryset=articles_queryset_base
+        ):
             queryset_articles = articles_queryset_base
         else:
             queryset_articles = articles_handler.filter_queryset(
@@ -33,14 +38,19 @@ class FrontpageViewSet(viewsets.ViewSet):
             )
 
         events_handler = get_permission_handler(Event)
-        queryset_events_base = Event.objects.all()\
-            .filter(end_time__gt=timezone.now()).order_by('-pinned', 'start_time', 'id')\
-            .prefetch_related('pools', 'pools__registrations', 'company', 'tags')
+        queryset_events_base = (
+            Event.objects.all()
+            .filter(end_time__gt=timezone.now())
+            .order_by("-pinned", "start_time", "id")
+            .prefetch_related("pools", "pools__registrations", "company", "tags")
+        )
 
         if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
             queryset_events = queryset_events_base
         else:
-            queryset_events = events_handler.filter_queryset(request.user, queryset_events_base)
+            queryset_events = events_handler.filter_queryset(
+                request.user, queryset_events_base
+            )
 
         articles = PublicArticleSerializer(
             queryset_articles[:10], context=self.get_serializer_context(), many=True
@@ -48,9 +58,6 @@ class FrontpageViewSet(viewsets.ViewSet):
         events = EventSearchSerializer(
             queryset_events, context=self.get_serializer_context(), many=True
         ).data
-        ret = {
-            'articles': articles,
-            'events': events,
-        }
+        ret = {"articles": articles, "events": events}
 
         return Response(ret)

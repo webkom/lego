@@ -1,4 +1,5 @@
 from django.utils.encoding import force_text
+
 from elasticsearch.helpers import BulkIndexError
 from structlog import get_logger
 
@@ -28,12 +29,12 @@ class SearchIndex:
         Get the queryset that should be indexed. Override this method or set a queryset attribute
         on this class.
         """
-        queryset = getattr(self, 'queryset')
+        queryset = getattr(self, "queryset")
 
         if queryset is None:
             raise NotImplementedError(
-                f'You must provide a \'get_qyeryset\' method or queryset attribute for the {self} '
-                f'index.'
+                f"You must provide a 'get_qyeryset' method or queryset attribute for the {self} "
+                f"index."
             )
         return queryset
 
@@ -49,11 +50,11 @@ class SearchIndex:
         Override this method or set the serializer_class attribute on the class to define the
         serializer.
         """
-        serializer_class = getattr(self, 'serializer_class')
+        serializer_class = getattr(self, "serializer_class")
         if serializer_class is None:
             raise NotImplementedError(
-                'You must provide a \'get_serializer_class\' function or a '
-                f'serializer_class attribute for the {self} index'
+                "You must provide a 'get_serializer_class' function or a "
+                f"serializer_class attribute for the {self} index"
             )
         return serializer_class
 
@@ -62,18 +63,18 @@ class SearchIndex:
         Returns an array of allowed fields to filter on. Returns a empty list by default. Override
         this function or set the filter_fields variable on the class to change this.
         """
-        filter_fields = getattr(self, 'filter_fields', [])
+        filter_fields = getattr(self, "filter_fields", [])
         return filter_fields
 
     def get_result_fields(self):
         """
         Returns a list of fields attached to the search result.
         """
-        result_fields = getattr(self, 'result_fields')
+        result_fields = getattr(self, "result_fields")
         if result_fields is None:
             raise NotImplementedError(
-                'You must provide a \'get_result_fields\' function or a '
-                f'result_fields attribute for the {self} index'
+                "You must provide a 'get_result_fields' function or a "
+                f"result_fields attribute for the {self} index"
             )
         return result_fields
 
@@ -81,14 +82,14 @@ class SearchIndex:
         """
         Returns a list of fields attached to the autocomplete result.
         """
-        result_fields = getattr(self, 'autocomplete_result_fields', [])
+        result_fields = getattr(self, "autocomplete_result_fields", [])
         return result_fields
 
     def get_index_filter_fields(self):
         """
         Returns True if we want to index filter fields. Defaults to False.
         """
-        index_filter_fields = getattr(self, 'index_filter_fields', False)
+        index_filter_fields = getattr(self, "index_filter_fields", False)
         return index_filter_fields
 
     def get_serializer(self, *args, **kwargs):
@@ -127,15 +128,15 @@ class SearchIndex:
             return {key: get_func(key) for key in filter_fields}
 
         prepared_instance = {
-            'content_type': force_text(instance_to_content_type_string(instance)),
-            'pk': force_text(instance.pk),
-            'data': {
-                'autocomplete': self.get_autocomplete(instance),
-                'filters': {k: v
-                            for k, v in get_filter_data(data).items() if v or not v == ''},
-                'fields': {k: v
-                           for k, v in data.items() if v or not v == ''}
-            }
+            "content_type": force_text(instance_to_content_type_string(instance)),
+            "pk": force_text(instance.pk),
+            "data": {
+                "autocomplete": self.get_autocomplete(instance),
+                "filters": {
+                    k: v for k, v in get_filter_data(data).items() if v or not v == ""
+                },
+                "fields": {k: v for k, v in data.items() if v or not v == ""},
+            },
         }
 
         return prepared_instance
@@ -151,15 +152,17 @@ class SearchIndex:
                 return
 
             try:
-                while start < queryset.order_by('pk').last().pk:
-                    func(queryset.filter(pk__gt=start, pk__lte=start + chunk).iterator())
+                while start < queryset.order_by("pk").last().pk:
+                    func(
+                        queryset.filter(pk__gt=start, pk__lte=start + chunk).iterator()
+                    )
                     start += chunk
             except TypeError:
                 func(queryset.all().iterator())
 
         def prepare(result):
             prepared = self.prepare(result)
-            return prepared['content_type'], prepared['pk'], prepared['data']
+            return prepared["content_type"], prepared["pk"], prepared["data"]
 
         def update_bulk(result_set):
             try:
@@ -174,7 +177,7 @@ class SearchIndex:
         Update a given instance in the index.
         """
         if not self.should_update(instance):
-            log.info('search_instance_update_rejected')
+            log.info("search_instance_update_rejected")
             return
 
         self.get_backend().update(**self.prepare(instance))
@@ -187,5 +190,6 @@ class SearchIndex:
         from lego.utils.content_types import instance_to_content_type_string
 
         self.get_backend().remove(
-            content_type=instance_to_content_type_string(self.get_model()), pk=force_text(pk)
+            content_type=instance_to_content_type_string(self.get_model()),
+            pk=force_text(pk),
         )

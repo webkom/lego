@@ -3,12 +3,12 @@ from django.core import signing
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from structlog import get_logger
 
 from lego.apps.notifications.constants import EMAIL, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.users.models import AbakusGroup
 from lego.utils.models import BasisModel
+from structlog import get_logger
 
 log = get_logger()
 
@@ -25,7 +25,7 @@ class RestrictedMail(BasisModel):
     tuple ([users], [raw_addresses])
     """
 
-    MANY_TO_MANY_RELATIONS = ['users', 'groups', 'events', 'meetings']
+    MANY_TO_MANY_RELATIONS = ["users", "groups", "events", "meetings"]
 
     from_address = models.EmailField(db_index=True)
     hide_sender = models.BooleanField(default=False)
@@ -33,22 +33,22 @@ class RestrictedMail(BasisModel):
     used = models.DateTimeField(null=True)
     weekly = models.BooleanField(default=False)
 
-    users = models.ManyToManyField('users.User', blank=True)
-    groups = models.ManyToManyField('users.AbakusGroup', blank=True)
-    events = models.ManyToManyField('events.Event', blank=True)
-    meetings = models.ManyToManyField('meetings.Meeting', blank=True)
+    users = models.ManyToManyField("users.User", blank=True)
+    groups = models.ManyToManyField("users.AbakusGroup", blank=True)
+    events = models.ManyToManyField("events.Event", blank=True)
+    meetings = models.ManyToManyField("meetings.Meeting", blank=True)
     raw_addresses = ArrayField(models.EmailField(), null=True)
 
     @classmethod
     def get_restricted_mail(cls, from_address, token):
         try:
-            return cls.objects\
-                .prefetch_related(*cls.MANY_TO_MANY_RELATIONS)\
-                .get(used=None, from_address=from_address.lower(), token=token)
+            return cls.objects.prefetch_related(*cls.MANY_TO_MANY_RELATIONS).get(
+                used=None, from_address=from_address.lower(), token=token
+            )
         except cls.DoesNotExist:
             return None
         except cls.MultipleObjectsReturned:
-            log.exception('multiple_restricted_mails_returned')
+            log.exception("multiple_restricted_mails_returned")
             return None
 
     def lookup_recipients(self):
@@ -61,14 +61,14 @@ class RestrictedMail(BasisModel):
         for relation_name in self.MANY_TO_MANY_RELATIONS:
             relation = getattr(self, relation_name)
             for instance in relation.all():
-                restricted_lookup = getattr(instance, 'restricted_lookup', None)
+                restricted_lookup = getattr(instance, "restricted_lookup", None)
                 if restricted_lookup:
                     users, raw_addresses = restricted_lookup()
                     all_users += list(users)
                     all_raw_addresses += list(raw_addresses)
 
         if self.weekly:
-            all_users += (AbakusGroup.objects.get(name="Students").restricted_lookup()[0])
+            all_users += AbakusGroup.objects.get(name="Students").restricted_lookup()[0]
 
         recipients = set(all_raw_addresses)
 

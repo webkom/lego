@@ -14,9 +14,6 @@ def notify_group(group, message):
     """
     channel_layer = get_channel_layer()
     payload = json.dumps(camelize(message))
-    return AsyncToSync(channel_layer.group_send
-                       )(group,
-                         {
-                             'type': 'notification.message',
-                             'text': payload
-                         })
+    return AsyncToSync(channel_layer.group_send)(
+        group, {"type": "notification.message", "text": payload}
+    )

@@ -6,8 +6,6 @@ from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.utils import timezone
-from mptt.fields import TreeForeignKey
-from mptt.models import MPTTModel
 
 from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
@@ -15,23 +13,32 @@ from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
 from lego.apps.users.managers import (
-    AbakusGroupManager, AbakusGroupManagerWithoutText, AbakusUserManager, MembershipManager,
-    UserPenaltyManager
+    AbakusGroupManager,
+    AbakusGroupManagerWithoutText,
+    AbakusUserManager,
+    MembershipManager,
+    UserPenaltyManager,
 )
 from lego.apps.users.permissions import (
-    AbakusGroupPermissionHandler, MembershipPermissionHandler, UserPermissionHandler
+    AbakusGroupPermissionHandler,
+    MembershipPermissionHandler,
+    UserPermissionHandler,
 )
 from lego.utils.decorators import abakus_cached_property
 from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
 from .validators import email_blacklist_validator, username_validator
 
 
 class MembershipHistory(models.Model):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    abakus_group = models.ForeignKey('users.AbakusGroup', on_delete=models.CASCADE)
-    role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
+    role = models.CharField(
+        max_length=30, choices=constants.ROLES, default=constants.MEMBER
+    )
     start_date = models.DateField(null=True)
     end_date = models.DateField()
 
@@ -39,27 +46,32 @@ class MembershipHistory(models.Model):
 class Membership(BasisModel):
     objects = MembershipManager()
 
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    abakus_group = models.ForeignKey('users.AbakusGroup', on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
 
-    role = models.CharField(max_length=30, choices=constants.ROLES, default=constants.MEMBER)
+    role = models.CharField(
+        max_length=30, choices=constants.ROLES, default=constants.MEMBER
+    )
     is_active = models.BooleanField(default=True, db_index=True)
     email_lists_enabled = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ('user', 'abakus_group')
+        unique_together = ("user", "abakus_group")
         permission_handler = MembershipPermissionHandler()
 
     def delete(self, using=None, force=False):
         with transaction.atomic():
             MembershipHistory.objects.create(
-                user=self.user, abakus_group=self.abakus_group, role=self.role,
-                start_date=self.created_at, end_date=timezone.now()
+                user=self.user,
+                abakus_group=self.abakus_group,
+                role=self.role,
+                start_date=self.created_at,
+                end_date=timezone.now(),
             )
             super(Membership, self).delete(using=using, force=True)
 
     def __str__(self):
-        return f'{self.user} is {self.get_role_display()} in {self.abakus_group}'
+        return f"{self.user} is {self.get_role_display()} in {self.abakus_group}"
 
 
 class AbakusGroup(MPTTModel, PersistentModel):
@@ -67,9 +79,13 @@ class AbakusGroup(MPTTModel, PersistentModel):
     description = models.CharField(blank=True, max_length=200)
     contact_email = models.EmailField(blank=True)
     parent = TreeForeignKey(
-        'self', blank=True, null=True, related_name='children', on_delete=models.SET_NULL
+        "self",
+        blank=True,
+        null=True,
+        related_name="children",
+        on_delete=models.SET_NULL,
     )
-    logo = FileField(related_name='group_pictures')
+    logo = FileField(related_name="group_pictures")
     type = models.CharField(
         max_length=10, choices=constants.GROUP_TYPES, default=constants.GROUP_OTHER
     )
@@ -77,7 +93,8 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     permissions = ArrayField(
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
-        verbose_name='permissions', default=list
+        verbose_name="permissions",
+        default=list,
     )
 
     objects = AbakusGroupManagerWithoutText()
@@ -103,7 +120,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     def leader(self):
         """Assume there is only one leader, or that we don't care about which leader we get
         if there is multiple leaders"""
-        membership = self.memberships.filter(role='leader').first()
+        membership = self.memberships.filter(role="leader").first()
         if membership:
             return membership.user
         return None
@@ -120,14 +137,11 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
     @abakus_cached_property
     def number_of_users(self):
-        return self.memberships.distinct('user').count()
+        return self.memberships.distinct("user").count()
 
     def add_user(self, user, **kwargs):
         membership, _ = Membership.objects.update_or_create(
-            user=user, abakus_group=self, defaults={
-                "deleted": False,
-                **kwargs
-            }
+            user=user, abakus_group=self, defaults={"deleted": False, **kwargs}
         )
         return membership
 
@@ -136,7 +150,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         membership.delete()
 
     def natural_key(self):
-        return self.name,
+        return (self.name,)
 
     def restricted_lookup(self):
         """
@@ -153,15 +167,19 @@ class AbakusGroup(MPTTModel, PersistentModel):
 class PermissionsMixin(CachedModel):
 
     abakus_groups = models.ManyToManyField(
-        AbakusGroup, through='Membership', through_fields=('user', 'abakus_group'), blank=True,
-        help_text='The groups this user belongs to. A user will '
-        'get all permissions granted to each of their groups.', related_name='users',
-        related_query_name='user'
+        AbakusGroup,
+        through="Membership",
+        through_fields=("user", "abakus_group"),
+        blank=True,
+        help_text="The groups this user belongs to. A user will "
+        "get all permissions granted to each of their groups.",
+        related_name="users",
+        related_query_name="user",
     )
 
     @abakus_cached_property
     def is_superuser(self):
-        return '/sudo/' in self.get_all_permissions()
+        return "/sudo/" in self.get_all_permissions()
 
     is_staff = is_superuser
 
@@ -175,7 +193,9 @@ class PermissionsMixin(CachedModel):
     @property
     def is_abakom_member(self):
         # from first_true @ https://docs.python.org/3/library/itertools.html
-        return bool(next(filter(lambda group: group.is_committee, self.all_groups), False))
+        return bool(
+            next(filter(lambda group: group.is_committee, self.all_groups), False)
+        )
 
     @property
     def has_grade_group(self):
@@ -194,27 +214,22 @@ class PermissionsMixin(CachedModel):
     @abakus_cached_property
     def memberships(self):
         return Membership.objects.filter(
-            abakus_group__deleted=False,
-            is_active=True,
-            user=self,
+            abakus_group__deleted=False, is_active=True, user=self
         )
 
     @abakus_cached_property
     def past_memberships(self):
         return MembershipHistory.objects.filter(
-            user=self,
-            abakus_group__deleted=False,
-        ).select_related('abakus_group')
+            user=self, abakus_group__deleted=False
+        ).select_related("abakus_group")
 
     @abakus_cached_property
     def all_groups(self):
         groups = set()
 
         memberships = self.memberships.filter(
-            abakus_group__deleted=False,
-            deleted=False,
-            is_active=True,
-        ).select_related('abakus_group')
+            abakus_group__deleted=False, deleted=False, is_active=True
+        ).select_related("abakus_group")
 
         for membership in memberships:
             if membership.abakus_group not in groups:
@@ -224,49 +239,55 @@ class PermissionsMixin(CachedModel):
         return list(groups)
 
 
-class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, PermissionsMixin):
+class User(
+    PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, PermissionsMixin
+):
     """
     Abakus user model, uses AbstractBaseUser because we use a custom PermissionsMixin.
     """
+
     username = models.CharField(
-        max_length=50, unique=True, db_index=True,
-        help_text='Required. 50 characters or fewer. Letters, digits and _ only.',
-        validators=[username_validator, ReservedNameValidator()], error_messages={
-            'unique': 'A user with that username already exists.',
-        }
+        max_length=50,
+        unique=True,
+        db_index=True,
+        help_text="Required. 50 characters or fewer. Letters, digits and _ only.",
+        validators=[username_validator, ReservedNameValidator()],
+        error_messages={"unique": "A user with that username already exists."},
     )
     student_username = models.CharField(
-        max_length=30, unique=True, null=True,
-        help_text='30 characters or fewer. Letters, digits and _ only.',
-        validators=[username_validator, ReservedNameValidator()], error_messages={
-            'unique': 'A user has already verified that student username.',
-        }
+        max_length=30,
+        unique=True,
+        null=True,
+        help_text="30 characters or fewer. Letters, digits and _ only.",
+        validators=[username_validator, ReservedNameValidator()],
+        error_messages={"unique": "A user has already verified that student username."},
     )
-    first_name = models.CharField('first name', max_length=50, blank=True)
-    last_name = models.CharField('last name', max_length=30, blank=True)
-    allergies = models.CharField('allergies', max_length=100, blank=True)
+    first_name = models.CharField("first name", max_length=50, blank=True)
+    last_name = models.CharField("last name", max_length=30, blank=True)
+    allergies = models.CharField("allergies", max_length=100, blank=True)
     email = models.EmailField(
-        unique=True, validators=[email_blacklist_validator], error_messages={
-            'unique': 'A user with that email already exists.',
-        }
+        unique=True,
+        validators=[email_blacklist_validator],
+        error_messages={"unique": "A user with that email already exists."},
     )
     email_lists_enabled = models.BooleanField(default=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
-    picture = FileField(related_name='user_pictures')
+    picture = FileField(related_name="user_pictures")
     is_active = models.BooleanField(
-        default=True, help_text='Designates whether this user should be treated as '
-        'active. Unselect this instead of deleting accounts.'
+        default=True,
+        help_text="Designates whether this user should be treated as "
+        "active. Unselect this instead of deleting accounts.",
     )
-    date_joined = models.DateTimeField('date joined', default=timezone.now)
+    date_joined = models.DateTimeField("date joined", default=timezone.now)
 
-    date_bumped = models.DateTimeField('date bumped', null=True, default=None)
+    date_bumped = models.DateTimeField("date bumped", null=True, default=None)
 
     objects = AbakusUserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
 
-    backend = 'lego.apps.permissions.backends.AbakusPermissionBackend'
+    backend = "lego.apps.permissions.backends.AbakusPermissionBackend"
 
     class Meta:
         permission_handler = UserPermissionHandler()
@@ -276,15 +297,15 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         super(User, self).clean()
 
     def get_full_name(self):
-        return f'{self.first_name} {self.last_name}'.strip()
+        return f"{self.first_name} {self.last_name}".strip()
 
     def get_default_picture(self):
         if self.gender == constants.MALE:
-            return 'default_male_avatar.png'
+            return "default_male_avatar.png"
         elif self.gender == constants.FEMALE:
-            return 'default_female_avatar.png'
+            return "default_female_avatar.png"
         else:
-            return 'default_other_avatar.png'
+            return "default_other_avatar.png"
 
     @property
     def full_name(self):
@@ -322,12 +343,15 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
         return self.first_name
 
     def natural_key(self):
-        return self.username,
+        return (self.username,)
 
     def number_of_penalties(self):
         # Returns the total penalty weight for this user
-        count = Penalty.objects.valid().filter(user=self)\
-            .aggregate(models.Sum('weight'))['weight__sum']
+        count = (
+            Penalty.objects.valid()
+            .filter(user=self)
+            .aggregate(models.Sum("weight"))["weight__sum"]
+        )
         return count or 0
 
     def restricted_lookup(self):
@@ -342,34 +366,43 @@ class User(PasswordHashUser, GSuiteAddress, AbstractBaseUser, PersistentModel, P
     def unanswered_surveys(self):
         from lego.apps.surveys.models import Survey
         from lego.apps.events.models import Registration
+
         registrations = Registration.objects.filter(user_id=self.id, presence=PRESENT)
-        unanswered_surveys = Survey.objects.filter(
-            event__registrations__in=registrations, active_from__lte=timezone.now(),
-            template_type__isnull=True
-        ).exclude(submissions__user__in=[self]
-                  ).prefetch_related('event__registrations', 'submissions__user')
-        return list(unanswered_surveys.values_list('id', flat=True))
+        unanswered_surveys = (
+            Survey.objects.filter(
+                event__registrations__in=registrations,
+                active_from__lte=timezone.now(),
+                template_type__isnull=True,
+            )
+            .exclude(submissions__user__in=[self])
+            .prefetch_related("event__registrations", "submissions__user")
+        )
+        return list(unanswered_surveys.values_list("id", flat=True))
 
 
 class Penalty(BasisModel):
 
-    user = models.ForeignKey(User, related_name='penalties', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="penalties", on_delete=models.CASCADE)
     reason = models.CharField(max_length=1000)
     weight = models.IntegerField(default=1)
     source_event = models.ForeignKey(
-        'events.Event', related_name='penalties', on_delete=models.CASCADE
+        "events.Event", related_name="penalties", on_delete=models.CASCADE
     )
 
     objects = UserPenaltyManager()
 
     def expires(self):
-        dt = Penalty.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
+        dt = Penalty.penalty_offset(self.created_at) - (
+            timezone.now() - self.created_at
+        )
         return dt.days
 
     @property
     def exact_expiration(self):
         """ Returns the exact time of expiration """
-        dt = Penalty.penalty_offset(self.created_at) - (timezone.now() - self.created_at)
+        dt = Penalty.penalty_offset(self.created_at) - (
+            timezone.now() - self.created_at
+        )
         return timezone.now() + dt
 
     @staticmethod
@@ -394,12 +427,8 @@ class Penalty(BasisModel):
     def ignore_date(date):
         summer_from, summer_to = settings.PENALTY_IGNORE_SUMMER
         winter_from, winter_to = settings.PENALTY_IGNORE_WINTER
-        if summer_from \
-                < (date.month, date.day) \
-                < summer_to:
+        if summer_from < (date.month, date.day) < summer_to:
             return True
-        elif winter_to \
-                < (date.month, date.day) \
-                <= winter_from:
+        elif winter_to < (date.month, date.day) <= winter_from:
             return False
         return True

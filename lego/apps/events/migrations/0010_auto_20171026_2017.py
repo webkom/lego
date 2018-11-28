@@ -9,18 +9,13 @@ import lego.apps.content.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0009_auto_20171023_0847'),
-    ]
+    dependencies = [("events", "0009_auto_20171023_0847")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='images',
-        ),
+        migrations.RemoveField(model_name="event", name="images"),
         migrations.AlterField(
-            model_name='event',
-            name='text',
+            model_name="event",
+            name="text",
             field=lego.apps.content.fields.ContentField(allow_images=False, blank=True),
         ),
     ]

@@ -7,53 +7,65 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('joblistings', '0004_auto_20171026_2043'),
-    ]
+    dependencies = [("joblistings", "0004_auto_20171026_2043")]
 
     operations = [
         migrations.AlterField(
-            model_name='joblisting',
-            name='created_by',
+            model_name="joblisting",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='joblisting_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="joblisting_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterField(
-            model_name='joblisting',
-            name='responsible',
+            model_name="joblisting",
+            name="responsible",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='joblistings',
-                to='companies.CompanyContact'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="joblistings",
+                to="companies.CompanyContact",
             ),
         ),
         migrations.AlterField(
-            model_name='joblisting',
-            name='updated_by',
+            model_name="joblisting",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='joblisting_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="joblisting_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterField(
-            model_name='workplace',
-            name='created_by',
+            model_name="workplace",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='workplace_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="workplace_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterField(
-            model_name='workplace',
-            name='updated_by',
+            model_name="workplace",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='workplace_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="workplace_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

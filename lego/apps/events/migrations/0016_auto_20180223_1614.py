@@ -6,17 +6,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0015_event_responsible_group'),
-    ]
+    dependencies = [("events", "0015_event_responsible_group")]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='responsible_group',
+            model_name="event",
+            name="responsible_group",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='events',
-                to='users.AbakusGroup'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="events",
+                to="users.AbakusGroup",
             ),
-        ),
+        )
     ]

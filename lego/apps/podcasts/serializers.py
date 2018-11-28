@@ -14,7 +14,7 @@ class PodcastSerializer(BasisModelSerializer):
 
     class Meta:
         model = Podcast
-        fields = ('id', 'source', 'created_at', 'description', 'authors', 'thanks')
+        fields = ("id", "source", "created_at", "description", "authors", "thanks")
 
 
 class DetailedPodcastSerializer(BasisModelSerializer):
@@ -25,7 +25,7 @@ class DetailedPodcastSerializer(BasisModelSerializer):
 
     class Meta:
         model = Podcast
-        fields = ('id', 'source', 'created_at', 'description', 'authors', 'thanks')
+        fields = ("id", "source", "created_at", "description", "authors", "thanks")
 
 
 class PodcastCreateAndUpdateSerializer(BasisModelSerializer):
@@ -36,4 +36,4 @@ class PodcastCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Podcast
-        fields = ('id', 'source', 'description', 'authors', 'thanks')
+        fields = ("id", "source", "description", "authors", "thanks")

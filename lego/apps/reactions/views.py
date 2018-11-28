@@ -6,13 +6,17 @@ from lego.apps.reactions.serializers import ReactionSerializer, ReactionTypeSeri
 
 
 class ReactionTypeViewSet(
-    AllowedPermissionsMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
+    AllowedPermissionsMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
 ):
     queryset = ReactionType.objects.all()
     serializer_class = ReactionTypeSerializer
 
 
-class ReactionViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class ReactionViewSet(
+    mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     queryset = Reaction.objects.all()
     serializer_class = ReactionSerializer

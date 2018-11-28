@@ -1,6 +1,7 @@
 from django.conf import settings
-from ipware.ip import get_ip
 from rest_framework import permissions
+
+from ipware.ip import get_ip
 
 
 class HealthPermission(permissions.BasePermission):

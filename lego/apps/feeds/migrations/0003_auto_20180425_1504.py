@@ -5,31 +5,24 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feeds', '0002_auto_20180411_2018'),
-    ]
+    dependencies = [("feeds", "0002_auto_20180411_2018")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='notificationfeed',
-            options={'ordering': ('-id', )},
+            name="notificationfeed", options={"ordering": ("-id",)}
         ),
         migrations.AlterModelOptions(
-            name='personalfeed',
-            options={'ordering': ('-id', )},
+            name="personalfeed", options={"ordering": ("-id",)}
         ),
-        migrations.AlterModelOptions(
-            name='userfeed',
-            options={'ordering': ('-id', )},
-        ),
+        migrations.AlterModelOptions(name="userfeed", options={"ordering": ("-id",)}),
         migrations.AlterField(
-            model_name='timelinestorage',
-            name='activity_id',
+            model_name="timelinestorage",
+            name="activity_id",
             field=models.CharField(db_index=True, max_length=48),
         ),
         migrations.AlterField(
-            model_name='timelinestorage',
-            name='aggregated_id',
+            model_name="timelinestorage",
+            name="aggregated_id",
             field=models.PositiveIntegerField(db_index=True),
         ),
     ]

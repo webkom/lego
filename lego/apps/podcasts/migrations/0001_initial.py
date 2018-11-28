@@ -10,50 +10,62 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Podcast',
+            name="Podcast",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('source', models.CharField(max_length=300)),
-                ('title', models.CharField(max_length=300)),
-                ('description', models.TextField()),
                 (
-                    'created_by',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("source", models.CharField(max_length=300)),
+                ("title", models.CharField(max_length=300)),
+                ("description", models.TextField()),
+                (
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name='podcast_created', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="podcast_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'updated_by',
+                    "updated_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name='podcast_updated', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="podcast_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-        ),
+        )
     ]

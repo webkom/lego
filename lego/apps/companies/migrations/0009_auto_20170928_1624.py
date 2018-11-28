@@ -11,33 +11,39 @@ import lego.apps.files.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('files', '0002_file_user'),
-        ('companies', '0008_merge_20170922_1353'),
+        ("files", "0002_file_user"),
+        ("companies", "0008_merge_20170922_1353"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='semesterstatus',
-            name='evaluation',
+            model_name="semesterstatus",
+            name="evaluation",
             field=lego.apps.files.models.FileField(
-                null=True, on_delete=django.db.models.deletion.SET_NULL,
-                related_name='semester_status_evaluations', to='files.File'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="semester_status_evaluations",
+                to="files.File",
             ),
         ),
         migrations.AddField(
-            model_name='semesterstatus',
-            name='statistics',
+            model_name="semesterstatus",
+            name="statistics",
             field=lego.apps.files.models.FileField(
-                null=True, on_delete=django.db.models.deletion.SET_NULL,
-                related_name='semester_status_statistics', to='files.File'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="semester_status_statistics",
+                to="files.File",
             ),
         ),
         migrations.AlterField(
-            model_name='semesterstatus',
-            name='contract',
+            model_name="semesterstatus",
+            name="contract",
             field=lego.apps.files.models.FileField(
-                null=True, on_delete=django.db.models.deletion.SET_NULL,
-                related_name='semester_status_contracts', to='files.File'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="semester_status_contracts",
+                to="files.File",
             ),
         ),
     ]

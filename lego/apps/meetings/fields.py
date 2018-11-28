@@ -6,7 +6,7 @@ class MeetingField(serializers.PrimaryKeyRelatedField):
         return False
 
     def to_representation(self, value):
-        return {'id': value.id, 'title': value.title}
+        return {"id": value.id, "title": value.title}
 
 
 class MeetingListField(serializers.ManyRelatedField):
@@ -14,5 +14,5 @@ class MeetingListField(serializers.ManyRelatedField):
         if field_kwargs is None:
             field_kwargs = {}
 
-        kwargs['child_relation'] = MeetingField(**field_kwargs)
+        kwargs["child_relation"] = MeetingField(**field_kwargs)
         super().__init__(**kwargs)

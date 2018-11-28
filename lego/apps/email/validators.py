@@ -6,10 +6,10 @@ from lego.utils.validators import ReservedNameValidator
 
 def validate_email_address(email_address):
     if email_address.email != email_address.email.lower():
-        raise ValidationError('Email is not lowercased')
+        raise ValidationError("Email is not lowercased")
 
     if email_address.is_assigned():
-        raise ValidationError('The address is already assigned')
+        raise ValidationError("The address is already assigned")
 
 
 def validate_email_address_content(email_address):

@@ -6,7 +6,7 @@ class ApplicationField(serializers.PrimaryKeyRelatedField):
         return False
 
     def to_representation(self, value):
-        return {'id': value.id, 'name': value.name, 'description': value.description}
+        return {"id": value.id, "name": value.name, "description": value.description}
 
 
 class ProtectedTokenField(serializers.CharField):
@@ -16,6 +16,6 @@ class ProtectedTokenField(serializers.CharField):
     """
 
     def to_representation(self, value):
-        start_token = '*' * 20
+        start_token = "*" * 20
         end_token = value[:10]
-        return f'{start_token}{end_token}'
+        return f"{start_token}{end_token}"

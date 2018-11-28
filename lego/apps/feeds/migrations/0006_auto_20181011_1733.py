@@ -6,24 +6,22 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feeds', '0005_auto_20180425_1834'),
-    ]
+    dependencies = [("feeds", "0005_auto_20180425_1834")]
 
     operations = [
         migrations.AlterField(
-            model_name='notificationfeed',
-            name='activity_store',
+            model_name="notificationfeed",
+            name="activity_store",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=list),
         ),
         migrations.AlterField(
-            model_name='personalfeed',
-            name='activity_store',
+            model_name="personalfeed",
+            name="activity_store",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=list),
         ),
         migrations.AlterField(
-            model_name='userfeed',
-            name='activity_store',
+            model_name="userfeed",
+            name="activity_store",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=list),
         ),
     ]

@@ -3,8 +3,8 @@ from datetime import timedelta
 
 from django.urls import reverse
 from django.utils import timezone
-from icalendar import Calendar
 
+from icalendar import Calendar
 from lego.apps.events.models import Event, Pool
 from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting
@@ -14,34 +14,34 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_token_url():
-    return reverse('api:v1:calendar-token-list')
+    return reverse("api:v1:calendar-token-list")
 
 
 def _get_token_regenerate_url():
-    return reverse('api:v1:calendar-token-regenerate')
+    return reverse("api:v1:calendar-token-regenerate")
 
 
 def _get_ical_list_url(token):
-    return reverse('api:v1:calendar-ical-list') + f'?token={token}'
+    return reverse("api:v1:calendar-ical-list") + f"?token={token}"
 
 
 def _get_ical_events_url(token):
-    return reverse('api:v1:calendar-ical-events') + f'?token={token}'
+    return reverse("api:v1:calendar-ical-events") + f"?token={token}"
 
 
 def _get_ical_personal_url(token):
-    return reverse('api:v1:calendar-ical-personal') + f'?token={token}'
+    return reverse("api:v1:calendar-ical-personal") + f"?token={token}"
 
 
 def _get_ical_registrations_url(token):
-    return reverse('api:v1:calendar-ical-registrations') + f'?token={token}'
+    return reverse("api:v1:calendar-ical-registrations") + f"?token={token}"
 
 
 def _get_all_ical_urls(token):
     return [
         _get_ical_events_url(token),
         _get_ical_registrations_url(token),
-        _get_ical_personal_url(token)
+        _get_ical_personal_url(token),
     ]
 
 
@@ -55,7 +55,7 @@ def _get_ical_event_meta(ical_event):
 
     eventType, pk, domain = _get_ical_event_meta(ical_event)
     """
-    return re.split("-|@", ical_event['UID'])
+    return re.split("-|@", ical_event["UID"])
 
 
 def _get_ical(url, client):
@@ -69,29 +69,29 @@ def _get_ical_events(url, client):
 
 class IcalAuthenticationTestCase(BaseAPITestCase):
     fixtures = [
-        'test_abakus_groups.yaml',
-        'test_users.yaml',
-        'test_events.yaml',
-        'test_meetings.yaml',
-        'test_companies.yaml',
-        'test_followevent.yaml',
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+        "test_meetings.yaml",
+        "test_companies.yaml",
+        "test_followevent.yaml",
     ]
 
     def setUp(self):
         Event.objects.all().update(
             start_time=timezone.now() + timedelta(hours=3),
-            end_time=timezone.now() + timedelta(hours=4)
+            end_time=timezone.now() + timedelta(hours=4),
         )
         Pool.objects.all().update(activation_date=timezone.now() + timedelta(hours=1))
         Meeting.objects.all().update(
             start_time=timezone.now() + timedelta(hours=3),
-            end_time=timezone.now() + timedelta(hours=4)
+            end_time=timezone.now() + timedelta(hours=4),
         )
 
         self.meeting = Meeting.objects.get(id=1)
-        self.user = User.objects.get(username='abakule')
+        self.user = User.objects.get(username="abakule")
         self.meeting.invite_user(self.user)
-        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
 
     def help_test_ical_content_permission(self, ical_content, user):
@@ -113,7 +113,7 @@ class IcalAuthenticationTestCase(BaseAPITestCase):
     def test_get_list(self, *args):
         res = self.client.get(_get_ical_list_url(self.token))
         self.assertEqual(res.status_code, 200)
-        res_token = res.data['result']['token']['token']
+        res_token = res.data["result"]["token"]["token"]
         self.assertEqual(res_token, self.token)
 
         res = self.client.get(_get_ical_list_url(self.token))
@@ -127,30 +127,27 @@ class IcalAuthenticationTestCase(BaseAPITestCase):
 
     def test_get_ical_authenticated(self, *args):
         self.client.force_authenticate(self.user)
-        for url in _get_all_ical_urls(''):
+        for url in _get_all_ical_urls(""):
             res = self.client.get(url)
             self.assertEqual(res.status_code, 200)
             self.help_test_ical_content_permission(res.content, self.user)
 
     def test_get_ical_without_authentication(self, *args):
-        for url in _get_all_ical_urls(''):
+        for url in _get_all_ical_urls(""):
             res = self.client.get(url)
             self.assertEqual(res.status_code, 401)
 
     def test_get_ical_with_invalid_token(self, *args):
-        for url in _get_all_ical_urls('invalid-token-here'):
+        for url in _get_all_ical_urls("invalid-token-here"):
             res = self.client.get(url)
             self.assertEqual(res.status_code, 401)
 
 
 class IcalPersonalTestCase(BaseAPITestCase):
-    fixtures = [
-        'test_abakus_groups.yaml',
-        'test_users.yaml',
-    ]
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
-        self.user = User.objects.get(username='test1')
+        self.user = User.objects.get(username="test1")
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
         self.url = _get_ical_personal_url(self.token)
 
@@ -178,29 +175,28 @@ class IcalPersonalTestCase(BaseAPITestCase):
 
 
 class IcalEventsTestCase(BaseAPITestCase):
-    fixtures = [
-        'test_abakus_groups.yaml',
-        'test_users.yaml',
-    ]
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
-        self.user = User.objects.get(username='test1')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.user)
+        self.user = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
         self.events_url = _get_ical_events_url(self.token)
         self.registrations_url = _get_ical_registrations_url(self.token)
         self.event = Event.objects.create(
-            title='AbakomEvent',
+            title="AbakomEvent",
             event_type=0,
             start_time=timezone.now() + timedelta(hours=7),
             end_time=timezone.now() + timedelta(hours=10),
             require_auth=False,
         )
         self.pool = Pool.objects.create(
-            name='Webkom', capacity=1, event=self.event,
-            activation_date=(timezone.now() + timedelta(hours=3))
+            name="Webkom",
+            capacity=1,
+            event=self.event,
+            activation_date=(timezone.now() + timedelta(hours=3)),
         )
-        self.pool.permission_groups.add(AbakusGroup.objects.get(name='Abakom'))
+        self.pool.permission_groups.add(AbakusGroup.objects.get(name="Abakom"))
         self.event.set_abakom_only(True)
 
     def test_non_abakom_user(self):
@@ -210,7 +206,7 @@ class IcalEventsTestCase(BaseAPITestCase):
 
     def test_public_event_can_register(self):
         self.event.set_abakom_only(False)
-        self.pool.permission_groups.add(AbakusGroup.objects.get(name='Abakus'))
+        self.pool.permission_groups.add(AbakusGroup.objects.get(name="Abakus"))
         for url in [self.events_url, self.registrations_url]:
 
             ical_events = _get_ical_events(url, self.client)
@@ -232,7 +228,7 @@ class IcalEventsTestCase(BaseAPITestCase):
         self.assertEqual(len(ical_events), 0)
 
     def test_abakom_user(self):
-        AbakusGroup.objects.get(name='Abakom').add_user(self.user)
+        AbakusGroup.objects.get(name="Abakom").add_user(self.user)
         for url in [self.events_url, self.registrations_url]:
             ical_events = _get_ical_events(url, self.client)
             self.assertEqual(len(ical_events), 1)
@@ -242,10 +238,10 @@ class IcalEventsTestCase(BaseAPITestCase):
 
 
 class ICalTokenGenerateTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
-        self.abakommer = User.objects.get(username='abakommer')
+        self.abakommer = User.objects.get(username="abakommer")
 
     def test_get_token_initial(self):
         self.client.force_authenticate(self.abakommer)
@@ -253,14 +249,14 @@ class ICalTokenGenerateTestCase(BaseAPITestCase):
         res = self.client.get(_get_token_url())
         token = ICalToken.objects.get(user=self.abakommer)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['token'], token.token)
+        self.assertEqual(res.data["token"], token.token)
 
 
 class ICalTokenRegenerateTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
-        self.abakommer = User.objects.get(username='abakommer')
+        self.abakommer = User.objects.get(username="abakommer")
         self.token = ICalToken.objects.create(user=self.abakommer)
 
     def test_regenerate_token(self):
@@ -272,8 +268,8 @@ class ICalTokenRegenerateTestCase(BaseAPITestCase):
 
         self.assertNotEqual(old_token, new_token)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['token'], new_token)
-        self.assertNotEqual(res.data['token'], old_token)
+        self.assertEqual(res.data["token"], new_token)
+        self.assertNotEqual(res.data["token"], old_token)
 
     def test_not_regenerate_token(self):
         self.client.force_authenticate(self.abakommer)
@@ -284,5 +280,5 @@ class ICalTokenRegenerateTestCase(BaseAPITestCase):
 
         self.assertEqual(old_token, new_token)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['token'], new_token)
-        self.assertEqual(res.data['token'], old_token)
+        self.assertEqual(res.data["token"], new_token)
+        self.assertEqual(res.data["token"], old_token)

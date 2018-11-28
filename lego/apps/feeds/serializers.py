@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 class FeedActivitySerializer(serializers.Serializer):
     activity_id = serializers.CharField(read_only=True)
-    verb = serializers.IntegerField(source='verb.id')
+    verb = serializers.IntegerField(source="verb.id")
     time = serializers.DateTimeField()
     extra_context = serializers.DictField(default={})
     actor = serializers.CharField(required=False, allow_null=True)
@@ -29,5 +29,5 @@ class MarkSerializer(serializers.Serializer):
 
 
 class AggregatedMarkedFeedSerializer(AggregatedFeedSerializer):
-    read = serializers.BooleanField(source='is_read')
-    seen = serializers.BooleanField(source='is_seen')
+    read = serializers.BooleanField(source="is_read")
+    seen = serializers.BooleanField(source="is_seen")

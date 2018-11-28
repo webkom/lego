@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('surveys', '0005_answer_hide_from_public'),
-    ]
+    dependencies = [("surveys", "0005_answer_hide_from_public")]
 
     operations = [
         migrations.AlterField(
-            model_name='answer',
-            name='answer_text',
-            field=models.TextField(blank=True, default=''),
-        ),
+            model_name="answer",
+            name="answer_text",
+            field=models.TextField(blank=True, default=""),
+        )
     ]

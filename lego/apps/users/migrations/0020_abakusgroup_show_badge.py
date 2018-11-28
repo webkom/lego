@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0019_auto_20181010_1630'),
-    ]
+    dependencies = [("users", "0019_auto_20181010_1630")]
 
     operations = [
         migrations.AddField(
-            model_name='abakusgroup',
-            name='show_badge',
+            model_name="abakusgroup",
+            name="show_badge",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

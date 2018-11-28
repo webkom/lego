@@ -8,8 +8,11 @@ from lego.apps.users.serializers.penalties import PenaltySerializer
 
 
 class PenaltyViewSet(
-    AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin,
-    mixins.ListModelMixin, GenericViewSet
+    AllowedPermissionsMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
 ):
     queryset = Penalty.objects.all()
     serializer_class = PenaltySerializer

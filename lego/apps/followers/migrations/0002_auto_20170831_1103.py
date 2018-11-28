@@ -7,21 +7,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('followers', '0001_initial'),
-    ]
+    dependencies = [("followers", "0001_initial")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='followcompany',
-            name='deleted',
-        ),
-        migrations.RemoveField(
-            model_name='followevent',
-            name='deleted',
-        ),
-        migrations.RemoveField(
-            model_name='followuser',
-            name='deleted',
-        ),
+        migrations.RemoveField(model_name="followcompany", name="deleted"),
+        migrations.RemoveField(model_name="followevent", name="deleted"),
+        migrations.RemoveField(model_name="followuser", name="deleted"),
     ]

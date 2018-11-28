@@ -12,6 +12,7 @@ class SearchViewSet(viewsets.ViewSet):
 
     types and filters is optional.
     """
+
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
@@ -26,6 +27,7 @@ class AutocompleteViewSet(viewsets.ViewSet):
 
     types is optional.
     """
+
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):

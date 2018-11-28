@@ -11,58 +11,67 @@ from lego.utils.management_command import BaseCommand
 
 
 class Command(BaseCommand):
-    help = 'Benchmark registration methods'
+    help = "Benchmark registration methods"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--single',
-            action='store_true',
+            "--single",
+            action="store_true",
             default=False,
-            help='Single registration benchmark',
+            help="Single registration benchmark",
         )
 
         parser.add_argument(
-            '--singleavg',
-            action='store_true',
+            "--singleavg",
+            action="store_true",
             default=False,
-            help='Single registration benchmark average',
+            help="Single registration benchmark average",
         )
         parser.add_argument(
-            '--multi',
-            action='store_true',
+            "--multi",
+            action="store_true",
             default=False,
-            help='200 registration benchmark',
+            help="200 registration benchmark",
         )
 
     def run(self, *args, **options):
 
-        user_group = AbakusGroup.objects.get_or_create(name='Users')[0]
-        abakus_group = AbakusGroup.objects.get_or_create(name='Abakus')[0]
+        user_group = AbakusGroup.objects.get_or_create(name="Users")[0]
+        abakus_group = AbakusGroup.objects.get_or_create(name="Abakus")[0]
         users = []
 
         for i in range(200):
             first_name = last_name = username = email = str(i)
             user = User.objects.get_or_create(
-                username=username, first_name=first_name, last_name=last_name, email=email
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
             )[0]
             user_group.add_user(user)
             users.append(user)
 
         event = Event.objects.create(
-            title="Test", start_time=(timezone.now() + timedelta(days=1)),
-            end_time=(timezone.now() + timedelta(days=1)), location="-",
-            event_type=constants.COMPANY_PRESENTATION
+            title="Test",
+            start_time=(timezone.now() + timedelta(days=1)),
+            end_time=(timezone.now() + timedelta(days=1)),
+            location="-",
+            event_type=constants.COMPANY_PRESENTATION,
         )
-        event.title = f'{event.id}'
+        event.title = f"{event.id}"
         event.save()
         pool1 = Pool.objects.create(
-            event=event, name="Users", capacity=100,
-            activation_date=(timezone.now() - timedelta(days=1))
+            event=event,
+            name="Users",
+            capacity=100,
+            activation_date=(timezone.now() - timedelta(days=1)),
         )
         pool1.permission_groups.set([user_group.id])
         pool2 = Pool.objects.create(
-            event=event, name="Abakus", capacity=10,
-            activation_date=(timezone.now() - timedelta(days=1))
+            event=event,
+            name="Abakus",
+            capacity=10,
+            activation_date=(timezone.now() - timedelta(days=1)),
         )
         pool2.permission_groups.set([abakus_group.id])
 
@@ -75,7 +84,7 @@ class Command(BaseCommand):
 
             reg.event.register(reg)
             pr.disable()
-            pr.dump_stats(f'single{event.id}.pstat')
+            pr.dump_stats(f"single{event.id}.pstat")
 
         def single_benchmark_avg(event, users):
 
@@ -89,7 +98,7 @@ class Command(BaseCommand):
             for reg in regs:
                 reg.event.register(reg)
             pr.disable()
-            pr.dump_stats(f'single_avg{event.id}.pstat')
+            pr.dump_stats(f"single_avg{event.id}.pstat")
 
         def benchmark(event, users):
 
@@ -99,25 +108,29 @@ class Command(BaseCommand):
                 regs.append(reg)
             time = timezone.now() + timedelta(seconds=5)
             for reg in regs:
-                async_register.apply_async((reg.id, ), eta=time)
+                async_register.apply_async((reg.id,), eta=time)
 
-            input('Start the celery workers: DONE?')
+            input("Start the celery workers: DONE?")
 
-            registrations = Registration.objects.filter(event=event).order_by('registration_date')
+            registrations = Registration.objects.filter(event=event).order_by(
+                "registration_date"
+            )
 
             first = registrations.first()
             last = registrations.last()
 
             diff = last.registration_date - first.registration_date
-            print(f'Number of registrations: {registrations.count()}')
-            print(f'Number pool1 {pool1.registrations.count()} / 100')
-            print(f'Number pool2 {pool2.registrations.count()} / 10')
-            print(f'Time per registration {diff.total_seconds() * 1000 / registrations.count()}')
-            print(f'Total time: {diff.total_seconds() * 1000}')
+            print(f"Number of registrations: {registrations.count()}")
+            print(f"Number pool1 {pool1.registrations.count()} / 100")
+            print(f"Number pool2 {pool2.registrations.count()} / 10")
+            print(
+                f"Time per registration {diff.total_seconds() * 1000 / registrations.count()}"
+            )
+            print(f"Total time: {diff.total_seconds() * 1000}")
 
-        if options['single']:
+        if options["single"]:
             single_benchmark(event, users[0])
-        elif options['singleavg']:
+        elif options["singleavg"]:
             single_benchmark_avg(event, users)
-        elif options['multi']:
+        elif options["multi"]:
             benchmark(event, users)

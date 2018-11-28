@@ -4,16 +4,25 @@ from django.db import models
 
 from lego.apps.comments.models import Comment
 from lego.apps.companies.permissions import (
-    CompanyContactPermissionHandler, CompanyInterestPermissionHandler, CompanyPermissionHandler,
-    NestedCompanyPermissionHandler, SemesterPermissionHandler
+    CompanyContactPermissionHandler,
+    CompanyInterestPermissionHandler,
+    CompanyPermissionHandler,
+    NestedCompanyPermissionHandler,
+    SemesterPermissionHandler,
 )
 from lego.apps.files.models import FileField
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel, PersistentModel, TimeStampModel
 
 from .constants import (
-    AUTUMN, COMPANY_EVENTS, OTHER_OFFERS, SEMESTER, SEMESTER_STATUSES, SPRING, TRANSLATED_EVENTS,
-    TRANSLATED_OTHER_OFFERS
+    AUTUMN,
+    COMPANY_EVENTS,
+    OTHER_OFFERS,
+    SEMESTER,
+    SEMESTER_STATUSES,
+    SPRING,
+    TRANSLATED_EVENTS,
+    TRANSLATED_OTHER_OFFERS,
 )
 
 
@@ -23,14 +32,14 @@ class Semester(BasisModel):
     active_interest_form = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('year', 'semester')
+        unique_together = ("year", "semester")
         permission_handler = SemesterPermissionHandler()
 
 
 class Company(BasisModel):
     name = models.CharField(max_length=100)
     student_contact = models.ForeignKey(
-        User, related_name='companies', null=True, on_delete=models.SET_NULL
+        User, related_name="companies", null=True, on_delete=models.SET_NULL
     )
     previous_contacts = models.ManyToManyField(User)
 
@@ -44,39 +53,47 @@ class Company(BasisModel):
     payment_mail = models.EmailField(max_length=100, blank=True)
     comments = GenericRelation(Comment)
 
-    logo = FileField(related_name='company_logos')
+    logo = FileField(related_name="company_logos")
 
     class Meta:
         permission_handler = CompanyPermissionHandler()
 
     @property
     def comment_target(self):
-        return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
+        return "{0}.{1}-{2}".format(
+            self._meta.app_label, self._meta.model_name, self.pk
+        )
 
     def __str__(self):
         return self.name
 
 
 class CompanyFile(models.Model):
-    company = models.ForeignKey(Company, related_name='files', on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, related_name="files", on_delete=models.CASCADE)
     file = FileField()
 
 
 class SemesterStatus(TimeStampModel):
-    company = models.ForeignKey(Company, related_name='semester_statuses', on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company, related_name="semester_statuses", on_delete=models.CASCADE
+    )
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
-    contacted_status = ArrayField(models.CharField(choices=SEMESTER_STATUSES, max_length=64))
-    contract = FileField(related_name='semester_status_contracts')
-    statistics = FileField(related_name='semester_status_statistics')
-    evaluation = FileField(related_name='semester_status_evaluations')
+    contacted_status = ArrayField(
+        models.CharField(choices=SEMESTER_STATUSES, max_length=64)
+    )
+    contract = FileField(related_name="semester_status_contracts")
+    statistics = FileField(related_name="semester_status_statistics")
+    evaluation = FileField(related_name="semester_status_evaluations")
 
     class Meta:
-        unique_together = ('semester', 'company')
+        unique_together = ("semester", "company")
         permission_handler = NestedCompanyPermissionHandler()
 
 
 class CompanyContact(BasisModel):
-    company = models.ForeignKey(Company, related_name='company_contacts', on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company, related_name="company_contacts", on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100, blank=True)
     mail = models.EmailField(blank=True)
@@ -105,9 +122,9 @@ class CompanyInterest(PersistentModel, TimeStampModel):
         semesters = []
         for semester in self.semesters.all():
             if semester.semester == SPRING:
-                semesters.append(f'Vår {semester.year}')
+                semesters.append(f"Vår {semester.year}")
             elif semester.semester == AUTUMN:
-                semesters.append(f'Høst {semester.year}')
+                semesters.append(f"Høst {semester.year}")
 
         events = []
         for event in self.events:
@@ -118,11 +135,11 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             others.append(TRANSLATED_OTHER_OFFERS[offer])
 
         return {
-            'company_name': self.company_name,
-            'contact_person': self.contact_person,
-            'mail': self.mail,
-            'semesters': ', '.join(semesters),
-            'events': ', '.join(events),
-            'others': ', '.join(others),
-            'comment': self.comment
+            "company_name": self.company_name,
+            "contact_person": self.contact_person,
+            "mail": self.mail,
+            "semesters": ", ".join(semesters),
+            "events": ", ".join(events),
+            "others": ", ".join(others),
+            "comment": self.comment,
         }

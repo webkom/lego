@@ -10,19 +10,22 @@ import lego.apps.permissions.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0001_initial'),
-    ]
+    dependencies = [("users", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='abakusgroup',
-            name='permissions',
+            model_name="abakusgroup",
+            name="permissions",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(
                     max_length=50,
-                    validators=[lego.apps.permissions.validators.KeywordPermissionValidator()]
-                ), default=[], size=None, verbose_name='permissions'
+                    validators=[
+                        lego.apps.permissions.validators.KeywordPermissionValidator()
+                    ],
+                ),
+                default=[],
+                size=None,
+                verbose_name="permissions",
             ),
-        ),
+        )
     ]

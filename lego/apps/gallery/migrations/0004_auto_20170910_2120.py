@@ -11,21 +11,23 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('gallery', '0003_gallery_cover'),
+        ("gallery", "0003_gallery_cover"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gallerypicture',
-            name='taggees',
+            model_name="gallerypicture",
+            name="taggees",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
-            model_name='gallery',
-            name='cover',
+            model_name="gallery",
+            name="cover",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.SET_NULL,
-                related_name='gallery_covers', to='gallery.GalleryPicture'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="gallery_covers",
+                to="gallery.GalleryPicture",
             ),
         ),
     ]

@@ -13,34 +13,37 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='ICalToken',
+            name="ICalToken",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
                 (
-                    'token',
+                    "token",
                     models.CharField(
-                        db_index=True, default=lego.apps.ical.models.generate_new_token,
-                        max_length=64
-                    )
+                        db_index=True,
+                        default=lego.apps.ical.models.generate_new_token,
+                        max_length=64,
+                    ),
                 ),
                 (
-                    'user',
+                    "user",
                     models.OneToOneField(
-                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-        ),
+        )
     ]

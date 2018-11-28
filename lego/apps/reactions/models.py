@@ -9,7 +9,7 @@ from lego.utils.models import BasisModel
 
 class ReactionManager(BasisModelManager):
     def get_queryset(self):
-        return super().get_queryset().select_related('created_by')
+        return super().get_queryset().select_related("created_by")
 
 
 class ReactionType(BasisModel):
@@ -33,4 +33,4 @@ class Reaction(BasisModel):
         return str(self)
 
     def __str__(self):
-        return f'{self.created_by} - {self.type_id}'
+        return f"{self.created_by} - {self.type_id}"

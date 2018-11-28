@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0003_auto_20170903_2206'),
-    ]
+    dependencies = [("events", "0003_auto_20170903_2206")]
 
     operations = [
         migrations.AlterField(
-            model_name='registration',
-            name='registration_date',
+            model_name="registration",
+            name="registration_date",
             field=models.DateTimeField(db_index=True, null=True),
-        ),
+        )
     ]

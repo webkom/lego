@@ -7,18 +7,18 @@ from lego.utils.test_utils import BaseAPITestCase
 
 class MembershipHistoryViewSetTestCase(BaseAPITestCase):
 
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
-        self.url = '/api/v1/membership-history/'
+        self.url = "/api/v1/membership-history/"
 
     def test_list_without_auth(self):
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_list_history_as_admin(self):
-        user = User.objects.get(username='test1')
-        admin_group = AbakusGroup.objects.get(name='Webkom')
+        user = User.objects.get(username="test1")
+        admin_group = AbakusGroup.objects.get(name="Webkom")
         group = AbakusGroup.objects.get(id=3)
         self.assertEquals(GROUP_OTHER, group.type)
 
@@ -29,10 +29,10 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         self.client.force_login(user)
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(1, len(response.data['results']))
+        self.assertEquals(1, len(response.data["results"]))
 
     def test_list_history_as_authenticated(self):
-        user = User.objects.get(username='test1')
+        user = User.objects.get(username="test1")
         group = AbakusGroup.objects.get(id=3)
         self.assertEquals(GROUP_OTHER, group.type)
 
@@ -42,4 +42,4 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         self.client.force_login(user)
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(0, len(response.data['results']))
+        self.assertEquals(0, len(response.data["results"]))

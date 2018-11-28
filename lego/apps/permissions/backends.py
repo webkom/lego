@@ -34,6 +34,8 @@ class LegoPermissionBackend(ModelBackend):
             return permission_handler.has_perm(user_obj, perm, queryset=obj)
         elif issubclass(obj, models.Model):
             permission_handler = get_permission_handler(obj)
-            return permission_handler.has_perm(user_obj, perm, queryset=obj.objects.none())
+            return permission_handler.has_perm(
+                user_obj, perm, queryset=obj.objects.none()
+            )
 
         return False

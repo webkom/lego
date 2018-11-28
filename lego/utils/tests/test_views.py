@@ -6,10 +6,10 @@ from lego.utils.test_utils import BaseAPITestCase
 
 class SiteMetaViewSetTestCase(BaseAPITestCase):
 
-    fixtures = ['test_users.yaml']
+    fixtures = ["test_users.yaml"]
 
     def setUp(self):
-        self.url = '/api/v1/site-meta/'
+        self.url = "/api/v1/site-meta/"
 
     def test_access_without_auth(self):
         response = self.client.get(self.url)

@@ -5,7 +5,11 @@ from lego.apps.feeds.attr_cache import AttrCache
 
 from .feed_manager import feed_manager
 from .models import NotificationFeed, PersonalFeed, UserFeed
-from .serializers import AggregatedFeedSerializer, AggregatedMarkedFeedSerializer, MarkSerializer
+from .serializers import (
+    AggregatedFeedSerializer,
+    AggregatedMarkedFeedSerializer,
+    MarkSerializer,
+)
 
 
 class FeedViewSet(viewsets.GenericViewSet):
@@ -13,7 +17,7 @@ class FeedViewSet(viewsets.GenericViewSet):
     Generic viewset base for all types of feeds.
     """
 
-    ordering = '-updated_at'
+    ordering = "-updated_at"
     serializer_class = AggregatedFeedSerializer
 
     def attach_metadata(self, data):
@@ -23,13 +27,13 @@ class FeedViewSet(viewsets.GenericViewSet):
         content_strings = set()
 
         for item in data:
-            activities = item.get('activities')
+            activities = item.get("activities")
             if activities:
                 # Aggregated Activity
                 for activity in activities:
-                    target = activity.get('target')
-                    object = activity.get('object')
-                    actor = activity.get('actor')
+                    target = activity.get("target")
+                    object = activity.get("object")
+                    actor = activity.get("actor")
                     content_strings.add(target) if target else None
                     content_strings.add(object) if object else None
                     content_strings.add(actor) if actor else None
@@ -41,20 +45,20 @@ class FeedViewSet(viewsets.GenericViewSet):
         for item in data:
             context = {}
 
-            activities = item.get('activities')
+            activities = item.get("activities")
             if activities:
                 # Aggregated Activity
                 for activity in activities:
-                    target = activity.get('target')
-                    object = activity.get('object')
-                    actor = activity.get('actor')
+                    target = activity.get("target")
+                    object = activity.get("object")
+                    actor = activity.get("actor")
                     if target in lookup.keys():
                         context[target] = lookup[target]
                     if object in lookup.keys():
                         context[object] = lookup[object]
                     if actor in lookup.keys():
                         context[actor] = lookup[actor]
-            item['context'] = context
+            item["context"] = context
 
         return data
 
@@ -77,7 +81,7 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
 
     serializer_class = AggregatedMarkedFeedSerializer
 
-    @decorators.list_route(serializer_class=MarkSerializer, methods=['POST'])
+    @decorators.list_route(serializer_class=MarkSerializer, methods=["POST"])
     def mark_all(self, request):
         """
         This function marks all activities in a NotificationFeed as seen or/and red.
@@ -86,13 +90,13 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         feed = self.get_queryset().model
-        seen = serializer.validated_data['seen']
-        read = serializer.validated_data['read']
+        seen = serializer.validated_data["seen"]
+        read = serializer.validated_data["read"]
         feed.mark_all(self.request.user.id, seen, read)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.detail_route(serializer_class=MarkSerializer, methods=['POST'])
+    @decorators.detail_route(serializer_class=MarkSerializer, methods=["POST"])
     def mark(self, request, pk):
         """
         Mark a single notification as read or seen.
@@ -101,13 +105,13 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         feed = self.get_queryset().model
-        seen = serializer.validated_data['seen']
-        read = serializer.validated_data['read']
+        seen = serializer.validated_data["seen"]
+        read = serializer.validated_data["read"]
         feed.mark_all(self.request.user.id, str(pk), seen, read)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.list_route(methods=['GET'])
+    @decorators.list_route(methods=["GET"])
     def notification_data(self, request):
         feed = self.get_queryset().model
         return Response(feed.get_notification_data(self.request.user.id))
@@ -122,7 +126,7 @@ class UserFeedViewSet(FeedViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        user_id = self.kwargs['user_pk']
+        user_id = self.kwargs["user_pk"]
         return feed_manager.retrieve_feed(UserFeed, user_id)
 
 

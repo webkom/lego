@@ -9,11 +9,22 @@ class UserIndex(SearchIndex):
 
     queryset = User.objects.all()
     serializer_class = SearchUserSerializer
-    result_fields = ('username', 'first_name', 'last_name', 'full_name', 'profile_picture')
-    autocomplete_result_fields = ('username', 'full_name', 'profile_picture')
+    result_fields = (
+        "username",
+        "first_name",
+        "last_name",
+        "full_name",
+        "profile_picture",
+    )
+    autocomplete_result_fields = ("username", "full_name", "profile_picture")
 
     def get_autocomplete(self, instance):
-        return [instance.username, instance.full_name, instance.last_name, instance.first_name]
+        return [
+            instance.username,
+            instance.full_name,
+            instance.last_name,
+            instance.first_name,
+        ]
 
 
 register(UserIndex)
@@ -23,11 +34,11 @@ class GroupIndex(SearchIndex):
 
     queryset = AbakusGroup.objects.all()
     serializer_class = SearchGroupSerializer
-    result_fields = ('name', 'type', 'logo')
-    autocomplete_result_fields = ('name', 'type', 'logo')
+    result_fields = ("name", "type", "logo")
+    autocomplete_result_fields = ("name", "type", "logo")
 
     def get_autocomplete(self, instance):
-        return [instance.name] + instance.name.split(' ')
+        return [instance.name] + instance.name.split(" ")
 
 
 register(GroupIndex)

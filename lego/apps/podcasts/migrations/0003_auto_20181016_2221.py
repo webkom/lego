@@ -8,22 +8,22 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('podcasts', '0002_podcast_authors'),
+        ("podcasts", "0002_podcast_authors"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='podcast',
-            name='thanks',
+            model_name="podcast",
+            name="thanks",
             field=models.ManyToManyField(
-                blank=True, related_name='thanks', to=settings.AUTH_USER_MODEL
+                blank=True, related_name="thanks", to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.AlterField(
-            model_name='podcast',
-            name='authors',
+            model_name="podcast",
+            name="authors",
             field=models.ManyToManyField(
-                blank=True, related_name='authors', to=settings.AUTH_USER_MODEL
+                blank=True, related_name="authors", to=settings.AUTH_USER_MODEL
             ),
         ),
     ]

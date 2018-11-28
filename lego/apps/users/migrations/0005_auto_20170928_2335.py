@@ -10,31 +10,33 @@ import lego.utils.validators
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0004_abakusgroup_logo'),
-    ]
+    dependencies = [("users", "0004_abakusgroup_logo")]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='first_name',
-            field=models.CharField(blank=True, max_length=50, verbose_name='first name'),
+            model_name="user",
+            name="first_name",
+            field=models.CharField(
+                blank=True, max_length=50, verbose_name="first name"
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='username',
+            model_name="user",
+            name="username",
             field=models.CharField(
                 db_index=True,
-                error_messages={'unique': 'A user with that username already exists.'},
-                help_text='Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.',
-                max_length=50, unique=True, validators=[
+                error_messages={"unique": "A user with that username already exists."},
+                help_text="Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                max_length=50,
+                unique=True,
+                validators=[
                     django.core.validators.RegexValidator(
-                        '^[\\w.@+-]+$',
-                        'Enter a valid username.  This value may contain only letters, numbers and @/./+/-/_ characters.',
-                        'invalid'
+                        "^[\\w.@+-]+$",
+                        "Enter a valid username.  This value may contain only letters, numbers and @/./+/-/_ characters.",
+                        "invalid",
                     ),
-                    lego.utils.validators.ReservedNameValidator()
-                ]
+                    lego.utils.validators.ReservedNameValidator(),
+                ],
             ),
         ),
     ]

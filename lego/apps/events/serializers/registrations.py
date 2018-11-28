@@ -1,15 +1,21 @@
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework_jwt.serializers import User
 
 from lego.apps.events import constants
 from lego.apps.events.fields import (
-    ChargeStatusField, FeedbackField, PresenceField, SetChargeStatusField
+    ChargeStatusField,
+    FeedbackField,
+    PresenceField,
+    SetChargeStatusField,
 )
 from lego.apps.events.models import Pool, Registration
-from lego.apps.users.serializers.users import AdministrateUserSerializer, PublicUserSerializer
+from lego.apps.users.serializers.users import (
+    AdministrateUserSerializer,
+    PublicUserSerializer,
+)
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
+from rest_framework_jwt.serializers import User
 
 
 class AdminUnregisterSerializer(serializers.Serializer):
@@ -21,12 +27,11 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(
-        required=False,
-        max_length=Registration._meta.get_field('feedback').max_length,
+        required=False, max_length=Registration._meta.get_field("feedback").max_length
     )
     admin_registration_reason = serializers.CharField(
         required=True,
-        max_length=Registration._meta.get_field('admin_registration_reason').max_length,
+        max_length=Registration._meta.get_field("admin_registration_reason").max_length,
     )
 
 
@@ -39,11 +44,11 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'feedback', 'presence', 'captcha_response', 'charge_status')
+        fields = ("id", "feedback", "presence", "captcha_response", "charge_status")
 
     def update(self, instance, validated_data):
         with transaction.atomic():
-            presence = validated_data.pop('presence', None)
+            presence = validated_data.pop("presence", None)
             super().update(instance, validated_data)
             if presence:
                 instance.set_presence(presence)
@@ -55,7 +60,7 @@ class RegistrationPublicReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ('id', 'user', 'pool', 'status')
+        fields = ("id", "user", "pool", "status")
         read_only = True
 
 
@@ -64,12 +69,15 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
     shared_memberships = serializers.IntegerField(required=False)
 
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + ('feedback', 'shared_memberships')
+        fields = RegistrationPublicReadSerializer.Meta.fields + (
+            "feedback",
+            "shared_memberships",
+        )
 
 
 class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + ('presence', )
+        fields = RegistrationPublicReadSerializer.Meta.fields + ("presence",)
 
 
 class RegistrationSearchSerializer(serializers.Serializer):
@@ -80,7 +88,7 @@ class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
     charge_status = ChargeStatusField()
 
     class Meta(RegistrationReadSerializer.Meta):
-        fields = RegistrationReadSerializer.Meta.fields + ('charge_status', )
+        fields = RegistrationReadSerializer.Meta.fields + ("charge_status",)
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
@@ -89,9 +97,20 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
         fields = (
-            'id', 'user', 'pool', 'event', 'presence', 'feedback', 'status', 'registration_date',
-            'unregistration_date', 'admin_registration_reason', 'charge_id', 'charge_status',
-            'charge_amount', 'charge_amount_refunded'
+            "id",
+            "user",
+            "pool",
+            "event",
+            "presence",
+            "feedback",
+            "status",
+            "registration_date",
+            "unregistration_date",
+            "admin_registration_reason",
+            "charge_id",
+            "charge_status",
+            "charge_amount",
+            "charge_amount_refunded",
         )
         read_only = True
 

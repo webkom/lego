@@ -11,11 +11,11 @@ class CORSPatchMiddleware(MiddlewareMixin):
     This is a temporarily patch to fix this.
     """
 
-    header = 'Access-Control-Allow-Origin'
-    regex_path = f'/api/v1/files/{KEY_REGEX_RAW}/upload_success/'
+    header = "Access-Control-Allow-Origin"
+    regex_path = f"/api/v1/files/{KEY_REGEX_RAW}/upload_success/"
     regex = re.compile(regex_path)
 
     def process_response(self, request, response):
         if self.regex.match(request.path):
-            response[self.header] = '*'
+            response[self.header] = "*"
         return response

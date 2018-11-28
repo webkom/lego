@@ -1,22 +1,24 @@
-import certifi
 from django.conf import settings
 from django.template.loader import render_to_string
+
+import certifi
 from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch.helpers import bulk
-
 from lego.apps.search.backend import SearchBacked
 
 
 class ElasticsearchBackend(SearchBacked):
 
-    name = 'elasticsearch'
+    name = "elasticsearch"
 
     connection = None
 
     def set_up(self):
-        hosts = getattr(settings, 'ELASTICSEARCH', None)
+        hosts = getattr(settings, "ELASTICSEARCH", None)
         if hosts:
-            self.connection = Elasticsearch(hosts=settings.ELASTICSEARCH, ca_certs=certifi.where())
+            self.connection = Elasticsearch(
+                hosts=settings.ELASTICSEARCH, ca_certs=certifi.where()
+            )
 
     def _index_name(self):
         """
@@ -37,12 +39,12 @@ class ElasticsearchBackend(SearchBacked):
         Shortcut to index a instance.
         """
         action = {
-            '_op_type': 'index',
-            '_index': self._index_name(),
-            '_id': f'{content_type}-{pk}',
-            '_type': 'document',
-            'id_': pk,
-            'type_': content_type,
+            "_op_type": "index",
+            "_index": self._index_name(),
+            "_id": f"{content_type}-{pk}",
+            "_type": "document",
+            "id_": pk,
+            "type_": content_type,
         }
         data.update(action)
         return data
@@ -52,10 +54,10 @@ class ElasticsearchBackend(SearchBacked):
         Shortcut to create a item removal operation.
         """
         action = {
-            '_op_type': 'delete',
-            '_index': self._index_name(),
-            '_id': f'{content_type}-{pk}',
-            '_type': 'document',
+            "_op_type": "delete",
+            "_index": self._index_name(),
+            "_id": f"{content_type}-{pk}",
+            "_type": "document",
         }
         return action
 
@@ -70,11 +72,13 @@ class ElasticsearchBackend(SearchBacked):
         self.connection.indices.create(settings.SEARCH_INDEX)
 
     def _search(self, payload):
-        return self.connection.search(settings.SEARCH_INDEX, doc_type='document', body=payload)
+        return self.connection.search(
+            settings.SEARCH_INDEX, doc_type="document", body=payload
+        )
 
-    def _refresh_template(self, template_name='lego-search'):
-        context = {'index': self._index_name()}
-        template = render_to_string('search/elasticsearch/index_template.json', context)
+    def _refresh_template(self, template_name="lego-search"):
+        context = {"index": self._index_name()}
+        template = render_to_string("search/elasticsearch/index_template.json", context)
         try:
             self.connection.indices.delete_template(template_name)
         except NotFoundError:
@@ -88,11 +92,9 @@ class ElasticsearchBackend(SearchBacked):
         """
         if autocomplete_value:
             return {
-                'autocomplete': {
-                    'input': autocomplete_value,
-                    'contexts': {
-                        'content_type': content_type
-                    }
+                "autocomplete": {
+                    "input": autocomplete_value,
+                    "contexts": {"content_type": content_type},
                 }
             }
 
@@ -109,16 +111,18 @@ class ElasticsearchBackend(SearchBacked):
             data_fields = dict()
 
             # Add fields to the operation payload
-            data_fields.update(data.get('fields', {}))
+            data_fields.update(data.get("fields", {}))
 
             # Add autocomplete to the operation if it exists
-            autocomplete = self._format_autocomplete(content_type, data.pop('autocomplete'))
+            autocomplete = self._format_autocomplete(
+                content_type, data.pop("autocomplete")
+            )
             if autocomplete:
                 data_fields.update(autocomplete)
 
             # Add filter fields
-            filter_fields = data.get('filters', {})
-            data_fields.update({f'{k}_filter': v for k, v in filter_fields.items()})
+            filter_fields = data.get("filters", {})
+            data_fields.update({f"{k}_filter": v for k, v in filter_fields.items()})
 
             return self._index(content_type, pk, data_fields)
 
@@ -140,30 +144,24 @@ class ElasticsearchBackend(SearchBacked):
         """
         if not filters:
             search_query = {
-                'query': {
-                    'multi_match': {
-                        "query": query,
-                        "operator": "and",
-                        "fields": "*"
-                    },
+                "query": {
+                    "multi_match": {"query": query, "operator": "and", "fields": "*"}
                 }
             }
         else:
             search_query = {
-                'query': {
-                    'bool': {
-                        'must': {
-                            'multi_match': {
-                                'query': query,
-                                'operator': 'and',
-                                "fields": "*"
+                "query": {
+                    "bool": {
+                        "must": {
+                            "multi_match": {
+                                "query": query,
+                                "operator": "and",
+                                "fields": "*",
                             }
                         },
-                        'filter': [{
-                            'terms': {
-                                f'{k}_filter': v
-                            }
-                        } for k, v in filters.items()]
+                        "filter": [
+                            {"terms": {f"{k}_filter": v}} for k, v in filters.items()
+                        ],
                     }
                 }
             }
@@ -171,60 +169,63 @@ class ElasticsearchBackend(SearchBacked):
         result = self._search(search_query)
 
         def parse_result(hit):
-            source = hit['_source']
-            search_index = self.get_search_index(source['type_'])
+            source = hit["_source"]
+            search_index = self.get_search_index(source["type_"])
             if search_index:
                 result_fields = [
-                    field for field in search_index.get_result_fields() if field in source.keys()
+                    field
+                    for field in search_index.get_result_fields()
+                    if field in source.keys()
                 ]
                 result = {field: source[field] for field in result_fields}
-                result.update({'id': source['id_'], 'content_type': source['type_']})
+                result.update({"id": source["id_"], "content_type": source["type_"]})
                 return result
 
-        return filter(lambda hit: hit is not None, map(parse_result, result['hits']['hits']))
+        return filter(
+            lambda hit: hit is not None, map(parse_result, result["hits"]["hits"])
+        )
 
     def autocomplete(self, query, content_types=None):
         autocomplete_query = {
-            'suggest': {
-                'autocomplete': {
-                    'prefix': query,
-                    'completion': {
-                        'field': 'autocomplete',
-                        'fuzzy': {
-                            'fuzziness': 0
-                        },
-                        'size': 10,
-                    }
+            "suggest": {
+                "autocomplete": {
+                    "prefix": query,
+                    "completion": {
+                        "field": "autocomplete",
+                        "fuzzy": {"fuzziness": 0},
+                        "size": 10,
+                    },
                 }
             }
         }
 
         if content_types:
-            autocomplete_query['suggest']['autocomplete']['completion']['contexts'] = {
-                'content_type': content_types
+            autocomplete_query["suggest"]["autocomplete"]["completion"]["contexts"] = {
+                "content_type": content_types
             }
 
         result = self._search(autocomplete_query)
 
         def parse_result(hit):
-            source = hit['_source']
-            search_index = self.get_search_index(hit['_source']['type_'])
+            source = hit["_source"]
+            search_index = self.get_search_index(hit["_source"]["type_"])
             if search_index:
                 result_fields = [
-                    field for field in search_index.get_autocomplete_result_fields()
+                    field
+                    for field in search_index.get_autocomplete_result_fields()
                     if field in source.keys()
                 ]
                 result = {field: source[field] for field in result_fields}
                 result.update(
                     {
-                        'id': source['id_'],
-                        'content_type': source['type_'],
-                        'text': hit['text']
+                        "id": source["id_"],
+                        "content_type": source["type_"],
+                        "text": hit["text"],
                     }
                 )
                 return result
 
         return filter(
             lambda hit: hit is not None,
-            map(parse_result, result['suggest']['autocomplete'][0]['options'])
+            map(parse_result, result["suggest"]["autocomplete"][0]["options"]),
         )

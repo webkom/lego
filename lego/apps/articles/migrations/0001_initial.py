@@ -14,33 +14,42 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Article',
+            name="Article",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('require_auth', models.BooleanField(default=False, verbose_name='require auth')),
-                ('slug', models.SlugField(null=True, unique=True)),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField()),
-                ('text', models.TextField(blank=True)),
+                (
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "require_auth",
+                    models.BooleanField(default=False, verbose_name="require auth"),
+                ),
+                ("slug", models.SlugField(null=True, unique=True)),
+                ("title", models.CharField(max_length=255)),
+                ("description", models.TextField()),
+                ("text", models.TextField(blank=True)),
             ],
-            options={
-                'abstract': False,
-            },
-        ),
+            options={"abstract": False},
+        )
     ]

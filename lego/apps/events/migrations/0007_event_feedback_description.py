@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0006_merge_20171004_2216'),
-    ]
+    dependencies = [("events", "0006_merge_20171004_2216")]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='feedback_description',
+            model_name="event",
+            name="feedback_description",
             field=models.CharField(blank=True, max_length=255),
-        ),
+        )
     ]

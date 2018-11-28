@@ -8,17 +8,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gallery', '0002_auto_20170903_2206'),
-    ]
+    dependencies = [("gallery", "0002_auto_20170903_2206")]
 
     operations = [
         migrations.AddField(
-            model_name='gallery',
-            name='cover',
+            model_name="gallery",
+            name="cover",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.CASCADE,
-                related_name='gallery_covers', to='gallery.GalleryPicture'
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="gallery_covers",
+                to="gallery.GalleryPicture",
             ),
-        ),
+        )
     ]

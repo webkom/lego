@@ -14,7 +14,7 @@ def fanout(operation, activity, recipients, feed):
     destination feeds.
     """
     activity = Activity.deserialize(activity)
-    feed = apps.get_model('feeds', feed)
+    feed = apps.get_model("feeds", feed)
 
     if operation == ADD:
         return add_to_feed(activity, feed, recipients)
@@ -22,7 +22,7 @@ def fanout(operation, activity, recipients, feed):
     elif operation == REMOVE:
         return remove_from_feed(activity, feed, recipients)
 
-    raise ValueError('Invalid feed operation')
+    raise ValueError("Invalid feed operation")
 
 
 def add_to_feed(activity, feed, recipients):
@@ -75,4 +75,4 @@ def remove_from_feed(activity, feed, recipients):
 
 def chunks(l, n):
     for i in range(0, len(l), n):
-        yield l[i:i + n]
+        yield l[i : i + n]
