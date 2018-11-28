@@ -27,4 +27,4 @@ class Quote(BasisModel, Content):
         self.save()
 
     def get_absolute_url(self):
-        return f'{settings.FRONTEND_URL}/quotes/{self.id}/'
+        return f"{settings.FRONTEND_URL}/quotes/{self.id}/"

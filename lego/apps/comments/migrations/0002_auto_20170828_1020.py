@@ -12,65 +12,74 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('users', '0001_initial'),
-        ('comments', '0001_initial'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("users", "0001_initial"),
+        ("comments", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='can_edit_groups',
+            model_name="comment",
+            name="can_edit_groups",
             field=models.ManyToManyField(
-                blank=True, related_name='can_edit_comment', to='users.AbakusGroup'
+                blank=True, related_name="can_edit_comment", to="users.AbakusGroup"
             ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='can_edit_users',
+            model_name="comment",
+            name="can_edit_users",
             field=models.ManyToManyField(
-                blank=True, related_name='can_edit_comment', to=settings.AUTH_USER_MODEL
+                blank=True, related_name="can_edit_comment", to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='can_view_groups',
+            model_name="comment",
+            name="can_view_groups",
             field=models.ManyToManyField(
-                blank=True, related_name='can_view_comment', to='users.AbakusGroup'
+                blank=True, related_name="can_view_comment", to="users.AbakusGroup"
             ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='content_type',
+            model_name="comment",
+            name="content_type",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType'
+                on_delete=django.db.models.deletion.CASCADE,
+                to="contenttypes.ContentType",
             ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='created_by',
+            model_name="comment",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='comment_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="comment_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='parent',
+            model_name="comment",
+            name="parent",
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                to='comments.Comment'
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="comments.Comment",
             ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='updated_by',
+            model_name="comment",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='comment_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="comment_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

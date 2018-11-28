@@ -28,8 +28,11 @@ class GSuiteAddress(models.Model):
     """
 
     internal_email = models.OneToOneField(
-        'email.EmailAddress', related_name='%(class)s', null=True, on_delete=models.SET_NULL,
-        editable=False
+        "email.EmailAddress",
+        related_name="%(class)s",
+        null=True,
+        on_delete=models.SET_NULL,
+        editable=False,
     )
     internal_email_enabled = models.BooleanField(default=True)
 
@@ -37,7 +40,7 @@ class GSuiteAddress(models.Model):
     def internal_email_address(self):
         internal_email = self.internal_email_id
         if internal_email and settings.GSUITE_DOMAIN and self.internal_email_enabled:
-            return f'{internal_email}@{settings.GSUITE_DOMAIN}'
+            return f"{internal_email}@{settings.GSUITE_DOMAIN}"
 
     class Meta:
         abstract = True

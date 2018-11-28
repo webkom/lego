@@ -6,13 +6,13 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class ObjectPermissionsModelTestCase(BaseTestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.regular_users = User.objects.all()
         self.creator = self.regular_users[0]
 
-        self.test_object = TestModel(name='test_object')
+        self.test_object = TestModel(name="test_object")
         self.test_object.save(current_user=self.creator)
 
     def test_inheritance(self):
@@ -34,8 +34,8 @@ class ObjectPermissionsModelTestCase(BaseTestCase):
 
     def test_can_edit_groups_hierarchy(self):
         user = self.regular_users[1]
-        abakom = AbakusGroup.objects.get(name='Abakom')
-        webkom = AbakusGroup.objects.get(name='Webkom')
+        abakom = AbakusGroup.objects.get(name="Abakom")
+        webkom = AbakusGroup.objects.get(name="Webkom")
         webkom.add_user(user)
 
         self.test_object.can_edit_groups.add(abakom)

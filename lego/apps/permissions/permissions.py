@@ -27,7 +27,7 @@ class PermissionHandler:
             permissions = PermissionHandler()
     """
 
-    default_keyword_permission = '/sudo/admin/{model_name}s/{perm}/'
+    default_keyword_permission = "/sudo/admin/{model_name}s/{perm}/"
     default_require_auth = True
 
     permission_map = {}
@@ -53,9 +53,13 @@ class PermissionHandler:
 
         filtered_permissions = []
         if obj is not None:
-            filtered_permissions = filter(lambda perm: user.has_perm(perm, obj), permissions)
+            filtered_permissions = filter(
+                lambda perm: user.has_perm(perm, obj), permissions
+            )
         elif queryset is not None:
-            filtered_permissions = filter(lambda perm: user.has_perm(perm, queryset), permissions)
+            filtered_permissions = filter(
+                lambda perm: user.has_perm(perm, queryset), permissions
+            )
 
         return list(filtered_permissions)
 
@@ -69,9 +73,13 @@ class PermissionHandler:
             return False
 
         if obj is None and queryset is None:
-            raise ValueError('You have to at least provide one parameter, obj or queryset.')
+            raise ValueError(
+                "You have to at least provide one parameter, obj or queryset."
+            )
         elif self.force_object_permission_check and self.skip_object_permission:
-            raise ValueError('You cannot force and skip the permission checks at the same time!')
+            raise ValueError(
+                "You cannot force and skip the permission checks at the same time!"
+            )
 
         require_auth = self.require_auth(perm, obj, queryset)
         authenticated = self.is_authenticated(user)
@@ -81,7 +89,7 @@ class PermissionHandler:
         elif require_auth and not authenticated:
             return False
 
-        if self.force_object_permission_check and perm != 'list':
+        if self.force_object_permission_check and perm != "list":
             return True
         elif self.skip_object_permission:
             return False
@@ -89,7 +97,7 @@ class PermissionHandler:
         if obj is not None:
             if isinstance(obj, ObjectPermissionsModel):
                 return True
-            if getattr(obj, 'created_by') == user:
+            if getattr(obj, "created_by") == user:
                 return True
 
         if queryset is not None and issubclass(queryset.model, ObjectPermissionsModel):
@@ -98,15 +106,25 @@ class PermissionHandler:
         return self.force_queryset_filtering
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
         """
         Check permission on a object.
         """
         if obj is None and queryset is None:
-            raise ValueError('You have to at least provide one parameter, obj or queryset.')
+            raise ValueError(
+                "You have to at least provide one parameter, obj or queryset."
+            )
         elif self.force_object_permission_check and self.skip_object_permission:
-            raise ValueError('You cannot force and skip the permission checks at the same time!')
+            raise ValueError(
+                "You cannot force and skip the permission checks at the same time!"
+            )
 
         require_auth = self.require_auth(perm, obj)
         authenticated = self.is_authenticated(user)
@@ -123,10 +141,12 @@ class PermissionHandler:
         else:
             model = queryset.model
         if model is None:
-            raise ValueError('The model is null, cannot continue.')
+            raise ValueError("The model is null, cannot continue.")
 
         if check_keyword_permissions:
-            required_keyword_permissions = self.required_keyword_permissions(model, perm)
+            required_keyword_permissions = self.required_keyword_permissions(
+                model, perm
+            )
             has_perms = user.has_perms(required_keyword_permissions)
             if has_perms:
                 return True
@@ -157,7 +177,8 @@ class PermissionHandler:
             return queryset.filter(
                 Q(can_edit_users__in=[user.pk])
                 | Q(can_edit_groups__in=groups)
-                | Q(can_view_groups__in=groups) | Q(created_by=user)
+                | Q(can_view_groups__in=groups)
+                | Q(created_by=user)
                 | Q(require_auth=False)
             ).distinct()
 
@@ -171,7 +192,7 @@ class PermissionHandler:
         if obj and isinstance(obj, ObjectPermissionsModel):
             return obj.require_auth
 
-        if queryset is not None and hasattr(queryset.model, 'require_auth'):
+        if queryset is not None and hasattr(queryset.model, "require_auth"):
             return False
 
         return True
@@ -185,9 +206,9 @@ class PermissionHandler:
         format. This is used when no permission is provided for a action in the permission_map.
         """
         kwargs = {
-            'app_label': model._meta.app_label,
-            'model_name': model._meta.model_name,
-            'perm': perm
+            "app_label": model._meta.app_label,
+            "model_name": model._meta.model_name,
+            "perm": perm,
         }
         return self.default_keyword_permission.format(**kwargs)
 
@@ -201,15 +222,14 @@ class PermissionHandler:
         return self.permission_map.get(perm, [self.keyword_permission(model, perm)])
 
     def created_by(self, user, obj):
-        created_by = getattr(obj, 'created_by_id', None)
+        created_by = getattr(obj, "created_by_id", None)
         return created_by == user.id
 
     def has_object_permissions(self, user, perm, obj):
         if perm in self.safe_methods:
             # Check can_view
             if _check_intersection(
-                user.all_groups,
-                obj.can_view_groups.all() | obj.can_edit_groups.all()
+                user.all_groups, obj.can_view_groups.all() | obj.can_edit_groups.all()
             ):
                 return True
             elif user in obj.can_edit_users.all():

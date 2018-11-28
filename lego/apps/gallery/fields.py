@@ -7,5 +7,6 @@ class GalleryCoverField(serializers.PrimaryKeyRelatedField):
 
     def to_representation(self, value):
         from lego.apps.gallery.serializers import GalleryCoverSerializer
+
         serializer = GalleryCoverSerializer(instance=value)
         return serializer.data

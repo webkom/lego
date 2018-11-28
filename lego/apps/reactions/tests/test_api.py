@@ -8,24 +8,28 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 def _get_list_url():
-    return reverse('api:v1:reaction-list')
+    return reverse("api:v1:reaction-list")
 
 
 def _get_detail_url(pk):
-    return reverse('api:v1:reaction-detail', kwargs={'pk': pk})
+    return reverse("api:v1:reaction-detail", kwargs={"pk": pk})
 
 
 class CreateReactionsAPITestCase(BaseAPITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_reaction_types.yaml',
-        'test_articles.yaml'
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_reaction_types.yaml",
+        "test_articles.yaml",
     ]
 
     def get_test_data(self, article_id):
         content_type = ContentType.objects.get_for_model(Article)
         return {
-            'type': ReactionType.objects.first().pk,
-            'target': '{0}.{1}-{2}'.format(content_type.app_label, content_type.model, article_id)
+            "type": ReactionType.objects.first().pk,
+            "target": "{0}.{1}-{2}".format(
+                content_type.app_label, content_type.model, article_id
+            ),
         }
 
     def setUp(self):
@@ -60,7 +64,7 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_invalid_reaction_type(self):
-        test_data = {**self.test_data, 'type': 'xxxyzb'}
+        test_data = {**self.test_data, "type": "xxxyzb"}
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
         self.assertEqual(response.status_code, 400)
@@ -68,8 +72,10 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
 
 class DeleteReactionsAPITestCase(BaseAPITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_reaction_types.yaml',
-        'test_articles.yaml'
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_reaction_types.yaml",
+        "test_articles.yaml",
     ]
 
     def setUp(self):
@@ -79,16 +85,20 @@ class DeleteReactionsAPITestCase(BaseAPITestCase):
         self.test_reaction.created_by = User.objects.get(pk=4)
         self.test_reaction.save()
 
-        self.with_permission = User.objects.get(username='useradmin_test')
-        group = AbakusGroup.objects.get(name='ReactionAdminTest')
+        self.with_permission = User.objects.get(username="useradmin_test")
+        group = AbakusGroup.objects.get(name="ReactionAdminTest")
         group.add_user(self.with_permission)
-        self.without_permission = User.objects.exclude(pk=self.with_permission.pk).first()
+        self.without_permission = User.objects.exclude(
+            pk=self.with_permission.pk
+        ).first()
 
     def successful_delete(self, user):
         self.client.force_authenticate(user=user)
         response = self.client.delete(_get_detail_url(self.test_reaction.pk))
         self.assertEqual(response.status_code, 204)
-        self.assertRaises(Reaction.DoesNotExist, Reaction.objects.get, pk=self.test_reaction.pk)
+        self.assertRaises(
+            Reaction.DoesNotExist, Reaction.objects.get, pk=self.test_reaction.pk
+        )
 
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)

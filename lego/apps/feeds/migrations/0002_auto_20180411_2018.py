@@ -5,24 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feeds', '0001_initial'),
-    ]
+    dependencies = [("feeds", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='notificationfeed',
-            name='updated_at',
+            model_name="notificationfeed",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True, db_index=True),
         ),
         migrations.AlterField(
-            model_name='personalfeed',
-            name='updated_at',
+            model_name="personalfeed",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True, db_index=True),
         ),
         migrations.AlterField(
-            model_name='userfeed',
-            name='updated_at',
+            model_name="userfeed",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True, db_index=True),
         ),
     ]

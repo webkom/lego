@@ -7,8 +7,11 @@ from lego.utils.test_utils import BaseTestCase
 
 class SurveyMailTestCase(BaseTestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_users.yaml', 'test_companies.yaml', 'test_events.yaml',
-        'test_surveys.yaml'
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_companies.yaml",
+        "test_events.yaml",
+        "test_surveys.yaml",
     ]
 
     def setUp(self):

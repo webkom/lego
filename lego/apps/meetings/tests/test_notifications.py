@@ -6,10 +6,13 @@ from lego.apps.users.models import User
 from lego.utils.test_utils import BaseTestCase
 
 
-@patch('lego.utils.email.django_send_mail')
+@patch("lego.utils.email.django_send_mail")
 class MeetingInvitationNotificationTestCase(BaseTestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml', 'initial_files.yaml'
+        "test_abakus_groups.yaml",
+        "test_meetings.yaml",
+        "test_users.yaml",
+        "initial_files.yaml",
     ]
 
     def setUp(self):
@@ -25,17 +28,17 @@ class MeetingInvitationNotificationTestCase(BaseTestCase):
     def assertEmailContains(self, send_mail_mock, content):
         self.notifier.generate_mail()
         email_args = send_mail_mock.call_args[1]
-        self.assertIn(content, email_args['message'])
-        self.assertIn(content, email_args['html_message'])
+        self.assertIn(content, email_args["message"])
+        self.assertIn(content, email_args["html_message"])
 
     def test_generate_email_time(self, send_mail_mock):
-        time = '01.10.16, kl. 19:15'
+        time = "01.10.16, kl. 19:15"
         self.assertEmailContains(send_mail_mock, time)
 
     def test_generate_email_content(self, send_mail_mock):
-        content = 'test user1 inviterte deg til et møte med tittel Bra møte.'
+        content = "test user1 inviterte deg til et møte med tittel Bra møte."
         self.assertEmailContains(send_mail_mock, content)
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = 'Hei test user1!'
+        opening = "Hei test user1!"
         self.assertEmailContains(send_mail_mock, opening)

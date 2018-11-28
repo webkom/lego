@@ -7,17 +7,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0009_auto_20171021_1521'),
-    ]
+    dependencies = [("users", "0009_auto_20171021_1521")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='abakusgroup',
-            name='internal_email',
-        ),
-        migrations.RemoveField(
-            model_name='abakusgroup',
-            name='internal_email_enabled',
-        ),
+        migrations.RemoveField(model_name="abakusgroup", name="internal_email"),
+        migrations.RemoveField(model_name="abakusgroup", name="internal_email_enabled"),
     ]

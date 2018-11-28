@@ -8,47 +8,35 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('companies', '0010_auto_20170930_1336'),
-    ]
+    dependencies = [("companies", "0010_auto_20170930_1336")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='companyinterest',
-            name='collaboration',
-        ),
-        migrations.RemoveField(
-            model_name='companyinterest',
-            name='created_by',
-        ),
-        migrations.RemoveField(
-            model_name='companyinterest',
-            name='itdagene',
-        ),
-        migrations.RemoveField(
-            model_name='companyinterest',
-            name='readme',
-        ),
-        migrations.RemoveField(
-            model_name='companyinterest',
-            name='updated_by',
-        ),
+        migrations.RemoveField(model_name="companyinterest", name="collaboration"),
+        migrations.RemoveField(model_name="companyinterest", name="created_by"),
+        migrations.RemoveField(model_name="companyinterest", name="itdagene"),
+        migrations.RemoveField(model_name="companyinterest", name="readme"),
+        migrations.RemoveField(model_name="companyinterest", name="updated_by"),
         migrations.AddField(
-            model_name='companyinterest',
-            name='other_offers',
+            model_name="companyinterest",
+            name="other_offers",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(
                     choices=[
-                        ('collaboration', 'collaboration'), ('readme', 'readme'),
-                        ('itdagene', 'itdagene'), ('labamba_sponsor', 'labamba_sponsor')
-                    ], max_length=64
-                ), default=[], size=None
+                        ("collaboration", "collaboration"),
+                        ("readme", "readme"),
+                        ("itdagene", "itdagene"),
+                        ("labamba_sponsor", "labamba_sponsor"),
+                    ],
+                    max_length=64,
+                ),
+                default=[],
+                size=None,
             ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='semester',
-            name='active_interest_form',
+            model_name="semester",
+            name="active_interest_form",
             field=models.BooleanField(default=False),
         ),
     ]

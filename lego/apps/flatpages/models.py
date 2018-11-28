@@ -8,10 +8,10 @@ from lego.utils.models import BasisModel
 
 
 class Page(BasisModel, SlugModel):
-    title = models.CharField('title', max_length=200)
+    title = models.CharField("title", max_length=200)
     content = ContentField(allow_images=True)
     picture = FileField()
-    slug_field = 'title'
+    slug_field = "title"
 
     class Meta:
         permission_handler = PagePermissionHandler()

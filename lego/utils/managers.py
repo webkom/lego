@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from django.db.models.signals import post_delete, pre_delete
+
 from mptt.managers import TreeManager
 
 
@@ -33,9 +34,9 @@ class PersistentModelManager(models.Manager):
 
 class BasisModelManager(PersistentModelManager):
     def create(self, *args, **kwargs):
-        user = kwargs.pop('current_user', None)
-        kwargs['created_by'] = user
-        kwargs['updated_by'] = user
+        user = kwargs.pop("current_user", None)
+        kwargs["created_by"] = user
+        kwargs["updated_by"] = user
         instance = super().create(*args, **kwargs)
         return instance
 
@@ -44,4 +45,5 @@ class TreeBasisManager(TreeManager, BasisModelManager):
     """
     Ugly hack to be able to use BasisModel with django-mptt.
     """
+
     pass

@@ -12,16 +12,26 @@ class MeetingPermissionHandler(PermissionHandler):
 
     def filter_queryset(self, user, queryset, **kwargs):
         if user.is_authenticated:
-            return queryset.filter(Q(_invited_users=user) | Q(created_by=user)).distinct()
+            return queryset.filter(
+                Q(_invited_users=user) | Q(created_by=user)
+            ).distinct()
         return queryset.none()
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
         if not user.is_authenticated:
             return False
 
-        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
 
         if has_perm:
             return True
@@ -34,11 +44,17 @@ class MeetingPermissionHandler(PermissionHandler):
 
 class MeetingInvitationPermissionHandler(PermissionHandler):
 
-    default_keyword_permission = '/sudo/admin/meetings/{perm}/'
+    default_keyword_permission = "/sudo/admin/meetings/{perm}/"
     force_object_permission_check = True
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
         if not user.is_authenticated:
             return False
@@ -48,11 +64,11 @@ class MeetingInvitationPermissionHandler(PermissionHandler):
         if obj is not None:
             meeting = obj.meeting
         else:
-            view = kwargs.get('view', None)
+            view = kwargs.get("view", None)
             if view is None:
                 return False
             # This is a nested view and it is possible to retrieve the meeting.
-            meeting_pk = view.kwargs['meeting_pk']
+            meeting_pk = view.kwargs["meeting_pk"]
             meeting = Meeting.objects.get(id=meeting_pk)
 
         meeting_permission_handler = get_permission_handler(Meeting)

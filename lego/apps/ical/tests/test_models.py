@@ -4,7 +4,7 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class TokenTestCase(BaseTestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.user = User.objects.get(id=1)

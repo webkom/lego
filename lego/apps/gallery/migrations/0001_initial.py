@@ -15,115 +15,142 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('files', '0002_file_user'),
-        ('users', '0001_initial'),
-        ('events', '0002_auto_20170828_1020'),
+        ("files", "0002_file_user"),
+        ("users", "0001_initial"),
+        ("events", "0002_auto_20170828_1020"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Gallery',
+            name="Gallery",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('require_auth', models.BooleanField(default=False, verbose_name='require auth')),
-                ('title', models.CharField(max_length=128)),
-                ('description', models.TextField(blank=True)),
-                ('location', models.CharField(max_length=64)),
-                ('taken_at', models.DateField(null=True)),
                 (
-                    'can_edit_groups',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "require_auth",
+                    models.BooleanField(default=False, verbose_name="require auth"),
+                ),
+                ("title", models.CharField(max_length=128)),
+                ("description", models.TextField(blank=True)),
+                ("location", models.CharField(max_length=64)),
+                ("taken_at", models.DateField(null=True)),
+                (
+                    "can_edit_groups",
                     models.ManyToManyField(
-                        blank=True, related_name='can_edit_gallery', to='users.AbakusGroup'
-                    )
+                        blank=True,
+                        related_name="can_edit_gallery",
+                        to="users.AbakusGroup",
+                    ),
                 ),
                 (
-                    'can_edit_users',
+                    "can_edit_users",
                     models.ManyToManyField(
-                        blank=True, related_name='can_edit_gallery', to=settings.AUTH_USER_MODEL
-                    )
+                        blank=True,
+                        related_name="can_edit_gallery",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'can_view_groups',
+                    "can_view_groups",
                     models.ManyToManyField(
-                        blank=True, related_name='can_view_gallery', to='users.AbakusGroup'
-                    )
+                        blank=True,
+                        related_name="can_view_gallery",
+                        to="users.AbakusGroup",
+                    ),
                 ),
                 (
-                    'created_by',
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
-                        on_delete=django.db.models.deletion.CASCADE, related_name='gallery_created',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="gallery_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'event',
+                    "event",
                     models.ForeignKey(
-                        null=True, on_delete=django.db.models.deletion.CASCADE,
-                        related_name='galleries', to='events.Event'
-                    )
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="galleries",
+                        to="events.Event",
+                    ),
                 ),
-                ('photographers', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                ("photographers", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
                 (
-                    'updated_by',
+                    "updated_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
-                        on_delete=django.db.models.deletion.CASCADE, related_name='gallery_updated',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="gallery_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='GalleryPicture',
+            name="GalleryPicture",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('description', models.TextField(blank=True)),
-                ('active', models.BooleanField(default=True)),
+                ("description", models.TextField(blank=True)),
+                ("active", models.BooleanField(default=True)),
                 (
-                    'file',
+                    "file",
                     lego.apps.files.models.FileField(
-                        null=True, on_delete=django.db.models.deletion.SET_NULL,
-                        related_name='gallery_pictures', to='files.File'
-                    )
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="gallery_pictures",
+                        to="files.File",
+                    ),
                 ),
                 (
-                    'gallery',
+                    "gallery",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name='pictures',
-                        to='gallery.Gallery'
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pictures",
+                        to="gallery.Gallery",
+                    ),
                 ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='gallerypicture',
-            unique_together=set([('gallery', 'file')]),
+            name="gallerypicture", unique_together=set([("gallery", "file")])
         ),
     ]

@@ -6,14 +6,16 @@ from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 class Registrations:
     @staticmethod
     def generate_registration_token(email):
-        return TimestampSigner().sign(signing.dumps({'email': email}))
+        return TimestampSigner().sign(signing.dumps({"email": email}))
 
     @staticmethod
     def validate_registration_token(token):
         try:
             return signing.loads(
-                TimestampSigner().unsign(token, max_age=settings.REGISTRATION_CONFIRMATION_TIMEOUT)
-            )['email']
+                TimestampSigner().unsign(
+                    token, max_age=settings.REGISTRATION_CONFIRMATION_TIMEOUT
+                )
+            )["email"]
         except (BadSignature, SignatureExpired):
             return None
 
@@ -21,9 +23,9 @@ class Registrations:
     def generate_student_confirmation_token(student_username, course, member):
         data = signing.dumps(
             {
-                'student_username': student_username.lower(),
-                'course': course,
-                'member': member
+                "student_username": student_username.lower(),
+                "course": course,
+                "member": member,
             }
         )
         token = TimestampSigner().sign(data)
@@ -33,7 +35,9 @@ class Registrations:
     def validate_student_confirmation_token(token):
         try:
             return signing.loads(
-                TimestampSigner().unsign(token, max_age=settings.STUDENT_CONFIRMATION_TIMEOUT)
+                TimestampSigner().unsign(
+                    token, max_age=settings.STUDENT_CONFIRMATION_TIMEOUT
+                )
             )
         except (BadSignature, SignatureExpired):
             return None

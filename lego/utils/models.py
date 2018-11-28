@@ -33,7 +33,10 @@ class TimeStampModel(CachedModel):
     """
     Attach created_at and updated_at fields automatically on all model instances.
     """
-    created_at = models.DateTimeField(default=timezone.now, editable=False, db_index=True)
+
+    created_at = models.DateTimeField(
+        default=timezone.now, editable=False, db_index=True
+    )
     updated_at = models.DateTimeField(default=timezone.now, editable=False)
 
     class Meta:
@@ -49,6 +52,7 @@ class PersistentModel(CachedModel):
     Hide 'deleted' models from default queryset. Replaces the manager to accomplish this.
     Remember to inherit from PersistentModelManager when you replaces a manager on a child-class.
     """
+
     deleted = models.BooleanField(default=False, editable=False, db_index=True)
 
     objects = PersistentModelManager()
@@ -56,7 +60,7 @@ class PersistentModel(CachedModel):
 
     class Meta:
         abstract = True
-        default_manager_name = 'objects'
+        default_manager_name = "objects"
 
     def delete(self, using=None, force=False):
         if force:
@@ -77,24 +81,34 @@ class BasisModel(PersistentModel, TimeStampModel):
     Based on the PersistentModel and the TimeStampModel. Attach created_by and updated_by fields
     on all instances. A BasisModelSerializer is required when using this with rest-framework.
     """
+
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, default=None, editable=False,
-        related_name="%(class)s_created", db_index=True, on_delete=models.SET_NULL
+        settings.AUTH_USER_MODEL,
+        null=True,
+        default=None,
+        editable=False,
+        related_name="%(class)s_created",
+        db_index=True,
+        on_delete=models.SET_NULL,
     )
     updated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, default=None, editable=False,
-        related_name="%(class)s_updated", on_delete=models.SET_NULL
+        settings.AUTH_USER_MODEL,
+        null=True,
+        default=None,
+        editable=False,
+        related_name="%(class)s_updated",
+        on_delete=models.SET_NULL,
     )
 
     objects = BasisModelManager()
 
     class Meta:
         abstract = True
-        default_manager_name = 'objects'
+        default_manager_name = "objects"
 
     def save(self, *args, **kwargs):
         try:
-            current_user = kwargs.pop('current_user', None) or self.current_user
+            current_user = kwargs.pop("current_user", None) or self.current_user
             if not self.id:
                 self.created_by = current_user
             self.updated_by = current_user

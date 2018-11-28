@@ -14,18 +14,21 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     Image Gallery
     Normal permissions is used to restrict access to the gallery.
     """
+
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     cover = models.ForeignKey(
-        'gallery.GalleryPicture', related_name='gallery_covers', null=True,
-        on_delete=models.SET_NULL
+        "gallery.GalleryPicture",
+        related_name="gallery_covers",
+        null=True,
+        on_delete=models.SET_NULL,
     )
     location = models.CharField(max_length=64)
     taken_at = models.DateField(null=True)
-    photographers = models.ManyToManyField('users.User')
+    photographers = models.ManyToManyField("users.User")
 
     event = models.ForeignKey(
-        'events.Event', related_name='galleries', null=True, on_delete=models.SET_NULL
+        "events.Event", related_name="galleries", null=True, on_delete=models.SET_NULL
     )
     public_metadata = models.BooleanField(default=False)
 
@@ -35,24 +38,29 @@ class GalleryPicture(models.Model):
     Store the relation between the gallery and the file in remote storage.
     Inactive element are only visible for users with can_edit permissions.
     """
-    gallery = models.ForeignKey(Gallery, related_name='pictures', on_delete=models.CASCADE)
-    file = FileField(related_name='gallery_pictures')
-    taggees = models.ManyToManyField('users.User', blank=True)
+
+    gallery = models.ForeignKey(
+        Gallery, related_name="pictures", on_delete=models.CASCADE
+    )
+    file = FileField(related_name="gallery_pictures")
+    taggees = models.ManyToManyField("users.User", blank=True)
 
     description = models.TextField(blank=True)
     active = models.BooleanField(default=True)
     comments = GenericRelation(Comment)
 
     class Meta:
-        unique_together = ('gallery', 'file')
+        unique_together = ("gallery", "file")
         permission_handler = GalleryPicturePermissionHandler()
 
     @property
     def comment_target(self):
-        return '{0}.{1}-{2}'.format(self._meta.app_label, self._meta.model_name, self.pk)
+        return "{0}.{1}-{2}".format(
+            self._meta.app_label, self._meta.model_name, self.pk
+        )
 
     def __str__(self):
-        return f'{self.gallery.title}-#{self.pk}'
+        return f"{self.gallery.title}-#{self.pk}"
 
     def get_absolute_url(self):
-        return f'{settings.FRONTEND_URL}/photos/{self.gallery.id}/picture/{self.id}/'
+        return f"{settings.FRONTEND_URL}/photos/{self.gallery.id}/picture/{self.id}/"

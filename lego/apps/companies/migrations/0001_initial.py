@@ -16,189 +16,230 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.CharField(blank=True, max_length=500)),
-                ('phone', models.CharField(blank=True, max_length=100)),
-                ('company_type', models.CharField(blank=True, max_length=200)),
-                ('website', models.URLField(blank=True)),
-                ('address', models.CharField(blank=True, max_length=100)),
-                ('payment_mail', models.EmailField(blank=True, max_length=100)),
+                (
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.CharField(blank=True, max_length=500)),
+                ("phone", models.CharField(blank=True, max_length=100)),
+                ("company_type", models.CharField(blank=True, max_length=200)),
+                ("website", models.URLField(blank=True)),
+                ("address", models.CharField(blank=True, max_length=100)),
+                ("payment_mail", models.EmailField(blank=True, max_length=100)),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='CompanyContact',
+            name="CompanyContact",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('name', models.CharField(max_length=100)),
-                ('role', models.CharField(blank=True, max_length=100)),
-                ('mail', models.EmailField(blank=True, max_length=254)),
-                ('phone', models.CharField(blank=True, max_length=100)),
-                ('mobile', models.CharField(blank=True, max_length=100)),
+                (
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("role", models.CharField(blank=True, max_length=100)),
+                ("mail", models.EmailField(blank=True, max_length=254)),
+                ("phone", models.CharField(blank=True, max_length=100)),
+                ("mobile", models.CharField(blank=True, max_length=100)),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='CompanyInterest',
+            name="CompanyInterest",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('company_name', models.CharField(max_length=255)),
-                ('contact_person', models.CharField(max_length=255)),
-                ('mail', models.EmailField(max_length=254)),
                 (
-                    'events',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("company_name", models.CharField(max_length=255)),
+                ("contact_person", models.CharField(max_length=255)),
+                ("mail", models.EmailField(max_length=254)),
+                (
+                    "events",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(
                             choices=[
-                                ('company_presentation', 'company_presentation'),
-                                ('course', 'course'), ('lunch_presentation', 'lunch_presentation'),
-                                ('bedex', 'bedex'), ('anniversary', 'anniversary'),
-                                ('other', 'other')
-                            ], max_length=64
-                        ), size=None
-                    )
+                                ("company_presentation", "company_presentation"),
+                                ("course", "course"),
+                                ("lunch_presentation", "lunch_presentation"),
+                                ("bedex", "bedex"),
+                                ("anniversary", "anniversary"),
+                                ("other", "other"),
+                            ],
+                            max_length=64,
+                        ),
+                        size=None,
+                    ),
                 ),
-                ('read_me', models.BooleanField(default=False)),
-                ('collaboration', models.BooleanField(default=False)),
-                ('itdagene', models.BooleanField(default=False)),
-                ('comment', models.TextField(blank=True)),
+                ("read_me", models.BooleanField(default=False)),
+                ("collaboration", models.BooleanField(default=False)),
+                ("itdagene", models.BooleanField(default=False)),
+                ("comment", models.TextField(blank=True)),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='Semester',
+            name="Semester",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('year', models.PositiveIntegerField()),
                 (
-                    'semester',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("year", models.PositiveIntegerField()),
+                (
+                    "semester",
                     models.CharField(
-                        choices=[('spring', 'spring'), ('autumn', 'autumn')], max_length=64
-                    )
+                        choices=[("spring", "spring"), ("autumn", "autumn")],
+                        max_length=64,
+                    ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name='SemesterStatus',
+            name="SemesterStatus",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
                 (
-                    'contacted_status',
+                    "contacted_status",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(
                             choices=[
-                                ('company_presentation', 'company_presentation'),
-                                ('course', 'course'), ('lunch_presentation', 'lunch_presentation'),
-                                ('bedex', 'bedex'), ('anniversary', 'anniversary'),
-                                ('interested', 'interested'), ('not_interested', 'not_interested'),
-                                ('contacted', 'contacted'), ('not_contacted', 'not_contacted')
-                            ], max_length=64
-                        ), size=None
-                    )
+                                ("company_presentation", "company_presentation"),
+                                ("course", "course"),
+                                ("lunch_presentation", "lunch_presentation"),
+                                ("bedex", "bedex"),
+                                ("anniversary", "anniversary"),
+                                ("interested", "interested"),
+                                ("not_interested", "not_interested"),
+                                ("contacted", "contacted"),
+                                ("not_contacted", "not_contacted"),
+                            ],
+                            max_length=64,
+                        ),
+                        size=None,
+                    ),
                 ),
                 (
-                    'company',
+                    "company",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='semester_statuses', to='companies.Company'
-                    )
+                        related_name="semester_statuses",
+                        to="companies.Company",
+                    ),
                 ),
                 (
-                    'semester',
+                    "semester",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to='companies.Semester'
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="companies.Semester",
+                    ),
                 ),
             ],
         ),

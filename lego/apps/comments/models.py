@@ -10,7 +10,7 @@ from lego.utils.models import BasisModel
 
 class CommentManager(BasisModelManager):
     def get_queryset(self):
-        return super().get_queryset().select_related('created_by')
+        return super().get_queryset().select_related("created_by")
 
 
 class Comment(BasisModel):
@@ -19,12 +19,12 @@ class Comment(BasisModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
 
     objects = CommentManager()
 
     class Meta:
-        ordering = ('created_at', )
+        ordering = ("created_at",)
         permission_handler = CommentPermissionHandler()
 
     def __str__(self):

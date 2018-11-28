@@ -9,15 +9,11 @@ class FollowerSerializer(serializers.ModelSerializer):
     follower = PublicUserField(read_only=True)
 
     class Meta:
-        fields = (
-            'id',
-            'follower',
-            'target',
-        )
+        fields = ("id", "follower", "target")
 
     def save(self, **kwargs):
-        request = self.context['request']
-        kwargs['follower'] = request.user
+        request = self.context["request"]
+        kwargs["follower"] = request.user
         return super().save(**kwargs)
 
 

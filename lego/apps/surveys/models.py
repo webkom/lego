@@ -20,9 +20,11 @@ class Survey(BasisModel):
     template_type = models.CharField(
         max_length=30, choices=EVENT_TYPES, null=True, blank=True, unique=True
     )
-    event = models.OneToOneField('events.Event', on_delete=models.CASCADE)
+    event = models.OneToOneField("events.Event", on_delete=models.CASCADE)
     sent = models.BooleanField(default=False)
-    token = models.CharField(max_length=64, default=None, unique=True, null=True, blank=True)
+    token = models.CharField(
+        max_length=64, default=None, unique=True, null=True, blank=True
+    )
 
     def aggregate_submissions(self):
         result = {}
@@ -33,18 +35,20 @@ class Survey(BasisModel):
                 text_answers = list(
                     map(
                         lambda answer: answer.answer_text,
-                        Answer.objects.filter(question=question).exclude(hide_from_public=True)
+                        Answer.objects.filter(question=question).exclude(
+                            hide_from_public=True
+                        ),
                     )
                 )
                 shuffle(text_answers)
-                options['answers'] = text_answers
+                options["answers"] = text_answers
             else:
                 for option in question.options.all():
                     number_of_selections = submissions.filter(
                         answers__selected_options__in=[option.id]
                     ).count()
                     options[str(option.id)] = number_of_selections
-            options['questionType'] = question.question_type
+            options["questionType"] = question.question_type
             result[str(question.id)] = options
         return result
 
@@ -59,10 +63,12 @@ class Survey(BasisModel):
 
 class Question(models.Model):
     class Meta:
-        ordering = ['relative_index']
-        unique_together = ('survey', 'relative_index')
+        ordering = ["relative_index"]
+        unique_together = ("survey", "relative_index")
 
-    survey = models.ForeignKey(Survey, related_name='questions', on_delete=models.CASCADE)
+    survey = models.ForeignKey(
+        Survey, related_name="questions", on_delete=models.CASCADE
+    )
     question_type = models.CharField(max_length=64, choices=QUESTION_TYPES)
     question_text = models.TextField(max_length=255)
     mandatory = models.BooleanField(default=False)
@@ -70,30 +76,40 @@ class Question(models.Model):
 
 
 class Option(models.Model):
-    question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
-    option_text = models.TextField(max_length=255, default='')
+    question = models.ForeignKey(
+        Question, related_name="options", on_delete=models.CASCADE
+    )
+    option_text = models.TextField(max_length=255, default="")
 
 
 class Submission(BasisModel):
-    user = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
-    survey = models.ForeignKey(Survey, related_name='submissions', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="surveys", on_delete=models.CASCADE)
+    survey = models.ForeignKey(
+        Survey, related_name="submissions", on_delete=models.CASCADE
+    )
 
     class Meta:
-        unique_together = ('survey', 'user')
+        unique_together = ("survey", "user")
 
 
 class Answer(BasisModel):
-    submission = models.ForeignKey(Submission, related_name='answers', on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-    selected_options = models.ManyToManyField(
-        Option, related_name='selected_in_answers', blank=True
+    submission = models.ForeignKey(
+        Submission, related_name="answers", on_delete=models.CASCADE
     )
-    answer_text = models.TextField(default='', blank=True)
+    question = models.ForeignKey(
+        Question, related_name="answers", on_delete=models.CASCADE
+    )
+    selected_options = models.ManyToManyField(
+        Option, related_name="selected_in_answers", blank=True
+    )
+    answer_text = models.TextField(default="", blank=True)
     hide_from_public = models.BooleanField(default=False)
 
     def create(submission, question, **kwargs):
-        selected_options = kwargs.pop('selected_options')
-        answer = Answer.objects.create(submission=submission, question=question, **kwargs)
+        selected_options = kwargs.pop("selected_options")
+        answer = Answer.objects.create(
+            submission=submission, question=question, **kwargs
+        )
         for selected_option in selected_options:
             answer.selected_options.add(selected_option)
         answer.save()

@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gallery', '0001_initial'),
-    ]
+    dependencies = [("gallery", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='gallery',
-            name='require_auth',
+            model_name="gallery",
+            name="require_auth",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

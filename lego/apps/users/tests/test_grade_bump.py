@@ -12,7 +12,7 @@ def get_groups(user):
 
 
 def bump_users(dry_run=False):
-    call_command('bump_users', '--no-dryrun')
+    call_command("bump_users", "--no-dryrun")
 
 
 def reset_user_bump_date(user, months=10):
@@ -22,24 +22,34 @@ def reset_user_bump_date(user, months=10):
 
 
 class AbakusGroupHierarchyTestCase(BaseTestCase):
-    fixtures = ['initial_files.yaml', 'initial_abakus_groups.yaml']
+    fixtures = ["initial_files.yaml", "initial_abakus_groups.yaml"]
 
     def setUp(self):
-        self.students = AbakusGroup.objects.get(name='Students')
+        self.students = AbakusGroup.objects.get(name="Students")
 
-        self.data = AbakusGroup.objects.get(name='Datateknologi')
-        self.data_1 = AbakusGroup.objects.get(name='1. klasse Datateknologi')
-        self.data_2 = AbakusGroup.objects.get(name='2. klasse Datateknologi')
-        self.data_3 = AbakusGroup.objects.get(name='3. klasse Datateknologi')
-        self.data_4 = AbakusGroup.objects.get(name='4. klasse Datateknologi')
-        self.data_5 = AbakusGroup.objects.get(name='5. klasse Datateknologi')
+        self.data = AbakusGroup.objects.get(name="Datateknologi")
+        self.data_1 = AbakusGroup.objects.get(name="1. klasse Datateknologi")
+        self.data_2 = AbakusGroup.objects.get(name="2. klasse Datateknologi")
+        self.data_3 = AbakusGroup.objects.get(name="3. klasse Datateknologi")
+        self.data_4 = AbakusGroup.objects.get(name="4. klasse Datateknologi")
+        self.data_5 = AbakusGroup.objects.get(name="5. klasse Datateknologi")
 
-        self.komtek = AbakusGroup.objects.get(name='Kommunikasjonsteknologi')
-        self.komtek_1 = AbakusGroup.objects.get(name='1. klasse Kommunikasjonsteknologi')
-        self.komtek_2 = AbakusGroup.objects.get(name='2. klasse Kommunikasjonsteknologi')
-        self.komtek_3 = AbakusGroup.objects.get(name='3. klasse Kommunikasjonsteknologi')
-        self.komtek_4 = AbakusGroup.objects.get(name='4. klasse Kommunikasjonsteknologi')
-        self.komtek_5 = AbakusGroup.objects.get(name='5. klasse Kommunikasjonsteknologi')
+        self.komtek = AbakusGroup.objects.get(name="Kommunikasjonsteknologi")
+        self.komtek_1 = AbakusGroup.objects.get(
+            name="1. klasse Kommunikasjonsteknologi"
+        )
+        self.komtek_2 = AbakusGroup.objects.get(
+            name="2. klasse Kommunikasjonsteknologi"
+        )
+        self.komtek_3 = AbakusGroup.objects.get(
+            name="3. klasse Kommunikasjonsteknologi"
+        )
+        self.komtek_4 = AbakusGroup.objects.get(
+            name="4. klasse Kommunikasjonsteknologi"
+        )
+        self.komtek_5 = AbakusGroup.objects.get(
+            name="5. klasse Kommunikasjonsteknologi"
+        )
 
         self.user = User.objects.create()
         reset_user_bump_date(self.user)

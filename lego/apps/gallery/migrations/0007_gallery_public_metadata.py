@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gallery', '0006_auto_20171210_1610'),
-    ]
+    dependencies = [("gallery", "0006_auto_20171210_1610")]
 
     operations = [
         migrations.AddField(
-            model_name='gallery',
-            name='public_metadata',
+            model_name="gallery",
+            name="public_metadata",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

@@ -9,7 +9,8 @@ class FeedBase(models.Model):
     """
     FeedBase contains all the base components of a feed
     """
-    ordering_key = models.CharField(max_length=48, db_index=True, default='0')
+
+    ordering_key = models.CharField(max_length=48, db_index=True, default="0")
     feed_id = models.CharField(max_length=64, db_index=True)
     group = models.CharField(max_length=128)
 
@@ -33,7 +34,7 @@ class FeedBase(models.Model):
         last_activity = self.last_activity
         if last_activity:
             return last_activity.verb.infinitive
-        return 'unknown'
+        return "unknown"
 
     @property
     def activities(self):
@@ -51,10 +52,7 @@ class FeedBase(models.Model):
     @classmethod
     def create_activities(cls, activity, feed_ids, group):
         def create_activity(activity, feed_id, group):
-            aggregated_activity = cls(
-                feed_id=feed_id,
-                group=group,
-            )
+            aggregated_activity = cls(feed_id=feed_id, group=group)
             aggregated_activity.add_activity(activity)
             return aggregated_activity
 
@@ -84,12 +82,12 @@ class FeedBase(models.Model):
         """
         if isinstance(self.activity_store, list):
             for raw_activity in self.activity_store:
-                if raw_activity.get('activity_id') == str(activity.activity_id):
+                if raw_activity.get("activity_id") == str(activity.activity_id):
                     self.activity_store.remove(raw_activity)
         if self.last_activity:
             self.ordering_key = self.last_activity.activity_id
         else:
-            self.ordering_key = '0'
+            self.ordering_key = "0"
 
 
 class AggregatedFeedManager(models.Manager):
@@ -107,7 +105,7 @@ class AggregatedFeedBase(FeedBase):
 
     class Meta(FeedBase.Meta):
         abstract = True
-        ordering = ('-ordering_key', )
+        ordering = ("-ordering_key",)
 
 
 class NotificationFeedBase(FeedBase, MarkerModelMixin):
@@ -116,7 +114,7 @@ class NotificationFeedBase(FeedBase, MarkerModelMixin):
 
     class Meta(FeedBase.Meta):
         abstract = True
-        ordering = ('-ordering_key', )
+        ordering = ("-ordering_key",)
 
     def add_activity(self, activity):
         super().add_activity(activity)
@@ -137,13 +135,14 @@ class TimelineStorage(models.Model):
     aggregated_id = models.PositiveIntegerField(db_index=True)
 
     class Meta:
-        unique_together = ('activity_id', 'feed')
+        unique_together = ("activity_id", "feed")
 
     @classmethod
     def aggregated_ids(cls, activity_id, feed):
         return list(
-            cls.objects.filter(activity_id=str(activity_id),
-                               feed=feed._meta.model_name).values_list('aggregated_id', flat=True)
+            cls.objects.filter(
+                activity_id=str(activity_id), feed=feed._meta.model_name
+            ).values_list("aggregated_id", flat=True)
         )
 
     @classmethod

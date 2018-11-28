@@ -15,102 +15,126 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('users', '0001_initial'),
-        ('events', '0002_auto_20170828_1020'),
-        ('meetings', '0001_initial'),
+        ("users", "0001_initial"),
+        ("events", "0002_auto_20170828_1020"),
+        ("meetings", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Announcement',
+            name="Announcement",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('message', models.TextField()),
-                ('sent', models.DateTimeField(default=None, null=True)),
                 (
-                    'created_by',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("message", models.TextField()),
+                ("sent", models.DateTimeField(default=None, null=True)),
+                (
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='announcement_created', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="announcement_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
-                ('events', models.ManyToManyField(blank=True, to='events.Event')),
-                ('groups', models.ManyToManyField(blank=True, to='users.AbakusGroup')),
-                ('meetings', models.ManyToManyField(blank=True, to='meetings.Meeting')),
+                ("events", models.ManyToManyField(blank=True, to="events.Event")),
+                ("groups", models.ManyToManyField(blank=True, to="users.AbakusGroup")),
+                ("meetings", models.ManyToManyField(blank=True, to="meetings.Meeting")),
                 (
-                    'updated_by',
+                    "updated_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='announcement_updated', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="announcement_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
-                ('users', models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL)),
+                (
+                    "users",
+                    models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
+                ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='NotificationSetting',
+            name="NotificationSetting",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'notification_type',
+                    "notification_type",
                     models.CharField(
                         choices=[
-                            ('weekly_mail', 'weekly_mail'), ('event_bump', 'event_bump'),
-                            ('event_admin_registration', 'event_admin_registration'),
-                            ('event_payment_overdue', 'event_payment_overdue'),
-                            ('meeting_invite', 'meeting_invite'),
-                            ('penalty_creation', 'penalty_creation'),
-                            ('restricted_mail_sent', 'restricted_mail_sent'),
-                            ('announcement', 'announcement')
-                        ], max_length=64
-                    )
+                            ("weekly_mail", "weekly_mail"),
+                            ("event_bump", "event_bump"),
+                            ("event_admin_registration", "event_admin_registration"),
+                            ("event_payment_overdue", "event_payment_overdue"),
+                            ("meeting_invite", "meeting_invite"),
+                            ("penalty_creation", "penalty_creation"),
+                            ("restricted_mail_sent", "restricted_mail_sent"),
+                            ("announcement", "announcement"),
+                        ],
+                        max_length=64,
+                    ),
                 ),
-                ('enabled', models.BooleanField(default=True)),
+                ("enabled", models.BooleanField(default=True)),
                 (
-                    'channels',
+                    "channels",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(
-                            choices=[('email', 'email'), ('push', 'push')], max_length=64
-                        ), default=['email', 'push'], null=True, size=None
-                    )
+                            choices=[("email", "email"), ("push", "push")],
+                            max_length=64,
+                        ),
+                        default=["email", "push"],
+                        null=True,
+                        size=None,
+                    ),
                 ),
                 (
-                    'user',
+                    "user",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='notificationsetting',
-            unique_together=set([('user', 'notification_type')]),
+            name="notificationsetting",
+            unique_together=set([("user", "notification_type")]),
         ),
     ]

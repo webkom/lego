@@ -15,9 +15,11 @@ class MeetingInvitationHandler(Handler):
 
     def get_activity(self, meeting_invitation):
         return Activity(
-            actor=meeting_invitation.created_by, verb=MeetingInvitationVerb,
-            object=meeting_invitation, target=meeting_invitation.user,
-            time=meeting_invitation.created_at
+            actor=meeting_invitation.created_by,
+            verb=MeetingInvitationVerb,
+            object=meeting_invitation,
+            target=meeting_invitation.user,
+            time=meeting_invitation.created_at,
         )
 
     def handle_create(self, instance, **kwargs):
@@ -25,7 +27,9 @@ class MeetingInvitationHandler(Handler):
         self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
 
         # Send notification
-        notification = MeetingInvitationNotification(instance.user, meeting_invitation=instance)
+        notification = MeetingInvitationNotification(
+            instance.user, meeting_invitation=instance
+        )
         notification.notify()
 
     def handle_update(self, instance, **kwargs):

@@ -12,10 +12,10 @@ class ContactFormSerializer(serializers.Serializer):
 
     def validate_captcha_response(self, captcha_response):
         if not verify_captcha(captcha_response):
-            raise exceptions.ValidationError('invalid_captcha')
+            raise exceptions.ValidationError("invalid_captcha")
         return captcha_response
 
     def validate_anonymous(self, anonymous):
-        if not self.context['request'].user.is_authenticated and not anonymous:
-            raise exceptions.ValidationError('anonymous_required_without_auth')
+        if not self.context["request"].user.is_authenticated and not anonymous:
+            raise exceptions.ValidationError("anonymous_required_without_auth")
         return anonymous

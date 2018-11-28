@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0002_auto_20170828_1020'),
-    ]
+    dependencies = [("events", "0002_auto_20170828_1020")]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='require_auth',
+            model_name="event",
+            name="require_auth",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

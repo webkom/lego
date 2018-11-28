@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('joblistings', '0005_auto_20171210_1610'),
-    ]
+    dependencies = [("joblistings", "0005_auto_20171210_1610")]
 
     operations = [
         migrations.AddField(
-            model_name='joblisting',
-            name='contact_mail',
+            model_name="joblisting",
+            name="contact_mail",
             field=models.EmailField(blank=True, max_length=254),
-        ),
+        )
     ]

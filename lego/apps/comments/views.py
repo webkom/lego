@@ -6,8 +6,11 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
 class CommentViewSet(
-    AllowedPermissionsMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin, viewsets.GenericViewSet
+    AllowedPermissionsMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
 ):
     """
     NB: Don't add the ListMixin, this breaks permissions because the permissions
@@ -15,10 +18,10 @@ class CommentViewSet(
     """
 
     queryset = Comment.objects.all()
-    ordering = 'created_at'
+    ordering = "created_at"
 
     def get_serializer_class(self):
-        if self.action in ('update', 'partial_update'):
+        if self.action in ("update", "partial_update"):
             return UpdateCommentSerializer
 
         return CommentSerializer

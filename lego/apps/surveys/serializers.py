@@ -11,7 +11,7 @@ from lego.utils.serializers import BasisModelSerializer
 class OptionSerializer(BasisModelSerializer):
     class Meta:
         model = Option
-        fields = ('id', 'option_text')
+        fields = ("id", "option_text")
 
 
 class OptionUpdateSerializer(BasisModelSerializer):
@@ -19,7 +19,7 @@ class OptionUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Option
-        fields = ('id', 'option_text')
+        fields = ("id", "option_text")
 
 
 class QuestionSerializer(BasisModelSerializer):
@@ -28,7 +28,14 @@ class QuestionSerializer(BasisModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'question_type', 'question_text', 'mandatory', 'options', 'relative_index')
+        fields = (
+            "id",
+            "question_type",
+            "question_text",
+            "mandatory",
+            "options",
+            "relative_index",
+        )
 
 
 class QuestionUpdateSerializer(BasisModelSerializer):
@@ -38,7 +45,14 @@ class QuestionUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'question_type', 'question_text', 'mandatory', 'options', 'relative_index')
+        fields = (
+            "id",
+            "question_type",
+            "question_text",
+            "mandatory",
+            "options",
+            "relative_index",
+        )
 
 
 class AnswerSerializer(BasisModelSerializer):
@@ -46,7 +60,7 @@ class AnswerSerializer(BasisModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('id', 'submission', 'question', 'answer_text', 'selected_options')
+        fields = ("id", "submission", "question", "answer_text", "selected_options")
 
 
 class AnswerAdminSerializer(AnswerSerializer):
@@ -54,13 +68,13 @@ class AnswerAdminSerializer(AnswerSerializer):
 
     class Meta:
         model = Answer
-        fields = AnswerSerializer.Meta.fields + ('hide_from_public', )
+        fields = AnswerSerializer.Meta.fields + ("hide_from_public",)
 
 
 class AnswerCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Answer
-        fields = ('id', 'question', 'answer_text', 'selected_options')
+        fields = ("id", "question", "answer_text", "selected_options")
 
 
 class SurveyReadSerializer(BasisModelSerializer):
@@ -68,7 +82,7 @@ class SurveyReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'event', 'template_type')
+        fields = ("id", "title", "active_from", "event", "template_type")
 
 
 class SubmissionReadSerializer(BasisModelSerializer):
@@ -77,7 +91,7 @@ class SubmissionReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ('id', 'user', 'survey', 'answers')
+        fields = ("id", "user", "survey", "answers")
 
 
 class SubmissionAdminReadSerializer(SubmissionReadSerializer):
@@ -89,21 +103,27 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ('id', 'user', 'answers')
+        fields = ("id", "user", "answers")
 
     @atomic
     def create(self, validated_data):
-        survey = Survey.objects.get(pk=self.context['view'].kwargs['survey_pk'])
-        answers = None if 'answers' not in validated_data else validated_data.pop('answers')
+        survey = Survey.objects.get(pk=self.context["view"].kwargs["survey_pk"])
+        answers = (
+            None if "answers" not in validated_data else validated_data.pop("answers")
+        )
         submission = Submission.objects.create(survey=survey, **validated_data)
 
         if answers is not None:
             for answer in answers:
-                question = answer.pop('question')
+                question = answer.pop("question")
 
-                if question.question_type is 'SINGLE_CHOICE' and \
-                        len(answer['selected_options']) is not 1:
-                    raise exceptions.ValidationError('You must select exactly one option')
+                if (
+                    question.question_type is "SINGLE_CHOICE"
+                    and len(answer["selected_options"]) is not 1
+                ):
+                    raise exceptions.ValidationError(
+                        "You must select exactly one option"
+                    )
 
                 Answer.create(submission=submission, question=question, **answer)
 
@@ -116,7 +136,7 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'questions', 'event', 'template_type')
+        fields = ("id", "title", "active_from", "questions", "event", "template_type")
 
 
 class SurveyReadDetailedAdminSerializer(SurveyReadDetailedSerializer):
@@ -124,7 +144,7 @@ class SurveyReadDetailedAdminSerializer(SurveyReadDetailedSerializer):
 
     class Meta:
         model = Survey
-        fields = SurveyReadDetailedSerializer.Meta.fields + ('token', )
+        fields = SurveyReadDetailedSerializer.Meta.fields + ("token",)
 
 
 class SurveyCreateSerializer(BasisModelSerializer):
@@ -132,15 +152,15 @@ class SurveyCreateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'template_type', 'event', 'questions')
+        fields = ("id", "title", "active_from", "template_type", "event", "questions")
 
     @atomic
     def create(self, validated_data):
-        questions = validated_data.pop('questions')
+        questions = validated_data.pop("questions")
         survey = Survey.objects.create(**validated_data)
 
         for question in questions:
-            options = question.pop('options') if 'options' in question else None
+            options = question.pop("options") if "options" in question else None
             new_question = Question.objects.create(survey=survey, **question)
 
             if options is not None:
@@ -155,28 +175,28 @@ class SurveyUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ('id', 'title', 'active_from', 'template_type', 'event', 'questions')
+        fields = ("id", "title", "active_from", "template_type", "event", "questions")
 
     @atomic
     def update(self, instance, validated_data):
-        questions = validated_data.pop('questions')
+        questions = validated_data.pop("questions")
 
         # Update the regular survey fields that aren't questions or options first
         super().update(instance, validated_data)
 
         # Delete questions that aren't in the received list
         for old_question in instance.questions.all():
-            questions_with_ids = filter(lambda q: 'id' in q, questions)
-            existing_question_ids = map(lambda q: q['id'], questions_with_ids)
+            questions_with_ids = filter(lambda q: "id" in q, questions)
+            existing_question_ids = map(lambda q: q["id"], questions_with_ids)
             if old_question.id not in existing_question_ids:
                 old_question.delete()
 
         # Add or update question, depending on whether the received option has an id
         for question in questions:
-            options = question.pop('options') if 'options' in question else None
-            if 'id' in question:
-                Question.objects.filter(id=question['id']).update(**question)
-                new_question = Question.objects.get(id=question['id'])
+            options = question.pop("options") if "options" in question else None
+            if "id" in question:
+                Question.objects.filter(id=question["id"]).update(**question)
+                new_question = Question.objects.get(id=question["id"])
             else:
                 new_question = Question.objects.create(survey=instance, **question)
 
@@ -184,14 +204,14 @@ class SurveyUpdateSerializer(BasisModelSerializer):
             if options is not None:
                 # Delete options that aren't in the received list
                 for old_option in new_question.options.all():
-                    options_with_ids = filter(lambda o: 'id' in o, options)
-                    new_option_ids = map(lambda o: o['id'], options_with_ids)
+                    options_with_ids = filter(lambda o: "id" in o, options)
+                    new_option_ids = map(lambda o: o["id"], options_with_ids)
                     if old_option.id not in new_option_ids:
                         old_option.delete()
 
                 for option in options:
-                    if 'id' in option:
-                        Option.objects.filter(id=option['id']).update(**option)
+                    if "id" in option:
+                        Option.objects.filter(id=option["id"]).update(**option)
                     else:
                         Option.objects.create(question=new_question, **option)
 

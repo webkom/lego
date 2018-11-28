@@ -4,12 +4,12 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class QuoteMethodTest(BaseTestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_users.yaml', 'test_quotes.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml", "test_quotes.yaml"]
 
     def setUp(self):
-        self.user = User.objects.get(username='test1')
-        self.admin_user = User.objects.get(username='useradmin_test')
-        self.admin_group = AbakusGroup.objects.get(name='QuoteAdminTest')
+        self.user = User.objects.get(username="test1")
+        self.admin_user = User.objects.get(username="useradmin_test")
+        self.admin_group = AbakusGroup.objects.get(name="QuoteAdminTest")
         self.admin_group.add_user(self.admin_user)
         self.quote = Quote.objects.get(pk=1)
 

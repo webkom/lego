@@ -7,17 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('files', '0002_file_user'),
-    ]
+    dependencies = [("files", "0002_file_user")]
 
     operations = [
         migrations.AlterField(
-            model_name='file',
-            name='user',
+            model_name="file",
+            name="user",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.SET_NULL,
-                related_name='uploaded_files', to=settings.AUTH_USER_MODEL
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="uploaded_files",
+                to=settings.AUTH_USER_MODEL,
             ),
-        ),
+        )
     ]

@@ -11,24 +11,24 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('email', '0001_initial'),
-        ('users', '0001_initial'),
+        ("email", "0001_initial"),
+        ("users", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='emaillist',
-            name='groups',
+            model_name="emaillist",
+            name="groups",
             field=models.ManyToManyField(
-                blank=True, related_name='email_lists', to='users.AbakusGroup'
+                blank=True, related_name="email_lists", to="users.AbakusGroup"
             ),
         ),
         migrations.AddField(
-            model_name='emaillist',
-            name='users',
+            model_name="emaillist",
+            name="users",
             field=models.ManyToManyField(
-                blank=True, related_name='email_lists', to=settings.AUTH_USER_MODEL
+                blank=True, related_name="email_lists", to=settings.AUTH_USER_MODEL
             ),
         ),
     ]

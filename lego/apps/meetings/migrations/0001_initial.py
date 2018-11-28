@@ -13,150 +13,185 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('tags', '0001_initial'),
-        ('files', '0002_file_user'),
+        ("tags", "0001_initial"),
+        ("files", "0002_file_user"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Meeting',
+            name="Meeting",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('slug', models.SlugField(null=True, unique=True)),
-                ('description', models.TextField()),
-                ('text', models.TextField(blank=True)),
-                ('title', models.CharField(max_length=255)),
-                ('location', models.CharField(max_length=255)),
-                ('start_time', models.DateTimeField()),
-                ('end_time', models.DateTimeField(blank=True, null=True)),
-                ('report', models.TextField(blank=True)),
+                (
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("slug", models.SlugField(null=True, unique=True)),
+                ("description", models.TextField()),
+                ("text", models.TextField(blank=True)),
+                ("title", models.CharField(max_length=255)),
+                ("location", models.CharField(max_length=255)),
+                ("start_time", models.DateTimeField()),
+                ("end_time", models.DateTimeField(blank=True, null=True)),
+                ("report", models.TextField(blank=True)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='MeetingInvitation',
+            name="MeetingInvitation",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 (
-                    'status',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "status",
                     models.SmallIntegerField(
-                        choices=[(0, 'No answer'), (1, 'Attending'), (2, 'Not attending')],
-                        default=0
-                    )
+                        choices=[
+                            (0, "No answer"),
+                            (1, "Attending"),
+                            (2, "Not attending"),
+                        ],
+                        default=0,
+                    ),
                 ),
                 (
-                    'created_by',
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='meetinginvitation_created', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="meetinginvitation_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'meeting',
+                    "meeting",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name='invitations',
-                        to='meetings.Meeting'
-                    )
-                ),
-                (
-                    'updated_by',
-                    models.ForeignKey(
-                        default=None, editable=False, null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='meetinginvitation_updated', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="invitations",
+                        to="meetings.Meeting",
+                    ),
                 ),
                 (
-                    'user',
+                    "updated_by",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name='invitations',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="meetinginvitation_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="invitations",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='_invited_users',
+            model_name="meeting",
+            name="_invited_users",
             field=models.ManyToManyField(
-                related_name='meeting_invitation', through='meetings.MeetingInvitation',
-                to=settings.AUTH_USER_MODEL
+                related_name="meeting_invitation",
+                through="meetings.MeetingInvitation",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='created_by',
+            model_name="meeting",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='meeting_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="meeting_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='images',
-            field=models.ManyToManyField(blank=True, to='files.File'),
+            model_name="meeting",
+            name="images",
+            field=models.ManyToManyField(blank=True, to="files.File"),
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='report_author',
+            model_name="meeting",
+            name="report_author",
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                related_name='meetings_reports', to=settings.AUTH_USER_MODEL
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="meetings_reports",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='tags',
-            field=models.ManyToManyField(blank=True, to='tags.Tag'),
+            model_name="meeting",
+            name="tags",
+            field=models.ManyToManyField(blank=True, to="tags.Tag"),
         ),
         migrations.AddField(
-            model_name='meeting',
-            name='updated_by',
+            model_name="meeting",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='meeting_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="meeting_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterUniqueTogether(
-            name='meetinginvitation',
-            unique_together=set([('meeting', 'user')]),
+            name="meetinginvitation", unique_together=set([("meeting", "user")])
         ),
     ]

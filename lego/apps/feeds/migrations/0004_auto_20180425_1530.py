@@ -5,36 +5,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feeds', '0003_auto_20180425_1504'),
-    ]
+    dependencies = [("feeds", "0003_auto_20180425_1504")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='notificationfeed',
-            options={'ordering': ('-ordering_key', )},
+            name="notificationfeed", options={"ordering": ("-ordering_key",)}
         ),
         migrations.AlterModelOptions(
-            name='personalfeed',
-            options={'ordering': ('-ordering_key', )},
+            name="personalfeed", options={"ordering": ("-ordering_key",)}
         ),
         migrations.AlterModelOptions(
-            name='userfeed',
-            options={'ordering': ('-ordering_key', )},
+            name="userfeed", options={"ordering": ("-ordering_key",)}
         ),
         migrations.AddField(
-            model_name='notificationfeed',
-            name='ordering_key',
-            field=models.CharField(db_index=True, default='0', max_length=48),
+            model_name="notificationfeed",
+            name="ordering_key",
+            field=models.CharField(db_index=True, default="0", max_length=48),
         ),
         migrations.AddField(
-            model_name='personalfeed',
-            name='ordering_key',
-            field=models.CharField(db_index=True, default='0', max_length=48),
+            model_name="personalfeed",
+            name="ordering_key",
+            field=models.CharField(db_index=True, default="0", max_length=48),
         ),
         migrations.AddField(
-            model_name='userfeed',
-            name='ordering_key',
-            field=models.CharField(db_index=True, default='0', max_length=48),
+            model_name="userfeed",
+            name="ordering_key",
+            field=models.CharField(db_index=True, default="0", max_length=48),
         ),
     ]

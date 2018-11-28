@@ -8,7 +8,7 @@ from lego.utils.serializers import BasisModelSerializer
 class WorkplaceSerializer(BasisModelSerializer):
     class Meta:
         model = Workplace
-        fields = ('id', 'town')
+        fields = ("id", "town")
 
 
 class JoblistingSerializer(BasisModelSerializer):
@@ -18,7 +18,14 @@ class JoblistingSerializer(BasisModelSerializer):
     class Meta:
         model = Joblisting
         fields = (
-            'id', 'title', 'company', 'deadline', 'job_type', 'workplaces', 'from_year', 'to_year'
+            "id",
+            "title",
+            "company",
+            "deadline",
+            "job_type",
+            "workplaces",
+            "from_year",
+            "to_year",
         )
 
 
@@ -31,9 +38,21 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
     class Meta:
         model = Joblisting
         fields = (
-            'id', 'title', 'text', 'company', 'responsible', 'contact_mail', 'description',
-            'deadline', 'job_type', 'workplaces', 'visible_from', 'visible_to', 'from_year',
-            'to_year', 'application_url'
+            "id",
+            "title",
+            "text",
+            "company",
+            "responsible",
+            "contact_mail",
+            "description",
+            "deadline",
+            "job_type",
+            "workplaces",
+            "visible_from",
+            "visible_to",
+            "from_year",
+            "to_year",
+            "application_url",
         )
 
 
@@ -44,27 +63,43 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = Joblisting
         fields = (
-            'id', 'title', 'text', 'company', 'responsible', 'contact_mail', 'description',
-            'deadline', 'visible_from', 'visible_to', 'job_type', 'workplaces', 'from_year',
-            'to_year', 'application_url'
+            "id",
+            "title",
+            "text",
+            "company",
+            "responsible",
+            "contact_mail",
+            "description",
+            "deadline",
+            "visible_from",
+            "visible_to",
+            "job_type",
+            "workplaces",
+            "from_year",
+            "to_year",
+            "application_url",
         )
 
     def create(self, validated_data):
-        workplaces_data = validated_data.pop('workplaces')
+        workplaces_data = validated_data.pop("workplaces")
         instance = super().create(validated_data)
 
         for workplace_item in workplaces_data:
-            workplace, created = Workplace.objects.get_or_create(town=workplace_item['town'])
+            workplace, created = Workplace.objects.get_or_create(
+                town=workplace_item["town"]
+            )
             instance.workplaces.add(workplace)
         return instance
 
     def update(self, instance, validated_data):
-        workplaces_data = validated_data.pop('workplaces')
+        workplaces_data = validated_data.pop("workplaces")
         instance = super().update(instance, validated_data)
         new_workplaces = []
 
         for workplace_item in workplaces_data:
-            workplace, created = Workplace.objects.get_or_create(town=workplace_item['town'])
+            workplace, created = Workplace.objects.get_or_create(
+                town=workplace_item["town"]
+            )
             new_workplaces.append(workplace)
         instance.workplaces.set(new_workplaces)
 

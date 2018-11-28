@@ -8,7 +8,7 @@ permission_cache = {}
 
 
 def permission_handler(view, model):
-    handler = getattr(view, 'permission_handler', None)
+    handler = getattr(view, "permission_handler", None)
     if not handler:
         handler = get_permission_handler(model)
 
@@ -32,8 +32,11 @@ def get_viewset_permissions(viewset, model, user, obj, queryset):
             actions += route.mapping.values()
         return [action_to_permission(action) for action in actions]
 
-    permissions = permission_cache[viewset_cls] if viewset_cls in permission_cache else \
-        permission_cache.setdefault(viewset_cls, get_permissions(viewset_cls))
+    permissions = (
+        permission_cache[viewset_cls]
+        if viewset_cls in permission_cache
+        else permission_cache.setdefault(viewset_cls, get_permissions(viewset_cls))
+    )
 
     handler = permission_handler(viewset, model)
 
@@ -46,7 +49,7 @@ def wrap_results(response):
     in case the inheritee isn't using pagination.
     """
     if isinstance(response.data, list):
-        return {'results': response.data}
+        return {"results": response.data}
 
     return response.data
 
@@ -58,9 +61,9 @@ class AllowedPermissionsMixin:
     """
 
     def __init__(self, *args, **kwargs):
-        if hasattr(super(), 'list'):
+        if hasattr(super(), "list"):
             self.list = self._list
-        if hasattr(super(), 'retrieve'):
+        if hasattr(super(), "retrieve"):
             self.retrieve = self._retrieve
 
         super().__init__(*args, **kwargs)
@@ -68,9 +71,8 @@ class AllowedPermissionsMixin:
     def _list(self, request, *args, **kwargs):
         response = super().list(request, args, kwargs)
         response.data = wrap_results(response)
-        response.data['action_grant'] = get_viewset_permissions(
-            self,
-            self.get_queryset().model, request.user, None, self.get_queryset()
+        response.data["action_grant"] = get_viewset_permissions(
+            self, self.get_queryset().model, request.user, None, self.get_queryset()
         )
         return response
 
@@ -79,8 +81,7 @@ class AllowedPermissionsMixin:
         serializer = self.get_serializer(obj)
         response = Response(serializer.data)
         response.data = wrap_results(response)
-        response.data['action_grant'] = get_viewset_permissions(
-            self,
-            self.get_queryset().model, request.user, obj, self.get_queryset()
+        response.data["action_grant"] = get_viewset_permissions(
+            self, self.get_queryset().model, request.user, obj, self.get_queryset()
         )
         return response

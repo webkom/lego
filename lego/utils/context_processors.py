@@ -5,4 +5,4 @@ def site(request):
     """
     Return site information
     """
-    return {'SITE': settings.SITE}
+    return {"SITE": settings.SITE}

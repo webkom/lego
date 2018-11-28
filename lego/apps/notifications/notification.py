@@ -1,7 +1,6 @@
-from structlog import get_logger
-
 from lego.utils.content_types import instance_to_string
 from lego.utils.tasks import send_email, send_push
+from structlog import get_logger
 
 from .models import NotificationSetting
 
@@ -17,7 +16,7 @@ class Notification:
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
-        self.args = args,
+        self.args = (args,)
         self.kwargs = kwargs
 
     def notify(self):
@@ -25,12 +24,9 @@ class Notification:
         Lookup channels per user and notify on the selected channels.
         """
         if self.name is None:
-            raise ValueError('Set a name on the notification class.')
+            raise ValueError("Set a name on the notification class.")
 
-        generators = {
-            'email': self.generate_mail,
-            'push': self.generate_push,
-        }
+        generators = {"email": self.generate_mail, "push": self.generate_push}
 
         channels = NotificationSetting.active_channels(self.user, self.name)
 
@@ -53,10 +49,7 @@ class Notification:
             target = instance_to_string(instance)
 
         return send_push.delay(
-            user=self.user.id,
-            target=target,
-            template=template,
-            context=context,
+            user=self.user.id, target=target, template=template, context=context
         )
 
     def generate_mail(self):
@@ -69,4 +62,4 @@ class Notification:
         """
         Send a push message to the user.
         """
-        log.warn('push_message_not_implemented')
+        log.warn("push_message_not_implemented")

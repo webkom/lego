@@ -7,8 +7,8 @@ from .backends.elasticsearch import ElasticsearchBackend
 
 
 class SearchConfig(AppConfig):
-    name = 'lego.apps.search'
-    verbose_name = 'Search'
+    name = "lego.apps.search"
+    verbose_name = "Search"
 
     def ready(self):
         super().ready()
@@ -22,5 +22,5 @@ class SearchConfig(AppConfig):
             search_backed.set_up()
             backend.current_backend = search_backed
 
-            autodiscover_modules('search_indexes')
+            autodiscover_modules("search_indexes")
             from .signals import post_save_callback, post_delete_callback  # noqa

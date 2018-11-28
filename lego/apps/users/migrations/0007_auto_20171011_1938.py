@@ -7,27 +7,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0006_merge_20171004_2216'),
-    ]
+    dependencies = [("users", "0006_merge_20171004_2216")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='abakusgroup',
-            name='is_committee',
-        ),
-        migrations.RemoveField(
-            model_name='abakusgroup',
-            name='is_grade',
-        ),
+        migrations.RemoveField(model_name="abakusgroup", name="is_committee"),
+        migrations.RemoveField(model_name="abakusgroup", name="is_grade"),
         migrations.AlterField(
-            model_name='abakusgroup',
-            name='type',
+            model_name="abakusgroup",
+            name="type",
             field=models.CharField(
                 choices=[
-                    ('komite', 'komite'), ('interesse', 'interesse'), ('klasse', 'klasse'),
-                    ('annen', 'annen')
-                ], default='annen', max_length=10
+                    ("komite", "komite"),
+                    ("interesse", "interesse"),
+                    ("klasse", "klasse"),
+                    ("annen", "annen"),
+                ],
+                default="annen",
+                max_length=10,
             ),
         ),
     ]

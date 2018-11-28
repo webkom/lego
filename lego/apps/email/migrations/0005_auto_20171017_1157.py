@@ -8,30 +8,40 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('email', '0004_auto_20171011_2112'),
-    ]
+    dependencies = [("email", "0004_auto_20171011_2112")]
 
     operations = [
         migrations.AlterField(
-            model_name='emaillist',
-            name='group_roles',
+            model_name="emaillist",
+            name="group_roles",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(
                     choices=[
-                        ('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'),
-                        ('treasurer', 'treasurer'), ('recruiting', 'recruiting'),
-                        ('development', 'development'), ('editor', 'editor'),
-                        ('retiree', 'retiree'), ('media_relations', 'media_relations'),
-                        ('active_retiree', 'active_retiree'), ('alumni', 'alumni'),
-                        ('webmaster',
-                         'webmaster'), ('interest_group_admin', 'interest_group_admin'),
-                        ('alumni_admin', 'alumni_admin'), ('retiree_email', 'retiree_email'),
-                        ('company_admin', 'company_admin'), ('dugnad_admin', 'dugnad_admin'),
-                        ('trip_admin', 'trip_admin'), ('sponsor_admin', 'sponsor_admin'),
-                        ('social_admin', 'social_admin')
-                    ], max_length=64
-                ), default=list, size=None
+                        ("member", "member"),
+                        ("leader", "leader"),
+                        ("co-leader", "co-leader"),
+                        ("treasurer", "treasurer"),
+                        ("recruiting", "recruiting"),
+                        ("development", "development"),
+                        ("editor", "editor"),
+                        ("retiree", "retiree"),
+                        ("media_relations", "media_relations"),
+                        ("active_retiree", "active_retiree"),
+                        ("alumni", "alumni"),
+                        ("webmaster", "webmaster"),
+                        ("interest_group_admin", "interest_group_admin"),
+                        ("alumni_admin", "alumni_admin"),
+                        ("retiree_email", "retiree_email"),
+                        ("company_admin", "company_admin"),
+                        ("dugnad_admin", "dugnad_admin"),
+                        ("trip_admin", "trip_admin"),
+                        ("sponsor_admin", "sponsor_admin"),
+                        ("social_admin", "social_admin"),
+                    ],
+                    max_length=64,
+                ),
+                default=list,
+                size=None,
             ),
-        ),
+        )
     ]

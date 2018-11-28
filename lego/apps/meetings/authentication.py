@@ -5,7 +5,7 @@ from lego.apps.meetings.models import MeetingInvitation
 
 class MeetingInvitationTokenAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        raw_token = request.GET.get('token')
+        raw_token = request.GET.get("token")
         if not raw_token:
             return
 

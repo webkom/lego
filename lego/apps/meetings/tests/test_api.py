@@ -7,34 +7,34 @@ from lego.utils.test_utils import BaseAPITestCase
 
 test_meeting_data = [
     {
-        'title': 'Halla damer',
-        'location': 'Plebkom',
-        'report': '<p>report</p>',
-        'start_time': '2016-10-01T13:20:30Z',
-        'end_time': '2016-10-01T14:00:30Z',
+        "title": "Halla damer",
+        "location": "Plebkom",
+        "report": "<p>report</p>",
+        "start_time": "2016-10-01T13:20:30Z",
+        "end_time": "2016-10-01T14:00:30Z",
     }
 ]
 
 
 def _get_list_url():
-    return reverse('api:v1:meeting-list')
+    return reverse("api:v1:meeting-list")
 
 
 def _get_detail_url(pk):
-    return reverse('api:v1:meeting-detail', kwargs={'pk': pk})
+    return reverse("api:v1:meeting-detail", kwargs={"pk": pk})
 
 
 def _get_invitations_list_url(pk):
-    return reverse('api:v1:meeting-invitations-list', kwargs={'meeting_pk': pk})
+    return reverse("api:v1:meeting-invitations-list", kwargs={"meeting_pk": pk})
 
 
 class CreateMeetingTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
-        self.abakommer = User.objects.get(username='abakommer')
-        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
-        self.pleb = User.objects.get(username='pleb')
+        self.abakommer = User.objects.get(username="abakommer")
+        AbakusGroup.objects.get(name="Abakom").add_user(self.abakommer)
+        self.pleb = User.objects.get(username="pleb")
 
     def test_meeting_create(self):
         """
@@ -51,16 +51,16 @@ class CreateMeetingTestCase(BaseAPITestCase):
 
 
 class RetrieveMeetingTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)
         self.meeting2 = Meeting.objects.get(id=2)
-        self.abakommer = User.objects.get(username='abakommer')
-        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
-        self.abakule = User.objects.get(username='test1')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
-        self.pleb = User.objects.get(username='pleb')
+        self.abakommer = User.objects.get(username="abakommer")
+        AbakusGroup.objects.get(name="Abakom").add_user(self.abakommer)
+        self.abakule = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakule)
+        self.pleb = User.objects.get(username="pleb")
 
     def test_participant_can_retrieve(self):
         invited = self.abakommer
@@ -97,23 +97,27 @@ class RetrieveMeetingTestCase(BaseAPITestCase):
             self.client.force_authenticate(user)
             res = self.client.get(_get_invitations_list_url(self.meeting.id))
             self.assertEqual(res.status_code, 200)
-            invitations = list(res.data['results'])
-            attending = [inv for inv in invitations if inv['status'] == constants.ATTENDING]
+            invitations = list(res.data["results"])
+            attending = [
+                inv for inv in invitations if inv["status"] == constants.ATTENDING
+            ]
             self.assertEqual(len(attending), 2)
-            no_answer = [inv for inv in invitations if inv['status'] == constants.NO_ANSWER]
+            no_answer = [
+                inv for inv in invitations if inv["status"] == constants.NO_ANSWER
+            ]
             self.assertEqual(len(no_answer), 1)
 
 
 class DeleteMeetingTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=1)
-        self.abakommer = User.objects.get(username='abakommer')
-        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
-        self.abakule = User.objects.get(username='test1')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
-        self.pleb = User.objects.get(username='pleb')
+        self.abakommer = User.objects.get(username="abakommer")
+        AbakusGroup.objects.get(name="Abakom").add_user(self.abakommer)
+        self.abakule = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakule)
+        self.pleb = User.objects.get(username="pleb")
 
     def test_can_delete_own_meeting(self):
         self.meeting.created_by = self.abakommer
@@ -137,17 +141,20 @@ class DeleteMeetingTestCase(BaseAPITestCase):
 
 class InviteToMeetingTestCase(BaseAPITestCase):
     fixtures = [
-        'test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml', 'initial_files.yaml'
+        "test_abakus_groups.yaml",
+        "test_meetings.yaml",
+        "test_users.yaml",
+        "initial_files.yaml",
     ]
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=3)
-        self.abakommer = User.objects.get(username='abakommer')
-        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
-        self.abakule = User.objects.get(username='test1')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
-        self.pleb = User.objects.get(username='pleb')
-        self.AbaBrygg = AbakusGroup.objects.get(name='AbaBrygg')
+        self.abakommer = User.objects.get(username="abakommer")
+        AbakusGroup.objects.get(name="Abakom").add_user(self.abakommer)
+        self.abakule = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakule)
+        self.pleb = User.objects.get(username="pleb")
+        self.AbaBrygg = AbakusGroup.objects.get(name="AbaBrygg")
 
     def test_can_invite_to_own_meeting(self):
         self.meeting.created_by = self.abakommer
@@ -155,9 +162,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.abakommer)
         res = self.client.post(
-            _get_detail_url(self.meeting.id) + 'invite_user/', {
-                'user': self.abakule.id,
-            }
+            _get_detail_url(self.meeting.id) + "invite_user/", {"user": self.abakule.id}
         )
         self.assertEqual(res.status_code, 200)
 
@@ -170,9 +175,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(me)
         res = self.client.post(
-            _get_detail_url(self.meeting.id) + 'invite_user/', {
-                'user': self.pleb.id,
-            }
+            _get_detail_url(self.meeting.id) + "invite_user/", {"user": self.pleb.id}
         )
         self.assertEqual(res.status_code, 200)
 
@@ -185,9 +188,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(me)
         res = self.client.post(
-            _get_detail_url(self.meeting.id) + 'invite_user/', {
-                'user': self.pleb.id,
-            }
+            _get_detail_url(self.meeting.id) + "invite_user/", {"user": self.pleb.id}
         )
         self.assertEqual(res.status_code, 200)
 
@@ -200,10 +201,8 @@ class InviteToMeetingTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(me)
         res = self.client.post(
-            _get_detail_url(self.meeting.id) + 'bulk_invite/', {
-                'groups': [self.AbaBrygg.id],
-                'users': [self.pleb.id]
-            }
+            _get_detail_url(self.meeting.id) + "bulk_invite/",
+            {"groups": [self.AbaBrygg.id], "users": [self.pleb.id]},
         )
         self.assertEqual(res.status_code, 200)
         for user in self.AbaBrygg.users.all():
@@ -215,10 +214,8 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         me = self.abakommer
         self.client.force_authenticate(me)
         res = self.client.post(
-            _get_detail_url(self.meeting.id) + 'bulk_invite/', {
-                'groups': [self.AbaBrygg.id],
-                'users': [self.pleb.id]
-            }
+            _get_detail_url(self.meeting.id) + "bulk_invite/",
+            {"groups": [self.AbaBrygg.id], "users": [self.pleb.id]},
         )
         self.assertEqual(res.status_code, 404)
         for user in self.AbaBrygg.users.all():
@@ -230,9 +227,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         me = self.abakommer
         self.client.force_authenticate(me)
         res = self.client.post(
-            _get_invitations_list_url(self.meeting.id), {
-                'user': self.abakule.id,
-            }
+            _get_invitations_list_url(self.meeting.id), {"user": self.abakule.id}
         )
         self.assertEqual(res.status_code, 403)
 
@@ -241,10 +236,9 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         self.meeting.created_by = me
         self.meeting.save()
         self.client.force_authenticate(me)
-        webkom = AbakusGroup.objects.get(name='Webkom')
+        webkom = AbakusGroup.objects.get(name="Webkom")
         res = self.client.post(
-            _get_detail_url(self.meeting.id) + 'invite_group/',
-            {'group': webkom.id}
+            _get_detail_url(self.meeting.id) + "invite_group/", {"group": webkom.id}
         )
         self.assertEqual(res.status_code, 200)
         for user in webkom.users.all():
@@ -253,15 +247,15 @@ class InviteToMeetingTestCase(BaseAPITestCase):
 
 
 class UpdateInviteTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=3)
-        self.abakommer = User.objects.get(username='abakommer')
-        AbakusGroup.objects.get(name='Abakom').add_user(self.abakommer)
-        self.abakule = User.objects.get(username='test1')
-        AbakusGroup.objects.get(name='Abakus').add_user(self.abakule)
-        self.pleb = User.objects.get(username='pleb')
+        self.abakommer = User.objects.get(username="abakommer")
+        AbakusGroup.objects.get(name="Abakom").add_user(self.abakommer)
+        self.abakule = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakule)
+        self.pleb = User.objects.get(username="pleb")
 
     def test_can_update_own_status(self):
         me = self.abakommer
@@ -270,8 +264,8 @@ class UpdateInviteTestCase(BaseAPITestCase):
         self.assertEqual(invite.status, constants.NO_ANSWER)
         self.client.force_authenticate(me)
         res = self.client.patch(
-            _get_invitations_list_url(self.meeting.id) + str(me.id) + '/',
-            {'status': constants.ATTENDING}
+            _get_invitations_list_url(self.meeting.id) + str(me.id) + "/",
+            {"status": constants.ATTENDING},
         )
         self.assertEqual(res.status_code, 200)
         invite.refresh_from_db()
@@ -286,8 +280,8 @@ class UpdateInviteTestCase(BaseAPITestCase):
         self.assertEqual(invite.status, constants.NO_ANSWER)
         self.client.force_authenticate(other)
         res = self.client.patch(
-            _get_invitations_list_url(self.meeting.id) + str(me.id) + '/',
-            {'status': constants.ATTENDING}
+            _get_invitations_list_url(self.meeting.id) + str(me.id) + "/",
+            {"status": constants.ATTENDING},
         )
         self.assertEqual(res.status_code, 403)
         invite.refresh_from_db()
@@ -298,15 +292,15 @@ class UpdateInviteTestCase(BaseAPITestCase):
         invite = self.meeting.invite_user(me)[0]
         self.client.force_authenticate(me)
         self.client.patch(
-            _get_invitations_list_url(self.meeting.id) + str(me.id) + '/',
-            {'user': self.pleb.id}
+            _get_invitations_list_url(self.meeting.id) + str(me.id) + "/",
+            {"user": self.pleb.id},
         )
         invite.refresh_from_db()
         self.assertEqual(invite.user, me)
 
 
 class UnauthorizedTestCase(BaseAPITestCase):
-    fixtures = ['test_abakus_groups.yaml', 'test_meetings.yaml', 'test_users.yaml']
+    fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.meeting = Meeting.objects.get(id=3)

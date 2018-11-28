@@ -9,7 +9,7 @@ class SearchBacked:
 
     @property
     def name(self):
-        raise NotImplementedError('Please set the name property on the class.')
+        raise NotImplementedError("Please set the name property on the class.")
 
     def set_up(self):
         """
@@ -36,7 +36,7 @@ class SearchBacked:
         Bulk update items. Used by the update function by default.
         The tuple_list us a list of tuples containing ('content_type', 'pk', 'data')
         """
-        raise NotImplementedError('Please implement the update_many function.')
+        raise NotImplementedError("Please implement the update_many function.")
 
     def update(self, content_type, pk, data):
         return self.update_many([(content_type, pk, data)])
@@ -46,7 +46,7 @@ class SearchBacked:
         Bulk remove items from backend. The remove function uses this function by default.
         The tuple_list is a list of tuples containing ('content_type', 'pk')
         """
-        raise NotImplementedError('Please implement the remove_many function.')
+        raise NotImplementedError("Please implement the remove_many function.")
 
     def remove(self, content_type, pk):
         return self.remove_many([(content_type, pk)])
@@ -55,19 +55,19 @@ class SearchBacked:
         """
         Clear all items handled by this backend.
         """
-        raise NotImplementedError('Please implement the clear function.')
+        raise NotImplementedError("Please implement the clear function.")
 
     def search(self, query, content_types=None, filters=None):
         """
         Search on a string 'query', use content_type or/and filters to filter the search.
         """
-        raise NotImplementedError('Please implement the search function.')
+        raise NotImplementedError("Please implement the search function.")
 
     def autocomplete(self, query, content_types=None):
         """
         Autocomplete on a string 'query', use content_type or/and filters to filter the search.
         """
-        raise NotImplementedError('Please implement the autocomplete function.')
+        raise NotImplementedError("Please implement the autocomplete function.")
 
 
 """

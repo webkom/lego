@@ -14,76 +14,84 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('tags', '0001_initial'),
-        ('files', '0001_initial'),
-        ('users', '0001_initial'),
-        ('articles', '0001_initial'),
+        ("tags", "0001_initial"),
+        ("files", "0001_initial"),
+        ("users", "0001_initial"),
+        ("articles", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='article',
-            name='author',
+            model_name="article",
+            name="author",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.AddField(
-            model_name='article',
-            name='can_edit_groups',
+            model_name="article",
+            name="can_edit_groups",
             field=models.ManyToManyField(
-                blank=True, related_name='can_edit_article', to='users.AbakusGroup'
+                blank=True, related_name="can_edit_article", to="users.AbakusGroup"
             ),
         ),
         migrations.AddField(
-            model_name='article',
-            name='can_edit_users',
+            model_name="article",
+            name="can_edit_users",
             field=models.ManyToManyField(
-                blank=True, related_name='can_edit_article', to=settings.AUTH_USER_MODEL
+                blank=True, related_name="can_edit_article", to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.AddField(
-            model_name='article',
-            name='can_view_groups',
+            model_name="article",
+            name="can_view_groups",
             field=models.ManyToManyField(
-                blank=True, related_name='can_view_article', to='users.AbakusGroup'
+                blank=True, related_name="can_view_article", to="users.AbakusGroup"
             ),
         ),
         migrations.AddField(
-            model_name='article',
-            name='cover',
+            model_name="article",
+            name="cover",
             field=lego.apps.files.models.FileField(
-                null=True, on_delete=django.db.models.deletion.SET_NULL,
-                related_name='article_covers', to='files.File'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="article_covers",
+                to="files.File",
             ),
         ),
         migrations.AddField(
-            model_name='article',
-            name='created_by',
+            model_name="article",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='article_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="article_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='article',
-            name='images',
-            field=models.ManyToManyField(blank=True, to='files.File'),
+            model_name="article",
+            name="images",
+            field=models.ManyToManyField(blank=True, to="files.File"),
         ),
         migrations.AddField(
-            model_name='article',
-            name='tags',
-            field=models.ManyToManyField(blank=True, to='tags.Tag'),
+            model_name="article",
+            name="tags",
+            field=models.ManyToManyField(blank=True, to="tags.Tag"),
         ),
         migrations.AddField(
-            model_name='article',
-            name='updated_by',
+            model_name="article",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='article_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="article_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

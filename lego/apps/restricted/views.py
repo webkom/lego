@@ -7,13 +7,18 @@ from lego.apps.restricted.constants import RESTRICTED_TOKEN_PREFIX
 from lego.apps.restricted.filters import RestrictedMailFilterSet
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.restricted.serializers import (
-    RestrictedMailDetailSerializer, RestrictedMailListSerializer, RestrictedMailSerializer
+    RestrictedMailDetailSerializer,
+    RestrictedMailListSerializer,
+    RestrictedMailSerializer,
 )
 
 
 class RestrictedMailViewSet(
-    AllowedPermissionsMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin, viewsets.GenericViewSet
+    AllowedPermissionsMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
 ):
 
     filter_class = RestrictedMailFilterSet
@@ -21,26 +26,30 @@ class RestrictedMailViewSet(
     def get_queryset(self):
         if self.request.user.is_authenticated:
             queryset = RestrictedMail.objects.filter(created_by=self.request.user)
-            if self.action == 'retrieve':
-                return queryset.prefetch_related('users', 'groups', 'events', 'meetings')
+            if self.action == "retrieve":
+                return queryset.prefetch_related(
+                    "users", "groups", "events", "meetings"
+                )
             return queryset
         return RestrictedMail.objects.none()
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return RestrictedMailListSerializer
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return RestrictedMailDetailSerializer
         return RestrictedMailSerializer
 
-    @decorators.detail_route(methods=['GET'], permission_classes=(permissions.AllowAny, ))
+    @decorators.detail_route(
+        methods=["GET"], permission_classes=(permissions.AllowAny,)
+    )
     def token(self, *arg, **kwargs):
         """
         Download the token belonging to a restricted mail. This token has to be attached to
         the restricted mail for authentication.
         """
-        instance = get_object_or_404(RestrictedMail.objects.all(), id=kwargs['pk'])
-        auth = self.request.GET.get('auth')
+        instance = get_object_or_404(RestrictedMail.objects.all(), id=kwargs["pk"])
+        auth = self.request.GET.get("auth")
 
         if not instance.token_verify_query_param(auth):
             raise exceptions.AuthenticationFailed
@@ -48,8 +57,8 @@ class RestrictedMailViewSet(
         if not instance.token:
             raise exceptions.NotFound
 
-        file_content = f'{RESTRICTED_TOKEN_PREFIX}{instance.token}'
+        file_content = f"{RESTRICTED_TOKEN_PREFIX}{instance.token}"
 
         response = HttpResponse(file_content)
-        response['Content-Disposition'] = 'attachment; filename="token"'
+        response["Content-Disposition"] = 'attachment; filename="token"'
         return response

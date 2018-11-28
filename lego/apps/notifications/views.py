@@ -1,21 +1,26 @@
-from push_notifications.api.rest_framework import (
-    APNSDeviceAuthorizedViewSet, GCMDeviceAuthorizedViewSet
-)
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.notifications import constants
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.stats.utils import track
+from push_notifications.api.rest_framework import (
+    APNSDeviceAuthorizedViewSet,
+    GCMDeviceAuthorizedViewSet,
+)
 
 from .models import Announcement, NotificationSetting
 from .serializers import (
-    AnnouncementDetailSerializer, AnnouncementListSerializer, NotificationSettingCreateSerializer,
-    NotificationSettingSerializer
+    AnnouncementDetailSerializer,
+    AnnouncementListSerializer,
+    NotificationSettingCreateSerializer,
+    NotificationSettingSerializer,
 )
 
 
-class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.GenericViewSet):
+class NotificationSettingsViewSet(
+    viewsets.mixins.ListModelMixin, viewsets.GenericViewSet
+):
     """
     Manage the notification channels to the authenticated users.
     The default is to send all notifications on all channels.
@@ -24,7 +29,7 @@ class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.Gener
     List all existing settings.
     """
 
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
     pagination_class = None
 
     def get_queryset(self):
@@ -32,7 +37,7 @@ class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.Gener
         return NotificationSetting.objects.filter(user=user)
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return NotificationSettingCreateSerializer
         return NotificationSettingSerializer
 
@@ -43,8 +48,10 @@ class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.Gener
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        notification_type = serializer.validated_data['notification_type']
-        instance, _ = NotificationSetting.lookup_setting(request.user, notification_type)
+        notification_type = serializer.validated_data["notification_type"]
+        instance, _ = NotificationSetting.lookup_setting(
+            request.user, notification_type
+        )
 
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -52,27 +59,27 @@ class NotificationSettingsViewSet(viewsets.mixins.ListModelMixin, viewsets.Gener
 
         return Response(serializer.data)
 
-    @decorators.list_route(methods=['GET'])
+    @decorators.list_route(methods=["GET"])
     def alternatives(self, request):
         """
         Return a list of all possible notification_types and channels.
         """
         return Response(
             {
-                'notification_types': constants.NOTIFICATION_TYPES,
-                'channels': constants.CHANNELS
+                "notification_types": constants.NOTIFICATION_TYPES,
+                "channels": constants.CHANNELS,
             }
         )
 
 
 class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
 
-    ordering = ('date_created', )
+    ordering = ("date_created",)
 
 
 class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
 
-    ordering = ('date_created', )
+    ordering = ("date_created",)
 
 
 class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -81,13 +88,13 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Announcement.objects\
-                .filter(created_by=self.request.user)\
-                .prefetch_related('users', 'groups', 'events', 'meetings')
+            return Announcement.objects.filter(
+                created_by=self.request.user
+            ).prefetch_related("users", "groups", "events", "meetings")
         return Announcement.objects.none()
 
     def get_serializer_class(self):
-        if self.action in ['list']:
+        if self.action in ["list"]:
             return AnnouncementListSerializer
         return super().get_serializer_class()
 
@@ -96,18 +103,25 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(
-            AnnouncementListSerializer(serializer.instance).data, status=status.HTTP_201_CREATED
+            AnnouncementListSerializer(serializer.instance).data,
+            status=status.HTTP_201_CREATED,
         )
 
-    @decorators.detail_route(methods=['POST'])
+    @decorators.detail_route(methods=["POST"])
     def send(self, request, *args, **kwargs):
         instance = self.get_object()
 
         if instance.sent:
-            raise exceptions.ValidationError('message already sent')
+            raise exceptions.ValidationError("message already sent")
 
         instance.send()
 
-        track(request.user, 'announcement.send', properties={'announcement_id': instance.id})
+        track(
+            request.user,
+            "announcement.send",
+            properties={"announcement_id": instance.id},
+        )
 
-        return Response({'status': 'message queued for sending'}, status=status.HTTP_202_ACCEPTED)
+        return Response(
+            {"status": "message queued for sending"}, status=status.HTTP_202_ACCEPTED
+        )

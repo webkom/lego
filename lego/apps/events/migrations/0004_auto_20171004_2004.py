@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0003_auto_20170903_2206'),
-    ]
+    dependencies = [("events", "0003_auto_20170903_2206")]
 
     operations = [
         migrations.AlterField(
-            model_name='registration',
-            name='admin_reason',
+            model_name="registration",
+            name="admin_reason",
             field=models.CharField(blank=True, max_length=255),
         ),
         migrations.AlterField(
-            model_name='registration',
-            name='feedback',
+            model_name="registration",
+            name="feedback",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]

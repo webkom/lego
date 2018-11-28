@@ -13,127 +13,154 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('events', '0002_auto_20170828_1020'),
-        ('companies', '0002_auto_20170828_1020'),
+        ("events", "0002_auto_20170828_1020"),
+        ("companies", "0002_auto_20170828_1020"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FollowCompany',
+            name="FollowCompany",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 (
-                    'follower',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "follower",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'target',
+                    "target",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name='followers',
-                        to='companies.Company'
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="followers",
+                        to="companies.Company",
+                    ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name='FollowEvent',
+            name="FollowEvent",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 (
-                    'follower',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "follower",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'target',
+                    "target",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name='followers',
-                        to='events.Event'
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="followers",
+                        to="events.Event",
+                    ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name='FollowUser',
+            name="FollowUser",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 (
-                    'follower',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "follower",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'target',
+                    "target",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name='followers',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="followers",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='followuser',
-            unique_together=set([('follower', 'target')]),
+            name="followuser", unique_together=set([("follower", "target")])
         ),
         migrations.AlterUniqueTogether(
-            name='followevent',
-            unique_together=set([('follower', 'target')]),
+            name="followevent", unique_together=set([("follower", "target")])
         ),
         migrations.AlterUniqueTogether(
-            name='followcompany',
-            unique_together=set([('follower', 'target')]),
+            name="followcompany", unique_together=set([("follower", "target")])
         ),
     ]

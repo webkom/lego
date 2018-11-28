@@ -6,4 +6,4 @@ from .models import ICalToken
 class ICalTokenSerializer(BasisModelSerializer):
     class Meta:
         model = ICalToken
-        fields = ('token', 'created')
+        fields = ("token", "created")

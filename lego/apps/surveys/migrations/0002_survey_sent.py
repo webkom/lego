@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('surveys', '0001_initial'),
-    ]
+    dependencies = [("surveys", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='survey',
-            name='sent',
-            field=models.BooleanField(default=False),
-        ),
+            model_name="survey", name="sent", field=models.BooleanField(default=False)
+        )
     ]

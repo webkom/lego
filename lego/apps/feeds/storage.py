@@ -6,21 +6,21 @@ class RedisListStorage:
     Interface for storing lists in redis.
     """
 
-    key_format = 'feed_list:{key}:{list}'
+    key_format = "feed_list:{key}:{list}"
     max_length = 20
     data_type = str
 
     def __init__(self, key, **kwargs):
         self.base_key = key
-        self.max_length = kwargs.get('max_length', self.max_length)
-        self.data_type = kwargs.get('data_type', self.data_type)
+        self.max_length = kwargs.get("max_length", self.max_length)
+        self.data_type = kwargs.get("data_type", self.data_type)
 
     @property
     def redis(self):
         try:
             return self._redis
         except AttributeError:
-            self._redis = get_redis_connection('default')
+            self._redis = get_redis_connection("default")
             return self._redis
 
     def get_key(self, list_name):

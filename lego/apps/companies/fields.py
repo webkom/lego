@@ -7,6 +7,7 @@ class SemesterField(serializers.PrimaryKeyRelatedField):
 
     def to_representation(self, value):
         from lego.apps.companies.serializers import SemesterSerializer
+
         serializer = SemesterSerializer(instance=value)
         return serializer.data
 
@@ -17,6 +18,7 @@ class CompanyField(serializers.PrimaryKeyRelatedField):
 
     def to_representation(self, value):
         from lego.apps.companies.serializers import CompanyListSerializer
+
         serializer = CompanyListSerializer(instance=value)
         return serializer.data
 
@@ -27,5 +29,6 @@ class CompanyContactField(serializers.PrimaryKeyRelatedField):
 
     def to_representation(self, value):
         from lego.apps.companies.serializers import CompanyContactSerializer
+
         serializer = CompanyContactSerializer(instance=value)
         return serializer.data

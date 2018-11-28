@@ -18,14 +18,22 @@ class UserPermissionHandler(PermissionHandler):
         return False
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
 
         is_self = self.is_self(perm, user, obj)
         if is_self:
             return True
 
-        return super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        return super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
 
 
 class AbakusGroupPermissionHandler(PermissionHandler):
@@ -33,14 +41,22 @@ class AbakusGroupPermissionHandler(PermissionHandler):
     permission_map = {LIST: [], VIEW: []}
 
     force_object_permission_check = True
-    default_keyword_permission = '/sudo/admin/groups/{perm}/'
+    default_keyword_permission = "/sudo/admin/groups/{perm}/"
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
-        if perm == 'delete':
+        if perm == "delete":
             return False
-        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
 
         if has_perm:
             return True
@@ -54,12 +70,20 @@ class AbakusGroupPermissionHandler(PermissionHandler):
 class MembershipPermissionHandler(PermissionHandler):
 
     force_object_permission_check = True
-    default_keyword_permission = '/sudo/admin/groups/{perm}/'
+    default_keyword_permission = "/sudo/admin/groups/{perm}/"
 
     def has_perm(
-        self, user, perm, obj=None, queryset=None, check_keyword_permissions=True, **kwargs
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs
     ):
-        has_perm = super().has_perm(user, perm, obj, queryset, check_keyword_permissions, **kwargs)
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
 
         if has_perm:
             return True
@@ -72,11 +96,12 @@ class MembershipPermissionHandler(PermissionHandler):
             return obj.abakus_group.type in constants.OPEN_GROUPS and obj.user == user
 
         # Retrieve parent group
-        view = kwargs.get('view', None)
+        view = kwargs.get("view", None)
         if view is None:
             return False
-        abakus_group_pk = view.kwargs['group_pk']
+        abakus_group_pk = view.kwargs["group_pk"]
         from lego.apps.users.models import AbakusGroup
+
         abakus_group = AbakusGroup.objects.get(id=abakus_group_pk)
 
         if abakus_group.type == constants.GROUP_COMMITTEE:
@@ -88,13 +113,15 @@ class MembershipPermissionHandler(PermissionHandler):
                 return True
             elif perm == DELETE:
                 # Leaders should be able to remove memberships.
-                return abakus_group.memberships.filter(user=user, role__in=EDIT_ROLES).exists()
+                return abakus_group.memberships.filter(
+                    user=user, role__in=EDIT_ROLES
+                ).exists()
             elif perm == CREATE:
                 # Creating a memberships in open groups as yourself is allowed.
-                request = kwargs.get('request', None)
+                request = kwargs.get("request", None)
                 if not request:
                     return False
                 data = request.data
-                return data.get('user') == user.id
+                return data.get("user") == user.id
 
         return False

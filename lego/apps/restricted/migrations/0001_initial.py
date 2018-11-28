@@ -15,66 +15,82 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('users', '0001_initial'),
-        ('events', '0002_auto_20170828_1020'),
-        ('meetings', '0001_initial'),
+        ("users", "0001_initial"),
+        ("events", "0002_auto_20170828_1020"),
+        ("meetings", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RestrictedMail',
+            name="RestrictedMail",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('from_address', models.EmailField(db_index=True, max_length=254)),
-                ('hide_sender', models.BooleanField(default=False)),
-                ('token', models.CharField(db_index=True, max_length=128, unique=True)),
-                ('used', models.DateTimeField(null=True)),
                 (
-                    'raw_addresses',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("from_address", models.EmailField(db_index=True, max_length=254)),
+                ("hide_sender", models.BooleanField(default=False)),
+                ("token", models.CharField(db_index=True, max_length=128, unique=True)),
+                ("used", models.DateTimeField(null=True)),
+                (
+                    "raw_addresses",
                     django.contrib.postgres.fields.ArrayField(
-                        base_field=models.EmailField(max_length=254), null=True, size=None
-                    )
+                        base_field=models.EmailField(max_length=254),
+                        null=True,
+                        size=None,
+                    ),
                 ),
                 (
-                    'created_by',
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='restrictedmail_created', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="restrictedmail_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
-                ('events', models.ManyToManyField(blank=True, to='events.Event')),
-                ('groups', models.ManyToManyField(blank=True, to='users.AbakusGroup')),
-                ('meetings', models.ManyToManyField(blank=True, to='meetings.Meeting')),
+                ("events", models.ManyToManyField(blank=True, to="events.Event")),
+                ("groups", models.ManyToManyField(blank=True, to="users.AbakusGroup")),
+                ("meetings", models.ManyToManyField(blank=True, to="meetings.Meeting")),
                 (
-                    'updated_by',
+                    "updated_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='restrictedmail_updated', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="restrictedmail_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
-                ('users', models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL)),
+                (
+                    "users",
+                    models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
+                ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
-        ),
+            options={"abstract": False, "default_manager_name": "objects"},
+        )
     ]

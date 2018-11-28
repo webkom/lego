@@ -7,35 +7,41 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gallery', '0005_auto_20170912_1708'),
-    ]
+    dependencies = [("gallery", "0005_auto_20170912_1708")]
 
     operations = [
         migrations.AlterField(
-            model_name='gallery',
-            name='created_by',
+            model_name="gallery",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='gallery_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="gallery_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterField(
-            model_name='gallery',
-            name='event',
+            model_name="gallery",
+            name="event",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='galleries',
-                to='events.Event'
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="galleries",
+                to="events.Event",
             ),
         ),
         migrations.AlterField(
-            model_name='gallery',
-            name='updated_by',
+            model_name="gallery",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='gallery_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="gallery_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

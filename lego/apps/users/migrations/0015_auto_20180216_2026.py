@@ -5,19 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0014_auto_20171210_1610'),
-    ]
+    dependencies = [("users", "0014_auto_20171210_1610")]
 
     operations = [
         migrations.AlterField(
-            model_name='abakusgroup',
-            name='type',
+            model_name="abakusgroup",
+            name="type",
             field=models.CharField(
                 choices=[
-                    ('komite', 'komite'), ('interesse', 'interesse'), ('klasse', 'klasse'),
-                    ('annen', 'annen'), ('under', 'under')
-                ], default='annen', max_length=10
+                    ("komite", "komite"),
+                    ("interesse", "interesse"),
+                    ("klasse", "klasse"),
+                    ("annen", "annen"),
+                    ("under", "under"),
+                ],
+                default="annen",
+                max_length=10,
             ),
-        ),
+        )
     ]

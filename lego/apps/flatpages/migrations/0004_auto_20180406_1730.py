@@ -7,14 +7,12 @@ import lego.apps.content.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('flatpages', '0003_auto_20171210_1610'),
-    ]
+    dependencies = [("flatpages", "0003_auto_20171210_1610")]
 
     operations = [
         migrations.AlterField(
-            model_name='page',
-            name='content',
+            model_name="page",
+            name="content",
             field=lego.apps.content.fields.ContentField(allow_images=False),
-        ),
+        )
     ]

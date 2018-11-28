@@ -7,27 +7,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('restricted', '0002_restrictedmail_weekly'),
-    ]
+    dependencies = [("restricted", "0002_restrictedmail_weekly")]
 
     operations = [
         migrations.AlterField(
-            model_name='restrictedmail',
-            name='created_by',
+            model_name="restrictedmail",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='restrictedmail_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="restrictedmail_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterField(
-            model_name='restrictedmail',
-            name='updated_by',
+            model_name="restrictedmail",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='restrictedmail_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="restrictedmail_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

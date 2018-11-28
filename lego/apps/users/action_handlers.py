@@ -22,16 +22,20 @@ class MembershipHandler(Handler):
         # Add activity to feed on the user profile site.
         self.manager.add_activity(activity, [instance.user_id], [UserFeed])
         # Add activity to followers timeline.
-        followers = instance.user.followers\
-            .exclude(follower_id=instance.user_id)\
-            .values_list('follower_id', flat=True)
+        followers = instance.user.followers.exclude(
+            follower_id=instance.user_id
+        ).values_list("follower_id", flat=True)
 
         self.manager.add_activity(activity, followers, [PersonalFeed])
 
     def get_activity(self, membership):
         return Activity(
-            verb=GroupJoinVerb, actor=membership.user, target=membership.abakus_group,
-            object=membership, time=membership.created_at, extra_context={}
+            verb=GroupJoinVerb,
+            actor=membership.user,
+            target=membership.abakus_group,
+            object=membership,
+            time=membership.created_at,
+            extra_context={},
         )
 
 
@@ -44,11 +48,12 @@ class PenaltyHandler(Handler):
 
     def get_activity(self, penalty):
         return Activity(
-            actor=penalty.source_event, verb=PenaltyVerb, object=penalty, target=penalty.user,
-            time=penalty.created_at, extra_context={
-                'reason': penalty.reason,
-                'weight': penalty.weight,
-            }
+            actor=penalty.source_event,
+            verb=PenaltyVerb,
+            object=penalty,
+            target=penalty.user,
+            time=penalty.created_at,
+            extra_context={"reason": penalty.reason, "weight": penalty.weight},
         )
 
     def handle_create(self, instance, **kwargs):

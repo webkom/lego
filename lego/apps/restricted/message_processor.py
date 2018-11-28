@@ -4,10 +4,10 @@ from email.mime.text import MIMEText
 
 from django.conf import settings
 from django.core.mail import get_connection
-from structlog import get_logger
 
 from lego.apps.action_handlers.registry import get_handler
 from lego.apps.restricted.models import RestrictedMail
+from structlog import get_logger
 
 from .message import EmailMessage
 from .utils import get_mail_token
@@ -29,16 +29,20 @@ class MessageProcessor:
     def process_message(self):
         token = self.get_token(self.message)
         if not token:
-            log.critical('restricted_mail_no_token_found', sender=self.sender)
+            log.critical("restricted_mail_no_token_found", sender=self.sender)
             # Notify about failure
-            self.action_handler.run(None, 'failure', sender=self.sender, reason='TOKEN_NOT_FOUND')
+            self.action_handler.run(
+                None, "failure", sender=self.sender, reason="TOKEN_NOT_FOUND"
+            )
             return None
 
         restricted_message = self.lookup_instance(self.sender, token)
         if restricted_message is None:
-            log.critical('restricted_mail_token_not_found')
+            log.critical("restricted_mail_token_not_found")
             # Notify about failure
-            self.action_handler.run(None, 'failure', sender=self.sender, reason='TOKEN_INVALID')
+            self.action_handler.run(
+                None, "failure", sender=self.sender, reason="TOKEN_INVALID"
+            )
             return None
 
         recipients = restricted_message.lookup_recipients()
@@ -54,7 +58,7 @@ class MessageProcessor:
         restricted_message.mark_used()
 
         # Send a success message to the creator
-        self.action_handler.run(restricted_message, 'sent')
+        self.action_handler.run(restricted_message, "sent")
 
     def get_sender(self, restricted_mail):
         """
@@ -62,7 +66,10 @@ class MessageProcessor:
         the sender.
         """
 
-        if settings.RESTRICTED_ALLOW_ORIGINAL_SENDER and not restricted_mail.hide_sender:
+        if (
+            settings.RESTRICTED_ALLOW_ORIGINAL_SENDER
+            and not restricted_mail.hide_sender
+        ):
             return self.sender
 
         return settings.RESTRICTED_FROM
@@ -90,7 +97,7 @@ class MessageProcessor:
         pass thinks like SPF and DKIM checks. These headers is added automatically by our outgoing
         mail handler if the sender address is valid and managed by us.
         """
-        preserve_headers = ['Subject', 'Content-Type', 'MIME-Version']
+        preserve_headers = ["Subject", "Content-Type", "MIME-Version"]
         headers = {}
 
         for header in preserve_headers:
@@ -103,8 +110,8 @@ class MessageProcessor:
         for header, value in headers.items():
             message[header] = value
 
-        message['Sender'] = sender
-        message['From'] = sender
+        message["Sender"] = sender
+        message["From"] = sender
 
         return message
 
@@ -114,8 +121,13 @@ class MessageProcessor:
         Create a new connection and bulk send mails
         """
         connection = get_connection(fail_silently=False)
-        messages = [EmailMessage(recipient, sender, deepcopy(message)) for recipient in recipients]
-        log.info('restricted_mail_process_messages', sender=sender, recipients=len(messages))
+        messages = [
+            EmailMessage(recipient, sender, deepcopy(message))
+            for recipient in recipients
+        ]
+        log.info(
+            "restricted_mail_process_messages", sender=sender, recipients=len(messages)
+        )
         return connection.send_messages(messages)
 
     @staticmethod
@@ -124,58 +136,60 @@ class MessageProcessor:
         Notify the recipient about the sender rewrite.
         """
 
-        footer = ['------------', 'Du kan ikke svare direkte på denne eposten.']
+        footer = ["------------", "Du kan ikke svare direkte på denne eposten."]
 
         if not hide_sender:
-            footer.append(f'Opprinnelig avsender er {sender}, send svar til denne adressen.')
             footer.append(
-                'Denne eposten har uorginal avsender for å redusere risikoen for at '
-                'meldingen oppfattes som spam.'
+                f"Opprinnelig avsender er {sender}, send svar til denne adressen."
+            )
+            footer.append(
+                "Denne eposten har uorginal avsender for å redusere risikoen for at "
+                "meldingen oppfattes som spam."
             )
         else:
-            footer.append('Opprinnelig avsender har valgt å skjule sin adresse.')
+            footer.append("Opprinnelig avsender har valgt å skjule sin adresse.")
 
-        footer = '\n'.join(footer)
-        charset = message.get_content_charset() or 'us-ascii'
+        footer = "\n".join(footer)
+        charset = message.get_content_charset() or "us-ascii"
         content_type = message.get_content_type()
 
         wrap = True
-        if not message.is_multipart() and content_type == 'text/plain':
-            format_param = message.get_param('format')
-            delsp = message.get_param('delsp')
-            transfer_encoding = message.get('content-transfer-encoding')
+        if not message.is_multipart() and content_type == "text/plain":
+            format_param = message.get_param("format")
+            delsp = message.get_param("delsp")
+            transfer_encoding = message.get("content-transfer-encoding")
 
             try:
                 old_payload = message.get_payload(decode=True).decode(charset)
-                del message['content-transfer-encoding']
+                del message["content-transfer-encoding"]
 
-                footer_separator = '\n'
+                footer_separator = "\n"
                 payload = old_payload + footer_separator + footer
 
-                for cset in (charset, 'utf-8'):
+                for cset in (charset, "utf-8"):
                     try:
                         message.set_payload(payload.encode(cset), cset)
                     except UnicodeError:
                         pass
                     else:
                         if format_param:
-                            message.set_param('format', format_param)
+                            message.set_param("format", format_param)
                         if delsp:
-                            message.set_param('delsp', delsp)
+                            message.set_param("delsp", delsp)
                         wrap = False
                         break
             except (LookupError, UnicodeError):
                 if transfer_encoding:
-                    del message['content-transfer-encoding']
-                    message['Content-Transfer-Encoding'] = transfer_encoding
+                    del message["content-transfer-encoding"]
+                    message["Content-Transfer-Encoding"] = transfer_encoding
 
-        elif message.get_content_type() == 'multipart/mixed':
+        elif message.get_content_type() == "multipart/mixed":
             payload = message.get_payload()
             if not isinstance(payload, list):
                 payload = [payload]
 
-            mime_footer = MIMEText(footer.encode('utf-8'), 'plain', 'utf-8')
-            mime_footer['Content-Disposition'] = 'inline'
+            mime_footer = MIMEText(footer.encode("utf-8"), "plain", "utf-8")
+            mime_footer["Content-Disposition"] = "inline"
             payload.append(mime_footer)
             message.set_payload(payload)
             wrap = False
@@ -185,21 +199,21 @@ class MessageProcessor:
 
         inner = Message()
         for h, v in message.items():
-            if h.lower().startswith('content-'):
+            if h.lower().startswith("content-"):
                 inner[h] = v
         inner.set_payload(message.get_payload())
         inner.set_unixfrom(message.get_unixfrom())
         inner.preamble = message.preamble
         inner.epilogue = message.epilogue
         inner.set_default_type(message.get_default_type())
-        if hasattr(message, '__version__'):
+        if hasattr(message, "__version__"):
             inner.__version__ = message.__version__
         payload = [inner]
-        mime_footer = MIMEText(footer.encode('utf-8'), 'plain', 'utf-8')
-        mime_footer['Content-Disposition'] = 'inline'
+        mime_footer = MIMEText(footer.encode("utf-8"), "plain", "utf-8")
+        mime_footer["Content-Disposition"] = "inline"
         payload.append(mime_footer)
         message.set_payload(payload)
-        del message['content-type']
-        del message['content-transfer-encoding']
-        del message['content-disposition']
-        message['Content-Type'] = 'multipart/mixed'
+        del message["content-type"]
+        del message["content-transfer-encoding"]
+        del message["content-disposition"]
+        message["Content-Type"] = "multipart/mixed"

@@ -7,14 +7,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('companies', '0008_merge_20170922_1353'),
-    ]
+    dependencies = [("companies", "0008_merge_20170922_1353")]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='description',
-            field=models.TextField(blank=True),
-        ),
+            model_name="company", name="description", field=models.TextField(blank=True)
+        )
     ]

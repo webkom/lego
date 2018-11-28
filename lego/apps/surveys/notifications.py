@@ -7,26 +7,26 @@ class SurveyNotification(Notification):
     name = SURVEY_CREATED
 
     def generate_mail(self):
-        survey = self.kwargs['survey']
+        survey = self.kwargs["survey"]
 
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                'name': self.user.full_name,
-                'survey': survey.id,
-                'event': survey.event.title,
-                'active_from': survey.active_from,
+                "name": self.user.full_name,
+                "survey": survey.id,
+                "event": survey.event.title,
+                "active_from": survey.active_from,
             },
-            subject=f'Spørreundersøkelse for {survey.event.title}',
-            plain_template='surveys/email/survey.txt',
-            html_template='surveys/email/survey.html',
+            subject=f"Spørreundersøkelse for {survey.event.title}",
+            plain_template="surveys/email/survey.txt",
+            html_template="surveys/email/survey.html",
         )
 
     def generate_push(self):
-        survey = self.kwargs['survey']
+        survey = self.kwargs["survey"]
 
         return self._delay_push(
-            template='surveys/push/survey.txt', context={
-                'event': survey.event.title,
-            }, instance=survey
+            template="surveys/push/survey.txt",
+            context={"event": survey.event.title},
+            instance=survey,
         )

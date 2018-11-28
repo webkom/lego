@@ -10,12 +10,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_captcha_response(self, captcha_response):
         if not verify_captcha(captcha_response):
-            raise exceptions.ValidationError('invalid_captcha')
+            raise exceptions.ValidationError("invalid_captcha")
         return captcha_response
 
     class Meta:
         model = User
-        fields = ('email', 'captcha_response')
+        fields = ("email", "captcha_response")
 
 
 class RegistrationConfirmationSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class RegistrationConfirmationSerializer(serializers.ModelSerializer):
     def validate_username(self, username):
         username_exists = User.objects.filter(username__iexact=username).exists()
         if username_exists:
-            raise exceptions.ValidationError('Username exists')
+            raise exceptions.ValidationError("Username exists")
         return username
 
     def validate_password(self, password):
@@ -34,4 +34,11 @@ class RegistrationConfirmationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'gender', 'password', 'allergies')
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "gender",
+            "password",
+            "allergies",
+        )

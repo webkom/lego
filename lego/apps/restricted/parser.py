@@ -12,9 +12,10 @@ class ParserMessageType:
     """
     Different types of message formats to parse.
     """
-    STRING = 'string'
-    BYTES = 'bytes'
-    BINARY_FILE = 'binary_file'
+
+    STRING = "string"
+    BYTES = "bytes"
+    BINARY_FILE = "binary_file"
 
 
 class EmailParser:
@@ -33,7 +34,7 @@ class EmailParser:
             elif self.message_type == ParserMessageType.BINARY_FILE:
                 msg = email.message_from_binary_file(self.raw_message, Message)
             else:
-                raise ValueError('Invalid message_type, could not parse message.')
+                raise ValueError("Invalid message_type, could not parse message.")
         except Exception:
             raise ParseEmailException
 
@@ -44,6 +45,6 @@ class EmailParser:
 
         # Add headers used by LEGO
         msg.original_size = len(self.raw_message)
-        msg['X-MailFrom'] = self.mail_from
+        msg["X-MailFrom"] = self.mail_from
 
         return msg

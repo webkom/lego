@@ -14,22 +14,26 @@ from lego.utils.serializers import BasisModelSerializer
 
 class MeetingInvitationSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
-    status = serializers.ChoiceField(choices=(constants.ATTENDING, constants.NOT_ATTENDING))
+    status = serializers.ChoiceField(
+        choices=(constants.ATTENDING, constants.NOT_ATTENDING)
+    )
 
     class Meta:
         model = MeetingInvitation
-        fields = ('user', 'status', 'meeting')
+        fields = ("user", "status", "meeting")
 
     def create(self, validated_data):
-        meeting = Meeting.objects.get(id=self.context['view'].kwargs['meeting_pk'])
-        meeting_invitation = MeetingInvitation.objects.create(meeting=meeting, **validated_data)
+        meeting = Meeting.objects.get(id=self.context["view"].kwargs["meeting_pk"])
+        meeting_invitation = MeetingInvitation.objects.create(
+            meeting=meeting, **validated_data
+        )
         return meeting_invitation
 
 
 class MeetingInvitationUpdateSerializer(BasisModelSerializer):
     class Meta:
         model = MeetingInvitation
-        fields = ('status', )
+        fields = ("status",)
 
 
 class MeetingGroupInvite(serializers.Serializer):
@@ -41,7 +45,9 @@ class MeetingUserInvite(serializers.Serializer):
 
 
 class MeetingBulkInvite(serializers.Serializer):
-    users = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all(), many=True, required=False)
+    users = PrimaryKeyRelatedFieldNoPKOpt(
+        queryset=User.objects.all(), many=True, required=False
+    )
     groups = PrimaryKeyRelatedFieldNoPKOpt(
         queryset=AbakusGroup.objects.all(), many=True, required=False
     )
@@ -50,7 +56,9 @@ class MeetingBulkInvite(serializers.Serializer):
 class MeetingDetailSerializer(BasisModelSerializer):
     invitations = MeetingInvitationSerializer(many=True, read_only=True)
     report = ContentSerializerField()
-    report_author = PublicUserField(queryset=User.objects.all(), allow_null=True, required=False)
+    report_author = PublicUserField(
+        queryset=User.objects.all(), allow_null=True, required=False
+    )
     created_by = PublicUserField(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     comment_target = CharField(read_only=True)
@@ -58,24 +66,41 @@ class MeetingDetailSerializer(BasisModelSerializer):
     class Meta:
         model = Meeting
         fields = (
-            'id', 'created_by', 'title', 'location', 'start_time', 'end_time', 'report',
-            'report_author', 'invitations', 'comments', 'comment_target'
+            "id",
+            "created_by",
+            "title",
+            "location",
+            "start_time",
+            "end_time",
+            "report",
+            "report_author",
+            "invitations",
+            "comments",
+            "comment_target",
         )
         read_only = True
 
     def create(self, validated_data):
         meeting = Meeting.objects.create(**validated_data)
-        owner = validated_data['current_user']
+        owner = validated_data["current_user"]
         meeting.invite_user(owner, owner)
         return meeting
 
 
 class MeetingListSerializer(BasisModelSerializer):
-    report_author = PublicUserField(queryset=User.objects.all(), allow_null=True, required=False)
+    report_author = PublicUserField(
+        queryset=User.objects.all(), allow_null=True, required=False
+    )
     created_by = PublicUserField(read_only=True)
 
     class Meta:
         model = Meeting
         fields = (
-            'id', 'created_by', 'title', 'location', 'start_time', 'end_time', 'report_author'
+            "id",
+            "created_by",
+            "title",
+            "location",
+            "start_time",
+            "end_time",
+            "report_author",
         )

@@ -13,19 +13,19 @@ class ExternalSystem:
     def sync_users(self, users):
         for user in users:
             if self.user_exists(user):
-                log.info('sync_update_user', user=user.username)
+                log.info("sync_update_user", user=user.username)
                 self.update_user(user)
             else:
-                log.info('sync_add_user', user=user.username)
+                log.info("sync_add_user", user=user.username)
                 self.add_user(user)
 
     def sync_groups(self, groups):
         for group in groups:
             if self.group_exists(group):
-                log.info('sync_update_group', group=group.name)
+                log.info("sync_update_group", group=group.name)
                 self.update_group(group)
             else:
-                log.info('sync_add_group', group=group.name)
+                log.info("sync_add_group", group=group.name)
                 self.add_group(group)
 
     def migrate(self):

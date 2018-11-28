@@ -9,6 +9,6 @@ class Tag(models.Model):
     def related_counts(self):
         related_fields = [relation.name for relation in self._meta.related_objects]
         return {
-            related_field: getattr(self, f'{related_field}_count', 0)
+            related_field: getattr(self, f"{related_field}_count", 0)
             for related_field in related_fields
         }

@@ -12,253 +12,312 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0013_auto_20171210_1610'),
+        ("events", "0013_auto_20171210_1610"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Answer',
+            name="Answer",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('answer_text', models.TextField(blank=True, default='', max_length=255)),
                 (
-                    'created_by',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "answer_text",
+                    models.TextField(blank=True, default="", max_length=255),
+                ),
+                (
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
-                        on_delete=django.db.models.deletion.SET_NULL, related_name='answer_created',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="answer_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='Option',
+            name="Option",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
-                ('option_text', models.TextField(default='', max_length=255)),
+                ("option_text", models.TextField(default="", max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='Question',
+            name="Question",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'question_type',
+                    "question_type",
                     models.CharField(
                         choices=[
-                            ('single_choice', 'single_choice'),
-                            ('multiple_choice', 'multiple_choice'), ('text_field', 'text_field')
-                        ], max_length=64
-                    )
+                            ("single_choice", "single_choice"),
+                            ("multiple_choice", "multiple_choice"),
+                            ("text_field", "text_field"),
+                        ],
+                        max_length=64,
+                    ),
                 ),
-                ('question_text', models.TextField(max_length=255)),
-                ('mandatory', models.BooleanField(default=False)),
-                ('relative_index', models.IntegerField(default=1)),
+                ("question_text", models.TextField(max_length=255)),
+                ("mandatory", models.BooleanField(default=False)),
+                ("relative_index", models.IntegerField(default=1)),
             ],
-            options={
-                'ordering': ['relative_index'],
-            },
+            options={"ordering": ["relative_index"]},
         ),
         migrations.CreateModel(
-            name='Submission',
+            name="Submission",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
                 (
-                    'created_by',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name='submission_created', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="submission_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name='Survey',
+            name="Survey",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('title', models.CharField(max_length=100)),
-                ('active_from', models.DateTimeField(default=django.utils.timezone.now)),
                 (
-                    'template_type',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("title", models.CharField(max_length=100)),
+                (
+                    "active_from",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "template_type",
                     models.CharField(
-                        blank=True, choices=[
-                            ('company_presentation', 'company_presentation'),
-                            ('lunch_presentation', 'lunch_presentation'), ('course', 'course'),
-                            ('kid_event', 'kid_event'), ('party', 'party'), ('social', 'social'),
-                            ('other', 'other'), ('event', 'event')
-                        ], max_length=30, null=True
-                    )
+                        blank=True,
+                        choices=[
+                            ("company_presentation", "company_presentation"),
+                            ("lunch_presentation", "lunch_presentation"),
+                            ("course", "course"),
+                            ("kid_event", "kid_event"),
+                            ("party", "party"),
+                            ("social", "social"),
+                            ("other", "other"),
+                            ("event", "event"),
+                        ],
+                        max_length=30,
+                        null=True,
+                    ),
                 ),
                 (
-                    'created_by',
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
-                        on_delete=django.db.models.deletion.SET_NULL, related_name='survey_created',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="survey_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'event',
+                    "event",
                     models.OneToOneField(
-                        on_delete=django.db.models.deletion.CASCADE, to='events.Event'
-                    )
+                        on_delete=django.db.models.deletion.CASCADE, to="events.Event"
+                    ),
                 ),
                 (
-                    'updated_by',
+                    "updated_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
-                        on_delete=django.db.models.deletion.SET_NULL, related_name='survey_updated',
-                        to=settings.AUTH_USER_MODEL
-                    )
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="survey_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.AddField(
-            model_name='submission',
-            name='survey',
+            model_name="submission",
+            name="survey",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name='submissions',
-                to='surveys.Survey'
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="submissions",
+                to="surveys.Survey",
             ),
         ),
         migrations.AddField(
-            model_name='submission',
-            name='updated_by',
+            model_name="submission",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='submission_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="submission_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='submission',
-            name='user',
+            model_name="submission",
+            name="user",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name='surveys',
-                to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="surveys",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name='question',
-            name='survey',
+            model_name="question",
+            name="survey",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name='questions',
-                to='surveys.Survey'
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="questions",
+                to="surveys.Survey",
             ),
         ),
         migrations.AddField(
-            model_name='option',
-            name='question',
+            model_name="option",
+            name="question",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name='options',
-                to='surveys.Question'
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="options",
+                to="surveys.Question",
             ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='question',
+            model_name="answer",
+            name="question",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name='answers',
-                to='surveys.Question'
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="answers",
+                to="surveys.Question",
             ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='selected_options',
+            model_name="answer",
+            name="selected_options",
             field=models.ManyToManyField(
-                blank=True, related_name='selected_in_answers', to='surveys.Option'
+                blank=True, related_name="selected_in_answers", to="surveys.Option"
             ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='submission',
+            model_name="answer",
+            name="submission",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name='answers',
-                to='surveys.Submission'
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="answers",
+                to="surveys.Submission",
             ),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='updated_by',
+            model_name="answer",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='answer_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="answer_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterUniqueTogether(
-            name='submission',
-            unique_together={('survey', 'user')},
+            name="submission", unique_together={("survey", "user")}
         ),
         migrations.AlterUniqueTogether(
-            name='question',
-            unique_together={('survey', 'relative_index')},
+            name="question", unique_together={("survey", "relative_index")}
         ),
     ]

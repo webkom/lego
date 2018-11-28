@@ -9,8 +9,8 @@ class CompanyModelIndex(SearchIndex):
 
     queryset = Company.objects.all()
     serializer_class = CompanySearchSerializer
-    result_fields = ('name', 'description')
-    autocomplete_result_fields = ('name', )
+    result_fields = ("name", "description")
+    autocomplete_result_fields = ("name",)
 
     def get_autocomplete(self, instance):
         return instance.name

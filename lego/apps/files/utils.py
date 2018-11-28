@@ -12,8 +12,8 @@ def prepare_file_upload(key, user, public):
     dict with additional fields the client need to attach to the upload request.
     """
     file = File.create_file(key, user, public)
-    url = resolve_url('api:v1:file-upload-success', file.key)
-    redirect_url = f'{settings.SERVER_URL}{url}'
+    url = resolve_url("api:v1:file-upload-success", file.key)
+    redirect_url = f"{settings.SERVER_URL}{url}"
     signed_post = storage.generate_upload_url(file.bucket, file.key, redirect_url)
 
-    return file.key, signed_post['url'], signed_post['fields'], file.get_file_token()
+    return file.key, signed_post["url"], signed_post["fields"], file.get_file_token()

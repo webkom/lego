@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from lego.apps.events.serializers.events import EventReadDetailedSerializer
 from lego.apps.events.serializers.registrations import (
-    RegistrationPaymentReadSerializer, RegistrationPublicReadSerializer
+    RegistrationPaymentReadSerializer,
+    RegistrationPublicReadSerializer,
 )
 
 

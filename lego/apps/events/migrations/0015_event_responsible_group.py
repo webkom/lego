@@ -7,17 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0015_auto_20180216_2026'),
-        ('events', '0014_auto_20180219_1920'),
+        ("users", "0015_auto_20180216_2026"),
+        ("events", "0014_auto_20180219_1920"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='responsible_group',
+            model_name="event",
+            name="responsible_group",
             field=models.ForeignKey(
-                null=True, on_delete=django.db.models.deletion.CASCADE, related_name='events',
-                to='users.AbakusGroup'
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="events",
+                to="users.AbakusGroup",
             ),
-        ),
+        )
     ]

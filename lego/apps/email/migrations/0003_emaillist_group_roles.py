@@ -8,22 +8,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('email', '0002_auto_20170828_1020'),
-    ]
+    dependencies = [("email", "0002_auto_20170828_1020")]
 
     operations = [
         migrations.AddField(
-            model_name='emaillist',
-            name='group_roles',
+            model_name="emaillist",
+            name="group_roles",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(
                     choices=[
-                        ('member', 'member'), ('leader', 'leader'), ('co-leader', 'co-leader'),
-                        ('treasurer', 'treasurer')
-                    ], max_length=64
-                ), default=['member'], size=None
+                        ("member", "member"),
+                        ("leader", "leader"),
+                        ("co-leader", "co-leader"),
+                        ("treasurer", "treasurer"),
+                    ],
+                    max_length=64,
+                ),
+                default=["member"],
+                size=None,
             ),
             preserve_default=False,
-        ),
+        )
     ]

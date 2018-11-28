@@ -5,17 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('email', '0005_auto_20171017_1157'),
-    ]
+    dependencies = [("email", "0005_auto_20171017_1157")]
 
     operations = [
         migrations.AddField(
-            model_name='emaillist',
-            name='require_internal_address',
+            model_name="emaillist",
+            name="require_internal_address",
             field=models.BooleanField(
                 default=False,
-                help_text='Only allow users with emails from our internal domain, @abakus.no'
+                help_text="Only allow users with emails from our internal domain, @abakus.no",
             ),
-        ),
+        )
     ]

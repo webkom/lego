@@ -4,8 +4,10 @@ from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
 username_validator = validators.RegexValidator(
-    r'^\w+$', 'Enter a valid username. This value may contain only letters, numbers and _ '
-    'characters.', 'invalid'
+    r"^\w+$",
+    "Enter a valid username. This value may contain only letters, numbers and _ "
+    "characters.",
+    "invalid",
 )
 
 
@@ -16,7 +18,7 @@ class EmailValidatorWithBlacklist:
     in the blacklist.
     """
 
-    code = 'invalid'
+    code = "invalid"
     domain_blacklist = []
 
     def __init__(self, blacklist=None, *args, **kwargs):
@@ -24,10 +26,12 @@ class EmailValidatorWithBlacklist:
             self.domain_blacklist = blacklist
 
     def __call__(self, value):
-        _, domain_part = value.rsplit('@', 1)
+        _, domain_part = value.rsplit("@", 1)
 
         if domain_part.lower() in self.domain_blacklist:
-            message = 'You can\'t use a {} email for your personal account.'.format(domain_part)
+            message = "You can't use a {} email for your personal account.".format(
+                domain_part
+            )
             raise ValidationError(message, code=self.code)
 
     def __eq__(self, other):
@@ -35,4 +39,6 @@ class EmailValidatorWithBlacklist:
 
 
 # We do not permit emails from our GSuite account - causes circular dependencies.
-email_blacklist_validator = EmailValidatorWithBlacklist(blacklist=[settings.GSUITE_DOMAIN])
+email_blacklist_validator = EmailValidatorWithBlacklist(
+    blacklist=[settings.GSUITE_DOMAIN]
+)

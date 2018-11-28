@@ -13,9 +13,9 @@ from lego.apps.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteSe
 
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    queryset = Quote.objects.all().prefetch_related('tags')
+    queryset = Quote.objects.all().prefetch_related("tags")
     filter_class = QuotesFilterSet
-    ordering = '-created_at'
+    ordering = "-created_at"
 
     def get_queryset(self):
         access_unapproved = self.request.user.has_perm(EDIT, self.queryset)
@@ -25,26 +25,26 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return self.queryset
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ["create", "update", "partial_update"]:
             return QuoteCreateAndUpdateSerializer
         return QuoteSerializer
 
-    @detail_route(methods=['PUT'])
+    @detail_route(methods=["PUT"])
     def approve(self, *args, **kwargs):
         instance = self.get_object()
         instance.approve()
         return Response(status=status.HTTP_200_OK)
 
-    @detail_route(methods=['PUT'])
+    @detail_route(methods=["PUT"])
     def unapprove(self, *args, **kwargs):
         instance = self.get_object()
         instance.unapprove()
         return Response(status=status.HTTP_200_OK)
 
-    @list_route(methods=['GET'])
+    @list_route(methods=["GET"])
     def random(self, request):
         queryset = self.get_queryset().filter(approved=True)
-        values = queryset.values_list('pk', flat=True)
+        values = queryset.values_list("pk", flat=True)
         if not values:
             return Response(status=status.HTTP_204_NO_CONTENT)
 

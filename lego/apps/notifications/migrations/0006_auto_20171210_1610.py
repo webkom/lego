@@ -7,27 +7,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('notifications', '0005_auto_20171116_2217'),
-    ]
+    dependencies = [("notifications", "0005_auto_20171116_2217")]
 
     operations = [
         migrations.AlterField(
-            model_name='announcement',
-            name='created_by',
+            model_name="announcement",
+            name="created_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='announcement_created',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="announcement_created",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AlterField(
-            model_name='announcement',
-            name='updated_by',
+            model_name="announcement",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.SET_NULL, related_name='announcement_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="announcement_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

@@ -9,7 +9,7 @@ class LegoPermissionFilter(filters.BaseFilterBackend):
     """
 
     def permission_handler(self, view, queryset):
-        handler = getattr(view, 'permission_handler', None)
+        handler = getattr(view, "permission_handler", None)
         if not handler:
             handler = get_permission_handler(queryset.model)
 
@@ -17,7 +17,7 @@ class LegoPermissionFilter(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
 
-        has_keyword_permissions = getattr(request, 'user_has_perm', False)
+        has_keyword_permissions = getattr(request, "user_has_perm", False)
         if has_keyword_permissions:
             return queryset
 

@@ -13,104 +13,127 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
+        ("contenttypes", "0002_remove_content_type_name"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Reaction',
+            name="Reaction",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name='ID'
-                    )
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
                 ),
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('object_id', models.PositiveIntegerField(db_index=True)),
                 (
-                    'content_type',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                ("object_id", models.PositiveIntegerField(db_index=True)),
+                (
+                    "content_type",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType'
-                    )
-                ),
-                (
-                    'created_by',
-                    models.ForeignKey(
-                        default=None, editable=False, null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='reaction_created', to=settings.AUTH_USER_MODEL
-                    )
+                        to="contenttypes.ContentType",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        default=None,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reaction_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.CreateModel(
-            name='ReactionType',
+            name="ReactionType",
             fields=[
                 (
-                    'created_at',
+                    "created_at",
                     models.DateTimeField(
                         db_index=True, default=django.utils.timezone.now, editable=False
-                    )
+                    ),
                 ),
                 (
-                    'updated_at',
-                    models.DateTimeField(default=django.utils.timezone.now, editable=False)
+                    "updated_at",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, editable=False
+                    ),
                 ),
-                ('deleted', models.BooleanField(db_index=True, default=False, editable=False)),
-                ('short_code', models.CharField(max_length=40, primary_key=True, serialize=False)),
-                ('unicode', models.CharField(db_index=True, max_length=24)),
                 (
-                    'created_by',
+                    "deleted",
+                    models.BooleanField(db_index=True, default=False, editable=False),
+                ),
+                (
+                    "short_code",
+                    models.CharField(max_length=40, primary_key=True, serialize=False),
+                ),
+                ("unicode", models.CharField(db_index=True, max_length=24)),
+                (
+                    "created_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='reactiontype_created', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="reactiontype_created",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    'updated_by',
+                    "updated_by",
                     models.ForeignKey(
-                        default=None, editable=False, null=True,
+                        default=None,
+                        editable=False,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='reactiontype_updated', to=settings.AUTH_USER_MODEL
-                    )
+                        related_name="reactiontype_updated",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
-            options={
-                'abstract': False,
-                'default_manager_name': 'objects',
-            },
+            options={"abstract": False, "default_manager_name": "objects"},
         ),
         migrations.AddField(
-            model_name='reaction',
-            name='type',
+            model_name="reaction",
+            name="type",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to='reactions.ReactionType'
+                on_delete=django.db.models.deletion.CASCADE, to="reactions.ReactionType"
             ),
         ),
         migrations.AddField(
-            model_name='reaction',
-            name='updated_by',
+            model_name="reaction",
+            name="updated_by",
             field=models.ForeignKey(
-                default=None, editable=False, null=True,
-                on_delete=django.db.models.deletion.CASCADE, related_name='reaction_updated',
-                to=settings.AUTH_USER_MODEL
+                default=None,
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="reaction_updated",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

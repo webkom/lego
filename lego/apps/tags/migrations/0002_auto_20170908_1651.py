@@ -10,22 +10,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tags', '0001_initial'),
-    ]
+    dependencies = [("tags", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='tag',
-            name='tag',
+            model_name="tag",
+            name="tag",
             field=models.CharField(
-                max_length=64, primary_key=True, serialize=False, validators=[
+                max_length=64,
+                primary_key=True,
+                serialize=False,
+                validators=[
                     django.core.validators.RegexValidator(
-                        re.compile('^[-a-z0-9_]+\\Z', 32),
+                        re.compile("^[-a-z0-9_]+\\Z", 32),
                         "Enter a valid 'tag' consisting of letters, numbers, underscores or hyphens.",
-                        'invalid'
+                        "invalid",
                     )
-                ]
+                ],
             ),
-        ),
+        )
     ]
