@@ -41,7 +41,9 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return MeetingListSerializer
         return super().get_serializer_class()
 
-    @decorators.action(detail=True, methods=["POST"], serializer_class=MeetingUserInvite)
+    @decorators.action(
+        detail=True, methods=["POST"], serializer_class=MeetingUserInvite
+    )
     def invite_user(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -50,7 +52,9 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         meeting.invite_user(user, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.action(detail=True, methods=["POST"], serializer_class=MeetingBulkInvite)
+    @decorators.action(
+        detail=True, methods=["POST"], serializer_class=MeetingBulkInvite
+    )
     def bulk_invite(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -66,7 +70,9 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             meeting.invite_group(group, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.action(detail=True, methods=["POST"], serializer_class=MeetingGroupInvite)
+    @decorators.action(
+        detail=True, methods=["POST"], serializer_class=MeetingGroupInvite
+    )
     def invite_group(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)

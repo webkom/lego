@@ -156,7 +156,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 
-    @decorators.action(detail=True, methods=["POST"], serializer_class=StripeTokenSerializer)
+    @decorators.action(
+        detail=True, methods=["POST"], serializer_class=StripeTokenSerializer
+    )
     def payment(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -279,7 +281,9 @@ class RegistrationViewSet(
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.action(
-        detail=False, methods=["POST"], serializer_class=AdminRegistrationCreateAndUpdateSerializer
+        detail=False,
+        methods=["POST"],
+        serializer_class=AdminRegistrationCreateAndUpdateSerializer,
     )
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get("event_pk", None)
@@ -298,7 +302,9 @@ class RegistrationViewSet(
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
 
-    @decorators.action(detail=False, methods=["POST"], serializer_class=AdminUnregisterSerializer)
+    @decorators.action(
+        detail=False, methods=["POST"], serializer_class=AdminUnregisterSerializer
+    )
     def admin_unregister(self, request, *args, **kwargs):
         event_id = self.kwargs.get("event_pk", None)
         event = Event.objects.get(id=event_id)
