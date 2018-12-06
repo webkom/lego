@@ -41,7 +41,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return MeetingListSerializer
         return super().get_serializer_class()
 
-    @decorators.detail_route(methods=["POST"], serializer_class=MeetingUserInvite)
+    @decorators.action(detail=True, methods=["POST"], serializer_class=MeetingUserInvite)
     def invite_user(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -50,7 +50,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         meeting.invite_user(user, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.detail_route(methods=["POST"], serializer_class=MeetingBulkInvite)
+    @decorators.action(detail=True, methods=["POST"], serializer_class=MeetingBulkInvite)
     def bulk_invite(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -66,7 +66,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             meeting.invite_group(group, request.user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.detail_route(methods=["POST"], serializer_class=MeetingGroupInvite)
+    @decorators.action(detail=True, methods=["POST"], serializer_class=MeetingGroupInvite)
     def invite_group(self, request, *args, **kwargs):
         meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -105,7 +105,7 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
     authentication_classes = (MeetingInvitationTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
-    @decorators.list_route(methods=["POST"])
+    @decorators.action(detail=False, methods=["POST"])
     def accept(self, request):
         invitation = request.token_invitation
         invitation.accept()
@@ -115,7 +115,7 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
         invitation = request.token_invitation
         return Response(data=MeetingInvitationSerializer(invitation).data)
 
-    @decorators.list_route(methods=["POST"])
+    @decorators.action(detail=False, methods=["POST"])
     def reject(self, request):
         invitation = request.token_invitation
         invitation.reject()

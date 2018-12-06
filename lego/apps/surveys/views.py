@@ -1,5 +1,5 @@
 from rest_framework import exceptions, mixins, status, viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -46,7 +46,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         return SurveyReadSerializer
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def share(self, *args, **kwargs):
         user = self.request.user
         is_admin = user.has_perm(EDIT, obj=Survey)
@@ -57,7 +57,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = SurveyReadDetailedAdminSerializer(survey)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def hide(self, *args, **kwargs):
         user = self.request.user
         is_admin = user.has_perm(EDIT, obj=Survey)
@@ -129,7 +129,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise exceptions.NotAcceptable("Only text answers can be hidden")
         return submission, answer
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def hide(self, request, **kwargs):
         user = self.request.user
         is_admin = user.has_perm(EDIT, obj=Survey)
@@ -143,7 +143,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             status=status.HTTP_202_ACCEPTED,
         )
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def show(self, request, **kwargs):
         user = self.request.user
         is_admin = user.has_perm(EDIT, obj=Survey)
