@@ -134,8 +134,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         serializer.save(is_ready=False)
 
-    @decorators.detail_route(
-        methods=["GET"], serializer_class=EventAdministrateSerializer
+    @decorators.action(
+        detail=True, methods=["GET"], serializer_class=EventAdministrateSerializer
     )
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get("pk", None)
@@ -156,7 +156,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 
-    @decorators.detail_route(methods=["POST"], serializer_class=StripeTokenSerializer)
+    @decorators.action(
+        detail=True, methods=["POST"], serializer_class=StripeTokenSerializer
+    )
     def payment(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -180,7 +182,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    @decorators.list_route(
+    @decorators.action(
+        detail=False,
         serializer_class=EventReadSerializer,
         permission_classes=[permissions.IsAuthenticated],
     )
@@ -277,8 +280,10 @@ class RegistrationViewSet(
         serializer = RegistrationReadSerializer(instance)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    @decorators.list_route(
-        methods=["POST"], serializer_class=AdminRegistrationCreateAndUpdateSerializer
+    @decorators.action(
+        detail=False,
+        methods=["POST"],
+        serializer_class=AdminRegistrationCreateAndUpdateSerializer,
     )
     def admin_register(self, request, *args, **kwargs):
         event_id = self.kwargs.get("event_pk", None)
@@ -297,7 +302,9 @@ class RegistrationViewSet(
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
 
-    @decorators.list_route(methods=["POST"], serializer_class=AdminUnregisterSerializer)
+    @decorators.action(
+        detail=False, methods=["POST"], serializer_class=AdminUnregisterSerializer
+    )
     def admin_unregister(self, request, *args, **kwargs):
         event_id = self.kwargs.get("event_pk", None)
         event = Event.objects.get(id=event_id)

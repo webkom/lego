@@ -59,7 +59,7 @@ class NotificationSettingsViewSet(
 
         return Response(serializer.data)
 
-    @decorators.list_route(methods=["GET"])
+    @decorators.action(detail=False, methods=["GET"])
     def alternatives(self, request):
         """
         Return a list of all possible notification_types and channels.
@@ -107,7 +107,7 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @decorators.detail_route(methods=["POST"])
+    @decorators.action(detail=True, methods=["POST"])
     def send(self, request, *args, **kwargs):
         instance = self.get_object()
 

@@ -81,7 +81,7 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
 
     serializer_class = AggregatedMarkedFeedSerializer
 
-    @decorators.list_route(serializer_class=MarkSerializer, methods=["POST"])
+    @decorators.action(detail=False, serializer_class=MarkSerializer, methods=["POST"])
     def mark_all(self, request):
         """
         This function marks all activities in a NotificationFeed as seen or/and red.
@@ -96,7 +96,7 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.detail_route(serializer_class=MarkSerializer, methods=["POST"])
+    @decorators.action(detail=True, serializer_class=MarkSerializer, methods=["POST"])
     def mark(self, request, pk):
         """
         Mark a single notification as read or seen.
@@ -111,7 +111,7 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.list_route(methods=["GET"])
+    @decorators.action(detail=False, methods=["GET"])
     def notification_data(self, request):
         feed = self.get_queryset().model
         return Response(feed.get_notification_data(self.request.user.id))
