@@ -10,7 +10,7 @@ hiredis==0.2.0
 certifi==2018.10.15
 elasticsearch==6.2.0
 celery==4.2.1
-stripe==2.16.0
+stripe==2.17.0
 structlog==18.2.0
 boto3==1.8
 bs4==0.0.1
