@@ -40,8 +40,8 @@ class RestrictedMailViewSet(
             return RestrictedMailDetailSerializer
         return RestrictedMailSerializer
 
-    @decorators.detail_route(
-        methods=["GET"], permission_classes=(permissions.AllowAny,)
+    @decorators.action(
+        detail=True, methods=["GET"], permission_classes=(permissions.AllowAny,)
     )
     def token(self, *arg, **kwargs):
         """
