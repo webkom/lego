@@ -47,7 +47,8 @@ class FileViewSet(viewsets.GenericViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @decorators.detail_route(
+    @decorators.action(
+        detail=True,
         methods=["GET"],
         permission_classes=[permissions.AllowAny],
         authentication_classes=[],

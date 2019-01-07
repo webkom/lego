@@ -1,7 +1,7 @@
 from random import choice
 
 from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -29,19 +29,19 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return QuoteCreateAndUpdateSerializer
         return QuoteSerializer
 
-    @detail_route(methods=["PUT"])
+    @action(detail=True, methods=["PUT"])
     def approve(self, *args, **kwargs):
         instance = self.get_object()
         instance.approve()
         return Response(status=status.HTTP_200_OK)
 
-    @detail_route(methods=["PUT"])
+    @action(detail=True, methods=["PUT"])
     def unapprove(self, *args, **kwargs):
         instance = self.get_object()
         instance.unapprove()
         return Response(status=status.HTTP_200_OK)
 
-    @list_route(methods=["GET"])
+    @action(detail=False, methods=["GET"])
     def random(self, request):
         queryset = self.get_queryset().filter(approved=True)
         values = queryset.values_list("pk", flat=True)

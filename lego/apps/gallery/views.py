@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from lego.apps.gallery.filters import GalleryFilterSet
@@ -41,7 +41,8 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             .select_related("cover")
         )
 
-    @detail_route(
+    @action(
+        detail=True,
         methods=["get"],
         serializer_class=GalleryMetadataSerializer,
         queryset=Gallery.objects.filter(public_metadata=True),

@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -70,7 +70,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         return super().get_permissions()
 
-    @list_route(
+    @action(
+        detail=False,
         methods=["GET"],
         permission_classes=[IsAuthenticated],
         serializer_class=MeSerializer,
@@ -131,7 +132,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         payload["is_abakus_member"] = is_abakus_member
         return Response(data=payload, status=status.HTTP_200_OK)
 
-    @detail_route(
+    @action(
+        detail=True,
         methods=["POST"],
         permission_classes=[IsAuthenticated],
         serializer_class=ChangeGradeSerializer,

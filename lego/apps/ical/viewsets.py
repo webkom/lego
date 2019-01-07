@@ -24,7 +24,7 @@ class ICalTokenViewset(viewsets.ViewSet):
 
     permission_classes = (IsAuthenticated,)
 
-    @decorators.list_route(methods=["PATCH"])
+    @decorators.action(detail=False, methods=["PATCH"])
     def regenerate(self, request, *args, **kwargs):
         """Regenerate ICalToken."""
         token, created = ICalToken.objects.get_or_create(user=request.user)
@@ -80,7 +80,7 @@ class ICalViewset(viewsets.ViewSet):
         }
         return Response(data=data)
 
-    @decorators.list_route(methods=["GET"])
+    @decorators.action(detail=False, methods=["GET"])
     def personal(self, request):
         """Personal ical route."""
         calendar_type = constants.TYPE_PERSONAL
@@ -110,7 +110,7 @@ class ICalViewset(viewsets.ViewSet):
 
         return utils.render_ical_response(feed, calendar_type)
 
-    @decorators.list_route(methods=["GET"])
+    @decorators.action(detail=False, methods=["GET"])
     def registrations(self, request):
         """Registration ical route."""
         calendar_type = constants.TYPE_REGISTRATIONS
@@ -143,7 +143,7 @@ class ICalViewset(viewsets.ViewSet):
             )
         return utils.render_ical_response(feed, calendar_type)
 
-    @decorators.list_route(methods=["GET"])
+    @decorators.action(detail=False, methods=["GET"])
     def events(self, request):
         """Event ical route."""
         calendar_type = constants.TYPE_EVENTS
