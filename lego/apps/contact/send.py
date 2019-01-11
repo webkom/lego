@@ -1,5 +1,5 @@
-from lego.apps.users.models import AbakusGroup
 from lego.apps.users.constants import LEADER
+from lego.apps.users.models import AbakusGroup
 from lego.utils.tasks import send_email
 
 
@@ -9,6 +9,11 @@ def send_message(title, message, user, anonymous, recipient_group):
     Don't catch AbakusGroup.DoesNotExist, this notifies us when the group doesn't exist.
     """
     anonymous = anonymous if user.is_authenticated else True
+
+    # Handle no recipient group as HS
+    if not recipient_group:
+        recipient_group = AbakusGroup.objects.get(name="Hovedstyret")
+
     recipient_emails = get_recipients(recipient_group)
 
     from_name = "Anonymous" if anonymous else user.full_name
@@ -21,7 +26,7 @@ def send_message(title, message, user, anonymous, recipient_group):
             "message": message,
             "from_name": from_name,
             "from_email": from_email,
-            "recipient_group": recipient_group
+            "recipient_group": recipient_group,
         },
         subject=f"Ny henvendelse fra kontaktskjemaet til {recipient_group}",
         plain_template="contact/email/contact_form.txt",
@@ -29,10 +34,15 @@ def send_message(title, message, user, anonymous, recipient_group):
         from_email=None,
     )
 
+
 def get_recipients(recipient_group):
     hs_group = AbakusGroup.objects.get(name="Hovedstyret")
     if recipient_group == hs_group:
         return [hs_group.contact_email]
-    recipient_leaders = [membership.user for membership in recipient_group.memberships.filter(role=LEADER).select_related('user')]
+    recipient_leaders = [
+        membership.user
+        for membership in recipient_group.memberships.filter(
+            role=LEADER
+        ).select_related("user")
+    ]
     return [leader.email_address for leader in recipient_leaders]
-
