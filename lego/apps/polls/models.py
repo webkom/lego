@@ -11,6 +11,8 @@ from lego.apps.users.models import User
 
 class Poll(Content, BasisModel):
 
+    description = models.TextField(blank=True)
+
     valid_until = models.DateTimeField(
         default=(timezone.now()) + timezone.timedelta(weeks=52))
 
@@ -52,3 +54,6 @@ class Option(BasisModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['-votes', 'pk']
