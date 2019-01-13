@@ -32,6 +32,8 @@ If you get an error while installing requirements, you might be missing some dep
 $ apt-get install libpq-dev python3-dev
 ```
 
+> For MACOS you need to `brew install postgresql`
+
 If you get an error while running initialize_development mentioning `elasticsearch`, you probably need run the following code, and then start over from `docker-compose up -d`. [Read why and how to make it permanent on Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
 
 ```bash
