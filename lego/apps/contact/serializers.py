@@ -1,5 +1,8 @@
 from rest_framework import exceptions, serializers
 
+from lego.apps.users.constants import GROUP_COMMITTEE
+from lego.apps.users.models import AbakusGroup
+from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.functions import verify_captcha
 
 
@@ -9,6 +12,9 @@ class ContactFormSerializer(serializers.Serializer):
     message = serializers.CharField()
     anonymous = serializers.BooleanField()
     captcha_response = serializers.CharField()
+    recipient_group = PrimaryKeyRelatedFieldNoPKOpt(
+        allow_null=True, queryset=AbakusGroup.objects.all().filter(type=GROUP_COMMITTEE)
+    )
 
     def validate_captcha_response(self, captcha_response):
         if not verify_captcha(captcha_response):

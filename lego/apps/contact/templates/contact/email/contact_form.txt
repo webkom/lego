@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Det er sendt inn en ny henvendelse fra kontaktskjemaet.
+Det er sendt inn en ny henvendelse fra kontaktskjemaet til {{recipient_group}}.
 
 Tittel: {{title}}
 

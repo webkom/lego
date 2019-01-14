@@ -2,7 +2,7 @@ from unittest import mock
 
 from rest_framework import status
 
-from lego.apps.users.models import User
+from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
 
@@ -29,6 +29,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "message": "message",
                 "anonymous": True,
                 "captcha_response": "test",
+                "recipient_group": None,
             },
         )
         self.assertEquals(status.HTTP_202_ACCEPTED, response.status_code)
@@ -44,6 +45,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "message": "message",
                 "anonymous": False,
                 "captcha_response": "test",
+                "recipient_group": None,
             },
         )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -59,11 +61,14 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "message": "message",
                 "anonymous": True,
                 "captcha_response": "test",
+                "recipient_group": None,
             },
         )
         self.assertEquals(status.HTTP_202_ACCEPTED, response.status_code)
         mock_verify_captcha.assert_called_once()
-        mock_send_message.assert_called_once_with("title", "message", self.user, True)
+        mock_send_message.assert_called_once_with(
+            "title", "message", self.user, True, None
+        )
 
     @mock.patch("lego.apps.contact.views.send_message")
     @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=False)
@@ -76,7 +81,32 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "message": "message",
                 "anonymous": True,
                 "captcha_response": "test",
+                "recipient_group": None,
             },
         )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
         mock_verify_captcha.assert_called_once()
+
+    @mock.patch("lego.apps.contact.views.send_message")
+    @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=True)
+    def test_committee_as_recipient(self, mock_verify_captcha, mock_send_message):
+        webkom = AbakusGroup.objects.get(name="Webkom")
+        webkom_id = webkom.id
+
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            self.url,
+            {
+                "title": "title",
+                "message": "message",
+                "anonymous": True,
+                "captcha_response": "test",
+                "recipient_group": webkom_id,
+            },
+        )
+        self.assertEquals(status.HTTP_202_ACCEPTED, response.status_code)
+        mock_verify_captcha.assert_called_once()
+        mock_send_message.assert_called_once_with(
+            "title", "message", self.user, True, webkom
+        )

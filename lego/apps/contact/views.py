@@ -17,7 +17,11 @@ class ContactFormViewSet(viewsets.GenericViewSet):
         title = serializer.validated_data["title"]
         message = serializer.validated_data["message"]
         anonymous = serializer.validated_data["anonymous"]
+        recipient_group = serializer.validated_data["recipient_group"]
 
-        send_message(title, message, request.user, anonymous)
+        send_message(title, message, request.user, anonymous, recipient_group)
+
+        if recipient_group:
+            serializer.validated_data["recipient_group"] = recipient_group.id
 
         return Response(serializer.validated_data, status=status.HTTP_202_ACCEPTED)
