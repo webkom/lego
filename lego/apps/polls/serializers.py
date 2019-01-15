@@ -36,7 +36,7 @@ class PollSerializer(BasisModelSerializer):
         model = Poll
         fields = ('id', 'created_at', 'title', 'description', 'options',
                   'total_votes', 'tags', 'comments', 'comment_target',
-                  'has_answered')
+                  'has_answered', 'pinned')
 
 
 class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -57,7 +57,7 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
         model = Poll
         fields = ('id', 'created_at', 'title', 'description', 'options',
                   'total_votes', 'comments', 'comment_target', 'tags',
-                  'has_answered')
+                  'has_answered', 'pinned')
 
 
 class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -67,7 +67,7 @@ class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Poll
         fields = ('id', 'created_at', 'title', 'description', 'options',
-                  'total_votes', 'tags')
+                  'total_votes', 'tags', 'pinned')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -85,7 +85,7 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     class Meta:
         model = Poll
         fields = ('id', 'created_at', 'title', 'description', 'options',
-                  'total_votes', 'tags')
+                  'total_votes', 'tags', 'pinned')
 
     @transaction.atomic
     def update(self, instance, validated_data):

@@ -85,7 +85,7 @@ class FrontpageViewSet(viewsets.ViewSet):
             queryset_events = events_handler.filter_queryset(
                 request.user, queryset_events_base)
 
-        queryset_poll = Poll.objects.filter(tags__in=['frontpage']).latest()
+        queryset_poll = Poll.objects.filter(pinned=True).latest()
 
         articles = PublicArticleSerializer(
             queryset_articles[:10],

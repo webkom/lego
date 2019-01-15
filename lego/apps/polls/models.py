@@ -47,7 +47,7 @@ class Poll(Content, BasisModel):
 
 class Option(BasisModel):
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=30)
     votes = models.IntegerField(default=0)
     poll = models.ForeignKey(
         Poll, on_delete=models.CASCADE, related_name='options')
