@@ -7,7 +7,7 @@ from lego.utils.serializers import BasisModelSerializer
 class PageListSerializer(BasisModelSerializer):
     class Meta:
         model = Page
-        fields = ("pk", "title", "slug")
+        fields = ("pk", "title", "slug", "category")
 
 
 class PageDetailSerializer(BasisModelSerializer):
@@ -16,4 +16,4 @@ class PageDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Page
-        fields = ("pk", "title", "slug", "content", "picture")
+        fields = ("pk", "title", "slug", "content", "picture", "category")
