@@ -1,0 +1,47 @@
+- model: polls.Poll
+  pk: 1
+  fields:
+    title: Test poll 1
+    pinned: True
+
+- model: polls.Poll
+  pk: 2
+  fields:
+    title: Test poll 2
+    description: Dette er en beskrivelse av en poll. Hva mener du om denne saken?
+    pinned: False
+
+- model: polls.Option
+  pk: 1
+  fields:
+    name: Ja
+    votes: 0
+    poll: 1
+
+- model: polls.Option
+  pk: 2
+  fields:
+    name: Nei
+    votes: 20
+    poll: 1
+
+- model: polls.Option
+  pk: 3
+  fields:
+    name: Ja
+    votes: 73
+    poll: 2
+
+- model: polls.Option
+  pk: 4
+  fields:
+    name: Nei
+    votes: 21
+    poll: 2
+
+- model: polls.Option
+  pk: 5
+  fields:
+    name: Vet ikke
+    votes: 0
+    poll: 2

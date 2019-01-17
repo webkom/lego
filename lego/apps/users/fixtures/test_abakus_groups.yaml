@@ -173,3 +173,8 @@
   fields: {deleted: false, name: Students, description: '', contact_email: '', parent: null,
     logo: null, type: annen, text: '', permissions: '[]', show_badge: true, lft: 1,
     rght: 2, tree_id: 17, level: 0}
+- model: users.abakusgroup
+  pk: 27
+  fields: {deleted: false, name: PollAdminTest, description: '', contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/polls/"]',
+    show_badge: true, lft: 1, rght: 2, tree_id: 8, level: 0}

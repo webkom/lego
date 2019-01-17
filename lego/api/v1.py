@@ -49,6 +49,7 @@ from lego.apps.notifications.views import (
 )
 from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.podcasts.views import PodcastViewSet
+from lego.apps.polls.views import PollViewSet
 from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
@@ -77,7 +78,6 @@ from lego.apps.users.views.student_confirmation import (
 )
 from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
-from lego.apps.polls.views import PollViewSet
 
 router = routers.DefaultRouter()
 router.register(r"announcements", AnnouncementViewSet, base_name="announcements")
@@ -179,7 +179,7 @@ router.register(
 )
 router.register(r"penalties", PenaltyViewSet)
 router.register(r"podcasts", PodcastViewSet, base_name="podcasts")
-router.register(r'polls', PollViewSet, base_name="polls")
+router.register(r"polls", PollViewSet, base_name="polls")
 router.register(r"quotes", QuoteViewSet)
 router.register(r"reaction-types", ReactionTypeViewSet)
 router.register(r"reactions", ReactionViewSet)

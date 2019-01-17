@@ -3,4 +3,4 @@ from lego.apps.permissions.permissions import PermissionHandler
 
 
 class PollPermissionHandler(PermissionHandler):
-    authentication_map = {LIST: False, VIEW: False}
+    authentication_map = {LIST: False}

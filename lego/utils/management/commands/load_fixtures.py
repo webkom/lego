@@ -72,7 +72,7 @@ class Command(BaseCommand):
                     "articles/fixtures/development_articles.yaml",
                     "quotes/fixtures/development_quotes.yaml",
                     "podcasts/fixtures/development_podcasts.yaml",
-                    'polls/fixtures/development_polls.yaml',
+                    "polls/fixtures/development_polls.yaml",
                     "oauth/fixtures/development_applications.yaml",
                     "reactions/fixtures/emojione_reaction_types.yaml",
                     "joblistings/fixtures/development_joblistings.yaml",
