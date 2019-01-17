@@ -9,13 +9,15 @@ from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
 
+def get_time_delta():
+    return timezone.now() + timezone.timedelta(weeks=52)
+
+
 class Poll(Content, BasisModel):
 
     description = models.TextField(blank=True)
 
-    valid_until = models.DateTimeField(
-        default=(timezone.now()) + timezone.timedelta(weeks=52)
-    )
+    valid_until = models.DateTimeField(default=get_time_delta)
 
     answered_users = models.ManyToManyField(User, related_name="answered_polls")
 
