@@ -90,3 +90,9 @@ class PollViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.unauthenticated_user)
         response = self.client.post(_get_vote_url(1), {"optionId": 1})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_vote_poll_not_valid(self):
+        """A user should be able to vote on a poll where valid_until is not in the future"""
+        self.client.force_authenticate(self.authenticated_user)
+        response = self.client.post(_get_vote_url(3), {"optionId": 5})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

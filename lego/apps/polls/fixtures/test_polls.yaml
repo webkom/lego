@@ -11,6 +11,13 @@
     description: Dette er en beskrivelse av en poll. Hva mener du om denne saken?
     pinned: False
 
+- model: polls.Poll
+  pk: 3
+  fields:
+    title: Test poll 3
+    valid_until: "2011-09-01T13:20:30+03:00"
+    pinned: False
+
 - model: polls.Option
   pk: 1
   fields:
@@ -44,4 +51,4 @@
   fields:
     name: Vet ikke
     votes: 0
-    poll: 2
+    poll: 3

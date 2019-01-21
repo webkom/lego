@@ -1,7 +1,8 @@
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Sum
 from django.utils import timezone
+from rest_framework.exceptions import ParseError
 
 from lego.apps.content.models import Content
 from lego.apps.polls.permissions import PollPermissionHandler
@@ -33,15 +34,15 @@ class Poll(Content, BasisModel):
     def get_absolute_url(self):
         return f"{settings.FRONTEND_URL}/polls/{self.id}/"
 
+    @transaction.atomic
     def vote(self, user, option_id):
-        if user in self.answered_users.all():
-            return "forbidden"
         option = self.options.get(pk=option_id)
-        if option:
-            option.votes += 1
-            option.save()
-            self.answered_users.add(user)
-            self.save()
+        if not option:
+            raise ParseError(detail="Option not found.")
+        option.votes += 1
+        option.save()
+        self.answered_users.add(user)
+        self.save()
 
     class Meta:
         permission_handler = PollPermissionHandler()

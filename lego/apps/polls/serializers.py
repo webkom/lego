@@ -31,13 +31,14 @@ class PollSerializer(BasisModelSerializer):
 
     def get_has_answered(self, obj):
         user = self.context["request"].user
-        return user in obj.answered_users.all()
+        return user.answered_polls.filter(pk=obj.pk).exists()
 
     class Meta:
         model = Poll
         fields = (
             "id",
             "created_at",
+            "valid_until",
             "title",
             "description",
             "options",
@@ -62,13 +63,14 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
 
     def get_has_answered(self, obj):
         user = self.context["request"].user
-        return user in obj.answered_users.all()
+        return user.answered_polls.filter(pk=obj.pk).exists()
 
     class Meta:
         model = Poll
         fields = (
             "id",
             "created_at",
+            "valid_until",
             "title",
             "description",
             "options",
@@ -96,6 +98,7 @@ class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
             "total_votes",
             "tags",
             "pinned",
+            "valid_until",
         )
 
     @transaction.atomic

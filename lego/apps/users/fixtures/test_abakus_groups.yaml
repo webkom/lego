@@ -55,88 +55,93 @@
     show_badge: true, lft: 1, rght: 2, tree_id: 8, level: 0}
 - model: users.abakusgroup
   pk: 9
-  fields: {deleted: false, name: ReactionTest, description: '', contact_email: '',
-    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/reactions/create/"]',
+  fields: {deleted: false, name: PollAdminTest, description: '', contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/polls/"]',
     show_badge: true, lft: 1, rght: 2, tree_id: 9, level: 0}
 - model: users.abakusgroup
   pk: 10
-  fields: {deleted: false, name: ReactionAdminTest, description: '', contact_email: '',
-    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/reactions/"]',
+  fields: {deleted: false, name: ReactionTest, description: '', contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/reactions/create/"]',
     show_badge: true, lft: 1, rght: 2, tree_id: 10, level: 0}
 - model: users.abakusgroup
   pk: 11
+  fields: {deleted: false, name: ReactionAdminTest, description: '', contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/reactions/"]',
+    show_badge: true, lft: 1, rght: 2, tree_id: 11, level: 0}
+- model: users.abakusgroup
+  pk: 12
   fields: {deleted: false, name: InterestGroupAdminTest, description: '', contact_email: '',
     parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/interestgroups/list/",
       "/sudo/admin/interestgroups/view/", "/sudo/admin/interestgroups/create/", "/sudo/admin/interestgroups/edit/",
-      "/sudo/admin/interestgroups/delete/"]', show_badge: true, lft: 1, rght: 2, tree_id: 11,
+      "/sudo/admin/interestgroups/delete/"]', show_badge: true, lft: 1, rght: 2, tree_id: 12,
     level: 0}
-- model: users.abakusgroup
-  pk: 14
-  fields: {deleted: false, name: GalleryAdminTest, description: '', contact_email: '',
-    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/gallerys/"]',
-    show_badge: true, lft: 1, rght: 2, tree_id: 12, level: 0}
 - model: users.abakusgroup
   pk: 15
-  fields: {deleted: false, name: GalleryTest, description: '', contact_email: '',
-    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/gallerys/list/",
-      "/sudo/admin/gallerys/view/"]', show_badge: true, lft: 1, rght: 2, tree_id: 13,
-    level: 0}
+  fields: {deleted: false, name: GalleryAdminTest, description: '', contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/gallerys/"]',
+    show_badge: true, lft: 1, rght: 2, tree_id: 13, level: 0}
 - model: users.abakusgroup
   pk: 16
+  fields: {deleted: false, name: GalleryTest, description: '', contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/gallerys/list/",
+      "/sudo/admin/gallerys/view/"]', show_badge: true, lft: 1, rght: 2, tree_id: 14,
+    level: 0}
+- model: users.abakusgroup
+  pk: 17
   fields: {deleted: false, name: EmailAdminTest, description: '', contact_email: '',
     parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/emailusers/",
       "/sudo/admin/emailgroups/", "/sudo/admin/emaillists/"]', show_badge: true, lft: 1,
-    rght: 2, tree_id: 14, level: 0}
-- model: users.abakusgroup
-  pk: 17
-  fields: {deleted: false, name: Users, description: "Brukere p\xE5 Abakus.no", contact_email: '',
-    parent: null, logo: null, type: annen, text: '', permissions: '[]', show_badge: true,
-    lft: 1, rght: 2, tree_id: 15, level: 0}
+    rght: 2, tree_id: 15, level: 0}
 - model: users.abakusgroup
   pk: 18
+  fields: {deleted: false, name: Users, description: "Brukere p\xE5 Abakus.no", contact_email: '',
+    parent: null, logo: null, type: annen, text: '', permissions: '[]', show_badge: true,
+    lft: 1, rght: 2, tree_id: 16, level: 0}
+- model: users.abakusgroup
+  pk: 19
   fields: {deleted: false, name: Abakus, description: Medlemmer av Abakus, contact_email: '',
     parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/meetings/create",
       "/sudo/admin/meetinginvitations/create", "/sudo/admin/registrations/create/",
-      "/sudo/admin/events/payment/"]', show_badge: true, lft: 1, rght: 20, tree_id: 16,
+      "/sudo/admin/events/payment/"]', show_badge: true, lft: 1, rght: 20, tree_id: 17,
     level: 0}
 - model: users.abakusgroup
-  pk: 19
+  pk: 20
   fields: {deleted: false, name: Abakom, description: Medlemmer av Abakom, contact_email: '',
-    parent: 18, logo: null, type: annen, text: '', permissions: '["/sudo/admin/events/",
+    parent: 19, logo: null, type: annen, text: '', permissions: '["/sudo/admin/events/",
       "/sudo/admin/pools/", "/sudo/admin/registrations/", "/sudo/admin/companies/",
-      "/sudo/admin/joblistings/"]', show_badge: true, lft: 2, rght: 9, tree_id: 16,
+      "/sudo/admin/joblistings/"]', show_badge: true, lft: 2, rght: 9, tree_id: 17,
     level: 1}
 - model: users.abakusgroup
-  pk: 20
-  fields: {deleted: false, name: Bedkom, description: '', contact_email: '', parent: 19,
+  pk: 21
+  fields: {deleted: false, name: Bedkom, description: '', contact_email: '', parent: 20,
     logo: null, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/",
       "/sudo/admin/surveys/", "/sudo/admin/submissions/"]', show_badge: true, lft: 3,
-    rght: 4, tree_id: 16, level: 2}
-- model: users.abakusgroup
-  pk: 21
-  fields: {deleted: false, name: Fagkom, description: '', contact_email: '', parent: 19,
-    logo: null, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/",
-      "/sudo/admin/surveys/", "/sudo/admin/submissions/"]', show_badge: true, lft: 5,
-    rght: 6, tree_id: 16, level: 2}
+    rght: 4, tree_id: 17, level: 2}
 - model: users.abakusgroup
   pk: 22
-  fields: {deleted: false, name: Webkom, description: '', contact_email: '', parent: 19,
-    logo: null, type: komite, text: '', permissions: '["/sudo/"]', show_badge: true,
-    lft: 7, rght: 8, tree_id: 16, level: 2}
-- model: users.abakusgroup
-  pk: 12
-  fields: {deleted: false, name: Interessegrupper, description: '', contact_email: '',
-    parent: 18, logo: null, type: annen, text: '', permissions: '[]', show_badge: true,
-    lft: 10, rght: 19, tree_id: 16, level: 1}
-- model: users.abakusgroup
-  pk: 13
-  fields: {deleted: false, name: TestInterestGroup, description: '', contact_email: '',
-    parent: 12, logo: null, type: annen, text: '', permissions: '[]', show_badge: true,
-    lft: 11, rght: 12, tree_id: 16, level: 2}
+  fields: {deleted: false, name: Fagkom, description: '', contact_email: '', parent: 20,
+    logo: null, type: komite, text: '', permissions: '["/sudo/admin/companyinterest/",
+      "/sudo/admin/surveys/", "/sudo/admin/submissions/"]', show_badge: true, lft: 5,
+    rght: 6, tree_id: 17, level: 2}
 - model: users.abakusgroup
   pk: 23
+  fields: {deleted: false, name: Webkom, description: '', contact_email: '', parent: 20,
+    logo: null, type: komite, text: '', permissions: '["/sudo/"]', show_badge: true,
+    lft: 7, rght: 8, tree_id: 17, level: 2}
+- model: users.abakusgroup
+  pk: 13
+  fields: {deleted: false, name: Interessegrupper, description: '', contact_email: '',
+    parent: 19, logo: null, type: annen, text: '', permissions: '[]', show_badge: true,
+    lft: 10, rght: 19, tree_id: 17, level: 1}
+- model: users.abakusgroup
+  pk: 14
+  fields: {deleted: false, name: TestInterestGroup, description: '', contact_email: '',
+    parent: 13, logo: null, type: annen, text: '', permissions: '[]', show_badge: true,
+    lft: 11, rght: 12, tree_id: 17, level: 2}
+- model: users.abakusgroup
+  pk: 24
   fields: {deleted: false, name: AbaBrygg, description: Interessegruppe for AbaBrygg,
-    contact_email: '', parent: 12, logo: null, type: interesse, text: "Hender det\
+    contact_email: '', parent: 13, logo: null, type: interesse, text: "Hender det\
       \ seg at du tar en pils? Er lommeboken ofte tom, kanskje p\xE5 grunn av pils?\n\
       Visste du at ved \xE5 brygge \xF8l selv kan man enkelt produsere \xF8l til 3-4\
       \ kroner flaska?\nIkke bare er det koselig, besparende, og luktfritt (!) \xE5\
@@ -144,22 +149,22 @@
       \ supermann for at sluttresultatet smaker godt.\n\nabaBrygg er en liten gruppe\
       \ som passer deg som har en lidenskap for \xF8l, harlyst til \xE5 pr\xF8ve noe\
       \ nytt, eller bare trenger litt starthjelp med brygginga.\n", permissions: '[]',
-    show_badge: true, lft: 13, rght: 14, tree_id: 16, level: 2}
+    show_badge: true, lft: 13, rght: 14, tree_id: 17, level: 2}
 - model: users.abakusgroup
-  pk: 24
+  pk: 25
   fields: {deleted: false, name: abaGolf, description: Interessegruppe for abaGolf,
-    contact_email: '', parent: 12, logo: null, type: interesse, text: "Hei, er du\
+    contact_email: '', parent: 13, logo: null, type: interesse, text: "Hei, er du\
       \ en person som liker \xE5 klaske baller p\xE5 gr\xF8nne baner?Da er Abakus\
       \ golf gruppa for deg.\nVi tenker at dette vil v\xE6re en portal for oss som\
       \ \xF8nsker \xE5komme oss ut p\xE5 banene med noen hyggelige folk fra Abakus.\n\
       Det vil ogs\xE5 bli blestet om eventuelleturnerninger som m\xE5tte dukke opp.\n\
       Samt vil det v\xE6re treningsmuligheter gjennom hele vintereni samarbeid med\
-      \ NTNUI Golf.\n", permissions: '[]', show_badge: true, lft: 15, rght: 16, tree_id: 16,
+      \ NTNUI Golf.\n", permissions: '[]', show_badge: true, lft: 15, rght: 16, tree_id: 17,
     level: 2}
 - model: users.abakusgroup
-  pk: 25
+  pk: 26
   fields: {deleted: false, name: Turgruppa, description: Interessegruppe for Turgruppa,
-    contact_email: '', parent: 12, logo: null, type: interesse, text: "Abakus sin\
+    contact_email: '', parent: 13, logo: null, type: interesse, text: "Abakus sin\
       \ turgruppe er for alle som elsker, liker eller har sett norsk natur. Denne\
       \ turgruppenvil arrangere ulike turer i fjell skog og mark. Om vinteren vil\
       \ det v\xE6re mulighet for toppturereller \xE5 g\xE5 mellom hytter p\xE5 vidda.\
@@ -167,14 +172,9 @@
       \ v\xE6re flott stemning og minneverdige turopplevelser som er m\xE5let.\n\n\
       \ Om du harforslag til tur eller lurer p\xE5 om dette er noe du kan v\xE6re\
       \ med p\xE5, ikke n\xF8l med \xE5 ta kontakt.", permissions: '[]', show_badge: true,
-    lft: 17, rght: 18, tree_id: 16, level: 2}
-- model: users.abakusgroup
-  pk: 26
-  fields: {deleted: false, name: Students, description: '', contact_email: '', parent: null,
-    logo: null, type: annen, text: '', permissions: '[]', show_badge: true, lft: 1,
-    rght: 2, tree_id: 17, level: 0}
+    lft: 17, rght: 18, tree_id: 17, level: 2}
 - model: users.abakusgroup
   pk: 27
-  fields: {deleted: false, name: PollAdminTest, description: '', contact_email: '',
-    parent: null, logo: null, type: annen, text: '', permissions: '["/sudo/admin/polls/"]',
-    show_badge: true, lft: 1, rght: 2, tree_id: 8, level: 0}
+  fields: {deleted: false, name: Students, description: '', contact_email: '', parent: null,
+    logo: null, type: annen, text: '', permissions: '[]', show_badge: true, lft: 1,
+    rght: 2, tree_id: 18, level: 0}

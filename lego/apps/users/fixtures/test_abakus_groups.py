@@ -77,6 +77,7 @@ test_tree = {
         {},
     ],
     "PodcastAdminTest": [{"permissions": ["/sudo/admin/podcasts/"]}, {}],
+    "PollAdminTest": [{"permissions": ["/sudo/admin/polls/"]}, {}],
     "ReactionTest": [{"permissions": ["/sudo/admin/reactions/create/"]}, {}],
     "ReactionAdminTest": [{"permissions": ["/sudo/admin/reactions/"]}, {}],
     "InterestGroupAdminTest": [

@@ -86,10 +86,7 @@ class FrontpageViewSet(viewsets.ViewSet):
                 request.user, queryset_events_base
             )
 
-        try:
-            queryset_poll = Poll.objects.filter(pinned=True).latest()
-        except Poll.DoesNotExist:
-            queryset_poll = False
+        queryset_poll = Poll.objects.filter(pinned=True).order_by("created_at").last()
 
         articles = PublicArticleSerializer(
             queryset_articles[:10], context=self.get_serializer_context(), many=True
@@ -97,12 +94,13 @@ class FrontpageViewSet(viewsets.ViewSet):
         events = EventSearchSerializer(
             queryset_events, context=self.get_serializer_context(), many=True
         ).data
-        if queryset_poll:
-            poll = DetailedPollSerializer(
+        poll = (
+            DetailedPollSerializer(
                 queryset_poll, context=self.get_serializer_context()
             ).data
-        else:
-            poll = None
+            if queryset_poll
+            else None
+        )
         ret = {"articles": articles, "events": events, "poll": poll}
 
         return Response(ret)
