@@ -164,13 +164,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     def get_earliest_registration_time(self, user, pools=None, penalties=None):
 
-        if not pools:
+        if pools is None:
             pools = self.get_possible_pools(user, future=True)
-            if not pools:
-                return None
+        if len(pools) == 0:
+            return None
         reg_time = min(pool.activation_date for pool in pools)
         if self.heed_penalties:
-            if not penalties:
+            if penalties is None:
                 penalties = user.number_of_penalties()
             if penalties == 2:
                 return reg_time + timedelta(hours=12)
