@@ -112,7 +112,6 @@ class CompanyListSerializer(BasisModelSerializer):
             "address",
             "logo",
             "thumbnail",
-            "active",
         )
 
 
