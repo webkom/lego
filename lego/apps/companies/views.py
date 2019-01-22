@@ -46,7 +46,7 @@ class CompanyViewSet(
     viewsets.mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Company.objects.all()
+    queryset = Company.objects.all().filter(active=True)
     permission_classes = (permissions.IsAuthenticated,)
     ordering = "name"
 
