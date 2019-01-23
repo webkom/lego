@@ -47,9 +47,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": "Anonymous",
                 "from_email": "Unknown",
-                "recipient_group": self.webkom_group,
+                "recipient_group": self.webkom_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
@@ -69,9 +69,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": "Anonymous",
                 "from_email": "Unknown",
-                "recipient_group": self.webkom_group,
+                "recipient_group": self.webkom_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
@@ -91,9 +91,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": logged_in_user.full_name,
                 "from_email": logged_in_user.email_address,
-                "recipient_group": self.webkom_group,
+                "recipient_group": self.webkom_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
@@ -113,9 +113,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": "Anonymous",
                 "from_email": "Unknown",
-                "recipient_group": self.webkom_group,
+                "recipient_group": self.webkom_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
@@ -136,9 +136,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": "Anonymous",
                 "from_email": "Unknown",
-                "recipient_group": hs_group,
+                "recipient_group": hs_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {hs_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {hs_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
@@ -160,9 +160,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": "Anonymous",
                 "from_email": "Unknown",
-                "recipient_group": self.webkom_group,
+                "recipient_group": self.webkom_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
@@ -184,9 +184,9 @@ class SendTestCase(BaseTestCase):
                 "message": "message",
                 "from_name": "Anonymous",
                 "from_email": "Unknown",
-                "recipient_group": self.webkom_group,
+                "recipient_group": self.webkom_group.__str__(),
             },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group}",
+            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
             **default_values,
         )
         mock_send_email.assert_called_once()
