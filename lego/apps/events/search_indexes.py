@@ -1,5 +1,5 @@
 from lego.apps.events.models import Event
-from lego.apps.events.serializers.events import EventSearchSerializer
+from lego.apps.events.serializers.events import EventReadSerializer
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
@@ -7,7 +7,7 @@ from lego.apps.search.index import SearchIndex
 class EventModelIndex(SearchIndex):
 
     queryset = Event.objects.all()
-    serializer_class = EventSearchSerializer
+    serializer_class = EventReadSerializer
     result_fields = (
         "title",
         "description",

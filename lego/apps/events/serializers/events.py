@@ -43,7 +43,6 @@ class EventPublicSerializer(BasisModelSerializer):
 
 
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
-    company = CompanyField(queryset=Company.objects.all())
     cover = ImageField(required=False, options={"height": 500})
     thumbnail = ImageField(
         source="cover",
@@ -51,6 +50,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
         options={"height": 500, "width": 500, "smart": True},
     )
     activation_time = ActivationTimeField()
+    text = ContentSerializerField()
 
     class Meta:
         model = Event
@@ -58,16 +58,19 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "id",
             "title",
             "description",
+            "text",
             "cover",
             "event_type",
             "location",
             "start_time",
+            "end_time",
             "thumbnail",
             "total_capacity",
             "company",
             "registration_count",
             "tags",
             "activation_time",
+            "pinned",
         )
         read_only = True
 
@@ -131,6 +134,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class EventForSurveySerializer(EventReadSerializer):
     attended_count = serializers.SerializerMethodField()
+    company = CompanyField(queryset=Company.objects.all())
 
     class Meta:
         model = Event
@@ -138,6 +142,7 @@ class EventForSurveySerializer(EventReadSerializer):
             "registration_count",
             "waiting_registration_count",
             "attended_count",
+            "company",
         )
         read_only = True
 
@@ -185,12 +190,14 @@ class EventAdministrateSerializer(EventReadSerializer):
     pools = PoolAdministrateSerializer(many=True)
     unregistered = RegistrationReadDetailedSerializer(many=True)
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
+    company = CompanyField(queryset=Company.objects.all())
 
     class Meta(EventReadSerializer.Meta):
         fields = EventReadSerializer.Meta.fields + (
             "pools",
             "unregistered",
             "waiting_registrations",
+            "company",
         )
 
 
@@ -275,39 +282,6 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     Pool.objects.get(id=pool_id).delete()
             instance.set_abakom_only(is_abakom_only)
             return super().update(instance, validated_data)
-
-
-class EventSearchSerializer(serializers.ModelSerializer):
-    cover = ImageField(required=False, options={"height": 500})
-    thumbnail = ImageField(
-        source="cover",
-        required=False,
-        options={"height": 500, "width": 500, "smart": True},
-    )
-    text = ContentSerializerField()
-    activation_time = ActivationTimeField()
-
-    class Meta:
-        model = Event
-        fields = (
-            "id",
-            "title",
-            "description",
-            "cover",
-            "text",
-            "event_type",
-            "location",
-            "start_time",
-            "thumbnail",
-            "end_time",
-            "total_capacity",
-            "company",
-            "registration_count",
-            "tags",
-            "activation_time",
-            "pinned",
-        )
-        read_only = True
 
 
 def populate_event_registration_users_with_grade(event_dict):

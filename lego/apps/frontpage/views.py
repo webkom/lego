@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
 from lego.apps.events.models import Event
-from lego.apps.events.serializers.events import EventSearchSerializer
+from lego.apps.events.serializers.events import EventReadSerializer
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
 
@@ -55,7 +55,7 @@ class FrontpageViewSet(viewsets.ViewSet):
         articles = PublicArticleSerializer(
             queryset_articles[:10], context=self.get_serializer_context(), many=True
         ).data
-        events = EventSearchSerializer(
+        events = EventReadSerializer(
             queryset_events, context=self.get_serializer_context(), many=True
         ).data
         ret = {"articles": articles, "events": events}
