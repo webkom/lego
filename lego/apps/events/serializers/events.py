@@ -50,6 +50,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
         required=False,
         options={"height": 500, "width": 500, "smart": True},
     )
+    activation_time = ActivationTimeField()
 
     class Meta:
         model = Event
@@ -66,6 +67,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "company",
             "registration_count",
             "tags",
+            "activation_time",
         )
         read_only = True
 
