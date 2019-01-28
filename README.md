@@ -63,8 +63,7 @@ In addition to the standards outlined in PEP 8, we have a few guidelines
 Format the code with black & isort
 
 ```bash
-$ isort -rc lego # Sort imports
-$ black lego  # Format with black
+$ make fixme
 ```
 
 To check if it is formatted properly, run:
