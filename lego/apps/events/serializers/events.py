@@ -242,8 +242,12 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         """
         Check that start is before finish.
         """
-        if data['start_time'] > data['end_time']:
-            raise serializers.ValidationError({"end_time": "User does not have the required permissions for time travel"})
+        if data["start_time"] > data["end_time"]:
+            raise serializers.ValidationError(
+                {
+                    "end_time": "User does not have the required permissions for time travel"
+                }
+            )
         return data
 
     def create(self, validated_data):
