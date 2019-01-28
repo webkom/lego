@@ -9,6 +9,7 @@ LUNCH_PRESENTATION = "lunch_presentation"
 BEDEX = "bedex"
 OTHER = "other"
 SPONSOR = "sponsor"
+START_UP = "start_up"
 
 COMPANY_EVENTS = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
@@ -17,6 +18,7 @@ COMPANY_EVENTS = (
     (BEDEX, BEDEX),
     (OTHER, OTHER),
     (SPONSOR, SPONSOR),
+    (START_UP, START_UP),
 )
 
 TRANSLATED_EVENTS = {
@@ -25,6 +27,7 @@ TRANSLATED_EVENTS = {
     LUNCH_PRESENTATION: "Lunsjpresentasjon",
     BEDEX: "Bedex",
     OTHER: "Alternativt arrangement",
+    START_UP: "Start-up kveld",
 }
 
 COLLABORATION = "collaboration"
