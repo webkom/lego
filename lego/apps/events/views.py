@@ -1,11 +1,11 @@
+from celery import chain
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
-from rest_framework import decorators, mixins, permissions, status, viewsets
+from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
-from celery import chain
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound,
@@ -57,6 +57,8 @@ from lego.utils.functions import verify_captcha
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     filter_class = EventsFilterSet
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ("start_time",)
     ordering = "start_time"
 
     def get_queryset(self):
