@@ -238,6 +238,19 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "registration_close_time",
         )
 
+    def validate(self, data):
+        """
+        Check that start is before finish.
+        """
+        if hasattr(data, "start_time") and hasattr(data, "end_time"):
+            if data["start_time"] > data["end_time"]:
+                raise serializers.ValidationError(
+                    {
+                        "end_time": "User does not have the required permissions for time travel"
+                    }
+                )
+        return data
+
     def create(self, validated_data):
         pools = validated_data.pop("pools", [])
         is_abakom_only = validated_data.pop("is_abakom_only", False)
