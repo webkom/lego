@@ -33,8 +33,7 @@ class MeetingInvitationHandler(Handler):
         notification.notify()
 
     def handle_update(self, instance, **kwargs):
-        activity = self.get_activity(instance)
-        self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
+        pass
 
     def handle_delete(self, instance, **kwargs):
         activity = self.get_activity(instance)
