@@ -20,6 +20,8 @@ class MeetingInvitationNotification(Notification):
             meeting.report_author.full_name if meeting.report_author else "Ikke valgt"
         )
 
+        start_time = time.strftime("%d.%m.%y, kl. %H:%M")
+
         return self._delay_mail(
             to_email=self.user.email_address,
             context={
@@ -27,11 +29,11 @@ class MeetingInvitationNotification(Notification):
                 "owner": meeting.created_by.full_name,
                 "meeting_id": meeting.id,
                 "meeting_title": meeting.title,
-                "meeting_start_time": time.strftime("%d.%m.%y, kl. %H:%M"),
+                "meeting_start_time": start_time,
                 "report_author": author,
                 "token": token,
             },
-            subject=f"Invitasjon til møte: {meeting.title}",
+            subject=f"Invitasjon til møte: {meeting.title} - {start_time}",
             plain_template="meetings/email/meeting_invitation.txt",
             html_template="meetings/email/meeting_invitation.html",
         )
