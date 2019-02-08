@@ -49,6 +49,7 @@ from lego.apps.events.tasks import (
     check_for_bump_on_pool_creation_or_expansion,
     registration_payment_save,
 )
+from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.models import User
@@ -57,9 +58,13 @@ from lego.utils.functions import verify_captcha
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    filterset_class = EventsFilterSet
-    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
-    ordering_fields = ("start_time", "end_time", "title", "registration_time")
+    filter_class = EventsFilterSet
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+        LegoPermissionFilter,
+    )
+    ordering_fields = ("start_time", "end_time", "title", "registration_deadline_hours")
     ordering = "start_time"
 
     def get_queryset(self):
