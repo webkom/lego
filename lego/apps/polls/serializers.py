@@ -31,7 +31,7 @@ class PollSerializer(BasisModelSerializer):
 
     def get_has_answered(self, obj):
         user = self.context["request"].user
-        return user.answered_polls.filter(pk=obj.pk).exists()
+        return obj.get_has_answered(user)
 
     class Meta:
         model = Poll
@@ -63,7 +63,7 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
 
     def get_has_answered(self, obj):
         user = self.context["request"].user
-        return user.answered_polls.filter(pk=obj.pk).exists()
+        return obj.get_has_answered(user)
 
     class Meta:
         model = Poll

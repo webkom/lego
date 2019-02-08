@@ -31,6 +31,9 @@ class Poll(Content, BasisModel):
             "total_votes"
         ]
 
+    def get_has_answered(self, user):
+        return self.answered_users.all().filter(pk=user.id).exists()
+
     def get_absolute_url(self):
         return f"{settings.FRONTEND_URL}/polls/{self.id}/"
 
