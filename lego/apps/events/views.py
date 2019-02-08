@@ -1,12 +1,12 @@
-from celery import chain
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
+from celery import chain
+from django_filters.rest_framework import DjangoFilterBackend
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound,
