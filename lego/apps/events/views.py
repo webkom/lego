@@ -2,6 +2,7 @@ from celery import chain
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -56,9 +57,9 @@ from lego.utils.functions import verify_captcha
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    filter_class = EventsFilterSet
-    filter_backends = (filters.OrderingFilter,)
-    ordering_fields = ("start_time",)
+    filterset_class = EventsFilterSet
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    ordering_fields = ("start_time", "end_time", "title", "registration_time")
     ordering = "start_time"
 
     def get_queryset(self):
