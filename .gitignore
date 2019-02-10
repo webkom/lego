@@ -68,5 +68,8 @@ google-credentials.json
 # Vim swap files
 *.swp
 
-#iCloud
+# iCloud
 *.icloud
+
+# vscode
+.vscode/
