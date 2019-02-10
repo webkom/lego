@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models, transaction
 from django.db.models import Sum
 from django.utils import timezone
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import ParseError, PermissionDenied
 
 from lego.apps.content.models import Content
 from lego.apps.polls.permissions import PollPermissionHandler
@@ -42,6 +42,10 @@ class Poll(Content, BasisModel):
         option = self.options.get(pk=option_id)
         if not option:
             raise ParseError(detail="Option not found.")
+        if self.answered_users.filter(pk=user.id).exists():
+            raise PermissionDenied(detail="Cannot answer a poll twice.")
+        if self.valid_until < timezone.now():
+            raise PermissionDenied(detail="Poll is not valid at this time.")
         option.votes += 1
         option.save()
         self.answered_users.add(user)

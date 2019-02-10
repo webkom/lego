@@ -135,9 +135,9 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         super().update(instance, validated_data)
 
         # Delete options that aren't in the received list
+        options_with_ids = filter(lambda q: "id" in q, options)
+        existing_options_ids = map(lambda q: q["id"], options_with_ids)
         for old_option in instance.options.all():
-            options_with_ids = filter(lambda q: "id" in q, options)
-            existing_options_ids = map(lambda q: q["id"], options_with_ids)
             if old_option.id not in existing_options_ids:
                 old_option.delete()
 
@@ -145,7 +145,6 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         for option in options:
             if "id" in option:
                 Option.objects.filter(id=option["id"]).update(**option)
-                Option.objects.get(id=option["id"])
             else:
                 Option.objects.create(poll=instance, **option)
         return instance
