@@ -64,7 +64,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         filters.OrderingFilter,
         LegoPermissionFilter,
     )
-    ordering_fields = ("start_time", "end_time", "title", "registration_deadline_hours")
+    ordering_fields = ("start_time", "end_time", "title")
     ordering = "start_time"
 
     def get_queryset(self):

@@ -1,4 +1,4 @@
-from django_filters import CharFilter, DateFilter, FilterSet, OrderingFilter
+from django_filters import CharFilter, DateFilter, FilterSet
 from lego.apps.events.models import Event
 
 
