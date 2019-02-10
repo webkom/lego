@@ -1,1 +1,1 @@
-Du har mottatt en viktig melding fra {{created_by}}.
+Du har mottatt en viktig melding fra {{% if from_group %} {{from_group}} {% else %} {{created_by}}.
