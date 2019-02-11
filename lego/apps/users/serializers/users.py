@@ -60,6 +60,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "full_name",
             "gender",
             "profile_picture",
+            "email_address",
         )
         read_only_fields = ("username",)
 
