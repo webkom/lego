@@ -1,26 +1,39 @@
+from django.db.models import Prefetch
 from django.utils import timezone
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.users.models import User
 
 
 class FrontpageViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.AllowAny,)
 
-    def get_serializer_context(self):
-        """
-        Extra context provided to the serializer class.
-        """
-        return {"request": self.request, "format": self.format_kwarg, "view": self}
-
     def list(self, request):
+        cached_penalties = (
+            self.request.user.number_of_penalties()
+            if self.request.user.is_authenticated
+            else None
+        )
+
+        def get_serializer_context():
+            """
+            Extra context provided to the serializer class.
+            """
+            return {
+                "request": request,
+                "format": self.format_kwarg,
+                "view": self,
+                "cached_penalties": cached_penalties,
+            }
+
         articles_handler = get_permission_handler(Article)
         articles_queryset_base = (
             Article.objects.all()
@@ -42,7 +55,27 @@ class FrontpageViewSet(viewsets.ViewSet):
             Event.objects.all()
             .filter(end_time__gt=timezone.now())
             .order_by("-pinned", "start_time", "id")
-            .prefetch_related("pools", "pools__registrations", "company", "tags")
+            .prefetch_related(
+                "pools",
+                "pools__registrations",
+                "pools__registrations__user",
+                "company",
+                "tags",
+                Prefetch(
+                    "registrations",
+                    queryset=Registration.objects.filter(user=request.user).exclude(
+                        pool=None
+                    ),
+                    to_attr="user_reg",
+                ),
+                Prefetch(
+                    "pools",
+                    queryset=Pool.objects.filter(
+                        permission_groups__in=self.request.user.all_groups
+                    ),
+                    to_attr="possible_pools",
+                ),
+            )
         )
 
         if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
@@ -53,10 +86,10 @@ class FrontpageViewSet(viewsets.ViewSet):
             )
 
         articles = PublicArticleSerializer(
-            queryset_articles[:10], context=self.get_serializer_context(), many=True
+            queryset_articles[:10], context=get_serializer_context(), many=True
         ).data
         events = EventSearchSerializer(
-            queryset_events, context=self.get_serializer_context(), many=True
+            queryset_events, context=get_serializer_context(), many=True
         ).data
         ret = {"articles": articles, "events": events}
 

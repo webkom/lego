@@ -41,8 +41,16 @@ class ActivationTimeField(serializers.Field):
 
     def to_representation(self, value):
         request = self.context.get("request", None)
-        if request and request.user.is_authenticated:
-            return value.get_earliest_registration_time(request.user)
+        if not request or not request.user.is_authenticated:
+            return
+
+        kwargs = {}
+        cached_penalties = self.context.get("cached_penalties", None)
+        if hasattr(value, "possible_pools") and hasattr(value, "user_reg"):
+            kwargs["pools"] = [] if value.user_reg else value.possible_pools
+        if cached_penalties is not None:
+            kwargs["penalties"] = cached_penalties
+        return value.get_earliest_registration_time(request.user, **kwargs)
 
 
 class SpotsLeftField(serializers.Field):
