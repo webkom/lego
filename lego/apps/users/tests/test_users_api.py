@@ -249,8 +249,12 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
 
         self.with_perm = self.all_users.get(username="useradmin_test")
         self.useradmin_test_group = AbakusGroup.objects.get(name="UserAdminTest")
+        self.abakom = AbakusGroup.objects.get(name="Abakom")
+        self.abakom.add_user(self.with_perm)
         self.useradmin_test_group.add_user(self.with_perm)
         self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
+
+        self.abakom.add_user(self.without_perm)
 
         self.test_user = get_test_user()
 
@@ -329,6 +333,15 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
     def test_update_abakus_membership(self):
         """Try to change the is_abakus_member"""
         self.client.force_login(self.without_perm)
+
+        response = self.client.patch(
+            _get_detail_url(self.without_perm.username), {"is_abakus_member": True}
+        )
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        response = self.client.patch(
+            _get_detail_url(self.without_perm.username), {"is_abakus_member": False}
+        )
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
         response = self.client.patch(
             _get_detail_url(self.without_perm.username), {"is_abakus_member": True}
         )

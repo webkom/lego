@@ -185,10 +185,7 @@ class PermissionsMixin(CachedModel):
 
     @property
     def is_abakus_member(self):
-        for group in self.all_groups:
-            if group.name == constants.MEMBER_GROUP:
-                return True
-        return False
+        return self.abakus_groups.all().filter(name=constants.MEMBER_GROUP).exists()
 
     @property
     def is_abakom_member(self):
