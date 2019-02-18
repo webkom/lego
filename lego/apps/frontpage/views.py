@@ -11,6 +11,7 @@ from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.polls.models import Poll
 from lego.apps.polls.serializers import DetailedPollSerializer
+from lego.apps.users.models import User
 
 
 class FrontpageViewSet(viewsets.ViewSet):
@@ -89,15 +90,13 @@ class FrontpageViewSet(viewsets.ViewSet):
         queryset_poll = Poll.objects.filter(pinned=True).order_by("created_at").last()
 
         articles = PublicArticleSerializer(
-            queryset_articles[:10], context=self.get_serializer_context(), many=True
+            queryset_articles[:10], context=get_serializer_context(), many=True
         ).data
         events = EventSearchSerializer(
-            queryset_events, context=self.get_serializer_context(), many=True
+            queryset_events, context=get_serializer_context(), many=True
         ).data
         poll = (
-            DetailedPollSerializer(
-                queryset_poll, context=self.get_serializer_context()
-            ).data
+            DetailedPollSerializer(queryset_poll, context=get_serializer_context()).data
             if queryset_poll
             else None
         )
