@@ -21,9 +21,12 @@ class AnnouncementNotification(Notification):
             context={
                 "name": self.user.full_name,
                 "created_by": announcement.created_by.full_name,
+                "from_group": announcement.from_group.name
+                if announcement.from_group is not None
+                else None,
                 "message": announcement.message,
             },
-            subject=f"Viktig melding fra {announcement.created_by.full_name}",
+            subject=f"Viktig melding fra Abakus",
             plain_template="notifications/email/announcement.txt",
             html_template="notifications/email/announcement.html",
         )
@@ -36,6 +39,11 @@ class AnnouncementNotification(Notification):
 
         return self._delay_push(
             template="notifications/push/announcement.txt",
-            context={"created_by": announcement.created_by.full_name},
+            context={
+                "created_by": announcement.created_by.full_name,
+                "from_group": announcement.from_group.name
+                if announcement.from_group is not None
+                else None,
+            },
             instance=announcement,
         )
