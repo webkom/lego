@@ -15,10 +15,8 @@
   fields:
     title: Ny komité i Abakus
     cover: test_article_cover.png
-    description:
-      Etter langt å lenge har HS endelig blitt enig.
-    text:
-      Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
+    description: Etter langt å lenge har HS endelig blitt enig.
+    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
       Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
       da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
       av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
@@ -33,16 +31,15 @@
       - lorem
       - ipsum
       - sample-text
+    youtube_url: https://www.youtube.com/watch?v=bLHL75H_VEM
 
 - model: articles.Article
   pk: 2
   fields:
     title: Dette er en syk artikkel
     cover: test_article_cover.png
-    description:
-      Eller hur hur hur hur.
-    text:
-      Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
+    description: Eller hur hur hur hur.
+    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
       Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
       da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
       av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
@@ -56,3 +53,4 @@
     tags:
       - lorem
       - ipsum
+    youtube_url: https://www.youtube.com/watch?v=bLHL75H_VEM
