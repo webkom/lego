@@ -1,11 +1,12 @@
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
-from rest_framework import decorators, mixins, permissions, status, viewsets
+from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from celery import chain
+from django_filters.rest_framework import DjangoFilterBackend
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound,
@@ -48,6 +49,7 @@ from lego.apps.events.tasks import (
     check_for_bump_on_pool_creation_or_expansion,
     registration_payment_save,
 )
+from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.models import User
@@ -57,6 +59,12 @@ from lego.utils.functions import verify_captcha
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     filter_class = EventsFilterSet
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+        LegoPermissionFilter,
+    )
+    ordering_fields = ("start_time", "end_time", "title")
     ordering = "start_time"
 
     def get_queryset(self):
