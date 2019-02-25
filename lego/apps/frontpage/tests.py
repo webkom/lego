@@ -33,3 +33,15 @@ class FrontpageAPITestCase(BaseAPITestCase):
         self.assertTrue(first["pinned"])
         # .. but that the second is before the first
         self.assertGreater(first["startTime"], second["startTime"])
+
+    def test_pinned_is_first_not_logged_in(self):
+        res = self.client.get(_get_frontpage())
+        self.assertEquals(res.status_code, 200)
+        events = res.data["events"]
+        self.assertGreater(len(events), 1)
+        first = events[0]
+        second = events[1]
+        # Check that the first event is pinned
+        self.assertTrue(first["pinned"])
+        # .. but that the second is before the first
+        self.assertGreater(first["startTime"], second["startTime"])

@@ -55,12 +55,11 @@ class FrontpageViewSet(viewsets.ViewSet):
             Event.objects.all()
             .filter(end_time__gt=timezone.now())
             .order_by("-pinned", "start_time", "id")
-            .prefetch_related(
-                "pools",
-                "pools__registrations",
+            .prefetch_related("pools", "pools__registrations", "company", "tags")
+        )
+        if request.user.is_authenticated:
+            queryset_events_base = queryset_events_base.prefetch_related(
                 "pools__registrations__user",
-                "company",
-                "tags",
                 Prefetch(
                     "registrations",
                     queryset=Registration.objects.filter(user=request.user).exclude(
@@ -76,7 +75,6 @@ class FrontpageViewSet(viewsets.ViewSet):
                     to_attr="possible_pools",
                 ),
             )
-        )
 
         if events_handler.has_perm(request.user, LIST, queryset=queryset_events_base):
             queryset_events = queryset_events_base
