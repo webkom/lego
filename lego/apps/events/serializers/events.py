@@ -145,6 +145,18 @@ class EventForSurveySerializer(EventReadSerializer):
         return event.registrations.filter(presence=PRESENT).count()
 
 
+class EventUserRegSerializer(EventReadSerializer):
+    user_reg = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = EventReadSerializer.Meta.fields + ("user_reg",)
+        read_only = True
+
+    def get_user_reg(self, event):
+        return RegistrationReadSerializer(event.user_reg[0]).data
+
+
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     """ User specfic event serializer that appends data based on request.user """
 
