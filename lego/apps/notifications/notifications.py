@@ -16,17 +16,18 @@ class AnnouncementNotification(Notification):
         """
         announcement = self.kwargs["announcement"]
 
+        sender = announcement.created_by.full_name
+        if announcement.from_group:
+            sender = announcement.from_group.name
+
         return self._delay_mail(
             to_email=self.user.email_address,
             context={
                 "name": self.user.full_name,
-                "created_by": announcement.created_by.full_name,
-                "from_group": announcement.from_group.name
-                if announcement.from_group is not None
-                else None,
+                "sender": sender,
                 "message": announcement.message,
             },
-            subject=f"Viktig melding fra Abakus",
+            subject=f"Viktig melding fra {sender}",
             plain_template="notifications/email/announcement.txt",
             html_template="notifications/email/announcement.html",
         )
@@ -37,13 +38,12 @@ class AnnouncementNotification(Notification):
         """
         announcement = self.kwargs["announcement"]
 
+        sender = announcement.created_by.full_name
+        if announcement.from_group:
+            sender = announcement.from_group.name
+
         return self._delay_push(
             template="notifications/push/announcement.txt",
-            context={
-                "created_by": announcement.created_by.full_name,
-                "from_group": announcement.from_group.name
-                if announcement.from_group is not None
-                else None,
-            },
+            context={"sender": sender},
             instance=announcement,
         )

@@ -4,7 +4,7 @@
 
 Hei {{ name }}!
 
-{% if from_group %} {{ from_group }} {% else %} {{ created_by }} {% endif %}sendte deg en viktig melding.
+{{ sender }} sendte deg en viktig melding.
 
 {{message}}
 
