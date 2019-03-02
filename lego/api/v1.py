@@ -16,8 +16,8 @@ from lego.apps.email.views import EmailListViewSet, UserEmailViewSet
 from lego.apps.events.views import (
     EventViewSet,
     PoolViewSet,
-    RegistrationSearchViewSet,
     RegistrationConsentViewSet,
+    RegistrationSearchViewSet,
     RegistrationViewSet,
 )
 from lego.apps.events.webhooks import StripeWebhook

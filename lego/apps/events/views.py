@@ -33,8 +33,8 @@ from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
     AdminRegistrationCreateAndUpdateSerializer,
     AdminUnregisterSerializer,
-    RegistrationCreateAndUpdateSerializer,
     RegistrationConsentSerializer,
+    RegistrationCreateAndUpdateSerializer,
     RegistrationPaymentReadSerializer,
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
