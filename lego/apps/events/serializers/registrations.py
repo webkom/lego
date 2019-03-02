@@ -4,9 +4,9 @@ from rest_framework import serializers
 from lego.apps.events import constants
 from lego.apps.events.fields import (
     ChargeStatusField,
+    ConsentField,
     FeedbackField,
     PresenceField,
-    ConsentField,
     SetChargeStatusField,
 )
 from lego.apps.events.models import Pool, Registration
@@ -46,7 +46,14 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ("id", "feedback", "presence", "photo_consent", "captcha_response", "charge_status")
+        fields = (
+            "id",
+            "feedback",
+            "presence",
+            "photo_consent",
+            "captcha_response",
+            "charge_status",
+        )
 
     def update(self, instance, validated_data):
         with transaction.atomic():

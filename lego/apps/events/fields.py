@@ -134,6 +134,7 @@ class ConsentField(serializers.ChoiceField):
             return super().to_internal_value(data)
         raise PermissionDenied()
 
+
 class PublicEventField(serializers.PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
         return False
