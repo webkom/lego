@@ -6,6 +6,7 @@ from lego.apps.events.fields import (
     ChargeStatusField,
     FeedbackField,
     PresenceField,
+    ConsentField,
     SetChargeStatusField,
 )
 from lego.apps.events.models import Pool, Registration
@@ -41,10 +42,11 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
     )
     presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
+    photo_consent = ConsentField(required=False, choices=constants.CONSENT_CHOICES)
 
     class Meta:
         model = Registration
-        fields = ("id", "feedback", "presence", "captcha_response", "charge_status")
+        fields = ("id", "feedback", "presence", "photo_consent", "captcha_response", "charge_status")
 
     def update(self, instance, validated_data):
         with transaction.atomic():

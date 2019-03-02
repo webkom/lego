@@ -125,6 +125,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "is_abakom_only",
             "registration_count",
             "survey",
+            "use_consent",
         )
         read_only = True
 

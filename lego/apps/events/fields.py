@@ -111,6 +111,29 @@ class PresenceField(serializers.ChoiceField):
         raise PermissionDenied()
 
 
+class ConsentField(serializers.ChoiceField):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get("request", None)
+        if (
+            request
+            and request.user.is_authenticated
+            and request.user.has_perm(EDIT, Event)
+        ):
+            return getattr(value, "presence", None)
+
+    def to_internal_value(self, data):
+        request = self.context.get("request", None)
+        if (
+            request
+            and request.user.is_authenticated
+            and request.user.has_perm(EDIT, Event)
+        ):
+            return super().to_internal_value(data)
+        raise PermissionDenied()
+
 class PublicEventField(serializers.PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
         return False
