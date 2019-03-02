@@ -42,7 +42,9 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
     )
     presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
-    photo_consent = ConsentField(required=False, choices=constants.CONSENT_CHOICES)
+    photo_consent = ConsentField(
+        required=False, choices=constants.PHOTO_CONSENT_CHOICES
+    )
 
     class Meta:
         model = Registration

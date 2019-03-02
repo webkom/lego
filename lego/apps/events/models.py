@@ -759,7 +759,9 @@ class Registration(BasisModel):
         max_length=20, default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
     )
     photo_consent = models.CharField(
-        max_length=20, default=constants.UNKNOWN, choices=constants.CONSENT_CHOICES
+        max_length=20,
+        default=constants.UNKNOWN,
+        choices=constants.PHOTO_CONSENT_CHOICES,
     )
 
     charge_id = models.CharField(null=True, max_length=50)
@@ -816,6 +818,13 @@ class Registration(BasisModel):
             raise ValueError("Illegal presence choice")
         self.presence = presence
         self.handle_user_penalty(presence)
+        self.save()
+
+    def set_photo_consent(self, photo_consent):
+        """Wrap this method in a transaction"""
+        if photo_consent not in dict(constants.PHOTO_CONSENT_CHOICES):
+            raise ValueError("Illegal photo consent choice")
+        self.photo_consent = photo_consent
         self.save()
 
     def handle_user_penalty(self, presence):
