@@ -95,6 +95,11 @@ class RegistrationSearchSerializer(serializers.Serializer):
     username = serializers.CharField()
 
 
+class RegistrationConsentSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    photo_consent = ConsentField(constants.PHOTO_CONSENT_CHOICES)
+
+
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
     charge_status = ChargeStatusField()
 

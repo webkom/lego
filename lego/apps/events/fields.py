@@ -122,7 +122,7 @@ class ConsentField(serializers.ChoiceField):
             and request.user.is_authenticated
             and request.user.has_perm(EDIT, Event)
         ):
-            return getattr(value, "presence", None)
+            return getattr(value, "photo_consent", None)
 
     def to_internal_value(self, data):
         request = self.context.get("request", None)
