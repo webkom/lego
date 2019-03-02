@@ -404,8 +404,11 @@ class RegistrationConsentViewSet(
         return Registration.objects.filter(event=event_id).prefetch_related("user")
 
     def create(self, request, *args, **kwargs):
+        print("sadsadsadsadasdasdsa")
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        print(serializer.data)
         username = serializer.data["username"]
         photo_consent = serializer.data["photo_consent"]
 
@@ -436,5 +439,4 @@ class RegistrationConsentViewSet(
 
         reg.photo_consent = photo_consent
         reg.save()
-        data = RegistrationConsentSerializer(reg).data
-        return Response(data=data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)

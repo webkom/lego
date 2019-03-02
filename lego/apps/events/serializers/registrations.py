@@ -97,7 +97,7 @@ class RegistrationSearchSerializer(serializers.Serializer):
 
 class RegistrationConsentSerializer(serializers.Serializer):
     username = serializers.CharField()
-    photo_consent = ConsentField(constants.PHOTO_CONSENT_CHOICES)
+    photo_consent = serializers.CharField()
 
 
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
@@ -127,6 +127,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "charge_status",
             "charge_amount",
             "charge_amount_refunded",
+            "photo_consent",
         )
         read_only = True
 
