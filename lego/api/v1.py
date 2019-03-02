@@ -16,6 +16,7 @@ from lego.apps.email.views import EmailListViewSet, UserEmailViewSet
 from lego.apps.events.views import (
     EventViewSet,
     PoolViewSet,
+    RegistrationConsentViewSet,
     RegistrationSearchViewSet,
     RegistrationViewSet,
 )
@@ -116,6 +117,11 @@ router.register(
     r"events/(?P<event_pk>\d+)/registration_search",
     RegistrationSearchViewSet,
     base_name="registration-search",
+)
+router.register(
+    r"events/(?P<event_pk>\d+)/set_consent",
+    RegistrationConsentViewSet,
+    base_name="set_consent",
 )
 router.register(
     r"events/(?P<event_pk>\d+)/registrations",

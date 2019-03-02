@@ -78,6 +78,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     payment_due_date = models.DateTimeField(null=True)
     payment_overdue_notified = models.BooleanField(default=False)
     is_ready = models.BooleanField(default=True)
+    use_consent = models.BooleanField(default=False)
 
     class Meta:
         permission_handler = EventPermissionHandler()
@@ -757,6 +758,11 @@ class Registration(BasisModel):
     presence = models.CharField(
         max_length=20, default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
     )
+    photo_consent = models.CharField(
+        max_length=20,
+        default=constants.UNKNOWN,
+        choices=constants.PHOTO_CONSENT_CHOICES,
+    )
 
     charge_id = models.CharField(null=True, max_length=50)
     charge_amount = models.IntegerField(default=0)
@@ -812,6 +818,13 @@ class Registration(BasisModel):
             raise ValueError("Illegal presence choice")
         self.presence = presence
         self.handle_user_penalty(presence)
+        self.save()
+
+    def set_photo_consent(self, photo_consent):
+        """Wrap this method in a transaction"""
+        if photo_consent not in dict(constants.PHOTO_CONSENT_CHOICES):
+            raise ValueError("Illegal photo consent choice")
+        self.photo_consent = photo_consent
         self.save()
 
     def handle_user_penalty(self, presence):

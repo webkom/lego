@@ -4,6 +4,7 @@ from rest_framework import serializers
 from lego.apps.events import constants
 from lego.apps.events.fields import (
     ChargeStatusField,
+    ConsentField,
     FeedbackField,
     PresenceField,
     SetChargeStatusField,
@@ -41,10 +42,20 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
     )
     presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
+    photo_consent = ConsentField(
+        required=False, choices=constants.PHOTO_CONSENT_CHOICES
+    )
 
     class Meta:
         model = Registration
-        fields = ("id", "feedback", "presence", "captcha_response", "charge_status")
+        fields = (
+            "id",
+            "feedback",
+            "presence",
+            "photo_consent",
+            "captcha_response",
+            "charge_status",
+        )
 
     def update(self, instance, validated_data):
         with transaction.atomic():
@@ -84,6 +95,11 @@ class RegistrationSearchSerializer(serializers.Serializer):
     username = serializers.CharField()
 
 
+class RegistrationConsentSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    photo_consent = serializers.CharField()
+
+
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
     charge_status = ChargeStatusField()
 
@@ -111,6 +127,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "charge_status",
             "charge_amount",
             "charge_amount_refunded",
+            "photo_consent",
         )
         read_only = True
 

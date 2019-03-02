@@ -125,6 +125,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "is_abakom_only",
             "registration_count",
             "survey",
+            "use_consent",
         )
         read_only = True
 
@@ -203,6 +204,7 @@ class EventAdministrateSerializer(EventReadSerializer):
             "pools",
             "unregistered",
             "waiting_registrations",
+            "use_consent",
         )
 
 
@@ -244,6 +246,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "pools",
             "unregistration_deadline",
             "pinned",
+            "use_consent",
             "heed_penalties",
             "is_abakom_only",
             "registration_deadline_hours",

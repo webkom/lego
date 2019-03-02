@@ -35,6 +35,7 @@ from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
     AdminRegistrationCreateAndUpdateSerializer,
     AdminUnregisterSerializer,
+    RegistrationConsentSerializer,
     RegistrationCreateAndUpdateSerializer,
     RegistrationPaymentReadSerializer,
     RegistrationReadDetailedSerializer,
@@ -418,3 +419,52 @@ class RegistrationSearchViewSet(
         reg.save()
         data = RegistrationSearchReadSerializer(reg).data
         return Response(data=data, status=status.HTTP_200_OK)
+
+
+class RegistrationConsentViewSet(
+    AllowedPermissionsMixin, mixins.CreateModelMixin, viewsets.GenericViewSet
+):
+    serializer_class = RegistrationConsentSerializer
+    ordering = "registration_date"
+
+    def get_queryset(self):
+        event_id = self.kwargs.get("event_pk", None)
+        return Registration.objects.filter(event=event_id).prefetch_related("user")
+
+    def create(self, request, *args, **kwargs):
+        print("sadsadsadsadasdasdsa")
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print(serializer.data)
+        username = serializer.data["username"]
+        photo_consent = serializer.data["photo_consent"]
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise ValidationError(
+                {
+                    "error": f"There is no user with username {username}",
+                    "error_code": "no_user",
+                }
+            )
+
+        try:
+            reg = self.get_queryset().get(user=user)
+        except Registration.DoesNotExist:
+            raise ValidationError(
+                {
+                    "error": "The registration does not exist",
+                    "error_code": "not_registered",
+                }
+            )
+
+        if not get_permission_handler(Event).has_perm(
+            request.user, "EDIT", obj=reg.event
+        ):
+            raise PermissionDenied()
+
+        reg.photo_consent = photo_consent
+        reg.save()
+        return Response(status=status.HTTP_200_OK)
