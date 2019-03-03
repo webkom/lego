@@ -88,7 +88,10 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
 
 class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + ("presence",)
+        fields = RegistrationPublicReadSerializer.Meta.fields + (
+            "presence",
+            "photo_consent",
+        )
 
 
 class RegistrationSearchSerializer(serializers.Serializer):
