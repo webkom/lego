@@ -24,6 +24,7 @@ def get_data_with_author(author_pk):
         "description": "good article",
         "content": "the best article",
         "author": author_pk,
+        "youtube_url": "https://www.youtube.com/watch?v=KrzIaRwAMvc",
     }
 
 
@@ -181,6 +182,27 @@ class CreateArticlesTestCase(BaseAPITestCase):
         response = self.client.post(get_list_url(), data)
         self.assertEqual(response.data, {"title": ["This field is required."]})
         self.assertEqual(response.status_code, 400)
+
+    def test_wrong_youtube_url(self):
+        self.group.permissions = ["/sudo/admin/articles/create/"]
+        self.group.save()
+
+        self.client.force_authenticate(user=self.user)
+        data = get_data_with_author(self.user.pk)
+        data["youtube_url"] = "https://www.skra.com/watch?v=KrzIaRwAMvc"
+        response = self.client.post(get_list_url(), data)
+        self.assertEqual(response.data["youtube_url"][0].code, "invalid")
+        self.assertEqual(response.status_code, 400)
+
+    def test_correct_youtube_url(self):
+        self.group.permissions = ["/sudo/admin/articles/create/"]
+        self.group.save()
+
+        self.client.force_authenticate(user=self.user)
+        data = get_data_with_author(self.user.pk)
+        data["youtube_url"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
+        response = self.client.post(get_list_url(), data)
+        self.assertEqual(response.status_code, 201)
 
 
 class UpdateArticlesTestCase(BaseAPITestCase):

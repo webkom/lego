@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('articles', '0009_article_youtube_url'),
-    ]
+    dependencies = [("articles", "0009_article_youtube_url")]
 
     operations = [
         migrations.AlterField(
-            model_name='article',
-            name='youtube_url',
-            field=models.URLField(default=''),
-        ),
+            model_name="article", name="youtube_url", field=models.URLField(default="")
+        )
     ]
