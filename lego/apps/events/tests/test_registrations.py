@@ -801,12 +801,12 @@ class RegistrationTestCase(BaseTestCase):
 
     def test_rebalance_pool_method_should_not_overflow(self):
         """Test rebalancing method by moving registered user's pool to fit waiting list user"""
-        event = Event.objects.get(title='POOLS_NO_REGISTRATIONS')
-        abakus_pool = event.pools.get(name='Abakusmember')
-        webkom_pool = event.pools.get(name='Webkom')
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        abakus_pool = event.pools.get(name="Abakusmember")
+        webkom_pool = event.pools.get(name="Webkom")
         users = get_dummy_users(6)
         for user in users:
-            AbakusGroup.objects.get(name='Abakus').add_user(user)
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
 
         webkom_users = users[:3]
         abakus_users = users[3:]
@@ -826,7 +826,7 @@ class RegistrationTestCase(BaseTestCase):
         self.assertEqual(webkom_pool.registrations.count(), 0)
 
         for user in webkom_users:
-            AbakusGroup.objects.get(name='Webkom').add_user(user)
+            AbakusGroup.objects.get(name="Webkom").add_user(user)
 
         event.bump_on_pool_creation_or_expansion()
         self.assertEqual(abakus_pool.registrations.count(), 3)  # Abakus-pool has size 3
