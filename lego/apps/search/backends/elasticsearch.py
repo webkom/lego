@@ -14,10 +14,10 @@ class ElasticsearchBackend(SearchBacked):
     connection = None
 
     def set_up(self):
-        host = getattr(settings, "ELASTICSEARCH", None)
-        if host:
+        hosts = getattr(settings, "ELASTICSEARCH", None)
+        if hosts:
             self.connection = Elasticsearch(
-                settings.ELASTICSEARCH, ca_certs=certifi.where()
+                hosts=settings.ELASTICSEARCH, ca_certs=certifi.where()
             )
 
     def _index_name(self):

@@ -52,7 +52,7 @@ CACHES = {
     }
 }
 
-ELASTICSEARCH = "localhost"
+ELASTICSEARCH = [{"host": "localhost"}]
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
