@@ -799,6 +799,39 @@ class RegistrationTestCase(BaseTestCase):
         self.assertEqual(abakus_pool.registrations.count(), 1)
         self.assertEqual(webkom_pool.registrations.count(), 2)
 
+    def test_rebalance_pool_method_should_not_overflow(self):
+        """Test rebalancing method by moving registered user's pool to fit waiting list user"""
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        abakus_pool = event.pools.get(name="Abakusmember")
+        webkom_pool = event.pools.get(name="Webkom")
+        users = get_dummy_users(6)
+        for user in users:
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        webkom_users = users[:3]
+        abakus_users = users[3:]
+
+        for user in webkom_users:
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEqual(abakus_pool.registrations.count(), 3)
+        self.assertEqual(webkom_pool.registrations.count(), 0)
+
+        for user in abakus_users:
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+
+        self.assertEqual(abakus_pool.registrations.count(), 3)
+        self.assertEqual(webkom_pool.registrations.count(), 0)
+
+        for user in webkom_users:
+            AbakusGroup.objects.get(name="Webkom").add_user(user)
+
+        event.bump_on_pool_creation_or_expansion()
+        self.assertEqual(abakus_pool.registrations.count(), 3)  # Abakus-pool has size 3
+        self.assertEqual(webkom_pool.registrations.count(), 2)  # Webkom-pool has size 2
+
     def test_cant_register_after_event_has_started(self):
         """Test that a user cannot register after the event has started."""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
