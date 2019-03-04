@@ -443,6 +443,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         to_pool_permissions = to_pool.permission_groups.all()
         bumped = False
         for old_registration in self.registrations.filter(pool=from_pool):
+            if to_pool.is_full:
+                break
             moveable = False
             user_groups = old_registration.user.all_groups
             for group in to_pool_permissions:

@@ -805,13 +805,13 @@ class RegistrationTestCase(BaseTestCase):
         abakus_pool = event.pools.get(name='Abakusmember')
         webkom_pool = event.pools.get(name='Webkom')
         users = get_dummy_users(6)
-        webkom_users = users[:3]
-        abakus_users = users[3:]
-        for user in abakus_users:
+        for user in users:
             AbakusGroup.objects.get(name='Abakus').add_user(user)
 
+        webkom_users = users[:3]
+        abakus_users = users[3:]
+
         for user in webkom_users:
-            AbakusGroup.objects.get(name='Abakus').add_user(user)
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
