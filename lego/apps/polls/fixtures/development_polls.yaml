@@ -1,0 +1,32 @@
+- model: polls.Poll
+  pk: 1
+  fields:
+    title: en poll hey
+    description: Officia deserunt mollit anim id est laborum.
+
+- model: polls.Poll
+  pk: 2
+  fields:
+    title: en annen poll
+    description: Officia deserunt mollit anim id est laborum.
+
+- model: polls.Option
+  pk: 1
+  fields:
+    name: Skra
+    votes: 5
+    poll: 1
+
+- model: polls.Option
+  pk: 2
+  fields:
+    name: Bombom
+    votes: 15
+    poll: 1
+
+- model: polls.Option
+  pk: 3
+  fields:
+    name: yo
+    votes: 9
+    poll: 2

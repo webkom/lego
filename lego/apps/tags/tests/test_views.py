@@ -31,6 +31,7 @@ class TagViewsTestCase(APITestCase):
                     "event": 0,
                     "quote": 0,
                     "joblisting": 0,
+                    "poll": 0,
                 },
             },
         )
