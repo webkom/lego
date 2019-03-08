@@ -178,6 +178,7 @@ class MeSerializer(serializers.ModelSerializer):
             "ical_token",
             "memberships",
             "past_memberships",
+            "internal_email_address",
         )
 
 
