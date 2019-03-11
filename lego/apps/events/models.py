@@ -44,7 +44,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     event_type = models.CharField(max_length=50, choices=constants.EVENT_TYPES)
     event_status_type = models.CharField(
-        max_length=50, choices=constants.EVENT_STATUS_TYPES, default=constants.NORMAL
+        max_length=50, choices=constants.EVENT_STATUS_TYPES, default=constants.TBA
     )
     location = models.CharField(max_length=100)
     cover = FileField(related_name="event_covers")
