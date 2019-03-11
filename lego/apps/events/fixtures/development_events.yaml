@@ -2,6 +2,7 @@
     description: TBA
     end_time: '2016-10-27T20:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-10-27T17:15:00+00:00'
     text: "<p>TBA</p>"
@@ -19,6 +20,7 @@
       med kontorer i Oslo
     end_time: '2016-10-25T23:59:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-10-25T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -34,6 +36,7 @@
       for kunder i mer enn 120 land.
     end_time: '2016-10-13T23:59:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-10-13T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -47,6 +50,7 @@
     description: 'Bedriftspresentasjon med Netlight '
     end_time: '2016-10-11T23:59:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-10-11T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -60,6 +64,7 @@
     description: EY (tidligere Ernst & Young)
     end_time: '2016-10-06T23:59:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-10-06T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -73,6 +78,7 @@
     description: TBA
     end_time: '2016-10-04T20:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-10-04T17:15:00+00:00'
     text: "<p>TBA</p>"
@@ -87,6 +93,7 @@
     description: Velkommen til lunsjpresentasjon med Sopra Steria.
     end_time: '2016-09-19T23:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-09-19T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -102,6 +109,7 @@
       \ er åpen for alle 5. klassinger"
     end_time: '2016-09-10T12:00:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: Oslo
     start_time: '2016-09-07T07:00:00+00:00'
     text: "<p>Ekskursjonen går til Oslo og varer i tre dager. Bedriftene vi skal besøke\
@@ -128,6 +136,7 @@
     description: ' TBA'
     end_time: '2016-09-09T22:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-09-09T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -141,6 +150,7 @@
     description: 'Bedriftspresentasjon med DIPS. '
     end_time: '2016-09-06T23:59:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-09-06T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -155,6 +165,7 @@
       i Frimurerlogen, 3. september!
     end_time: '2016-09-03T23:59:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: 'Frimurerlogen '
     start_time: '2016-09-03T18:00:00+00:00'
     text: "<p>I tradisjon tro ønsker vi å feire opptaket av våre nye medlemmer. Begivenheten\
@@ -175,6 +186,7 @@
       av skreddersydde løsninger innen privat og offentlig sektor.
     end_time: '2016-09-01T20:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-09-01T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -188,6 +200,7 @@
     description: ' '
     end_time: '2016-08-30T21:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-08-30T17:00:00+00:00'
     text: "<p>TBA</p>"
@@ -201,6 +214,7 @@
     description: 'Som tidligere blir det også i år sommerfest i Oslo for alle abakuler. '
     end_time: '2016-07-02T23:55:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: Dattera til Hagen
     start_time: '2016-07-02T19:00:00+00:00'
     text: "<p>Det hele vil finne sted på Dattera til Hagen, hvor vi har andre etasje\
@@ -217,6 +231,7 @@
       \ en storslått eksamensfest!\r\n"
     end_time: '2016-06-11T23:59:00+00:00'
     event_type: party
+    event_status_type: 'normal'
     location: Trondheim
     start_time: '2016-06-11T20:00:00+00:00'
     text: "<p>Mer informasjon kommer.</p>"
@@ -233,6 +248,7 @@
       aktiviteter i regi av Abakus.
     end_time: '2016-06-01T20:00:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: '-'
     start_time: '2016-04-20T13:00:00+00:00'
     text: "<p>Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
@@ -256,6 +272,7 @@
       aktiviteter i regi av Abakus.
     end_time: '2016-06-01T20:00:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: '-'
     start_time: '2016-04-20T17:15:00+00:00'
     text: "<p>Vi hadde et bra antall faddere i fjor, og vi håper vi får minst like mange\
@@ -277,6 +294,7 @@
       og grill med Abakus!
     end_time: '2016-05-20T15:00:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: Høyskoleparken
     start_time: '2016-05-20T14:00:00+00:00'
     text: "<p>Vi ønsker i år som i fjor å samle abakuler til en hyggelig sammenkomst\
@@ -298,6 +316,7 @@
       \ å feire vår grunnlovsdag.\r\n\r\n"
     end_time: '2016-05-17T11:30:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: Kjelhuset
     start_time: '2016-05-17T09:30:00+00:00'
     text: "<p>Vi dekker til langbord med hvite duker, og kler opp Kjelkantina i rødt,\
@@ -324,6 +343,7 @@
       eksamenskurs i Java. '
     end_time: '2016-05-15T16:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: TBA
     start_time: '2016-05-14T11:00:00+00:00'
     text: "<p>'Forelesningene vil være spesielt rettet mot de som har vært borti pensum
@@ -343,6 +363,7 @@
       i forbindelse med "Sikkerhet og Sårbarhet 2016".
     end_time: '2016-05-09T21:30:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: R5
     start_time: '2016-05-09T17:15:00+00:00'
     text: "<p>Den digitale hverdagen er for de fleste å anse som hvilken som helst hverdag.\
@@ -427,6 +448,7 @@
       eksamensoppgaver og pensum.
     end_time: '2016-05-07T16:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: EL5
     start_time: '2016-05-07T10:15:00+00:00'
     text: "<p>Nils Barlaug holder lørdag 7. mai en uoffisiell eksamensforelesning i TFE4101
@@ -448,6 +470,7 @@
       \ kan melde seg til å være fadder. \r\n\r\n"
     end_time: '2016-05-01T23:59:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: '-'
     start_time: '2016-04-20T17:15:00+00:00'
     text: "<p>Å være fadder for 4. klasse er mer fritt enn å være fadder for 1. klasse\
@@ -468,6 +491,7 @@
       3.-5. klasse datateknologi og kommunikasjonteknologi med interesse for konsulentbransjen.
     end_time: '2016-04-29T16:00:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: Trondheim
     start_time: '2016-04-29T08:30:00+00:00'
     text: "<p>Årets temaer er sikkerhet og prosjektledelse. Vi kommer blant annet til\
@@ -489,6 +513,7 @@
       på 45 minutter vil det bli mingling på skolen med servering av pizza og brus.
     end_time: '2016-04-28T15:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: KJL 1
     start_time: '2016-04-28T12:00:00+00:00'
     text: "<p>DNV GL is undergoing a digital transformation encompassing all business\
@@ -515,6 +540,7 @@
       \  \r\n\r\n"
     end_time: '2016-04-27T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: R8
     start_time: '2016-04-27T16:00:00+00:00'
     text: "<p>Kvelden vil bestå av varierte foredrag og workshop, tilpasset til ulike\
@@ -540,6 +566,7 @@
       Fagkom fra Online og Abakus, studenter og ansatte til en hyggelig kveld sammen.**'
     end_time: '2016-04-25T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: Work-Work (Munkegata 58)
     start_time: '2016-04-25T17:15:00+00:00'
     text: "<p>![Bilde](http://i68.tinypic.com/k3wu2f.jpg \"Abakus/Online/IDI.png\")\r\
@@ -572,6 +599,7 @@
     description: Da er det på tide med årets andre (og semesterets siste) AbelLan.
     end_time: '2016-04-24T07:00:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: Drivhuset
     start_time: '2016-04-23T18:00:00+00:00'
     text: "<p>Detaljert informasjon kommer på [Facebook](https://www.facebook.com/events/718813778259009/).\r\
@@ -587,6 +615,7 @@
       sted på Håndverkeren.
     end_time: '2016-04-21T23:59:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: Håndverkeren
     start_time: '2016-04-21T19:00:00+00:00'
     text: "<p>Arrangementet blir i år tilpasset alle, uavhengig om pokerferdighetene\
@@ -613,6 +642,7 @@
       \ med stormskritt.\r\n"
     end_time: '2016-04-18T12:00:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: S2
     start_time: '2016-04-18T10:30:00+00:00'
     text: "<p>Om bare noen måneder strømmer tusenvis av nye studenter til Trondheim.\
@@ -640,6 +670,7 @@
       men blant de få er definitivt Labamba og abakulene! '
     end_time: '2016-04-16T01:00:00+00:00'
     event_type: party
+    event_status_type: 'normal'
     location: ' Klostergata 60 '
     start_time: '2016-04-15T19:00:00+00:00'
     text: "<p>Fredag 15. april er det duket for en fiesta av så godt kaliber at meksikanere\
@@ -664,6 +695,7 @@
       vi har et begrenset antall gratis plasser for studenter. Søknadsfrist 15. Mars!
     end_time: '2016-04-15T21:00:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: Radisson Blu Scandinavia, Holbergs plass, Oslo
     start_time: '2016-04-15T08:00:00+00:00'
     text: "<p>I BEKK er vi opptatt av faglig utvikling og kunnskapsdeling. Hvert år arrangerer\
@@ -686,6 +718,7 @@
       oppsettet
     end_time: '2016-04-14T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: H3
     start_time: '2016-04-14T17:00:00+00:00'
     text: "<p>De beste kursene gir deg noe kult som du kan ha etter kurset, derfor vil\
@@ -714,6 +747,7 @@
       \n \r\n\r\n\r\n"
     end_time: '2016-04-11T21:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: KJL1
     start_time: '2016-04-11T17:00:00+00:00'
     text: "<p>**Program for kvelden**\r\n\r\n17:00 Dørene åpner\r\n\r\n17:15 - 17:20\
@@ -747,6 +781,7 @@
     description: Lørdag 9. april inviterer Abakus til Vaargalla!
     end_time: '2016-04-10T08:00:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: Banksalen
     start_time: '2016-04-09T15:00:00+00:00'
     text: "<p>Hva er vel bedre for å feire at våren er her, enn en egen galla for det?\
@@ -783,6 +818,7 @@
     description: 'Hvis du hadde IT-styrken til DNB, hvordan ville du brukt den? '
     end_time: '2016-04-07T20:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: KJL1
     start_time: '2016-04-07T17:00:00+00:00'
     text: "<p>DNB har Norges mest besøkte nett- og mobilbank. Det er vi i IT stolte av.\r\
@@ -807,6 +843,7 @@
       programmering!
     end_time: '2016-04-06T19:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: EL2
     start_time: '2016-04-06T16:00:00+00:00'
     text: "<p>Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
@@ -832,6 +869,7 @@
       til å havne der du vil ha dem? Da er du velkommen til Webutvikling101.
     end_time: '2016-04-06T19:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: EL1
     start_time: '2016-04-06T16:00:00+00:00'
     text: "<p>Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
@@ -868,6 +906,7 @@
       the ”flag” med Java og Lego Mindstorms! [Promovideo](https://vimeo.com/160542061)
     end_time: '2016-04-05T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: IT-Vest 454
     start_time: '2016-04-05T17:00:00+00:00'
     text: "<p>Lego Lego Lego. Vi får ikke nok av Lego, forhåpentligvis gjelder det samme\
@@ -914,6 +953,7 @@
       linjene!
     end_time: '2016-03-31T23:00:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: D12
     start_time: '2016-03-31T19:00:00+00:00'
     text: "<p>Tiden har kommet for at Mannhullet, Emil, Abakus, Smørekoppen og Janus\
@@ -941,6 +981,7 @@
       Kurset passer perfekt for deg som ønsker å lære om IT-infrastruktur og Microsoft-teknologier.
     end_time: '2016-03-15T19:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: H3
     start_time: '2016-03-15T17:15:00+00:00'
     text: "<p>Kurset vil være inndelt i tre deler. Hver del starter med 5-10 minutter\
@@ -968,6 +1009,7 @@
       typer kaffe og lære nyttig tips og triks. '
     end_time: '2016-03-13T19:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: Dromedar Moxness, Olav Tryggvassonsgate 14
     start_time: '2016-03-13T16:00:00+00:00'
     text: "<p>Vi starter med en liten søtchilismak og litt kaker, før vi får vite litt\
@@ -990,6 +1032,7 @@
       bli med på!
     end_time: '2016-03-10T21:00:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: Radisson Blu Royal Garden
     start_time: '2016-03-10T17:00:00+00:00'
     text: "<p>Merk at arrangementet er eksternt og at påmeldingen foregår på [StartIT\
@@ -1021,6 +1064,7 @@
       programmering!
     end_time: '2016-03-09T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: EL2
     start_time: '2016-03-09T16:00:00+00:00'
     text: "<p>Vi starter med å se på hva funksjonell programmering faktisk er, og hvordan\
@@ -1048,6 +1092,7 @@
       \r\n"
     end_time: '2016-03-09T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: EL1
     start_time: '2016-03-09T16:00:00+00:00'
     text: "<p>Vi skal over 3 ettermiddager gå gjennom de mest grunnleggende delene av\
@@ -1086,6 +1131,7 @@
       \   \r\n"
     end_time: '2016-03-08T22:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: Acandos lokaler i Trondheim
     start_time: '2016-03-08T17:00:00+00:00'
     text: "<p>Hos oss vil du jobbe med mange spennende kunder, prosjekter og problemstillinger.\
@@ -1114,6 +1160,7 @@
       år.
     end_time: '2016-03-07T20:00:00+00:00'
     event_type: course
+    event_status_type: 'normal'
     location: Bassengbakken 4
     start_time: '2016-03-07T17:15:00+00:00'
     text: "<p>Med litt enkel Javascript-programmering kan du gjøre alt dette. Du kan\
@@ -1147,6 +1194,7 @@
       uten like!
     end_time: '2016-03-06T12:00:00+00:00'
     event_type: event
+    event_status_type: 'normal'
     location: Sundmans Fjällgård, Åre
     start_time: '2016-03-05T09:00:00+00:00'
     text: "<p>I år arrangeres Helgesamlingen på Sundmans Fjellgård fra 5 - 6 mars. \r\
@@ -1177,6 +1225,7 @@
       til statuttendringer vil legges frem og det skal velges totalt 6 stillinger.
     end_time: '2016-03-04T23:59:00+00:00'
     event_type: other
+    event_status_type: 'normal'
     location: EL5
     start_time: '2016-03-04T16:15:00+00:00'
     text: "<p>Viktige dokumenter å gjøre seg kjent med i forkant:  \r\n---------------------------------------------------\r\
@@ -1237,6 +1286,7 @@
       Meld deg på og bli bedre kjent med selskapet!
     end_time: '2016-03-03T23:00:00+00:00'
     event_type: company_presentation
+    event_status_type: 'normal'
     location: EL6
     start_time: '2016-03-03T17:00:00+00:00'
     text: "<p>Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter\
@@ -1264,3 +1314,51 @@
     require_auth: False
   model: events.Event
   pk: 50
+- fields:
+    tags:
+      - abakus
+    description: En description om alt mulig, dette eventet er TBA.
+    end_time: '2016-03-03T23:00:00+00:00'
+    event_type: other
+    event_status_type: 'tba'
+    location: TBA
+    start_time: '2016-03-03T17:00:00+00:00'
+    text: "TBA event, mer info kommer kanskje"
+    title: Event med status type TBA
+    cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
+  model: events.Event
+  pk: 51
+- fields:
+    tags:
+      - abakus
+    description: En description om alt mulig, dette eventet er Åpent.
+    end_time: '2016-03-03T23:00:00+00:00'
+    event_type: other
+    event_status_type: 'open'
+    location: Webkomkontoret
+    start_time: '2016-03-03T17:00:00+00:00'
+    text: "Åpent event, kom kom!"
+    title: Event med status type Åpent
+    cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
+  model: events.Event
+  pk: 52
+- fields:
+    tags:
+      - abakus
+    description: En description om alt mulig, dette eventet har Uendelig påmelding.
+    end_time: '2016-03-03T23:00:00+00:00'
+    event_type: other
+    event_status_type: 'infinity'
+    location: Webkomkontoret
+    start_time: '2016-03-03T17:00:00+00:00'
+    text: "Alle må komme!!!!! Åpent for alle i Abakus :D"
+    title: Event med status type Uendelig
+    cover: test_event_cover.png
+    created_by: 3
+    require_auth: True
+  model: events.Event
+  pk: 53

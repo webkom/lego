@@ -28,6 +28,7 @@ _test_event_data = [
         "description": "Ingress1",
         "text": "Ingress1",
         "event_type": "event",
+        "event_status_type": "normal",
         "location": "F252",
         "start_time": "2011-09-01T13:20:30Z",
         "end_time": "2012-09-01T13:20:30Z",
@@ -47,6 +48,7 @@ _test_event_data = [
         "description": "Ingress2",
         "text": "Ingress2",
         "event_type": "event",
+        "event_status_type": "normal",
         "location": "F252",
         "start_time": "2015-09-01T13:20:30Z",
         "end_time": "2015-09-01T13:20:30Z",
@@ -65,6 +67,66 @@ _test_event_data = [
                 "activation_date": "2012-09-01T10:20:30Z",
                 "permission_groups": [2],
             },
+        ],
+    },
+    {
+        "title": "Event3",
+        "description": "Ingress3",
+        "text": "Ingress3",
+        "event_type": "event",
+        "event_status_type": "tba",
+        "location": "F252",
+        "start_time": "2015-09-01T13:20:30Z",
+        "end_time": "2015-09-01T13:20:30Z",
+        "merge_time": "2016-01-01T13:20:30Z",
+        "is_abakom_only": True,
+        "pools": [
+            {
+                "name": "Initial Pool 1",
+                "capacity": 10,
+                "activation_date": "2012-09-01T10:20:30Z",
+                "permission_groups": [2],
+            }
+        ],
+    },
+    {
+        "title": "Event4",
+        "description": "Ingress4",
+        "text": "Ingress4",
+        "event_type": "event",
+        "event_status_type": "open",
+        "location": "F252",
+        "start_time": "2015-09-01T13:20:30Z",
+        "end_time": "2015-09-01T13:20:30Z",
+        "merge_time": "2016-01-01T13:20:30Z",
+        "is_abakom_only": True,
+        "pools": [
+            {
+                "name": "Initial Pool 1",
+                "capacity": 10,
+                "activation_date": "2012-09-01T10:20:30Z",
+                "permission_groups": [2],
+            }
+        ],
+    },
+    {
+        "title": "Event5",
+        "description": "Ingress5",
+        "text": "Ingress5",
+        "event_type": "event",
+        "event_status_type": "infinity",
+        "location": "F252",
+        "start_time": "2015-09-01T13:20:30Z",
+        "end_time": "2015-09-01T13:20:30Z",
+        "merge_time": "2016-01-01T13:20:30Z",
+        "is_abakom_only": True,
+        "pools": [
+            {
+                "name": "Initial Pool 1",
+                "capacity": 10,
+                "activation_date": "2012-09-01T10:20:30Z",
+                "permission_groups": [2],
+            }
         ],
     },
 ]
@@ -161,7 +223,7 @@ class ListEventsTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.data["results"]), 6)
+        self.assertEqual(len(event_response.data["results"]), 9)
 
 
 class RetrieveEventsTestCase(BaseAPITestCase):
@@ -419,6 +481,76 @@ class CreateEventsTestCase(BaseAPITestCase):
             for key in ["name", "capacity", "activationDate", "permissionGroups"]:
                 self.assertEqual(res_pools[i][key], expect_pools[i][key])
 
+    def test_event_creation_tba(self):
+        """Test event creation for TBA status type"""
+        self.event_response = self.client.post(_get_list_url(), _test_event_data[2])
+        self.assertEqual(self.event_response.status_code, 201)
+        self.event_id = self.event_response.data.pop("id", None)
+        self.assertIsNotNone(self.event_id)
+        res_event = self.event_response.data
+        expect_event = _test_event_data[2]
+        for key in [
+            "title",
+            "description",
+            "text",
+            "start_time",
+            "end_time",
+            "merge_time",
+            "is_abakom_only",
+        ]:
+            self.assertEqual(res_event[key], expect_event[key])
+        created_event = Event.objects.get(id=self.event_id)
+        self.assertEqual(created_event.event_status_type, "tba")
+        self.assertEqual(created_event.location, "TBA")
+        self.assertEqual(len(created_event.pools.all()), 0)
+
+    def test_event_creation_open(self):
+        """Test event creation for OPEN status type"""
+        self.event_response = self.client.post(_get_list_url(), _test_event_data[3])
+        self.assertEqual(self.event_response.status_code, 201)
+        self.event_id = self.event_response.data.pop("id", None)
+        self.assertIsNotNone(self.event_id)
+        res_event = self.event_response.data
+        expect_event = _test_event_data[3]
+        for key in [
+            "title",
+            "description",
+            "text",
+            "start_time",
+            "location",
+            "end_time",
+            "merge_time",
+            "is_abakom_only",
+        ]:
+            self.assertEqual(res_event[key], expect_event[key])
+        created_event = Event.objects.get(id=self.event_id)
+        self.assertEqual(created_event.event_status_type, "open")
+        self.assertEqual(len(created_event.pools.all()), 0)
+
+    def test_event_creation_infinity(self):
+        """Test event creation for INFINITY status type"""
+        self.event_response = self.client.post(_get_list_url(), _test_event_data[4])
+        self.assertEqual(self.event_response.status_code, 201)
+        self.event_id = self.event_response.data.pop("id", None)
+        self.assertIsNotNone(self.event_id)
+        res_event = self.event_response.data
+        expect_event = _test_event_data[4]
+        for key in [
+            "title",
+            "description",
+            "text",
+            "start_time",
+            "location",
+            "end_time",
+            "merge_time",
+            "is_abakom_only",
+        ]:
+            self.assertEqual(res_event[key], expect_event[key])
+        created_event = Event.objects.get(id=self.event_id)
+        self.assertEqual(created_event.event_status_type, "infinity")
+        self.assertEqual(len(created_event.pools.all()), 1)
+        self.assertEqual(created_event.pools.all().first().capacity, 0)
+
     def test_event_creation_without_auth(self):
         self.client.logout()
         response = self.client.post(_get_list_url(), _test_event_data[1])
@@ -661,6 +793,51 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
 
     def test_create(self, *args):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        registration_response = self.client.post(
+            _get_registrations_list_url(event.id), {}
+        )
+        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(
+            registration_response.data.get("status"), constants.PENDING_REGISTER
+        )
+        res = self.client.get(
+            _get_registrations_detail_url(event.id, registration_response.data["id"])
+        )
+        self.assertEqual(res.data["user"]["id"], 1)
+        self.assertEqual(res.data["status"], constants.SUCCESS_REGISTER)
+
+    def test_register_tba_event(self, *args):
+        event = Event.objects.get(title="TBA_EVENT")
+        registration_response = self.client.post(
+            _get_registrations_list_url(event.id), {}
+        )
+        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(
+            registration_response.data.get("status"), constants.PENDING_REGISTER
+        )
+        res = self.client.get(
+            _get_registrations_detail_url(event.id, registration_response.data["id"])
+        )
+        self.assertEqual(res.data["user"]["id"], 1)
+        self.assertEqual(res.data["status"], constants.FAILURE_REGISTER)
+
+    def test_register_open_event(self, *args):
+        event = Event.objects.get(title="OPEN_EVENT")
+        registration_response = self.client.post(
+            _get_registrations_list_url(event.id), {}
+        )
+        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(
+            registration_response.data.get("status"), constants.PENDING_REGISTER
+        )
+        res = self.client.get(
+            _get_registrations_detail_url(event.id, registration_response.data["id"])
+        )
+        self.assertEqual(res.data["user"]["id"], 1)
+        self.assertEqual(res.data["status"], constants.FAILURE_REGISTER)
+
+    def test_register_open_infinity(self, *args):
+        event = Event.objects.get(title="INFINITY_EVENT")
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
