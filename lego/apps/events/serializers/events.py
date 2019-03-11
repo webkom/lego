@@ -39,7 +39,6 @@ class EventPublicSerializer(BasisModelSerializer):
 
     class Meta:
         model = Event
-<<<<<<< HEAD
         fields = (
             "id",
             "title",
@@ -49,10 +48,6 @@ class EventPublicSerializer(BasisModelSerializer):
             "location",
             "thumbnail",
         )
-=======
-        fields = ("id", "title", "description",
-                  "event_type", "location", "thumbnail")
->>>>>>> e6111e71... Add field for youtube_url to event detail
         read_only = True
 
 
@@ -143,7 +138,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "registration_count",
             "survey",
             "use_consent",
-            "youtube_url"
+            "youtube_url",
         )
         read_only = True
 
@@ -324,8 +319,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             pools[0]["capacity"] = 0
         with transaction.atomic():
             if pools is not None:
-                existing_pools = list(
-                    instance.pools.all().values_list("id", flat=True))
+                existing_pools = list(instance.pools.all().values_list("id", flat=True))
                 for pool in pools:
                     pool_id = pool.get("id", None)
                     if pool_id in existing_pools:

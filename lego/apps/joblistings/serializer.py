@@ -53,6 +53,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
             "from_year",
             "to_year",
             "application_url",
+            "youtube_url",
         )
 
 

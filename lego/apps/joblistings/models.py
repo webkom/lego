@@ -1,9 +1,11 @@
 from django.db import models
+from django.db.models import URLField
 
 from lego.apps.companies.models import Company, CompanyContact
 from lego.apps.content.models import Content
 from lego.apps.joblistings.permissions import JoblistingPermissionHandler
 from lego.utils.models import BasisModel
+from lego.utils.youtube_validator import youtube_validator
 
 
 class Workplace(BasisModel):
@@ -42,6 +44,7 @@ class Joblisting(Content, BasisModel):
     from_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default="1")
     to_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default="5")
     application_url = models.URLField(null=True, blank=True)
+    youtube_url = URLField(default="", validators=[youtube_validator])
 
     class Meta:
         permission_handler = JoblistingPermissionHandler()

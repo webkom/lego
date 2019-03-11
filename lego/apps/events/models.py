@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, URLField
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event
@@ -29,7 +29,7 @@ from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
-from django.db.models import URLField
+
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
     """
