@@ -28,7 +28,8 @@ from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
-
+from lego.utils.youtube_validator import youtube_validator
+from django.db.models import URLField
 
 class Event(Content, BasisModel, ObjectPermissionsModel):
     """
@@ -82,6 +83,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     payment_overdue_notified = models.BooleanField(default=False)
     is_ready = models.BooleanField(default=True)
     use_consent = models.BooleanField(default=False)
+    youtube_url = URLField(default="", validators=[youtube_validator])
 
     class Meta:
         permission_handler = EventPermissionHandler()
