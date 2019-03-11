@@ -6,6 +6,7 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.fields import CompanyField
 from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
+from lego.apps.events import constants
 from lego.apps.events.constants import PRESENT
 from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
@@ -38,7 +39,15 @@ class EventPublicSerializer(BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "title", "description", "event_type", "location", "thumbnail")
+        fields = (
+            "id",
+            "title",
+            "description",
+            "event_type",
+            "event_status_type",
+            "location",
+            "thumbnail",
+        )
         read_only = True
 
 
@@ -60,6 +69,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "description",
             "cover",
             "event_type",
+            "event_status_type",
             "location",
             "start_time",
             "thumbnail",
@@ -96,6 +106,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "cover",
             "text",
             "event_type",
+            "event_status_type",
             "location",
             "comments",
             "comment_target",
@@ -232,6 +243,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "feedback_description",
             "feedback_required",
             "event_type",
+            "event_status_type",
             "location",
             "is_priced",
             "price_member",
@@ -269,6 +281,15 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     def create(self, validated_data):
         pools = validated_data.pop("pools", [])
         is_abakom_only = validated_data.pop("is_abakom_only", False)
+        event_status_type = validated_data.get("event_status_type", constants.NORMAL)
+        if event_status_type == constants.TBA:
+            pools = []
+            validated_data["location"] = "TBA"
+        elif event_status_type == constants.OPEN:
+            pools = []
+        elif event_status_type == constants.INFINITY:
+            for pool in pools:
+                pool["capacity"] = 0
         with transaction.atomic():
             event = super().create(validated_data)
             for pool in pools:
@@ -281,6 +302,15 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     def update(self, instance, validated_data):
         pools = validated_data.pop("pools", None)
         is_abakom_only = validated_data.pop("is_abakom_only", False)
+        event_status_type = validated_data.get("event_status_type", constants.NORMAL)
+        if event_status_type == constants.TBA:
+            pools = []
+            validated_data["location"] = "TBA"
+        elif event_status_type == constants.OPEN:
+            pools = []
+        elif event_status_type == constants.INFINITY:
+            for pool in pools:
+                pool["capacity"] = 0
         with transaction.atomic():
             if pools is not None:
                 existing_pools = list(instance.pools.all().values_list("id", flat=True))
@@ -324,6 +354,7 @@ class EventSearchSerializer(serializers.ModelSerializer):
             "cover",
             "text",
             "event_type",
+            "event_status_type",
             "location",
             "start_time",
             "thumbnail",
