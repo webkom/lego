@@ -1352,7 +1352,7 @@
     description: En description om alt mulig, dette eventet har Uendelig påmelding.
     end_time: '2016-03-03T23:00:00+00:00'
     event_type: other
-    event_status_type: 'infinity'
+    event_status_type: 'infinite'
     location: Webkomkontoret
     start_time: '2016-03-03T17:00:00+00:00'
     text: "Alle må komme!!!!! Åpent for alle i Abakus :D"

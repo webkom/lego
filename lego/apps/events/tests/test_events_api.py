@@ -114,7 +114,7 @@ _test_event_data = [
         "description": "Ingress5",
         "text": "Ingress5",
         "event_type": "event",
-        "event_status_type": "infinity",
+        "event_status_type": "infinite",
         "location": "F252",
         "start_time": "2015-09-01T13:20:30Z",
         "end_time": "2015-09-01T13:20:30Z",
@@ -527,8 +527,8 @@ class CreateEventsTestCase(BaseAPITestCase):
         self.assertEqual(created_event.event_status_type, "open")
         self.assertEqual(len(created_event.pools.all()), 0)
 
-    def test_event_creation_infinity(self):
-        """Test event creation for INFINITY status type"""
+    def test_event_creation_infinite(self):
+        """Test event creation for INFINITE status type"""
         self.event_response = self.client.post(_get_list_url(), _test_event_data[4])
         self.assertEqual(self.event_response.status_code, 201)
         self.event_id = self.event_response.data.pop("id", None)
@@ -547,7 +547,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         ]:
             self.assertEqual(res_event[key], expect_event[key])
         created_event = Event.objects.get(id=self.event_id)
-        self.assertEqual(created_event.event_status_type, "infinity")
+        self.assertEqual(created_event.event_status_type, "infinite")
         self.assertEqual(len(created_event.pools.all()), 1)
         self.assertEqual(created_event.pools.all().first().capacity, 0)
 
@@ -836,8 +836,8 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         self.assertEqual(res.data["user"]["id"], 1)
         self.assertEqual(res.data["status"], constants.FAILURE_REGISTER)
 
-    def test_register_open_infinity(self, *args):
-        event = Event.objects.get(title="INFINITY_EVENT")
+    def test_register_open_infinite(self, *args):
+        event = Event.objects.get(title="INFINITE_EVENT")
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )

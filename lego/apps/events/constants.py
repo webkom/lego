@@ -18,11 +18,34 @@ EVENT_TYPES = (
     (EVENT, EVENT),
 )
 
+"""
+Events marked as NORMAL are events that can have infinite pools.
+This even status type should be used for most events.
+"""
 NORMAL = "normal"
-INFINITY = "infinity"
+"""
+Events marked as INFINITE should have exactly 1 pool, with capacity set to 0.
+A user _should_ be able to sign up to the event.
+There are no permissions (except Abakom).
+This even status type should be used for events such as Abakom Works, etc.
+"""
+INFINITE = "infinite"
+"""
+Events marked as OPEN should have 0 pools, like TBA. Location is required.
+A user should _not_ be able to sign up to the event.
+There are no permissions (except Abakom).
+This even status type should be used for events hosted by LaBamba, etc.
+"""
 OPEN = "open"
+"""
+Events marked as TBA should have 0 pools, location will be set to TBA.
+A user should _not_ be able to sign up to the event.
+There are no permissions (except Abakom).
+TBA should be used for events that need additional information, as a placeholder.
+This is the default even status type.
+"""
 TBA = "tba"
-EVENT_STATUS_TYPES = ((NORMAL, NORMAL), (INFINITY, INFINITY), (OPEN, OPEN), (TBA, TBA))
+EVENT_STATUS_TYPES = ((NORMAL, NORMAL), (INFINITE, INFINITE), (OPEN, OPEN), (TBA, TBA))
 
 UNKNOWN = "UNKNOWN"
 PRESENT = "PRESENT"

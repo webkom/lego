@@ -287,7 +287,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
-        elif event_status_type == constants.INFINITY:
+        elif event_status_type == constants.INFINITE:
             for pool in pools:
                 pool["capacity"] = 0
         with transaction.atomic():
@@ -308,7 +308,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
-        elif event_status_type == constants.INFINITY:
+        elif event_status_type == constants.INFINITE:
             for pool in pools:
                 pool["capacity"] = 0
         with transaction.atomic():
