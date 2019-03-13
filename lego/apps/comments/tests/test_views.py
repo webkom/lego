@@ -72,6 +72,19 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
         self.assertEqual(comment.text, post_data["text"])
         self.assertEqual(comment.created_by.pk, self.with_permission.pk)
 
+    def test_with_empty_text(self):
+        self.client.force_authenticate(user=self.with_permission)
+        content_type = ContentType.objects.get_for_model(Article)
+        post_data = {
+            "text": "",
+            "comment_target": "{0}.{1}-{2}".format(
+                content_type.app_label, content_type.model, Article.objects.first().pk
+            ),
+        }
+        response = self.client.post(_get_list_url(), post_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_with_empty_text_and_source(self):
         self.client.force_authenticate(user=self.with_permission)
         post_data = {"text": "", "comment_target": ""}
