@@ -1,11 +1,13 @@
 from rest_framework import mixins, viewsets
 
+from lego.apps.events.models import Event
 from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.followers.serializers import (
     FollowCompanySerializer,
     FollowEventSerializer,
     FollowUserSerializer,
 )
+from lego.apps.permissions.utils import get_permission_handler
 
 from .filters import FollowCompanyFilterSet, FollowEventFilterSet, FollowUserFilterSet
 
@@ -16,7 +18,10 @@ class FollowerBaseViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    pass
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        permission_handler = get_permission_handler(queryset.model)
+        return permission_handler.filter_queryset(self.request.user, queryset)
 
 
 class FollowUserViewSet(FollowerBaseViewSet):

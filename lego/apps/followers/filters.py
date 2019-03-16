@@ -1,4 +1,6 @@
+from django_filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
+from lego.apps.events.models import Event
 
 from .models import FollowCompany, FollowEvent, FollowUser
 
@@ -10,9 +12,10 @@ class FollowUserFilterSet(FilterSet):
 
 
 class FollowEventFilterSet(FilterSet):
+    target = ModelChoiceFilter(queryset=Event.objects.all())
+
     class Meta:
-        model = FollowEvent
-        fields = ("target", "follower")
+        fields = "target"
 
 
 class FollowCompanyFilterSet(FilterSet):
