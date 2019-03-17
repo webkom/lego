@@ -24,7 +24,7 @@ class FollowEventViewTestCase(BaseAPITestCase):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
@@ -33,7 +33,7 @@ class FollowEventViewTestCase(BaseAPITestCase):
         response = self.client.post(self.url, {"target": 1})
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.post(self.url, {"target": 1})
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
@@ -49,11 +49,11 @@ class FollowEventViewTestCase(BaseAPITestCase):
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         denied_user = User.objects.get(id=2)
-        self.client.force_login(denied_user)
+        self.client.force_authenticate(denied_user)
         response = self.client.delete(f"{self.url}1/")
         self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.delete(f"{self.url}1/")
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -71,7 +71,7 @@ class FollowUserViewTestCase(BaseAPITestCase):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
@@ -80,7 +80,7 @@ class FollowUserViewTestCase(BaseAPITestCase):
         response = self.client.post(self.url, {"target": 1})
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.post(self.url, {"target": 1})
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
@@ -96,11 +96,11 @@ class FollowUserViewTestCase(BaseAPITestCase):
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         denied_user = User.objects.get(id=2)
-        self.client.force_login(denied_user)
+        self.client.force_authenticate(denied_user)
         response = self.client.delete(f"{self.url}1/")
         self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.delete(f"{self.url}1/")
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -123,7 +123,7 @@ class FollowCompanyViewTestCase(BaseAPITestCase):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
@@ -132,7 +132,7 @@ class FollowCompanyViewTestCase(BaseAPITestCase):
         response = self.client.post(self.url, {"target": 1})
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.post(self.url, {"target": 1})
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
@@ -148,10 +148,10 @@ class FollowCompanyViewTestCase(BaseAPITestCase):
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         denied_user = User.objects.get(id=2)
-        self.client.force_login(denied_user)
+        self.client.force_authenticate(denied_user)
         response = self.client.delete(f"{self.url}1/")
         self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.delete(f"{self.url}1/")
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)

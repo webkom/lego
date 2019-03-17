@@ -19,13 +19,13 @@ class ListArticlesTestCase(BaseAPITestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_with_no_key(self):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         res = self.client.post(f"{self.url}", data={})
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch("lego.apps.files.models.File.create_file")
     def test_post_create_file_call(self, mock_create_file):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         key = "myfile.png"
         try:
             self.client.post(f"{self.url}", data={"key": key})

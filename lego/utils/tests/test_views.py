@@ -16,6 +16,6 @@ class SiteMetaViewSetTestCase(BaseAPITestCase):
         self.assertEquals(status.HTTP_200_OK, response.status_code)
 
     def test_access_with_user(self):
-        self.client.force_login(User.objects.first())
+        self.client.force_authenticate(User.objects.first())
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
