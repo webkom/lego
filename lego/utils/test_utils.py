@@ -4,11 +4,6 @@ from rest_framework.test import APITestCase, APITransactionTestCase
 
 
 class BaseTestCase(TestCase):
-    """
-    Normally we don't want to hit Cassandra in tests, so we mock out add_activity in most tests
-    to avoid this. If you want to test something using Cassandra, override FeedTestBase instead.
-    """
-
     pass
 
 
