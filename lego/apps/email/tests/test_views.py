@@ -22,7 +22,7 @@ class EmailListTestCase(BaseAPITestCase):
         self.admin_group.add_user(self.user)
         self.admin_group.add_user(self.user2, role="leader")
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
 
     def test_list(self):
         """The list endpoint is available"""
@@ -104,7 +104,7 @@ class UserEmailTestCase(BaseAPITestCase):
         self.admin_group = AbakusGroup.objects.get(name="EmailAdminTest")
         self.admin_group.add_user(self.user)
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
 
     def test_list(self):
         """The list endpoint is available"""

@@ -53,7 +53,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
     @mock.patch("lego.apps.contact.views.send_message")
     @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=True)
     def test_with_auth(self, mock_verify_captcha, mock_send_message):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.post(
             self.url,
             {
@@ -73,7 +73,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
     @mock.patch("lego.apps.contact.views.send_message")
     @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=False)
     def test_with_auth_invalid_captcha(self, mock_verify_captcha, mock_send_message):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.post(
             self.url,
             {
@@ -93,7 +93,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
         webkom = AbakusGroup.objects.get(name="Webkom")
         webkom_id = webkom.id
 
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
 
         response = self.client.post(
             self.url,

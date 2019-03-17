@@ -24,7 +24,7 @@ class SlackInviteTestCase(BaseAPITestCase):
     )
     def test_invite_user(self, mock_post):
         user = User.objects.first()
-        self.client.force_login(user)
+        self.client.force_authenticate(user)
         response = self.client.post(self.url, {"email": "test@test.com"})
         self.assertEquals(response.json(), {"detail": "test_error"})
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)

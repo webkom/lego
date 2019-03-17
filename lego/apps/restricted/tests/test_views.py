@@ -22,14 +22,14 @@ class RestrictedViewTestCase(BaseAPITestCase):
 
     def test_list(self):
         """List instances created_by authenticated user only."""
-        self.client.force_login(self.allowed_user)
+        self.client.force_authenticate(self.allowed_user)
 
         response = self.client.get(self.url)
         self.assertEquals(len(response.data["results"]), 1)
 
     def test_list_no_perms(self):
         """A user tries to list with no permissions"""
-        self.client.force_login(self.denied_user)
+        self.client.force_authenticate(self.denied_user)
 
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)

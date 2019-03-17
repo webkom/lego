@@ -43,7 +43,7 @@ class PageAPITestCase(BaseAPITestCase):
         slug = "webkom"
         methods = ["post", "patch", "put", "delete"]
         user = create_normal_user()
-        self.client.force_login(user)
+        self.client.force_authenticate(user)
         for method in methods:
             call = getattr(self.client, method)
             response = call("/api/v1/pages/{0}/".format(slug))
@@ -53,6 +53,6 @@ class PageAPITestCase(BaseAPITestCase):
         page = {"title": "cat", "content": "hei"}
 
         user = create_super_user()
-        self.client.force_login(user)
+        self.client.force_authenticate(user)
         response = self.client.post("/api/v1/pages/", data=page)
         self.assertEqual(response.status_code, 201)

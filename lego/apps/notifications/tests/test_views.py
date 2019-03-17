@@ -32,10 +32,10 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list(self):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
 
     def test_alternatives(self):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         response = self.client.get(f"{self.url}alternatives/")
         self.assertEquals(
             response.data,
@@ -46,7 +46,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         )
 
     def test_change_setting(self):
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
 
         response = self.client.post(
             self.url, {"notification_type": "weekly_mail", "enabled": True}
@@ -62,7 +62,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
 
     def test_change_setting_defaults(self):
         """Make sure a new setting is created with correct defaults"""
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
 
         response = self.client.post(
             self.url, {"notification_type": constants.MEETING_INVITE}

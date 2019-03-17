@@ -26,7 +26,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         group.add_user(user)
         group.remove_user(user)
 
-        self.client.force_login(user)
+        self.client.force_authenticate(user)
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEquals(1, len(response.data["results"]))
@@ -39,7 +39,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         group.add_user(user)
         group.remove_user(user)
 
-        self.client.force_login(user)
+        self.client.force_authenticate(user)
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         self.assertEquals(0, len(response.data["results"]))
