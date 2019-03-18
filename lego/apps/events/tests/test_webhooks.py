@@ -4,7 +4,7 @@ from django.test import override_settings
 from rest_framework import status
 
 from lego.utils.test_utils import BaseAPITestCase
-from stripe import SignatureVerificationError
+from stripe.error import SignatureVerificationError
 
 
 @override_settings(STRIPE_WEBHOOK_SECRET="test_secret")
