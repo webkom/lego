@@ -62,6 +62,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "event_type",
             "location",
             "start_time",
+            "end_time",
             "thumbnail",
             "total_capacity",
             "company",
