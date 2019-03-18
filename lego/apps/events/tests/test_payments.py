@@ -20,8 +20,8 @@ class StripePaymentTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_companies.yaml",
-        "test_events.yaml",
         "test_users.yaml",
+        "test_events.yaml",
     ]
 
     def setUp(self):
