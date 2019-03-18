@@ -28,7 +28,7 @@ _test_event_data = [
         "description": "Ingress1",
         "text": "Ingress1",
         "event_type": "event",
-        "event_status_type": "normal",
+        "event_status_type": "NORMAL",
         "location": "F252",
         "start_time": "2011-09-01T13:20:30Z",
         "end_time": "2012-09-01T13:20:30Z",
@@ -48,7 +48,7 @@ _test_event_data = [
         "description": "Ingress2",
         "text": "Ingress2",
         "event_type": "event",
-        "event_status_type": "normal",
+        "event_status_type": "NORMAL",
         "location": "F252",
         "start_time": "2015-09-01T13:20:30Z",
         "end_time": "2015-09-01T13:20:30Z",
@@ -74,7 +74,7 @@ _test_event_data = [
         "description": "Ingress3",
         "text": "Ingress3",
         "event_type": "event",
-        "event_status_type": "tba",
+        "event_status_type": "TBA",
         "location": "F252",
         "start_time": "2015-09-01T13:20:30Z",
         "end_time": "2015-09-01T13:20:30Z",
@@ -94,7 +94,7 @@ _test_event_data = [
         "description": "Ingress4",
         "text": "Ingress4",
         "event_type": "event",
-        "event_status_type": "open",
+        "event_status_type": "OPEN",
         "location": "F252",
         "start_time": "2015-09-01T13:20:30Z",
         "end_time": "2015-09-01T13:20:30Z",
@@ -114,7 +114,7 @@ _test_event_data = [
         "description": "Ingress5",
         "text": "Ingress5",
         "event_type": "event",
-        "event_status_type": "infinite",
+        "event_status_type": "INFINITE",
         "location": "F252",
         "start_time": "2015-09-01T13:20:30Z",
         "end_time": "2015-09-01T13:20:30Z",
@@ -485,8 +485,8 @@ class CreateEventsTestCase(BaseAPITestCase):
         """Test event creation for TBA status type"""
         self.event_response = self.client.post(_get_list_url(), _test_event_data[2])
         self.assertEqual(self.event_response.status_code, 201)
-        self.event_id = self.event_response.data.pop("id", None)
-        self.assertIsNotNone(self.event_id)
+        event_id = self.event_response.data.pop("id", None)
+        self.assertIsNotNone(event_id)
         res_event = self.event_response.data
         expect_event = _test_event_data[2]
         for key in [
@@ -499,8 +499,8 @@ class CreateEventsTestCase(BaseAPITestCase):
             "is_abakom_only",
         ]:
             self.assertEqual(res_event[key], expect_event[key])
-        created_event = Event.objects.get(id=self.event_id)
-        self.assertEqual(created_event.event_status_type, "tba")
+        created_event = Event.objects.get(id=event_id)
+        self.assertEqual(created_event.event_status_type, "TBA")
         self.assertEqual(created_event.location, "TBA")
         self.assertEqual(len(created_event.pools.all()), 0)
 
@@ -524,7 +524,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         ]:
             self.assertEqual(res_event[key], expect_event[key])
         created_event = Event.objects.get(id=self.event_id)
-        self.assertEqual(created_event.event_status_type, "open")
+        self.assertEqual(created_event.event_status_type, "OPEN")
         self.assertEqual(len(created_event.pools.all()), 0)
 
     def test_event_creation_infinite(self):
@@ -547,9 +547,9 @@ class CreateEventsTestCase(BaseAPITestCase):
         ]:
             self.assertEqual(res_event[key], expect_event[key])
         created_event = Event.objects.get(id=self.event_id)
-        self.assertEqual(created_event.event_status_type, "infinite")
+        self.assertEqual(created_event.event_status_type, "INFINITE")
         self.assertEqual(len(created_event.pools.all()), 1)
-        self.assertEqual(created_event.pools.all().first().capacity, 0)
+        self.assertEqual(created_event.pools.first().capacity, 0)
 
     def test_event_creation_without_auth(self):
         self.client.logout()

@@ -5,7 +5,7 @@
     description: TestIngress1
     text: TestText1
     event_type: 0
-    event_status_type: 'normal'
+    event_status_type: NORMAL
     location: R1
     company: 1
     start_time: '2118-09-01T13:20:30+03:00'
@@ -20,7 +20,7 @@
     description: TestIngress2
     text: TestText2
     event_type: 3
-    event_status_type: 'normal'
+    event_status_type: NORMAL
     location: F254
     company: 2
     start_time: '2118-09-02T13:20:30+03:00'
@@ -36,7 +36,7 @@
     description: TestIngress3
     text: TestText3
     event_type: 3
-    event_status_type: 0
+    event_status_type: NORMAL
     location: F254
     company: 3
     start_time: '2118-09-03T13:20:30+03:00'
@@ -51,7 +51,7 @@
     description: TestIngress4
     text: TestText4
     event_type: 4
-    event_status_type: 'normal'
+    event_status_type: NORMAL
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
@@ -65,7 +65,7 @@
     description: TestIngress5
     text: TestText5
     event_type: 0
-    event_status_type: 'normal'
+    event_status_type: NORMAL
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
@@ -83,7 +83,7 @@
     description: TestIngress6
     text: TestText6
     event_type: 0
-    event_status_type: 'normal'
+    event_status_type: NORMAL
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
@@ -99,7 +99,7 @@
     description: TestIngress7
     text: TestText7
     event_type: 0
-    event_status_type: 'tba'
+    event_status_type: 'TBA'
     location: blabla
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
@@ -115,7 +115,7 @@
     description: TestIngress8
     text: TestText8
     event_type: 0
-    event_status_type: 'open'
+    event_status_type: 'OPEN'
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
@@ -131,7 +131,7 @@
     description: TestIngress9
     text: TestText9
     event_type: 0
-    event_status_type: 'infinite'
+    event_status_type: 'INFINITE'
     location: R1
     start_time: '2011-09-01T13:20:30+03:00'
     end_time: '2012-09-01T13:20:30+03:00'
