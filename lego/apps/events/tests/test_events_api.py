@@ -745,6 +745,18 @@ class CreateEventsTestCase(BaseAPITestCase):
         self.assertEqual(0, event.can_view_groups.count())
         self.assertEqual(res_event["pools"], [])
 
+    def test_event_correct_youtube_url(self):
+        test_event = _test_event_data[0].copy()
+        test_event["youtube_url"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
+        self.response = self.client.post(_get_list_url(), test_event)
+        self.assertEqual(self.response.status_code, 201)
+
+    def test_event_wrong_youtube_url(self):
+        test_event = _test_event_data[0].copy()
+        test_event["youtube_url"] = "skra"
+        self.response = self.client.post(_get_list_url(), test_event)
+        self.assertEqual(self.response.status_code, 400)
+
 
 class PoolsTestCase(BaseAPITestCase):
     fixtures = [

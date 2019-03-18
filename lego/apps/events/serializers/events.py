@@ -265,6 +265,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "is_abakom_only",
             "registration_deadline_hours",
             "registration_close_time",
+            "youtube_url",
         )
 
     def validate(self, data):

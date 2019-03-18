@@ -79,6 +79,7 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
             "from_year",
             "to_year",
             "application_url",
+            "youtube_url",
         )
 
     def create(self, validated_data):

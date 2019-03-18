@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import Count, Sum, URLField
+from django.db.models import CharField, Count, Sum
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event
@@ -83,7 +83,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     payment_overdue_notified = models.BooleanField(default=False)
     is_ready = models.BooleanField(default=True)
     use_consent = models.BooleanField(default=False)
-    youtube_url = URLField(default="", validators=[youtube_validator])
+    youtube_url = CharField(
+        max_length=200, default="", validators=[youtube_validator], blank=True
+    )
 
     class Meta:
         permission_handler = EventPermissionHandler()

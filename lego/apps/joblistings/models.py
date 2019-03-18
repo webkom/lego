@@ -44,7 +44,7 @@ class Joblisting(Content, BasisModel):
     from_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default="1")
     to_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default="5")
     application_url = models.URLField(null=True, blank=True)
-    youtube_url = URLField(default="", validators=[youtube_validator])
+    youtube_url = URLField(default="", validators=[youtube_validator], blank=True)
 
     class Meta:
         permission_handler = JoblistingPermissionHandler()

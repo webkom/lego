@@ -24,7 +24,6 @@ def get_data_with_author(author_pk):
         "description": "good article",
         "content": "the best article",
         "author": author_pk,
-        "youtube_url": "https://www.youtube.com/watch?v=KrzIaRwAMvc",
     }
 
 
