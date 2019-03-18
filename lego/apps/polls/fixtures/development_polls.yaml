@@ -14,14 +14,14 @@
   pk: 1
   fields:
     name: Skra
-    votes: 5
+    votes: 3
     poll: 1
 
 - model: polls.Option
   pk: 2
   fields:
     name: Bombom
-    votes: 15
+    votes: 25
     poll: 1
 
 - model: polls.Option
