@@ -3,9 +3,11 @@ from rest_framework import serializers
 
 from lego.apps.events import constants
 from lego.apps.events.fields import (
-    ChargeStatusField,
     ConsentField,
-    FeedbackField,
+    PersonalChargeStatusField,
+    PersonalConsentField,
+    PersonalFeedbackField,
+    PersonalPresenceField,
     PresenceField,
     SetChargeStatusField,
 )
@@ -76,13 +78,17 @@ class RegistrationPublicReadSerializer(BasisModelSerializer):
 
 
 class RegistrationReadSerializer(RegistrationPublicReadSerializer):
-    feedback = FeedbackField()
+    feedback = PersonalFeedbackField()
+    presence = PersonalPresenceField()
+    photo_consent = PersonalConsentField()
     shared_memberships = serializers.IntegerField(required=False)
 
     class Meta(RegistrationPublicReadSerializer.Meta):
         fields = RegistrationPublicReadSerializer.Meta.fields + (
             "feedback",
             "shared_memberships",
+            "presence",
+            "photo_consent",
         )
 
 
@@ -104,7 +110,7 @@ class RegistrationConsentSerializer(serializers.Serializer):
 
 
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
-    charge_status = ChargeStatusField()
+    charge_status = PersonalChargeStatusField()
 
     class Meta(RegistrationReadSerializer.Meta):
         fields = RegistrationReadSerializer.Meta.fields + ("charge_status",)
