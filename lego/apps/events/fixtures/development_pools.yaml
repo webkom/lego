@@ -718,3 +718,12 @@
     - - Webkom
   model: events.Pool
   pk: 80
+- fields:
+    activation_date: '2016-03-03T17:00:00+00:00'
+    capacity: 0
+    event: 53
+    name: Abakus
+    permission_groups:
+      - - Abakus
+  model: events.Pool
+  pk: 81
