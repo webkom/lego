@@ -281,15 +281,17 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     def create(self, validated_data):
         pools = validated_data.pop("pools", [])
         is_abakom_only = validated_data.pop("is_abakom_only", False)
-        event_status_type = validated_data.get("event_status_type", constants.NORMAL)
+        event_status_type = validated_data.get(
+            "event_status_type", Event._meta.get_field("event_status_type").default
+        )
         if event_status_type == constants.TBA:
             pools = []
             validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
         elif event_status_type == constants.INFINITE:
-            for pool in pools:
-                pool["capacity"] = 0
+            pools = [pools[0]]
+            pools[0]["capacity"] = 0
         with transaction.atomic():
             event = super().create(validated_data)
             for pool in pools:
@@ -302,15 +304,17 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     def update(self, instance, validated_data):
         pools = validated_data.pop("pools", None)
         is_abakom_only = validated_data.pop("is_abakom_only", False)
-        event_status_type = validated_data.get("event_status_type", constants.NORMAL)
+        event_status_type = validated_data.get(
+            "event_status_type", Event._meta.get_field("event_status_type").default
+        )
         if event_status_type == constants.TBA:
             pools = []
             validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
         elif event_status_type == constants.INFINITE:
-            for pool in pools:
-                pool["capacity"] = 0
+            pools = [pools[0]]
+            pools[0]["capacity"] = 0
         with transaction.atomic():
             if pools is not None:
                 existing_pools = list(instance.pools.all().values_list("id", flat=True))

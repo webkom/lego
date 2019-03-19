@@ -129,6 +129,25 @@ _test_event_data = [
             }
         ],
     },
+    {
+        "title": "Event6",
+        "description": "Ingress6",
+        "text": "Ingress6",
+        "event_type": "event",
+        "location": "F252",
+        "start_time": "2015-09-01T13:20:30Z",
+        "end_time": "2015-09-01T13:20:30Z",
+        "merge_time": "2016-01-01T13:20:30Z",
+        "is_abakom_only": True,
+        "pools": [
+            {
+                "name": "Initial Pool 1",
+                "capacity": 10,
+                "activation_date": "2012-09-01T10:20:30Z",
+                "permission_groups": [2],
+            }
+        ],
+    },
 ]
 
 _test_pools_data = [
@@ -550,6 +569,15 @@ class CreateEventsTestCase(BaseAPITestCase):
         self.assertEqual(created_event.event_status_type, "INFINITE")
         self.assertEqual(len(created_event.pools.all()), 1)
         self.assertEqual(created_event.pools.first().capacity, 0)
+
+    def test_event_create_no_event_status_type(self):
+        """Test event creation with no event status type posted"""
+        event_response = self.client.post(_get_list_url(), _test_event_data[5])
+        self.assertEqual(event_response.status_code, 201)
+        event_id = event_response.data.pop("id", None)
+        self.assertIsNotNone(event_id)
+        created_event = Event.objects.get(id=event_id)
+        self.assertEqual(created_event.event_status_type, "TBA")
 
     def test_event_creation_without_auth(self):
         self.client.logout()
