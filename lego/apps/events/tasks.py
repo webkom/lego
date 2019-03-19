@@ -54,7 +54,7 @@ class Payment(AbakusTask):
                 self.registration.charge_id = error["charge"]
                 self.registration.charge_status = error["code"]
                 self.registration.save()
-                notify_user_registration(
+                notify_user_payment(
                     constants.SOCKET_PAYMENT_FAILURE,
                     self.registration,
                     error_message=error["message"],
@@ -62,7 +62,7 @@ class Payment(AbakusTask):
             else:
                 self.registration.charge_status = constants.PAYMENT_FAILURE
                 self.registration.save()
-                notify_user_registration(
+                notify_user_payment(
                     constants.SOCKET_PAYMENT_FAILURE,
                     self.registration,
                     error_message="Payment failed",
