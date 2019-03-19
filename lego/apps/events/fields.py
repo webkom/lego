@@ -5,7 +5,9 @@ from lego.apps.events.models import Event
 from lego.apps.permissions.constants import EDIT
 
 
-class FeedbackField(serializers.Field):
+# Personal....Fields for registrations will only return values if the authenticated
+# user "owns" the registrations Otherwise null will be returned
+class PersonalFeedbackField(serializers.Field):
     def get_attribute(self, instance):
         return instance
 
@@ -20,7 +22,37 @@ class FeedbackField(serializers.Field):
         return None
 
 
-class ChargeStatusField(serializers.Field):
+class PersonalConsentField(serializers.Field):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get("request", None)
+        if request and request.user.is_authenticated and request.user == value.user:
+            return value.photo_consent
+
+        user = self.context.get("user", None)
+        if user and user == value.user:
+            return value.photo_consent
+        return None
+
+
+class PersonalPresenceField(serializers.Field):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get("request", None)
+        if request and request.user.is_authenticated and request.user == value.user:
+            return value.presence
+
+        user = self.context.get("user", None)
+        if user and user == value.user:
+            return value.presence
+        return None
+
+
+class PersonalChargeStatusField(serializers.Field):
     def get_attribute(self, instance):
         return instance
 
