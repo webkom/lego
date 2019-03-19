@@ -5,10 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("events", "0021_auto_20190302_1448")]
+    dependencies = [("events", "0022_event_event_status_type")]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name="event",
             name="event_status_type",
             field=models.CharField(
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                     ("OPEN", "OPEN"),
                     ("TBA", "TBA"),
                 ],
-                default="NORMAL",
+                default="TBA",
                 max_length=50,
             ),
         )
