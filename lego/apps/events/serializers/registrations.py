@@ -1,6 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from rest_framework_jwt.serializers import User
+
 from lego.apps.events import constants
 from lego.apps.events.fields import (
     ConsentField,
@@ -18,7 +20,6 @@ from lego.apps.users.serializers.users import (
 )
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
-from rest_framework_jwt.serializers import User
 
 
 class AdminUnregisterSerializer(serializers.Serializer):

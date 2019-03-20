@@ -2,6 +2,7 @@ from rest_framework import exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
 import structlog
+
 from lego.apps.stats.utils import track
 
 from .serializers import SlackInviteSerializer

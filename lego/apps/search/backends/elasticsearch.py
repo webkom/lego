@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 import certifi
 from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch.helpers import bulk
+
 from lego.apps.search.backend import SearchBacked
 
 

@@ -7,6 +7,8 @@ from django.core.management import call_command
 from django.utils.crypto import get_random_string
 
 import yaml
+from slugify import slugify
+
 from lego.apps.articles.models import Article
 from lego.apps.events.models import Event
 from lego.apps.files.exceptions import UnknownFileType
@@ -20,7 +22,6 @@ from lego.apps.users.fixtures.initial_abakus_groups import initial_tree
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.functions import insert_abakus_groups
 from lego.utils.management_command import BaseCommand
-from slugify import slugify
 
 log = logging.getLogger(__name__)
 IMPORT_DIRECTORY = ".nerd_export"

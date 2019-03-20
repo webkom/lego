@@ -3,6 +3,7 @@ from django.db.models import TextField
 from rest_framework import serializers
 
 from bs4 import BeautifulSoup
+
 from lego.apps.content.utils import sanitize_html
 from lego.apps.files.constants import IMAGE, READY
 from lego.apps.files.models import File

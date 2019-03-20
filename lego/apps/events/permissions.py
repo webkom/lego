@@ -1,6 +1,7 @@
+from structlog import get_logger
+
 from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
-from structlog import get_logger
 
 log = get_logger()
 

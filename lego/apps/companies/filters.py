@@ -1,4 +1,5 @@
 from django_filters import BooleanFilter, FilterSet
+
 from lego.apps.companies.models import CompanyInterest, Semester
 
 

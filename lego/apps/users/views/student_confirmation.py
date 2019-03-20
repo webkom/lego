@@ -3,6 +3,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from structlog import get_logger
+
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.registrations import Registrations
@@ -11,7 +13,6 @@ from lego.apps.users.serializers.student_confirmation import (
 )
 from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.tasks import send_email
-from structlog import get_logger
 
 log = get_logger()
 

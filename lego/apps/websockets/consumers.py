@@ -1,5 +1,6 @@
 from asgiref.sync import AsyncToSync
 from channels.generic.websocket import WebsocketConsumer
+
 from lego.apps.events.websockets import find_event_groups
 from lego.apps.websockets.groups import group_for_user
 

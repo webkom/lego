@@ -2,6 +2,7 @@ from unittest import skipIf
 
 import stripe
 from celery import chain
+
 from lego.apps.events.models import Event
 from lego.apps.events.tasks import async_payment, registration_payment_save
 from lego.apps.users.models import AbakusGroup, User

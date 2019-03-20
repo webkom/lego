@@ -4,6 +4,8 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 
 import stripe
+from structlog import get_logger
+
 from lego import celery_app
 from lego.apps.action_handlers.events import handle_event
 from lego.apps.events import constants
@@ -21,7 +23,6 @@ from lego.apps.events.websockets import (
     notify_user_registration,
 )
 from lego.utils.tasks import AbakusTask
-from structlog import get_logger
 
 log = get_logger()
 

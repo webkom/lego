@@ -3,8 +3,9 @@ from logging import getLogger
 
 import cssutils
 import structlog
-from lego.settings import TESTING
 from structlog.threadlocal import wrap_dict
+
+from lego.settings import TESTING
 
 
 def skip_if_testing(*args, **kwargs):

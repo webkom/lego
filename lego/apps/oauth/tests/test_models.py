@@ -1,6 +1,7 @@
+from oauth2_provider.models import Application
+
 from lego.apps.oauth.models import APIApplication
 from lego.utils.test_utils import BaseTestCase
-from oauth2_provider.models import Application
 
 
 class APIApplicationTestCase(BaseTestCase):

@@ -1,4 +1,5 @@
 from django_filters.rest_framework import CharFilter, FilterSet
+
 from lego.apps.email.models import EmailList
 from lego.apps.users.models import User
 

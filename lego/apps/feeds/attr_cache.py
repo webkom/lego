@@ -1,7 +1,8 @@
 from django.core.cache import cache
 
-from lego.utils.content_types import string_to_model_cls
 from structlog import get_logger
+
+from lego.utils.content_types import string_to_model_cls
 
 from . import attr_renderers
 

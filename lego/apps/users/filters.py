@@ -1,4 +1,5 @@
 from django_filters import CharFilter, FilterSet
+
 from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, Penalty
 
 

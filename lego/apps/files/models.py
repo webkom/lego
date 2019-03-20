@@ -6,9 +6,10 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
+from structlog import get_logger, threadlocal
+
 from lego.apps.files.exceptions import UnknownFileType
 from lego.utils.models import TimeStampModel
-from structlog import get_logger, threadlocal
 
 from .constants import DOCUMENT, FILE_STATES, FILE_TYPES, IMAGE, PENDING_UPLOAD, READY
 from .storage import storage

@@ -1,10 +1,11 @@
 from smtplib import SMTPException
 
 import celery
-from lego import celery_app
-from lego.apps.users.models import User
 from push_notifications import NotificationError
 from structlog import get_logger
+
+from lego import celery_app
+from lego.apps.users.models import User
 
 from .email import EmailMessage
 from .push import PushMessage

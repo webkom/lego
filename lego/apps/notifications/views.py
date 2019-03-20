@@ -1,13 +1,14 @@
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
-from lego.apps.notifications import constants
-from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.stats.utils import track
 from push_notifications.api.rest_framework import (
     APNSDeviceAuthorizedViewSet,
     GCMDeviceAuthorizedViewSet,
 )
+
+from lego.apps.notifications import constants
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.stats.utils import track
 
 from .models import Announcement, NotificationSetting
 from .serializers import (

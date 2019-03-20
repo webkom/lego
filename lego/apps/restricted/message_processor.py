@@ -5,9 +5,10 @@ from email.mime.text import MIMEText
 from django.conf import settings
 from django.core.mail import get_connection
 
+from structlog import get_logger
+
 from lego.apps.action_handlers.registry import get_handler
 from lego.apps.restricted.models import RestrictedMail
-from structlog import get_logger
 
 from .message import EmailMessage
 from .utils import get_mail_token

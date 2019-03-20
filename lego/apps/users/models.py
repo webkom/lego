@@ -7,6 +7,9 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.utils import timezone
 
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
+
 from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
@@ -27,8 +30,6 @@ from lego.apps.users.permissions import (
 from lego.utils.decorators import abakus_cached_property
 from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
-from mptt.fields import TreeForeignKey
-from mptt.models import MPTTModel
 
 from .validators import email_blacklist_validator, username_validator
 

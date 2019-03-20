@@ -1,6 +1,7 @@
 from django.utils import timezone
 
 import pytz
+
 from lego.apps.notifications.constants import MEETING_INVITE
 from lego.apps.notifications.notification import Notification
 

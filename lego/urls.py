@@ -4,13 +4,14 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 
-from lego.api.urls import urlpatterns as api
-from lego.apps.health.urls import urlpatterns as health_urlpatterns
 from rest_framework_jwt.views import (
     obtain_jwt_token,
     refresh_jwt_token,
     verify_jwt_token,
 )
+
+from lego.api.urls import urlpatterns as api
+from lego.apps.health.urls import urlpatterns as health_urlpatterns
 
 jwt_urlpatterns = [
     url(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),

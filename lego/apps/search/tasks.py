@@ -1,9 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
 
+from structlog import get_logger
+
 from lego import celery_app
 from lego.utils.content_types import string_to_instance
 from lego.utils.tasks import AbakusTask
-from structlog import get_logger
 
 from .registry import get_content_type_index, get_model_index
 

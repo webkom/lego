@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.db.models import Q
 
+from structlog import get_logger
+
 from lego.apps.external_sync.base import ExternalSystem
 from lego.apps.external_sync.utils.ldap import LDAPLib
 from lego.apps.users.constants import GROUP_COMMITTEE
-from structlog import get_logger
 
 log = get_logger()
 

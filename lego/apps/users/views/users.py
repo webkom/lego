@@ -5,6 +5,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from structlog import get_logger
+
 from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
@@ -18,7 +20,6 @@ from lego.apps.users.serializers.users import (
     PublicUserSerializer,
     PublicUserWithGroupsSerializer,
 )
-from structlog import get_logger
 
 log = get_logger()
 

@@ -1,4 +1,5 @@
 from django_filters import CharFilter, FilterSet
+
 from lego.apps.surveys.models import Submission
 
 

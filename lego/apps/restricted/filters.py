@@ -1,4 +1,5 @@
 from django_filters.rest_framework import FilterSet
+
 from lego.apps.restricted.models import RestrictedMail
 
 

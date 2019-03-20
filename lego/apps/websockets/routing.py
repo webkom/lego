@@ -2,9 +2,10 @@ from django.conf import settings
 from django.conf.urls import url
 
 from channels.routing import ProtocolTypeRouter, URLRouter
+from structlog import get_logger
+
 from lego.apps.websockets.auth import JWTAuthenticationMiddleware
 from lego.apps.websockets.consumers import GroupConsumer
-from structlog import get_logger
 
 log = get_logger()
 

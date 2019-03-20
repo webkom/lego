@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.utils import timezone
 
 import stripe
+
 from lego.apps.users.models import AbakusGroup, User
 
 

@@ -1,8 +1,9 @@
 from django.core.exceptions import ImproperlyConfigured
 
+from structlog import get_logger
+
 from lego.apps.external_sync.external.gsuite import GSuiteSystem
 from lego.apps.users.models import AbakusGroup, User
-from structlog import get_logger
 
 from .external.ldap import LDAPSystem
 

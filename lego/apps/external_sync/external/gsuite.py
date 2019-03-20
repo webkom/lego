@@ -1,9 +1,10 @@
 from django.conf import settings
 
+from structlog import get_logger
+
 from lego.apps.email.models import EmailList
 from lego.apps.external_sync.base import ExternalSystem
 from lego.apps.external_sync.utils.gsuite import GSuiteLib
-from structlog import get_logger
 
 log = get_logger()
 
