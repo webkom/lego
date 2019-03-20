@@ -48,7 +48,9 @@ class Payment(AbakusTask):
     registration = None
 
     def on_failure(self, return_value, *args):
-        if self.request.retries == self.max_retries:
+        # There is no reason to retry card declined errors, the exception has max_retries=0
+        isCardError = isinstance(return_value, stripe.error.CardError)
+        if self.request.retries == self.max_retries or isCardError:
             if return_value.json_body:
                 error = return_value.json_body["error"]
                 self.registration.charge_id = error["charge"]
@@ -156,7 +158,7 @@ def async_payment(self, registration_id, token, logger_context=None):
         log.info("stripe_payment_success", registration_id=self.registration.id)
         return response
     except stripe.error.CardError as e:
-        raise self.retry(exc=e)
+        raise self.retry(exc=e, max_retries=0)
     except stripe.error.InvalidRequestError as e:
         log.error("invalid_request", exception=e, registration_id=self.registration.id)
         self.registration.charge_status = e.json_body["error"]["type"]
