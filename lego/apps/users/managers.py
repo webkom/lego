@@ -2,8 +2,9 @@ from django.contrib.auth.models import UserManager
 from django.db.models import Q
 from django.utils import timezone
 
-from lego.utils.managers import PersistentModelManager
 from mptt.managers import TreeManager
+
+from lego.utils.managers import PersistentModelManager
 
 
 class AbakusGroupManager(TreeManager, PersistentModelManager):

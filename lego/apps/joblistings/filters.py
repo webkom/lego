@@ -1,4 +1,5 @@
 from django_filters import FilterSet
+
 from lego.apps.joblistings.models import Joblisting
 
 

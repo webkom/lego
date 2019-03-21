@@ -7,8 +7,9 @@ import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
 
-import lego.apps.files.models
 import mptt.fields
+
+import lego.apps.files.models
 
 
 class Migration(migrations.Migration):

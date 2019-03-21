@@ -1,8 +1,9 @@
 from django.template.loader import render_to_string
 
-from lego.apps.feeds.models import NotificationFeed
 from push_notifications.models import APNSDevice, GCMDevice
 from structlog import get_logger
+
+from lego.apps.feeds.models import NotificationFeed
 
 log = get_logger()
 

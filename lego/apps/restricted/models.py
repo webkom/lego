@@ -4,11 +4,12 @@ from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
+from structlog import get_logger
+
 from lego.apps.notifications.constants import EMAIL, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.users.models import AbakusGroup
 from lego.utils.models import BasisModel
-from structlog import get_logger
 
 log = get_logger()
 

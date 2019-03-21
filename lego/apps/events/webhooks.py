@@ -2,10 +2,11 @@ from django.conf import settings
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.response import Response
 
-from lego.apps.events.tasks import stripe_webhook_event
 from stripe.error import SignatureVerificationError
 from stripe.webhook import WebhookSignature
 from structlog import get_logger
+
+from lego.apps.events.tasks import stripe_webhook_event
 
 log = get_logger()
 

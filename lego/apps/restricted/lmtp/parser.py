@@ -1,6 +1,7 @@
+from structlog import get_logger
+
 from lego.apps.restricted.exceptions import MessageIDNotExistException
 from lego.apps.restricted.parser import EmailParser
-from structlog import get_logger
 
 log = get_logger()
 

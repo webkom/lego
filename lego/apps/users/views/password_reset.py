@@ -3,6 +3,8 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from structlog import get_logger
+
 from lego.apps.users.models import User
 from lego.apps.users.password_reset import PasswordReset
 from lego.apps.users.serializers.password_reset import (
@@ -11,7 +13,6 @@ from lego.apps.users.serializers.password_reset import (
 )
 from lego.apps.users.serializers.users import DetailedUserSerializer
 from lego.utils.tasks import send_email
-from structlog import get_logger
 
 log = get_logger()
 

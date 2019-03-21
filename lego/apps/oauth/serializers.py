@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from lego.apps.users.fields import PublicUserField
 from oauth2_provider.models import AccessToken
+
+from lego.apps.users.fields import PublicUserField
 
 from .fields import ApplicationField, ProtectedTokenField
 from .models import APIApplication

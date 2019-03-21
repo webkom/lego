@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from icalendar import Calendar
+
 from lego.apps.events.models import Event, Pool
 from lego.apps.ical.models import ICalToken
 from lego.apps.meetings.models import Meeting

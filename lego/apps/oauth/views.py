@@ -1,8 +1,9 @@
 from rest_framework import mixins, permissions, viewsets
 
-from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from oauth2_provider.models import AccessToken
 from oauth2_provider.views import AuthorizationView
+
+from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 from .models import APIApplication
 from .serializers import AccessTokenSerializer, ApplicationSerializer

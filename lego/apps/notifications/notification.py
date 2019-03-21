@@ -1,6 +1,7 @@
+from structlog import get_logger
+
 from lego.utils.content_types import instance_to_string
 from lego.utils.tasks import send_email, send_push
-from structlog import get_logger
 
 from .models import NotificationSetting
 

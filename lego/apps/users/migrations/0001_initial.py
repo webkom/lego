@@ -9,12 +9,13 @@ import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
 
+import mptt.fields
+
 import lego.apps.files.models
 import lego.apps.permissions.validators
 import lego.apps.users.managers
 import lego.apps.users.validators
 import lego.utils.validators
-import mptt.fields
 
 
 class Migration(migrations.Migration):

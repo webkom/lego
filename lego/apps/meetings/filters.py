@@ -1,4 +1,5 @@
 from django_filters import DateFilter, FilterSet
+
 from lego.apps.meetings.models import Meeting
 
 

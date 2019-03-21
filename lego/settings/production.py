@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 import environ
 import stripe
+
 from lego.settings import (
     BASE_DIR,
     CHANNEL_LAYERS,

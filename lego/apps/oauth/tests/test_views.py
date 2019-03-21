@@ -1,8 +1,9 @@
 from rest_framework import status
 
+from oauth2_provider.models import AccessToken
+
 from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.test_utils import BaseAPITestCase
-from oauth2_provider.models import AccessToken
 
 
 class OauthViewsTestCase(BaseAPITestCase):

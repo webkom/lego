@@ -7,6 +7,7 @@ from django.utils import timezone
 
 import stripe
 from djangorestframework_camel_case.render import camelize
+
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     UnansweredSurveyException,

@@ -4,6 +4,8 @@ import smtpd
 from django.conf import settings
 from django.utils import timezone
 
+from structlog import get_logger
+
 from lego.apps.restricted.exceptions import (
     DefectMessageException,
     MessageIDNotExistException,
@@ -12,7 +14,6 @@ from lego.apps.restricted.exceptions import (
 from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.parser import ParserMessageType
 from lego.utils.management_command import BaseCommand
-from structlog import get_logger
 
 from . import channel
 from .parser import LMTPEmailParser

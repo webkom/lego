@@ -1,8 +1,9 @@
 from django.conf import settings
 
 import requests
-from lego.apps.users.models import AbakusGroup
 from structlog import get_logger
+
+from lego.apps.users.models import AbakusGroup
 
 log = get_logger()
 

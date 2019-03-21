@@ -1,12 +1,13 @@
 from django.utils import timezone
 
+from structlog import get_logger
+
 from lego import celery_app
 from lego.apps.events.constants import PRESENT
 from lego.apps.stats.utils import track
 from lego.apps.surveys.models import Survey
 from lego.apps.surveys.notifications import SurveyNotification
 from lego.utils.tasks import AbakusTask
-from structlog import get_logger
 
 log = get_logger()
 
