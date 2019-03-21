@@ -1,10 +1,13 @@
-pipeline:
+kind: pipeline
+name: default
+
+steps:
 - name: setup
   image: abakus/lego-testbase
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
+    LANG: C.UTF-8
   commands:
     - make ci_settings
 
@@ -13,9 +16,9 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
-    - DATABASE=database
-    - CACHE=cache
+    LANG: C.UTF-8
+    DATABASE: database
+    CACHE: cache
   group: testing
   commands:
     - tox -e missing-migrations
@@ -25,9 +28,9 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
-    - DATABASE=database
-    - CACHE=cache
+    LANG: C.UTF-8
+    DATABASE: database
+    CACHE: cache
   group: testing
   commands:
     - tox -e tests
@@ -37,7 +40,7 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
+    LANG: C.UTF-8
   group: testing
   commands:
     - tox -e isort
@@ -47,7 +50,7 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
+    LANG: C.UTF-8
   group: testing
   commands:
     - tox -e flake8
@@ -58,7 +61,7 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
+    LANG: C.UTF-8
   group: testing
   commands:
     - tox -e black
@@ -68,7 +71,7 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
+    LANG: C.UTF-8
   group: testing
   commands:
     - tox -e docs
@@ -78,7 +81,7 @@ pipeline:
   when:
     event: push
   environment:
-    - LANG=C.UTF-8
+    LANG: C.UTF-8
   commands:
     - tox -e coverage
 
@@ -101,6 +104,10 @@ services:
 - name: database
   image: postgres:9.5
   environment:
-    - POSTGRES_USER=lego
+    POSTGRES_USER: lego
+  ports:
+    - 5432
 - name: cache
-  image: redis
+  image: redis:latest
+  ports:
+    - 6379
