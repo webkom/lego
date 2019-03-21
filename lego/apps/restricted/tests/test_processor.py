@@ -112,3 +112,10 @@ class MessageProcessorTestCase(BaseTestCase):
             ["Subject", "Content-Type", "MIME-Version", "Sender", "From", "To"],
             first_message.keys(),
         )
+
+    def test_send_wrong_addr(self):
+        """Sending from wrong addr shouldn't crash and burn"""
+        processor = MessageProcessor("test-wrong-from-addr@test.com", self.message, {})
+        processor.process_message()
+
+        self.assertEquals(1, len(mail.outbox))
