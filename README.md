@@ -1,4 +1,4 @@
-# LEGO [![DroneCI](https://ci.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci.abakus.no/webkom/lego)
+# LEGO [![DroneCI](https://ci-v1.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci-v1.abakus.no/webkom/lego)
 
 > LEGO Er Ganske Oppdelt
 
