@@ -361,3 +361,20 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertTrue(response.data)
         self.assertEquals(response.data["token"], None)
+
+    def test_survey_export_admin(self):
+        """Test that admins can export a survey as csv"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(_get_list_url(), self.survey_data)
+
+        url = _get_detail_url(response.data["id"]) + "csv/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_survey_export_regular(self):
+        """Test that normal users can't export a survey as csv"""
+        self.client.force_authenticate(user=self.attended_user)
+
+        url = _get_detail_url(1) + "csv/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

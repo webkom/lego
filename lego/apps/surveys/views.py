@@ -79,20 +79,32 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         def describe_results(survey):
-            result = []
+            choice_answers = []
+            text_answers = []
             submissions = Submission.objects.filter(survey=survey)
             for question in survey.questions.all():
                 if question.question_type != TEXT_FIELD:
-                    options = []
-                    options.append(["question", question.question_text])
-                    options.append(["value:", "count:"])
+                    answers = []
+                    answers.append(["question", question.question_text])
+                    answers.append(["value:", "count:"])
                     for option in question.options.all():
                         number_of_selections = submissions.filter(
                             answers__selected_options__in=[option.id]
                         ).count()
-                        options.append([option.option_text, number_of_selections])
-                    result.append(options)
-            return result
+                        answers.append([option.option_text, number_of_selections])
+                    choice_answers.append(answers)
+                else:
+                    answers = []
+                    answers.append([question.question_text])
+                    answers.append(["answer:"])
+                    answers += [
+                        [answer.answer_text]
+                        for answer in Answer.objects.filter(question=question).exclude(
+                            hide_from_public=True
+                        )
+                    ]
+                    text_answers.append(answers)
+            return choice_answers + text_answers
 
         survey = Survey.objects.get(pk=kwargs["pk"])
 
@@ -101,9 +113,8 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             "Content-Disposition"
         ] = f'attachment; filename="{survey.title.replace(" ", "_")}.csv"'
 
-        questions = describe_results(survey)
         writer = csv.writer(response)
-        for question in questions:
+        for question in describe_results(survey):
             for line in question:
                 writer.writerow(line)
             writer.writerow([])
