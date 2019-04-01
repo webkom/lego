@@ -47,12 +47,9 @@ class PostgresBackend(SearchBacked):
         content_type = instance_to_content_type_string(object)
         search_index = self.get_search_index(content_type)
         serializer = search_index.get_serializer(object)
-        print(serializer)
-        print(search_index.get_serializer_class())
         fields = search_index.get_autocomplete_result_fields() \
             if search_type == 'autocomplete' \
             else search_index.get_result_fields()
-        print(object, serializer.data)
         result = {field: serializer.data[field] for field in fields}
         result.update(
             {
