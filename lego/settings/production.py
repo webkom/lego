@@ -66,6 +66,8 @@ CHANNEL_LAYERS["default"]["CONFIG"] = {"hosts": [env("CHANNELS_REDIS_URL")]}
 # Elasticsearch
 ELASTICSEARCH = env("ELASTICSEARCH_HOST")
 SEARCH_INDEX = env("SEARCH_INDEX", default="lego-search")
+# Search
+SEARCH_BACKEND = env("SEARCH_BACKEND", default="elasticsearch")
 
 # Optional AWS entrypoint for minio
 AWS_ENTRYPOINT = env("AWS_ENTRYPOINT", default=None)
