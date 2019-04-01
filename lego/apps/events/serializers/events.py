@@ -292,6 +292,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "unregistration_close_time",
             "youtube_url",
             "use_contact_tracing",
+            "mazemap_poi"
         )
 
     def validate(self, data):
