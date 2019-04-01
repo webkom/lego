@@ -1,9 +1,11 @@
-# LEGO [![DroneCI](https://ci-v1.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci-v1.abakus.no/webkom/lego)
+# LEGO [![DroneCI](https://ci-v1.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci-v1.abakus.no/webkom/lego) [![Requirements Status](https://requires.io/github/webkom/lego/requirements.svg?branch=master)](https://requires.io/github/webkom/lego/requirements/?branch=master)
+
+> Open source backend for abakus.no, frontend locatad at [webkom/lego-webapp](https://github.com/webkom/lego-webapp)
+
+[![MIT](https://badgen.net/badge/license/MIT/blue)](https://en.wikipedia.org/wiki/MIT_License) [![last commit](https://badgen.net/github/last-commit/webkom/lego/)](https://github.com/webkom/lego/commits/master) [![coontibutors](https://badgen.net/github/contributors/webkom/lego)](https://github.com/webkom/lego/graphs/contributors)
 
 > LEGO Er Ganske Oppdelt
 
-LEGO is the backend for [abakus.no](https://abakus.no) - the frontend is located at
-[webkom/lego-webapp](https://github.com/webkom/lego-webapp).
 Documentation is located at [lego.abakus.no](https://lego.abakus.no). We also have a [beginner's guide for setting up LEGO](https://github.com/webkom/lego/wiki/Noob-Guide).
 
 We use GitHub issues and project boards for simple project management.
