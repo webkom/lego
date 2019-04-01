@@ -26,6 +26,10 @@ $ python manage.py initialize_development
 $ python manage.py runserver
 ```
 
+### Testing with elasticsearch
+
+By default, development uses postgres for search. We use elasticsearch in production, so you might want to test things locally with elasticsearch. In order to do so, you need to run elasticsearch from `docker-compose.extra.yml` by running `docker-compose -f docker-compose.extra.yml up -d`. Then you need to run lego with the env variable `SEARCH_BACKEND=elasticsearch`. You might need to run the migrate_search and rebuild_index commands to get elasticsearch up to date.
+
 ### Debugging
 
 If you get an error while installing requirements, you might be missing some dependencies on your system.
