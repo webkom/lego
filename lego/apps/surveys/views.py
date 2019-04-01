@@ -1,3 +1,6 @@
+import csv
+
+from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import action
@@ -67,6 +70,56 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         survey.delete_token()
         serializer = SurveyReadDetailedAdminSerializer(survey)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    @action(detail=True, methods=["GET"])
+    def csv(self, *args, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        def describe_results(survey):
+            choice_answers = []
+            text_answers = []
+            submissions = Submission.objects.filter(survey=survey)
+            for question in survey.questions.all():
+                if question.question_type != TEXT_FIELD:
+                    answers = []
+                    answers.append(["question", question.question_text])
+                    answers.append(["value:", "count:"])
+                    for option in question.options.all():
+                        number_of_selections = submissions.filter(
+                            answers__selected_options__in=[option.id]
+                        ).count()
+                        answers.append([option.option_text, number_of_selections])
+                    choice_answers.append(answers)
+                else:
+                    answers = []
+                    answers.append([question.question_text])
+                    answers.append(["answer:"])
+                    answers += [
+                        [answer.answer_text]
+                        for answer in Answer.objects.filter(question=question).exclude(
+                            hide_from_public=True
+                        )
+                    ]
+                    text_answers.append(answers)
+            return choice_answers + text_answers
+
+        survey = Survey.objects.get(pk=kwargs["pk"])
+
+        response = HttpResponse(content_type="text/csv")
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="{survey.title.replace(" ", "_")}.csv"'
+
+        writer = csv.writer(response)
+        for question in describe_results(survey):
+            for line in question:
+                writer.writerow(line)
+            writer.writerow([])
+
+        return response
 
 
 class SurveyTemplateViewSet(
