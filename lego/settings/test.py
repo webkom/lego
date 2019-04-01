@@ -65,9 +65,6 @@ INSTALLED_APPS += ("lego.apps.permissions.tests",)
 INSTALLED_APPS.remove("django_extensions")
 INSTALLED_APPS.remove("corsheaders")
 
-SLACK_TEAM = ""
-SLACK_TOKEN = ""
-
 LDAP_SERVER = "127.0.0.1:389"
 LDAP_USER = "cn=admin,dc=abakus,dc=no"
 LDAP_PASSWORD = "admin"

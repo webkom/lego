@@ -55,7 +55,6 @@ from lego.apps.quotes.views import QuoteViewSet
 from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
-from lego.apps.slack.views import SlackInviteViewSet
 from lego.apps.surveys.views import (
     SubmissionViewSet,
     SurveyTemplateViewSet,
@@ -193,7 +192,6 @@ router.register(r"restricted-mail", RestrictedMailViewSet, base_name="restricted
 router.register(r"search-autocomplete", AutocompleteViewSet, base_name="autocomplete")
 router.register(r"search-search", SearchViewSet, base_name="search")
 router.register(r"site-meta", SiteMetaViewSet, base_name="site-meta")
-router.register(r"slack-invite", SlackInviteViewSet, base_name="slack-invite")
 router.register(r"survey-results", SurveyTokenViewset, base_name="survey-results")
 router.register(r"survey-templates", SurveyTemplateViewSet, base_name="survey-template")
 router.register(r"surveys", SurveyViewSet)
