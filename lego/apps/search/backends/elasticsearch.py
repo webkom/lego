@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 
 import certifi
@@ -230,3 +231,16 @@ class ElasticsearchBackend(SearchBacked):
             lambda hit: hit is not None,
             map(parse_result, result["suggest"]["autocomplete"][0]["options"]),
         )
+
+    def serialize(self, objects, **kwargs):
+        return objects
+
+    def get_django_object(self, el):
+        from lego.utils.content_types import string_to_model_cls
+        model = string_to_model_cls(el["content_type"])
+
+        try:
+            instance = model.objects.get(pk=el["id"])
+            return instance
+        except ObjectDoesNotExist:
+            return None

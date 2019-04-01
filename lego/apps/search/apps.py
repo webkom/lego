@@ -4,6 +4,7 @@ from django.utils.module_loading import autodiscover_modules
 
 from . import backend
 from .backends.elasticsearch import ElasticsearchBackend
+from .backends.postgres import PostgresBackend
 
 
 class SearchConfig(AppConfig):
@@ -18,7 +19,8 @@ class SearchConfig(AppConfig):
         """
         if not settings.TESTING:
             # Simple way to initialize the search backend. We may change this in the future.
-            search_backed = ElasticsearchBackend()
+            # search_backed = ElasticsearchBackend()
+            search_backed = PostgresBackend()
             search_backed.set_up()
             backend.current_backend = search_backed
 

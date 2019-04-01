@@ -12,8 +12,13 @@ class CompanyModelIndex(SearchIndex):
     result_fields = ("name", "description")
     autocomplete_result_fields = ("name",)
 
+    autocomplete_fields = ("name", )
+
     def get_autocomplete(self, instance):
         return instance.name
+
+    def autocomplete(self, query):
+        return self.queryset.filter(name__istartswith=query)
 
 
 register(CompanyModelIndex)

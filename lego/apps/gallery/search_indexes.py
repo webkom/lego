@@ -15,5 +15,8 @@ class GalleryIndex(SearchIndex):
     def get_autocomplete(self, instance):
         return [instance.title]
 
+    def autocomplete(self, query):
+        return self.queryset.filter(title__istartswith=query)
+
 
 register(GalleryIndex)

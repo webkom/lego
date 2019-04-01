@@ -48,7 +48,7 @@ class DetailedArticleAdminSerializer(
         )
 
 
-class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
+class SearchArticleSerializer(BasisModelSerializer):
     cover = ImageField(required=False, options={"height": 500})
     content = ContentSerializerField(source="text")
 
@@ -59,7 +59,6 @@ class SearchArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "cover",
             "description",
-            "tags",
             "content",
             "pinned",
             "created_at",
