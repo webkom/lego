@@ -85,12 +85,12 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, 200)
-        self.assertEqual(len(joblisting_response.data["results"]), 3)
+        self.assertEqual(len(joblisting_response.data["results"]), 4)
 
     def test_without_user(self):
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, 200)
-        self.assertEqual(len(joblisting_response.data["results"]), 3)
+        self.assertEqual(len(joblisting_response.data["results"]), 4)
 
     def test_list_after_visible_to(self):
         joblisting = Joblisting.objects.all().first()
@@ -98,7 +98,7 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         joblisting.save()
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, 200)
-        self.assertEqual(len(joblisting_response.data["results"]), 2)
+        self.assertEqual(len(joblisting_response.data["results"]), 3)
 
 
 class RetrieveJoblistingsTestCase(BaseAPITestCase):
@@ -164,6 +164,20 @@ class CreateJoblistingsTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.not_abakom_user)
         res = self.client.post(_get_list_url(), _test_joblistings_data[0])
         self.assertEqual(res.status_code, 403)
+
+    def test_correct_youtube_url(self):
+        self.client.force_authenticate(user=self.abakom_user)
+        joblisting = _test_joblistings_data[0].copy()
+        joblisting["youtube_url"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
+        res = self.client.post(_get_list_url(), joblisting)
+        self.assertEqual(res.status_code, 201)
+
+    def test_wrong_youtube_url(self):
+        self.client.force_authenticate(user=self.abakom_user)
+        joblisting = _test_joblistings_data[0].copy()
+        joblisting["youtube_url"] = "skra"
+        res = self.client.post(_get_list_url(), joblisting)
+        self.assertEqual(res.status_code, 400)
 
 
 class EditJoblistingsTestCase(BaseAPITestCase):

@@ -33,6 +33,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "content",
             "created_at",
             "pinned",
+            "youtube_url",
         )
 
 

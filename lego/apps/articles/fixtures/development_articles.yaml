@@ -15,10 +15,8 @@
   fields:
     title: Ny komité i Abakus
     cover: test_article_cover.png
-    description:
-      Etter langt å lenge har HS endelig blitt enig.
-    text:
-      Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
+    description: Etter langt å lenge har HS endelig blitt enig.
+    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
       Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
       da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
       av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
@@ -39,10 +37,8 @@
   fields:
     title: Dette er en syk artikkel
     cover: test_article_cover.png
-    description:
-      Eller hur hur hur hur.
-    text:
-      Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
+    description: Eller hur hur hur hur.
+    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
       Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
       da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
       av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
@@ -56,3 +52,25 @@
     tags:
       - lorem
       - ipsum
+
+- model: articles.Article
+  pk: 3
+  fields:
+    title: Artikkel med youtube cover
+    cover: test_article_cover.png
+    description: Eller hur hur hur hur.
+    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
+      Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
+      da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
+      av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
+      til å bestå gjennom fem århundrer også tålt spranget over til elektronisk
+      typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i
+      1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og
+      senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp
+      Lorem Ipsum for dummytekst.
+    can_view_groups:
+      - - Users
+    tags:
+      - lorem
+      - ipsum
+    youtube_url: https://www.youtube.com/watch?v=bLHL75H_VEM
