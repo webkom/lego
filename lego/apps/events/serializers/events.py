@@ -150,6 +150,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "use_consent",
             "youtube_url",
             "use_contact_tracing",
+            "mazemap_poi",
         )
         read_only = True
 

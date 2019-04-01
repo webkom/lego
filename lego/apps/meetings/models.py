@@ -24,6 +24,7 @@ class Meeting(BasisModel):
     end_time = models.DateTimeField(blank=True, null=True)
     description = models.TextField(blank=True, default="")
     comments = GenericRelation(Comment)
+    mazemap_poi = models.PositiveIntegerField(null=True)
 
     report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(
