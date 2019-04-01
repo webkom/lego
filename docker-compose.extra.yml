@@ -1,0 +1,40 @@
+version: '3.5'
+
+services:
+  ldap:
+    image: osixia/openldap:1.1.8
+    ports:
+      - "127.0.0.1:389:389"
+      - "127.0.0.1:636:636"
+    environment:
+      LDAP_ORGANISATION: "Abakus Linjeforening"
+      LDAP_DOMAIN: "abakus.no"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_READONLY_USER: "false"
+      LDAP_TLS: "true"
+      LDAP_TLS_CRT_FILENAME: "ldap.crt"
+      LDAP_TLS_KEY_FILENAME: "ldap.key"
+      LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+      LDAP_TLS_ENFORCE: "false"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
+    environment:
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - HEAP_SIZE=1g
+      - discovery.type=single-node
+    ports:
+      - "127.0.0.1:9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.1
+    links:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      - elasticsearch

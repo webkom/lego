@@ -9,6 +9,17 @@ services:
     environment:
       - POSTGRES_USER=lego
 
+  lego_cypress_helper:
+    image: abakus/lego-cypress-helper:latest
+    ports:
+      - "127.0.0.1:3030:3030"
+    environment:
+      PG_HOST: 'postgres'
+      PG_USERNAME: 'lego'
+      PG_DATABASE: 'lego'
+    links:
+      - postgres
+
   minio:
     image: minio/minio:edge
     ports:
@@ -43,39 +54,3 @@ services:
     links:
       - minio
 
-  ldap:
-    image: osixia/openldap:1.1.8
-    ports:
-      - "127.0.0.1:389:389"
-      - "127.0.0.1:636:636"
-    environment:
-      LDAP_ORGANISATION: "Abakus Linjeforening"
-      LDAP_DOMAIN: "abakus.no"
-      LDAP_ADMIN_PASSWORD: "admin"
-      LDAP_CONFIG_PASSWORD: "config"
-      LDAP_READONLY_USER: "false"
-      LDAP_TLS: "true"
-      LDAP_TLS_CRT_FILENAME: "ldap.crt"
-      LDAP_TLS_KEY_FILENAME: "ldap.key"
-      LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
-      LDAP_TLS_ENFORCE: "false"
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
-    environment:
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - HEAP_SIZE=1g
-    ports:
-      - "127.0.0.1:9200:9200"
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:6.2.1
-    links:
-      - elasticsearch
-    environment:
-      - ELASTICSEARCH_HOST=http://elasticsearch
-      - ELASTICSEARCH_PORT=9200
-    ports:
-      - "127.0.0.1:5601:5601"
-    depends_on:
-      - elasticsearch
