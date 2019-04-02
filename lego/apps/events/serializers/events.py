@@ -8,7 +8,7 @@ from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events import constants
 from lego.apps.events.constants import PRESENT
-from lego.apps.events.fields import ActivationTimeField, SpotsLeftField
+from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
     PoolAdministrateSerializer,
@@ -60,6 +60,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
         options={"height": 500, "width": 500, "smart": True},
     )
     activation_time = ActivationTimeField()
+    is_admitted = IsAdmittedField()
 
     class Meta:
         model = Event
@@ -79,6 +80,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "registration_count",
             "tags",
             "activation_time",
+            "is_admitted",
         )
         read_only = True
 
@@ -175,6 +177,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     """ User specfic event serializer that appends data based on request.user """
 
     activation_time = ActivationTimeField()
+    is_admitted = IsAdmittedField()
     spots_left = SpotsLeftField()
     price = serializers.SerializerMethodField()
 
@@ -182,6 +185,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
         fields = EventReadDetailedSerializer.Meta.fields + (
             "price",
             "activation_time",
+            "is_admitted",
             "spots_left",
         )
 
@@ -351,6 +355,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
     )
     text = ContentSerializerField()
     activation_time = ActivationTimeField()
+    is_admitted = IsAdmittedField()
 
     class Meta:
         model = Event
@@ -371,6 +376,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
             "registration_count",
             "tags",
             "activation_time",
+            "is_admitted",
             "pinned",
         )
         read_only = True
