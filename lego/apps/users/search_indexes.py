@@ -1,4 +1,4 @@
-from django.db.models import Q, Value, F
+from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
 
 from lego.apps.search import register
@@ -30,14 +30,14 @@ class UserIndex(SearchIndex):
         ]
 
     def autocomplete(self, query):
-        return self.queryset\
-            .annotate(fullname=Concat(F('first_name'), Value(' '), F('last_name')))\
-            .filter(
-                Q(first_name__istartswith=query) |
-                Q(last_name__istartswith=query) |
-                Q(username__istartswith=query) |
-                Q(fullname__istartswith=query)
-            )
+        return self.queryset.annotate(
+            fullname=Concat(F("first_name"), Value(" "), F("last_name"))
+        ).filter(
+            Q(first_name__istartswith=query)
+            | Q(last_name__istartswith=query)
+            | Q(username__istartswith=query)
+            | Q(fullname__istartswith=query)
+        )
 
 
 register(UserIndex)

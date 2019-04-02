@@ -19,8 +19,7 @@ class PageModelIndex(SearchIndex):
 
     def autocomplete(self, query):
         return self.queryset.filter(
-            Q(title__istartswith=query) |
-            Q(slug__istartswith=query)
+            Q(title__istartswith=query) | Q(slug__istartswith=query)
         )
 
 

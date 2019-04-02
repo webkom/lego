@@ -1,7 +1,6 @@
-from .. import registry
-
-
 from lego.apps.search.backend import SearchBacked
+
+from .. import registry
 
 
 class PostgresBackend(SearchBacked):
@@ -44,24 +43,26 @@ class PostgresBackend(SearchBacked):
 
     def serialize_object(self, object, search_type):
         from lego.utils.content_types import instance_to_content_type_string
+
         content_type = instance_to_content_type_string(object)
         search_index = self.get_search_index(content_type)
         serializer = search_index.get_serializer(object)
-        fields = search_index.get_autocomplete_result_fields() \
-            if search_type == 'autocomplete' \
+        fields = (
+            search_index.get_autocomplete_result_fields()
+            if search_type == "autocomplete"
             else search_index.get_result_fields()
-        result = {field: serializer.data[field] for field in fields}
-        result.update(
-            {
-                "id": object.pk,
-                "content_type": content_type,
-                "text": "text",
-            }
         )
+        result = {field: serializer.data[field] for field in fields}
+        result.update({"id": object.pk, "content_type": content_type, "text": "text"})
         return result
 
-    def serialize(self, objects, search_type='autocomplete'):
-        return list(map(lambda o: self.serialize_object(o, search_type), objects[:self.max_results]))
+    def serialize(self, objects, search_type="autocomplete"):
+        return list(
+            map(
+                lambda o: self.serialize_object(o, search_type),
+                objects[: self.max_results],
+            )
+        )
 
     def get_django_object(self, el):
         return el

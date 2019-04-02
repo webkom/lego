@@ -19,9 +19,9 @@ class SearchConfig(AppConfig):
         """
         if not settings.TESTING:
             # Simple way to initialize the search backend. We may change this in the future.
-            if settings.SEARCH_BACKEND == 'elasticsearch':
+            if settings.SEARCH_BACKEND == "elasticsearch":
                 search_backed = ElasticsearchBackend()
-            elif settings.SEARCH_BACKEND == 'postgres':
+            elif settings.SEARCH_BACKEND == "postgres":
                 search_backed = PostgresBackend()
             else:
                 raise ValueError("Invalid search backend")

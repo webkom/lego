@@ -390,7 +390,7 @@ class EventSearchSerializer(serializers.ModelSerializer):
             "cover",
             "location",
             "start_time",
-            "end_time"
+            "end_time",
         )
         read_only = True
 

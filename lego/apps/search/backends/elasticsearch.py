@@ -237,6 +237,7 @@ class ElasticsearchBackend(SearchBacked):
 
     def get_django_object(self, el):
         from lego.utils.content_types import string_to_model_cls
+
         model = string_to_model_cls(el["content_type"])
 
         try:

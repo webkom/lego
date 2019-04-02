@@ -18,7 +18,7 @@ class SearchBacked:
         """
         pass
 
-    def serialize(self, objects, search_type='autocomplete'):
+    def serialize(self, objects, search_type="autocomplete"):
         raise NotImplementedError("Backend needs to implement serialize.")
 
     def get_django_object(self, el):

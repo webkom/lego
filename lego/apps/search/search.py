@@ -41,4 +41,4 @@ def search(query, types, filters, user):
         user, "search.search", properties={"query": query, "result_count": len(results)}
     )
 
-    return backend.current_backend.serialize(results, search_type='search')
+    return backend.current_backend.serialize(results, search_type="search")
