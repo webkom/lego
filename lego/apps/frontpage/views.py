@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.serializers.events import EventSearchSerializer
+from lego.apps.events.serializers.events import FrontpageEventSerializer
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.polls.models import Poll
@@ -90,7 +90,7 @@ class FrontpageViewSet(viewsets.ViewSet):
         articles = PublicArticleSerializer(
             queryset_articles[:10], context=get_serializer_context(), many=True
         ).data
-        events = EventSearchSerializer(
+        events = FrontpageEventSerializer(
             queryset_events, context=get_serializer_context(), many=True
         ).data
         poll = (

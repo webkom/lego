@@ -342,7 +342,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             return super().update(instance, validated_data)
 
 
-class EventSearchSerializer(serializers.ModelSerializer):
+class FrontpageEventSerializer(serializers.ModelSerializer):
     cover = ImageField(required=False, options={"height": 500})
     thumbnail = ImageField(
         source="cover",
@@ -372,6 +372,25 @@ class EventSearchSerializer(serializers.ModelSerializer):
             "tags",
             "activation_time",
             "pinned",
+        )
+        read_only = True
+
+
+class EventSearchSerializer(serializers.ModelSerializer):
+    cover = ImageField(required=False, options={"height": 500})
+    text = ContentSerializerField()
+
+    class Meta:
+        model = Event
+        fields = (
+            "id",
+            "title",
+            "description",
+            "text",
+            "cover",
+            "location",
+            "start_time",
+            "end_time",
         )
         read_only = True
 

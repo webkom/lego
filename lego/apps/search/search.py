@@ -5,32 +5,40 @@ from .permissions import has_permission
 
 
 def autocomplete(query, types, user):
-    result = backend.current_backend.autocomplete(query, types)
+    results = backend.current_backend.autocomplete(query, types)
 
     def permission_check(hit):
-        return has_permission(hit["content_type"], hit["id"], user)
+        instance = backend.current_backend.get_django_object(hit)
+        if instance:
+            return has_permission(instance, user)
+        else:
+            return False
 
-    result = list(filter(permission_check, result))
+    results = list(filter(permission_check, results))
 
     track(
         user,
         "search.autocomplete",
-        properties={"query": query, "result_count": len(result)},
+        properties={"query": query, "result_count": len(results)},
     )
 
-    return result
+    return backend.current_backend.serialize(results)
 
 
 def search(query, types, filters, user):
-    result = backend.current_backend.search(query, types, filters)
+    results = backend.current_backend.search(query, types, filters)
 
     def permission_check(hit):
-        return has_permission(hit["content_type"], hit["id"], user)
+        instance = backend.current_backend.get_django_object(hit)
+        if instance:
+            return has_permission(instance, user)
+        else:
+            return False
 
-    result = list(filter(permission_check, result))
+    results = list(filter(permission_check, results))
 
     track(
-        user, "search.search", properties={"query": query, "result_count": len(result)}
+        user, "search.search", properties={"query": query, "result_count": len(results)}
     )
 
-    return result
+    return backend.current_backend.serialize(results, search_type="search")

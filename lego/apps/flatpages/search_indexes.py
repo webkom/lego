@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
@@ -14,6 +16,11 @@ class PageModelIndex(SearchIndex):
 
     def get_autocomplete(self, instance):
         return [instance.title, instance.slug_field]
+
+    def autocomplete(self, query):
+        return self.queryset.filter(
+            Q(title__istartswith=query) | Q(slug__istartswith=query)
+        )
 
 
 register(PageModelIndex)

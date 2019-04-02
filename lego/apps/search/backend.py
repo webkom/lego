@@ -18,6 +18,12 @@ class SearchBacked:
         """
         pass
 
+    def serialize(self, objects, search_type="autocomplete"):
+        raise NotImplementedError("Backend needs to implement serialize.")
+
+    def get_django_object(self, el):
+        raise NotImplementedError("Backend needs to implement get_django_object.")
+
     def get_search_index(self, content_type):
         """
         Return the search_index used to index a content_type.

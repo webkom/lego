@@ -106,6 +106,9 @@ class SearchIndex:
         """
         return None
 
+    def autocomplete(self, query):
+        raise NotImplementedError("You must provide a 'autocomplete' function")
+
     def should_update(self, instance):
         """
         Determine if an instance should be updated in the index.

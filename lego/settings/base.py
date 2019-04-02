@@ -124,6 +124,8 @@ ROOT_URLCONF = "lego.urls"
 
 WSGI_APPLICATION = "lego.wsgi.application"
 
+SEARCH_BACKEND = "postgres"
+
 TIME_ZONE = "UTC"
 USE_I18N = False
 USE_L10N = False
