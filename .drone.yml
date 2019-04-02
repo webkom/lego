@@ -1,119 +1,106 @@
-kind: pipeline
-name: default
+pipeline:
+  setup:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - make ci_settings
 
-steps:
-- name: setup
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-  commands:
-    - make ci_settings
+  missing-migrations:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+      - DATABASE=database
+      - CACHE=cache
+    group: testing
+    commands:
+      - tox -e missing-migrations
 
-- name: missing-migrations
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-    DATABASE: database
-    CACHE: cache
-  depends_on: [ setup ]
-  commands:
-    - tox -e missing-migrations
+  tests:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+      - DATABASE=database
+      - CACHE=cache
+    group: testing
+    commands:
+      - tox -e tests
 
-- name: tests
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-    DATABASE: database
-    CACHE: cache
-  depends_on: [ setup ]
-  commands:
-    - tox -e tests
+  isort:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
+      - tox -e isort
 
-- name: isort
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-  depends_on: [ setup ]
-  commands:
-    - tox -e isort
+  flake8:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
+      - tox -e flake8
 
-- name: flake8
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-  depends_on: [ setup ]
-  commands:
-    - tox -e flake8
+  black:
+    image: abakus/lego-testbase
+    pull: true
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
+      - tox -e black
 
-- name: black
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-  depends_on: [ setup ]
-  commands:
-    - tox -e black
+  docs:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    group: testing
+    commands:
+      - tox -e docs
 
-- name: docs
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-  depends_on: [ setup ]
-  commands:
-    - tox -e docs
+  coverage:
+    image: abakus/lego-testbase
+    when:
+      event: push
+    environment:
+      - LANG=C.UTF-8
+    commands:
+      - tox -e coverage
 
-- name: coverage
-  image: abakus/lego-testbase
-  when:
-    event: push
-  environment:
-    LANG: C.UTF-8
-  depends_on: [ tests ]
-  commands:
-    - tox -e coverage
-
-- name: docker
-  image: plugins/docker
-  when:
-    branch:
-      - prod
-    status: success
-    event: push
-  settings:
+  docker:
+    image: plugins/docker
+    when:
+      branch:
+        - prod
+      status: success
+      event: push
     registry: https://registry.abakus.no
     repo: registry.abakus.no/webkom/lego
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
+    secrets: [ docker_username, docker_password ]
     tags:
       - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
-      - latest
     build_args:
       - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
-  depends_on: [ coverage, docs, black, flake8, isort, tests, missing-migrations ]
 
 services:
-- name: database
-  image: postgres:9.5
-  environment:
-    POSTGRES_USER: lego
-  ports:
-    - 5432
-- name: cache
-  image: redis:latest
-  ports:
-    - 6379
+  database:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_USER=lego
+  cache:
+    image: redis
