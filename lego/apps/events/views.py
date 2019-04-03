@@ -201,12 +201,12 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def previous(self, request):
         queryset = (
             self.get_queryset()
-                .filter(
+            .filter(
                 registrations__status=constants.SUCCESS_REGISTER,
                 registrations__user=request.user,
                 start_time__lt=timezone.now(),
             )
-                .prefetch_related(
+            .prefetch_related(
                 Prefetch(
                     "registrations",
                     queryset=Registration.objects.filter(
