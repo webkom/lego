@@ -198,6 +198,39 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer_class=EventUserRegSerializer,
         permission_classes=[permissions.IsAuthenticated],
     )
+    def previous(self, request):
+        queryset = (
+            self.get_queryset()
+                .filter(
+                registrations__status=constants.SUCCESS_REGISTER,
+                registrations__user=request.user,
+                start_time__lt=timezone.now(),
+            )
+                .prefetch_related(
+                Prefetch(
+                    "registrations",
+                    queryset=Registration.objects.filter(
+                        user=request.user
+                    ).select_related("user", "pool"),
+                    to_attr="user_reg",
+                ),
+                Prefetch(
+                    "pools",
+                    queryset=Pool.objects.filter(
+                        permission_groups__in=self.request.user.all_groups
+                    ),
+                    to_attr="possible_pools",
+                ),
+            )
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @decorators.action(
+        detail=False,
+        serializer_class=EventUserRegSerializer,
+        permission_classes=[permissions.IsAuthenticated],
+    )
     def upcoming(self, request):
         queryset = (
             self.get_queryset()
