@@ -13,7 +13,7 @@ elasticsearch==6.2.0
 celery==4.2.1
 stripe==2.22.0
 structlog==18.2.0
-boto3==1.8
+boto3==1.9.130
 bs4==0.0.1
 bleach==3.1.0
 requests==2.21.0
