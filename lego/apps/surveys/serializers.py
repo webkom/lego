@@ -118,8 +118,8 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
                 question = answer.pop("question")
 
                 if (
-                    question.question_type is "SINGLE_CHOICE"
-                    and len(answer["selected_options"]) is not 1
+                    question.question_type == "SINGLE_CHOICE"
+                    and len(answer["selected_options"]) != 1
                 ):
                     raise exceptions.ValidationError(
                         "You must select exactly one option"
