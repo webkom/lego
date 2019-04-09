@@ -266,7 +266,7 @@ class SurveyViewSetTestCase(APITestCase):
                 "options",
             ]:
                 if not (
-                    key is "id" and key not in expected
+                    key == "id" and key not in expected
                 ):  # Because id is undefined for new questions
                     self.assertEqual(expected[key], question[key])
 
@@ -296,7 +296,7 @@ class SurveyViewSetTestCase(APITestCase):
             expected = _test_surveys[survey_id]["questions"][0]["options"][i]
             for key in ["id", "optionText"]:
                 if not (
-                    key is "id" and key not in expected
+                    key == "id" and key not in expected
                 ):  # Because id is undefined for new questions
                     self.assertEqual(expected[key], option[key])
 
