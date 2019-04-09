@@ -65,7 +65,7 @@ class Command(BaseCommand):
             students.annotate(Count("id")).order_by().filter(id__count__gt=1)
         )
 
-        if users_with_multiple_memberships.count() is 0:
+        if users_with_multiple_memberships.count() == 0:
             return
 
         for user in users_with_multiple_memberships:
