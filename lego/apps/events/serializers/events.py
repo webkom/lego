@@ -8,7 +8,12 @@ from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events import constants
 from lego.apps.events.constants import PRESENT
-from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
+from lego.apps.events.fields import (
+    ActivationTimeField,
+    CanRegisterField,
+    IsAdmittedField,
+    SpotsLeftField,
+)
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
     PoolAdministrateSerializer,
@@ -61,6 +66,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     )
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    can_register = CanRegisterField()
 
     class Meta:
         model = Event
@@ -81,6 +87,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "tags",
             "activation_time",
             "is_admitted",
+            "can_register",
         )
         read_only = True
 
@@ -178,6 +185,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
 
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    can_register = CanRegisterField()
     spots_left = SpotsLeftField()
     price = serializers.SerializerMethodField()
 
@@ -186,6 +194,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
             "price",
             "activation_time",
             "is_admitted",
+            "can_register",
             "spots_left",
         )
 
@@ -356,6 +365,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
     text = ContentSerializerField()
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    can_register = CanRegisterField()
 
     class Meta:
         model = Event
@@ -377,6 +387,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
             "tags",
             "activation_time",
             "is_admitted",
+            "can_register",
             "pinned",
         )
         read_only = True

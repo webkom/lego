@@ -1142,7 +1142,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Webkom").add_user(self.request_user)
         pool_two = self.event.pools.get(name="Webkom")
 
-        self.assertFalse(self.event.can_register(self.user, self.pool))
+        self.assertFalse(self.event.can_register_to_pool(self.user, self.pool))
         self.client.force_authenticate(self.request_user)
 
         registration_response = self.client.post(
@@ -1161,7 +1161,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
     def test_without_admin_permission(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.user)
 
-        self.assertTrue(self.event.can_register(self.user, self.pool))
+        self.assertTrue(self.event.can_register_to_pool(self.user, self.pool))
         self.client.force_authenticate(self.request_user)
 
         registration_response = self.client.post(
@@ -1181,7 +1181,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.user)
         nonexistant_pool_id = len(self.event.pools.all())
 
-        self.assertTrue(self.event.can_register(self.user, self.pool))
+        self.assertTrue(self.event.can_register_to_pool(self.user, self.pool))
         self.client.force_authenticate(self.request_user)
 
         registration_response = self.client.post(

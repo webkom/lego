@@ -155,23 +155,31 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def get_absolute_url(self):
         return f"{settings.FRONTEND_URL}/events/{self.id}/"
 
-    def can_register(self, user, pool, future=False, is_admitted=None):
-        if not pool.is_activated and not future:
+    def can_register(self, user, pools=None, future=False, is_admitted=None):
+        if pools is None:
+            pools = self.get_possible_pools(user, future)
+
+        for pool in pools:
+            if not pool.is_activated and not future:
+                continue
+
+            if is_admitted is None:
+                is_admitted = self.is_admitted(user)
+
+            if is_admitted:
+                continue
+
+            for group in pool.permission_groups.all():
+
+                if group in user.all_groups:
+                    return True
+        else:
             return False
 
-        if is_admitted is None:
-            is_admitted = self.is_admitted(user)
-
-        if is_admitted:
-            return False
-
-        for group in pool.permission_groups.all():
-            if group in user.all_groups:
-                return True
-        return False
+    def can_register_to_pool(self, user, pool, future=False, is_admitted=None):
+        return self.can_register(user, [pool], future, is_admitted)
 
     def get_earliest_registration_time(self, user, pools=None, penalties=None):
-
         if pools is None:
             pools = self.get_possible_pools(user, future=True)
         if len(pools) == 0:
@@ -366,7 +374,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     new_pool.increment()
                 else:
                     for pool in self.pools.all():
-                        if self.can_register(first_waiting.user, pool):
+                        if self.can_register_to_pool(first_waiting.user, pool):
                             new_pool = pool
                             new_pool.increment()
                             break
@@ -387,7 +395,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 break
             if self.heed_penalties and reg.user.number_of_penalties() >= 3:
                 continue
-            if self.can_register(reg.user, opening_pool, future=True):
+            if self.can_register_to_pool(reg.user, opening_pool, future=True):
                 reg.pool = opening_pool
                 reg.save()
                 handle_event(reg, "bump")
@@ -410,7 +418,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     break
                 if self.heed_penalties and reg.user.number_of_penalties() >= 3:
                     continue
-                if self.can_register(reg.user, pool, future=True):
+                if self.can_register_to_pool(reg.user, pool, future=True):
                     reg.pool = pool
                     reg.save()
                     handle_event(reg, "bump")
@@ -498,9 +506,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                         registration.user, [to_pool], penalties
                     )
                     if penalties < 3 and earliest_reg < timezone.now():
-                        if self.can_register(registration.user, to_pool):
+                        if self.can_register_to_pool(registration.user, to_pool):
                             return registration
-                elif self.can_register(registration.user, to_pool):
+                elif self.can_register_to_pool(registration.user, to_pool):
                     return registration
             return None
 
