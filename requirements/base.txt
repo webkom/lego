@@ -29,7 +29,7 @@ channels==2.1.7
 channels_redis==2.3.3
 daphne==2.2.5
 # Implicit dependency
-flatbuffers==1.10
+flatbuffers==1.11
 
 djangorestframework==3.9.3
 djangorestframework-jwt==1.11.0
