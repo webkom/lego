@@ -1,6 +1,6 @@
 pipeline:
   setup:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
@@ -9,7 +9,7 @@ pipeline:
       - make ci_settings
 
   missing-migrations:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
@@ -21,7 +21,7 @@ pipeline:
       - tox -e missing-migrations
 
   tests:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
@@ -33,7 +33,7 @@ pipeline:
       - tox -e tests
 
   isort:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
@@ -43,7 +43,7 @@ pipeline:
       - tox -e isort
 
   flake8:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
@@ -53,7 +53,7 @@ pipeline:
       - tox -e flake8
 
   black:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     pull: true
     when:
       event: push
@@ -64,7 +64,7 @@ pipeline:
       - tox -e black
 
   docs:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
@@ -74,7 +74,7 @@ pipeline:
       - tox -e docs
 
   coverage:
-    image: abakus/lego-testbase
+    image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
