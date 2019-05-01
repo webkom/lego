@@ -1,4 +1,4 @@
-# LEGO [![DroneCI](https://ci-v1.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci-v1.abakus.no/webkom/lego) [![Requirements Status](https://requires.io/github/webkom/lego/requirements.svg?branch=master)](https://requires.io/github/webkom/lego/requirements/?branch=master)
+# LEGO [![DroneCI](https://ci.abakus.no/api/badges/webkom/lego/status.svg?branch=master)](https://ci.abakus.no/webkom/lego) [![Requirements Status](https://requires.io/github/webkom/lego/requirements.svg?branch=master)](https://requires.io/github/webkom/lego/requirements/?branch=master)
 
 > Open source backend for abakus.no, frontend locatad at [webkom/lego-webapp](https://github.com/webkom/lego-webapp)
 
