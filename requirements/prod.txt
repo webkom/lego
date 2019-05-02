@@ -2,5 +2,3 @@
 
 uwsgi
 flower==0.9.3
-# Implicity needed by flower. When we remove this it will use ==6, aka. crash
-tornado==5.1.1
