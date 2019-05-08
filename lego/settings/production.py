@@ -1,4 +1,5 @@
 import os
+import re
 from urllib.parse import urlparse
 
 import environ
@@ -92,6 +93,9 @@ ANALYTICS_WRITE_KEY = env("ANALYTICS_WRITE_KEY", default="")
 CORS_FRONTEND_URL = urlparse(FRONTEND_URL).netloc
 CORS_ORIGIN_WHITELIST = list(
     {CORS_FRONTEND_URL, f"www.{CORS_FRONTEND_URL}", "127.0.0.1:3000", "localhost:3000"}
+)
+CORS_ORIGIN_REGEX_WHITELIST = (
+    r"^(https?://)?(.*\.)?{0}$".format(re.escape(CORS_FRONTEND_URL)),
 )
 
 # Restricted
