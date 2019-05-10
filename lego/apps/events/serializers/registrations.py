@@ -125,6 +125,8 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
         fields = (
             "id",
             "user",
+            "created_by",
+            "updated_by",
             "pool",
             "event",
             "presence",
