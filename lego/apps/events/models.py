@@ -105,7 +105,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 pool.save(update_fields=["counter"])
             return super().save(*args, **kwargs)
 
-    def admin_register(self, user, admin_registration_reason, pool=None, feedback=""):
+    def admin_register(
+        self, admin_user, user, admin_registration_reason, pool=None, feedback=""
+    ):
         """
         Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
@@ -130,24 +132,30 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     pool,
                     feedback=feedback,
                     admin_registration_reason=admin_registration_reason,
+                    created_by=admin_user,
+                    updated_by=admin_user,
                 )
             else:
                 registration.add_to_waiting_list(
                     feedback=feedback,
                     admin_registration_reason=admin_registration_reason,
+                    created_by=admin_user,
+                    updated_by=admin_user,
                 )
             # Make the user follow the event
             FollowEvent.objects.get_or_create(follower=user, target=self)
             handle_event(registration, "admin_registration")
             return registration
 
-    def admin_unregister(self, user, admin_unregistration_reason):
+    def admin_unregister(self, admin_user, user, admin_unregistration_reason):
         with transaction.atomic():
             registration = self.registrations.filter(user=user).first()
             if not registration:
                 raise NoSuchRegistration()
             self.unregister(
-                registration, admin_unregistration_reason=admin_unregistration_reason
+                registration,
+                admin_unregistration_reason=admin_unregistration_reason,
+                updated_by=admin_user,
             )
             handle_event(registration, "admin_unregistration")
             return registration
@@ -289,7 +297,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return registration.add_to_pool(chosen_pool)
 
-    def unregister(self, registration, admin_unregistration_reason=""):
+    def unregister(self, registration, updated_by=None, admin_unregistration_reason=""):
         """
         Pulls the registration, and clears relevant fields. Sets unregistration date.
         If the user was in a pool, and not in the waiting list,
@@ -303,6 +311,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         registration.unregister(
             is_merged=self.is_merged,
             admin_unregistration_reason=admin_unregistration_reason,
+            updated_by=updated_by if updated_by is not None else registration.user,
         )
         if pool_id:
             if (
@@ -883,7 +892,9 @@ class Registration(BasisModel):
             **kwargs,
         )
 
-    def unregister(self, is_merged=None, admin_unregistration_reason=""):
+    def unregister(
+        self, is_merged=None, updated_by=None, admin_unregistration_reason=""
+    ):
         # We do not care about the counter if the event is merged or pool is None
         if self.pool and not is_merged:
             with transaction.atomic():
@@ -894,6 +905,7 @@ class Registration(BasisModel):
             unregistration_date=timezone.now(),
             status=constants.SUCCESS_UNREGISTER,
             admin_unregistration_reason=admin_unregistration_reason,
+            updated_by=updated_by if updated_by is not None else self.user,
         )
 
     def set_values(self, **kwargs):

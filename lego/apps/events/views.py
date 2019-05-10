@@ -314,18 +314,18 @@ class RegistrationViewSet(
         ):
             raise ValidationError({"error": "Bad captcha"})
 
-        user_id = request.user.id
+        current_user = request.user
 
         with transaction.atomic():
             registration = Registration.objects.get_or_create(
-                event_id=event_id, user_id=user_id
+                event_id=event_id, user_id=current_user.id
             )[0]
             feedback = serializer.data.get("feedback", "")
             if registration.event.feedback_required and not feedback:
                 raise ValidationError({"error": "Feedback is required"})
             registration.status = constants.PENDING_REGISTER
             registration.feedback = feedback
-            registration.save(update_fields=["status", "feedback"])
+            registration.save(current_user=current_user)
             transaction.on_commit(lambda: async_register.delay(registration.id))
         registration_serializer = RegistrationReadSerializer(
             registration, context={"user": registration.user}
@@ -349,6 +349,7 @@ class RegistrationViewSet(
         serializer_class=AdminRegistrationCreateAndUpdateSerializer,
     )
     def admin_register(self, request, *args, **kwargs):
+        admin_user = request.user
         event_id = self.kwargs.get("event_pk", None)
         try:
             event = Event.objects.get(id=event_id)
@@ -357,7 +358,9 @@ class RegistrationViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            registration = event.admin_register(**serializer.validated_data)
+            registration = event.admin_register(
+                admin_user=admin_user, **serializer.validated_data
+            )
         except NoSuchPool:
             raise APINoSuchPool()
         except RegistrationExists:
@@ -369,12 +372,15 @@ class RegistrationViewSet(
         detail=False, methods=["POST"], serializer_class=AdminUnregisterSerializer
     )
     def admin_unregister(self, request, *args, **kwargs):
+        admin_user = request.user
         event_id = self.kwargs.get("event_pk", None)
         event = Event.objects.get(id=event_id)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            registration = event.admin_unregister(**serializer.validated_data)
+            registration = event.admin_unregister(
+                admin_user=admin_user, **serializer.validated_data
+            )
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:
