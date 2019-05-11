@@ -318,7 +318,9 @@ class RegistrationViewSet(
 
         with transaction.atomic():
             registration = Registration.objects.get_or_create(
-                event_id=event_id, user_id=current_user.id
+                event_id=event_id,
+                user_id=current_user.id,
+                defaults={"updated_by": current_user, "created_by": current_user},
             )[0]
             feedback = serializer.data.get("feedback", "")
             if registration.event.feedback_required and not feedback:
