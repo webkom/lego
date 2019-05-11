@@ -844,6 +844,9 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.data["id"])
         )
+        registration = Registration.objects.get(id=res.data["id"])
+        self.assertEqual(registration.created_by.id, res.data["user"]["id"])
+        self.assertEqual(registration.updated_by.id, res.data["user"]["id"])
         self.assertEqual(res.data["user"]["id"], 1)
         self.assertEqual(res.data["status"], constants.SUCCESS_REGISTER)
 
@@ -918,6 +921,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         )
         self.assertEqual(registration_response.status_code, 202)
         self.assertEqual(get_unregistered.status_code, 200)
+        self.assertEqual(get_unregistered.data.get("updated_by"), self.abakus_user.id)
         self.assertIsNone(get_unregistered.data.get("pool"))
 
 
@@ -982,8 +986,10 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.data["id"]),
             {"presence": "PRESENT"},
         )
+        registration = Registration.objects.get(id=res.data["id"])
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data["presence"], "PRESENT")
+        self.assertEqual(registration.updated_by, self.abakus_user)
 
     def test_user_cannot_update_other_registration(self, *args):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -1013,8 +1019,10 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.data["id"]),
             {"feedback": "UPDATED_BY_ADMIN"},
         )
+        registration = Registration.objects.get(id=res.data["id"])
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data["feedback"], "UPDATED_BY_ADMIN")
+        self.assertEqual(registration.updated_by, self.webkom_user)
 
     def test_can_not_unregister_other_user(self, *args):
         event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
@@ -1157,6 +1165,8 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(self.pool.registrations.count(), 1)
         self.assertEqual(pool_two.registrations.count(), 0)
+        self.assertEqual(registration_response.data["created_by"], self.request_user.id)
+        self.assertEqual(registration_response.data["updated_by"], self.request_user.id)
 
     def test_without_admin_permission(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.user)
@@ -1211,6 +1221,8 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
 
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(registration_response.data.get("feedback"), "TEST")
+        self.assertEqual(registration_response.data["created_by"], self.request_user.id)
+        self.assertEqual(registration_response.data["updated_by"], self.request_user.id)
 
     def test_without_admin_registration_reason(self):
         AbakusGroup.objects.get(name="Webkom").add_user(self.request_user)
@@ -1271,6 +1283,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
         )
 
         self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(registration_response.data["updated_by"], self.webkom_user.id)
         self.assertEqual(self.event.number_of_registrations, registrations_before - 1)
 
     def test_admin_unregistration_without_permission(self):

@@ -572,20 +572,25 @@ class RegistrationTestCase(BaseTestCase):
         pool_one = event.pools.get(name="Abakusmember")
         pool_two = event.pools.get(name="Webkom")
 
-        users = get_dummy_users(6)
+        users = get_dummy_users(7)
         abakus_users = users[:3]
         webkom_users = users[3:5]
+        admin_user = users[6]
 
         for user in abakus_users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
-            event.admin_register(user, pool=pool_one, admin_registration_reason="test")
+            event.admin_register(
+                admin_user, user, pool=pool_one, admin_registration_reason="test"
+            )
             event_follow_exists = FollowEvent.objects.filter(
                 follower=user, target=event
             ).exists()
             self.assertEqual(event_follow_exists, True)
         for user in webkom_users:
             AbakusGroup.objects.get(name="Webkom").add_user(user)
-            event.admin_register(user, pool=pool_two, admin_registration_reason="test")
+            event.admin_register(
+                admin_user, user, pool=pool_two, admin_registration_reason="test"
+            )
             event_follow_exists = FollowEvent.objects.filter(
                 follower=user, target=event
             ).exists()
