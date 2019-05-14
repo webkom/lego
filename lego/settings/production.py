@@ -12,6 +12,7 @@ from lego.settings import (
     MIDDLEWARE,
     PUSH_NOTIFICATIONS_SETTINGS,
 )
+from lego.utils.cors import generate_cors_origin_regex_list
 
 from .secure import *  # noqa
 
@@ -90,11 +91,9 @@ ANALYTICS_HOST = env("ANALYTICS_HOST", default=None)
 ANALYTICS_WRITE_KEY = env("ANALYTICS_WRITE_KEY", default="")
 
 # CORS
-CORS_FRONTEND_URL = urlparse(FRONTEND_URL).netloc
 CORS_ORIGIN_WHITELIST = ["http://127.0.0.1:3000", "http://localhost:3000"]
-CORS_ORIGIN_REGEX_WHITELIST = (
-    r"^(https?://)?(.*\.)?{0}$".format(re.escape(CORS_FRONTEND_URL)),
-)
+CORS_ORIGIN_DOMAINS = env("CORS_ORIGIN_DOMAINS", default=["abakus.no"])
+CORS_ORIGIN_REGEX_WHITELIST = generate_cors_origin_regex_list(CORS_ORIGIN_DOMAINS)
 
 # Restricted
 RESTRICTED_ADDRESS = env("RESTRICTED_ADDRESS", default="restricted")
