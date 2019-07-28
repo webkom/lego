@@ -1,5 +1,5 @@
 django==2.1.7
-ipython==7.6.1
+ipython==7.7.0
 
 
 psycopg2==2.7.7
