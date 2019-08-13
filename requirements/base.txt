@@ -11,7 +11,7 @@ hiredis==1.0.0
 certifi==2019.3.9
 elasticsearch==6.2.0
 celery==4.2.1
-stripe==2.34.0
+stripe==2.35.0
 structlog==19.1.0
 boto3==1.9.147
 bs4==0.0.1
