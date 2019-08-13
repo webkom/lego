@@ -75,6 +75,7 @@ class Command(BaseCommand):
                     "polls/fixtures/development_polls.yaml",
                     "oauth/fixtures/development_applications.yaml",
                     "reactions/fixtures/emojione_reaction_types.yaml",
+                    "reactions/fixtures/development_reactions.yaml",
                     "joblistings/fixtures/development_joblistings.yaml",
                     "surveys/fixtures/development_surveys.yaml",
                 ]

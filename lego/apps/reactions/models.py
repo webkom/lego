@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 from lego.apps.reactions.permissions import ReactionPermissionHandler
 from lego.utils.managers import BasisModelManager
@@ -28,9 +29,16 @@ class Reaction(BasisModel):
 
     class Meta:
         permission_handler = ReactionPermissionHandler()
+        constraints = [
+            models.UniqueConstraint(fields=['journal_id', 'volume_number'],
+                                    name='name of constraint')
+        ]
 
     def __repr__(self):
         return str(self)
 
     def __str__(self):
         return f"{self.created_by} - {self.type_id}"
+
+    def delete(self, using=None, force=False):
+        super().delete(using, force=True)

@@ -55,19 +55,27 @@ class Content(SlugModel):
 
     slug_field = "title"
 
-    @property
-    def reactions_grouped(self):
+    def get_reactions_grouped(self, user):
         grouped = {}
         for reaction in self.reactions.all():
             if reaction.type_id not in grouped:
                 grouped[reaction.type_id] = {
                     "type": reaction.type_id,
+                    "unicode": reaction.type.unicode,
                     "count": 0,
-                    "users": [],
+                    "has_reacted": False,
+                    "reaction_id": None,
+                    # "users": [],
                 }
+
             grouped[reaction.type_id]["count"] += 1
-            grouped[reaction.type_id]["users"].append(reaction.created_by)
-        return grouped.values()
+            # grouped[reaction.type_id]["users"].append(reaction.created_by)
+
+            if reaction.created_by == user:
+                grouped[reaction.type_id]["has_reacted"] = True
+                grouped[reaction.type_id]["reaction_id"] = reaction.id
+
+        return sorted(grouped.values(), key=lambda kv: kv['count'], reverse=True)
 
     class Meta:
         abstract = True
@@ -77,4 +85,8 @@ class Content(SlugModel):
 
     @property
     def comment_target(self):
+        return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
+
+    @property
+    def reaction_target(self):
         return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
