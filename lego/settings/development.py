@@ -20,6 +20,7 @@ CAPTCHA_KEY = (
     os.environ.get("CAPTCHA_KEY") or "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 )
 
+SESSION_COOKIE_SECURE = False
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",

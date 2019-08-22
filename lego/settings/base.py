@@ -117,7 +117,10 @@ OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth.APIApplication"
 # Tokens is valid for 7 days.
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 86400 * 7,
-    "SCOPES": {"user": "Gir tilgang til brukerprofilen."},
+    "SCOPES": {
+        "user": "Enkel brukerinfo. Dette gir lesetilgang til navn, profilbilde, epost og dine medlemskap",
+        "all": "Gir tilgang til all brukerinfo. Kan også gjøre ting som deg",
+    },
 }
 
 ROOT_URLCONF = "lego.urls"
