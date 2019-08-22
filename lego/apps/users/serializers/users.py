@@ -112,6 +112,40 @@ class SearchGroupSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "type", "logo")
 
 
+class Oauth2UserDataSerializer(serializers.ModelSerializer):
+    """
+    Basic serailizer
+    """
+
+    abakus_groups = PublicAbakusGroupSerializer(many=True)
+    memberships = MembershipSerializer(many=True)
+    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    is_student = serializers.SerializerMethodField()
+    is_abakus_member = serializers.BooleanField()
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "full_name",
+            "email_address",
+            "profile_picture",
+            "gender",
+            "is_active",
+            "is_student",
+            "abakus_groups",
+            "is_abakus_member",
+            "is_abakom_member",
+            "memberships",
+        )
+
+    def get_is_student(self, user):
+        return user.is_verified_student()
+
+
 class MeSerializer(serializers.ModelSerializer):
     """
     Serializer for the /me, retrieve and update endpoint with EDIT permissions.

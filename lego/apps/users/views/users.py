@@ -17,6 +17,7 @@ from lego.apps.users.serializers.registration import RegistrationConfirmationSer
 from lego.apps.users.serializers.users import (
     ChangeGradeSerializer,
     MeSerializer,
+    Oauth2UserDataSerializer,
     PublicUserSerializer,
     PublicUserWithGroupsSerializer,
 )
@@ -70,6 +71,20 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return [AllowAny()]
 
         return super().get_permissions()
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        # The oauth lib will give permission if it has scope user
+        permission_classes=[IsAuthenticated],
+        serializer_class=Oauth2UserDataSerializer,
+    )
+    def oauth2_userdata(self, request):
+        """
+        Read-only endpoint used to retrieve information about the authenticated user.
+        """
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
     @action(
         detail=False,
