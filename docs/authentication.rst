@@ -23,10 +23,10 @@ Lego has support for OAuth2 authentication using the ``authorization-code`` meth
 a valid user and the right permissions is able to create an OAuth2 application. This works in the
 same way as ``Login with GitHub`` or any other OAuth2 system.
 
-You should newer expose the ``client_secret`` to the public. Never implement the OAuth2
+You should never expose the ``client_secret`` to the public. Never implement the OAuth2
 authorization flow in a browser.
 
-The snippet bellow can be used together with ``python-social-auth`` to authenticate with Lego as
+The snippet below can be used together with ``python-social-auth`` to authenticate with Lego as
 the user directory.
 
 ::
