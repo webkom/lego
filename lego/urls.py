@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 
@@ -49,4 +50,4 @@ urlpatterns = [
 if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
-    urlpatterns += [url(r"^__debug__/", include(debug_toolbar.urls))]
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
