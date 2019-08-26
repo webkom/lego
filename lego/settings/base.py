@@ -118,7 +118,7 @@ OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth.APIApplication"
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 86400 * 7,
     "SCOPES": {
-        "user": "Enkel brukerinfo. Dette gir lesetilgang til navn, profilbilde, epost og dine medlemskap",
+        "user": "Enkel brukerinfo. Dette gir lesetilgang til ditt navn, brukernavn, profilbilde, epost, kjønn og dine medlemskap",
         "all": "Gir tilgang til all brukerinfo. Kan også gjøre ting som deg",
     },
 }

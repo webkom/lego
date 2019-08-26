@@ -29,6 +29,11 @@ authorization flow in a browser.
 The snippet below can be used together with ``python-social-auth`` to authenticate with Lego as
 the user directory.
 
+We currently have two scopes.
+
+- ``user`` - This scope gives read access access to basic user information: Name, username, profile picture, email and the users memberships. This information can be found in ``/api/v1/users/oauth2_userdata/``
+- ``all`` - This scope gives full read & write access to everything. Including password change.
+
 ::
 
     from six.moves.urllib.parse import urljoin
@@ -51,6 +56,9 @@ the user directory.
             if not api_url:
                 raise ValueError('Please set the LEGO_API_URL setting.')
             return api_url
+
+        def get_scope(self):
+            return ['user'] # Only use ['all'] when necessary (aka. never)
 
         def authorization_url(self):
             return urljoin(self.api_url(), '/authorization/oauth2/authorize/')
