@@ -48,7 +48,7 @@ django-ipware==2.1.0
 odinuge-django-push-notifications==1.6.0.post3
 
 # Ical-export
-django-ical==1.5
+django-ical==1.6
 icalendar==4.0.3
 
 # Docs
