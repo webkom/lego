@@ -260,8 +260,8 @@ class User(
         validators=[username_validator, ReservedNameValidator()],
         error_messages={"unique": "A user has already verified that student username."},
     )
-    first_name = models.CharField("first name", max_length=50, blank=True)
-    last_name = models.CharField("last name", max_length=30, blank=True)
+    first_name = models.CharField("first name", max_length=50, blank=False)
+    last_name = models.CharField("last name", max_length=30, blank=False)
     allergies = models.CharField("allergies", max_length=100, blank=True)
     email = models.EmailField(
         unique=True,
