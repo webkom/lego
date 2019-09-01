@@ -1,237 +1,237 @@
 - pk: 1
   fields:
-    type: ':football:'
+    emoji: ':football:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 2
   fields:
-    type: ':star_and_crescent:'
+    emoji: ':star_and_crescent:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 3
   fields:
-    type: ':boom:'
+    emoji: ':boom:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 4
   fields:
-    type: ':angel:'
+    emoji: ':angel:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 5
   fields:
-    type: ':gun:'
+    emoji: ':gun:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 6
   fields:
-    type: ':shirt:'
+    emoji: ':grin:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 7
   fields:
-    type: ':golfer:'
+    emoji: ':grinning:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 8
   fields:
-    type: ':office:'
+    emoji: ':partying:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 9
   fields:
-    type: ':a:'
+    emoji: ':smiley:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 10
   fields:
-    type: ':womans_clothes:'
+    emoji: ':rofl:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 11
   fields:
-    type: ':womans_clothes:'
+    emoji: ':rofl:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 2
   model: reactions.Reaction
 - pk: 12
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 1
   model: reactions.Reaction
 - pk: 13
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 2
   model: reactions.Reaction
 - pk: 14
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 15
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 4
   model: reactions.Reaction
 - pk: 16
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 5
   model: reactions.Reaction
 - pk: 17
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 6
   model: reactions.Reaction
 - pk: 18
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 7
   model: reactions.Reaction
 - pk: 19
   fields:
-    type: ':flag_no:'
+    emoji: ':norway:'
     content_type: ['articles', 'article']
     object_id: 2
     created_by: 3
   model: reactions.Reaction
 - pk: 20
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 2
     created_by: 3
   model: reactions.Reaction
 - pk: 21
   fields:
-    type: ':mag_right:'
+    emoji: ':wizard:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 22
   fields:
-    type: ':astonished:'
+    emoji: ':astonished:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 23
   fields:
-    type: ':middle_finger:'
+    emoji: ':fu:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 24
   fields:
-    type: ':fountain:'
+    emoji: ':fountain:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 25
   fields:
-    type: ':printer:'
+    emoji: ':printer:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 26
   fields:
-    type: ':flashlight:'
+    emoji: ':flashlight:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 27
   fields:
-    type: ':bee:'
+    emoji: ':bowling:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 28
   fields:
-    type: ':pray:'
+    emoji: ':pray:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 29
   fields:
-    type: ':bear:'
+    emoji: ':bear:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 30
   fields:
-    type: ':seat:'
+    emoji: ':chipmunk:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 3
   model: reactions.Reaction
 - pk: 31
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 8
   model: reactions.Reaction
 - pk: 32
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 9
   model: reactions.Reaction
 - pk: 33
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 10
   model: reactions.Reaction
 - pk: 34
   fields:
-    type: ':flag_pl:'
+    emoji: ':poland:'
     content_type: ['articles', 'article']
     object_id: 3
     created_by: 11

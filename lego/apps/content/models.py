@@ -58,24 +58,22 @@ class Content(SlugModel):
     def get_reactions_grouped(self, user):
         grouped = {}
         for reaction in self.reactions.all():
-            if reaction.type_id not in grouped:
-                grouped[reaction.type_id] = {
-                    "type": reaction.type_id,
-                    "unicode": reaction.type.unicode,
+            if reaction.emoji_id not in grouped:
+                grouped[reaction.emoji_id] = {
+                    "emoji": reaction.emoji_id,
+                    "unicode_string": reaction.emoji.unicode_string,
                     "count": 0,
                     "has_reacted": False,
                     "reaction_id": None,
-                    # "users": [],
                 }
 
-            grouped[reaction.type_id]["count"] += 1
-            # grouped[reaction.type_id]["users"].append(reaction.created_by)
+            grouped[reaction.emoji_id]["count"] += 1
 
             if reaction.created_by == user:
-                grouped[reaction.type_id]["has_reacted"] = True
-                grouped[reaction.type_id]["reaction_id"] = reaction.id
+                grouped[reaction.emoji_id]["has_reacted"] = True
+                grouped[reaction.emoji_id]["reaction_id"] = reaction.id
 
-        return sorted(grouped.values(), key=lambda kv: kv['count'], reverse=True)
+        return sorted(grouped.values(), key=lambda kv: kv["count"], reverse=True)
 
     class Meta:
         abstract = True

@@ -53,6 +53,7 @@ class Command(BaseCommand):
                 "users/fixtures/initial_abakus_groups.yaml",
                 "tags/fixtures/initial_tags.yaml",
                 "flatpages/fixtures/initial_pages.yaml",
+                "emojis/fixtures/initial_emojis.yaml",
             ]
         )
 
@@ -74,7 +75,6 @@ class Command(BaseCommand):
                     "podcasts/fixtures/development_podcasts.yaml",
                     "polls/fixtures/development_polls.yaml",
                     "oauth/fixtures/development_applications.yaml",
-                    "reactions/fixtures/emojione_reaction_types.yaml",
                     "reactions/fixtures/development_reactions.yaml",
                     "joblistings/fixtures/development_joblistings.yaml",
                     "surveys/fixtures/development_surveys.yaml",

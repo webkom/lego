@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "lego.apps.comments",
     "lego.apps.contact",
     "lego.apps.content",
+    "lego.apps.emojis",
     "lego.apps.events",
     "lego.apps.external_sync",
     "lego.apps.companies",

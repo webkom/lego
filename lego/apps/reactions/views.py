@@ -1,18 +1,8 @@
 from rest_framework import mixins, viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.reactions.models import Reaction, ReactionType
-from lego.apps.reactions.serializers import ReactionSerializer, ReactionTypeSerializer
-
-
-class ReactionTypeViewSet(
-    AllowedPermissionsMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,
-):
-    queryset = ReactionType.objects.all()
-    serializer_class = ReactionTypeSerializer
+from lego.apps.reactions.models import Reaction
+from lego.apps.reactions.serializers import ReactionSerializer
 
 
 class ReactionViewSet(
