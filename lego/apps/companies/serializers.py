@@ -150,7 +150,7 @@ class CompanyDetailSerializer(BasisModelSerializer):
 
 class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
+    content_target = CharField(read_only=True)
 
     student_contact = PublicUserField(
         required=False, allow_null=True, queryset=User.objects.all()
@@ -174,7 +174,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
             "address",
             "payment_mail",
             "comments",
-            "comment_target",
+            "content_target",
             "semester_statuses",
             "active",
             "admin_comment",

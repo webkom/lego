@@ -8,4 +8,10 @@ from lego.utils.serializers import BasisModelSerializer
 class EmojiSerializer(BasisModelSerializer):
     class Meta:
         model = Emoji
-        fields = ("id", "keywords", "unicode_string", "fitzpatrick_scale", "category")
+        fields = (
+            "short_code",
+            "keywords",
+            "unicode_string",
+            "fitzpatrick_scale",
+            "category",
+        )

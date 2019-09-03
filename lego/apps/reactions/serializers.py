@@ -14,25 +14,12 @@ from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer, GenericRelationField
 
 
-class GroupedReactionSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    emoji = serializers.CharField()
-    has_reacted = serializers.SerializerMethodField()
-
-    def get_has_reacted(self, obj):
-        user = self.context["request"].user
-        return obj.get_has_reacted(user)
-
-    class Meta:
-        fields = ("count", "emoji", "users")
-
-
 class ReactionSerializer(BasisModelSerializer):
-    target = GenericRelationField(source="content_object")
+    content_target = GenericRelationField(source="content_object")
 
     class Meta:
         model = Reaction
-        fields = ("id", "emoji", "target")
+        fields = ("id", "emoji", "content_target")
 
     def create(self, validated_data):
         try:

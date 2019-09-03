@@ -61,7 +61,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
     )
     created_by = PublicUserField(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
+    content_target = CharField(read_only=True)
 
     class Meta:
         model = Meeting
@@ -76,7 +76,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
             "report_author",
             "invitations",
             "comments",
-            "comment_target",
+            "content_target",
         )
         read_only = True
 

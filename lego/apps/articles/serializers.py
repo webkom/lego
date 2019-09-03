@@ -5,7 +5,6 @@ from lego.apps.articles.models import Article
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.files.fields import ImageField
-from lego.apps.reactions.serializers import GroupedReactionSerializer
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
@@ -18,9 +17,8 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
     comments = CommentSerializer(read_only=True, many=True)
     cover = ImageField(required=False, options={"height": 500})
-    comment_target = CharField(read_only=True)
+    content_target = CharField(read_only=True)
     content = ContentSerializerField(source="text")
-    reaction_target = CharField(read_only=True)
     reactions_grouped = serializers.SerializerMethodField()
 
     def get_reactions_grouped(self, obj):
@@ -36,12 +34,11 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "author",
             "description",
             "comments",
-            "comment_target",
+            "content_target",
             "tags",
             "content",
             "created_at",
             "pinned",
-            "reaction_target",
             "reactions_grouped",
             "youtube_url",
         )

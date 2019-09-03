@@ -32,7 +32,7 @@ class Reaction(BasisModel):
         return str(self)
 
     def __str__(self):
-        return f"{self.created_by} - {self.type_id}"
+        return f"{self.created_by} - {self.emoji.pk}"
 
     def save(self, *args, **kwargs):
         if Reaction.objects.filter(

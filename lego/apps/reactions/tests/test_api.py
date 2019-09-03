@@ -29,7 +29,7 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
         content_type = ContentType.objects.get_for_model(Article)
         return {
             "emoji": Emoji.objects.first().pk,
-            "target": "{0}.{1}-{2}".format(
+            "content_target": "{0}.{1}-{2}".format(
                 content_type.app_label, content_type.model, article_id
             ),
         }
@@ -42,6 +42,7 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
 
         self.authorized_user = User.objects.get(pk=1)
         group.add_user(self.authorized_user)
+        group.save()
 
         self.unauthorized_user = User.objects.get(pk=2)
 

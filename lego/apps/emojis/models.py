@@ -10,7 +10,7 @@ from lego.utils.models import BasisModel
 
 
 class Emoji(BasisModel):
-    id = models.CharField(max_length=40, primary_key=True)
+    short_code = models.CharField(max_length=40, primary_key=True)
     keywords = fields.ArrayField(models.CharField(max_length=40))
     unicode_string = models.CharField(max_length=24, db_index=True)
     fitzpatrick_scale = models.BooleanField()

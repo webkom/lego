@@ -10,7 +10,7 @@ from lego.utils.serializers import BasisModelSerializer
 class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
 
     comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
+    content_target = CharField(read_only=True)
     text = ContentSerializerField()
 
     class Meta:
@@ -23,7 +23,7 @@ class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
             "approved",
             "tags",
             "comments",
-            "comment_target",
+            "content_target",
         )
 
 

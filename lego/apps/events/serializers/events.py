@@ -87,7 +87,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
+    content_target = CharField(read_only=True)
     cover = ImageField(required=False, options={"height": 500})
     company = CompanyField(queryset=Company.objects.all())
     responsible_group = AbakusGroupField(
@@ -112,7 +112,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "event_status_type",
             "location",
             "comments",
-            "comment_target",
+            "content_target",
             "start_time",
             "end_time",
             "merge_time",

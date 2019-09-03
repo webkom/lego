@@ -12,7 +12,7 @@ class CommentSerializer(BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
     created_at = DateTimeField(read_only=True)
     updated_at = DateTimeField(read_only=True)
-    comment_target = GenericRelationField(source="content_object")
+    content_target = GenericRelationField(source="content_object")
     text = ContentSerializerField()
 
     class Meta:
@@ -21,24 +21,24 @@ class CommentSerializer(BasisModelSerializer):
             "id",
             "text",
             "author",
-            "comment_target",
+            "content_target",
             "created_at",
             "updated_at",
             "parent",
         )
 
     def validate(self, attrs):
-        comment_target = attrs.get("content_object")
+        content_target = attrs.get("content_object")
 
-        if comment_target and "parent" in attrs:
+        if content_target and "parent" in attrs:
             parent = attrs["parent"]
             if (
-                parent.object_id != comment_target.id
+                parent.object_id != content_target.id
                 or parent.content_type
-                != ContentType.objects.get_for_model(comment_target)
+                != ContentType.objects.get_for_model(content_target)
             ):
                 raise ValidationError(
-                    {"parent": "parent does not point to the same comment_target"}
+                    {"parent": "parent does not point to the same content_target"}
                 )
 
         return attrs
