@@ -8,7 +8,7 @@ class JSONRenderer(CamelCaseJSONRenderer):
     """
 
     def render(self, data, *args, **kwargs):
-        if data is None:
+        if data is None and len(args) > 1 and args[1]["response"].status_code != 204:
             return bytes("{}".encode("utf-8"))
 
         return super().render(data, *args, **kwargs)
