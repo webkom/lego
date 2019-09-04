@@ -13,6 +13,7 @@ from lego.apps.companies.views import (
 )
 from lego.apps.contact.views import ContactFormViewSet
 from lego.apps.email.views import EmailListViewSet, UserEmailViewSet
+from lego.apps.emojis.views import EmojiViewSet
 from lego.apps.events.views import (
     EventViewSet,
     PoolViewSet,
@@ -52,7 +53,7 @@ from lego.apps.oauth.views import AccessTokenViewSet, ApplicationViewSet
 from lego.apps.podcasts.views import PodcastViewSet
 from lego.apps.polls.views import PollViewSet
 from lego.apps.quotes.views import QuoteViewSet
-from lego.apps.reactions.views import ReactionTypeViewSet, ReactionViewSet
+from lego.apps.reactions.views import ReactionViewSet
 from lego.apps.restricted.views import RestrictedMailViewSet
 from lego.apps.search.views import AutocompleteViewSet, SearchViewSet
 from lego.apps.surveys.views import (
@@ -111,6 +112,7 @@ router.register(r"device-apns", APNSDeviceViewSet)
 router.register(r"device-gcm", GCMDeviceViewSet)
 router.register(r"email-lists", EmailListViewSet, base_name="email-lists")
 router.register(r"email-users", UserEmailViewSet, base_name="email-users")
+router.register(r"emojis", EmojiViewSet, base_name="emoji")
 router.register(r"events", EventViewSet, base_name="event")
 router.register(r"events/(?P<event_pk>\d+)/pools", PoolViewSet)
 router.register(
@@ -186,7 +188,6 @@ router.register(r"penalties", PenaltyViewSet)
 router.register(r"podcasts", PodcastViewSet, base_name="podcasts")
 router.register(r"polls", PollViewSet, base_name="polls")
 router.register(r"quotes", QuoteViewSet)
-router.register(r"reaction-types", ReactionTypeViewSet)
 router.register(r"reactions", ReactionViewSet)
 router.register(r"restricted-mail", RestrictedMailViewSet, base_name="restricted-mail")
 router.register(r"search-autocomplete", AutocompleteViewSet, base_name="autocomplete")

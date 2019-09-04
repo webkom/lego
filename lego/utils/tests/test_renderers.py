@@ -8,4 +8,4 @@ class JSONRendererTestCase(BaseTestCase):
 
     def test_empty_data(self):
         """The renderer should return an empty object when data is None"""
-        self.assertEquals(self.renderer.render(None), "{}".encode())
+        self.assertEquals(self.renderer.render(None), b"")

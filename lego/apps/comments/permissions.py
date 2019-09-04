@@ -40,7 +40,7 @@ class CommentPermissionHandler(PermissionHandler):
 
     def check_target_permission(self, user, request):
         try:
-            target = request.data.get("comment_target", None)
+            target = request.data.get("content_target", None)
             if target:
                 obj = string_to_instance(target)
                 return user.has_perm(VIEW, obj)

@@ -54,7 +54,7 @@ class GalleryPicture(models.Model):
         permission_handler = GalleryPicturePermissionHandler()
 
     @property
-    def comment_target(self):
+    def content_target(self):
         return "{0}.{1}-{2}".format(
             self._meta.app_label, self._meta.model_name, self.pk
         )

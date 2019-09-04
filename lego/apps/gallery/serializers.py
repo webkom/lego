@@ -62,7 +62,7 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
     )
     raw_file = FileField(source="file", read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
-    comment_target = CharField(read_only=True)
+    content_target = CharField(read_only=True)
     taggees = PublicUserField(many=True, queryset=User.objects.all(), required=False)
 
     class Meta:
@@ -77,7 +77,7 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
             "thumbnail",
             "raw_file",
             "comments",
-            "comment_target",
+            "content_target",
         )
         read_only_fields = ("raw_file", "thumbnail", "gallery")
 

@@ -3,13 +3,6 @@ from lego.apps.permissions.permissions import PermissionHandler
 from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
-class ReactionTypePermissionHandler(PermissionHandler):
-
-    default_keyword_permission = "/sudo/admin/reactions/{perm}"
-
-    permission_map = {LIST: [], VIEW: []}
-
-
 class ReactionPermissionHandler(PermissionHandler):
 
     default_keyword_permission = "/sudo/admin/reactions/{perm}"
@@ -60,7 +53,7 @@ class ReactionPermissionHandler(PermissionHandler):
 
     def check_target_permission(self, user, request):
         try:
-            target = request.data.get("target", None)
+            target = request.data.get("content_target", None)
             if target:
                 obj = string_to_instance(target)
                 return user.has_perm(VIEW, obj)

@@ -1,0 +1,384 @@
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - smile
+    - happy
+    - joy
+    - :D
+    - grin
+    unicode_string: "\U0001F600"
+  model: emojis.Emoji
+  pk: ':grinning:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - grimace
+    - teeth
+    unicode_string: "\U0001F62C"
+  model: emojis.Emoji
+  pk: ':grimacing:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - happy
+    - smile
+    - joy
+    - kawaii
+    unicode_string: "\U0001F601"
+  model: emojis.Emoji
+  pk: ':grin:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - cry
+    - tears
+    - weep
+    - happy
+    - happytears
+    - haha
+    unicode_string: "\U0001F602"
+  model: emojis.Emoji
+  pk: ':joy:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - rolling
+    - floor
+    - laughing
+    - lol
+    - haha
+    unicode_string: "\U0001F923"
+  model: emojis.Emoji
+  pk: ':rofl:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - celebration
+    - woohoo
+    unicode_string: "\U0001F973"
+  model: emojis.Emoji
+  pk: ':partying:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - happy
+    - joy
+    - haha
+    - :D
+    - :)
+    - smile
+    - funny
+    unicode_string: "\U0001F603"
+  model: emojis.Emoji
+  pk: ':smiley:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - happy
+    - joy
+    - funny
+    - haha
+    - laugh
+    - like
+    - :D
+    - :)
+    unicode_string: "\U0001F604"
+  model: emojis.Emoji
+  pk: ':smile:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - hot
+    - happy
+    - laugh
+    - sweat
+    - smile
+    - relief
+    unicode_string: "\U0001F605"
+  model: emojis.Emoji
+  pk: ':sweat_smile:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - happy
+    - joy
+    - lol
+    - satisfied
+    - haha
+    - face
+    - glad
+    - XD
+    - laugh
+    unicode_string: "\U0001F606"
+  model: emojis.Emoji
+  pk: ':laughing:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - angel
+    - heaven
+    - halo
+    unicode_string: "\U0001F607"
+  model: emojis.Emoji
+  pk: ':innocent:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - happy
+    - mischievous
+    - secret
+    - ;)
+    - smile
+    - eye
+    unicode_string: "\U0001F609"
+  model: emojis.Emoji
+  pk: ':wink:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - smile
+    - happy
+    - flushed
+    - crush
+    - embarrassed
+    - shy
+    - joy
+    unicode_string: "\U0001F60A"
+  model: emojis.Emoji
+  pk: ':blush:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - smile
+    unicode_string: "\U0001F642"
+  model: emojis.Emoji
+  pk: ':slightly_smiling_face:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - flipped
+    - silly
+    - smile
+    unicode_string: "\U0001F643"
+  model: emojis.Emoji
+  pk: ':upside_down_face:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - blush
+    - massage
+    - happiness
+    unicode_string: "\u263A\uFE0F"
+  model: emojis.Emoji
+  pk: ':relaxed:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - happy
+    - joy
+    - tongue
+    - smile
+    - face
+    - silly
+    - yummy
+    - nom
+    - delicious
+    - savouring
+    unicode_string: "\U0001F60B"
+  model: emojis.Emoji
+  pk: ':yum:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - relaxed
+    - phew
+    - massage
+    - happiness
+    unicode_string: "\U0001F60C"
+  model: emojis.Emoji
+  pk: ':relieved:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - love
+    - like
+    - affection
+    - valentines
+    - infatuation
+    - crush
+    - heart
+    unicode_string: "\U0001F60D"
+  model: emojis.Emoji
+  pk: ':heart_eyes:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - love
+    - like
+    - affection
+    - valentines
+    - infatuation
+    - crush
+    - hearts
+    - adore
+    unicode_string: "\U0001F970"
+  model: emojis.Emoji
+  pk: ':smiling_face_with_three_hearts:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - love
+    - like
+    - affection
+    - valentines
+    - infatuation
+    - kiss
+    unicode_string: "\U0001F618"
+  model: emojis.Emoji
+  pk: ':kissing_heart:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - love
+    - like
+    - face
+    - '3'
+    - valentines
+    - infatuation
+    - kiss
+    unicode_string: "\U0001F617"
+  model: emojis.Emoji
+  pk: ':kissing:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - affection
+    - valentines
+    - infatuation
+    - kiss
+    unicode_string: "\U0001F619"
+  model: emojis.Emoji
+  pk: ':kissing_smiling_eyes:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - love
+    - like
+    - affection
+    - valentines
+    - infatuation
+    - kiss
+    unicode_string: "\U0001F61A"
+  model: emojis.Emoji
+  pk: ':kissing_closed_eyes:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - prank
+    - childish
+    - playful
+    - mischievous
+    - smile
+    - wink
+    - tongue
+    unicode_string: "\U0001F61C"
+  model: emojis.Emoji
+  pk: ':stuck_out_tongue_winking_eye:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - goofy
+    - crazy
+    unicode_string: "\U0001F92A"
+  model: emojis.Emoji
+  pk: ':zany:'
+- fields:
+    category: people
+    disabled: false
+    fitzpatrick_scale: false
+    keywords:
+    - face
+    - distrust
+    - scepticism
+    - disapproval
+    - disbelief
+    - surprise
+    unicode_string: "\U0001F928"
+  model: emojis.Emoji
+  pk: ':raised_eyebrow:'
+

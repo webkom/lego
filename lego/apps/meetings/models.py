@@ -86,7 +86,7 @@ class Meeting(BasisModel):
         return self.invited_users
 
     @property
-    def comment_target(self):
+    def content_target(self):
         return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
 
 

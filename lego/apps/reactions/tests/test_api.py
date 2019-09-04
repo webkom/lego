@@ -2,7 +2,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
 from lego.apps.articles.models import Article
-from lego.apps.reactions.models import Reaction, ReactionType
+from lego.apps.emojis.models import Emoji
+from lego.apps.reactions.constants import REACTION_COUNT_LIMIT
+from lego.apps.reactions.models import Reaction
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -19,15 +21,15 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
-        "test_reaction_types.yaml",
+        "test_emojis.yaml",
         "test_articles.yaml",
     ]
 
     def get_test_data(self, article_id):
         content_type = ContentType.objects.get_for_model(Article)
         return {
-            "type": ReactionType.objects.first().pk,
-            "target": "{0}.{1}-{2}".format(
+            "emoji": Emoji.objects.first().pk,
+            "content_target": "{0}.{1}-{2}".format(
                 content_type.app_label, content_type.model, article_id
             ),
         }
@@ -40,6 +42,7 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
 
         self.authorized_user = User.objects.get(pk=1)
         group.add_user(self.authorized_user)
+        group.save()
 
         self.unauthorized_user = User.objects.get(pk=2)
 
@@ -63,24 +66,45 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
         response = self.client.post(_get_list_url(), test_data)
         self.assertEqual(response.status_code, 403)
 
-    def test_invalid_reaction_type(self):
-        test_data = {**self.test_data, "type": "xxxyzb"}
+    def test_invalid_emoji(self):
+        test_data = {**self.test_data, "emoji": "xxxyzb"}
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
         self.assertEqual(response.status_code, 400)
+
+    def test_already_reacted(self):
+        self.client.force_authenticate(self.authorized_user)
+        test_reaction = Reaction.objects.create(
+            content_object=Article.objects.get(id=1), emoji=Emoji.objects.first()
+        )
+        test_reaction.created_by = self.authorized_user
+        test_reaction.save()
+        response = self.client.post(_get_list_url(), self.test_data)
+        self.assertEqual(response.status_code, 409)
+
+    def test_reaction_limit(self):
+        for emoji in Emoji.objects.all()[:REACTION_COUNT_LIMIT]:
+            test_reaction = Reaction.objects.create(
+                content_object=Article.objects.get(id=1), emoji=emoji
+            )
+            test_reaction.created_by = self.authorized_user
+            test_reaction.save()
+        self.client.force_authenticate(self.authorized_user)
+        response = self.client.post(_get_list_url(), self.test_data)
+        self.assertEqual(response.status_code, 413)
 
 
 class DeleteReactionsAPITestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
-        "test_reaction_types.yaml",
+        "test_emojis.yaml",
         "test_articles.yaml",
     ]
 
     def setUp(self):
         self.test_reaction = Reaction.objects.create(
-            content_object=Article.objects.get(id=1), type=ReactionType.objects.first()
+            content_object=Article.objects.get(id=1), emoji=Emoji.objects.first()
         )
         self.test_reaction.created_by = User.objects.get(pk=4)
         self.test_reaction.save()
