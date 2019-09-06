@@ -6,6 +6,7 @@ from django.db import models
 
 from lego.apps.users.constants import ROLES
 from lego.utils.validators import ReservedNameValidator
+from lego.apps.users.validators import email_blacklist_validator, username_validator
 
 
 class EmailAddress(models.Model):
@@ -67,6 +68,14 @@ class EmailList(models.Model):
     require_internal_address = models.BooleanField(
         default=False,
         help_text="Only allow users with emails from our internal domain, @abakus.no",
+    )
+    additional_emails = ArrayField(
+        models.EmailField(
+            unique=False,
+            # validators=[email_blacklist_validator],
+            error_messages={"unique": "A user with that email already exists."},
+            default="",
+        )
     )
 
     @property
