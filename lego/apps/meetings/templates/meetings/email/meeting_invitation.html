@@ -20,7 +20,7 @@
 
     <tr>
         <td class="content-block">
-            {{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
+            {{owner}} inviterte deg til et møte med tittel <b>{{meeting_title}}</b>.
         </td>
     </tr>
 
@@ -37,36 +37,42 @@
     </tr>
 
     <tr>
-        <td class="button">
-          <div>
-            <!--[if mso]>
-            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
-                <w:anchorlock/>
-                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">My Account</center>
-            </v:roundrect>
-            <![endif]-->
-            <a class="btn-primary" href="{{frontend_url}}/meetings/{{meeting_id}}/?action=accept&token={{token}}"
-                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
-                Aksepter invitasjon
-            </a>
-          </div>
+        <td align="center">
+            <table width="300px" style="margin: 0 auto" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="button">
+                      <div>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                            <w:anchorlock/>
+                            <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Aksepter invitasjon</center>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a class="btn-primary" href="{{frontend_url}}/meetings/{{meeting_id}}/?action=accept&token={{token}}"
+                            style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;margin-right:10px">
+                            Aksepter invitasjon
+                        </a>
+                      </div>
+                    </td>
+
+                    <td class="button">
+                      <div>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{frontend_url}}/meetings/{{meeting_id}}/?action=reject&token={{token}}" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                            <w:anchorlock/>
+                            <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Avslå invitasjon</center>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a class="btn-primary" href="{{frontend_url}}/meetings/{{meeting_id}}/?action=reject&token={{token}}"
+                            style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
+                            Avslå invitasjon
+                        </a>
+                      </div>
+                    </td>
+                </tr>
+            </table>
         </td>
-    </tr>
-    <tr>
-        <td class="button">
-          <div>
-            <!--[if mso]>
-            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
-                <w:anchorlock/>
-                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">My Account</center>
-            </v:roundrect>
-            <![endif]-->
-            <a class="btn-primary" href="{{frontend_url}}/meetings/{{meeting_id}}/?action=reject&token={{token}}"
-                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
-                Avslå invitasjon
-            </a>
-          </div>
-        </td>
+
     </tr>
 
     <tr>

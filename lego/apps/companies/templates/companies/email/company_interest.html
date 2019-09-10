@@ -12,19 +12,33 @@
 
 {% block content %}
 
-    <tr class="content-block">
-        <p>Bedrift: {{ company_name }}</p>
-        <p>Kontaktperson: {{ contact_person }}</p>
-        <p>E-post: {{ mail }}</p>
-        <p>Semestere: {{ semesters }}</p>
-        <p>Arrangementer: {{ events }}</p>
-        <p>Andre ønsker: {{ others }}</p>
-        <p>Kommentar: {{ comment }}</p>
+    <tr>
+        <td class="content-block">
+            <p>Bedrift: {{ company_name }}</p>
+            <p>Kontaktperson: {{ contact_person }}</p>
+            <p>E-post: {{ mail }}</p>
+            <p>Semestere: {{ semesters }}</p>
+            <p>Arrangementer: {{ events }}</p>
+            <p>Andre ønsker: {{ others }}</p>
+            <p>Kommentar: {{ comment }}</p>
+        </td>
     </tr>
+
     
     <tr>
-        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-            <a href="{{ frontend_url }}/companyInterest/" class="btn-primary" itemprop="url">Vis interessemeldinger</a>
+        <td class="button">
+          <div>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}/companyInterest/" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Vis interessemeldinger</center>
+            </v:roundrect>
+            <![endif]-->
+            <a class="btn-primary" href="{{ frontend_url }}/companyInterest/"
+                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
+                Vis interessemeldinger
+            </a>
+          </div>
         </td>
     </tr>
 
