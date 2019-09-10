@@ -5,8 +5,8 @@ from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 
 from lego.apps.users.constants import ROLES
-from lego.utils.validators import ReservedNameValidator
 from lego.apps.users.validators import email_blacklist_validator, username_validator
+from lego.utils.validators import ReservedNameValidator
 
 
 class EmailAddress(models.Model):
@@ -71,11 +71,9 @@ class EmailList(models.Model):
     )
     additional_emails = ArrayField(
         models.EmailField(
-            unique=False,
-            # validators=[email_blacklist_validator],
-            error_messages={"unique": "A user with that email already exists."},
-            default="",
-        )
+            unique=False, validators=[email_blacklist_validator], default=""
+        ),
+        default=list,
     )
 
     @property
@@ -105,6 +103,8 @@ class EmailList(models.Model):
                     role__in=self.group_roles,
                 )
             members += [membership.user.email_address for membership in memberships]
+        # Add additional emails to members
+        members += [email for email in self.additional_emails]
 
         if self.require_internal_address:
             members = filter(lambda m: m.endswith(settings.GSUITE_DOMAIN), members)
