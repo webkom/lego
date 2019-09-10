@@ -138,16 +138,15 @@ def async_unregister(self, registration_id, logger_context=None):
 
 
 @celery_app.task(base=Payment, bind=True)
-def async_payment(self, registration_id, token, logger_context=None):
+def async_payment(self, registration_id, logger_context=None):
     self.setup_logger(logger_context)
 
     self.registration = Registration.objects.get(id=registration_id)
     event = self.registration.event
     try:
-        response = stripe.Charge.create(
+        response = stripe.PaymentIntent.create(
             amount=event.get_price(self.registration.user),
             currency="NOK",
-            source=token,
             description=event.slug,
             metadata={
                 "EVENT_ID": event.id,
@@ -189,6 +188,7 @@ def registration_payment_save(self, result, registration_id, logger_context=None
             registration,
             success_message="Betaling gjennomført",
         )
+        return {"client_secret": result["client_secret"]}
     except IntegrityError as e:
         log.error(
             "registration_save_error", exception=e, registration_id=registration_id
@@ -212,7 +212,11 @@ def check_for_bump_on_pool_creation_or_expansion(self, event_id, logger_context=
 def stripe_webhook_event(self, event_id, event_type, logger_context=None):
     self.setup_logger(logger_context)
 
-    if event_type in ["charge.failed", "charge.refunded", "charge.succeeded"]:
+    if event_type in [
+        "payment_intent.failed",
+        "payment_intent.refunded",
+        "payment_intent.succeeded",
+    ]:
         event = stripe.Event.retrieve(event_id)
         serializer = StripeObjectSerializer(data=event.data["object"])
         serializer.is_valid(raise_exception=True)

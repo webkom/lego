@@ -10,7 +10,7 @@ hiredis==1.0.1
 certifi==2020.4.5.1
 elasticsearch==6.2.0
 celery==4.4.2
-stripe==2.24.1
+stripe==2.35.1
 boto3>=1.9<=1.10
 bs4==0.0.1
 bleach==3.1.4

@@ -168,11 +168,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return Response(event_data)
 
     @decorators.action(
-        detail=True, methods=["POST"], serializer_class=StripeTokenSerializer
+        detail=True, methods=["GET"], serializer_class=StripeTokenSerializer
     )
     def payment(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         event_id = self.kwargs.get("pk", None)
         event = Event.objects.get(id=event_id)
         registration = event.get_registration(request.user)
@@ -184,14 +182,24 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise APIPaymentExists()
         registration.charge_status = constants.PAYMENT_PENDING
         registration.save()
-        chain(
-            async_payment.s(registration.id, serializer.data["token"]),
-            registration_payment_save.s(registration.id),
-        ).delay()
+        client_secret = (
+            chain(
+                async_payment.s(registration.id),
+                registration_payment_save.s(registration.id),
+            )
+            .delay()
+            .get()
+        )
         payment_serializer = RegistrationPaymentReadSerializer(
             registration, context={"request": request}
         )
-        return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
+
+        response_data = payment_serializer.data
+        if client_secret:
+            response_data = dict(response_data)
+            response_data.update(client_secret)
+
+        return Response(data=response_data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.action(
         detail=False,

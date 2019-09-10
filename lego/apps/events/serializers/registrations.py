@@ -145,7 +145,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
 
 class StripeTokenSerializer(serializers.Serializer):
-    token = serializers.CharField()
+    payment_intent_id = serializers.CharField()
 
 
 class StripeMetaSerializer(serializers.Serializer):
