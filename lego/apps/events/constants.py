@@ -83,7 +83,7 @@ STATUSES = (
 
 PAYMENT_PENDING = "pending"
 PAYMENT_SUCCESS = "succeeded"
-PAYMENT_FAILURE = "failed"  # Matches stripe API
+PAYMENT_FAILURE = "payment_failed"  # Matches stripe API
 PAYMENT_MANUAL = "manual"
 
 SOCKET_PAYMENT_SUCCESS = "Event.SOCKET_PAYMENT.SUCCESS"

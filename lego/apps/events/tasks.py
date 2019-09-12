@@ -139,6 +139,10 @@ def async_unregister(self, registration_id, logger_context=None):
 
 @celery_app.task(base=Payment, bind=True)
 def async_payment(self, registration_id, logger_context=None):
+    """
+    Task that creates a new Stripe payment intent. Stripe returns a payment_intent object. The
+    client_secret is then needed to finsish the payment on the frontend.
+    """
     self.setup_logger(logger_context)
 
     self.registration = Registration.objects.get(id=registration_id)
@@ -175,6 +179,9 @@ def async_payment(self, registration_id, logger_context=None):
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def registration_payment_save(self, result, registration_id, logger_context=None):
+    """
+    Saves a users registration with new payment details.
+    """
     self.setup_logger(logger_context)
 
     try:
@@ -183,11 +190,6 @@ def registration_payment_save(self, result, registration_id, logger_context=None
         registration.charge_amount = result["amount"]
         registration.charge_status = result["status"]
         registration.save()
-        notify_user_payment(
-            constants.SOCKET_PAYMENT_SUCCESS,
-            registration,
-            success_message="Betaling gjennomført",
-        )
         return {"client_secret": result["client_secret"]}
     except IntegrityError as e:
         log.error(
@@ -210,10 +212,14 @@ def check_for_bump_on_pool_creation_or_expansion(self, event_id, logger_context=
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def stripe_webhook_event(self, event_id, event_type, logger_context=None):
+    """
+    Task that handles webhook events from Stripe, and updates the users registration in accordance
+    with the payment status.
+    """
     self.setup_logger(logger_context)
 
     if event_type in [
-        "payment_intent.failed",
+        "payment_intent.payment_failed",
         "payment_intent.refunded",
         "payment_intent.succeeded",
     ]:
@@ -230,9 +236,19 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
             raise WebhookDidNotFindRegistration(event_id, metadata)
         registration.charge_id = serializer.data["id"]
         registration.charge_amount = serializer.data["amount"]
-        registration.charge_amount_refunded = serializer.data["amount_refunded"]
+        registration.charge_amount_refunded = (
+            serializer.data["amount_refunded"]
+            if "amount_refunded" in serializer.data
+            else 0
+        )
         registration.charge_status = serializer.data["status"]
         registration.save()
+        if event_type == "payment_intent.succeeded":
+            notify_user_payment(
+                constants.SOCKET_PAYMENT_SUCCESS,
+                registration,
+                success_message="Betaling godkjent",
+            )
         log.info(
             "stripe_webhook_received",
             event_id=event_id,

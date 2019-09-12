@@ -144,7 +144,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
         read_only = True
 
 
-class StripeTokenSerializer(serializers.Serializer):
+class StripePaymentIntentSerializer(serializers.Serializer):
     payment_intent_id = serializers.CharField()
 
 
@@ -157,6 +157,6 @@ class StripeMetaSerializer(serializers.Serializer):
 class StripeObjectSerializer(serializers.Serializer):
     id = serializers.CharField()
     amount = serializers.IntegerField()
-    amount_refunded = serializers.IntegerField()
+    amount_refunded = serializers.IntegerField(required=False)
     status = serializers.CharField()
     metadata = StripeMetaSerializer()

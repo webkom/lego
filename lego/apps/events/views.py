@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
 
 from celery import chain
 
@@ -43,7 +44,7 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadSerializer,
     RegistrationSearchReadSerializer,
     RegistrationSearchSerializer,
-    StripeTokenSerializer,
+    StripePaymentIntentSerializer,
 )
 from lego.apps.events.tasks import (
     async_payment,
@@ -167,9 +168,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 
-    @decorators.action(
-        detail=True, methods=["GET"], serializer_class=StripeTokenSerializer
-    )
+    @decorators.action(detail=True, methods=["POST"], serializer_class=BaseSerializer)
     def payment(self, request, *args, **kwargs):
         event_id = self.kwargs.get("pk", None)
         event = Event.objects.get(id=event_id)
@@ -180,6 +179,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         if registration.has_paid():
             raise APIPaymentExists()
+
         registration.charge_status = constants.PAYMENT_PENDING
         registration.save()
         client_secret = (
