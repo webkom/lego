@@ -58,7 +58,7 @@ class EmailListTestCase(BaseTestCase):
         list.groups.add(group)
 
         self.assertSequenceEqual(
-            {"test1@user.com", "test2@user.com"}, set(list.members())
+            {"test1@user.com", "test2@user.com", "test@test.no"}, set(list.members())
         )
 
     def test_only_internal_allowed(self):

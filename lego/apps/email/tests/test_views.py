@@ -39,6 +39,7 @@ class EmailListTestCase(BaseAPITestCase):
                 "users": [3, 4],
                 "groups": [self.admin_group.id],
                 "groupRoles": ["member"],
+                "additional_emails": [],
             },
         )
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
