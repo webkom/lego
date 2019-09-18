@@ -22,7 +22,7 @@ class EmailAddressTestCase(BaseTestCase):
         self.assertFalse(address.is_assigned(list))
 
     def test_is_assigned_when_not_used(self):
-        """is_assigned returns False when the address is'nt used."""
+        """is_assigned returns False when the address isn't used."""
         address = EmailAddress.objects.get(email="address1")
         self.assertFalse(address.is_assigned())
 
