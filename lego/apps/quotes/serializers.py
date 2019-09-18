@@ -1,6 +1,6 @@
+from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.quotes.models import Quote
 from lego.apps.tags.serializers import TagSerializerMixin
@@ -8,10 +8,13 @@ from lego.utils.serializers import BasisModelSerializer
 
 
 class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
-
-    comments = CommentSerializer(read_only=True, many=True)
-    content_target = CharField(read_only=True)
     text = ContentSerializerField()
+    reactions_grouped = serializers.SerializerMethodField()
+    content_target = CharField(read_only=True)
+
+    def get_reactions_grouped(self, obj):
+        user = self.context["request"].user
+        return obj.get_reactions_grouped(user)
 
     class Meta:
         model = Quote
@@ -22,7 +25,7 @@ class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
             "source",
             "approved",
             "tags",
-            "comments",
+            "reactions_grouped",
             "content_target",
         )
 
