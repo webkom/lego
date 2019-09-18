@@ -3,11 +3,12 @@ name: LEGO backend
 on:
   push:
     branches:
+      - '*'
       - '!master'
       - '!prod'
 
 jobs:
-  Run tests:
+  tests:
     runs-on: ubuntu-latest
 
     services:
