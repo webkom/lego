@@ -26,7 +26,7 @@ class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
             "approved",
             "tags",
             "reactions_grouped",
-            "content_target"
+            "content_target",
         )
 
 
