@@ -13,7 +13,7 @@ from lego.apps.companies.views import (
 )
 from lego.apps.contact.views import ContactFormViewSet
 from lego.apps.email.views import EmailListViewSet, UserEmailViewSet
-from lego.apps.emojis.views import EmojiViewSet
+from lego.apps.emojis.views import EmojiCategoryViewSet, EmojiViewSet
 from lego.apps.events.views import (
     EventViewSet,
     PoolViewSet,
@@ -113,6 +113,7 @@ router.register(r"device-gcm", GCMDeviceViewSet)
 router.register(r"email-lists", EmailListViewSet, base_name="email-lists")
 router.register(r"email-users", UserEmailViewSet, base_name="email-users")
 router.register(r"emojis", EmojiViewSet, base_name="emoji")
+router.register(r"emoji-categories", EmojiCategoryViewSet, base_name="emoji-categories")
 router.register(r"events", EventViewSet, base_name="event")
 router.register(r"events/(?P<event_pk>\d+)/pools", PoolViewSet)
 router.register(
