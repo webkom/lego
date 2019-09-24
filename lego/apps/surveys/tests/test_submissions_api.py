@@ -83,7 +83,7 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(_get_detail_url(1, 1))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_detail_attended_own(self):
         """Users who attended the event should be able to see their own submission"""
@@ -94,7 +94,7 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertEqual(created.status_code, status.HTTP_201_CREATED)
         response = self.client.get(_get_detail_url(1, created.json()["id"]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_detail_attended_other(self):
         """Users who attended the event should not be able to see other submissions"""
@@ -116,7 +116,7 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_list_url(1) + "?user=" + str(self.admin_user.id)
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_answered_attended_other(self):
         """Users who attended the event should be able to check if they have answered a survey"""
@@ -125,14 +125,14 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_list_url(1) + "?user=" + str(self.attended_user.id)
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
-        self.assertFalse(response.data.get("results", False))
+        self.assertTrue(response.json())
+        self.assertFalse(response.json().get("results", False))
 
         self.client.post(_get_list_url(1), submission_data(self.attended_user))
         response = self.client.get(
             _get_list_url(1) + "?user=" + str(self.attended_user.id)
         )
-        self.assertTrue(response.data.get("results", False))
+        self.assertTrue(response.json().get("results", False))
 
     def test_answered_regular(self):
         """Users should not be able to check if they have answered a survey if they haven't
@@ -197,7 +197,7 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         expected = submission_data(self.admin_user, 1)
-        result = response.data
+        result = response.json()
         self.assertEqual(expected["user"], result["user"].get("id", None))
 
         self.assertEqual(len(result["answers"]), 3)
@@ -222,8 +222,8 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
 
         response = self.client.get(_get_detail_url(1, 1))
-        self.assertTrue(response.data)
-        response_answers = response.data["answers"]
+        self.assertTrue(response.json())
+        response_answers = response.json()["answers"]
         answer = next(x for x in response_answers if x["id"] == answer_pk)
         self.assertTrue("hideFromPublic" in answer)
         self.assertTrue(answer["hideFromPublic"])
@@ -242,8 +242,8 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
 
         response = self.client.get(_get_detail_url(1, 1))
-        self.assertTrue(response.data)
-        response_answers = response.data["answers"]
+        self.assertTrue(response.json())
+        response_answers = response.json()["answers"]
         answer = next(x for x in response_answers if x["id"] == answer_pk)
         self.assertTrue("hideFromPublic" in answer)
         self.assertFalse(answer["hideFromPublic"])

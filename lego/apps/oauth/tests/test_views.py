@@ -27,10 +27,10 @@ class OauthViewsTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(response.data["results"]),
+            len(response.json()["results"]),
             AccessToken.objects.filter(user=self.user).count(),
         )
-        for token in response.data["results"]:
+        for token in response.json()["results"]:
             self.assertEqual(token["user"], self.user.id)
 
     def test_delete_token(self):

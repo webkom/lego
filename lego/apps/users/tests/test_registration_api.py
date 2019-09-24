@@ -34,7 +34,7 @@ class RetrieveRegistrationAPITestCase(BaseAPITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get("email"), "test1@user.com")
+        self.assertEqual(response.json().get("email"), "test1@user.com")
 
     def test_with_valid_token_and_capitalized_email(self):
         response = self.client.get(
@@ -43,7 +43,7 @@ class RetrieveRegistrationAPITestCase(BaseAPITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get("email"), "Test1@User.CoM")
+        self.assertEqual(response.json().get("email"), "Test1@User.CoM")
 
 
 class CreateRegistrationAPITestCase(BaseAPITestCase):

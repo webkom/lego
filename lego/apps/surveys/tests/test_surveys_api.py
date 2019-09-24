@@ -23,7 +23,7 @@ _test_surveys = [
     {
         "title": "Test",
         "event": 3,
-        "active_from": "2018-02-13T19:15:51.162564Z",
+        "activeFrom": "2018-02-13T19:15:51.162564Z",
         "questions": [],
     },
     # 1: To test editing question fields. Usually to edit the fixture questions.
@@ -155,7 +155,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_detail_regular(self):
         """Users should not be able see detailed surveys"""
@@ -168,20 +168,20 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     # Detail data
     def test_detail_admin_data(self):
         """Admin users should should get tokens when fetching detail"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(_get_detail_url(1))
-        self.assertTrue("token" in response.data)
+        self.assertTrue("token" in response.json())
 
     def test_detail_attended_data(self):
         """Users who attended the event should not get tokens when fetching detail"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_detail_url(1))
-        self.assertFalse("token" in response.data)
+        self.assertFalse("token" in response.json())
 
     # Fetch list
     def test_list_admin(self):
@@ -228,9 +228,9 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.patch(_get_detail_url(1), _test_surveys[0])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        actual = response.data
+        actual = response.json()
         expected = _test_surveys[0]
-        for key in ["title", "event", "active_from"]:
+        for key in ["title", "event", "activeFrom"]:
             self.assertEqual(actual[key], expected[key])
 
     def test_edit_questions(self):
@@ -242,7 +242,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.patch(_get_detail_url(1), _test_surveys[1])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_questions = response.data["questions"]
+        response_questions = response.json()["questions"]
         self.assertEqual(len(response_questions), 3)
         self.compare_questions(response_questions, 1)
 
@@ -250,7 +250,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.patch(_get_detail_url(1), _test_surveys[2])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_questions = response.data["questions"]
+        response_questions = response.json()["questions"]
         self.assertEqual(len(response_questions), 3)
         self.compare_questions(response_questions, 2)
 
@@ -279,7 +279,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.patch(_get_detail_url(1), _test_surveys[3])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_options = response.data["questions"][0]["options"]
+        response_options = response.json()["questions"][0]["options"]
         self.assertEqual(len(response_options), 2)
         self.compare_options(response_options, 3)
 
@@ -287,7 +287,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.patch(_get_detail_url(1), _test_surveys[4])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response_options = response.data["questions"][0]["options"]
+        response_options = response.json()["questions"][0]["options"]
         self.assertEqual(len(response_options), 2)
         self.compare_options(response_options, 4)
 
@@ -304,7 +304,7 @@ class SurveyViewSetTestCase(APITestCase):
         """Test that trying to access the public survey results without a token fails"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
-        survey = Survey.objects.get(id=response.data["id"])
+        survey = Survey.objects.get(id=response.json()["id"])
 
         self.client.force_authenticate(user=None)
         response = self.client.get(_get_token_url(survey.id))
@@ -314,7 +314,7 @@ class SurveyViewSetTestCase(APITestCase):
         """Test that you can access the public survey results with a token"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
-        survey = Survey.objects.get(id=response.data["id"])
+        survey = Survey.objects.get(id=response.json()["id"])
         survey.generate_token()
         token = survey.token
 
@@ -322,52 +322,52 @@ class SurveyViewSetTestCase(APITestCase):
         header = {"HTTP_AUTHORIZATION": "Token {}".format(token)}
         response = self.client.get(_get_token_url(survey.id), {}, **header)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_survey_results_data(self):
         """Test that you can access the public survey results with a token"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
-        survey = Survey.objects.get(id=response.data["id"])
+        survey = Survey.objects.get(id=response.json()["id"])
         survey.generate_token()
         token = survey.token
         self.client.force_authenticate(user=None)
         header = {"HTTP_AUTHORIZATION": "Token {}".format(token)}
         response = self.client.get(_get_token_url(survey.id), {}, **header)
 
-        self.assertEqual(response.data["results"], survey.aggregate_submissions())
-        self.assertEqual(response.data["submissionCount"], survey.submissions.count())
+        self.assertEqual(response.json()["results"], survey.aggregate_submissions())
+        self.assertEqual(response.json()["submissionCount"], survey.submissions.count())
 
     def test_survey_sharing(self):
         """Test that you can get a token for sharing an event"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
-        self.assertFalse("token" in response.data)
+        self.assertFalse("token" in response.json())
 
-        url = _get_detail_url(response.data["id"]) + "share/"
+        url = _get_detail_url(response.json()["id"]) + "share/"
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertTrue(response.data)
-        self.assertNotEquals(response.data["token"], None)
+        self.assertTrue(response.json())
+        self.assertNotEquals(response.json()["token"], None)
 
     def test_survey_hiding(self):
         """Test that you can remove a token to unshare an event"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
-        survey = Survey.objects.get(id=response.data["id"])
+        survey = Survey.objects.get(id=response.json()["id"])
         survey.generate_token()
 
-        response = self.client.post(_get_detail_url(response.data["id"]) + "hide/")
+        response = self.client.post(_get_detail_url(response.json()["id"]) + "hide/")
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertTrue(response.data)
-        self.assertEquals(response.data["token"], None)
+        self.assertTrue(response.json())
+        self.assertEquals(response.json()["token"], None)
 
     def test_survey_export_admin(self):
         """Test that admins can export a survey as csv"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_list_url(), self.survey_data)
 
-        url = _get_detail_url(response.data["id"]) + "csv/"
+        url = _get_detail_url(response.json()["id"]) + "csv/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

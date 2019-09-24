@@ -24,7 +24,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         response = self.client.post(
             self.url,
             {
-                "notification_type": "weekly_mail",
+                "notificationType": "weekly_mail",
                 "enabled": True,
                 "channels": ["email"],
             },
@@ -38,9 +38,9 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user)
         response = self.client.get(f"{self.url}alternatives/")
         self.assertEquals(
-            response.data,
+            response.json(),
             {
-                "notification_types": constants.NOTIFICATION_TYPES,
+                "notificationTypes": constants.NOTIFICATION_TYPES,
                 "channels": constants.CHANNELS,
             },
         )
@@ -49,12 +49,12 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user)
 
         response = self.client.post(
-            self.url, {"notification_type": "weekly_mail", "enabled": True}
+            self.url, {"notificationType": "weekly_mail", "enabled": True}
         )
         self.assertEquals(
-            response.data,
+            response.json(),
             {
-                "notification_type": "weekly_mail",
+                "notificationType": "weekly_mail",
                 "enabled": True,
                 "channels": ["email", "push"],
             },
@@ -65,13 +65,13 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user)
 
         response = self.client.post(
-            self.url, {"notification_type": constants.MEETING_INVITE}
+            self.url, {"notificationType": constants.MEETING_INVITE}
         )
 
         self.assertEquals(
-            response.data,
+            response.json(),
             {
-                "notification_type": constants.MEETING_INVITE,
+                "notificationType": constants.MEETING_INVITE,
                 "enabled": True,
                 "channels": constants.CHANNELS,
             },

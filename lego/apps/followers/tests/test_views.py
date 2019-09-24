@@ -40,7 +40,7 @@ class FollowEventViewTestCase(BaseAPITestCase):
         # Always use request.user to set the follower
         response = self.client.post(self.url, {"target": 2, "follower": 2})
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        result_id = response.data["id"]
+        result_id = response.json()["id"]
         self.assertEquals(FollowEvent.objects.get(id=result_id).follower, self.user)
 
     def test_delete(self):
@@ -87,7 +87,7 @@ class FollowUserViewTestCase(BaseAPITestCase):
         # Always use request.user to set the follower
         response = self.client.post(self.url, {"target": 2, "follower": 2})
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        result_id = response.data["id"]
+        result_id = response.json()["id"]
         self.assertEquals(FollowUser.objects.get(id=result_id).follower, self.user)
 
     def test_delete(self):
@@ -139,7 +139,7 @@ class FollowCompanyViewTestCase(BaseAPITestCase):
         # Always use request.user to set the follower
         response = self.client.post(self.url, {"target": 2, "follower": 2})
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        result_id = response.data["id"]
+        result_id = response.json()["id"]
         self.assertEquals(FollowCompany.objects.get(id=result_id).follower, self.user)
 
     def test_delete(self):

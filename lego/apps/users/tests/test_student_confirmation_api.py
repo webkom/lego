@@ -74,9 +74,9 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get("student_username"), "teststudentusername")
-        self.assertEqual(response.data.get("course"), constants.DATA)
-        self.assertEqual(response.data.get("member"), True)
+        self.assertEqual(response.json().get("studentUsername"), "teststudentusername")
+        self.assertEqual(response.json().get("course"), constants.DATA)
+        self.assertEqual(response.json().get("member"), True)
 
     def test_with_valid_token_and_capitalized_student_username(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -91,9 +91,9 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get("student_username"), "teststudentusername")
-        self.assertEqual(response.data.get("course"), constants.DATA)
-        self.assertEqual(response.data.get("member"), True)
+        self.assertEqual(response.json().get("studentUsername"), "teststudentusername")
+        self.assertEqual(response.json().get("course"), constants.DATA)
+        self.assertEqual(response.json().get("member"), True)
 
 
 class CreateStudentConfirmationAPITestCase(BaseAPITestCase):

@@ -80,7 +80,7 @@ class SurveyTemplateViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(_get_detail_url(self.taken_template_type))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_detail_regular(self):
         """Users should not be able see detailed templates"""

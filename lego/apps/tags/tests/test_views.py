@@ -9,24 +9,24 @@ class TagViewsTestCase(APITestCase):
     def test_fetch_popular(self):
         response = self.client.get("/api/v1/tags/popular/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertTrue(isinstance(response.data, list))
+        self.assertTrue(isinstance(response.json(), list))
 
     def test_fetch_list(self):
         response = self.client.get("/api/v1/tags/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertDictEqual(
-            response.data["results"][0], {"tag": "ababrygg", "usages": 0}
+            response.json()["results"][0], {"tag": "ababrygg", "usages": 0}
         )
 
     def test_fetch_detail(self):
         response = self.client.get("/api/v1/tags/ababrygg/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertDictEqual(
-            response.data,
+            response.json(),
             {
                 "tag": "ababrygg",
                 "usages": 0,
-                "related_counts": {
+                "relatedCounts": {
                     "article": 0,
                     "event": 0,
                     "quote": 0,

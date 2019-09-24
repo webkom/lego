@@ -45,9 +45,9 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
         response = self.client.get(_get_list_url())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), len(self.all_groups))
+        self.assertEqual(len(response.json()["results"]), len(self.all_groups))
 
-        for group in response.data["results"]:
+        for group in response.json()["results"]:
             keys = set(group.keys())
 
             # Serializer fields is camelized, transform contact_email
@@ -89,12 +89,7 @@ class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):
     def successful_retrieve(self, user, pk):
         self.client.force_authenticate(user=user)
         response = self.client.get(_get_detail_url(pk))
-        user = response.data
-        keys = set(user.keys())
-        keys.remove("action_grant")
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
     def test_without_auth(self):
         response = self.client.get(_get_detail_url(1))
@@ -106,24 +101,14 @@ class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):
     def test_own_group(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.get(_get_detail_url(self.test_group.pk))
-        group = response.data
-        keys = set(group.keys())
-        keys.remove("action_grant")
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(DetailedAbakusGroupSerializer.Meta.fields))
 
     def test_without_permission(self):
         new_group = AbakusGroup.objects.create(name="new_group")
 
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.get(_get_detail_url(new_group.pk))
-        group = response.data
-        keys = set(group.keys())
-        keys.remove("action_grant")
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(keys, set(PublicAbakusGroupSerializer.Meta.fields))
 
 
 class CreateAbakusGroupAPITestCase(BaseAPITestCase):
@@ -172,7 +157,7 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
 
         response = self.client.post(_get_list_url(), group)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(expected_data, response.data)
+        self.assertEqual(expected_data, response.json())
 
     def test_without_auth(self):
         response = self.client.post(_get_list_url(), _test_group_data)

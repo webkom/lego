@@ -61,7 +61,8 @@ DEBUG_TOOLBAR_PANELS = [
 ]
 
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += [
-    "rest_framework.renderers.BrowsableAPIRenderer"
+    # "rest_framework.renderers.BrowsableAPIRenderer"
+    "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer"
 ]
 
 AWS_ACCESS_KEY_ID = "lego-dev"

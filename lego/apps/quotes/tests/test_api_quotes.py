@@ -58,7 +58,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.authenticated_user)
         response = self.client.get(_get_list_approved_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_list_unauthenticated(self):
         """Users with no permissions should not be able to list quotes"""
@@ -71,7 +71,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.authenticated_user)
         response = self.client.get(_get_detail_url(1))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data)
+        self.assertTrue(response.json())
 
     def test_detail_unauthenticated(self):
         """Users with no permissions should not be able see detailed quotes"""
@@ -100,7 +100,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         response = self.client.get(_get_list_unapproved_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        first_quote = response.data["results"][0]
+        first_quote = response.json()["results"][0]
         self.assertFalse(first_quote["approved"])
 
     def test_list_unapproved_unauthenticated(self):
@@ -118,7 +118,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
 
         response = self.client.get(_get_list_approved_url())
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertTrue(len(response.data["results"]) > 0)
+        self.assertTrue(len(response.json()["results"]) > 0)
 
     def test_list_unapproved_unauthorized(self):
         """Users with regular permissions should not be able to see unapproved quotes"""
@@ -128,4 +128,4 @@ class QuoteViewSetTestCase(BaseAPITestCase):
 
         response = self.client.get(_get_list_unapproved_url())
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(len(response.data["results"]), 0)
+        self.assertEquals(len(response.json()["results"]), 0)

@@ -67,7 +67,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        comment = Comment.objects.get(pk=response.data["id"])
+        comment = Comment.objects.get(pk=response.json()["id"])
 
         self.assertEqual(comment.text, post_data["text"])
         self.assertEqual(comment.created_by.pk, self.with_permission.pk)
@@ -131,7 +131,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
             _get_list_url(), {"content_target": content_target, "text": "first comment"}
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        pk = response.data["id"]
+        pk = response.json()["id"]
 
         response2 = self.client.post(
             _get_list_url(),
@@ -153,7 +153,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
             _get_list_url(), {"content_target": content_target, "text": "first comment"}
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        pk = response.data["id"]
+        pk = response.json()["id"]
 
         response2 = self.client.post(
             _get_list_url(),
@@ -164,7 +164,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
             },
         )
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("parent", response2.data)
+        self.assertIn("parent", response2.json())
 
     def test_with_nonexistent_parent(self):
         self.client.force_authenticate(user=self.with_permission)
@@ -177,7 +177,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
             _get_list_url(), {"content_target": content_target, "text": "first comment"}
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        pk = response.data["id"]
+        pk = response.json()["id"]
 
         response2 = self.client.post(
             _get_list_url(),
@@ -188,7 +188,7 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
             },
         )
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("parent", response2.data)
+        self.assertIn("parent", response2.json())
 
     def test_with_user_who_cannot_see_parent(self):
         self.client.force_authenticate(user=self.with_permission)

@@ -62,19 +62,19 @@ class ListArticlesTestCase(BaseAPITestCase):
     def test_unauthenticated_user(self):
         response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(len(response.json()["results"]), 1)
 
     def test_fields(self):
         response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
-        article = response.data["results"][0]
+        article = response.json()["results"][0]
         self.assertEqual(len(PublicArticleSerializer.Meta.fields), len(article.keys()))
 
     def test_authenticated(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(len(response.json()["results"]), 2)
 
     def test_with_keyword_permissions(self):
         self.group.permissions = ["/sudo/admin/articles/list/"]
@@ -83,14 +83,14 @@ class ListArticlesTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 3)
+        self.assertEqual(len(response.json()["results"]), 3)
 
     def test_with_object_permissions(self):
         self.permission_group.add_user(self.user)
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 3)
+        self.assertEqual(len(response.json()["results"]), 3)
 
 
 class RetrieveArticlesTestCase(BaseAPITestCase):
@@ -119,7 +119,7 @@ class RetrieveArticlesTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_detail_url(self.auth_article.pk))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["id"], self.auth_article.id)
+        self.assertEqual(response.json()["id"], self.auth_article.id)
 
     def test_unauthorized(self):
         self.client.force_authenticate(user=self.user)
@@ -139,7 +139,7 @@ class RetrieveArticlesTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_detail_url(self.object_permission_article.pk))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["id"], self.object_permission_article.pk)
+        self.assertEqual(response.json()["id"], self.object_permission_article.pk)
 
 
 class CreateArticlesTestCase(BaseAPITestCase):
@@ -169,7 +169,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
         data = get_data_with_author(self.user.pk)
         response = self.client.post(get_list_url(), data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data["title"], data["title"])
+        self.assertEqual(response.json()["title"], data["title"])
 
     def test_no_title(self):
         self.group.permissions = ["/sudo/admin/articles/create/"]
@@ -179,7 +179,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
         data = get_data_with_author(self.user.pk)
         del data["title"]
         response = self.client.post(get_list_url(), data)
-        self.assertEqual(response.data, {"title": ["This field is required."]})
+        self.assertEqual(response.json(), {"title": ["This field is required."]})
         self.assertEqual(response.status_code, 400)
 
     def test_wrong_youtube_url(self):
@@ -188,9 +188,9 @@ class CreateArticlesTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(user=self.user)
         data = get_data_with_author(self.user.pk)
-        data["youtube_url"] = "https://www.skra.com/watch?v=KrzIaRwAMvc"
+        data["youtubeUrl"] = "https://www.skra.com/watch?v=KrzIaRwAMvc"
         response = self.client.post(get_list_url(), data)
-        self.assertEqual(response.data["youtube_url"][0].code, "invalid")
+        self.assertIn("youtubeUrl", response.json())
         self.assertEqual(response.status_code, 400)
 
     def test_correct_youtube_url(self):
@@ -199,7 +199,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(user=self.user)
         data = get_data_with_author(self.user.pk)
-        data["youtube_url"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
+        data["youtubeUrl"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
         response = self.client.post(get_list_url(), data)
         self.assertEqual(response.status_code, 201)
 

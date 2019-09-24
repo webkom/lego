@@ -29,7 +29,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(user)
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(1, len(response.data["results"]))
+        self.assertEquals(1, len(response.json()["results"]))
 
     def test_list_history_as_authenticated(self):
         user = User.objects.get(username="test1")
@@ -42,4 +42,4 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(user)
         response = self.client.get(self.url)
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(0, len(response.data["results"]))
+        self.assertEquals(0, len(response.json()["results"]))
