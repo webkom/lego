@@ -1165,8 +1165,12 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(self.pool.registrations.count(), 1)
         self.assertEqual(pool_two.registrations.count(), 0)
-        self.assertEqual(registration_response.json()["createdBy"], self.request_user.id)
-        self.assertEqual(registration_response.json()["updatedBy"], self.request_user.id)
+        self.assertEqual(
+            registration_response.json()["createdBy"], self.request_user.id
+        )
+        self.assertEqual(
+            registration_response.json()["updatedBy"], self.request_user.id
+        )
 
     def test_without_admin_permission(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.user)
@@ -1221,8 +1225,12 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
 
         self.assertEqual(registration_response.status_code, 201)
         self.assertEqual(registration_response.json().get("feedback"), "TEST")
-        self.assertEqual(registration_response.json()["createdBy"], self.request_user.id)
-        self.assertEqual(registration_response.json()["updatedBy"], self.request_user.id)
+        self.assertEqual(
+            registration_response.json()["createdBy"], self.request_user.id
+        )
+        self.assertEqual(
+            registration_response.json()["updatedBy"], self.request_user.id
+        )
 
     def test_without_admin_registration_reason(self):
         AbakusGroup.objects.get(name="Webkom").add_user(self.request_user)

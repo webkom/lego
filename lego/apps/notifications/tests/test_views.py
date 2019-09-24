@@ -23,11 +23,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
 
         response = self.client.post(
             self.url,
-            {
-                "notificationType": "weekly_mail",
-                "enabled": True,
-                "channels": ["email"],
-            },
+            {"notificationType": "weekly_mail", "enabled": True, "channels": ["email"]},
         )
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 

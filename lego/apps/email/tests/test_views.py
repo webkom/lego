@@ -154,11 +154,7 @@ class UserEmailTestCase(BaseAPITestCase):
         """Set an address that is capitalized to make sure it is lowercased in input sanitation"""
         response = self.client.post(
             self.url,
-            {
-                "user": 2,
-                "internalEmail": "TestEmail123",
-                "internalEmailEnabled": True,
-            },
+            {"user": 2, "internalEmail": "TestEmail123", "internalEmailEnabled": True},
         )
         self.assertEquals(status.HTTP_201_CREATED, response.status_code)
         self.assertEquals("testemail123", response.json()["internalEmail"])

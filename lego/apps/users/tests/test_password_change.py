@@ -16,11 +16,7 @@ class TestPasswordChange(BaseAPITestCase):
     def test_not_authenticated(self):
         response = self.client.post(
             self.url,
-            {
-                "password": "test",
-                "newPassword": "test1",
-                "retypeNewPassword": "test1",
-            },
+            {"password": "test", "newPassword": "test1", "retypeNewPassword": "test1"},
         )
         self.assertEquals(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
@@ -28,11 +24,7 @@ class TestPasswordChange(BaseAPITestCase):
         self.client.force_authenticate(self.user)
         response = self.client.post(
             self.url,
-            {
-                "password": "error",
-                "newPassword": "test1",
-                "retypeNewPassword": "test1",
-            },
+            {"password": "error", "newPassword": "test1", "retypeNewPassword": "test1"},
         )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
@@ -51,8 +43,7 @@ class TestPasswordChange(BaseAPITestCase):
     def test_new_password_not_valid(self):
         self.client.force_authenticate(self.user)
         response = self.client.post(
-            self.url,
-            {"password": "test", "newPassword": "x", "retypeNewPassword": "x"},
+            self.url, {"password": "test", "newPassword": "x", "retypeNewPassword": "x"}
         )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 

@@ -1,5 +1,3 @@
-from unittest import skip
-
 from django.urls import reverse
 
 from lego.apps.users import constants
@@ -140,7 +138,6 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         for key, value in _test_group_data.items():
             self.assertEqual(getattr(created_group, key), value)
 
-    @skip
     def test_create_validate_permissions(self):
         self.client.force_authenticate(user=self.with_permission)
         group = {
@@ -149,10 +146,11 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         }
 
         expected_data = {
-            "permissions": [
-                "Keyword permissions can only contain forward slashes and letters and must begin "
-                "and end with a forward slash"
-            ]
+            "permissions": {
+                "1": [
+                    "Keyword permissions can only contain forward slashes and letters and must begin and end with a forward slash"
+                ]
+            }
         }
 
         response = self.client.post(_get_list_url(), group)

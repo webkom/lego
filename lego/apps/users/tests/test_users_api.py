@@ -419,7 +419,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
             len(self.user.penalties.valid()), len(response.json()["penalties"])
         )
         data = response.json()
-        self.assertEqual(self.user.id, data['id'])
+        self.assertEqual(self.user.id, data["id"])
 
         self.assertEqual(self.user.username, data["username"])
         self.assertEqual(self.user.first_name, data["firstName"])
