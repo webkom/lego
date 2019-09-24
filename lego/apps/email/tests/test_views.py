@@ -38,7 +38,7 @@ class EmailListTestCase(BaseAPITestCase):
                 "email": "jubileum",
                 "users": [3, 4],
                 "groups": [self.admin_group.id],
-                "group_roles": ["member"],
+                "groupRoles": ["member"],
             },
         )
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -58,7 +58,7 @@ class EmailListTestCase(BaseAPITestCase):
                 "name": "Invalid",
                 "email": "not valid email",
                 "users": [1, 2],
-                "group_roles": ["member"],
+                "groupRoles": ["member"],
             },
         )
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -69,7 +69,7 @@ class EmailListTestCase(BaseAPITestCase):
                 "name": "Invalid",
                 "email": "admin",
                 "users": [1, 2],
-                "group_roles": ["member"],
+                "groupRoles": ["member"],
             },
         )
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -118,14 +118,14 @@ class UserEmailTestCase(BaseAPITestCase):
 
     def test_set_email(self):
         """It is possible to change from no email to one nobody has used"""
-        response = self.client.patch(f"{self.url}2/", {"internal_email": "testgroup"})
+        response = self.client.patch(f"{self.url}2/", {"internalEmail": "testgroup"})
         self.assertEquals(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def test_set_email_to_none(self):
         """It is not possible to set the email back to none"""
         User.objects.filter(id=1).update(internal_email="noassigned")
 
-        response = self.client.patch(f"{self.url}1/", {"internal_email": None})
+        response = self.client.patch(f"{self.url}1/", {"internalEmail": None})
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_set_email_to_new(self):
@@ -134,19 +134,19 @@ class UserEmailTestCase(BaseAPITestCase):
         """
         User.objects.filter(id=1).update(internal_email="noassigned")
 
-        response = self.client.patch(f"{self.url}1/", {"internal_email": "unused"})
+        response = self.client.patch(f"{self.url}1/", {"internalEmail": "unused"})
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_set_email_to_an_assigned(self):
         """It is not possible to use an email used by another instance"""
-        response = self.client.patch(f"{self.url}1/", {"internal_email": "address"})
+        response = self.client.patch(f"{self.url}1/", {"internalEmail": "address"})
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_set_address_on_new_user(self):
         """Set an address on a user that has no address assigned"""
         response = self.client.post(
             self.url,
-            {"user": 2, "internal_email": "test2", "internal_email_enabled": True},
+            {"user": 2, "internalEmail": "test2", "internalEmailEnabled": True},
         )
         self.assertEquals(status.HTTP_201_CREATED, response.status_code)
 
@@ -154,11 +154,7 @@ class UserEmailTestCase(BaseAPITestCase):
         """Set an address that is capitalized to make sure it is lowercased in input sanitation"""
         response = self.client.post(
             self.url,
-            {
-                "user": 2,
-                "internal_email": "TestEmail123",
-                "internal_email_enabled": True,
-            },
+            {"user": 2, "internalEmail": "TestEmail123", "internalEmailEnabled": True},
         )
         self.assertEquals(status.HTTP_201_CREATED, response.status_code)
         self.assertEquals("testemail123", response.json()["internalEmail"])
@@ -168,7 +164,7 @@ class UserEmailTestCase(BaseAPITestCase):
         """Not possible to set an assigned email"""
         response = self.client.post(
             self.url,
-            {"user": 2, "internal_email": "address", "internal_email_enabled": True},
+            {"user": 2, "internalEmail": "address", "internalEmailEnabled": True},
         )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
@@ -176,6 +172,6 @@ class UserEmailTestCase(BaseAPITestCase):
         """Not possible to post to a user that already have an address"""
         response = self.client.post(
             self.url,
-            {"user": 1, "internal_email": "unknown", "internal_email_enabled": True},
+            {"user": 1, "internalEmail": "unknown", "internalEmailEnabled": True},
         )
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)

@@ -65,7 +65,7 @@ class ListCompaniesTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         company_response = self.client.get(_get_list_url())
         self.assertEqual(company_response.status_code, 200)
-        self.assertEqual(len(company_response.data["results"]), 3)
+        self.assertEqual(len(company_response.json()["results"]), 3)
 
 
 class RetrieveCompaniesTestCase(BaseAPITestCase):
@@ -116,7 +116,7 @@ class CreateCompaniesTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         company_response = self.client.patch(_get_detail_url(1), _test_company_data[1])
         self.assertEqual(company_response.status_code, 200)
-        self.assertEqual(company_response.data["name"], _test_company_data[1]["name"])
+        self.assertEqual(company_response.json()["name"], _test_company_data[1]["name"])
 
 
 class DeleteCompaniesTestCase(BaseAPITestCase):
@@ -179,7 +179,8 @@ class CreateSemesterStatusTestCase(BaseAPITestCase):
         )
         self.assertEqual(company_response.status_code, 200)
         self.assertEqual(
-            company_response.data["semester"], _test_semester_status_data[0]["semester"]
+            company_response.json()["semester"],
+            _test_semester_status_data[0]["semester"],
         )
 
 
@@ -240,7 +241,7 @@ class CreateCompanyContactsTestCase(BaseAPITestCase):
         )
         self.assertEqual(company_response.status_code, 200)
         self.assertEqual(
-            company_response.data["name"], _test_company_contact_data[0]["name"]
+            company_response.json()["name"], _test_company_contact_data[0]["name"]
         )
 
 

@@ -114,7 +114,7 @@ class IcalAuthenticationTestCase(BaseAPITestCase):
     def test_get_list(self, *args):
         res = self.client.get(_get_ical_list_url(self.token))
         self.assertEqual(res.status_code, 200)
-        res_token = res.data["result"]["token"]["token"]
+        res_token = res.json()["result"]["token"]["token"]
         self.assertEqual(res_token, self.token)
 
         res = self.client.get(_get_ical_list_url(self.token))
@@ -250,7 +250,7 @@ class ICalTokenGenerateTestCase(BaseAPITestCase):
         res = self.client.get(_get_token_url())
         token = ICalToken.objects.get(user=self.abakommer)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["token"], token.token)
+        self.assertEqual(res.json()["token"], token.token)
 
 
 class ICalTokenRegenerateTestCase(BaseAPITestCase):
@@ -269,8 +269,8 @@ class ICalTokenRegenerateTestCase(BaseAPITestCase):
 
         self.assertNotEqual(old_token, new_token)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["token"], new_token)
-        self.assertNotEqual(res.data["token"], old_token)
+        self.assertEqual(res.json()["token"], new_token)
+        self.assertNotEqual(res.json()["token"], old_token)
 
     def test_not_regenerate_token(self):
         self.client.force_authenticate(self.abakommer)
@@ -281,5 +281,5 @@ class ICalTokenRegenerateTestCase(BaseAPITestCase):
 
         self.assertEqual(old_token, new_token)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["token"], new_token)
-        self.assertEqual(res.data["token"], old_token)
+        self.assertEqual(res.json()["token"], new_token)
+        self.assertEqual(res.json()["token"], old_token)

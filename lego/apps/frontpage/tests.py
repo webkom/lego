@@ -25,7 +25,7 @@ class FrontpageAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user)
         res = self.client.get(_get_frontpage())
         self.assertEquals(res.status_code, 200)
-        events = res.data["events"]
+        events = res.json()["events"]
         self.assertGreater(len(events), 1)
         first = events[0]
         second = events[1]
@@ -37,7 +37,7 @@ class FrontpageAPITestCase(BaseAPITestCase):
     def test_pinned_is_first_not_logged_in(self):
         res = self.client.get(_get_frontpage())
         self.assertEquals(res.status_code, 200)
-        events = res.data["events"]
+        events = res.json()["events"]
         self.assertGreater(len(events), 1)
         first = events[0]
         second = events[1]

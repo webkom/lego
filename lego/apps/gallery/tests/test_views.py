@@ -41,7 +41,7 @@ class GalleryViewSetTestCase(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(0, len(response.data["results"]))
+        self.assertEqual(0, len(response.json()["results"]))
 
     def test_list_galleries_permitted_user(self, mock_signer):
         """Permitted user should see the gallery."""
@@ -49,7 +49,7 @@ class GalleryViewSetTestCase(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data["results"]))
+        self.assertEqual(1, len(response.json()["results"]))
 
     def test_detail_gallery_permitted_user(self, mock_signer):
         """Permitted user should be able to see all pictures."""
@@ -57,7 +57,7 @@ class GalleryViewSetTestCase(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}1/pictures/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data["results"]))
+        self.assertEqual(2, len(response.json()["results"]))
 
     def test_detail_gallery_read_user(self, mock_signer):
         """Read only user is able to fetch the gallery."""
@@ -65,13 +65,13 @@ class GalleryViewSetTestCase(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}1/pictures/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data["results"]))
+        self.assertEqual(1, len(response.json()["results"]))
 
     def test_detail_gallery_no_user(self, mock_signer):
         """Non logged in users should not find any pictures"""
         response = self.client.get(f"{self.url}1/pictures/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(0, len(response.data["results"]))
+        self.assertEqual(0, len(response.json()["results"]))
 
     def test_detail_gallery_denied(self, mock_signer):
         """Users is not able to fetch galleries by default."""
@@ -178,7 +178,7 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data["results"]))
+        self.assertEqual(1, len(response.json()["results"]))
 
     def test_list_galleries_permitted_user(self, mock_signer):
         """Permitted user should see the gallery."""
@@ -186,7 +186,7 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data["results"]))
+        self.assertEqual(1, len(response.json()["results"]))
 
     def test_detail_gallery_permitted_user(self, mock_signer):
         """Permitted user should be able to see all pictures."""
@@ -194,7 +194,7 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}1/pictures/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data["results"]))
+        self.assertEqual(2, len(response.json()["results"]))
 
     def test_detail_gallery_read_user(self, mock_signer):
         """Read only user is able to fetch the gallery."""
@@ -202,13 +202,13 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
         response = self.client.get(f"{self.url}1/pictures/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data["results"]))
+        self.assertEqual(1, len(response.json()["results"]))
 
     def test_detail_gallery_no_user(self, mock_signer):
         """Non logged in users should find active pictures"""
         response = self.client.get(f"{self.url}1/pictures/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data["results"]))
+        self.assertEqual(1, len(response.json()["results"]))
 
     def test_active_picture_non_allowed_user(self, mock_signer):
         self.client.force_authenticate(self.denied_user)

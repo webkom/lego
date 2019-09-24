@@ -65,7 +65,7 @@ class ListUsersAPITestCase(BaseAPITestCase):
         response = self.client.get(_get_list_url())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), len(self.all_users))
+        self.assertEqual(len(response.json()["results"]), len(self.all_users))
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())
@@ -239,8 +239,8 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
 
     modified_user = {
         "username": "Modified_User",
-        "first_name": "modified",
-        "last_name": "user",
+        "firstName": "modified",
+        "lastName": "user",
         "email": "modified@testuser.com",
     }
 
@@ -263,13 +263,10 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_url(update_object.username), self.modified_user
         )
-        user = User.objects.get(pk=update_object.pk)
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(set(response.data.keys()), set(MeSerializer.Meta.fields))
 
         for key, value in self.modified_user.items():
-            self.assertEqual(getattr(user, key), value)
+            self.assertEqual(response.json()[key], value)
 
     def test_self(self):
         self.successful_update(self.without_perm, self.without_perm)
@@ -296,7 +293,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
             _get_detail_url(self.test_user), {"email": "cat@gmail"}
         )
 
-        self.assertEqual(["Enter a valid email address."], response.data["email"])
+        self.assertEqual(["Enter a valid email address."], response.json()["email"])
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_with_super_user_invalid_email(self):
@@ -309,7 +306,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual(
             ["You can't use a abakus.no email for your personal account."],
-            response.data["email"],
+            response.json()["email"],
         )
 
     def test_update_username_used_by_other(self):
@@ -335,18 +332,18 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(self.without_perm)
 
         response = self.client.patch(
-            _get_detail_url(self.without_perm.username), {"is_abakus_member": True}
+            _get_detail_url(self.without_perm.username), {"isAbakusMember": True}
         )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         response = self.client.patch(
-            _get_detail_url(self.without_perm.username), {"is_abakus_member": False}
+            _get_detail_url(self.without_perm.username), {"isAbakusMember": False}
         )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         response = self.client.patch(
-            _get_detail_url(self.without_perm.username), {"is_abakus_member": True}
+            _get_detail_url(self.without_perm.username), {"isAbakusMember": True}
         )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(response.data["is_abakus_member"], True)
+        self.assertEqual(response.json()["isAbakusMember"], True)
 
     def test_update_abakus_membership_when_not_student(self):
         """Try to change the is_abakus_member when user is not a student"""
@@ -418,23 +415,18 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         response = self.client.get(reverse("api:v1:user-me"))
 
         self.assertEqual(response.status_code, 200)
-        fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "full_name",
-            "email",
-            "is_active",
-            "penalties",
+        self.assertEqual(
+            len(self.user.penalties.valid()), len(response.json()["penalties"])
         )
-        for field in fields:
-            if field == "penalties":
-                self.assertEqual(
-                    len(self.user.penalties.valid()), len(response.data["penalties"])
-                )
-            else:
-                self.assertEqual(getattr(self.user, field), response.data[field])
+        data = response.json()
+        self.assertEqual(self.user.id, data["id"])
+
+        self.assertEqual(self.user.username, data["username"])
+        self.assertEqual(self.user.first_name, data["firstName"])
+        self.assertEqual(self.user.last_name, data["lastName"])
+        self.assertEqual(self.user.full_name, data["fullName"])
+        self.assertEqual(self.user.email, data["email"])
+        self.assertEqual(self.user.is_active, data["isActive"])
 
     def test_self_unauthed(self):
         response = self.client.get(reverse("api:v1:user-me"))
@@ -463,7 +455,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(
-            len(self.user.penalties.valid()), len(response.data["penalties"])
+            len(self.user.penalties.valid()), len(response.json()["penalties"])
         )
-        self.assertEqual(len(response.data["penalties"]), 1)
-        self.assertEqual(len(response.data["penalties"][0]), 7)
+        self.assertEqual(len(response.json()["penalties"]), 1)
+        self.assertEqual(len(response.json()["penalties"][0]), 7)

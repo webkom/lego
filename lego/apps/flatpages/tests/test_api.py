@@ -12,8 +12,8 @@ class PageAPITestCase(BaseAPITestCase):
     def test_get_pages(self):
         response = self.client.get("/api/v1/pages/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 4)
-        first = response.data["results"][0]
+        self.assertEqual(len(response.json()["results"]), 4)
+        first = response.json()["results"][0]
         self.assertEqual(first["title"], self.pages.first().title)
         self.assertEqual(first["slug"], self.pages.first().slug)
         self.assertFalse("content" in first)
@@ -23,9 +23,9 @@ class PageAPITestCase(BaseAPITestCase):
         response = self.client.get("/api/v1/pages/{0}/".format(slug))
         expected = self.pages.get(slug=slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["title"], expected.title)
-        self.assertEqual(response.data["slug"], expected.slug)
-        self.assertEqual(response.data["content"], expected.content)
+        self.assertEqual(response.json()["title"], expected.title)
+        self.assertEqual(response.json()["slug"], expected.slug)
+        self.assertEqual(response.json()["content"], expected.content)
 
     def test_non_existing_retrieve(self):
         response = self.client.get("/api/v1/pages/badslug/")

@@ -17,12 +17,12 @@ class JSONWebTokenTestCase(BaseAPITestCase):
         fields = (
             "id",
             "username",
-            "first_name",
-            "last_name",
-            "full_name",
+            "firstName",
+            "lastName",
+            "fullName",
             "email",
-            "is_staff",
-            "is_active",
+            "isStaff",
+            "isActive",
             "penalties",
         )
         for field in fields:
@@ -42,7 +42,7 @@ class JSONWebTokenTestCase(BaseAPITestCase):
         token_response = self.client.post(
             reverse("jwt:obtain_jwt_token"), self.user_data
         )
-        token_data = {"token": token_response.data["token"]}
+        token_data = {"token": token_response.json()["token"]}
         refresh_response = self.client.post(
             reverse("jwt:refresh_jwt_token"), token_data
         )

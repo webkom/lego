@@ -25,7 +25,7 @@ class RestrictedViewTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.allowed_user)
 
         response = self.client.get(self.url)
-        self.assertEquals(len(response.data["results"]), 1)
+        self.assertEquals(len(response.json()["results"]), 1)
 
     def test_list_no_perms(self):
         """A user tries to list with no permissions"""

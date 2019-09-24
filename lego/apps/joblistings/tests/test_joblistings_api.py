@@ -85,12 +85,12 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, 200)
-        self.assertEqual(len(joblisting_response.data["results"]), 4)
+        self.assertEqual(len(joblisting_response.json()["results"]), 4)
 
     def test_without_user(self):
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, 200)
-        self.assertEqual(len(joblisting_response.data["results"]), 4)
+        self.assertEqual(len(joblisting_response.json()["results"]), 4)
 
     def test_list_after_visible_to(self):
         joblisting = Joblisting.objects.all().first()
@@ -98,7 +98,7 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         joblisting.save()
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, 200)
-        self.assertEqual(len(joblisting_response.data["results"]), 3)
+        self.assertEqual(len(joblisting_response.json()["results"]), 3)
 
 
 class RetrieveJoblistingsTestCase(BaseAPITestCase):
@@ -124,13 +124,13 @@ class RetrieveJoblistingsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_detail_url(1))
-        self.assertEqual(joblisting_response.data["id"], 1)
+        self.assertEqual(joblisting_response.json()["id"], 1)
         self.assertEqual(joblisting_response.status_code, 200)
 
     def test_without_group_permission(self):
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_detail_url(2))
-        self.assertEqual(joblisting_response.data["id"], 2)
+        self.assertEqual(joblisting_response.json()["id"], 2)
         self.assertEqual(joblisting_response.status_code, 200)
 
 
@@ -206,14 +206,14 @@ class EditJoblistingsTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.abakom_user)
         res = self.client.put(_get_detail_url(1), _test_joblistings_data[1])
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data.get("workplaces")[0].get("town"), "Trondheim")
+        self.assertEqual(res.json().get("workplaces")[0].get("town"), "Trondheim")
 
     def test_joblistings_edit_multiple_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
         res = self.client.put(_get_detail_url(1), _test_joblistings_data[2])
         self.assertEqual(res.status_code, 200)
-        self.assertEqual("Itera", res.data.get("title"))
-        self.assertEqual(len(res.data.get("workplaces")), 2)
+        self.assertEqual("Itera", res.json().get("title"))
+        self.assertEqual(len(res.json().get("workplaces")), 2)
 
     def test_pleb_cannot_edit(self):
         self.client.force_authenticate(user=self.not_abakom_user)
