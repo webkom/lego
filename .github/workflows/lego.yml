@@ -8,8 +8,8 @@ on:
       - '!prod'
 
 jobs:
-  missing-migrations-tests-and-coverage:
-    name: Check for missing migrations, run tests and check coverage
+  missing-migrations:
+    name: Check for missing migrations
     runs-on: ubuntu-latest
 
     services:
@@ -45,6 +45,39 @@ jobs:
     - name: Test for missing migrations
       run: |
         tox -e missing-migrations
+      env:
+        LANG: C.UTF-8
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    services:
+      cache:
+        image: redis
+        ports:
+        - 6379:6379
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: lego
+        ports:
+        - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - name: Checkout commit
+      uses: actions/checkout@v1
+
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Setup CI and install tox
+      run: |
+        make ci_settings
+        pip install tox
       env:
         LANG: C.UTF-8
 
