@@ -26,6 +26,7 @@ class EmailListSerializer(serializers.ModelSerializer):
             "groups",
             "group_roles",
             "require_internal_address",
+            "additional_emails",
         )
 
 

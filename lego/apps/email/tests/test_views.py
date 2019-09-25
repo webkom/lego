@@ -39,6 +39,7 @@ class EmailListTestCase(BaseAPITestCase):
                 "users": [3, 4],
                 "groups": [self.admin_group.id],
                 "groupRoles": ["member"],
+                "additional_emails": [],
             },
         )
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -73,6 +74,74 @@ class EmailListTestCase(BaseAPITestCase):
             },
         )
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_create_list_duplicate_email(self):
+        """ No duplicate in members """
+        response = self.client.post(
+            self.url,
+            {
+                "name": "Jubileum",
+                "email": "jubileum",
+                "users": [3, 4],
+                "groups": [self.admin_group.id],
+                "group_roles": ["member"],
+                "additional_emails": ["additional@email.com", "additional@email.com"],
+            },
+        )
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        email_list = EmailList.objects.get(email="jubileum")
+        members = email_list.members()
+
+        self.assertCountEqual(
+            [
+                "test1@user.com",
+                "user@admin.com",
+                "abakusgroup@admin.com",
+                "additional@email.com",
+            ],
+            members,
+        )
+
+    def test_create_list_invalid_additional_email(self):
+        """Bad request when user tries to create list with invalid additional email"""
+        response = self.client.post(
+            self.url,
+            {
+                "name": "Invalid",
+                "email": "valid",
+                "users": [1, 2],
+                "group_roles": ["member"],
+                "additional_emails": ["invalid"],
+            },
+        )
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_edit_additional_email(self):
+        """ Test ability to remove an additional email"""
+        response = self.client.patch(
+            f"{self.url}1/", {"additional_emails": ["test@test.no", "test2@test.no"]}
+        )
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(
+            ["test@test.no", "test2@test.no"],
+            EmailList.objects.get(id=1).additional_emails,
+        )
+
+        response = self.client.patch(
+            f"{self.url}1/", {"additional_emails": ["test@test.no"]}
+        )
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(
+            ["test@test.no"], EmailList.objects.get(id=1).additional_emails
+        )
+
+    def test_delete_additional_email(self):
+        """ Test ability to set additional emails to an empty array"""
+
+        response = self.client.patch(f"{self.url}1/", {"additional_emails": []})
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual([], EmailList.objects.get(id=1).additional_emails)
 
     def test_change_assigned_email(self):
         """It is'nt possible to change the email after the list is created"""

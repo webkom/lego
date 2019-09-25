@@ -22,7 +22,7 @@ class EmailAddressTestCase(BaseTestCase):
         self.assertFalse(address.is_assigned(list))
 
     def test_is_assigned_when_not_used(self):
-        """is_assigned returns False when the address is'nt used."""
+        """is_assigned returns False when the address isn't used."""
         address = EmailAddress.objects.get(email="address1")
         self.assertFalse(address.is_assigned())
 
@@ -58,7 +58,7 @@ class EmailListTestCase(BaseTestCase):
         list.groups.add(group)
 
         self.assertSequenceEqual(
-            {"test1@user.com", "test2@user.com"}, set(list.members())
+            {"test1@user.com", "test2@user.com", "test@test.no"}, set(list.members())
         )
 
     def test_only_internal_allowed(self):

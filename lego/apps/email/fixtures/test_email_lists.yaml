@@ -5,3 +5,5 @@
     email: address
     group_roles:
       - member
+    additional_emails:
+      - test@test.no
