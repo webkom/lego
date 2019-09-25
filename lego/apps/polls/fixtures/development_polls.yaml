@@ -21,7 +21,7 @@
 - model: polls.Option
   pk: 2
   fields:
-    name: Grinder
+    name: Grindr
     votes: 10
     poll: 1
 
