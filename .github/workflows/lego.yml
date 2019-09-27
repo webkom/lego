@@ -6,6 +6,8 @@ on:
       - '*'
       - '!master'
       - '!prod'
+    paths:
+      - '!README.md'
 
 jobs:
   missing-migrations:
