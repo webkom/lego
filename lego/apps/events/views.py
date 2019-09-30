@@ -47,7 +47,7 @@ from lego.apps.events.serializers.registrations import (
     StripePaymentIntentSerializer,
 )
 from lego.apps.events.tasks import (
-    async_payment,
+    async_initiate_payment,
     async_register,
     async_unregister,
     check_for_bump_on_pool_creation_or_expansion,
@@ -175,29 +175,23 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         registration = event.get_registration(request.user)
 
         if not event.is_priced or not event.use_stripe:
-            raise PermissionDenied()
+            raise PermissionDenied()  # TODO better response
 
         if registration.has_paid():
             raise APIPaymentExists()
 
-        registration.charge_status = constants.PAYMENT_PENDING
+        registration.payment_status = constants.PAYMENT_PENDING
         registration.save()
-        client_secret = (
-            chain(
-                async_payment.s(registration.id),
-                registration_payment_save.s(registration.id),
-            )
-            .delay()
-            .get()
-        )
+        chain(
+            async_initiate_payment.s(registration.id),
+            registration_payment_save.s(registration.id),
+        ).delay()
+
         payment_serializer = RegistrationPaymentReadSerializer(
             registration, context={"request": request}
         )
 
         response_data = payment_serializer.data
-        if client_secret:
-            response_data = dict(response_data)
-            response_data.update(client_secret)
 
         return Response(data=response_data, status=status.HTTP_202_ACCEPTED)
 

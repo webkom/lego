@@ -52,18 +52,18 @@ class PersonalPresenceField(serializers.Field):
         return None
 
 
-class PersonalChargeStatusField(serializers.Field):
+class PersonalPaymentStatusField(serializers.Field):
     def get_attribute(self, instance):
         return instance
 
     def to_representation(self, value):
         request = self.context.get("request", None)
         if request and request.user.is_authenticated and request.user == value.user:
-            return value.charge_status
+            return value.payment_status
 
         user = self.context.get("user", None)
         if user and user == value.user:
-            return value.charge_status
+            return value.payment_status
         return None
 
 
@@ -106,7 +106,7 @@ class SpotsLeftField(serializers.Field):
             return value.spots_left_for_user(request.user)
 
 
-class SetChargeStatusField(serializers.ChoiceField):
+class SetPaymentStatusField(serializers.ChoiceField):
     def get_attribute(self, instance):
         return instance
 
@@ -117,7 +117,7 @@ class SetChargeStatusField(serializers.ChoiceField):
             and request.user.is_authenticated
             and request.user.has_perm(EDIT, Event)
         ):
-            return getattr(value, "charge_status", None)
+            return getattr(value, "payment_status", None)
 
     def to_internal_value(self, data):
         request = self.context.get("request", None)

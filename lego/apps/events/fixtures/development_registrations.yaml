@@ -6,7 +6,7 @@
     user: 1
     status: 'SUCCESS_REGISTER'
     presence: 'PRESENT'
-    charge_status: 'succeeded'
+    payment_status: 'succeeded'
   model: events.Registration
   pk: 1
 - fields:
@@ -16,7 +16,7 @@
     unregistration_date: null
     user: 2
     status: 'SUCCESS_REGISTER'
-    charge_status: 'succeeded'
+    payment_status: 'succeeded'
   model: events.Registration
   pk: 2
 - fields:
@@ -26,7 +26,7 @@
     unregistration_date: null
     user: 3
     status: 'SUCCESS_REGISTER'
-    charge_status: 'succeeded'
+    payment_status: 'succeeded'
   model: events.Registration
   pk: 3
 - fields:
@@ -36,7 +36,7 @@
     unregistration_date: null
     user: 4
     status: 'SUCCESS_REGISTER'
-    charge_status: 'PAYMENT_PENDING'
+    payment_status: 'PAYMENT_PENDING'
   model: events.Registration
   pk: 4
 - fields:
@@ -46,7 +46,7 @@
     unregistration_date: null
     user: 5
     status: 'SUCCESS_REGISTER'
-    charge_status: 'FAILURE'
+    payment_status: 'FAILURE'
   model: events.Registration
   pk: 5
 - fields:

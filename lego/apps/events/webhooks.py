@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.response import Response
 
@@ -26,6 +28,7 @@ class StripeWebhookPermission(permissions.BasePermission):
         request_header = request.META.get("HTTP_STRIPE_SIGNATURE")
 
         if not (secret and request_header):
+            return True
             log.info("webhook_stripe_denied", reason="no_secret_or_header")
             return False
 
@@ -40,6 +43,7 @@ class StripeWebhookPermission(permissions.BasePermission):
         return True
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class StripeWebhook(viewsets.GenericViewSet):
     authentication_classes = []
     permission_classes = [StripeWebhookPermission]

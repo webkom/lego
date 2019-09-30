@@ -3,6 +3,7 @@ from datetime import datetime
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (
     EventReadDetailedSocketSerializer,
+    RegistrationPaymentInitiateSocketSerializer,
     RegistrationPaymentReadSocketSerializer,
     RegistrationReadSocketSerializer,
 )
@@ -34,6 +35,16 @@ def notify_event_registration(action_type, registration, **kwargs):
     kwargs["event_id"] = registration.event.id
     serializer = RegistrationReadSocketSerializer(
         {"type": action_type, "payload": registration, "meta": kwargs}
+    )
+    notify_group(group, serializer.data)
+
+
+def notify_user_payment_initiated(action_type, registration, **kwargs):
+    group = group_for_user(registration.user)
+    kwargs["event_id"] = registration.event.id
+    serializer = RegistrationPaymentInitiateSocketSerializer(
+        {"type": action_type, "payload": registration, "meta": kwargs},
+        context={"user": registration.user},
     )
     notify_group(group, serializer.data)
 

@@ -15,6 +15,10 @@ class MetaSerializer(serializers.Serializer):
     success_message = serializers.CharField(required=False)
 
 
+class PaymentIntentMetaSerializer(MetaSerializer):
+    client_secret = serializers.CharField(required=True)
+
+
 class WebsocketSerializer(serializers.Serializer):
     type = serializers.CharField()
     meta = MetaSerializer()
@@ -27,6 +31,12 @@ class RegistrationReadSocketSerializer(WebsocketSerializer):
 
 class RegistrationPaymentReadSocketSerializer(WebsocketSerializer):
     payload = RegistrationPaymentReadSerializer()
+
+
+class RegistrationPaymentInitiateSocketSerializer(
+    RegistrationPaymentReadSocketSerializer
+):
+    meta = PaymentIntentMetaSerializer()
 
 
 class EventReadDetailedSocketSerializer(WebsocketSerializer):

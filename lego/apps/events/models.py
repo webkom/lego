@@ -782,10 +782,10 @@ class Registration(BasisModel):
         choices=constants.PHOTO_CONSENT_CHOICES,
     )
 
-    charge_id = models.CharField(null=True, max_length=50)
-    charge_amount = models.IntegerField(default=0)
-    charge_amount_refunded = models.IntegerField(default=0)
-    charge_status = models.CharField(null=True, max_length=50)
+    payment_intent_id = models.CharField(null=True, max_length=50)
+    payment_amount = models.IntegerField(default=0)
+    payment_amount_refunded = models.IntegerField(null=True, default=0)
+    payment_status = models.CharField(null=True, max_length=50)
     last_notified_overdue_payment = models.DateTimeField(null=True)
 
     class Meta:
@@ -809,7 +809,7 @@ class Registration(BasisModel):
             raise ValidationError("Pool and unregistration_date should not both be set")
 
     def has_paid(self):
-        return self.charge_status in [
+        return self.payment_status in [
             constants.PAYMENT_SUCCESS,
             constants.PAYMENT_MANUAL,
         ]
@@ -826,7 +826,7 @@ class Registration(BasisModel):
         return False
 
     def set_payment_success(self):
-        self.charge_status = constants.PAYMENT_MANUAL
+        self.payment_status = constants.PAYMENT_MANUAL
         self.save()
         return self
 
