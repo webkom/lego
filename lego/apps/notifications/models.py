@@ -82,6 +82,13 @@ class Announcement(BasisModel):
     groups = models.ManyToManyField("users.AbakusGroup", blank=True)
     events = models.ManyToManyField("events.Event", blank=True)
     meetings = models.ManyToManyField("meetings.Meeting", blank=True)
+    from_group = models.ForeignKey(
+        "users.AbakusGroup",
+        on_delete=models.PROTECT,
+        related_name="from_group",
+        null=True,
+        blank=True,
+    )
 
     def lookup_recipients(self):
         """

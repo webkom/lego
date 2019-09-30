@@ -1,0 +1,48 @@
+- model: notifications.Announcement
+  pk: 1
+  fields:
+    message: abakom
+    sent: '2019-02-10T14:38:49.164657Z'
+    groups: [3]
+    created_by: 4
+
+- model: notifications.Announcement
+  pk: 2
+  fields:
+    message: event_from_arrkom
+    from_group: 4
+    sent: '2019-02-10T14:38:49.164657Z'
+    events: [1]
+    created_by: 4
+
+- model: notifications.Announcement
+  pk: 3
+  fields:
+    message: event_abakom
+    sent: '2019-02-10T14:38:49.164657Z'
+    groups: [3]
+    events: [1]
+    created_by: 4
+
+- model: notifications.Announcement
+  pk: 4
+  fields:
+    message: user_from_webkom
+    from_group: 12
+    users: [1, 2,3]
+    created_by: 4
+
+- model: notifications.Announcement
+  pk: 5
+  fields:
+    message: from_authorized_user
+    from_group: 10
+    groups: [3]
+    created_by: 9
+
+- model: notifications.Announcement
+  pk: 6
+  fields:
+    message: test_from_user_webkom
+    groups: [1]
+    created_by: 3

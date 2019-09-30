@@ -32,15 +32,34 @@ class AnnouncementListSerializer(BasisModelSerializer):
     groups = PublicAbakusGroupSerializer(many=True, read_only=True)
     events = EventReadSerializer(many=True, read_only=True)
     meetings = MeetingDetailSerializer(many=True, read_only=True)
+    from_group = PublicAbakusGroupSerializer(read_only=True)
 
     class Meta:
         model = Announcement
-        fields = ("id", "message", "sent", "users", "groups", "events", "meetings")
+        fields = (
+            "id",
+            "message",
+            "from_group",
+            "sent",
+            "users",
+            "groups",
+            "events",
+            "meetings",
+        )
         read_only_fields = ("sent",)
 
 
 class AnnouncementDetailSerializer(BasisModelSerializer):
     class Meta(AnnouncementListSerializer.Meta):
         model = Announcement
-        fields = ("id", "message", "sent", "users", "groups", "events", "meetings")
+        fields = (
+            "id",
+            "message",
+            "from_group",
+            "sent",
+            "users",
+            "groups",
+            "events",
+            "meetings",
+        )
         read_only_fields = ("sent",)

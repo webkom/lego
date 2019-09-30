@@ -4,7 +4,7 @@
 
 Hei {{ name }}!
 
-{{created_by}} sendte deg en viktig melding.
+{{ sender }} sendte deg en viktig melding.
 
 {{message}}
 
