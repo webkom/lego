@@ -2,10 +2,6 @@ name: LEGO backend
 
 on:
     push:
-        branches:
-          - '*'
-          - '!master'
-          - '!prod'
         paths:
           - '!README.md'
 
