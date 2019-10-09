@@ -1,8 +1,9 @@
 - model: polls.Poll
   pk: 1
   fields:
-    title: en poll hey
+    title: Hvor skaffer du kok?
     description: Officia deserunt mollit anim id est laborum.
+    pinned: true
 
 - model: polls.Poll
   pk: 2
@@ -13,20 +14,41 @@
 - model: polls.Option
   pk: 1
   fields:
-    name: Skra
-    votes: 3
+    name: Tinder
+    votes: 5
     poll: 1
 
 - model: polls.Option
   pk: 2
   fields:
-    name: Bombom
-    votes: 25
+    name: Grindr
+    votes: 10
     poll: 1
 
 - model: polls.Option
   pk: 3
   fields:
+    name: Github
+    votes: 13
+    poll: 1
+
+- model: polls.Option
+  pk: 5
+  fields:
+    name: Bodegaen
+    votes: 31
+    poll: 1
+
+- model: polls.Option
+  pk: 6
+  fields:
     name: yo
     votes: 9
+    poll: 2
+
+- model: polls.Option
+  pk: 7
+  fields:
+    name: yo
+    votes: 4
     poll: 2

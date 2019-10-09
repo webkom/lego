@@ -4,3 +4,11 @@
     title: Om oss
     slug: om-oss
     content: <p>Om oss</p>
+
+- model: flatpages.page
+  pk: 2
+  fields:
+    title: For bedrifter
+    slug: for-bedrifter
+    category: bedrifter
+    content: <p>Masse info for bedrifter</p>

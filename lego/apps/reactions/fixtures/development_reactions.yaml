@@ -236,3 +236,10 @@
     object_id: 3
     created_by: 11
   model: reactions.Reaction
+- pk: 35
+  fields:
+    emoji: ':poland:'
+    content_type: ['quotes', 'quote']
+    object_id: 1
+    created_by: 11
+  model: reactions.Reaction

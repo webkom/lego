@@ -2,13 +2,12 @@ name: LEGO backend
 
 on:
     push:
-        branches:
-          - '*'
-          - '!master'
-          - '!prod'
         paths:
           - '!README.md'
-
+        branches:
+                  - '*'
+                  - '!master'
+                  - '!prod'
 jobs:
     missing-migrations:
         name: Check for missing migrations

@@ -8,6 +8,10 @@
 
 - model: tags.Tag
   fields:
+    tag: weekly
+
+- model: tags.Tag
+  fields:
     tag: sample-text
 
 - model: articles.Article
@@ -15,16 +19,17 @@
   fields:
     title: Ny komité i Abakus
     cover: test_article_cover.png
-    description: Etter langt å lenge har HS endelig blitt enig.
-    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
-      Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
-      da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
-      av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
-      til å bestå gjennom fem århundrer også tålt spranget over til elektronisk
-      typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i
-      1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og
-      senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp
-      Lorem Ipsum for dummytekst.
+    description: "Etter langt å lenge har HS endelig blitt enig."
+    text:
+      "<p>Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.\
+      \ Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,\
+      \ da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar\
+      \ av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg\
+      \ til å bestå gjennom fem århundrer også tålt spranget over til elektronisk\
+      \ typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i\
+      \ 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og\
+      \ senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp\
+      \ Lorem Ipsum for dummytekst. </p>"
     can_view_groups:
       - - Users
     tags:
@@ -37,16 +42,17 @@
   fields:
     title: Dette er en syk artikkel
     cover: test_article_cover.png
-    description: Eller hur hur hur hur.
-    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
-      Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
-      da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
-      av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
-      til å bestå gjennom fem århundrer også tålt spranget over til elektronisk
-      typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i
-      1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og
-      senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp
-      Lorem Ipsum for dummytekst.
+    description: "Hurr durr durr"
+    text:
+      "<p>Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.\
+      \ Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,\
+      \ da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar\
+      \ av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg\
+      \ til å bestå gjennom fem århundrer også tålt spranget over til elektronisk\
+      \ typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i\
+      \ 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og\
+      \ senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp\
+      \ Lorem Ipsum for dummytekst. </p>"
     can_view_groups:
       - - Users
     tags:
@@ -58,19 +64,85 @@
   fields:
     title: Artikkel med youtube cover
     cover: test_article_cover.png
-    description: Eller hur hur hur hur.
-    text: Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.
-      Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,
-      da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar
-      av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg
-      til å bestå gjennom fem århundrer også tålt spranget over til elektronisk
-      typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i
-      1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og
-      senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp
-      Lorem Ipsum for dummytekst.
+    description: "Eller hur hur hur hur."
+    text:
+      "<p>Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.\
+      \ Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,\
+      \ da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar\
+      \ av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg\
+      \ til å bestå gjennom fem århundrer også tålt spranget over til elektronisk\
+      \ typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i\
+      \ 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og\
+      \ senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp\
+      \ Lorem Ipsum for dummytekst. </p>"
     can_view_groups:
       - - Users
     tags:
       - lorem
       - ipsum
     youtube_url: https://www.youtube.com/watch?v=bLHL75H_VEM
+
+- model: articles.Article
+  pk: 4
+  fields:
+    title: Weekly - UKE 37
+    cover: test_article_cover.png
+    description: "Takket være de flinke medlemmene i itDAGENE så fikk vi en pangstart"
+    text:
+      "<p>Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.\
+      \ Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,\
+      \ da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar\
+      \ av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg\
+      \ til å bestå gjennom fem århundrer også tålt spranget over til elektronisk\
+      \ typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i\
+      \ 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og\
+      \ senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp\
+      \ Lorem Ipsum for dummytekst. </p>"
+    can_view_groups:
+      - - Users
+    tags:
+      - weekly
+
+- model: articles.Article
+  pk: 5
+  fields:
+    title: Ganske sjuk artikkel her også.
+    cover: test_article_cover.png
+    description: "Eller hur hur hur hur."
+    text:
+      "<p>Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.\
+      \ Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,\
+      \ da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar\
+      \ av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg\
+      \ til å bestå gjennom fem århundrer også tålt spranget over til elektronisk\
+      \ typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i\
+      \ 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og\
+      \ senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp\
+      \ Lorem Ipsum for dummytekst. </p>"
+    can_view_groups:
+      - - Users
+    tags:
+      - lorem
+      - ipsum
+
+- model: articles.Article
+  pk: 6
+  fields:
+    title: Artikkel nr 6 sånn ca
+    cover: test_article_cover.png
+    description: "Eller hur hur hur hur."
+    text:
+      "<p>Lorem Ipsum er rett og slett dummytekst fra og for trykkeindustrien.\
+      \ Lorem Ipsum har vært bransjens standard for dummytekst helt siden 1500-tallet,\
+      \ da en ukjent boktrykker stokket en mengde bokstaver for å lage et prøveeksemplar\
+      \ av en bok. Lorem Ipsum har tålt tidens tann usedvanlig godt, og har i tillegg\
+      \ til å bestå gjennom fem århundrer også tålt spranget over til elektronisk\
+      \ typografi uten vesentlige endringer. Lorem Ipsum ble gjort allment kjent i\
+      \ 1960-årene ved lanseringen av Letraset-ark med avsnitt fra Lorem Ipsum, og\
+      \ senere med sideombrekkingsprogrammet Aldus PageMaker som tok i bruk nettopp\
+      \ Lorem Ipsum for dummytekst. </p>"
+    can_view_groups:
+      - - Users
+    tags:
+      - lorem
+      - ipsum
