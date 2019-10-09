@@ -2,7 +2,7 @@
 import os
 import sys
 
-TESTING = "test" in sys.argv[:2] or os.environ.get("GITHUB_ACTIONS") is True
+TESTING = "test" in sys.argv[:2]
 DAPHNE_SERVER = "daphne" in sys.argv
 
 from .base import *  # noqa
