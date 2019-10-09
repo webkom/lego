@@ -33,10 +33,7 @@ class PasswordResetRequestViewSet(viewsets.GenericViewSet):
         token = PasswordReset.generate_reset_token(email)
         send_email.delay(
             to_email=email,
-            context={
-            "name": user.full_name,
-            "token": token
-             },
+            context={"name": user.full_name, "token": token},
             subject="Nullstill ditt passord på abakus.no",
             plain_template="users/email/reset_password.txt",
             html_template="users/email/reset_password.html",
