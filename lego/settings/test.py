@@ -8,7 +8,7 @@ from .base import CHANNEL_LAYERS, INSTALLED_APPS
 logging.disable(logging.CRITICAL)
 
 # Disable migrations for all apps (not on CI):
-if "DRONE" not in os.environ and "GITHUB_ACTIONS" not in os.environ:
+if "DRONE" not in os.environ:
     MIGRATION_MODULES = {
         "auth": None,
         "contenttypes": None,
