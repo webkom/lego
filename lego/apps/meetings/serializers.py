@@ -76,7 +76,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
             "report_author",
             "invitations",
             "comments",
-            "comment_target",
+            "content_target",
             "mazemap_poi",
         )
         read_only = True
