@@ -4,6 +4,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 
 import stripe
+from celery import chain
 from structlog import get_logger
 
 from lego import celery_app
@@ -53,8 +54,6 @@ class Payment(AbakusTask):
     registration = None
 
     def on_failure(self, return_value, *args):
-        # If the request to Stripe fails, return an error
-        print("\n\n\n\n\n", return_value, "\n\n\n\n\n\n")
         if self.request.retries == self.max_retries:
             if return_value.json_body:
                 error = return_value.json_body["error"]
@@ -85,6 +84,10 @@ def async_register(self, registration_id, logger_context=None):
                 )
             )
         log.info("registration_success", registration_id=self.registration.id)
+        chain(
+            async_initiate_payment.s(registration_id),
+            save_and_notify_payment.s(registration_id),
+        ).delay()
     except EventHasClosed as e:
         log.warn(
             "registration_tried_after_started",
@@ -136,6 +139,54 @@ def async_unregister(self, registration_id, logger_context=None):
         )
 
 
+@celery_app.task(base=AbakusTask, bind=True)
+def async_retrieve_payment(
+    self, registration_id, client_secret=None, logger_context=None
+):
+    """
+    Task that retrieves an existing payment intents client_secret from Stripe.
+    If the client_secret is provided, this is returned directly
+    """
+    self.registration = Registration.objects.get(id=registration_id)
+
+    if client_secret is None:
+        try:
+            payment_intent = stripe.PaymentIntent.retrieve(
+                self.registration.payment_intent_id
+            )
+            client_secret = payment_intent["client_secret"]
+        except stripe.error.InvalidRequestError as e:
+            log.error(
+                "invalid_request", exception=e, registration_id=self.registration.id
+            )
+            self.registration.payment_status = e.json_body["error"]["type"]
+            self.registration.save()
+        except stripe.error.StripeError as e:
+            log.error("stripe_error", exception=e, registration_id=self.registration.id)
+            raise self.retry(exc=e, max_retries=3)
+        except stripe.error.APIConnectionError as e:
+            log.error(
+                "stripe_APIConnectionError",
+                exception=e,
+                registration_id=self.registration.id,
+            )
+            raise self.retry(exc=e, max_retries=3)
+        except Exception as e:
+            log.error(
+                "Exception on creating a payment intent",
+                exception=e,
+                registration=self.registration.id,
+            )
+            raise self.retry(exc=e)
+
+    notify_user_payment_initiated(
+        constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+        self.registration,
+        success_message="Betaling påbegynt",
+        client_secret=client_secret,
+    )
+
+
 @celery_app.task(base=Payment, bind=True)
 def async_initiate_payment(self, registration_id, logger_context=None):
     """
@@ -163,12 +214,6 @@ def async_initiate_payment(self, registration_id, logger_context=None):
             "stripe_payment_intent_create_success", registration_id=self.registration.id
         )
 
-        notify_user_payment_initiated(
-            constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
-            self.registration,
-            success_message="Betaling påbegynt",
-            client_secret=payment_intent["client_secret"],
-        )
         return payment_intent
 
     except stripe.error.InvalidRequestError as e:
@@ -195,7 +240,7 @@ def async_initiate_payment(self, registration_id, logger_context=None):
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def registration_payment_save(self, result, registration_id, logger_context=None):
+def save_and_notify_payment(self, result, registration_id, logger_context=None):
     """
     Saves a users registration with new payment details.
     Result is a stripe payment_intent
@@ -204,18 +249,23 @@ def registration_payment_save(self, result, registration_id, logger_context=None
 
     try:
         registration = Registration.objects.get(id=registration_id)
-        if registration.payment_intent_id is not None:
-            # Cancel if the payment_intent exists. The payment intent may already be canceled
-            stripe.PaymentIntent.cancel(registration.payment_intent_id)
         registration.payment_intent_id = result["id"]
         registration.payment_amount = result["amount"]
         registration.payment_intent_status = result["status"]
         registration.save()
+
     except IntegrityError as e:
         log.error(
             "registration_save_error", exception=e, registration_id=registration_id
         )
         raise self.retry(exc=e)
+
+    notify_user_payment_initiated(
+        constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+        registration,
+        success_message="Betaling påbegynt",
+        client_secret=result["client_secret"],
+    )
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
@@ -277,7 +327,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
             notify_user_payment(
                 constants.SOCKET_PAYMENT_FAILURE,
                 registration,
-                error_message=serializer.data["last_payment_error"]["message"],
+                error_message="Betaling feilet",
             )
 
         log.info(

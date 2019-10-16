@@ -49,9 +49,10 @@ from lego.apps.events.serializers.registrations import (
 from lego.apps.events.tasks import (
     async_initiate_payment,
     async_register,
+    async_retrieve_payment,
     async_unregister,
     check_for_bump_on_pool_creation_or_expansion,
-    registration_payment_save,
+    save_and_notify_payment,
 )
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -180,12 +181,14 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if registration.has_paid():
             raise APIPaymentExists()
 
-        registration.payment_status = constants.PAYMENT_PENDING
-        registration.save()
-        chain(
-            async_initiate_payment.s(registration.id),
-            registration_payment_save.s(registration.id),
-        ).delay()
+        if registration.payment_intent_id is None:
+            # If the payment_intent was not created when registering
+            chain(
+                async_initiate_payment.s(registration.id),
+                save_and_notify_payment.s(registration.id),
+            ).delay()
+        else:
+            async_retrieve_payment.s(registration.id).delay()
 
         payment_serializer = RegistrationPaymentReadSerializer(
             registration, context={"request": request}
