@@ -84,10 +84,12 @@ def async_register(self, registration_id, logger_context=None):
                 )
             )
         log.info("registration_success", registration_id=self.registration.id)
-        chain(
-            async_initiate_payment.s(registration_id),
-            save_and_notify_payment.s(registration_id),
-        ).delay()
+        if self.registration.event.is_priced and self.event.use_stripe:
+            chain(
+                async_initiate_payment.s(registration_id),
+                save_and_notify_payment.s(registration_id),
+            ).delay()
+
     except EventHasClosed as e:
         log.warn(
             "registration_tried_after_started",
@@ -121,6 +123,7 @@ def async_unregister(self, registration_id, logger_context=None):
                     activation_time=activation_time,
                 )
             )
+        async_cancel_payment.s(registration_id).delay()
         log.info("unregistration_success", registration_id=registration.id)
     except EventHasClosed as e:
         log.warn(
@@ -203,6 +206,7 @@ def async_initiate_payment(self, registration_id, logger_context=None):
             receipt_email=self.registration.user.email,
             currency="NOK",
             description=event.slug,
+            idempotency_key=self.registration.id,
             metadata={
                 "EVENT_ID": event.id,
                 "USER_ID": self.registration.user.id,
@@ -239,10 +243,37 @@ def async_initiate_payment(self, registration_id, logger_context=None):
         raise self.retry(exc=e)
 
 
+@celery_app.task(bind=True, base=AbakusTask)
+def async_cancel_payment(self, registration_id, logger_context=None):
+    """
+    Cancel a Stripe payment intent connected to a users registration.
+    """
+    self.setup_logger(logger_context)
+
+    registration = Registration.objects.get(id=registration_id)
+
+    if registration.payment_intent_id is None:
+        log.error(
+            "Attempting to cancel a payment intent that does not exist",
+            registration=registration.id,
+        )
+        raise ValueError("Payment intent does not exist")
+
+    try:
+        stripe.PaymentIntent.cancel(registration.payment_intent_id)
+    except stripe.error.InvalidRequestError as e:
+        log.error(
+            "Exception when attempting to cancel a payment intent",
+            exception=e,
+            registration=registration.id,
+        )
+
+
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def save_and_notify_payment(self, result, registration_id, logger_context=None):
     """
-    Saves a users registration with new payment details.
+    Saves a users registration with new payment details and sends the stripe payment_intent
+    client_secret to the client.
     Result is a stripe payment_intent
     """
     self.setup_logger(logger_context)

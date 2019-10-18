@@ -5,33 +5,30 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0025_auto_20190714_1906'),
-    ]
+    dependencies = [("events", "0025_auto_20190714_1906")]
 
     operations = [
         migrations.RenameField(
-            model_name='registration',
-            old_name='charge_amount',
-            new_name='payment_amount',
+            model_name="registration",
+            old_name="charge_amount",
+            new_name="payment_amount",
         ),
         migrations.RenameField(
-            model_name='registration',
-            old_name='charge_id',
-            new_name='payment_intent_id',
+            model_name="registration",
+            old_name="charge_id",
+            new_name="payment_intent_id",
         ),
         migrations.RenameField(
-            model_name='registration',
-            old_name='charge_status',
-            new_name='payment_status',
+            model_name="registration",
+            old_name="charge_status",
+            new_name="payment_status",
         ),
         migrations.RemoveField(
-            model_name='registration',
-            name='charge_amount_refunded',
+            model_name="registration", name="charge_amount_refunded"
         ),
         migrations.AddField(
-            model_name='registration',
-            name='payment_amount_refunded',
+            model_name="registration",
+            name="payment_amount_refunded",
             field=models.IntegerField(default=0, null=True),
         ),
     ]

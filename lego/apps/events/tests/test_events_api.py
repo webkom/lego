@@ -318,8 +318,8 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 200)
 
-    def test_charge_status_hidden_when_not_priced(self):
-        """Test that chargeStatus is hidden when getting nonpriced event"""
+    def test_payment_status_hidden_when_not_priced(self):
+        """Test that paymentStatus is hidden when getting nonpriced event"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(1))
@@ -327,7 +327,7 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         for pool in event_response.json()["pools"]:
             for reg in pool["registrations"]:
                 with self.assertRaises(KeyError):
-                    reg["chargeStatus"]
+                    reg["paymentStatus"]
 
     def test_only_own_fields_visible(self):
         """Test that a user can only view own fields"""
@@ -339,10 +339,10 @@ class RetrieveEventsTestCase(BaseAPITestCase):
             for reg in pool["registrations"]:
                 if reg["user"]["id"] == self.abakus_user.id:
                     self.assertIsNotNone(reg["feedback"])
-                    self.assertIsNotNone(reg["chargeStatus"])
+                    self.assertIsNotNone(reg["paymentStatus"])
                 else:
                     self.assertIsNone(reg["feedback"])
-                    self.assertIsNone(reg["chargeStatus"])
+                    self.assertIsNone(reg["paymentStatus"])
 
     def test_event_registration_no_shared_memberships(self):
         """Test registrations shared_memberships without any shared groups"""
@@ -1057,8 +1057,8 @@ class RegistrationsTestCase(BaseAPITestCase):
         )
         self.assertEqual(registration_response.status_code, 202)
 
-    def test_update_charge_status_with_permissions(self, mock_verify_captcha):
-        """Test user with permission can update charge_status"""
+    def test_update_payment_status_with_permissions(self, mock_verify_captcha):
+        """Test user with permission can update payment_status"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -1067,12 +1067,12 @@ class RegistrationsTestCase(BaseAPITestCase):
         )
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
-            {"charge_status": "manual"},
+            {"payment_status": "manual"},
         )
         self.assertEqual(res.status_code, 200)
 
-    def test_update_charge_status_wrongly_with_permissions(self, mock_verify_captcha):
-        """Test user with permission fails in updating charge_status when giving wrong choice"""
+    def test_update_payment_status_wrongly_with_permissions(self, mock_verify_captcha):
+        """Test user with permission fails in updating payment_status when giving wrong choice"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
@@ -1082,19 +1082,19 @@ class RegistrationsTestCase(BaseAPITestCase):
         )
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
-            {"charge_status": "feil-data"},
+            {"payment_status": "feil-data"},
         )
         self.assertEqual(res.status_code, 400)
 
-    def test_update_charge_status_without_permissions(self, mock_verify_captcha):
-        """Test that user without permission cannot update charge_status"""
+    def test_update_payment_status_without_permissions(self, mock_verify_captcha):
+        """Test that user without permission cannot update _status"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.json()["id"]),
-            {"charge_status": "manual"},
+            _get_registrations_detail_url(event.id, registration_response.data.json()["id"]),
+            {"payment_status": "manual"},
         )
         self.assertEqual(res.status_code, 403)
 
@@ -1349,12 +1349,12 @@ class StripePaymentTestCase(BaseAPITestCase):
         token = create_token("4242424242424242", "123")
         res = self.issue_payment(token)
         self.assertEqual(res.status_code, 202)
-        self.assertEqual(res.json().get("charge_status"), constants.PAYMENT_PENDING)
+        self.assertEqual(res.data.get("payment_status"), constants.PAYMENT_PENDING)
         registration_id = res.json().get("id")
         get_object = self.client.get(
             _get_registrations_detail_url(self.event.id, registration_id)
         )
-        self.assertEqual(get_object.json().get("charge_status"), "succeeded")
+        self.assertEqual(get_object.json().get("payment_status"), "succeeded")
 
     def test_refund_task(self):
         token = create_token("4242424242424242", "123")
@@ -1377,9 +1377,9 @@ class StripePaymentTestCase(BaseAPITestCase):
 
         registration.refresh_from_db()
 
-        self.assertEqual(registration.charge_status, "succeeded")
-        self.assertEqual(registration.charge_amount, 10000)
-        self.assertEqual(registration.charge_amount_refunded, 10000)
+        self.assertEqual(registration.payment_status, "succeeded")
+        self.assertEqual(registration.payment_amount, 10000)
+        self.assertEqual(registration.payment_amount_refunded, 10000)
 
     def test_refund_webhook_raising_error(self):
         token = create_token("4242424242424242", "123")

@@ -159,7 +159,7 @@
     event: 1
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:
-      - - Webkom 
+      - - Webkom
 
 - model: events.Pool
   pk: 3
@@ -242,7 +242,7 @@
     pool: 5
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
-    charge_status: 'succeeded'
+    payment_status: 'succeeded'
 
 - model: events.Registration
   pk: 4
@@ -252,7 +252,7 @@
     pool: 5
     registration_date: '2011-09-01T13:20:30+03:00'
     status: 'SUCCESS_REGISTER'
-    charge_status: 'succeeded'
+    payment_status: 'succeeded'
 
 - model: events.Registration
   pk: 5
