@@ -161,6 +161,18 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return SubmissionReadSerializer
 
     def create(self, request, *args, **kwargs):
+        print("###", request)
+        user = request.user.id
+        print("%%%", user)
+        survey = Survey.objects.get(pk=kwargs["survey_pk"])
+        user_has_already_answered = user in survey.answered_by
+        print("user_has_already_answered", user_has_already_answered)
+        if user_has_already_answered:
+            return Response(
+                data='You have already anwered this survey.',
+                status=status.HTTP_409_CONFLICT,
+            )
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

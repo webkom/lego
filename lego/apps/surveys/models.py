@@ -25,6 +25,9 @@ class Survey(BasisModel):
     token = models.CharField(
         max_length=64, default=None, unique=True, null=True, blank=True
     )
+    answered_by = models.ManyToManyField(
+        User, related_name="answered_surveys", blank=True
+    )
 
     def aggregate_submissions(self):
         result = {}
@@ -83,13 +86,9 @@ class Option(models.Model):
 
 
 class Submission(BasisModel):
-    user = models.ForeignKey(User, related_name="surveys", on_delete=models.CASCADE)
     survey = models.ForeignKey(
         Survey, related_name="submissions", on_delete=models.CASCADE
     )
-
-    class Meta:
-        unique_together = ("survey", "user")
 
 
 class Answer(BasisModel):

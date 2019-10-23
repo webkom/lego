@@ -36,21 +36,12 @@ class SubmissionPermissions(permissions.BasePermission):
             event=event.id, user=user.id, presence=constants.PRESENT
         ).exists()
 
-        if view.action in ["update", "partial_update"]:
+        if view.action in ["update", "partial_update", "retrieve"]:
             return False
         if user.has_perm(EDIT, obj=Survey):
             return True
         if view.action in ["create"]:
             return user_attended_event
-        if view.action in ["retrieve"]:
-            return (
-                user_attended_event
-                and survey.submissions.get(id=view.kwargs["pk"]).user_id is user.id
-            )
-        if request.query_params.get("user", False):
-            return user_attended_event and int(
-                request.query_params.get("user", False)
-            ) is int(user.id)
         return False
 
 
