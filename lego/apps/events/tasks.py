@@ -84,7 +84,11 @@ def async_register(self, registration_id, logger_context=None):
                 )
             )
         log.info("registration_success", registration_id=self.registration.id)
-        if self.registration.event.is_priced and self.event.use_stripe:
+        if (
+            self.registration.event.is_priced
+            and self.registration.event.use_stripe
+            and self.registration.pool is not None
+        ):
             chain(
                 async_initiate_payment.s(registration_id),
                 save_and_notify_payment.s(registration_id),
@@ -123,7 +127,8 @@ def async_unregister(self, registration_id, logger_context=None):
                     activation_time=activation_time,
                 )
             )
-        async_cancel_payment.s(registration_id).delay()
+        if registration.event.payment_intent_id:
+            async_cancel_payment.s(registration_id).delay()
         log.info("unregistration_success", registration_id=registration.id)
     except EventHasClosed as e:
         log.warn(
@@ -151,6 +156,13 @@ def async_retrieve_payment(
     If the client_secret is provided, this is returned directly
     """
     self.registration = Registration.objects.get(id=registration_id)
+
+    if self.registration.payment_intent_id is None:
+        log.error(
+            "Attempted to retrieve a non-existing payment intent",
+            registration=self.registration.id,
+        )
+        raise ValueError("The payment intent does not exist")
 
     if client_secret is None:
         try:
@@ -194,7 +206,7 @@ def async_retrieve_payment(
 def async_initiate_payment(self, registration_id, logger_context=None):
     """
     Task that creates a new Stripe payment intent. Stripe returns a payment_intent object. The
-    client_secret is then needed to finsish the payment on frontend.
+    client_secret is then needed to finsish the payment on the client side.
     """
     self.setup_logger(logger_context)
 
@@ -206,7 +218,7 @@ def async_initiate_payment(self, registration_id, logger_context=None):
             receipt_email=self.registration.user.email,
             currency="NOK",
             description=event.slug,
-            idempotency_key=self.registration.id,
+            idempotency_key=str(self.registration.id),
             metadata={
                 "EVENT_ID": event.id,
                 "USER_ID": self.registration.user.id,

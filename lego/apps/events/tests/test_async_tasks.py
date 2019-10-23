@@ -1,18 +1,25 @@
 from datetime import timedelta
-from unittest import mock
+from unittest import mock, skipIf
 
 from django.utils import timezone
+
+import stripe
+from celery import chain
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
+    async_cancel_payment,
+    async_initiate_payment,
     async_register,
+    async_retrieve_payment,
     bump_waiting_users_to_new_pool,
     check_events_for_registrations_with_expired_penalties,
     check_that_pool_counters_match_registration_number,
     notify_event_creator_when_payment_overdue,
     notify_user_when_payment_soon_overdue,
+    save_and_notify_payment,
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
@@ -395,6 +402,78 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 2)
 
 
+@skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
+class StripePaymentTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+        "test_companies.yaml",
+    ]
+
+    def setUp(self):
+        self.event = Event.objects.get(title="POOLS_AND_PRICED")
+        self.event.start_time = timezone.now() + timedelta(days=1)
+        self.event.end_time = timezone.now() + timedelta(days=1, hours=2)
+        self.event.merge_time = timezone.now() + timedelta(hours=12)
+        self.event.payment_due_date = timezone.now() + timedelta(days=2)
+        self.event.save()
+        self.registration = self.event.registrations.first()
+
+    @mock.patch("lego.apps.events.tasks.async_initiate_payment")
+    def test_create_payment_intent_when_registering(self, mock_initiate_payment):
+        """Test that the payment is created when registering and there is space in a pool"""
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        async_register(registration.id)
+        mock_initiate_payment.assert_called_once()
+        self.assertIsNotNone(registration.payment_intent_id)
+
+    @mock.patch("lego.apps.events.tasks.async_initiate_payment")
+    def test_retrieve_payment(self, mock_initiate_payment):
+        """Test that you can retrieve a payment after registering"""
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        async_register(registration.id)
+        async_retrieve_payment.s(registration.id).delay()
+
+    @mock.patch("lego.apps.events.tasks.async_initiate_payment")
+    def test_initiate_payment_in_waiting_list_and_bump(self, mock_initiate_payment):
+        """
+        Test that the payment intent is not created when the registration is added to the waiting
+        list, and that it can be created after being added to a pool.
+        """
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        p1 = Penalty.objects.create(
+            user=user, reason="test", weight=3, source_event=self.event
+        )
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        async_register(registration.id)
+        mock_initiate_payment.assert_not_called()
+        make_penalty_expire(p1)
+        check_events_for_registrations_with_expired_penalties.delay()
+
+        chain(
+            async_initiate_payment.s(registration.id),
+            save_and_notify_payment.s(registration.id),
+        ).delay()
+        mock_initiate_payment.assert_called_once()
+        self.assertIsNotNone(registration.payment_intent_id)
+        async_retrieve_payment(registration.id)
+
+
 class PaymentDueTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
@@ -455,7 +534,7 @@ class PaymentDueTestCase(BaseTestCase):
     def test_no_notification_when_user_has_paid(self, mock_handle_event):
         """Test that notification is not added when user has paid"""
 
-        self.registration.charge_status = constants.PAYMENT_SUCCESS
+        self.registration.payment_status = constants.PAYMENT_SUCCESS
         self.registration.save()
 
         notify_user_when_payment_soon_overdue.delay()
@@ -485,15 +564,15 @@ class PaymentDueTestCase(BaseTestCase):
         mock_notification.assert_called_once()
 
     @mock.patch("lego.apps.events.tasks.EventPaymentOverdueCreatorNotification")
-    def test_creator_notification_when_past_due_date_and_charge_failed(
+    def test_creator_notification_when_past_due_date_and_payment_failed(
         self, mock_notification
     ):
-        """Test that email is sent when event is past due and user has a failed charge"""
+        """Test that email is sent when event is past due and user has a waiting payment"""
 
         self.event.payment_due_date = timezone.now() - timedelta(days=2)
         self.event.save()
-        self.registration.charge_id = "CHARGE_ID"
-        self.registration.charge_status = constants.PAYMENT_FAILURE
+        self.registration.payment_id = "PAYMENT_ID"
+        self.registration.payment_status = constants.PAYMENT_FAILURE
         notify_event_creator_when_payment_overdue.delay()
         call = mock_notification.mock_calls[0]
         self.assertEqual(call[1], (self.event.created_by,))

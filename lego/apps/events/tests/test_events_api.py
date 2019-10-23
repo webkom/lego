@@ -1093,7 +1093,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_list_url(event.id), {}
         )
         res = self.client.patch(
-            _get_registrations_detail_url(event.id, registration_response.data.json()["id"]),
+            _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"payment_status": "manual"},
         )
         self.assertEqual(res.status_code, 403)
@@ -1340,65 +1340,17 @@ class StripePaymentTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         self.event = Event.objects.get(title="POOLS_AND_PRICED")
 
-    def issue_payment(self, token):
-        return self.client.post(
-            _get_detail_url(self.event.id) + "payment/", {"token": token.id}
-        )
+    def get_payment_intent(self):
+        return self.client.post(_get_detail_url(self.event.id) + "payment/")
 
-    def test_payment(self):
-        token = create_token("4242424242424242", "123")
-        res = self.issue_payment(token)
+    def test_create_payment_intent(self):
+        res = self.get_payment_intent()
         self.assertEqual(res.status_code, 202)
-        self.assertEqual(res.data.get("payment_status"), constants.PAYMENT_PENDING)
         registration_id = res.json().get("id")
         get_object = self.client.get(
             _get_registrations_detail_url(self.event.id, registration_id)
         )
-        self.assertEqual(get_object.json().get("payment_status"), "succeeded")
-
-    def test_refund_task(self):
-        token = create_token("4242424242424242", "123")
-        self.issue_payment(token)
-        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
-
-        stripe.Refund.create(charge=registration.charge_id)
-
-        stripe_events_all = stripe.Event.all(limit=3)
-        stripe_event = None
-        for obj in stripe_events_all.json():
-            if obj.json().object.id == registration.charge_id:
-                stripe_event = obj
-                break
-        self.assertIsNotNone(stripe_event)
-
-        stripe_webhook_event.delay(
-            event_id=stripe_event.id, event_type="charge.refunded"
-        )
-
-        registration.refresh_from_db()
-
-        self.assertEqual(registration.payment_status, "succeeded")
-        self.assertEqual(registration.payment_amount, 10000)
-        self.assertEqual(registration.payment_amount_refunded, 10000)
-
-    def test_refund_webhook_raising_error(self):
-        token = create_token("4242424242424242", "123")
-        self.issue_payment(token)
-        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
-
-        stripe.Refund.create(charge=registration.charge_id)
-
-        stripe_events_all = stripe.Event.all(limit=3)
-        stripe_event = None
-        for obj in stripe_events_all.json():
-            if obj.json().object.id == registration.charge_id:
-                stripe_event = obj
-                break
-        self.assertIsNotNone(stripe_event)
-
-        registration.delete()
-        with self.assertRaises(WebhookDidNotFindRegistration):
-            stripe_webhook_event(event_id=stripe_event.id, event_type="charge.refunded")
+        self.assertIsNotNone(get_object.json().get("payment_intent_id"))
 
 
 class CapacityExpansionTestCase(BaseAPITestCase):
