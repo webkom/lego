@@ -27,6 +27,7 @@ from lego.apps.surveys.serializers import (
     SurveyReadSerializer,
     SurveyUpdateSerializer,
 )
+from lego.apps.users.models import User
 
 
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -165,11 +166,15 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         user = request.user.id
         print("%%%", user)
         survey = Survey.objects.get(pk=kwargs["survey_pk"])
-        user_has_already_answered = user in survey.answered_by
+        user_has_already_answered = True
+        try:
+            survey.answered_by.all().get(id=user)
+        except User.DoesNotExist:
+            user_has_already_answered = False
         print("user_has_already_answered", user_has_already_answered)
         if user_has_already_answered:
             return Response(
-                data='You have already anwered this survey.',
+                data='You have already answered this survey.',
                 status=status.HTTP_409_CONFLICT,
             )
 
