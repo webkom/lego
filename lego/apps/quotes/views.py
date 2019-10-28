@@ -43,7 +43,10 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["GET"])
     def random(self, request):
+        seen = [3, 12]
         queryset = self.get_queryset().filter(approved=True)
+        if len(seen) != len(queryset):
+            queryset = queryset.exclude(pk__in=seen)
         values = queryset.values_list("pk", flat=True)
         if not values:
             return Response(status=status.HTTP_204_NO_CONTENT)
