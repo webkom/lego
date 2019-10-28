@@ -1,3 +1,4 @@
+import ast
 from random import choice
 
 from rest_framework import status, viewsets
@@ -43,8 +44,8 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["GET"])
     def random(self, request, *args, **kwargs):
-        seen_query_param = request.query_params.get("seen", [])
-        seen = eval(seen_query_param)
+        seen_query_param = request.query_params.get("seen", "[]")
+        seen = ast.literal_eval(seen_query_param)
         queryset = self.get_queryset().filter(approved=True)
         # Check if there are more "fresh", ie unseen, quotes. Otherwise, we have no choice but to show a stale one.
         if len(seen) < len(queryset):
