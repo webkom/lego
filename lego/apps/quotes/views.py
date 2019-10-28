@@ -42,10 +42,12 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["GET"])
-    def random(self, request):
-        seen = [3, 12]
+    def random(self, request, *args, **kwargs):
+        seen_query_param = request.query_params.get("seen", [])
+        seen = eval(seen_query_param)
         queryset = self.get_queryset().filter(approved=True)
-        if len(seen) != len(queryset):
+        # Check if there are more "fresh", ie unseen, quotes. Otherwise, we have no choice but to show a stale one.
+        if len(seen) < len(queryset):
             queryset = queryset.exclude(pk__in=seen)
         values = queryset.values_list("pk", flat=True)
         if not values:
