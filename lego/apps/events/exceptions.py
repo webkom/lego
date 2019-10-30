@@ -11,6 +11,11 @@ class APIPaymentExists(APIException):
     default_detail = "Payment already exist."
 
 
+class APIEventNotPriced(APIException):
+    status_code = 400
+    default_detail = "Event is not priced"
+
+
 class APIEventNotFound(APIException):
     status_code = 400
     default_detail = "No such event"

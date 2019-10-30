@@ -16,6 +16,7 @@ ENVIRONMENT_NAME = "development"
 SECRET_KEY = "secret"
 
 stripe.api_key = os.environ.get("STRIPE_TEST_KEY")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 CAPTCHA_KEY = (
     os.environ.get("CAPTCHA_KEY") or "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 )
@@ -85,6 +86,13 @@ LDAP_SERVER = "127.0.0.1:389"
 LDAP_USER = "cn=admin,dc=abakus,dc=no"
 LDAP_PASSWORD = "admin"
 
-CORS_ORIGIN_WHITELIST = list({"http://127.0.0.1:3000", "http://localhost:3000"})
+CORS_ORIGIN_WHITELIST = list(
+    {
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+        "https://localhost:3000",
+        "https://127.0.0.1:3000",
+    }
+)
 
 SEARCH_INDEX = "lego-search"

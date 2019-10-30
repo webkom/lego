@@ -1,6 +1,9 @@
 from datetime import timedelta
+from unittest import skipIf
 
 from django.utils import timezone
+
+import stripe
 
 from lego.apps.events.exceptions import RegistrationExists
 from lego.apps.events.models import Event, Registration
@@ -254,3 +257,24 @@ class AdminRegistrationTestCase(BaseTestCase):
         reg = event.registrations.get(user=reg.user)
         self.assertEqual(event.waiting_registrations.count(), waiting_regs_before - 1)
         self.assertEqual(reg.updated_by, admin_user)
+
+    @skipIf(
+        not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test."
+    )
+    def test_admin_unreg_with_payment(self):
+        """Test that a users payment is cancelled when admin unregistering"""
+        admin_user = get_dummy_users(1)[0]
+        event = Event.objects.get(title="POOLS_AND_PRICED")
+        event.created_by = User.objects.all().first()
+        event.unregistration_deadline = timezone.now() - timedelta(days=1)
+        event.save()
+        reg = event.registrations.exclude(pool=None).first()
+
+        event.admin_unregister(admin_user, reg.user, admin_unregistration_reason="test")
+        event.save()
+        reg = event.registrations.get(user=reg.user)
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["object"]["status"],
+            "canceled",
+        )

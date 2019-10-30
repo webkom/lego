@@ -12,6 +12,7 @@ from celery import chain
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound,
+    APIEventNotPriced,
     APINoSuchPool,
     APINoSuchRegistration,
     APIPaymentExists,
@@ -47,6 +48,7 @@ from lego.apps.events.serializers.registrations import (
     StripePaymentIntentSerializer,
 )
 from lego.apps.events.tasks import (
+    async_cancel_payment,
     async_initiate_payment,
     async_register,
     async_retrieve_payment,
@@ -176,7 +178,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         registration = event.get_registration(request.user)
 
         if not event.is_priced or not event.use_stripe:
-            raise PermissionDenied()  # TODO better response
+            raise APIEventNotPriced()
 
         if registration.has_paid():
             raise APIPaymentExists()
@@ -388,6 +390,7 @@ class RegistrationViewSet(
             registration = event.admin_unregister(
                 admin_user=admin_user, **serializer.validated_data
             )
+            async_cancel_payment.s(registration.id).delay()
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:

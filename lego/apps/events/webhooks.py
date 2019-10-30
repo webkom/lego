@@ -1,6 +1,4 @@
 from django.conf import settings
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.response import Response
 

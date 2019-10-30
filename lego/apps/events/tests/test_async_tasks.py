@@ -442,7 +442,7 @@ class StripePaymentTestCase(BaseTestCase):
             0
         ]
         async_register(registration.id)
-        async_retrieve_payment.s(registration.id).delay()
+        async_retrieve_payment(registration.id)
 
     @mock.patch("lego.apps.events.tasks.async_initiate_payment")
     def test_initiate_payment_in_waiting_list_and_bump(self, mock_initiate_payment):

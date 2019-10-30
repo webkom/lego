@@ -804,6 +804,10 @@ class Registration(BasisModel):
     def is_admitted(self):
         return self.pool is not None
 
+    @property
+    def can_pay(self):
+        return self.is_admitted and self.event.is_priced and self.event.use_stripe
+
     def validate(self):
         if self.pool and self.unregistration_date:
             raise ValidationError("Pool and unregistration_date should not both be set")

@@ -1,12 +1,13 @@
-from copy import deepcopy
 from datetime import timedelta
 from unittest import mock, skipIf
 
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
 import stripe
 from djangorestframework_camel_case.render import camelize
+from y import deepcopy
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
@@ -173,6 +174,8 @@ _test_pools_data = [
 ]
 
 _test_registration_data = {"user": 1}
+
+webhook_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", None)
 
 
 def _get_list_url():
@@ -1324,7 +1327,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
 class StripePaymentTestCase(BaseAPITestCase):
     """
     Testing cards used:
-    https://stripe.com/docs/testing#cards
+    https://stripe.com/docs/payments/cards/testing
     """
 
     fixtures = [
@@ -1351,6 +1354,18 @@ class StripePaymentTestCase(BaseAPITestCase):
             _get_registrations_detail_url(self.event.id, registration_id)
         )
         self.assertIsNotNone(get_object.json().get("payment_intent_id"))
+
+    @skipIf(
+        not webhook_secret,
+        "No webhook signing key set. Set STRIPE_WEBHOOK_SECRET in ENV to run test",
+    )
+    def test_refund(self):
+        res = self.get_payment_intent()
+        client_secret = res.json().get("client_secret")
+
+        stripe.PaymentIntent.confirm(client_secret, payment_method="pm_card_visa")
+
+        self.assertEqual()
 
 
 class CapacityExpansionTestCase(BaseAPITestCase):
