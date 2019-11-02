@@ -26,14 +26,24 @@
 
     <tr>
         <td class="content-block">
-                
             <i>Du vil ikke ha mulighet til å melde deg på et nytt arrangement på abakus.no før dette er gjort.</i>
         </td>
     </tr>
 
     <tr>
-        <td class="content-block" itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-          <a href="{{ frontend_url }}/surveys/{{ survey }}/answer" class="btn-primary" itemprop="url" style="color:#FFF; text-decoration:none; background-color:#348eda; border:solid #348eda; border-radius:5px; border-width:10px 20px; cursor:pointer; display:inline-block; font-weight:bold; line-height:2em; text-align:center; text-transform:capitalize" bgcolor="#348eda" align="center">Gå til undersøkelsen</a>
+        <td class="button">
+        <div>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}/surveys/{{ survey }}/answer"style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Gå til undersøkelsen</center>
+            </v:roundrect>
+            <![endif]-->
+            <a class="btn-primary" href="{{ frontend_url }}/surveys/{{ survey }}/answer"
+                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;margin-right:10px">
+                Gå til undersøkelsen
+            </a>
+        </div>
         </td>
     </tr>
 
