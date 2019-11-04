@@ -43,7 +43,7 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["GET"])
-    def random(self, request, *args, **kwargs):
+    def random(self, request):
         seen_query_param = request.query_params.get("seen", "[]")
         seen = ast.literal_eval(seen_query_param)
         queryset = self.get_queryset().filter(approved=True)
