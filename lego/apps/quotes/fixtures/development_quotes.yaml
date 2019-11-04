@@ -17,6 +17,30 @@
 - model: quotes.Quote
   pk: 3
   fields:
+    title: Test tittel
+    text: Sist gang jeg løftet noe tungt var 1L melk
+    source: Peder når han må ta håndbak
+    approved: 1
+
+- model: quotes.Quote
+  pk: 4
+  fields:
+    title: Test tittel
+    text: Jeg må skaffe meg en jobb der jeg kan sparke folk
+    source: Odin
+    approved: 1
+
+- model: quotes.Quote
+  pk: 5
+  fields:
+    title: Test tittel
+    text: Du snakker med charterkongen her
+    source: Peder
+    approved: 1
+
+- model: quotes.Quote
+  pk: 6
+  fields:
     title: Webkommer forsøker å avvise en invitasjon til en strippeklubb
     text: I like the big dick from the man
     source: Webkommedlem
