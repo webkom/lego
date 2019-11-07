@@ -390,12 +390,18 @@ class RegistrationViewSet(
             registration = event.admin_unregister(
                 admin_user=admin_user, **serializer.validated_data
             )
-            async_cancel_payment.s(registration.id).delay()
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:
             raise APIRegistrationExists()
         reg_data = RegistrationReadDetailedSerializer(registration).data
+
+        if (
+            registration.payment_intent_id
+            and registration.payment_status != constants.PAYMENT_SUCCESS
+        ):
+            async_cancel_payment(registration.id).delay()
+
         return Response(data=reg_data, status=status.HTTP_200_OK)
 
 

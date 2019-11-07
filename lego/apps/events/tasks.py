@@ -1,3 +1,4 @@
+import uuid
 from datetime import timedelta
 
 from django.db import IntegrityError, transaction
@@ -124,10 +125,10 @@ def async_unregister(self, registration_id, logger_context=None):
                 )
             )
         if (
-            registration.event.payment_intent_id
+            registration.payment_intent_id
             and registration.payment_status != constants.PAYMENT_SUCCESS
         ):
-            async_cancel_payment.s(registration_id).delay()
+            async_cancel_payment(registration_id).delay()
         log.info("unregistration_success", registration_id=registration.id)
     except EventHasClosed as e:
         log.warn(
@@ -206,13 +207,18 @@ def async_initiate_payment(self, registration_id, logger_context=None):
 
     self.registration = Registration.objects.get(id=registration_id)
     event = self.registration.event
+
+    if not self.registration.payment_idempotency_key:
+        self.registration.payment_idempotency_key = uuid.uuid4()
+        self.registration.save()
+
     try:
         payment_intent = stripe.PaymentIntent.create(
             amount=event.get_price(self.registration.user),
             receipt_email=self.registration.user.email,
             currency="NOK",
             description=event.slug,
-            idempotency_key=str(self.registration.id),
+            idempotency_key=str(self.registration.payment_idempotency_key),
             metadata={
                 "EVENT_ID": event.id,
                 "USER_ID": self.registration.user.id,

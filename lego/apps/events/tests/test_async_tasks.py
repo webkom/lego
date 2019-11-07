@@ -420,8 +420,12 @@ class StripePaymentTestCase(BaseTestCase):
         self.event.save()
         self.registration = self.event.registrations.first()
 
+    @mock.patch("lego.apps.events.tasks.save_and_notify_payment")
     @mock.patch("lego.apps.events.tasks.async_initiate_payment")
-    def test_create_payment_intent_when_registering(self, mock_initiate_payment):
+    @mock.patch("lego.apps.events.tasks.chain")
+    def test_create_payment_intent_when_registering(
+        self, mock_chain, mock_initiate_payment, mock_save_and_notify_payment
+    ):
         """Test that the payment is created when registering and there is space in a pool"""
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
@@ -430,30 +434,36 @@ class StripePaymentTestCase(BaseTestCase):
             0
         ]
         async_register(registration.id)
-        mock_initiate_payment.assert_called_once()
-        self.assertIsNotNone(registration.payment_intent_id)
+        mock_chain.assert_called_once_with(
+            mock_initiate_payment.s(registration.id),
+            mock_save_and_notify_payment.s(registration.id),
+        )
 
+    @mock.patch("lego.apps.events.tasks.stripe.PaymentIntent.retrieve")
     @mock.patch("lego.apps.events.tasks.async_initiate_payment")
-    def test_retrieve_payment(self, mock_initiate_payment):
+    def test_retrieve_payment(self, mock_initiate_payment, mock_stripe_retrieve):
         """Test that you can retrieve a payment after registering"""
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
         registration = Registration.objects.get_or_create(event=self.event, user=user)[
             0
         ]
-        async_register(registration.id)
+
+        registration.payment_intent_id = "test_id"
+        registration.save()
         async_retrieve_payment(registration.id)
+        mock_stripe_retrieve.assert_called_once_with(registration.payment_intent_id)
 
     @mock.patch("lego.apps.events.tasks.async_initiate_payment")
     def test_initiate_payment_in_waiting_list_and_bump(self, mock_initiate_payment):
         """
         Test that the payment intent is not created when the registration is added to the waiting
-        list, and that it can be created after being added to a pool.
+        list.
         """
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        Penalty.objects.create(
             user=user, reason="test", weight=3, source_event=self.event
         )
 
@@ -462,16 +472,6 @@ class StripePaymentTestCase(BaseTestCase):
         ]
         async_register(registration.id)
         mock_initiate_payment.assert_not_called()
-        make_penalty_expire(p1)
-        check_events_for_registrations_with_expired_penalties.delay()
-
-        chain(
-            async_initiate_payment.s(registration.id),
-            save_and_notify_payment.s(registration.id),
-        ).delay()
-        mock_initiate_payment.assert_called_once()
-        self.assertIsNotNone(registration.payment_intent_id)
-        async_retrieve_payment(registration.id)
 
 
 class PaymentDueTestCase(BaseTestCase):

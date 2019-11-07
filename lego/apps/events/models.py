@@ -787,6 +787,7 @@ class Registration(BasisModel):
     payment_amount_refunded = models.IntegerField(null=True, default=0)
     payment_status = models.CharField(null=True, max_length=50)
     last_notified_overdue_payment = models.DateTimeField(null=True)
+    payment_idempotency_key = models.UUIDField(blank=True, null=True)
 
     class Meta:
         unique_together = ("user", "event")

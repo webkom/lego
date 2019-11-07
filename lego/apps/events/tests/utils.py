@@ -11,9 +11,12 @@ def get_dummy_users(n):
     users = []
 
     for i in range(n):
-        first_name = last_name = username = email = str(i)
+        first_name = last_name = username = str(i)
         user = User(
-            username=username, first_name=first_name, last_name=last_name, email=email
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=f"test{i}@aba.wtf",
         )
         user.save()
         AbakusGroup.objects.get(name="Users").add_user(user)

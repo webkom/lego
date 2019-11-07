@@ -1,3 +1,4 @@
+from copy import deepcopy
 from datetime import timedelta
 from unittest import mock, skipIf
 
@@ -7,7 +8,6 @@ from django.utils import timezone
 
 import stripe
 from djangorestframework_camel_case.render import camelize
-from y import deepcopy
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
@@ -1338,32 +1338,103 @@ class StripePaymentTestCase(BaseAPITestCase):
     ]
 
     def setUp(self):
-        self.abakus_user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
-        self.client.force_authenticate(self.abakus_user)
+        users = get_dummy_users(3)
+        self.admin_user = users[0]
+        self.abakus_user = users[1]
+        self.abakus_user_2 = users[2]
+
+        AbakusGroup.objects.get(name="Webkom").add_user(self.admin_user)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_2)
+
         self.event = Event.objects.get(title="POOLS_AND_PRICED")
+
+        self.event.start_time = timezone.now() + timedelta(days=1)
+        self.event.end_time = timezone.now() + timedelta(days=1, hours=2)
+        self.event.merge_time = timezone.now() + timedelta(hours=12)
+        self.event.payment_due_date = timezone.now() + timedelta(days=2)
+        self.event.save()
+
+        self.registration = Registration.objects.get_or_create(
+            user=self.abakus_user, event=self.event
+        )[0]
+        self.registration.save()
+        self.event.register(self.registration)
+        self.event.save()
 
     def get_payment_intent(self):
         return self.client.post(_get_detail_url(self.event.id) + "payment/")
 
-    def test_create_payment_intent(self):
+    @mock.patch("lego.apps.events.tasks.notify_user_payment_initiated")
+    def test_create_payment_intent(self, mock_notify):
+        """
+        Test that the payment intent is created and the correct
+        client secret is sent to the client
+        """
+
+        self.client.force_authenticate(self.abakus_user)
+
         res = self.get_payment_intent()
         self.assertEqual(res.status_code, 202)
-        registration_id = res.json().get("id")
-        get_object = self.client.get(
-            _get_registrations_detail_url(self.event.id, registration_id)
+
+        registration = Registration.objects.get(id=self.registration.id)
+
+        self.assertIsNotNone(registration.payment_intent_id)
+
+        stripe_intent = stripe.PaymentIntent.retrieve(registration.payment_intent_id)
+
+        mock_notify.assert_called_once_with(
+            constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+            registration,
+            success_message="Betaling påbegynt",
+            client_secret=stripe_intent["client_secret"],
         )
-        self.assertIsNotNone(get_object.json().get("payment_intent_id"))
 
-    @skipIf(
-        not webhook_secret,
-        "No webhook signing key set. Set STRIPE_WEBHOOK_SECRET in ENV to run test",
-    )
+        stripe.PaymentIntent.cancel(registration.payment_intent_id)
+
+    def test_admin_unregister_with_payment(self, mock_cancel_payment):
+        """Test that a users payment is cancelled when admin unregistering"""
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        self.client.force_authenticate(self.admin_user)
+
+        self.client.post(
+            f"{_get_registrations_list_url(self.event.id)}admin_unregister/",
+            {"user": self.abakus_user_2.id, "admin_unregistration_reason": "test"},
+        )
+
+        registration = Registration.objects.get(id=reg.id)
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(registration.payment_intent_id)["status"],
+            "canceled",
+        )
+
     def test_refund(self):
-        res = self.get_payment_intent()
-        client_secret = res.json().get("client_secret")
+        registration = Registration.objects.get_or_create(user=self.abakus_user_3)[0]
+        self.client.force_authenticate(self.abakus_user_3)
+        self.get_payment_intent()
 
-        stripe.PaymentIntent.confirm(client_secret, payment_method="pm_card_visa")
+        registration.refresh_from_db()
+
+        intent = stripe.PaymentIntent.retrieve(registration.payment_intent_id)
+
+        intent = stripe.PaymentIntent.confirm(
+            intent["client_secret"], payment_method="pm_card_visa"
+        )
+
+        stripe.Charge.refund(intent["charges"][0])
+        # TODO check all of this stuff and check the stripe
+        # event and call the data to asssert equal
+        stripe_webhook_event()
 
         self.assertEqual()
 
