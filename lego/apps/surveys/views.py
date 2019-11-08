@@ -10,7 +10,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.surveys.authentication import SurveyTokenAuthentication
 from lego.apps.surveys.constants import TEXT_FIELD
-from lego.apps.surveys.filters import SubmissionFilterSet
+from lego.apps.surveys.filters import SubmissionFilterSet, SurveyFilterSet
 from lego.apps.surveys.models import Answer, Submission, Survey
 from lego.apps.surveys.permissions import (
     SubmissionPermissions,
@@ -32,6 +32,7 @@ from lego.apps.surveys.serializers import (
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Survey.objects.all().prefetch_related("questions", "submissions")
     permission_classes = [SurveyPermissions]
+    filter_class = SurveyFilterSet
     filter_backends = (DjangoFilterBackend,)
 
     def get_serializer_class(self):
