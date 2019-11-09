@@ -14,6 +14,7 @@ from lego.apps.events.fields import (
     SetPaymentStatusField,
 )
 from lego.apps.events.models import Pool, Registration
+# from lego.apps.events.tasks import async_cancel_payment
 from lego.apps.users.serializers.users import (
     AdministrateUserSerializer,
     PublicUserSerializer,
@@ -66,6 +67,10 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             super().update(instance, validated_data)
             if presence:
                 instance.set_presence(presence)
+
+            # if validated_data["payment_status"] == constants.PAYMENT_MANUAL:
+            # async_cancel_payment(instance.id).delay()
+
             return instance
 
 

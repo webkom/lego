@@ -73,6 +73,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     )
     ordering_fields = ("start_time", "end_time", "title")
     ordering = "start_time"
+    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user

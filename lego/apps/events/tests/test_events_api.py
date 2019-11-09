@@ -1326,8 +1326,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
 @skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
 class StripePaymentTestCase(BaseAPITestCase):
     """
-    Testing cards used:
-    https://stripe.com/docs/payments/cards/testing
+    Test API calls related to payments.
     """
 
     fixtures = [
@@ -1392,7 +1391,31 @@ class StripePaymentTestCase(BaseAPITestCase):
 
         stripe.PaymentIntent.cancel(registration.payment_intent_id)
 
-    def test_admin_unregister_with_payment(self, mock_cancel_payment):
+    def test_unregister_with_payment(self):
+        """Test that the payment is canceled when unregistering."""
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        reg.refresh_from_db()
+
+        self.assertIsNotNone(reg.payment_intent_id)
+
+        self.client.post(
+            f"{_get_registrations_list_url(self.event.id)}{reg.id}/unregister/"
+        )
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+        )
+
+    def test_admin_unregister_with_payment(self):
         """Test that a users payment is cancelled when admin unregistering"""
 
         reg = Registration.objects.get_or_create(
@@ -1419,6 +1442,9 @@ class StripePaymentTestCase(BaseAPITestCase):
         )
 
     def test_refund(self):
+        """
+        The refund should be saved on the registration with the correct amount.
+        """
         registration = Registration.objects.get_or_create(user=self.abakus_user_3)[0]
         self.client.force_authenticate(self.abakus_user_3)
         self.get_payment_intent()
@@ -1431,12 +1457,28 @@ class StripePaymentTestCase(BaseAPITestCase):
             intent["client_secret"], payment_method="pm_card_visa"
         )
 
-        stripe.Charge.refund(intent["charges"][0])
-        # TODO check all of this stuff and check the stripe
-        # event and call the data to asssert equal
-        stripe_webhook_event()
+        charge_id = intent["object"]["charges"]["data"][0]["id"]
 
-        self.assertEqual()
+        stripe.Charge.refund(charge_id)
+
+        refund_event = filter(
+            lambda e: e["object"]["id"] == charge_id, stripe.Event.list(limit=3)
+        )[0]
+
+        stripe_webhook_event(
+            event_type=refund_event["type"], event_id=refund_event["id"]
+        )
+
+        registration.refresh_from_db()
+
+        self.assertEqual(registration.payment_status, constants.PAYMENT_SUCCESS)
+        self.assertEqual(
+            registration.payment_amount_refunded,
+            refund_event["object"]["amount_refunded"],
+        )
+        self.assertEqual(
+            registration.payment_amount, registration.payment_amount_refunded
+        )
 
 
 class CapacityExpansionTestCase(BaseAPITestCase):
