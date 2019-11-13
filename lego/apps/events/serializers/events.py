@@ -81,6 +81,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "tags",
             "activation_time",
             "is_admitted",
+            "survey",
         )
         read_only = True
 

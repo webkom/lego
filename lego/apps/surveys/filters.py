@@ -1,6 +1,14 @@
 from django_filters import CharFilter, FilterSet
 
-from lego.apps.surveys.models import Submission
+from lego.apps.surveys.models import Submission, Survey
+
+
+class SurveyFilterSet(FilterSet):
+    company = CharFilter("event__company")
+
+    class Meta:
+        model = Survey
+        fields = ("event",)
 
 
 class SubmissionFilterSet(FilterSet):
