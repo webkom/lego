@@ -14,7 +14,6 @@ from lego.apps.events.fields import (
     SetPaymentStatusField,
 )
 from lego.apps.events.models import Pool, Registration
-# from lego.apps.events.tasks import async_cancel_payment
 from lego.apps.users.serializers.users import (
     AdministrateUserSerializer,
     PublicUserSerializer,
@@ -43,7 +42,7 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     captcha_response = serializers.CharField(required=False)
     payment_status = SetPaymentStatusField(
-        required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
+        required=False, choices=constants.PAYMENT_STATUS_CHOICES
     )
     presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
     photo_consent = ConsentField(
@@ -67,9 +66,6 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             super().update(instance, validated_data)
             if presence:
                 instance.set_presence(presence)
-
-            # if validated_data["payment_status"] == constants.PAYMENT_MANUAL:
-            # async_cancel_payment(instance.id).delay()
 
             return instance
 

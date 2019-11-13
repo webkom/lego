@@ -128,7 +128,7 @@ def async_unregister(self, registration_id, logger_context=None):
             registration.payment_intent_id
             and registration.payment_status != constants.PAYMENT_SUCCESS
         ):
-            async_cancel_payment(registration_id).delay()
+            async_cancel_payment.s(registration_id).delay()
         log.info("unregistration_success", registration_id=registration.id)
     except EventHasClosed as e:
         log.warn(
@@ -338,6 +338,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
     ]:
 
         serializer = StripePaymentIntentSerializer(data=event.data["object"])
+        serializer.is_valid(raise_exception=True)
 
         metadata = serializer.data["metadata"]
         registration = Registration.objects.filter(
@@ -347,7 +348,6 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
             log.error("stripe_webhook_error", event_id=event_id, metadata=metadata)
             raise WebhookDidNotFindRegistration(event_id, metadata)
 
-        registration.payment_intent_id = serializer.data["id"]
         registration.payment_amount = serializer.data["amount"]
         # We update the payment status based on the stripe event type
         if event_type == constants.STRIPE_EVENT_INTENT_SUCCESS:
@@ -378,11 +378,11 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
             log.error("stripe_webhook_error", event_id=event_id, metadata=metadata)
             raise WebhookDidNotFindRegistration(event_id, metadata)
 
+        registration.payment_status = constants.PAYMENT_SUCCESS
         registration.payment_amount_refunded = serializer.data["amount_refunded"]
+        registration.save()
 
-    log.info(
-        "stripe_webhook_received", event_id=event_id, registration_id=registration.id
-    )
+    log.info("stripe_webhook_received", event_id=event_id)
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)

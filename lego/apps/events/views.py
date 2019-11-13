@@ -15,6 +15,7 @@ from lego.apps.events.exceptions import (
     APIEventNotPriced,
     APINoSuchPool,
     APINoSuchRegistration,
+    APIPaymentDenied,
     APIPaymentExists,
     APIRegistrationExists,
     APIRegistrationsExistsInPool,
@@ -180,6 +181,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         if not event.is_priced or not event.use_stripe:
             raise APIEventNotPriced()
+
+        if registration is None or not registration.can_pay:
+            raise APIPaymentDenied
 
         if registration.has_paid():
             raise APIPaymentExists()
@@ -353,6 +357,18 @@ class RegistrationViewSet(
         serializer = RegistrationReadSerializer(instance)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
 
+    def update(self, request, *args, **kwargs):
+        registration = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if (
+            serializer.validated_data.get("payment_status", None)
+            == constants.PAYMENT_MANUAL
+        ):
+            async_cancel_payment.s(registration.id).delay()
+
+        return super().update(request, *args, **kwargs)
+
     @decorators.action(
         detail=False,
         methods=["POST"],
@@ -391,17 +407,16 @@ class RegistrationViewSet(
             registration = event.admin_unregister(
                 admin_user=admin_user, **serializer.validated_data
             )
+            if (
+                registration.payment_intent_id
+                and registration.payment_status != constants.PAYMENT_SUCCESS
+            ):
+                async_cancel_payment.s(registration.id).delay()
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:
             raise APIRegistrationExists()
         reg_data = RegistrationReadDetailedSerializer(registration).data
-
-        if (
-            registration.payment_intent_id
-            and registration.payment_status != constants.PAYMENT_SUCCESS
-        ):
-            async_cancel_payment(registration.id).delay()
 
         return Response(data=reg_data, status=status.HTTP_200_OK)
 

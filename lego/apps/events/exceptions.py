@@ -11,6 +11,11 @@ class APIPaymentExists(APIException):
     default_detail = "Payment already exist."
 
 
+class APIPaymentDenied(APIException):
+    status_code = 403
+    default_detail = "The registration is not permittet to pay."
+
+
 class APIEventNotPriced(APIException):
     status_code = 400
     default_detail = "Event is not priced"

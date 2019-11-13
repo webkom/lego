@@ -186,7 +186,7 @@
   pk: 5
   fields:
     name: Users
-    capacity: 2
+    capacity: 10
     event: 5
     activation_date: '2011-09-01T13:20:30+03:00'
     permission_groups:

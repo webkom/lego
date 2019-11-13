@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('events', '0026_auto_20190925_2239'),
-    ]
+    dependencies = [("events", "0026_auto_20190925_2239")]
 
     operations = [
         migrations.AddField(
-            model_name='registration',
-            name='payment_idempotency_key',
+            model_name="registration",
+            name="payment_idempotency_key",
             field=models.UUIDField(blank=True, null=True),
-        ),
+        )
     ]

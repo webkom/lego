@@ -455,7 +455,7 @@ class StripePaymentTestCase(BaseTestCase):
         mock_stripe_retrieve.assert_called_once_with(registration.payment_intent_id)
 
     @mock.patch("lego.apps.events.tasks.async_initiate_payment")
-    def test_initiate_payment_in_waiting_list_and_bump(self, mock_initiate_payment):
+    def test_initiate_payment_in_waiting_list(self, mock_initiate_payment):
         """
         Test that the payment intent is not created when the registration is added to the waiting
         list.

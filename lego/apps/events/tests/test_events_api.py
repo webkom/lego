@@ -15,11 +15,14 @@ from lego.apps.events.exceptions import (
     WebhookDidNotFindRegistration,
 )
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.tasks import stripe_webhook_event
-from lego.apps.events.tests.utils import get_dummy_users
+from lego.apps.events.tasks import (
+    check_events_for_registrations_with_expired_penalties,
+    stripe_webhook_event,
+)
+from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
 
 from .utils import create_token
@@ -1324,7 +1327,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
 
 
 @skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
-class StripePaymentTestCase(BaseAPITestCase):
+class StripePaymentTestCase(BaseAPITransactionTestCase):
     """
     Test API calls related to payments.
     """
@@ -1337,14 +1340,18 @@ class StripePaymentTestCase(BaseAPITestCase):
     ]
 
     def setUp(self):
-        users = get_dummy_users(3)
+        users = get_dummy_users(5)
         self.admin_user = users[0]
         self.abakus_user = users[1]
         self.abakus_user_2 = users[2]
+        self.abakus_user_3 = users[3]
+        self.abakus_user_4 = users[4]
 
         AbakusGroup.objects.get(name="Webkom").add_user(self.admin_user)
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_2)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_3)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_4)
 
         self.event = Event.objects.get(title="POOLS_AND_PRICED")
 
@@ -1391,6 +1398,53 @@ class StripePaymentTestCase(BaseAPITestCase):
 
         stripe.PaymentIntent.cancel(registration.payment_intent_id)
 
+    @mock.patch("lego.apps.events.tasks.notify_user_payment_initiated")
+    def test_create_payment_intent_when_bump_from_waitlist(self, mock_notify):
+        """
+        Test that the payment intent is created and the correct
+        client secret is sent to the client when you have ben bumped from the
+        waiting list.
+        """
+
+        self.client.force_authenticate(self.abakus_user_4)
+
+        p1 = Penalty.objects.create(
+            user=self.abakus_user_4, reason="test", weight=3, source_event=self.event
+        )
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_4
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        mock_notify.assert_not_called()
+
+        res = self.get_payment_intent()
+        self.assertEqual(res.status_code, 403)
+
+        make_penalty_expire(p1)
+        check_events_for_registrations_with_expired_penalties.delay()
+
+        res = self.get_payment_intent()
+        self.assertEqual(res.status_code, 202)
+        self.assertIsNone(reg.payment_intent_id)
+
+        reg.refresh_from_db()
+
+        self.assertIsNotNone(reg.payment_intent_id)
+
+        stripe_intent = stripe.PaymentIntent.retrieve(reg.payment_intent_id)
+
+        mock_notify.assert_called_once_with(
+            constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+            reg,
+            success_message="Betaling påbegynt",
+            client_secret=stripe_intent["client_secret"],
+        )
+
+        stripe.PaymentIntent.cancel(reg.payment_intent_id)
+
     def test_unregister_with_payment(self):
         """Test that the payment is canceled when unregistering."""
 
@@ -1407,9 +1461,7 @@ class StripePaymentTestCase(BaseAPITestCase):
 
         self.assertIsNotNone(reg.payment_intent_id)
 
-        self.client.post(
-            f"{_get_registrations_list_url(self.event.id)}{reg.id}/unregister/"
-        )
+        self.client.delete(f"{_get_registrations_list_url(self.event.id)}{reg.id}/")
 
         self.assertEqual(
             stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
@@ -1434,18 +1486,49 @@ class StripePaymentTestCase(BaseAPITestCase):
             {"user": self.abakus_user_2.id, "admin_unregistration_reason": "test"},
         )
 
-        registration = Registration.objects.get(id=reg.id)
+        reg.refresh_from_db()
 
         self.assertEqual(
-            stripe.PaymentIntent.retrieve(registration.payment_intent_id)["status"],
-            "canceled",
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+        )
+
+    def test_cancel_on_payment_manual(self):
+        """
+        The payment intent should be canceled when setting the payment status to manual.
+        """
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        self.client.force_authenticate(self.admin_user)
+
+        self.client.patch(
+            f"{_get_registrations_list_url(self.event.id)}{reg.id}/",
+            {"payment_status": "manual", "photo_consent": "UNKNOWN"},
+        )
+
+        reg.refresh_from_db()
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
         )
 
     def test_refund(self):
         """
         The refund should be saved on the registration with the correct amount.
         """
-        registration = Registration.objects.get_or_create(user=self.abakus_user_3)[0]
+        registration = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_3
+        )[0]
+        self.event.register(registration)
+        self.event.save()
+
         self.client.force_authenticate(self.abakus_user_3)
         self.get_payment_intent()
 
@@ -1454,15 +1537,21 @@ class StripePaymentTestCase(BaseAPITestCase):
         intent = stripe.PaymentIntent.retrieve(registration.payment_intent_id)
 
         intent = stripe.PaymentIntent.confirm(
-            intent["client_secret"], payment_method="pm_card_visa"
+            intent["id"], payment_method="pm_card_visa"
         )
 
-        charge_id = intent["object"]["charges"]["data"][0]["id"]
+        charge_id = intent["charges"]["data"][0]["id"]
 
-        stripe.Charge.refund(charge_id)
+        refund_resp = stripe.Refund.create(charge=charge_id)
 
-        refund_event = filter(
-            lambda e: e["object"]["id"] == charge_id, stripe.Event.list(limit=3)
+        self.assertEqual(refund_resp["amount"], registration.payment_amount)
+        self.assertEqual(refund_resp["status"], "succeeded")
+
+        refund_event = list(
+            filter(
+                lambda e: e["data"]["object"]["id"] == charge_id,
+                stripe.Event.list(limit=3)["data"],
+            )
         )[0]
 
         stripe_webhook_event(
@@ -1474,7 +1563,7 @@ class StripePaymentTestCase(BaseAPITestCase):
         self.assertEqual(registration.payment_status, constants.PAYMENT_SUCCESS)
         self.assertEqual(
             registration.payment_amount_refunded,
-            refund_event["object"]["amount_refunded"],
+            refund_event["data"]["object"]["amount_refunded"],
         )
         self.assertEqual(
             registration.payment_amount, registration.payment_amount_refunded
