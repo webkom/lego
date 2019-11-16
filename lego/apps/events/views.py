@@ -183,7 +183,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise APIEventNotPriced()
 
         if registration is None or not registration.can_pay:
-            raise APIPaymentDenied
+            raise APIPaymentDenied()
 
         if registration.has_paid():
             raise APIPaymentExists()
@@ -195,7 +195,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 save_and_notify_payment.s(registration.id),
             ).delay()
         else:
-            async_retrieve_payment.s(registration.id).delay()
+            async_retrieve_payment.delay(registration.id)
 
         payment_serializer = RegistrationPaymentReadSerializer(
             registration, context={"request": request}
@@ -365,7 +365,7 @@ class RegistrationViewSet(
             serializer.validated_data.get("payment_status", None)
             == constants.PAYMENT_MANUAL
         ):
-            async_cancel_payment.s(registration.id).delay()
+            async_cancel_payment.delay(registration.id)
 
         return super().update(request, *args, **kwargs)
 
@@ -411,7 +411,7 @@ class RegistrationViewSet(
                 registration.payment_intent_id
                 and registration.payment_status != constants.PAYMENT_SUCCESS
             ):
-                async_cancel_payment.s(registration.id).delay()
+                async_cancel_payment.delay(registration.id)
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:

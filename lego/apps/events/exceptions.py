@@ -13,7 +13,7 @@ class APIPaymentExists(APIException):
 
 class APIPaymentDenied(APIException):
     status_code = 403
-    default_detail = "The registration is not permittet to pay."
+    default_detail = "The registration is not permitted to pay."
 
 
 class APIEventNotPriced(APIException):

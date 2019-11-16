@@ -128,7 +128,7 @@ def async_unregister(self, registration_id, logger_context=None):
             registration.payment_intent_id
             and registration.payment_status != constants.PAYMENT_SUCCESS
         ):
-            async_cancel_payment.s(registration_id).delay()
+            async_cancel_payment.delay(registration_id)
         log.info("unregistration_success", registration_id=registration.id)
     except EventHasClosed as e:
         log.warn(

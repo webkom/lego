@@ -1510,7 +1510,7 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
 
         self.client.patch(
             f"{_get_registrations_list_url(self.event.id)}{reg.id}/",
-            {"payment_status": "manual", "photo_consent": "UNKNOWN"},
+            {"payment_status": "manual"},
         )
 
         reg.refresh_from_db()
