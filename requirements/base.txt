@@ -17,7 +17,7 @@ boto3>=1.9<=1.10
 bs4==0.0.1
 bleach==3.1.0
 requests==2.22.0
-ldap3==2.5
+ldap3==2.6.1
 google-api-python-client==1.7.11
 oauth2client
 premailer==3.4.1
