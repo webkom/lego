@@ -410,14 +410,16 @@ class Penalty(BasisModel):
         offset_days = 0
         multiplier = 1 if forwards else -1
 
-        while remaining_days > 0:
-
-            date_to_check = start_date + (multiplier * timedelta(days=offset_days))
-
-            if not Penalty.ignore_date(date_to_check):
+        date_to_check = start_date + (multiplier * timedelta(days=offset_days))
+        ignore_date = Penalty.ignore_date(date_to_check)
+        while remaining_days > 0 or ignore_date:
+            if not ignore_date:
                 remaining_days -= 1
 
             offset_days += 1
+
+            date_to_check = start_date + (multiplier * timedelta(days=offset_days))
+            ignore_date = Penalty.ignore_date(date_to_check)
 
         return timedelta(days=offset_days)
 
@@ -425,8 +427,8 @@ class Penalty(BasisModel):
     def ignore_date(date):
         summer_from, summer_to = settings.PENALTY_IGNORE_SUMMER
         winter_from, winter_to = settings.PENALTY_IGNORE_WINTER
-        if summer_from < (date.month, date.day) < summer_to:
+        if summer_from <= (date.month, date.day) <= summer_to:
             return True
-        elif winter_to < (date.month, date.day) <= winter_from:
+        elif winter_to < (date.month, date.day) < winter_from:
             return False
         return True
