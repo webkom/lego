@@ -1,3 +1,4 @@
+import operator
 from datetime import timedelta
 
 from django.conf import settings
@@ -182,7 +183,7 @@ class PermissionsMixin(CachedModel):
     def is_superuser(self):
         return "/sudo/" in self.get_all_permissions()
 
-    is_staff = is_superuser
+    is_staff = property(operator.attrgetter("is_superuser"))
 
     @property
     def is_abakus_member(self):
