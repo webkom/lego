@@ -88,22 +88,11 @@ class ICalViewset(viewsets.ViewSet):
 
         permission_handler = get_permission_handler(Event)
         following_events = permission_handler.filter_queryset(
-            request.user,
-            Event.objects.filter(
-                followers__follower_id=request.user.id,
-                end_time__gt=timezone.now()
-                - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS),
-            ).all(),
+            request.user, Event.objects.filter(followers__follower_id=request.user.id)
         )
 
         permission_handler = get_permission_handler(Meeting)
-        meetings = permission_handler.filter_queryset(
-            request.user,
-            Meeting.objects.filter(
-                end_time__gt=timezone.now()
-                - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
-            ),
-        )
+        meetings = permission_handler.filter_queryset(request.user, Meeting.objects)
 
         utils.add_events_to_ical_feed(feed, following_events)
         utils.add_meetings_to_ical_feed(feed, meetings)
