@@ -93,7 +93,7 @@ class ICalViewset(viewsets.ViewSet):
         )
 
         permission_handler = get_permission_handler(Meeting)
-        meetings = permission_handler.filter_queryset(request.user, Meeting.objects.all())
+        meetings = permission_handler.filter_queryset(request.user, Meeting.objects
 
         utils.add_events_to_ical_feed(feed, following_events)
         utils.add_meetings_to_ical_feed(feed, meetings)
@@ -103,25 +103,25 @@ class ICalViewset(viewsets.ViewSet):
     @decorators.action(detail=False, methods=["GET"])
     def registrations(self, request):
         """Registration ical route."""
-        calendar_type = constants.TYPE_REGISTRATIONS
-        feed = utils.generate_ical_feed(request, calendar_type)
+        calendar_type=constants.TYPE_REGISTRATIONS
+        feed=utils.generate_ical_feed(request, calendar_type)
 
-        permission_handler = get_permission_handler(Event)
-        events = permission_handler.filter_queryset(
+        permission_handler=get_permission_handler(Event)
+        events=permission_handler.filter_queryset(
             request.user, Event.objects.all().filter(end_time__gt=timezone.now())
         )
 
         for event in events:
-            reg_time = event.get_earliest_registration_time(request.user)
+            reg_time=event.get_earliest_registration_time(request.user)
             if not reg_time:  # User cannot register
                 continue
 
-            ical_starttime = reg_time
-            ical_endtime = ical_starttime + timedelta(
+            ical_starttime=reg_time
+            ical_endtime=ical_starttime + timedelta(
                 minutes=constants.REGISTRATION_EVENT_LENGTH_IN_MINUTES
             )
-            price = event.get_price(request.user) if event.is_priced else None
-            title = f"Reg: {event.title}"
+            price=event.get_price(request.user) if event.is_priced else None
+            title=f"Reg: {event.title}"
 
             utils.add_event_to_ical_feed(
                 feed,
@@ -136,11 +136,11 @@ class ICalViewset(viewsets.ViewSet):
     @decorators.action(detail=False, methods=["GET"])
     def events(self, request):
         """Event ical route."""
-        calendar_type = constants.TYPE_EVENTS
-        feed = utils.generate_ical_feed(request, calendar_type)
+        calendar_type=constants.TYPE_EVENTS
+        feed=utils.generate_ical_feed(request, calendar_type)
 
-        permission_handler = get_permission_handler(Event)
-        events = permission_handler.filter_queryset(
+        permission_handler=get_permission_handler(Event)
+        events=permission_handler.filter_queryset(
             request.user,
             Event.objects.all().filter(
                 end_time__gt=timezone.now()
