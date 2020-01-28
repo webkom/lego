@@ -89,7 +89,7 @@ class ICalViewset(viewsets.ViewSet):
         permission_handler = get_permission_handler(Event)
         following_events = permission_handler.filter_queryset(
             request.user,
-            Event.objects.filter(followers__follower_id=request.user.id).all(),
+            Event.objects.filter(followers__follower_id=request.user.id),
         )
 
         permission_handler = get_permission_handler(Meeting)
