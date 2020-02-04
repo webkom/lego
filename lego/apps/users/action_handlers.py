@@ -6,7 +6,7 @@ from lego.apps.feeds.models import NotificationFeed, PersonalFeed, UserFeed
 from lego.apps.feeds.verbs import GroupJoinVerb, PenaltyVerb
 from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST
 from lego.apps.users.models import Membership, Penalty
-from lego.apps.users.notifications import PenaltyNotification
+from lego.apps.users.notifications import PenaltyNotification, PenaltyTest
 
 
 class MembershipHandler(Handler):
@@ -58,19 +58,24 @@ class PenaltyHandler(Handler):
 
     def handle_create(self, instance, **kwargs):
         activity = self.get_activity(instance)
-        self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
+        self.manager.add_activity(
+            activity, [instance.user.pk], [NotificationFeed])
 
         # Send Notification
-        notification = PenaltyNotification(instance.user, penalty=instance)
+        #notification = PenaltyNotification(instance.user, penalty=instance)
+        # notification.notify()
+        notification = PenaltyTest(instance.user, penalty=instance)
         notification.notify()
 
     def handle_update(self, instance, **kwargs):
         activity = self.get_activity(instance)
-        self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
+        self.manager.add_activity(
+            activity, [instance.user.pk], [NotificationFeed])
 
     def handle_delete(self, instance, **kwargs):
         activity = self.get_activity(instance)
-        self.manager.remove_activity(activity, [instance.user.pk], [NotificationFeed])
+        self.manager.remove_activity(
+            activity, [instance.user.pk], [NotificationFeed])
 
 
 register_handler(PenaltyHandler)
