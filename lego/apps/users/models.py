@@ -372,8 +372,8 @@ class User(
                 active_from__lte=timezone.now(),
                 template_type__isnull=True,
             )
-            .exclude(submissions__user__in=[self])
-            .prefetch_related("event__registrations", "submissions__user")
+            .exclude(answered_by__in=[self])
+            .prefetch_related("event__registrations")
         )
         return list(unanswered_surveys.values_list("id", flat=True))
 

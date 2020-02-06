@@ -70,13 +70,11 @@
 - model: surveys.Submission
   pk: 1
   fields:
-    user: 2
     survey: 1
 
 - model: surveys.Submission
   pk: 2
   fields:
-    user: 4
     survey: 1
 
 - model: surveys.Answer
@@ -121,7 +119,6 @@
 - model: surveys.Submission
   pk: 3
   fields:
-    user: 1
     survey: 2
 
 - model: surveys.Answer

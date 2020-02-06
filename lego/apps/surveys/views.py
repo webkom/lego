@@ -174,7 +174,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         print("user_has_already_answered", user_has_already_answered)
         if user_has_already_answered:
             return Response(
-                data='You have already answered this survey.',
+                data="You have already answered this survey.",
                 status=status.HTTP_409_CONFLICT,
             )
 

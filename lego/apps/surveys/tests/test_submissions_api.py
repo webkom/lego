@@ -28,9 +28,8 @@ _answers = [
 ]
 
 
-def submission_data(user, survey=1, include_answers=False):
+def submission_data(survey=1, include_answers=False):
     return {
-        "user": user.id,
         "survey": survey,
         "answers": _answers if include_answers else [],
     }
@@ -58,14 +57,14 @@ class SubmissionViewSetTestCase(APITestCase):
     def test_create_admin(self):
         """Admin users should be able to create submissions"""
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.post(_get_list_url(1), submission_data(self.admin_user))
+        response = self.client.post(_get_list_url(1), submission_data())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_attended(self):
         """Users who attended the event should be able to create submissions = answer the survey"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.post(
-            _get_list_url(1), submission_data(self.attended_user)
+            _get_list_url(1), submission_data()
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -73,7 +72,7 @@ class SubmissionViewSetTestCase(APITestCase):
         """Regular users should not be able to create submissions"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.post(
-            _get_list_url(1), submission_data(self.regular_user)
+            _get_list_url(1), submission_data()
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -89,7 +88,7 @@ class SubmissionViewSetTestCase(APITestCase):
         """Users who attended the event should be able to see their own submission"""
         self.client.force_authenticate(user=self.attended_user)
         created = self.client.post(
-            _get_list_url(1), submission_data(self.attended_user)
+            _get_list_url(1), submission_data()
         )
         self.assertEqual(created.status_code, status.HTTP_201_CREATED)
         response = self.client.get(_get_detail_url(1, created.json()["id"]))
@@ -110,29 +109,27 @@ class SubmissionViewSetTestCase(APITestCase):
 
     # Check if user has answered survey
     def test_answered_admin(self):
-        """Admin users should be able to check if they have answered a survey"""
+        """Not even admin users should be able to fetch individual submissions"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(
             _get_list_url(1) + "?user=" + str(self.admin_user.id)
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.json())
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_answered_attended_other(self):
-        """Users who attended the event should be able to check if they have answered a survey"""
+        """Regular users should not be able to check individual submission, even if they
+         attended the event"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(
             _get_list_url(1) + "?user=" + str(self.attended_user.id)
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.json())
-        self.assertFalse(response.json().get("results", False))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        self.client.post(_get_list_url(1), submission_data(self.attended_user))
+        self.client.post(_get_list_url(1), submission_data())
         response = self.client.get(
             _get_list_url(1) + "?user=" + str(self.attended_user.id)
         )
-        self.assertTrue(response.json().get("results", False))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_answered_regular(self):
         """Users should not be able to check if they have answered a survey if they haven't
@@ -167,7 +164,7 @@ class SubmissionViewSetTestCase(APITestCase):
         """Not even Admin users should be able to edit submissions"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.patch(
-            _get_detail_url(1, 1), submission_data(self.admin_user)
+            _get_detail_url(1, 1), submission_data()
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -175,7 +172,7 @@ class SubmissionViewSetTestCase(APITestCase):
         """Regular users should not be able to edit submissions"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.patch(
-            _get_detail_url(1, 1), submission_data(self.regular_user)
+            _get_detail_url(1, 1), submission_data()
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -183,7 +180,7 @@ class SubmissionViewSetTestCase(APITestCase):
         """Users who attended an event users should not be able to edit submissions"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.patch(
-            _get_detail_url(1, 1), submission_data(self.attended_user)
+            _get_detail_url(1, 1), submission_data()
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -192,13 +189,11 @@ class SubmissionViewSetTestCase(APITestCase):
         """Check that every field is created successfully"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(
-            _get_list_url(1), submission_data(self.admin_user, 1, True)
+            _get_list_url(1), submission_data(1, True)
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        expected = submission_data(self.admin_user, 1)
         result = response.json()
-        self.assertEqual(expected["user"], result["user"].get("id", None))
 
         self.assertEqual(len(result["answers"]), 3)
         for i, answer in enumerate(result["answers"]):

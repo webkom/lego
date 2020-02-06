@@ -8,25 +8,20 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('surveys', '0007_auto_20190714_1906'),
+        ("surveys", "0007_auto_20190714_1906"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='submission',
-            options={'default_manager_name': 'objects'},
+            name="submission", options={"default_manager_name": "objects"}
         ),
         migrations.AddField(
-            model_name='survey',
-            name='answered_by',
-            field=models.ManyToManyField(blank=True, related_name='answered_surveys', to=settings.AUTH_USER_MODEL),
+            model_name="survey",
+            name="answered_by",
+            field=models.ManyToManyField(
+                blank=True, related_name="answered_surveys", to=settings.AUTH_USER_MODEL
+            ),
         ),
-        migrations.AlterUniqueTogether(
-            name='submission',
-            unique_together=set(),
-        ),
-        migrations.RemoveField(
-            model_name='submission',
-            name='user',
-        ),
+        migrations.AlterUniqueTogether(name="submission", unique_together=set()),
+        migrations.RemoveField(model_name="submission", name="user"),
     ]

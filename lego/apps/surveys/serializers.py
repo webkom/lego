@@ -107,7 +107,7 @@ class SubmissionCreateAndUpdateSerializer(BasisModelSerializer):
     @atomic
     def create(self, validated_data):
         survey = Survey.objects.get(pk=self.context["view"].kwargs["survey_pk"])
-        user = validated_data.pop('current_user')
+        user = validated_data.pop("current_user")
         print("$$$", user)
 
         answers = (
@@ -141,7 +141,15 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ("id", "title", "active_from", "questions", "event", "template_type", "answered_by")
+        fields = (
+            "id",
+            "title",
+            "active_from",
+            "questions",
+            "event",
+            "template_type",
+            "answered_by",
+        )
 
 
 class SurveyReadDetailedAdminSerializer(SurveyReadDetailedSerializer):

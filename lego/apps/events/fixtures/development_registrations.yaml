@@ -99,6 +99,7 @@
     pool: 2
     registration_date: '2016-10-11T17:00:00+00:00'
     unregistration_date: null
+    presence: 'PRESENT'
     user: 2
     status: 'SUCCESS_REGISTER'
   model: events.Registration

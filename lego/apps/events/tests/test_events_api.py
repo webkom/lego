@@ -449,7 +449,9 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         survey = Survey.objects.create(event=event)
         self.client.get(_get_detail_url(event.id))
 
-        Submission.objects.create(user=user, survey=survey)
+        Submission.objects.create(survey=survey)
+        survey.answered_by.add(user)
+        survey.save()
         self.client.get(_get_detail_url(event.id))
         unanswered_surveys = user.unanswered_surveys()
         self.assertEqual(len(unanswered_surveys), 0)
