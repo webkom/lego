@@ -83,6 +83,10 @@ schedule = {
         "task": "lego.apps.surveys.tasks.send_survey_mail",
         "schedule": crontab(minute="*/10"),
     },
+    "notify_user_before_event_opens": {
+        "task": "lego.apps.followers.tasks.send_registration_reminder_mail",
+        "schedule": crontab(minute="*/30"),
+    },
 }
 
 app.conf.update(

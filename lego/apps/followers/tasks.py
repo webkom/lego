@@ -15,7 +15,7 @@ log = get_logger()
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def send_survey_mail(self, logger_context=None):
+def send_registration_reminder_mail(self, logger_context=None):
     self.setup_logger(logger_context)
 
     pools = Pool.objects.filter(
@@ -27,9 +27,7 @@ def send_survey_mail(self, logger_context=None):
             user = followsevent.follower
 
             if pool.permission_groups.filter(id__in=[user.id for user in
-                                                     user.all_groups]).exists():
-                print(user, pool.event)
-                print(pool.event.is_admitted(user))
+                                                     user.all_groups]).exists() and pool.event.is_admitted(user):
                 notification = RegistrationReminderNotification(
                     user, event=pool.event)
                 notification.notify()
