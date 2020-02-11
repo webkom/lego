@@ -4,8 +4,8 @@
 
 Hei {{ name }}!
 
-Nå er det 30 min til påmeldning til {{ event }} starter.
+Nå er det under en time til påmeldning til {{ event }} starter.
 
-Du kan se alle prikkene dine på {{ frontend_url }}/events/{{event_id}}
+Gå til arrangement  {{ frontend_url }}/events/{{event_id}}
 
 {% endblock %}
