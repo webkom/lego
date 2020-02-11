@@ -7,6 +7,7 @@ PARTY = "party"
 SOCIAL = "social"
 OTHER = "other"
 EVENT = "event"
+ALTERNATE = "alternate"
 
 EVENT_TYPES = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
@@ -18,6 +19,7 @@ EVENT_TYPES = (
     (SOCIAL, SOCIAL),
     (OTHER, OTHER),
     (EVENT, EVENT),
+    (ALTERNATE, ALTERNATE),
 )
 
 """
