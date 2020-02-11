@@ -54,6 +54,13 @@
     event: 8
     template_type: 'event'
 
+- model: surveys.Survey
+  pk: 9
+  fields:
+    title: 'Template: alternate'
+    event: 9
+    template_type: 'alternate'
+
   # company_presentation
 
 - model: surveys.Question
@@ -238,3 +245,26 @@
     option_text: 'Nei'
     question: 8
 
+
+# alternate
+
+- model: surveys.Question
+  pk: 9
+  fields:
+    question_text: 'Var den alternative bedpressen bra?'
+    mandatory: True
+    question_type: 'single_choice'
+    survey: 9
+    relative_index: 1
+
+- model: surveys.Option
+  pk: 17
+  fields:
+    option_text: 'Ja'
+    question: 9
+
+- model: surveys.Option
+  pk: 18
+  fields:
+    option_text: 'Nei'
+    question: 9
