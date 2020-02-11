@@ -57,9 +57,9 @@
 - model: surveys.Survey
   pk: 9
   fields:
-    title: 'Template: alternate'
+    title: 'Template: alternative presentation'
     event: 9
-    template_type: 'alternate'
+    template_type: 'alternative_presentation'
 
   # company_presentation
 
