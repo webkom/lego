@@ -1,12 +1,8 @@
 from lego.apps.followers.notifications import RegistrationReminderNotification
-
 from django.utils import timezone
 from datetime import timedelta
-
 from structlog import get_logger
-
 from lego import celery_app
-from lego.apps.events.constants import PRESENT
 from lego.apps.stats.utils import track
 from lego.apps.events.models import Pool
 from lego.utils.tasks import AbakusTask
