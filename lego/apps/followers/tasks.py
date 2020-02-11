@@ -23,7 +23,7 @@ def send_registration_reminder_mail(self, logger_context=None):
             user = followsevent.follower
 
             if pool.permission_groups.filter(id__in=[user.id for user in
-                                                     user.all_groups]).exists() and pool.event.is_admitted(user):
+                                                     user.all_groups]).exists() and not pool.event.is_admitted(user):
                 notification = RegistrationReminderNotification(
                     user, event=pool.event)
                 notification.notify()
