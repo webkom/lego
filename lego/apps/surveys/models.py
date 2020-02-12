@@ -64,7 +64,6 @@ class Survey(BasisModel):
 class Question(models.Model):
     class Meta:
         ordering = ["relative_index"]
-        unique_together = ("survey", "relative_index")
 
     survey = models.ForeignKey(
         Survey, related_name="questions", on_delete=models.CASCADE
