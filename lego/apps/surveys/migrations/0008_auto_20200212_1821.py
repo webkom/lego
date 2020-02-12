@@ -5,13 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('surveys', '0007_auto_20190714_1906'),
-    ]
+    dependencies = [("surveys", "0007_auto_20190714_1906")]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='question',
-            unique_together=set(),
-        ),
+        migrations.AlterUniqueTogether(name="question", unique_together=set())
     ]
