@@ -109,9 +109,12 @@ TEMPLATES = [
 ]
 
 JWT_AUTH = {
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=31),
+    # Tokens will expire after 14 days
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=14),
     "JWT_RESPONSE_PAYLOAD_HANDLER": "lego.apps.jwt.handlers.response_handler",
+    # Allow refresh. Tokens can be refreshed for 180 days after initial login, so users must login ~twice a year
+    "JWT_ALLOW_REFRESH": True,
+    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=180),
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth.APIApplication"
