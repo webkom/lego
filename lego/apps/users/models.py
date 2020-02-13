@@ -269,7 +269,7 @@ class User(
     last_name = models.CharField("last name", max_length=30, blank=False)
     allergies = models.CharField("allergies", max_length=100, blank=True)
     selected_theme = models.CharField(
-        "selected theme", max_length=50, blank=True)
+        "selected theme", max_length=50, blank=False, default='light')
     email = models.EmailField(
         unique=True,
         validators=[email_blacklist_validator],
