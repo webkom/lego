@@ -6,7 +6,7 @@ from lego.apps.feeds.models import NotificationFeed, PersonalFeed, UserFeed
 from lego.apps.feeds.verbs import GroupJoinVerb, PenaltyVerb
 from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST
 from lego.apps.users.models import Membership, Penalty
-from lego.apps.users.notifications import PenaltyNotification, PenaltyTest
+from lego.apps.users.notifications import PenaltyNotification
 
 
 class MembershipHandler(Handler):
@@ -62,9 +62,7 @@ class PenaltyHandler(Handler):
             activity, [instance.user.pk], [NotificationFeed])
 
         # Send Notification
-        #notification = PenaltyNotification(instance.user, penalty=instance)
-        # notification.notify()
-        notification = PenaltyTest(instance.user, penalty=instance)
+        notification = PenaltyNotification(instance.user, penalty=instance)
         notification.notify()
 
     def handle_update(self, instance, **kwargs):
