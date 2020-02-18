@@ -37,8 +37,7 @@ from .validators import email_blacklist_validator, username_validator
 
 class MembershipHistory(models.Model):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    abakus_group = models.ForeignKey(
-        "users.AbakusGroup", on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
     role = models.CharField(
         max_length=30, choices=constants.ROLES, default=constants.MEMBER
     )
@@ -50,8 +49,7 @@ class Membership(BasisModel):
     objects = MembershipManager()
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
-    abakus_group = models.ForeignKey(
-        "users.AbakusGroup", on_delete=models.CASCADE)
+    abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
 
     role = models.CharField(
         max_length=30, choices=constants.ROLES, default=constants.MEMBER
@@ -96,8 +94,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     text = models.TextField(blank=True)
 
     permissions = ArrayField(
-        models.CharField(
-            validators=[KeywordPermissionValidator()], max_length=50),
+        models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
         verbose_name="permissions",
         default=list,
     )
@@ -262,14 +259,18 @@ class User(
         null=True,
         help_text="30 characters or fewer. Letters, digits and _ only.",
         validators=[username_validator, ReservedNameValidator()],
-        error_messages={
-            "unique": "A user has already verified that student username."},
+        error_messages={"unique": "A user has already verified that student username."},
     )
     first_name = models.CharField("first name", max_length=50, blank=False)
     last_name = models.CharField("last name", max_length=30, blank=False)
     allergies = models.CharField("allergies", max_length=100, blank=True)
     selected_theme = models.CharField(
-        "selected theme", max_length=50, blank=False, default='light')
+        "selected theme",
+        max_length=50,
+        blank=False,
+        choices=constants.THEMES,
+        default=constants.LIGHT_THEME,
+    )
     email = models.EmailField(
         unique=True,
         validators=[email_blacklist_validator],
@@ -372,8 +373,7 @@ class User(
         from lego.apps.surveys.models import Survey
         from lego.apps.events.models import Registration
 
-        registrations = Registration.objects.filter(
-            user_id=self.id, presence=PRESENT)
+        registrations = Registration.objects.filter(user_id=self.id, presence=PRESENT)
         unanswered_surveys = (
             Survey.objects.filter(
                 event__registrations__in=registrations,
@@ -388,8 +388,7 @@ class User(
 
 class Penalty(BasisModel):
 
-    user = models.ForeignKey(
-        User, related_name="penalties", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="penalties", on_delete=models.CASCADE)
     reason = models.CharField(max_length=1000)
     weight = models.IntegerField(default=1)
     source_event = models.ForeignKey(
@@ -427,8 +426,7 @@ class Penalty(BasisModel):
 
             offset_days += 1
 
-            date_to_check = start_date + \
-                (multiplier * timedelta(days=offset_days))
+            date_to_check = start_date + (multiplier * timedelta(days=offset_days))
             ignore_date = Penalty.ignore_date(date_to_check)
 
         return timedelta(days=offset_days)

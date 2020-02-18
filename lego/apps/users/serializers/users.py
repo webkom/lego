@@ -18,8 +18,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     past_memberships = PastMembershipSerializer(many=True)
     penalties = serializers.SerializerMethodField("get_valid_penalties")
-    profile_picture = ImageField(required=False, options={
-                                 "height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -49,8 +48,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 
 class PublicUserSerializer(serializers.ModelSerializer):
 
-    profile_picture = ImageField(required=False, options={
-                                 "height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
 
     class Meta:
         model = User
@@ -86,14 +84,12 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + \
-            ("abakus_groups", "allergies")
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups", "allergies")
 
 
 class SearchUserSerializer(serializers.ModelSerializer):
 
-    profile_picture = ImageField(required=False, options={
-                                 "height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
 
     class Meta:
         model = User
@@ -123,8 +119,7 @@ class Oauth2UserDataSerializer(serializers.ModelSerializer):
 
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     memberships = MembershipSerializer(many=True)
-    profile_picture = ImageField(required=False, options={
-                                 "height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
     is_student = serializers.SerializerMethodField()
     is_abakus_member = serializers.BooleanField()
 
@@ -159,8 +154,7 @@ class MeSerializer(serializers.ModelSerializer):
 
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     memberships = MembershipSerializer(many=True)
-    profile_picture = ImageField(required=False, options={
-                                 "height": 200, "width": 200})
+    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
     ical_token = serializers.SerializerMethodField("get_user_ical_token")
     penalties = serializers.SerializerMethodField("get_valid_penalties")
     is_student = serializers.SerializerMethodField()
