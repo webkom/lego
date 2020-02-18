@@ -5,14 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0021_auto_20190829_1632'),
-    ]
+    dependencies = [("users", "0021_auto_20190829_1632")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='selected_theme',
-            field=models.CharField(choices=[('light', 'light'), ('dark', 'dark')], default='light', max_length=50, verbose_name='selected theme'),
-        ),
+            model_name="user",
+            name="selected_theme",
+            field=models.CharField(
+                choices=[("light", "light"), ("dark", "dark")],
+                default="light",
+                max_length=50,
+                verbose_name="selected theme",
+            ),
+        )
     ]
