@@ -2,9 +2,9 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ name }}!
 
-Nå er det under en time til påmeldning til {{ event }} starter.
+Nå er det under en time til påmelding til {{ event }} starter.
 
 Gå til arrangement  {{ frontend_url }}/events/{{event_id}}
 

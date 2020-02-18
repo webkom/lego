@@ -27,7 +27,6 @@ class PenaltyNotification(Notification):
 
         return self._delay_push(
             template="users/push/penalty.txt",
-            context={"weight": penalty.weight,
-                     "event": penalty.source_event.title},
+            context={"weight": penalty.weight, "event": penalty.source_event.title},
             instance=penalty,
         )

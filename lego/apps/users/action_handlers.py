@@ -58,8 +58,7 @@ class PenaltyHandler(Handler):
 
     def handle_create(self, instance, **kwargs):
         activity = self.get_activity(instance)
-        self.manager.add_activity(
-            activity, [instance.user.pk], [NotificationFeed])
+        self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
 
         # Send Notification
         notification = PenaltyNotification(instance.user, penalty=instance)
@@ -67,13 +66,11 @@ class PenaltyHandler(Handler):
 
     def handle_update(self, instance, **kwargs):
         activity = self.get_activity(instance)
-        self.manager.add_activity(
-            activity, [instance.user.pk], [NotificationFeed])
+        self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
 
     def handle_delete(self, instance, **kwargs):
         activity = self.get_activity(instance)
-        self.manager.remove_activity(
-            activity, [instance.user.pk], [NotificationFeed])
+        self.manager.remove_activity(activity, [instance.user.pk], [NotificationFeed])
 
 
 register_handler(PenaltyHandler)
