@@ -213,6 +213,7 @@ class MeSerializer(serializers.ModelSerializer):
             "memberships",
             "past_memberships",
             "internal_email_address",
+            "selected_theme",
         )
 
 
