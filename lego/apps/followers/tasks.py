@@ -14,13 +14,9 @@ from lego.utils.tasks import AbakusTask
 log = get_logger()
 
 
-def createNotification(user, pool):
-    notification = RegistrationReminderNotification(user, event=pool.event)
-    notification.notify()
-
-
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def send_registration_reminder_mail(self, logger_context=None):
+
     self.setup_logger(logger_context)
 
     pools = Pool.objects.filter(
@@ -31,8 +27,8 @@ def send_registration_reminder_mail(self, logger_context=None):
     for pool in pools:
         for followsevent in pool.event.followers.all():
             user = followsevent.follower
-
             if pool.permission_groups.filter(
                 id__in=[user.id for user in user.all_groups]
             ).exists() and not pool.event.is_admitted(user):
-                createNotification(user, pool)
+                notification = RegistrationReminderNotification(user, event=pool.event)
+                notification.notify()
