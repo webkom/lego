@@ -12,7 +12,7 @@ certifi==2019.11.28
 elasticsearch==6.2.0
 celery==4.2.1
 stripe==2.24.1
-structlog==19.1.0
+structlog==20.1.0
 boto3>=1.9<=1.10
 bs4==0.0.1
 bleach==3.1.0
