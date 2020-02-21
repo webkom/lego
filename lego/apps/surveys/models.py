@@ -5,7 +5,12 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from lego.apps.events.constants import EVENT_TYPES
-from lego.apps.surveys.constants import QUESTION_TYPES, TEXT_FIELD
+from lego.apps.surveys.constants import (
+    DISPLAY_TYPES,
+    PIE_CHART,
+    QUESTION_TYPES,
+    TEXT_FIELD,
+)
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -68,6 +73,10 @@ class Question(models.Model):
 
     survey = models.ForeignKey(
         Survey, related_name="questions", on_delete=models.CASCADE
+    )
+    # Save type of graph used
+    display_type = models.CharField(
+        max_length=64, choices=DISPLAY_TYPES, default=PIE_CHART
     )
     question_type = models.CharField(max_length=64, choices=QUESTION_TYPES)
     question_text = models.TextField(max_length=255)
