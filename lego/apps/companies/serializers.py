@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
-from lego.apps.companies.constants import NOT_CONTACTED, INTERESTED
+from lego.apps.companies.constants import INTERESTED, NOT_CONTACTED
 from lego.apps.companies.models import (
     Company,
     CompanyContact,
@@ -217,8 +217,10 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
         company = company_interest.company
         for semester in company_interest.semesters.all():
             if company:
-                semester_status = SemesterStatus.objects.get(semester=semester, company=company)
-                if len(semester_status.contacted_status) is 0:
+                semester_status = SemesterStatus.objects.get(
+                    semester=semester, company=company
+                )
+                if len(semester_status.contacted_status) == 0:
                     semester_status.contacted_status.append(INTERESTED)
                 elif semester_status.contacted_status[0] == NOT_CONTACTED:
                     semester_status.contacted_status[0] = INTERESTED

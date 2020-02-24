@@ -113,8 +113,13 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     It still needs to be possible to register interested without being in the BDB,
     however, in which case company is Null and the string company_name is used instead.
     """
+
     company = models.ForeignKey(
-        Company, related_name="company_interests", on_delete=models.DO_NOTHING, null=True)
+        Company,
+        related_name="company_interests",
+        on_delete=models.DO_NOTHING,
+        null=True,
+    )
     company_name = models.CharField(max_length=255, blank=True)
 
     contact_person = models.CharField(max_length=255)

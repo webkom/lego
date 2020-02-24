@@ -15,13 +15,14 @@ from lego.apps.companies.serializers import (
     CompanyContactSerializer,
     CompanyDetailSerializer,
     CompanyFileSerializer,
+    CompanyInterestCreateAndUpdateSerializer,
     CompanyInterestListSerializer,
     CompanyInterestSerializer,
     CompanyListSerializer,
     SemesterSerializer,
     SemesterStatusDetailSerializer,
     SemesterStatusSerializer,
-    CompanyInterestCreateAndUpdateSerializer)
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
