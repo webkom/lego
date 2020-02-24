@@ -1,8 +1,10 @@
+from django.db.transaction import atomic
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.companies.constants import NOT_CONTACTED, INTERESTED
 from lego.apps.companies.models import (
     Company,
     CompanyContact,
@@ -149,6 +151,16 @@ class CompanyDetailSerializer(BasisModelSerializer):
         )
 
 
+class CompanySearchSerializer(serializers.ModelSerializer):
+    """
+    Public company information available on search.
+    """
+
+    class Meta:
+        model = Company
+        fields = ("id", "name", "description", "website", "company_type", "address")
+
+
 class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
@@ -185,47 +197,73 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
         )
 
 
-class CompanyInterestSerializer(serializers.ModelSerializer):
+class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyInterest
         fields = (
             "id",
             "company_name",
+            "company",
             "contact_person",
             "mail",
+            "phone",
             "semesters",
             "events",
             "other_offers",
             "comment",
         )
 
+    def update_company_interest_bdb(self, company_interest):
+        company = company_interest.company
+        for semester in company_interest.semesters.all():
+            if company:
+                semester_status = SemesterStatus.objects.get(semester=semester, company=company)
+                if len(semester_status.contacted_status) is 0:
+                    semester_status.contacted_status.append(INTERESTED)
+                elif semester_status.contacted_status[0] == NOT_CONTACTED:
+                    semester_status.contacted_status[0] = INTERESTED
+                semester_status.save()
+
+    @atomic
     def create(self, validated_data):
         semesters = validated_data.pop("semesters")
         company_interest = CompanyInterest.objects.create(**validated_data)
         company_interest.semesters.add(*semesters)
         company_interest.save()
 
+        # TODO: Update interest when updating interest form?
+        self.update_company_interest_bdb(company_interest)
+
         return company_interest
+
+    @atomic
+    def update(self, instance, validated_data):
+        semesters = validated_data.pop("semesters")
+        updated_instance = super().update(instance, validated_data)
+        updated_instance.semesters.add(*semesters)
+        updated_instance.save()
+
+        self.update_company_interest_bdb(updated_instance)
+
+        return updated_instance
+
+
+class CompanyInterestSerializer(CompanyInterestCreateAndUpdateSerializer):
+    company = CompanySearchSerializer(many=False, read_only=False, allow_null=True)
 
 
 class CompanyInterestListSerializer(serializers.ModelSerializer):
+    company = CompanySearchSerializer(many=False)
+
     class Meta:
         model = CompanyInterest
         fields = (
             "id",
             "company_name",
+            "company",
             "contact_person",
             "mail",
+            "phone",
             "semesters",
             "created_at",
         )
-
-
-class CompanySearchSerializer(serializers.ModelSerializer):
-    """
-    Public company information available on search.
-    """
-
-    class Meta:
-        model = Company
-        fields = ("id", "name", "description", "website", "company_type", "address")

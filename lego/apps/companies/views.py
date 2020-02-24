@@ -21,7 +21,7 @@ from lego.apps.companies.serializers import (
     SemesterSerializer,
     SemesterStatusDetailSerializer,
     SemesterStatusSerializer,
-)
+    CompanyInterestCreateAndUpdateSerializer)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
@@ -111,4 +111,6 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return CompanyInterestListSerializer
+        elif self.action in ["create", "update", "partial_update"]:
+            return CompanyInterestCreateAndUpdateSerializer
         return CompanyInterestSerializer

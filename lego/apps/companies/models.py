@@ -106,9 +106,20 @@ class CompanyContact(BasisModel):
 
 
 class CompanyInterest(PersistentModel, TimeStampModel):
-    company_name = models.CharField(max_length=255)
+    """
+    Either company_name OR company should be null. We prefer to use a Foreign key to
+    an existing company when making a Company Interest, because that lets us
+    do things like update the BDB status for that company to "interested".
+    It still needs to be possible to register interested without being in the BDB,
+    however, in which case company is Null and the string company_name is used instead.
+    """
+    company = models.ForeignKey(
+        Company, related_name="company_interests", on_delete=models.DO_NOTHING, null=True)
+    company_name = models.CharField(max_length=255, blank=True)
+
     contact_person = models.CharField(max_length=255)
     mail = models.EmailField()
+    phone = models.CharField(max_length=100, blank=True)
     semesters = models.ManyToManyField(Semester, blank=True)
     events = ArrayField(models.CharField(max_length=64, choices=COMPANY_EVENTS))
     other_offers = ArrayField(models.CharField(max_length=64, choices=OTHER_OFFERS))
