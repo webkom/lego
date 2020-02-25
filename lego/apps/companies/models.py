@@ -110,7 +110,7 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     Either company_name OR company should be null. We prefer to use a Foreign key to
     an existing company when making a Company Interest, because that lets us
     do things like update the BDB status for that company to "interested".
-    It still needs to be possible to register interested without being in the BDB,
+    It still needs to be possible to register interest without being in the BDB,
     however, in which case company is Null and the string company_name is used instead.
     """
 
