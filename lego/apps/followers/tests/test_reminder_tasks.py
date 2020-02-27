@@ -5,7 +5,7 @@ from unittest.mock import patch
 from django.conf import settings
 from django.utils import timezone
 
-from lego.apps.events.models import Event, Pool
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.followers.models import FollowEvent
 from lego.apps.followers.notifications import RegistrationReminderNotification
@@ -59,5 +59,54 @@ class RegistrationReminderTestCase(BaseTestCase):
         self.pool.activation_date = current_time + timedelta(minutes=45)
         self.pool.save()
 
+        send_registration_reminder_mail.delay()
+        mock_notification.assert_not_called()
+
+    def test_follows_registration_under_one_hour_already_sent(self, mock_notification):
+        current_time = timezone.now()
+        self.pool.activation_date = current_time + timedelta(minutes=45)
+        self.pool.save()
+        FollowEvent.objects.get_or_create(
+            follower=self.recipient, target=self.pool.event, sent=True
+        )
+
+        send_registration_reminder_mail.delay()
+        mock_notification.assert_not_called()
+
+    def test_follows_and_is_registred_under_one_hour(self, mock_notification):
+        current_time = timezone.now()
+        self.pool.activation_date = current_time + timedelta(minutes=45)
+        self.pool.save()
+        FollowEvent.objects.get_or_create(
+            follower=self.recipient, target=self.pool.event
+        )
+        Registration.objects.get_or_create(
+            pool=self.pool, user=self.recipient, event=self.pool.event
+        )
+
+        send_registration_reminder_mail.delay()
+        mock_notification.assert_not_called()
+
+    def test_follows_and_is_waiting_list_under_one_hour(self, mock_notification):
+        current_time = timezone.now()
+        self.pool.activation_date = current_time + timedelta(minutes=45)
+        self.pool.save()
+        FollowEvent.objects.get_or_create(
+            follower=self.recipient, target=self.pool.event
+        )
+        Registration.objects.get_or_create(
+            pool=None, user=self.recipient, event=self.pool.event
+        )
+
+        send_registration_reminder_mail.delay()
+        mock_notification.assert_not_called()
+
+    def test_follows_registration_past(self, mock_notification):
+        current_time = timezone.now()
+        self.pool.activation_date = current_time - timedelta(minutes=15)
+        self.pool.save()
+        FollowEvent.objects.get_or_create(
+            follower=self.recipient, target=self.pool.event
+        )
         send_registration_reminder_mail.delay()
         mock_notification.assert_not_called()

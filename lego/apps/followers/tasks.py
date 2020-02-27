@@ -20,15 +20,21 @@ def send_registration_reminder_mail(self, logger_context=None):
     self.setup_logger(logger_context)
 
     pools = Pool.objects.filter(
-        activation_date__gt=timezone.now() + timedelta(minutes=30),
+        activation_date__gt=timezone.now(),
         activation_date__lte=timezone.now() + timedelta(minutes=60),
     ).prefetch_related("event", "event__followers", "event__followers__follower")
 
     for pool in pools:
         for followsevent in pool.event.followers.all():
             user = followsevent.follower
-            if pool.permission_groups.filter(
-                id__in=[user.id for user in user.all_groups]
-            ).exists() and not pool.event.is_admitted(user):
+            if (
+                pool.permission_groups.filter(
+                    id__in=[user.id for user in user.all_groups]
+                ).exists()
+                and not pool.event.registrations.filter(user=user).exists()
+                and not followsevent.sent
+            ):
                 notification = RegistrationReminderNotification(user, event=pool.event)
                 notification.notify()
+            followsevent.sent = True
+            followsevent.save()
