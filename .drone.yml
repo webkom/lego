@@ -103,5 +103,6 @@ services:
     image: postgres:9.5
     environment:
       - POSTGRES_USER=lego
+      - POSTGRES_HOST_AUTH_METHOD=trust
   cache:
     image: redis
