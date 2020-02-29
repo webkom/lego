@@ -19,6 +19,7 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             "contact_email",
             "parent",
             "permissions",
+            "parent_permissions",
             "type",
             "text",
             "logo",
