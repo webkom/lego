@@ -43,7 +43,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             "penalties",
             "abakus_groups",
             "past_memberships",
-            "nested_permissions",
+            "permissions_per_group",
         )
 
 
@@ -215,7 +215,7 @@ class MeSerializer(serializers.ModelSerializer):
             "past_memberships",
             "internal_email_address",
             "selected_theme",
-            "nested_permissions",
+            "permissions_per_group",
         )
 
 

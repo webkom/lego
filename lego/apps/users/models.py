@@ -138,16 +138,16 @@ class AbakusGroup(MPTTModel, PersistentModel):
         )
 
     @abakus_cached_property
-    def nested_permissions(self):
-        parent_groups = []
+    def parent_permissions(self):
+        parent_permissions = []
         for group in self.get_ancestors():
-            parent_groups += [
+            parent_permissions += [
                 {
                     "abakusGroup": {"id": group.pk, "name": group.name},
                     "permissions": group.permissions,
                 }
             ]
-        return parent_groups
+        return parent_permissions
 
     @abakus_cached_property
     def number_of_users(self):
@@ -235,28 +235,21 @@ class PermissionsMixin(CachedModel):
         ).select_related("abakus_group")
 
     @abakus_cached_property
-    def nested_permissions(self):
-        nested_permissions = []
+    def permissions_per_group(self):
+        permissions_per_group = []
         for membership in self.memberships.select_related("abakus_group"):
-            parent_groups = []
-            for group in membership.abakus_group.get_ancestors():
-                parent_groups += [
-                    {
-                        "abakusGroup": {"id": group.pk, "name": group.name},
-                        "permissions": group.permissions,
-                    }
-                ]
-            nested_permissions += [
+            permissions_per_group += [
                 {
                     "abakusGroup": {
                         "id": membership.abakus_group.pk,
                         "name": membership.abakus_group.name,
                     },
                     "permissions": membership.abakus_group.permissions,
-                    "parentGroups": parent_groups,
+                    "parentPermissions": membership.abakus_group.parent_permissions,
                 }
             ]
-        return nested_permissions
+
+        return permissions_per_group
 
     @abakus_cached_property
     def all_groups(self):
