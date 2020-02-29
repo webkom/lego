@@ -142,7 +142,10 @@ class AbakusGroup(MPTTModel, PersistentModel):
         parent_groups = []
         for group in self.get_ancestors():
             parent_groups += [
-                {"abakusGroup": group.pk, "permissions": group.permissions}
+                {
+                    "abakusGroup": {"id": group.pk, "name": group.name},
+                    "permissions": group.permissions,
+                }
             ]
         return parent_groups
 
@@ -238,11 +241,17 @@ class PermissionsMixin(CachedModel):
             parent_groups = []
             for group in membership.abakus_group.get_ancestors():
                 parent_groups += [
-                    {"abakusGroup": group.pk, "permissions": group.permissions}
+                    {
+                        "abakusGroup": {"id": group.pk, "name": group.name},
+                        "permissions": group.permissions,
+                    }
                 ]
             nested_permissions += [
                 {
-                    "abakusGroup": membership.abakus_group.pk,
+                    "abakusGroup": {
+                        "id": membership.abakus_group.pk,
+                        "name": membership.abakus_group.name,
+                    },
                     "permissions": membership.abakus_group.permissions,
                     "parentGroups": parent_groups,
                 }
