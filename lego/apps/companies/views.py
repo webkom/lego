@@ -15,6 +15,7 @@ from lego.apps.companies.serializers import (
     CompanyContactSerializer,
     CompanyDetailSerializer,
     CompanyFileSerializer,
+    CompanyInterestCreateAndUpdateSerializer,
     CompanyInterestListSerializer,
     CompanyInterestSerializer,
     CompanyListSerializer,
@@ -111,4 +112,6 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return CompanyInterestListSerializer
+        elif self.action in ["create", "update", "partial_update"]:
+            return CompanyInterestCreateAndUpdateSerializer
         return CompanyInterestSerializer
