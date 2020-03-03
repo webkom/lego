@@ -2,7 +2,7 @@ from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 
 from lego.apps.events.serializers.events import EventForSurveySerializer
-from lego.apps.surveys.constants import QUESTION_TYPES
+from lego.apps.surveys.constants import DISPLAY_TYPES, QUESTION_TYPES
 from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
@@ -23,6 +23,7 @@ class OptionUpdateSerializer(BasisModelSerializer):
 
 
 class QuestionSerializer(BasisModelSerializer):
+    display_type = serializers.ChoiceField(choices=DISPLAY_TYPES)
     question_type = serializers.ChoiceField(choices=QUESTION_TYPES)
     options = OptionSerializer(many=True, required=False, allow_null=True)
 
@@ -30,6 +31,7 @@ class QuestionSerializer(BasisModelSerializer):
         model = Question
         fields = (
             "id",
+            "display_type",
             "question_type",
             "question_text",
             "mandatory",
@@ -39,6 +41,7 @@ class QuestionSerializer(BasisModelSerializer):
 
 
 class QuestionUpdateSerializer(BasisModelSerializer):
+    display_type = serializers.ChoiceField(choices=DISPLAY_TYPES)
     question_type = serializers.ChoiceField(choices=QUESTION_TYPES)
     options = OptionUpdateSerializer(many=True, required=False, allow_null=True)
     id = serializers.IntegerField(read_only=False)
@@ -47,6 +50,7 @@ class QuestionUpdateSerializer(BasisModelSerializer):
         model = Question
         fields = (
             "id",
+            "display_type",
             "question_type",
             "question_text",
             "mandatory",
