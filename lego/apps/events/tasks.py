@@ -25,6 +25,7 @@ from lego.apps.events.serializers.registrations import (
 from lego.apps.events.websockets import (
     notify_event_registration,
     notify_user_payment,
+    notify_user_payment_error,
     notify_user_payment_initiated,
     notify_user_registration,
 )
@@ -188,6 +189,21 @@ def async_retrieve_payment(self, registration_id, logger_context=None):
             registration=self.registration.id,
         )
         raise self.retry(exc=e)
+
+    # Check that the payment intent is not already confirmed
+    # If so, update the payment status to reflect reality
+    # See https://stripe.com/docs/api/payment_intents/object
+    if payment_intent["status"] == constants.STRIPE_INTENT_SUCCEEDED:
+        self.registration.payment_status = constants.PAYMENT_SUCCESS
+        self.registration.payment_amount = payment_intent["amount"]
+        self.registration.save()
+        notify_user_payment_error(
+            constants.SOCKET_PAYMENT_FAILURE,
+            self.registration,
+            success_message="Betaling feilet",
+            payment_error="The payment is already successful",
+        )
+        return
 
     notify_user_payment_initiated(
         constants.SOCKET_INITIATE_PAYMENT_SUCCESS,

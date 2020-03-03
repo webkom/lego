@@ -341,6 +341,7 @@ class RegistrationViewSet(
             registration.feedback = feedback
             registration.save(current_user=current_user)
             transaction.on_commit(lambda: async_register.delay(registration.id))
+        registration.refresh_from_db()
         registration_serializer = RegistrationReadSerializer(
             registration, context={"user": registration.user}
         )

@@ -8,7 +8,7 @@ class APINoSuchPool(APIException):
 
 class APIPaymentExists(APIException):
     status_code = 403
-    default_detail = "Payment already exist."
+    default_detail = "Payment already exists."
 
 
 class APIPaymentDenied(APIException):
