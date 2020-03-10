@@ -13,7 +13,7 @@ from mptt.models import MPTTModel
 
 from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
-from lego.apps.files.models import FileField
+from lego.apps.files.models import File, FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
 from lego.apps.users.managers import (
@@ -370,6 +370,11 @@ class User(
     @profile_picture.setter
     def profile_picture(self, value):
         self.picture = value
+
+    def profile_picture_remove(self):
+        default_picture = self.get_default_picture()
+        self.profile_picture = File.objects.get(key=default_picture)
+        self.save()
 
     def is_verified_student(self):
         return self.student_username is not None

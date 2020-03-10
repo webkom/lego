@@ -129,7 +129,6 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         user = self.get_object()
         serializer = self.get_serializer(user, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-
         is_abakus_member = serializer.validated_data.pop("is_abakus_member", None)
         with transaction.atomic():
             super().perform_update(serializer)
@@ -172,5 +171,14 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 grade.remove_user(user)
             if newGrade is not None:
                 newGrade.add_user(user)
+
+        return Response(MeSerializer(user).data)
+
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def remove_picture(self, request, *args, **kwargs):
+        user = self.get_object()
+        if (not request.user.has_perm(EDIT, User)) and (request.user != user):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        user.profile_picture_remove()
 
         return Response(MeSerializer(user).data)

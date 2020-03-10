@@ -24,3 +24,21 @@
     token: token
     user: 1
     public: true
+
+- pk: default_male_avatar.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+    public: true
+
+- pk: default_female_avatar.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    user: 1
+    public: true
