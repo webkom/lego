@@ -1,88 +1,93 @@
-pipeline:
-  setup:
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: setup
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
+      LANG: C.UTF-8
     commands:
       - make ci_settings
 
-  missing-migrations:
+  - name: missing-migrations
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
-      - DATABASE=database
-      - CACHE=cache
+      LANG: C.UTF-8
+      DATABASE: database
+      CACHE: cache
     group: testing
     commands:
       - tox -e missing-migrations
 
-  tests:
+  - name: tests
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
-      - DATABASE=database
-      - CACHE=cache
+      LANG: C.UTF-8
+      DATABASE: database
+      CACHE: cache
     group: testing
     commands:
       - tox -e tests
 
-  isort:
+  - name: isort
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
+      LANG: C.UTF-8
     group: testing
     commands:
       - tox -e isort
 
-  flake8:
+  - name: flake8
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
+      LANG: C.UTF-8
     group: testing
     commands:
       - tox -e flake8
 
-  black:
+  - name: black
     image: abakus/lego-testbase:python3.7
     pull: true
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
+      LANG: C.UTF-8
     group: testing
     commands:
       - tox -e black
 
-  docs:
+  - name: docs
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
+      LANG: C.UTF-8
     group: testing
     commands:
       - tox -e docs
 
-  coverage:
+  - name: coverage
     image: abakus/lego-testbase:python3.7
     when:
       event: push
     environment:
-      - LANG=C.UTF-8
+      LANG: C.UTF-8
     commands:
       - tox -e coverage
 
-  docker:
+  - name: docker
     image: plugins/docker
     when:
       branch:
@@ -99,10 +104,10 @@ pipeline:
       - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
 services:
-  database:
+  - name: database
     image: postgres:9.5
     environment:
-      - POSTGRES_USER=lego
-      - POSTGRES_HOST_AUTH_METHOD=trust
-  cache:
+      POSTGRES_USER: lego
+      POSTGRES_HOST_AUTH_METHOD: trust
+  - name: cache
     image: redis
