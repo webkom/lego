@@ -93,7 +93,7 @@ PAYMENT_STATUS_CHOICES = (
     (PAYMENT_PENDING, PAYMENT_PENDING),
 )
 
-STRIPE_EVENT_INTENT_SUCCESS = "payment_intent.success"
+STRIPE_EVENT_INTENT_SUCCESS = "payment_intent.succeeded"
 STRIPE_EVENT_INTENT_PAYMENT_FAILED = "payment_intent.payment_failed"
 STRIPE_EVENT_CHARGE_REFUNDED = "charge.refunded"
 

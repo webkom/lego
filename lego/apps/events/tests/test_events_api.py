@@ -844,9 +844,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -862,9 +863,12 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        # We check the status against the database because the response is dependant
+        # on whether we run celery in eager mode or not.
+        reg_status = Registration.objects.get(
+            id=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -877,9 +881,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -892,9 +897,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -907,9 +913,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
