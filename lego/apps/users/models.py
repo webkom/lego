@@ -307,7 +307,7 @@ class User(
     )
     email_lists_enabled = models.BooleanField(default=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
-    picture = FileField(related_name="user_pictures")
+    picture = FileField(related_name="user_pictures", blank=True)
     is_active = models.BooleanField(
         default=True,
         help_text="Designates whether this user should be treated as "
@@ -372,8 +372,7 @@ class User(
         self.picture = value
 
     def profile_picture_remove(self):
-        default_picture = self.get_default_picture()
-        self.profile_picture = File.objects.get(key=default_picture)
+        self.profile_picture = None
         self.save()
 
     def is_verified_student(self):
