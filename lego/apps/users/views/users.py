@@ -173,12 +173,3 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 newGrade.add_user(user)
 
         return Response(MeSerializer(user).data)
-
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
-    def remove_picture(self, request, *args, **kwargs):
-        user = self.get_object()
-        if (not request.user.has_perm(EDIT, User)) and (request.user != user):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        user.profile_picture_remove()
-
-        return Response(MeSerializer(user).data)
