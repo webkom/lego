@@ -155,7 +155,9 @@ class MeSerializer(serializers.ModelSerializer):
 
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     memberships = MembershipSerializer(many=True)
-    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture = ImageField(
+        required=False, options={"height": 200, "width": 200}, allow_null=True
+    )
     ical_token = serializers.SerializerMethodField("get_user_ical_token")
     penalties = serializers.SerializerMethodField("get_valid_penalties")
     is_student = serializers.SerializerMethodField()
