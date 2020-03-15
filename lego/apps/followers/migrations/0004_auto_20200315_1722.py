@@ -5,14 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('followers', '0003_followevent_sent'),
-    ]
+    dependencies = [("followers", "0003_followevent_sent")]
 
     operations = [
         migrations.RenameField(
-            model_name='followevent',
-            old_name='sent',
-            new_name='notification_sent',
-        ),
+            model_name="followevent", old_name="sent", new_name="notification_sent"
+        )
     ]
