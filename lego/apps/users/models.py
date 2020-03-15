@@ -13,7 +13,7 @@ from mptt.models import MPTTModel
 
 from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
-from lego.apps.files.models import File, FileField
+from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
 from lego.apps.users import constants
 from lego.apps.users.managers import (
