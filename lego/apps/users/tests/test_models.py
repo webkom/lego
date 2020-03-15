@@ -109,26 +109,6 @@ class UserTestCase(BaseTestCase):
         self.user.save()
         self.assertEqual(self.user.profile_picture, "abakus.png")
 
-    def test_remove__male_profile_picture(self):
-        self.assertEqual(self.user.profile_picture, "default_male_avatar.png")
-        self.user.profile_picture = File.objects.get(key="abakus.png")
-        self.user.save()
-        self.assertEqual(self.user.profile_picture, "abakus.png")
-        self.user.profile_picture_remove()
-        self.user.save()
-        self.assertEqual(self.user.profile_picture, "default_male_avatar.png")
-
-    def test_remove_female_profile_picture(self):
-        self.user.gender = constants.FEMALE
-        self.user.save()
-        self.assertEqual(self.user.profile_picture, "default_female_avatar.png")
-        self.user.profile_picture = File.objects.get(key="abakus.png")
-        self.user.save()
-        self.assertEqual(self.user.profile_picture, "abakus.png")
-        self.user.profile_picture_remove()
-        self.user.save()
-        self.assertEqual(self.user.profile_picture, "default_female_avatar.png")
-
     def test_all_groups(self):
         abakus = AbakusGroup.objects.get(name="Abakus")
         abakom = AbakusGroup.objects.get(name="Abakom")

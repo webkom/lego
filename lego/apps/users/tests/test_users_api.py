@@ -359,6 +359,16 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         user = self.all_users.exclude(student_username__isnull=False).first()
         self.successful_update(user, user)
 
+    def test_update_to_remove_profile_picture(self):
+        """Try to remove profile picture by updating user with profilePIcture equals null"""
+        user = self.all_users.exclude(student_username__isnull=False).first()
+        self.client.force_authenticate(user)
+        response = self.client.patch(
+            _get_detail_url(user.username), {"profilePicture": None}
+        )
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(user.profile_picture, user.get_default_picture())
+
 
 class DeleteUsersAPITestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
