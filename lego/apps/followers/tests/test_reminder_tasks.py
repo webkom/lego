@@ -67,7 +67,7 @@ class RegistrationReminderTestCase(BaseTestCase):
         self.pool.activation_date = current_time + timedelta(minutes=45)
         self.pool.save()
         FollowEvent.objects.get_or_create(
-            follower=self.recipient, target=self.pool.event, sent=True
+            follower=self.recipient, target=self.pool.event, notification_sent=True
         )
 
         send_registration_reminder_mail.delay()

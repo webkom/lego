@@ -32,9 +32,9 @@ def send_registration_reminder_mail(self, logger_context=None):
                     id__in=[user.id for user in user.all_groups]
                 ).exists()
                 and not pool.event.registrations.filter(user=user).exists()
-                and not followsevent.sent
+                and not followsevent.notification_sent
             ):
                 notification = RegistrationReminderNotification(user, event=pool.event)
                 notification.notify()
-            followsevent.sent = True
+            followsevent.notification_sent = True
             followsevent.save()
