@@ -6,13 +6,12 @@ from django.urls import reverse
 from rest_framework import status
 
 from lego.apps.events.models import Event
+from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.test_utils import BaseAPITestCase, fake_time
-from lego.apps.files.models import File
-
 
 _test_user_data = {
     "username": "new_testuser",
@@ -365,16 +364,14 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         """Try to remove profile picture by updating user with profilePicture equals null"""
         user = self.all_users.exclude(student_username__isnull=False).first()
         user.profile_picture = File.objects.get(key="abakus.png")
-        self.assertEqual(user.profile_picture, "abakus.png")
         user.save()
         self.client.force_authenticate(user)
         response = self.client.patch(
             _get_detail_url(user.username), {"profilePicture": None}
         )
         self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(
-            response.json()["profilePicture"][-len(user.get_default_picture()) : :],
-            user.get_default_picture(),
+        self.assertTrue(
+            response.json()["profilePicture"].endswith(user.get_default_picture())
         )
 
 
