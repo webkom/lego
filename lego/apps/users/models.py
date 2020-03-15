@@ -371,10 +371,6 @@ class User(
     def profile_picture(self, value):
         self.picture = value
 
-    def profile_picture_remove(self):
-        self.profile_picture = None
-        self.save()
-
     def is_verified_student(self):
         return self.student_username is not None
 
