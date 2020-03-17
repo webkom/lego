@@ -1,0 +1,11 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei, {{ name }}!
+
+Nå er det under en time til påmelding til {{ event }} starter.
+
+Gå til arrangement  {{ frontend_url }}/events/{{event_id}}
+
+{% endblock %}

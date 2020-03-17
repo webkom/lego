@@ -25,6 +25,7 @@ class FollowEvent(Follower):
     target = models.ForeignKey(
         "events.Event", related_name="followers", on_delete=models.CASCADE
     )
+    notification_sent = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("follower", "target")

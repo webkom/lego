@@ -37,6 +37,9 @@ COMMENT_REPLY = "comment_reply"
 # Notifications
 ANNOUNCEMENT = "announcement"
 
+# Followers
+REGISTRATION_REMINDER = "registration_reminder"
+
 NOTIFICATION_TYPES = [
     WEEKLY_MAIL,
     EVENT_BUMP,
@@ -52,6 +55,7 @@ NOTIFICATION_TYPES = [
     COMMENT_REPLY,
     ANNOUNCEMENT,
     SURVEY_CREATED,
+    REGISTRATION_REMINDER,
 ]
 
 NOTIFICATION_CHOICES = [
