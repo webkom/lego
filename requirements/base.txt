@@ -41,7 +41,7 @@ django-cors-headers==3.2.0
 django-mptt==0.9.1
 django-filter==2.2.0
 django-environ==0.4.5
-django-redis==4.10.0
+django-redis==4.11.0
 django-ipware==2.1.0
 # djanog-push-notifications cannot be installed on python3.7
 # Wait for this: https://github.com/jazzband/django-push-notifications/pull/492
