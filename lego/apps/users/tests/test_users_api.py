@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from lego.apps.events.models import Event
+from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
@@ -235,7 +236,7 @@ class CreateUsersAPITestCase(BaseAPITestCase):
 
 
 class UpdateUsersAPITestCase(BaseAPITestCase):
-    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml", "test_files.yaml"]
 
     modified_user = {
         "username": "Modified_User",
@@ -358,6 +359,20 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         """Test the update method not failing when the user is not a student"""
         user = self.all_users.exclude(student_username__isnull=False).first()
         self.successful_update(user, user)
+
+    def test_update_to_remove_profile_picture(self):
+        """Try to remove profile picture by updating user with profilePicture equals null"""
+        user = self.all_users.exclude(student_username__isnull=False).first()
+        user.profile_picture = File.objects.get(key="abakus.png")
+        user.save()
+        self.client.force_authenticate(user)
+        response = self.client.patch(
+            _get_detail_url(user.username), {"profilePicture": None}
+        )
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertTrue(
+            response.json()["profilePicture"].endswith(user.get_default_picture())
+        )
 
 
 class DeleteUsersAPITestCase(BaseAPITestCase):

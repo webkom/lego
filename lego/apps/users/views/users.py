@@ -129,7 +129,6 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         user = self.get_object()
         serializer = self.get_serializer(user, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-
         is_abakus_member = serializer.validated_data.pop("is_abakus_member", None)
         with transaction.atomic():
             super().perform_update(serializer)
