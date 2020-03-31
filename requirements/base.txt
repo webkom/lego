@@ -9,7 +9,7 @@ raven==6.10.0
 redis==3.4.1
 hiredis==1.0.1
 certifi==2019.11.28
-elasticsearch==6.2.0
+elasticsearch==7.6.0
 celery==4.4.2
 stripe==2.24.1
 structlog==20.1.0
