@@ -29,21 +29,6 @@ def celery_init(*args, **kwargs):
     analytics_client.setup_analytics()
 
 
-@app.on_configure.connect()
-def on_configure(*args, **kwargs):
-
-    import raven
-    from raven.contrib.celery import register_signal, register_logger_signal
-
-    client = raven.Client()
-
-    # register a custom filter to filter out duplicate logs
-    register_logger_signal(client)
-
-    # hook into the Celery error handler
-    register_signal(client)
-
-
 @setup_logging.connect()
 def on_setup_logging(**kwargs):
     """

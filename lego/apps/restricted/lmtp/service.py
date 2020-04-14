@@ -89,9 +89,7 @@ class LMTPService(BaseCommand, smtpd.SMTPServer):
                 return status.append(channel.OK_250)
 
             except Exception:
-                from raven.contrib.django.raven_compat.models import client
 
-                client.captureException()
                 log.exception("lmtp_lookup_failure")
                 status.append(channel.ERR_550)
 

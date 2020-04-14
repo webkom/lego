@@ -3,7 +3,10 @@ import re
 from urllib.parse import urlparse
 
 import environ
+import sentry_sdk
 import stripe
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from lego.settings import (
     BASE_DIR,
@@ -47,17 +50,15 @@ THUMBOR_SERVER = env("THUMBOR_SERVER")
 THUMBOR_SECURITY_KEY = env("THUMBOR_SECURITY_KEY")
 
 # Sentry
-SENTRY_CLIENT = "raven.contrib.django.raven_compat.DjangoClient"
 SENTRY_DSN = env("SENTRY")
-RAVEN_CONFIG = {
-    "dsn": SENTRY_DSN,
-    "release": env("RELEASE", default="latest"),
-    "environment": ENVIRONMENT_NAME,
-}
-INSTALLED_APPS += ["raven.contrib.django.raven_compat"]
-MIDDLEWARE = [
-    "raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware"
-] + MIDDLEWARE
+SENTRY_RELEASE = env("RELEASE", default="latest")
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=[DjangoIntegration(), CeleryIntegration()],
+    release=SENTRY_RELEASE,
+    environment=ENVIRONMENT_NAME,
+    send_default_pii=True,
+)
 
 # Celery
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
