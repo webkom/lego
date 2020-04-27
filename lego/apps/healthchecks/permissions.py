@@ -4,7 +4,7 @@ from rest_framework import permissions
 from ipware.ip import get_ip
 
 
-class HealthPermission(permissions.BasePermission):
+class HealthChecksPermission(permissions.BasePermission):
     """
     Health checks is only allowed by approved ips. We restrict this because the health may be hard
     to calculate.
