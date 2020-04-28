@@ -64,6 +64,7 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+        "django.utils.autoreload": {"level": "INFO"},
         "elasticsearch": {"level": "WARNING", "propagate": True},
         "botocore": {"level": "WARNING", "propagate": True},
         "boto3": {"level": "WARNING", "propagate": True},

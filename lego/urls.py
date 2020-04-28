@@ -12,7 +12,6 @@ from rest_framework_jwt.views import (
 )
 
 from lego.api.urls import urlpatterns as api
-from lego.apps.health.urls import urlpatterns as health_urlpatterns
 
 jwt_urlpatterns = [
     url(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),
@@ -34,7 +33,7 @@ authorization_urlpatterns = [
 urlpatterns = [
     url(r"^api/", include("lego.api.urls", namespace="api")),
     url(r"^authorization/", include(authorization_urlpatterns)),
-    url(r"^", include(health_urlpatterns)),
+    url(r"^healthchecks/", include("health_check.urls")),
     url(
         r"^api-docs/",
         include_docs_urls(
