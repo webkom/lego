@@ -5,9 +5,9 @@ from health_check.plugins import plugin_dir
 from lego.apps.healthchecks.backends import (
     HealthCheckArticlesBackend,
     HealthCheckEventsBackend,
-    HealthCheckGroupsBackend,
+    HealthCheckJoblistingsBackend,
     HealthCheckPagesBackend,
-    HealthCheckUsersBackend,
+    HealthCheckSiteMetaBackend,
 )
 
 
@@ -17,6 +17,6 @@ class HealthChecksConfig(AppConfig):
     def ready(self):
         plugin_dir.register(HealthCheckArticlesBackend)
         plugin_dir.register(HealthCheckEventsBackend)
-        plugin_dir.register(HealthCheckGroupsBackend)
+        plugin_dir.register(HealthCheckJoblistingsBackend)
         plugin_dir.register(HealthCheckPagesBackend)
-        plugin_dir.register(HealthCheckUsersBackend)
+        plugin_dir.register(HealthCheckSiteMetaBackend)
