@@ -18,7 +18,7 @@ bs4==0.0.1
 bleach==3.1.4
 requests==2.23.0
 ldap3==2.7
-google-api-python-client==1.8.2
+google-api-python-client==1.8.3
 oauth2client
 premailer==3.6.1
 analytics-python==1.2.9
