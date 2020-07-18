@@ -36,9 +36,13 @@ DATABASES = {"default": env.db()}
 # Cache
 CACHES = {"default": env.cache()}
 
-# Email / We may enable the celery email backend.
-EMAIL_CONFIG = env.email()
-vars().update(EMAIL_CONFIG)
+# Gsuite mail
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 
 # File Storage
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
