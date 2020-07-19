@@ -111,8 +111,8 @@ steps:
       - docs
       - coverage
     settings:
-      registry: https://registry.abakus.no
-      repo: registry.abakus.no/webkom/lego
+      registry: https://registry.webkom.dev
+      repo: registry.webkom.dev/webkom/lego
       username:
         from_secret: docker_username
       password:
