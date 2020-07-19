@@ -2,7 +2,7 @@ import logging
 from datetime import timedelta
 
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils import timezone
 
 from lego.apps.users.constants import DATA_LONG, KOMTEK_LONG
@@ -46,17 +46,21 @@ class Command(BaseCommand):
     def get_group(self, name):
         group = AbakusGroup.objects.filter(name=name).first()
         if not group:
-            raise ValueError(f'Cold not find group with name "{name}"')
+            raise ValueError(f'Could not find group with name "{name}"')
         return group
 
     def get_students_in_group(self, group):
         return self.get_students_in_groups([group])
 
     def get_students_in_groups(self, groups):
-        return User.all_objects.filter(
-            abakus_groups__in=groups,
-            date_bumped__lte=timezone.now() - timedelta_since_prev_bump,
-        ).prefetch_related("abakus_groups")
+        return (
+            User.all_objects.filter(abakus_groups__in=groups)
+            .filter(
+                Q(date_bumped__lte=timezone.now() - timedelta_since_prev_bump)
+                | Q(date_bumped=None)
+            )
+            .prefetch_related("abakus_groups")
+        )
 
     def verify_no_duplicate_memberships(self, student_groups):
         students = self.get_students_in_groups(student_groups)
