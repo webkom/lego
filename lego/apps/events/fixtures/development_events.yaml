@@ -1434,3 +1434,22 @@
     require_auth: True
   model: events.Event
   pk: 53
+- fields:
+    description: Abakus inviterer til julebord!
+    end_time: '2016-04-10T08:00:00+00:00'
+    event_type: event
+    event_status_type: NORMAL
+    location: Scandic nidelva
+    start_time: '2016-04-09T15:00:00+00:00'
+    text:
+      "<p>Da er det tid for julebord!</br>\
+      \ <b>Pris: 270</b></p>"
+    title: Julebord
+    is_priced: True
+    price_member: 27000
+    price_guest: 35000
+    cover: test_event_cover.png
+    created_by: 3
+    require_auth: False
+  model: events.Event
+  pk: 54

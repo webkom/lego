@@ -118,9 +118,19 @@ class Command(BaseCommand):
             event.end_time = date + timedelta(days=i - 10, hours=4)
             event.save()
             for j, pool in enumerate(event.pools.all()):
-                pool.activation_date = date.replace(hour=12, minute=0) + timedelta(
-                    days=i - j - 16
-                )
+                # If you set this date in the fixture, the activation_date will be earlier than now
+                # so that the pool is open
+                if (
+                    pool.activation_date.date()
+                    == timezone.datetime(year=2016, month=1, day=1).date()
+                ):
+                    pool.activation_date = date.replace(hour=12, minute=0) - timedelta(
+                        days=1
+                    )
+                else:
+                    pool.activation_date = date.replace(hour=12, minute=0) + timedelta(
+                        days=i - j - 16
+                    )
                 pool.save()
 
     def generate_groups(self):
