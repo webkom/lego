@@ -1,5 +1,6 @@
 from urllib.parse import parse_qs
 
+from django.db import close_old_connections
 from rest_framework import exceptions
 
 from lego.apps.jwt.authentication import Authentication
@@ -24,6 +25,10 @@ class JWTAuthenticationMiddleware:
         self.authentication = JWTQSAuthentication()
 
     def __call__(self, scope):
+
+        # If there are old connecions in the database,
+        # authentication will fail. So we make sure to clean up.
+        close_old_connections()
         user, token = self.authentication.authenticate(scope)
         scope["user"] = user
         scope["token"] = token
