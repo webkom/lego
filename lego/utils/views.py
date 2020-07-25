@@ -8,6 +8,7 @@ from lego.apps.gallery.models import Gallery
 from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST
+from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
 from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, Penalty, User
@@ -22,14 +23,14 @@ class SiteMetaViewSet(viewsets.ViewSet):
         site_meta = settings.SITE
 
         # Allow non-logged in users to see these as well:
-        allow_anonymous_entities = ["events", "articles", "joblistings"]
+        allow_anonymous_entities = ["events", "articles", "joblistings", "galleries"]
 
         # Whereas these require that a user has keyword permissions:
         permission_entities = {
             "companies": (Company, LIST),
             "meetings": (Meeting, LIST),
+            "polls": (Poll, LIST),
             "quotes": (Quote, LIST),
-            "galleries": (Gallery, LIST),
             "interest_groups": (AbakusGroup, LIST),
             # Admin:
             "bdb": (Company, CREATE),
