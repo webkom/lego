@@ -37,6 +37,7 @@ DATABASES = {"default": env.db()}
 CACHES = {"default": env.cache()}
 
 # Email / We may enable the celery email backend.
+# See https://github.com/joke2k/django-environ#email-settings for how to configure
 EMAIL_CONFIG = env.email()
 vars().update(EMAIL_CONFIG)
 
