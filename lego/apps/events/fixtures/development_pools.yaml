@@ -727,3 +727,12 @@
       - - Abakus
   model: events.Pool
   pk: 81
+- fields:
+    activation_date: '2016-01-01T17:00:00+00:00'
+    capacity: 0
+    event: 54
+    name: Abakus
+    permission_groups:
+      - - Abakus
+  model: events.Pool
+  pk: 82
