@@ -1,9 +1,10 @@
 import socket
-from logging import getLogger
+from logging import ERROR, getLogger
 
 import cssutils
 import structlog
 from structlog.threadlocal import wrap_dict
+from structlog_sentry import SentryJsonProcessor
 
 from lego.settings import TESTING
 
@@ -83,6 +84,7 @@ structlog.configure(
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
+        SentryJsonProcessor(level=ERROR),
         structlog.processors.JSONRenderer(),
     ],
     context_class=WrappedDictClass,
