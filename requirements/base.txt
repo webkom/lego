@@ -18,7 +18,7 @@ requests==2.23.0
 ldap3==2.7
 google-api-python-client==1.9.3
 oauth2client
-premailer==3.6.1
+premailer==3.7.0
 libthumbor==2.0.1
 django-health-check==3.12.1
 
