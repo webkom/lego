@@ -16,7 +16,7 @@ class RegistrationReminderNotification(Notification):
                 "event": event.title,
                 "event_id": event.id,
             },
-            subject=f"Påminnelse",
+            subject="Påminnelse",
             plain_template="followers/email/reminder.txt",
             html_template="followers/email/reminder.html",
         )

@@ -17,7 +17,7 @@ class PenaltyNotification(Notification):
                 "event": penalty.source_event.title,
                 "reason": penalty.reason,
             },
-            subject=f"Du har fått en ny prikk",
+            subject="Du har fått en ny prikk",
             plain_template="users/email/penalty.txt",
             html_template="users/email/penalty.html",
         )

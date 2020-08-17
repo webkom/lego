@@ -73,6 +73,6 @@ def remove_from_feed(activity, feed, recipients):
     TimelineStorage.remove_ids(activity.activity_id, aggregated_ids, feed)
 
 
-def chunks(l, n):
-    for i in range(0, len(l), n):
-        yield l[i : i + n]
+def chunks(items, n):
+    for i in range(0, len(items), n):
+        yield items[i : i + n]

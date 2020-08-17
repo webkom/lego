@@ -10,7 +10,7 @@ class RestrictedMailSentNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email,
             context={"name": self.user.full_name},
-            subject=f"Begrenset epost sendt ut",
+            subject="Begrenset epost sendt ut",
             plain_template="restricted/email/process_success.txt",
             html_template="restricted/email/process_success.html",
         )

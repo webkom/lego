@@ -45,7 +45,7 @@ class RestrictedHandler(Handler):
         send_email.delay(
             to_email=sender,
             context={"reason": reason},
-            subject=f"Kunne ikke sende ut begrenset epost",
+            subject="Kunne ikke sende ut begrenset epost",
             plain_template="restricted/email/process_failure.txt",
             html_template="restricted/email/process_failure.html",
         )
