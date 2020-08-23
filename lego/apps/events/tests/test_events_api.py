@@ -2,6 +2,7 @@ from copy import deepcopy
 from datetime import timedelta
 from unittest import mock, skipIf
 
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -14,11 +15,14 @@ from lego.apps.events.exceptions import (
     WebhookDidNotFindRegistration,
 )
 from lego.apps.events.models import Event, Pool, Registration
-from lego.apps.events.tasks import stripe_webhook_event
-from lego.apps.events.tests.utils import get_dummy_users
+from lego.apps.events.tasks import (
+    check_events_for_registrations_with_expired_penalties,
+    stripe_webhook_event,
+)
+from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
 
 from .utils import create_token
@@ -174,6 +178,8 @@ _test_pools_data = [
 
 _test_registration_data = {"user": 1}
 
+webhook_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", None)
+
 
 def _get_list_url():
     return reverse("api:v1:event-list")
@@ -318,8 +324,8 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event_response = self.client.get(_get_detail_url(event.id))
         self.assertEqual(event_response.status_code, 200)
 
-    def test_charge_status_hidden_when_not_priced(self):
-        """Test that chargeStatus is hidden when getting nonpriced event"""
+    def test_payment_status_hidden_when_not_priced(self):
+        """Test that paymentStatus is hidden when getting nonpriced event"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(1))
@@ -327,7 +333,7 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         for pool in event_response.json()["pools"]:
             for reg in pool["registrations"]:
                 with self.assertRaises(KeyError):
-                    reg["chargeStatus"]
+                    reg["paymentStatus"]
 
     def test_only_own_fields_visible(self):
         """Test that a user can only view own fields"""
@@ -339,10 +345,10 @@ class RetrieveEventsTestCase(BaseAPITestCase):
             for reg in pool["registrations"]:
                 if reg["user"]["id"] == self.abakus_user.id:
                     self.assertIsNotNone(reg["feedback"])
-                    self.assertIsNotNone(reg["chargeStatus"])
+                    self.assertIsNotNone(reg["paymentStatus"])
                 else:
                     self.assertIsNone(reg["feedback"])
-                    self.assertIsNone(reg["chargeStatus"])
+                    self.assertIsNone(reg["paymentStatus"])
 
     def test_event_registration_no_shared_memberships(self):
         """Test registrations shared_memberships without any shared groups"""
@@ -838,9 +844,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -856,9 +863,12 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        # We check the status against the database because the response is dependant
+        # on whether we run celery in eager mode or not.
+        reg_status = Registration.objects.get(
+            id=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -871,9 +881,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -886,9 +897,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -901,9 +913,10 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
             _get_registrations_list_url(event.id), {}
         )
         self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(
-            registration_response.json().get("status"), constants.PENDING_REGISTER
-        )
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(registration_response.json().get("status"), reg_status)
         res = self.client.get(
             _get_registrations_detail_url(event.id, registration_response.json()["id"])
         )
@@ -1057,8 +1070,8 @@ class RegistrationsTestCase(BaseAPITestCase):
         )
         self.assertEqual(registration_response.status_code, 202)
 
-    def test_update_charge_status_with_permissions(self, mock_verify_captcha):
-        """Test user with permission can update charge_status"""
+    def test_update_payment_status_with_permissions(self, mock_verify_captcha):
+        """Test user with permission can update payment_status"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -1067,12 +1080,12 @@ class RegistrationsTestCase(BaseAPITestCase):
         )
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
-            {"charge_status": "manual"},
+            {"payment_status": "manual"},
         )
         self.assertEqual(res.status_code, 200)
 
-    def test_update_charge_status_wrongly_with_permissions(self, mock_verify_captcha):
-        """Test user with permission fails in updating charge_status when giving wrong choice"""
+    def test_update_payment_status_wrongly_with_permissions(self, mock_verify_captcha):
+        """Test user with permission fails in updating payment_status when giving wrong choice"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
@@ -1082,19 +1095,19 @@ class RegistrationsTestCase(BaseAPITestCase):
         )
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
-            {"charge_status": "feil-data"},
+            {"payment_status": "feil-data"},
         )
         self.assertEqual(res.status_code, 400)
 
-    def test_update_charge_status_without_permissions(self, mock_verify_captcha):
-        """Test that user without permission cannot update charge_status"""
+    def test_update_payment_status_without_permissions(self, mock_verify_captcha):
+        """Test that user without permission cannot update _status"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
         res = self.client.patch(
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
-            {"charge_status": "manual"},
+            {"payment_status": "manual"},
         )
         self.assertEqual(res.status_code, 403)
 
@@ -1321,10 +1334,9 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
 
 
 @skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
-class StripePaymentTestCase(BaseAPITestCase):
+class StripePaymentTestCase(BaseAPITransactionTestCase):
     """
-    Testing cards used:
-    https://stripe.com/docs/testing#cards
+    Test API calls related to payments.
     """
 
     fixtures = [
@@ -1335,70 +1347,234 @@ class StripePaymentTestCase(BaseAPITestCase):
     ]
 
     def setUp(self):
-        self.abakus_user = User.objects.get(pk=1)
-        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
-        self.client.force_authenticate(self.abakus_user)
+        users = get_dummy_users(5)
+        self.admin_user = users[0]
+        self.abakus_user = users[1]
+        self.abakus_user_2 = users[2]
+        self.abakus_user_3 = users[3]
+        self.abakus_user_4 = users[4]
+
+        AbakusGroup.objects.get(name="Webkom").add_user(self.admin_user)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_2)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_3)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user_4)
+
         self.event = Event.objects.get(title="POOLS_AND_PRICED")
 
-    def issue_payment(self, token):
-        return self.client.post(
-            _get_detail_url(self.event.id) + "payment/", {"token": token.id}
-        )
+        self.event.start_time = timezone.now() + timedelta(days=1)
+        self.event.end_time = timezone.now() + timedelta(days=1, hours=2)
+        self.event.merge_time = timezone.now() + timedelta(hours=12)
+        self.event.payment_due_date = timezone.now() + timedelta(days=2)
+        self.event.save()
 
-    def test_payment(self):
-        token = create_token("4242424242424242", "123")
-        res = self.issue_payment(token)
+        self.registration = Registration.objects.get_or_create(
+            user=self.abakus_user, event=self.event
+        )[0]
+        self.registration.save()
+        self.event.register(self.registration)
+        self.event.save()
+
+    def get_payment_intent(self):
+        return self.client.post(_get_detail_url(self.event.id) + "payment/")
+
+    @mock.patch("lego.apps.events.tasks.notify_user_payment_initiated")
+    def test_create_payment_intent(self, mock_notify):
+        """
+        Test that the payment intent is created and the correct
+        client secret is sent to the client
+        """
+
+        self.client.force_authenticate(self.abakus_user)
+
+        res = self.get_payment_intent()
         self.assertEqual(res.status_code, 202)
-        self.assertEqual(res.json().get("charge_status"), constants.PAYMENT_PENDING)
-        registration_id = res.json().get("id")
-        get_object = self.client.get(
-            _get_registrations_detail_url(self.event.id, registration_id)
+
+        registration = Registration.objects.get(id=self.registration.id)
+
+        self.assertIsNotNone(registration.payment_intent_id)
+
+        stripe_intent = stripe.PaymentIntent.retrieve(registration.payment_intent_id)
+
+        mock_notify.assert_called_once_with(
+            constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+            registration,
+            success_message="Betaling påbegynt",
+            client_secret=stripe_intent["client_secret"],
         )
-        self.assertEqual(get_object.json().get("charge_status"), "succeeded")
 
-    def test_refund_task(self):
-        token = create_token("4242424242424242", "123")
-        self.issue_payment(token)
-        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
+        stripe.PaymentIntent.cancel(registration.payment_intent_id)
 
-        stripe.Refund.create(charge=registration.charge_id)
+    @mock.patch("lego.apps.events.tasks.notify_user_payment_initiated")
+    def test_create_payment_intent_when_bump_from_waitlist(self, mock_notify):
+        """
+        Test that the payment intent is created and the correct
+        client secret is sent to the client when you have ben bumped from the
+        waiting list.
+        """
 
-        stripe_events_all = stripe.Event.all(limit=3)
-        stripe_event = None
-        for obj in stripe_events_all.json():
-            if obj.json().object.id == registration.charge_id:
-                stripe_event = obj
-                break
-        self.assertIsNotNone(stripe_event)
+        self.client.force_authenticate(self.abakus_user_4)
 
-        stripe_webhook_event.delay(
-            event_id=stripe_event.id, event_type="charge.refunded"
+        p1 = Penalty.objects.create(
+            user=self.abakus_user_4, reason="test", weight=3, source_event=self.event
+        )
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_4
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        mock_notify.assert_not_called()
+
+        res = self.get_payment_intent()
+        self.assertEqual(res.status_code, 403)
+
+        make_penalty_expire(p1)
+        check_events_for_registrations_with_expired_penalties.delay()
+
+        res = self.get_payment_intent()
+        self.assertEqual(res.status_code, 202)
+        self.assertIsNone(reg.payment_intent_id)
+
+        reg.refresh_from_db()
+
+        self.assertIsNotNone(reg.payment_intent_id)
+
+        stripe_intent = stripe.PaymentIntent.retrieve(reg.payment_intent_id)
+
+        mock_notify.assert_called_once_with(
+            constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+            reg,
+            success_message="Betaling påbegynt",
+            client_secret=stripe_intent["client_secret"],
+        )
+
+        stripe.PaymentIntent.cancel(reg.payment_intent_id)
+
+    def test_unregister_with_payment(self):
+        """Test that the payment is canceled when unregistering."""
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        reg.refresh_from_db()
+
+        self.assertIsNotNone(reg.payment_intent_id)
+
+        self.client.delete(f"{_get_registrations_list_url(self.event.id)}{reg.id}/")
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+        )
+
+    def test_admin_unregister_with_payment(self):
+        """Test that a users payment is cancelled when admin unregistering"""
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        self.client.force_authenticate(self.admin_user)
+
+        self.client.post(
+            f"{_get_registrations_list_url(self.event.id)}admin_unregister/",
+            {"user": self.abakus_user_2.id, "admin_unregistration_reason": "test"},
+        )
+
+        reg.refresh_from_db()
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+        )
+
+    def test_cancel_on_payment_manual(self):
+        """
+        The payment intent should be canceled when setting the payment status to manual.
+        """
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        self.client.force_authenticate(self.admin_user)
+
+        self.client.patch(
+            f"{_get_registrations_list_url(self.event.id)}{reg.id}/",
+            {"payment_status": "manual"},
+        )
+
+        reg.refresh_from_db()
+
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+        )
+
+    def test_refund(self):
+        """
+        The refund should be saved on the registration with the correct amount.
+        """
+        registration = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_3
+        )[0]
+        self.event.register(registration)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_3)
+        self.get_payment_intent()
+
+        registration.refresh_from_db()
+
+        intent = stripe.PaymentIntent.retrieve(registration.payment_intent_id)
+
+        intent = stripe.PaymentIntent.confirm(
+            intent["id"], payment_method="pm_card_visa"
+        )
+
+        charge_id = intent["charges"]["data"][0]["id"]
+
+        refund_resp = stripe.Refund.create(charge=charge_id)
+
+        self.assertEqual(refund_resp["amount"], registration.payment_amount)
+        self.assertEqual(refund_resp["status"], "succeeded")
+
+        refund_event = list(
+            filter(
+                lambda e: e["data"]["object"]["id"] == charge_id,
+                stripe.Event.list(limit=3)["data"],
+            )
+        )[0]
+
+        stripe_webhook_event(
+            event_type=refund_event["type"], event_id=refund_event["id"]
         )
 
         registration.refresh_from_db()
 
-        self.assertEqual(registration.charge_status, "succeeded")
-        self.assertEqual(registration.charge_amount, 10000)
-        self.assertEqual(registration.charge_amount_refunded, 10000)
-
-    def test_refund_webhook_raising_error(self):
-        token = create_token("4242424242424242", "123")
-        self.issue_payment(token)
-        registration = Registration.objects.get(event=self.event, user=self.abakus_user)
-
-        stripe.Refund.create(charge=registration.charge_id)
-
-        stripe_events_all = stripe.Event.all(limit=3)
-        stripe_event = None
-        for obj in stripe_events_all.json():
-            if obj.json().object.id == registration.charge_id:
-                stripe_event = obj
-                break
-        self.assertIsNotNone(stripe_event)
-
-        registration.delete()
-        with self.assertRaises(WebhookDidNotFindRegistration):
-            stripe_webhook_event(event_id=stripe_event.id, event_type="charge.refunded")
+        self.assertEqual(registration.payment_status, constants.PAYMENT_SUCCESS)
+        self.assertEqual(
+            registration.payment_amount_refunded,
+            refund_event["data"]["object"]["amount_refunded"],
+        )
+        self.assertEqual(
+            registration.payment_amount, registration.payment_amount_refunded
+        )
 
 
 class CapacityExpansionTestCase(BaseAPITestCase):

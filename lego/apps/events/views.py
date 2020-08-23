@@ -5,14 +5,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
 
 from celery import chain
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound,
+    APIEventNotPriced,
     APINoSuchPool,
     APINoSuchRegistration,
+    APIPaymentDenied,
     APIPaymentExists,
     APIRegistrationExists,
     APIRegistrationsExistsInPool,
@@ -43,14 +46,16 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadSerializer,
     RegistrationSearchReadSerializer,
     RegistrationSearchSerializer,
-    StripeTokenSerializer,
+    StripePaymentIntentSerializer,
 )
 from lego.apps.events.tasks import (
-    async_payment,
+    async_cancel_payment,
+    async_initiate_payment,
     async_register,
+    async_retrieve_payment,
     async_unregister,
     check_for_bump_on_pool_creation_or_expansion,
-    registration_payment_save,
+    save_and_notify_payment,
 )
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -69,6 +74,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     )
     ordering_fields = ("start_time", "end_time", "title")
     ordering = "start_time"
+    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
@@ -167,31 +173,37 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 
-    @decorators.action(
-        detail=True, methods=["POST"], serializer_class=StripeTokenSerializer
-    )
+    @decorators.action(detail=True, methods=["POST"], serializer_class=BaseSerializer)
     def payment(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         event_id = self.kwargs.get("pk", None)
         event = Event.objects.get(id=event_id)
         registration = event.get_registration(request.user)
 
         if not event.is_priced or not event.use_stripe:
-            raise PermissionDenied()
+            raise APIEventNotPriced()
+
+        if registration is None or not registration.can_pay:
+            raise APIPaymentDenied()
 
         if registration.has_paid():
             raise APIPaymentExists()
-        registration.charge_status = constants.PAYMENT_PENDING
-        registration.save()
-        chain(
-            async_payment.s(registration.id, serializer.data["token"]),
-            registration_payment_save.s(registration.id),
-        ).delay()
+
+        if registration.payment_intent_id is None:
+            # If the payment_intent was not created when registering
+            chain(
+                async_initiate_payment.s(registration.id),
+                save_and_notify_payment.s(registration.id),
+            ).delay()
+        else:
+            async_retrieve_payment.delay(registration.id)
+
         payment_serializer = RegistrationPaymentReadSerializer(
             registration, context={"request": request}
         )
-        return Response(data=payment_serializer.data, status=status.HTTP_202_ACCEPTED)
+
+        response_data = payment_serializer.data
+
+        return Response(data=response_data, status=status.HTTP_202_ACCEPTED)
 
     @decorators.action(
         detail=False,
@@ -329,6 +341,7 @@ class RegistrationViewSet(
             registration.feedback = feedback
             registration.save(current_user=current_user)
             transaction.on_commit(lambda: async_register.delay(registration.id))
+        registration.refresh_from_db()
         registration_serializer = RegistrationReadSerializer(
             registration, context={"user": registration.user}
         )
@@ -344,6 +357,18 @@ class RegistrationViewSet(
             transaction.on_commit(lambda: async_unregister.delay(instance.id))
         serializer = RegistrationReadSerializer(instance)
         return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def update(self, request, *args, **kwargs):
+        registration = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if (
+            serializer.validated_data.get("payment_status", None)
+            == constants.PAYMENT_MANUAL
+        ):
+            async_cancel_payment.delay(registration.id)
+
+        return super().update(request, *args, **kwargs)
 
     @decorators.action(
         detail=False,
@@ -383,11 +408,17 @@ class RegistrationViewSet(
             registration = event.admin_unregister(
                 admin_user=admin_user, **serializer.validated_data
             )
+            if (
+                registration.payment_intent_id
+                and registration.payment_status != constants.PAYMENT_SUCCESS
+            ):
+                async_cancel_payment.delay(registration.id)
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:
             raise APIRegistrationExists()
         reg_data = RegistrationReadDetailedSerializer(registration).data
+
         return Response(data=reg_data, status=status.HTTP_200_OK)
 
 

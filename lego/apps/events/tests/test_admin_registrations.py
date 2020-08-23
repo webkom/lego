@@ -1,6 +1,9 @@
 from datetime import timedelta
+from unittest import mock, skipIf
 
 from django.utils import timezone
+
+import stripe
 
 from lego.apps.events.exceptions import RegistrationExists
 from lego.apps.events.models import Event, Registration

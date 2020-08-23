@@ -8,7 +8,17 @@ class APINoSuchPool(APIException):
 
 class APIPaymentExists(APIException):
     status_code = 403
-    default_detail = "Payment already exist."
+    default_detail = "Payment already exists."
+
+
+class APIPaymentDenied(APIException):
+    status_code = 403
+    default_detail = "The registration is not permitted to pay."
+
+
+class APIEventNotPriced(APIException):
+    status_code = 400
+    default_detail = "Event is not priced"
 
 
 class APIEventNotFound(APIException):

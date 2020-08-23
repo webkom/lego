@@ -6,12 +6,12 @@ from rest_framework_jwt.serializers import User
 from lego.apps.events import constants
 from lego.apps.events.fields import (
     ConsentField,
-    PersonalChargeStatusField,
     PersonalConsentField,
     PersonalFeedbackField,
+    PersonalPaymentStatusField,
     PersonalPresenceField,
     PresenceField,
-    SetChargeStatusField,
+    SetPaymentStatusField,
 )
 from lego.apps.events.models import Pool, Registration
 from lego.apps.users.serializers.users import (
@@ -34,15 +34,15 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
         required=False, max_length=Registration._meta.get_field("feedback").max_length
     )
     admin_registration_reason = serializers.CharField(
-        required=True,
         max_length=Registration._meta.get_field("admin_registration_reason").max_length,
+        required=True,
     )
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     captcha_response = serializers.CharField(required=False)
-    charge_status = SetChargeStatusField(
-        required=False, choices=(constants.PAYMENT_MANUAL, constants.PAYMENT_FAILURE)
+    payment_status = SetPaymentStatusField(
+        required=False, choices=constants.PAYMENT_STATUS_CHOICES
     )
     presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
     photo_consent = ConsentField(
@@ -57,7 +57,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             "presence",
             "photo_consent",
             "captcha_response",
-            "charge_status",
+            "payment_status",
         )
 
     def update(self, instance, validated_data):
@@ -66,6 +66,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             super().update(instance, validated_data)
             if presence:
                 instance.set_presence(presence)
+
             return instance
 
 
@@ -111,10 +112,10 @@ class RegistrationConsentSerializer(serializers.Serializer):
 
 
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
-    charge_status = PersonalChargeStatusField()
+    payment_status = PersonalPaymentStatusField()
 
     class Meta(RegistrationReadSerializer.Meta):
-        fields = RegistrationReadSerializer.Meta.fields + ("charge_status",)
+        fields = RegistrationReadSerializer.Meta.fields + ("payment_status",)
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
@@ -135,17 +136,13 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "registration_date",
             "unregistration_date",
             "admin_registration_reason",
-            "charge_id",
-            "charge_status",
-            "charge_amount",
-            "charge_amount_refunded",
+            "payment_intent_id",
+            "payment_status",
+            "payment_amount",
+            "payment_amount_refunded",
             "photo_consent",
         )
         read_only = True
-
-
-class StripeTokenSerializer(serializers.Serializer):
-    token = serializers.CharField()
 
 
 class StripeMetaSerializer(serializers.Serializer):
@@ -154,7 +151,27 @@ class StripeMetaSerializer(serializers.Serializer):
     EMAIL = serializers.EmailField()
 
 
-class StripeObjectSerializer(serializers.Serializer):
+class StripePaymentIntentErrorSerializer(serializers.Serializer):
+    """
+    Stripe payment intent last error.
+    https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error
+    """
+
+    code = serializers.CharField()
+    doc_url = serializers.CharField()
+    message = serializers.CharField()
+    type = serializers.CharField()
+
+
+class StripePaymentIntentSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    amount = serializers.IntegerField()
+    status = serializers.CharField()
+    metadata = StripeMetaSerializer()
+    last_payment_error = StripePaymentIntentErrorSerializer(allow_null=True)
+
+
+class StripeChargeSerializer(serializers.Serializer):
     id = serializers.CharField()
     amount = serializers.IntegerField()
     amount_refunded = serializers.IntegerField()
