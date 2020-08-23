@@ -58,7 +58,7 @@ When changing the user fixtures one must load new fixtures
 ./manage.py load_fixtures --generate
 ```
 
-After changes
+An overview of the available users for development can be found in [this PR](https://github.com/webkom/lego/pull/1913)
 
 ## Code Style
 
