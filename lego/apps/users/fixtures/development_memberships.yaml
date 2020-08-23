@@ -1,3 +1,6 @@
+# =======================
+# Webkom user
+# =======================
 - model: users.Membership
   pk: 1
   fields:
@@ -5,7 +8,6 @@
       - webkom
     abakus_group:
       - Users
-
 - model: users.Membership
   pk: 2
   fields:
@@ -13,7 +15,6 @@
       - webkom
     abakus_group:
       - Abakus
-
 - model: users.Membership
   pk: 3
   fields:
@@ -21,43 +22,143 @@
       - webkom
     abakus_group:
       - Webkom
-
+    role: "leader"
 - model: users.Membership
   pk: 4
+  fields:
+    user:
+      - webkom
+    abakus_group:
+      - 3. klasse Datateknologi
+
+# =======================
+# Webkom rec user
+# =======================
+- model: users.Membership
+  pk: 5
+  fields:
+    user:
+      - webkomrec
+    abakus_group:
+      - Users
+- model: users.Membership
+  pk: 6
+  fields:
+    user:
+      - webkomrec
+    abakus_group:
+      - Abakus
+- model: users.Membership
+  pk: 7
+  fields:
+    user:
+      - webkomrec
+    abakus_group:
+      - Webkom
+    role: "recruiting"
+- model: users.Membership
+  pk: 8
+  fields:
+    user:
+      - webkomrec
+    abakus_group:
+      - 3. klasse Datateknologi
+
+# =======================
+# Bedkom user
+# =======================
+- model: users.Membership
+  pk: 9
   fields:
     user:
       - bedkom
     abakus_group:
       - Users
-
 - model: users.Membership
-  pk: 5
+  pk: 10
   fields:
     user:
       - bedkom
     abakus_group:
       - Abakus
-
 - model: users.Membership
-  pk: 6
+  pk: 11
   fields:
     user:
       - bedkom
     abakus_group:
       - Bedkom
-
+    role: "leader"
 - model: users.Membership
-  pk: 7
+  pk: 12
   fields:
     user:
-      - test1
+      - bedkom
+    abakus_group:
+      - 3. klasse Kommunikasjonsteknologi
+
+# =======================
+# Bedkom rec user
+# =======================
+- model: users.Membership
+  pk: 13
+  fields:
+    user:
+      - bedkomrec
     abakus_group:
       - Users
-
 - model: users.Membership
-  pk: 8
+  pk: 14
   fields:
     user:
-      - test1
+      - bedkomrec
     abakus_group:
       - Abakus
+- model: users.Membership
+  pk: 15
+  fields:
+    user:
+      - bedkomrec
+    abakus_group:
+      - Bedkom
+    role: "recruiting"
+- model: users.Membership
+  pk: 16
+  fields:
+    user:
+      - bedkomrec
+    abakus_group:
+      - 3. klasse Kommunikasjonsteknologi
+
+# =======================
+# Abakus Leader
+# =======================
+- model: users.Membership
+  pk: 17
+  fields:
+    user:
+      - leader
+    abakus_group:
+      - Users
+- model: users.Membership
+  pk: 18
+  fields:
+    user:
+      - leader
+    abakus_group:
+      - Abakus
+- model: users.Membership
+  pk: 19
+  fields:
+    user:
+      - leader
+    abakus_group:
+      - Hovedstyret
+    role: "leader"
+- model: users.Membership
+  pk: 20
+  fields:
+    user:
+      - leader
+    abakus_group:
+      - 5. klasse Datateknologi
