@@ -12,3 +12,11 @@
     slug: for-bedrifter
     category: bedrifter
     content: <p>Masse info for bedrifter</p>
+
+- model: flatpages.page
+  pk: 3
+  fields:
+    title: Personvernerklæring
+    slug: personvern
+    category: personvern
+    content: <p>GDPR og sånt</p>
