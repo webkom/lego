@@ -23,7 +23,7 @@ class OptionUpdateSerializer(BasisModelSerializer):
 
 
 class QuestionSerializer(BasisModelSerializer):
-    display_type = serializers.ChoiceField(choices=DISPLAY_TYPES)
+    display_type = serializers.ChoiceField(choices=DISPLAY_TYPES, required=False)
     question_type = serializers.ChoiceField(choices=QUESTION_TYPES)
     options = OptionSerializer(many=True, required=False, allow_null=True)
 
