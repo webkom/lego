@@ -7,13 +7,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('files', '0003_auto_20171210_1610'),
+        ("files", "0003_auto_20171210_1610"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='file',
-            name='key',
-            field=models.CharField(max_length=200, primary_key=True, serialize=False, validators=[django.core.validators.RegexValidator('^\\w+(([.]|-)\\w+)*[.][A-Za-z]{2,4}$', 'enter a valid key', 'invalid')]),
+            model_name="file",
+            name="key",
+            field=models.CharField(
+                max_length=200,
+                primary_key=True,
+                serialize=False,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        "^\\w+(([.]|-)\\w+)*[.][A-Za-z]{2,4}$",
+                        "enter a valid key",
+                        "invalid",
+                    )
+                ],
+            ),
         ),
     ]
