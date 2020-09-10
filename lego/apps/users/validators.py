@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
 username_validator = validators.RegexValidator(
-    r"^\w+$",
+    r"^[a-zA-Z0-9_]+$",
     "Enter a valid username. This value may contain only letters, numbers and _ "
     "characters.",
     "invalid",
