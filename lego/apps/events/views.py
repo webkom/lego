@@ -278,6 +278,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         detail=True, methods=["GET"], serializer_class=EventAdministrateSerializer
     )
     def export(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         has_permission = self.request.user.has_perm("administrate", obj=Event)
         if not has_permission:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -304,7 +307,6 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         writer = csv.writer(response)
         writer.writerow(["username", "fullName", "emailAddress", "pool"])
         for pool in event["pools"]:
-            print("\n\n\n", pool)
             for registration in pool["registrations"]:
                 writer.writerow(
                     [

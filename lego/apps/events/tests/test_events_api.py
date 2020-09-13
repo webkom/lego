@@ -3,6 +3,7 @@ from datetime import timedelta
 from unittest import mock, skipIf
 
 from django.conf import settings
+from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
 
@@ -214,6 +215,10 @@ def _get_registration_search_url(event_pk):
 
 def _get_upcoming_url():
     return reverse("api:v1:event-upcoming")
+
+
+def _get_export_url(pk):
+    return reverse("api:v1:event-export", kwargs={"pk": pk})
 
 
 class ListEventsTestCase(BaseAPITestCase):
@@ -1752,3 +1757,48 @@ class UpcomingEventsTestCase(BaseAPITestCase):
     def test_unauthenticated(self):
         event_response = self.client.get(_get_upcoming_url())
         self.assertEqual(event_response.status_code, 401)
+
+
+class ExportEventRegistrationsTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.webkom_user = User.objects.get(pk=1)
+
+        abakus_group = AbakusGroup.objects.get(name="Abakus")
+        webkom_group = AbakusGroup.objects.get(name="Webkom")
+        webkom_group.add_user(self.webkom_user)
+        self.client.force_authenticate(self.webkom_user)
+        event_data = _test_event_data[0]
+        event_data["pools"][0]["permissionGroups"] = [abakus_group.id]
+
+        self.event_response = self.client.post(_get_list_url(), event_data)
+        self.event = Event.objects.get(id=self.event_response.json().pop("id", None))
+        self.event.start_time = timezone.now() + timedelta(hours=3)
+        self.users = get_dummy_users(11)
+        for user in self.users:
+            abakus_group.add_user(user)
+            registration = Registration.objects.get_or_create(
+                event=self.event, user=user
+            )[0]
+            self.event.register(registration)
+
+    def test_unauthenticated(self):
+        self.client = Client()
+        event_response = self.client.get(_get_export_url(1))
+        self.assertEqual(event_response.status_code, 401)
+
+    def test_with_abakus_user(self):
+        self.client.force_authenticate(self.users[1])
+        event_response = self.client.get(_get_export_url(1))
+        self.assertEqual(event_response.status_code, 403)
+
+    def test_webkom_user(self):
+        self.client.force_authenticate(self.webkom_user)
+        event_response = self.client.get(_get_export_url(1))
+        self.assertEqual(event_response.status_code, 200)
