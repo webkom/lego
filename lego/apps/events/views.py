@@ -1,5 +1,8 @@
+import csv
+
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
+from django.http import HttpResponse
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
@@ -270,6 +273,49 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @decorators.action(
+        detail=True, methods=["GET"], serializer_class=EventAdministrateSerializer
+    )
+    def export(self, *args, **kwargs):
+        has_permission = self.request.user.has_perm("administrate", obj=Event)
+        if not has_permission:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        query = (
+            Event.objects.filter(pk=kwargs["pk"])
+            .prefetch_related(
+                Prefetch(
+                    "pools__registrations",
+                    queryset=Registration.objects.select_related(
+                        "user"
+                    ).prefetch_related("user__abakus_groups"),
+                ),
+            )
+            .first()
+        )
+
+        event = self.get_serializer(query).data
+
+        response = HttpResponse(content_type="text/csv")
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="{event["title"].replace(" ", "_")}_registrations.csv"'
+        writer = csv.writer(response)
+        writer.writerow(["username", "fullName", "emailAddress", "pool"])
+        for pool in event["pools"]:
+            print("\n\n\n", pool)
+            for registration in pool["registrations"]:
+                writer.writerow(
+                    [
+                        registration["user"]["username"],
+                        registration["user"]["full_name"],
+                        registration["user"]["email_address"],
+                        registration["feedback"],
+                        pool["name"],
+                    ]
+                )
+        return response
 
 
 class PoolViewSet(
