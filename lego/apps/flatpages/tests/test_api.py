@@ -48,7 +48,6 @@ class PageAPITestCase(BaseAPITestCase):
             call = getattr(self.client, method)
             response = call("/api/v1/pages/{0}/".format(slug))
             self.assertEqual(response.status_code, 403)
-
     def test_create_page(self):
         page = {"title": "cat", "content": "hei"}
 
