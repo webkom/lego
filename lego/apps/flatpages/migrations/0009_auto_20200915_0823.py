@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('flatpages', '0008_auto_20200913_1858'),
+        ("flatpages", "0008_auto_20200913_1858"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='page',
-            name='require_auth',
+            model_name="page",
+            name="require_auth",
             field=models.BooleanField(default=True),
         ),
     ]

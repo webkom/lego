@@ -21,10 +21,14 @@ class PageDetailSerializer(BasisModelSerializer, ObjectPermissionsSerializerMixi
         model = Page
         fields = ("pk", "title", "slug", "content", "picture", "category")
 
+
 class PageDetailAuthSerializer(BasisModelSerializer, ObjectPermissionsSerializerMixin):
     content = ContentSerializerField()
     picture = ImageField(required=False, options={"height": 500})
 
     class Meta:
         model = Page
-        fields = (PageDetailSerializer.Meta.fields +  ObjectPermissionsSerializerMixin.Meta.fields)
+        fields = (
+            PageDetailSerializer.Meta.fields
+            + ObjectPermissionsSerializerMixin.Meta.fields
+        )

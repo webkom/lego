@@ -7,30 +7,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0024_auto_20200910_1530'),
+        ("users", "0024_auto_20200910_1530"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('flatpages', '0007_auto_20200826_2307'),
+        ("flatpages", "0007_auto_20200826_2307"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='page',
-            name='can_edit_groups',
-            field=models.ManyToManyField(blank=True, related_name='can_edit_page', to='users.AbakusGroup'),
+            model_name="page",
+            name="can_edit_groups",
+            field=models.ManyToManyField(
+                blank=True, related_name="can_edit_page", to="users.AbakusGroup"
+            ),
         ),
         migrations.AddField(
-            model_name='page',
-            name='can_edit_users',
-            field=models.ManyToManyField(blank=True, related_name='can_edit_page', to=settings.AUTH_USER_MODEL),
+            model_name="page",
+            name="can_edit_users",
+            field=models.ManyToManyField(
+                blank=True, related_name="can_edit_page", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='page',
-            name='can_view_groups',
-            field=models.ManyToManyField(blank=True, related_name='can_view_page', to='users.AbakusGroup'),
+            model_name="page",
+            name="can_view_groups",
+            field=models.ManyToManyField(
+                blank=True, related_name="can_view_page", to="users.AbakusGroup"
+            ),
         ),
         migrations.AddField(
-            model_name='page',
-            name='require_auth',
+            model_name="page",
+            name="require_auth",
             field=models.BooleanField(default=False),
         ),
     ]

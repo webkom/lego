@@ -3,7 +3,11 @@ from rest_framework import viewsets
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 from .models import Page
-from .serializers import PageDetailSerializer, PageListSerializer, PageDetailAuthSerializer
+from .serializers import (
+    PageDetailAuthSerializer,
+    PageDetailSerializer,
+    PageListSerializer,
+)
 
 
 class PageViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
