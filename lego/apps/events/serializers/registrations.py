@@ -70,6 +70,13 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             return instance
 
 
+class RegistrationAnonymizedReadSerializer(BasisModelSerializer):
+    class Meta:
+        model = Registration
+        fields = ("id", "pool", "status")
+        read_only = True
+
+
 class RegistrationPublicReadSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
 

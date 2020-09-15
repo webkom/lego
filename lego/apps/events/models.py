@@ -105,6 +105,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 pool.save(update_fields=["counter"])
             return super().save(*args, **kwargs)
 
+    def user_should_see_regs(self, user):
+        return (
+            self.get_possible_pools(user, future=True, is_admitted=False).exists()
+            or user.is_abakom_member
+            or self.created_by.id == user.id
+        )
+
     def admin_register(
         self, admin_user, user, admin_registration_reason, pool=None, feedback=""
     ):
