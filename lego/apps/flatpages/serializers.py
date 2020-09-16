@@ -22,7 +22,7 @@ class PageDetailSerializer(BasisModelSerializer, ObjectPermissionsSerializerMixi
         fields = ("pk", "title", "slug", "content", "picture", "category")
 
 
-class PageDetailAuthSerializer(BasisModelSerializer, ObjectPermissionsSerializerMixin):
+class PageWithPermissionsSerializer(BasisModelSerializer, ObjectPermissionsSerializerMixin):
     content = ContentSerializerField()
     picture = ImageField(required=False, options={"height": 500})
 
