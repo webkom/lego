@@ -6,6 +6,7 @@ from lego.apps.events.serializers.sockets import (
     RegistrationPaymentInitiateSocketSerializer,
     RegistrationPaymentReadErrorSerializer,
     RegistrationPaymentReadSocketSerializer,
+    RegistrationReadAnonymizedSocketSerializer,
     RegistrationReadSocketSerializer,
 )
 from lego.apps.permissions.constants import LIST
@@ -26,18 +27,25 @@ def find_event_groups(user):
 
     groups = []
     for event in queryset:
-        groups.append(group_for_event(event))
+        groups.append(group_for_event(event, event.user_should_see_regs(user)))
 
     return groups
 
 
 def notify_event_registration(action_type, registration, **kwargs):
-    group = group_for_event(registration.event)
+    full_access_group = group_for_event(registration.event, True)
+    partial_access_group = group_for_event(registration.event, False)
+
     kwargs["event_id"] = registration.event.id
-    serializer = RegistrationReadSocketSerializer(
+    full_serializer = RegistrationReadSocketSerializer(
         {"type": action_type, "payload": registration, "meta": kwargs}
     )
-    notify_group(group, serializer.data)
+    partial_serializer = RegistrationReadAnonymizedSocketSerializer(
+        {"type": action_type, "payload": registration, "meta": kwargs}
+    )
+
+    notify_group(full_access_group, full_serializer.data)
+    notify_group(partial_access_group, partial_serializer.data)
 
 
 def notify_user_payment_initiated(action_type, registration, **kwargs):
@@ -82,9 +90,11 @@ def notify_user_registration(action_type, registration, **kwargs):
 
 
 def notify_event_updated(event, **kwargs):
-    group = group_for_event(event)
+    full_access_group = group_for_event(event, True)
+    limited_access_group = group_for_event(event, False)
     serializer = EventReadDetailedSocketSerializer(
         {"type": "SOCKET_EVENT_UPDATED", "payload": event, "meta": kwargs}
     )
 
-    notify_group(group, serializer.data)
+    notify_group(full_access_group, serializer.data)
+    notify_group(limited_access_group, serializer.data)

@@ -108,13 +108,6 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         return registrations
 
-    def user_should_see_regs(self, event, user):
-        return (
-            event.get_possible_pools(user, future=True, is_admitted=False).exists()
-            or user.is_abakom_member
-            or event.created_by.id == user.id
-        )
-
     def get_serializer_class(self):
         if self.action in ["create", "partial_update", "update"]:
             return EventCreateAndUpdateSerializer
@@ -127,7 +120,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 event
                 and user
                 and user.is_authenticated
-                and self.user_should_see_regs(event, user)
+                and event.user_should_see_regs(user)
             ):
                 return EventReadAuthUserDetailedSerializer
             return EventReadUserDetailedSerializer
