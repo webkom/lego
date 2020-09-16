@@ -1,3 +1,5 @@
+import uuid
+
 from lego.apps.flatpages.models import Page
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.tests.utils import (
@@ -8,23 +10,16 @@ from lego.apps.users.tests.utils import (
 from lego.utils.test_utils import BaseAPITestCase
 
 
-def get_new_page():
+def get_new_unique_page():
     return {
-        "title": "test page",
-        "slug": "halla",
-        "content": "the best page",
+        "title": str(uuid.uuid4()),
+        "slug": str(uuid.uuid4()),
+        "content": str(uuid.uuid4()),
     }
 
 
-group_name_suffix = 1
-
-
 def create_group(**kwargs):
-    global group_name_suffix
-    group = AbakusGroup.objects.create(
-        name="group_{}".format(group_name_suffix), **kwargs
-    )
-    group_name_suffix += 1
+    group = AbakusGroup.objects.create(name=str(uuid.uuid4()), **kwargs)
     return group
 
 
@@ -76,9 +71,8 @@ class PageAPITestCase(BaseAPITestCase):
 
     def test_create_page(self):
         page = {"title": "cat", "content": "hei"}
-
-        superuser = create_super_user()
-        self.client.force_authenticate(superuser)
+        user = create_user_with_permissions("/sudo/admin/pages/")
+        self.client.force_authenticate(user)
         response = self.client.post("/api/v1/pages/", data=page)
         self.assertEqual(response.status_code, 201)
 
@@ -98,7 +92,9 @@ class PageAPITestCase(BaseAPITestCase):
         group.save()
         page.can_edit_groups.add(group)
         self.client.force_authenticate(user)
-        response = self.client.patch("/api/v1/pages/{0}/".format(slug), get_new_page())
+        response = self.client.patch(
+            "/api/v1/pages/{0}/".format(slug), get_new_unique_page()
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_edit_without_object_permissions(self):
@@ -111,5 +107,7 @@ class PageAPITestCase(BaseAPITestCase):
         wrong_group.add_user(user)
         wrong_group.save()
         self.client.force_authenticate(user)
-        response = self.client.patch("/api/v1/pages/{0}/".format(slug), get_new_page())
+        response = self.client.patch(
+            "/api/v1/pages/{0}/".format(slug), get_new_unique_page()
+        )
         self.assertEqual(response.status_code, 403)
