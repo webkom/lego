@@ -11,6 +11,8 @@
     title: For bedrifter
     slug: for-bedrifter
     category: bedrifter
+    can_edit_groups:
+      - - Bedkom
     content: <p>Masse info for bedrifter</p>
 
 - model: flatpages.page

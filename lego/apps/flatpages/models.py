@@ -4,11 +4,11 @@ from lego.apps.content.fields import ContentField
 from lego.apps.content.models import SlugModel
 from lego.apps.files.models import FileField
 from lego.apps.flatpages import constants
-from lego.apps.flatpages.permissions import PagePermissionHandler
+from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.utils.models import BasisModel
 
 
-class Page(BasisModel, SlugModel):
+class Page(BasisModel, SlugModel, ObjectPermissionsModel):
     title = models.CharField("title", max_length=200)
     content = ContentField(allow_images=True)
     picture = FileField()
@@ -18,7 +18,7 @@ class Page(BasisModel, SlugModel):
     )
 
     class Meta:
-        permission_handler = PagePermissionHandler()
+        abstract = False
 
     def __str__(self):
         return "%s -- %s" % (self.slug, self.title)

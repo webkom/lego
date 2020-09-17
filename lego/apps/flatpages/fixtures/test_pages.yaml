@@ -4,6 +4,7 @@
     title: Om oss
     slug: om-oss
     content: Abakus Linjeforening
+    require_auth: False
 
 - model: flatpages.page
   pk: 2
@@ -11,6 +12,7 @@
     title: Komiteer
     slug: komiteer
     content: Komiteer
+    require_auth: False
 
 - model: flatpages.page
   pk: 3
@@ -18,6 +20,7 @@
     title: Webkom
     slug: webkom
     content: Webkom
+    require_auth: False
 
 - model: flatpages.page
   pk: 4
@@ -25,3 +28,11 @@
     title: Bedkom
     slug: bedkom
     content: Bedkom
+    require_auth: False
+
+- model: flatpages.page
+  pk: 5
+  fields:
+    title: Arrkom
+    slug: Arrkom
+    content: HEIYO
