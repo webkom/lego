@@ -12,15 +12,14 @@ from lego.utils.test_utils import BaseAPITestCase
 
 def get_new_unique_page():
     return {
-        "title": str(uuid.uuid4()),
-        "slug": str(uuid.uuid4()),
-        "content": str(uuid.uuid4()),
+        "title": f"title-{str(uuid.uuid4())}",
+        "slug": f"slug-{str(uuid.uuid4())}",
+        "content": f"content-{str(uuid.uuid4())}",
     }
 
 
 def create_group(**kwargs):
-    group = AbakusGroup.objects.create(name=str(uuid.uuid4()), **kwargs)
-    return group
+    return AbakusGroup.objects.create(name=str(uuid.uuid4()), **kwargs)
 
 
 class PageAPITestCase(BaseAPITestCase):
