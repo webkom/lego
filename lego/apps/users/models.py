@@ -317,6 +317,11 @@ class User(
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
 
+    cookie_consent = models.BooleanField(
+        default=False,
+        help_text="Designates whether this User have accepted to the cookie pop-up",
+    )
+
     objects = AbakusUserManager()
 
     USERNAME_FIELD = "username"

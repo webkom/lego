@@ -218,6 +218,7 @@ class MeSerializer(serializers.ModelSerializer):
             "internal_email_address",
             "selected_theme",
             "permissions_per_group",
+            "cookie_consent",
         )
 
 
