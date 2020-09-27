@@ -7,14 +7,16 @@ COMPANY_PRESENTATION = "company_presentation"
 COURSE = "course"
 LUNCH_PRESENTATION = "lunch_presentation"
 BEDEX = "bedex"
+DIGITAL_PRESENTATION = "digital_presentation"
 OTHER = "other"
 SPONSOR = "sponsor"
 START_UP = "start_up"
 
 COMPANY_EVENTS = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
-    (COURSE, COURSE),
     (LUNCH_PRESENTATION, LUNCH_PRESENTATION),
+    (COURSE, COURSE),
+    (DIGITAL_PRESENTATION, DIGITAL_PRESENTATION),
     (BEDEX, BEDEX),
     (OTHER, OTHER),
     (SPONSOR, SPONSOR),
@@ -23,9 +25,10 @@ COMPANY_EVENTS = (
 
 TRANSLATED_EVENTS = {
     COMPANY_PRESENTATION: "Bedriftspresentasjon",
-    COURSE: "Kurs",
     LUNCH_PRESENTATION: "Lunsjpresentasjon",
-    BEDEX: "Bedex",
+    COURSE: "Kurs",
+    DIGITAL_PRESENTATION: "Digital presentasjon",
+    BEDEX: "BedEx (vinter 2021)",
     OTHER: "Alternativt arrangement",
     START_UP: "Start-up kveld",
 }
