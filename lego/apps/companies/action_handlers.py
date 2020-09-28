@@ -19,28 +19,28 @@ class CompanyInterestHandler(Handler):
 
     def handle_create(self, instance, **kwargs):
 
-        activity = Activity(
-            actor=instance,
-            verb=CompanyInterestVerb,
-            object=instance,
-            time=instance.created_at,
-            extra_context={},
-        )
+        # activity = Activity(
+        #    actor=instance,
+        #    verb=CompanyInterestVerb,
+        #    object=instance,
+        #    time=instance.created_at,
+        #    extra_context={},
+        # )
 
-        recipients = [
-            member.user
-            for member in AbakusGroup.objects.get(name="Bedkom").memberships.all()
-        ]
+        # recipients = [
+        #    member.user
+        #    for member in AbakusGroup.objects.get(name="Bedkom").memberships.all()
+        # ]
 
-        self.manager.add_activity(
-            activity, [recipient.pk for recipient in recipients], [NotificationFeed]
-        )
+        # self.manager.add_activity(
+        #    activity, [recipient.pk for recipient in recipients], [NotificationFeed]
+        # )
 
-        for recipient in recipients:
-            notification = CompanyInterestNotification(
-                recipient, company_interest=instance
-            )
-            notification.notify()
+        # for recipient in recipients:
+        #    notification = CompanyInterestNotification(
+        #        recipient, company_interest=instance
+        #    )
+        #    notification.notify()
 
         send_email.delay(
             to_email=f"bedriftskontakt@{settings.GSUITE_DOMAIN}",

@@ -1,4 +1,4 @@
-from django.db.transaction import atomic
+from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import CharField
@@ -226,28 +226,23 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
                     semester_status.contacted_status[0] = INTERESTED
                 semester_status.save()
 
-    @atomic
     def create(self, validated_data):
-        semesters = validated_data.pop("semesters")
-        company_interest = CompanyInterest.objects.create(**validated_data)
-        company_interest.semesters.add(*semesters)
-        company_interest.save()
+        with transaction.atomic():
+            semesters = validated_data.pop("semesters")
+            company_interest = CompanyInterest.objects.create(**validated_data)
+            company_interest.semesters.add(*semesters)
+            company_interest.save()
+            self.update_company_interest_bdb(company_interest)
+            return company_interest
 
-        # TODO: Update interest when updating interest form?
-        self.update_company_interest_bdb(company_interest)
-
-        return company_interest
-
-    @atomic
     def update(self, instance, validated_data):
-        semesters = validated_data.pop("semesters")
-        updated_instance = super().update(instance, validated_data)
-        updated_instance.semesters.add(*semesters)
-        updated_instance.save()
-
-        self.update_company_interest_bdb(updated_instance)
-
-        return updated_instance
+        with transaction.atomic():
+            semesters = validated_data.pop("semesters")
+            updated_instance = super().update(instance, validated_data)
+            updated_instance.semesters.add(*semesters)
+            updated_instance.save()
+            self.update_company_interest_bdb(updated_instance)
+            return updated_instance
 
 
 class CompanyInterestSerializer(CompanyInterestCreateAndUpdateSerializer):
