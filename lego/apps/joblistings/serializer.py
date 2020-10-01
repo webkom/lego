@@ -26,6 +26,7 @@ class JoblistingSerializer(BasisModelSerializer):
             "workplaces",
             "from_year",
             "to_year",
+            "created_at",
         )
 
 
@@ -54,6 +55,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
             "to_year",
             "application_url",
             "youtube_url",
+            "created_at",
         )
 
 
