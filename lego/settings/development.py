@@ -5,7 +5,7 @@ import stripe
 from .base import INSTALLED_APPS, MIDDLEWARE
 from .rest_framework import REST_FRAMEWORK
 
-DEBUG = True
+DEBUG = False
 DEVELOPMENT = True
 
 SERVER_URL = "http://127.0.0.1:8000"

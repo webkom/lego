@@ -86,6 +86,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     youtube_url = CharField(
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
+    share_info_flag = models.BooleanField(default=False)
 
     class Meta:
         permission_handler = EventPermissionHandler()

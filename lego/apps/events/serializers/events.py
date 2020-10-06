@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.fields import BooleanField, CharField
@@ -142,6 +144,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "survey",
             "use_consent",
             "youtube_url",
+            "share_info_flag",
         )
         read_only = True
 
@@ -271,6 +274,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "registration_deadline_hours",
             "registration_close_time",
             "youtube_url",
+            "share_info_flag",
         )
 
     def validate(self, data):
@@ -284,6 +288,20 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
+        if self.instance is not None and "share_info_flag" in data:
+            pools = self.instance.pools.all()
+            reg_time = min(pool.activation_date for pool in pools)
+            if data[
+                "share_info_flag"
+            ] != self.instance.share_info_flag and reg_time < datetime.now(
+                timezone.utc
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "share_info_flag": "Cannot change this field after registration has started"
+                    }
+                )
+
         return data
 
     def create(self, validated_data):
