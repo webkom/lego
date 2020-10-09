@@ -151,6 +151,8 @@ steps:
 
   - name: Deploy
     image: plugins/ansible
+    environment:
+      user: drone
     volumes:
       - name: infrastructure
         path: /infrastructure
