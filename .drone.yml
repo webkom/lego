@@ -123,7 +123,7 @@ steps:
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
-  - name: clone_infra
+  - name: clone_infrastructure
     image: alpine/git
     volumes:
       - name: infrastructure
@@ -152,7 +152,7 @@ steps:
   - name: Deploy
     image: plugins/ansible
     environment:
-      user: drone
+      USER: drone
     volumes:
       - name: infrastructure
         path: /infrastructure
@@ -174,7 +174,7 @@ steps:
       branch:
         - prod
     depends_on:
-      - clone_infra
+      - clone_infrastructure
 
 services:
   - name: database
@@ -184,3 +184,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
   - name: cache
     image: redis
+
+---
+kind: signature
+hmac: 2e932463b93ec09dbd46f49f87d1ac82b124a03676f452d496a9384089e5ce94
