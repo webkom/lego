@@ -123,6 +123,59 @@ steps:
       build_args:
         - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
+  - name: clone_infrastructure
+    image: alpine/git
+    volumes:
+      - name: infrastructure
+        path: /infrastructure
+    environment:
+      INFRA_SSH_KEY:
+        from_secret: infra_deploy_key
+    commands:
+      # These commands configure our authentication against
+      # github so we can clone our infra repo
+      - mkdir -p /root/.ssh
+      - echo -n "$INFRA_SSH_KEY" > /root/.ssh/id_rsa
+      - chmod 600 /root/.ssh/id_rsa
+      - touch /root/.ssh/known_hosts
+      - chmod 600 /root/.ssh/known_hosts
+      - ssh-keyscan -t rsa -H github.com > /etc/ssh/ssh_known_hosts 2> /dev/null
+      - git clone git@github.com:webkom/infrastructure.git /infrastructure
+    when:
+      event:
+        - promote
+        - rollback
+      branch:
+        - prod
+
+
+  - name: Deploy
+    image: plugins/ansible
+    environment:
+      USER: drone
+    volumes:
+      - name: infrastructure
+        path: /infrastructure
+    settings:
+      playbook: /infrastructure/lego/playbooks/deploy.yml
+      tags:
+        - lego
+      # This is the same tag as the docker step above
+      extra_vars: lego_version=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+      inventory: /infrastructure/lego/${DRONE_DEPLOY_TO}
+      vault_password:
+        from_secret: ansible_vault_password
+      private_key:
+        from_secret: infra_deploy_key
+    when:
+      event:
+        - promote
+        - rollback
+      branch:
+        - prod
+    depends_on:
+      - clone_infrastructure
+
 services:
   - name: database
     image: postgres:9.5
@@ -131,3 +184,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
   - name: cache
     image: redis
+
+---
+kind: signature
+hmac: 2e932463b93ec09dbd46f49f87d1ac82b124a03676f452d496a9384089e5ce94
