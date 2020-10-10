@@ -26,4 +26,4 @@ def post_delete_callback(instance, **kwargs):
     app = instance._meta.app_label
     model = instance._meta.model_name
 
-    log.info(f"instance_delete", app=app, model=model, pk=instance.pk)
+    log.info("instance_delete", app=app, model=model, pk=instance.pk)
