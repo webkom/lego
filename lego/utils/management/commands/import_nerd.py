@@ -185,7 +185,7 @@ class Command(BaseCommand):
             if not options["yes"]:
                 choice = input("Do you wish to upload/import all files? [Y/n]").lower()
                 if choice == "n" or choice == "no" or choice == "nei":
-                    print(f"[IGNORE] Ignoring upload of files\n----------------")
+                    print("[IGNORE] Ignoring upload of files\n----------------")
                 else:
                     self.upload_files(uploads_bucket, f"{IMPORT_DIRECTORY}/files")
             else:
