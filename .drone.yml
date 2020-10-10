@@ -176,6 +176,10 @@ steps:
     depends_on:
       - clone_infrastructure
 
+volumes:
+  - name: infrastructure
+    temp: {}
+
 services:
   - name: database
     image: postgres:9.5
@@ -187,4 +191,4 @@ services:
 
 ---
 kind: signature
-hmac: 2e932463b93ec09dbd46f49f87d1ac82b124a03676f452d496a9384089e5ce94
+hmac: 4da9349a1c5ca9cff684ada84d1a4fe19c73be04e8c39f55309e1c7f87aa0916
