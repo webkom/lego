@@ -14,12 +14,14 @@ from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsL
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
     PoolAdministrateSerializer,
+    PoolAdministrateSerializerExport,
     PoolCreateAndUpdateSerializer,
     PoolReadAuthSerializer,
     PoolReadSerializer,
 )
 from lego.apps.events.serializers.registrations import (
     RegistrationReadDetailedSerializer,
+    RegistrationReadDetailedSerializerExport,
     RegistrationReadSerializer,
 )
 from lego.apps.files.fields import ImageField
@@ -227,6 +229,12 @@ class EventAdministrateSerializer(EventReadSerializer):
             "waiting_registrations",
             "use_consent",
         )
+
+
+class EventAdministrateSerializerExport(EventAdministrateSerializer):
+    pools = PoolAdministrateSerializerExport(many=True)
+    unregistered = RegistrationReadDetailedSerializerExport(many=True)
+    waiting_registrations = RegistrationReadDetailedSerializerExport(many=True)
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):

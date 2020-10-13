@@ -4,6 +4,7 @@ from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.registrations import (
     RegistrationPaymentReadSerializer,
     RegistrationReadDetailedSerializer,
+    RegistrationReadDetailedSerializerExport,
     RegistrationReadSerializer,
 )
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -53,6 +54,10 @@ class PoolReadAuthSerializer(PoolReadSerializer):
 
 class PoolAdministrateSerializer(PoolReadAuthSerializer):
     registrations = RegistrationReadDetailedSerializer(many=True)
+
+
+class PoolAdministrateSerializerExport(PoolReadAuthSerializer):
+    registrations = RegistrationReadDetailedSerializerExport(many=True)
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):

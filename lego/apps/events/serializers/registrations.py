@@ -16,6 +16,7 @@ from lego.apps.events.fields import (
 from lego.apps.events.models import Pool, Registration
 from lego.apps.users.serializers.users import (
     AdministrateUserSerializer,
+    AdministrateUserSerializerExport,
     PublicUserSerializer,
 )
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -150,6 +151,10 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "photo_consent",
         )
         read_only = True
+
+
+class RegistrationReadDetailedSerializerExport(RegistrationReadDetailedSerializer):
+    user = AdministrateUserSerializerExport()
 
 
 class StripeMetaSerializer(serializers.Serializer):
