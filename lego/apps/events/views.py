@@ -80,25 +80,25 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         user = self.request.user
         if self.action in ["list", "upcoming", "previous"]:
             queryset = Event.objects.select_related("company",).prefetch_related(
-                "pools",
-                "pools__registrations",
-                "tags",
-                "survey",
-                Prefetch(
-                    "pools",
-                    queryset=Pool.objects.filter(
-                        permission_groups__in=self.request.user.all_groups
-                    ),
-                    to_attr="possible_pools",
-                ),
-                Prefetch(
-                    "registrations",
-                    queryset=Registration.objects.filter(user=user).select_related(
-                        "user", "pool"
-                    ),
-                    to_attr="user_reg",
-                ),
+                "pools", "pools__registrations", "tags", "survey",
             )
+            if user.is_authenticated:
+                queryset = queryset.prefetch_related(
+                    Prefetch(
+                        "pools",
+                        queryset=Pool.objects.filter(
+                            permission_groups__in=self.request.user.all_groups
+                        ),
+                        to_attr="possible_pools",
+                    ),
+                    Prefetch(
+                        "registrations",
+                        queryset=Registration.objects.filter(user=user).select_related(
+                            "user", "pool"
+                        ),
+                        to_attr="user_reg",
+                    ),
+                )
         elif self.action == "retrieve":
             queryset = Event.objects.select_related(
                 "company", "responsible_group"
