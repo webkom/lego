@@ -571,7 +571,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     def is_admitted(self, user):
         if hasattr(self, "user_reg"):
-            return len(self.user_reg) > 0
+            if len(self.user_reg) == 0:
+                return False
+            return self.user_reg[0].pool is not None
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
     def get_registration(self, user):
