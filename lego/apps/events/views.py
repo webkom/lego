@@ -78,9 +78,26 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if self.action in ["list", "upcoming"]:
-            queryset = Event.objects.select_related("company").prefetch_related(
-                "pools", "pools__registrations", "tags"
+        if self.action in ["list", "upcoming", "previous"]:
+            queryset = Event.objects.select_related("company",).prefetch_related(
+                "pools",
+                "pools__registrations",
+                "tags",
+                "survey",
+                Prefetch(
+                    "pools",
+                    queryset=Pool.objects.filter(
+                        permission_groups__in=self.request.user.all_groups
+                    ),
+                    to_attr="possible_pools",
+                ),
+                Prefetch(
+                    "registrations",
+                    queryset=Registration.objects.filter(user=user).select_related(
+                        "user", "pool"
+                    ),
+                    to_attr="user_reg",
+                ),
             )
         elif self.action == "retrieve":
             queryset = Event.objects.select_related(
@@ -204,29 +221,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         permission_classes=[permissions.IsAuthenticated],
     )
     def previous(self, request):
-        queryset = (
-            self.get_queryset()
-            .filter(
-                registrations__status=constants.SUCCESS_REGISTER,
-                registrations__user=request.user,
-                start_time__lt=timezone.now(),
-            )
-            .prefetch_related(
-                Prefetch(
-                    "registrations",
-                    queryset=Registration.objects.filter(
-                        user=request.user
-                    ).select_related("user", "pool"),
-                    to_attr="user_reg",
-                ),
-                Prefetch(
-                    "pools",
-                    queryset=Pool.objects.filter(
-                        permission_groups__in=self.request.user.all_groups
-                    ),
-                    to_attr="possible_pools",
-                ),
-            )
+        queryset = self.get_queryset().filter(
+            registrations__status=constants.SUCCESS_REGISTER,
+            registrations__user=request.user,
+            start_time__lt=timezone.now(),
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -237,29 +235,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         permission_classes=[permissions.IsAuthenticated],
     )
     def upcoming(self, request):
-        queryset = (
-            self.get_queryset()
-            .filter(
-                registrations__status=constants.SUCCESS_REGISTER,
-                registrations__user=request.user,
-                start_time__gt=timezone.now(),
-            )
-            .prefetch_related(
-                Prefetch(
-                    "registrations",
-                    queryset=Registration.objects.filter(
-                        user=request.user
-                    ).select_related("user", "pool"),
-                    to_attr="user_reg",
-                ),
-                Prefetch(
-                    "pools",
-                    queryset=Pool.objects.filter(
-                        permission_groups__in=self.request.user.all_groups
-                    ),
-                    to_attr="possible_pools",
-                ),
-            )
+        queryset = self.get_queryset().filter(
+            registrations__status=constants.SUCCESS_REGISTER,
+            registrations__user=request.user,
+            start_time__gt=timezone.now(),
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
