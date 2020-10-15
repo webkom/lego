@@ -570,6 +570,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return pools[capacities.index(max(capacities))]
 
     def is_admitted(self, user):
+        if hasattr(self, "user_reg"):
+            return len(self.user_reg) > 0
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
     def get_registration(self, user):
