@@ -64,9 +64,7 @@ class FrontpageViewSet(viewsets.ViewSet):
                 "pools__registrations__user",
                 Prefetch(
                     "registrations",
-                    queryset=Registration.objects.filter(user=request.user).exclude(
-                        pool=None
-                    ),
+                    queryset=Registration.objects.filter(user=request.user),
                     to_attr="user_reg",
                 ),
                 Prefetch(
