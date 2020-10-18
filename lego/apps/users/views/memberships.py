@@ -1,5 +1,7 @@
-from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
 
+from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.users.filters import MembershipFilterSet
 from lego.apps.users.models import AbakusGroup, Membership
@@ -9,6 +11,12 @@ from lego.apps.users.serializers.memberships import MembershipSerializer
 class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = MembershipSerializer
     filter_class = MembershipFilterSet
+    ordering_fields = ["id", "role"]
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+        LegoPermissionFilter,
+    )
     ordering = "id"
 
     def get_queryset(self):
