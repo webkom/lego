@@ -1,3 +1,7 @@
+from django.utils import timezone
+
+import pytz
+
 from lego.apps.notifications.constants import (
     EVENT_ADMIN_REGISTRATION,
     EVENT_ADMIN_UNREGISTRATION,
@@ -40,12 +44,18 @@ class EventPaymentOverdueNotification(Notification):
     def generate_mail(self):
         event = self.kwargs["event"]
 
+        date = timezone.localtime(
+            value=event.payment_due_date, timezone=pytz.timezone("Europe/Oslo")
+        )
+
+        due_date = date.strftime("%d.%m.%y, kl. %H:%M")
+
         return self._delay_mail(
             to_email=self.user.email,
             context={
                 "event": event.title,
                 "name": self.user.full_name,
-                "due_date": event.payment_due_date,
+                "due_date": due_date,
                 "id": event.id,
             },
             subject=f"Du har ikke betalt påmeldingen på arrangementet {event.title}",
