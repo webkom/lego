@@ -4,11 +4,23 @@ from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, P
 
 
 class MembershipFilterSet(FilterSet):
-    group = CharFilter(field_name="abakus_group")
+
+    userFirstName = CharFilter(field_name="user__last_name", lookup_expr="icontains")
+    userLastName = CharFilter(field_name="user__first_name", lookup_expr="icontains")
+    userUsername = CharFilter(field_name="user__username", lookup_expr="icontains")
+    abakusGroupName = CharFilter(
+        field_name="abakus_group__name", lookup_expr="icontains"
+    )
 
     class Meta:
         model = Membership
-        fields = ("group",)
+        fields = [
+            "role",
+            "userFirstName",
+            "userLastName",
+            "userUsername",
+            "abakusGroupName",
+        ]
 
 
 class AbakusGroupFilterSet(FilterSet):
