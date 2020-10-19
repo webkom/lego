@@ -4,8 +4,8 @@ from rest_framework import exceptions, serializers
 from lego.apps.email.models import EmailAddress, EmailList
 from lego.apps.users.fields import (
     AbakusGroupListField,
-    PublicUserField,
     PublicUserListField,
+    PublicUserWithGroupsField,
 )
 from lego.apps.users.models import User
 
@@ -70,7 +70,7 @@ class GSuiteAddressSerializer(serializers.ModelSerializer):
 
 class UserEmailSerializer(GSuiteAddressSerializer):
 
-    user = PublicUserField(read_only=True, source="*")
+    user = PublicUserWithGroupsField(read_only=True, source="*")
     internal_email = EmailAddressField(
         queryset=EmailAddress.objects.all(), validators=[]
     )
@@ -82,7 +82,7 @@ class UserEmailSerializer(GSuiteAddressSerializer):
 
 class UserEmailCreateSerializer(serializers.Serializer):
 
-    user = PublicUserField(queryset=User.objects.all())
+    user = PublicUserWithGroupsField(queryset=User.objects.all())
     internal_email = EmailAddressField(queryset=EmailAddress.objects.all())
     internal_email_enabled = serializers.BooleanField()
 

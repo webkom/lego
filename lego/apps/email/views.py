@@ -53,7 +53,9 @@ class UserEmailViewSet(
     viewsets.GenericViewSet,
 ):
 
-    queryset = User.objects.filter(internal_email__isnull=False)
+    queryset = User.objects.filter(internal_email__isnull=False).prefetch_related(
+        "abakus_groups"
+    )
     serializer_class = UserEmailSerializer
     ordering = "id"
     filter_class = EmailUserFilterSet
