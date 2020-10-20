@@ -27,6 +27,19 @@ class AbakusGroupListField(serializers.ManyRelatedField):
         super().__init__(**kwargs)
 
 
+class PublicUserWithGroupsField(serializers.PrimaryKeyRelatedField):
+    def use_pk_only_optimization(self):
+        return False
+
+    def to_representation(self, value):
+        from lego.apps.users.serializers.users import (
+            PublicUserWithAbakusGroupsSerializer,
+        )
+
+        serializer = PublicUserWithAbakusGroupsSerializer(instance=value)
+        return serializer.data
+
+
 class PublicUserField(serializers.PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
         return False

@@ -66,6 +66,13 @@ class PublicUserSerializer(serializers.ModelSerializer):
         read_only_fields = ("username",)
 
 
+class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
+    abakus_groups = PublicAbakusGroupSerializer(many=True)
+
+    class Meta(PublicUserSerializer.Meta):
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)
+
+
 class PublicUserWithGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     past_memberships = PastMembershipSerializer(many=True)
