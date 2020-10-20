@@ -1,6 +1,5 @@
-from datetime import datetime, timezone
-
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import BooleanField, CharField
 
@@ -13,15 +12,15 @@ from lego.apps.events.constants import PRESENT
 from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
+    PoolAdministrateExportSerializer,
     PoolAdministrateSerializer,
-    PoolAdministrateSerializerExport,
     PoolCreateAndUpdateSerializer,
     PoolReadAuthSerializer,
     PoolReadSerializer,
 )
 from lego.apps.events.serializers.registrations import (
+    RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
-    RegistrationReadDetailedSerializerExport,
     RegistrationReadSerializer,
 )
 from lego.apps.files.fields import ImageField
@@ -228,13 +227,15 @@ class EventAdministrateSerializer(EventReadSerializer):
             "unregistered",
             "waiting_registrations",
             "use_consent",
+            "share_info_flag",
+            "created_by",
         )
 
 
-class EventAdministrateSerializerExport(EventAdministrateSerializer):
-    pools = PoolAdministrateSerializerExport(many=True)
-    unregistered = RegistrationReadDetailedSerializerExport(many=True)
-    waiting_registrations = RegistrationReadDetailedSerializerExport(many=True)
+class EventAdministrateExportSerializer(EventAdministrateSerializer):
+    pools = PoolAdministrateExportSerializer(many=True)
+    unregistered = RegistrationReadDetailedExportSerializer(many=True)
+    waiting_registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -296,19 +297,17 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
-        if self.instance is not None and "share_info_flag" in data:
-            pools = self.instance.pools.all()
-            reg_time = min(pool.activation_date for pool in pools)
-            if data[
-                "share_info_flag"
-            ] != self.instance.share_info_flag and reg_time < datetime.now(
-                timezone.utc
-            ):
-                raise serializers.ValidationError(
-                    {
-                        "share_info_flag": "Cannot change this field after registration has started"
-                    }
-                )
+        if (
+            self.instance is not None
+            and "share_info_flag" in data
+            and data["share_info_flag"] != self.instance.share_info_flag
+            and self.instance.registrations.exists()
+        ):
+            raise serializers.ValidationError(
+                {
+                    "share_info_flag": "Cannot change this field after registration has started"
+                }
+            )
 
         return data
 

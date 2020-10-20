@@ -95,7 +95,7 @@ class AdministrateUserSerializer(PublicUserSerializer):
         fields = PublicUserSerializer.Meta.fields + ("abakus_groups", "allergies",)
 
 
-class AdministrateUserSerializerExport(PublicUserSerializer):
+class AdministrateUserExportSerializer(PublicUserSerializer):
     """
     Used by the events app when listing user registrations, and has permission to export user data.
     """

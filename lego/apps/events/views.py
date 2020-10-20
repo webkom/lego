@@ -27,8 +27,8 @@ from lego.apps.events.exceptions import (
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (
+    EventAdministrateExportSerializer,
     EventAdministrateSerializer,
-    EventAdministrateSerializerExport,
     EventCreateAndUpdateSerializer,
     EventReadAuthUserDetailedSerializer,
     EventReadSerializer,
@@ -178,8 +178,14 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             ),
         )
         event = queryset.first()
-        if event.share_info_flag:
-            serializer = EventAdministrateSerializerExport
+        if (
+            event.share_info_flag
+            and request.user == event.created_by
+            and event.end_time
+            <= timezone.now()
+            <= event.end_time + timezone.timedelta(days=14)
+        ):
+            serializer = EventAdministrateExportSerializer
         event_data = serializer(event).data
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)

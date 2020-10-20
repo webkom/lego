@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0027_registration_payment_idempotency_key'),
+        ("events", "0027_registration_payment_idempotency_key"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='share_info_flag',
+            model_name="event",
+            name="share_info_flag",
             field=models.BooleanField(default=False),
         ),
     ]

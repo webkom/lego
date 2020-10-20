@@ -3,8 +3,8 @@ from rest_framework import serializers
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.registrations import (
     RegistrationPaymentReadSerializer,
+    RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
-    RegistrationReadDetailedSerializerExport,
     RegistrationReadSerializer,
 )
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -56,8 +56,8 @@ class PoolAdministrateSerializer(PoolReadAuthSerializer):
     registrations = RegistrationReadDetailedSerializer(many=True)
 
 
-class PoolAdministrateSerializerExport(PoolReadAuthSerializer):
-    registrations = RegistrationReadDetailedSerializerExport(many=True)
+class PoolAdministrateExportSerializer(PoolReadAuthSerializer):
+    registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):

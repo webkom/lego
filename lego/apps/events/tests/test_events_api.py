@@ -235,21 +235,21 @@ class ListEventsTestCase(BaseAPITestCase):
     def test_with_unauth(self):
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.json()["results"]), 5)
+        self.assertEqual(len(event_response.json()["results"]), 6)
 
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.json()["results"]), 5)
+        self.assertEqual(len(event_response.json()["results"]), 6)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name="Webkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
         self.assertEqual(event_response.status_code, 200)
-        self.assertEqual(len(event_response.json()["results"]), 9)
+        self.assertEqual(len(event_response.json()["results"]), 10)
 
 
 class RetrieveEventsTestCase(BaseAPITestCase):
@@ -1141,6 +1141,60 @@ class EventAdministrateTestCase(BaseAPITestCase):
             f"{_get_detail_url(self.event.id)}administrate/"
         )
         self.assertEqual(event_response.status_code, 403)
+
+
+class ExportInfoTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.abakus_user = User.objects.get(pk=1)
+        self.event = Event.objects.get(title="EXPORT_INFO_EVENT")
+        self.event.start_time = timezone.now() - timedelta(hours=7)
+        self.event.end_time = timezone.now() - timedelta(hours=3)
+        self.event.save()
+
+    def test_with_export_permission(self):
+        # Need to apply to the actual event (The one in the db)
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        event_response = self.client.get(
+            f"{_get_detail_url(self.event.id)}administrate/"
+        )
+
+        attendee_email = self.event.pools.first().registrations.first().user.email
+
+        self.assertEqual(self.event.share_info_flag, True)
+        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(
+            event_response.json()
+            .get("pools")[0]
+            .get("registrations")[0]
+            .get("user")
+            .get("email"),
+            attendee_email,
+        )
+
+    def test_without_export_permission(self):
+        user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name="Webkom").add_user(user)
+        self.client.force_authenticate(user)
+        event_response = self.client.get(
+            f"{_get_detail_url(self.event.id)}administrate/"
+        )
+
+        self.assertIsNone(
+            event_response.json()
+            .get("pools")[0]
+            .get("registrations")[0]
+            .get("user")
+            .get("email")
+        )
 
 
 class CreateAdminRegistrationTestCase(BaseAPITestCase):
