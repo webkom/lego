@@ -145,7 +145,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "survey",
             "use_consent",
             "youtube_url",
-            "share_info_flag",
+            "use_contact_tracing",
         )
         read_only = True
 
@@ -227,7 +227,7 @@ class EventAdministrateSerializer(EventReadSerializer):
             "unregistered",
             "waiting_registrations",
             "use_consent",
-            "share_info_flag",
+            "use_contact_tracing",
             "created_by",
         )
 
@@ -283,7 +283,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "registration_deadline_hours",
             "registration_close_time",
             "youtube_url",
-            "share_info_flag",
+            "use_contact_tracing",
         )
 
     def validate(self, data):
@@ -299,13 +299,13 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                 )
         if (
             self.instance is not None
-            and "share_info_flag" in data
-            and data["share_info_flag"] != self.instance.share_info_flag
+            and "use_contact_tracing" in data
+            and data["use_contact_tracing"] != self.instance.use_contact_tracing
             and self.instance.registrations.exists()
         ):
             raise serializers.ValidationError(
                 {
-                    "share_info_flag": "Cannot change this field after registration has started"
+                    "use_contact_tracing": "Cannot change this field after registration has started"
                 }
             )
 

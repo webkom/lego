@@ -56,7 +56,7 @@ class PoolAdministrateSerializer(PoolReadAuthSerializer):
     registrations = RegistrationReadDetailedSerializer(many=True)
 
 
-class PoolAdministrateExportSerializer(PoolReadAuthSerializer):
+class PoolAdministrateExportSerializer(PoolAdministrateSerializer):
     registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 

@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django_filters",
     "push_notifications",
     "health_check",
+    "phonenumber_field",
     "lego.utils",
     "lego.apps.action_handlers",
     "lego.apps.articles",

@@ -1169,7 +1169,7 @@ class ExportInfoTestCase(BaseAPITestCase):
 
         attendee_email = self.event.pools.first().registrations.first().user.email
 
-        self.assertEqual(self.event.share_info_flag, True)
+        self.assertEqual(self.event.use_contact_tracing, True)
         self.assertEqual(event_response.status_code, 200)
         self.assertEqual(
             event_response.json()

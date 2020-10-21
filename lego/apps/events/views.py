@@ -179,7 +179,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         event = queryset.first()
         if (
-            event.share_info_flag
+            event.use_contact_tracing
             and request.user == event.created_by
             and event.end_time
             <= timezone.now()

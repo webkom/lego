@@ -101,7 +101,7 @@ class AdministrateUserExportSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = AdministrateUserSerializer.Meta.fields + ("email",)
+        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")
 
 
 class SearchUserSerializer(serializers.ModelSerializer):
@@ -218,6 +218,7 @@ class MeSerializer(serializers.ModelSerializer):
             "full_name",
             "email",
             "email_address",
+            "phone_number",
             "email_lists_enabled",
             "profile_picture",
             "gender",

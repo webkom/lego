@@ -53,6 +53,10 @@ class UnansweredSurveyException(ValueError):
     pass
 
 
+class NoPhoneNumber(ValueError):
+    pass
+
+
 class NoSuchRegistration(ValueError):
     pass
 
