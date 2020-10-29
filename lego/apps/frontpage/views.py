@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
+from lego.apps.events.constants import SUCCESS_UNREGISTER
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import FrontpageEventSerializer
 from lego.apps.permissions.constants import LIST
@@ -64,9 +65,9 @@ class FrontpageViewSet(viewsets.ViewSet):
                 "pools__registrations__user",
                 Prefetch(
                     "registrations",
-                    queryset=Registration.objects.filter(
-                        user=request.user
-                    ).select_related("pool"),
+                    queryset=Registration.objects.filter(user=request.user)
+                    .exclude(status=SUCCESS_UNREGISTER)
+                    .select_related("pool"),
                     to_attr="user_reg",
                 ),
                 Prefetch(
