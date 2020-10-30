@@ -92,9 +92,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     ),
                     Prefetch(
                         "registrations",
-                        queryset=Registration.objects.filter(user=user).select_related(
-                            "user", "pool"
-                        ),
+                        queryset=Registration.objects.filter(user=user)
+                        .exclude(status=constants.SUCCESS_UNREGISTER)
+                        .select_related("user", "pool"),
                         to_attr="user_reg",
                     ),
                 )
