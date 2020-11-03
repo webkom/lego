@@ -13,6 +13,7 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed,
     EventNotReady,
+    NoPhoneNumber,
     NoSuchPool,
     NoSuchRegistration,
     RegistrationExists,
@@ -86,6 +87,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     youtube_url = CharField(
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
+    use_contact_tracing = models.BooleanField(default=False)
 
     class Meta:
         permission_handler = EventPermissionHandler()
@@ -252,6 +254,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         current_time = timezone.now()
         if self.registration_close_time < current_time:
             raise EventHasClosed()
+
+        if self.use_contact_tracing and user.phone_number is None:
+            raise NoPhoneNumber()
 
         all_pools = self.pools.all()
         possible_pools = self.get_possible_pools(

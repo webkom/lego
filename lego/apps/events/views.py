@@ -27,6 +27,7 @@ from lego.apps.events.exceptions import (
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import (
+    EventAdministrateExportSerializer,
     EventAdministrateSerializer,
     EventCreateAndUpdateSerializer,
     EventReadAuthUserDetailedSerializer,
@@ -160,11 +161,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         serializer.save(is_ready=False)
 
-    @decorators.action(
-        detail=True, methods=["GET"], serializer_class=EventAdministrateSerializer
-    )
+    @decorators.action(detail=True, methods=["GET"])
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get("pk", None)
+        serializer = EventAdministrateSerializer
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
             "pools__permission_groups",
             Prefetch(
@@ -178,7 +178,13 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             ),
         )
         event = queryset.first()
-        event_data = self.get_serializer(event).data
+        if (
+            event.use_contact_tracing
+            and request.user == event.created_by
+            and timezone.now() <= event.end_time + timezone.timedelta(days=14)
+        ):
+            serializer = EventAdministrateExportSerializer
+        event_data = serializer(event).data
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 

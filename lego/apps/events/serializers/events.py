@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import BooleanField, CharField
 
@@ -11,12 +12,14 @@ from lego.apps.events.constants import PRESENT
 from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.pools import (
+    PoolAdministrateExportSerializer,
     PoolAdministrateSerializer,
     PoolCreateAndUpdateSerializer,
     PoolReadAuthSerializer,
     PoolReadSerializer,
 )
 from lego.apps.events.serializers.registrations import (
+    RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
 )
@@ -142,6 +145,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "survey",
             "use_consent",
             "youtube_url",
+            "use_contact_tracing",
         )
         read_only = True
 
@@ -223,7 +227,15 @@ class EventAdministrateSerializer(EventReadSerializer):
             "unregistered",
             "waiting_registrations",
             "use_consent",
+            "use_contact_tracing",
+            "created_by",
         )
+
+
+class EventAdministrateExportSerializer(EventAdministrateSerializer):
+    pools = PoolAdministrateExportSerializer(many=True)
+    unregistered = RegistrationReadDetailedExportSerializer(many=True)
+    waiting_registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -271,6 +283,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "registration_deadline_hours",
             "registration_close_time",
             "youtube_url",
+            "use_contact_tracing",
         )
 
     def validate(self, data):
@@ -284,6 +297,18 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
+        if (
+            self.instance is not None
+            and "use_contact_tracing" in data
+            and data["use_contact_tracing"] != self.instance.use_contact_tracing
+            and self.instance.registrations.exists()
+        ):
+            raise serializers.ValidationError(
+                {
+                    "use_contact_tracing": "Cannot change this field after registration has started"
+                }
+            )
+
         return data
 
     def create(self, validated_data):

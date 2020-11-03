@@ -3,6 +3,7 @@ from rest_framework import serializers
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.registrations import (
     RegistrationPaymentReadSerializer,
+    RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
 )
@@ -53,6 +54,10 @@ class PoolReadAuthSerializer(PoolReadSerializer):
 
 class PoolAdministrateSerializer(PoolReadAuthSerializer):
     registrations = RegistrationReadDetailedSerializer(many=True)
+
+
+class PoolAdministrateExportSerializer(PoolAdministrateSerializer):
+    registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):

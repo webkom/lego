@@ -92,7 +92,16 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ("abakus_groups", "allergies")
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups", "allergies",)
+
+
+class AdministrateUserExportSerializer(PublicUserSerializer):
+    """
+    Used by the events app when listing user registrations, and has permission to export user data.
+    """
+
+    class Meta(PublicUserSerializer.Meta):
+        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")
 
 
 class SearchUserSerializer(serializers.ModelSerializer):
@@ -209,6 +218,7 @@ class MeSerializer(serializers.ModelSerializer):
             "full_name",
             "email",
             "email_address",
+            "phone_number",
             "email_lists_enabled",
             "profile_picture",
             "gender",

@@ -8,8 +8,8 @@
     event_status_type: NORMAL
     location: R1
     company: 1
-    start_time: '2118-09-01T13:20:30+03:00'
-    end_time: '2118-09-01T15:20:30+03:00'
+    start_time: "2118-09-01T13:20:30+03:00"
+    end_time: "2118-09-01T15:20:30+03:00"
     created_by: 2
     require_auth: False
 
@@ -23,8 +23,8 @@
     event_status_type: NORMAL
     location: F254
     company: 2
-    start_time: '2118-09-02T13:20:30+03:00'
-    end_time: '2118-09-02T15:20:30+03:00'
+    start_time: "2118-09-02T13:20:30+03:00"
+    end_time: "2118-09-02T15:20:30+03:00"
     pinned: true
     created_by: 1
     require_auth: False
@@ -39,8 +39,8 @@
     event_status_type: NORMAL
     location: F254
     company: 3
-    start_time: '2118-09-03T13:20:30+03:00'
-    end_time: '2118-09-03T15:20:30+03:00'
+    start_time: "2118-09-03T13:20:30+03:00"
+    end_time: "2118-09-03T15:20:30+03:00"
     created_by: 1
     require_auth: False
 
@@ -53,8 +53,8 @@
     event_type: 4
     event_status_type: NORMAL
     location: R1
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     created_by: 1
     require_auth: False
 
@@ -67,13 +67,13 @@
     event_type: 0
     event_status_type: NORMAL
     location: R1
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     is_priced: True
     use_stripe: True
     price_member: 10000
     price_guest: 15000
-    payment_due_date: '2011-09-01T13:20:30+03:00'
+    payment_due_date: "2011-09-01T13:20:30+03:00"
     created_by: 1
     require_auth: False
 
@@ -86,12 +86,12 @@
     event_type: 0
     event_status_type: NORMAL
     location: R1
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     created_by: 3
     require_auth: True
     can_view_groups:
-    - - Abakom
+      - - Abakom
 
 - model: events.Event
   pk: 7
@@ -100,10 +100,10 @@
     description: TestIngress7
     text: TestText7
     event_type: 0
-    event_status_type: 'TBA'
+    event_status_type: "TBA"
     location: blabla
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     created_by: 3
     require_auth: True
     can_view_groups:
@@ -116,10 +116,10 @@
     description: TestIngress8
     text: TestText8
     event_type: 0
-    event_status_type: 'OPEN'
+    event_status_type: "OPEN"
     location: R1
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     created_by: 3
     require_auth: True
     can_view_groups:
@@ -132,14 +132,29 @@
     description: TestIngress9
     text: TestText9
     event_type: 0
-    event_status_type: 'INFINITE'
+    event_status_type: "INFINITE"
     location: R1
-    start_time: '2011-09-01T13:20:30+03:00'
-    end_time: '2012-09-01T13:20:30+03:00'
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
     created_by: 3
     require_auth: True
     can_view_groups:
       - - Abakom
+
+- model: events.Event
+  pk: 10
+  fields:
+    title: EXPORT_INFO_EVENT
+    description: RonaTime
+    text: RonaParty
+    event_type: 0
+    event_status_type: NORMAL
+    location: "Scandic Lerkendal"
+    start_time: "2118-09-01T13:20:30+03:00"
+    end_time: "2118-09-01T15:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_contact_tracing: True
 
 - model: events.Pool
   pk: 1
@@ -148,7 +163,7 @@
     capacity: 2
     event: 1
     counter: 2
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
 
@@ -158,7 +173,7 @@
     name: Webkom
     capacity: 3
     event: 1
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Webkom
 
@@ -168,7 +183,7 @@
     name: Abakusmember
     capacity: 3
     event: 4
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
 
@@ -178,7 +193,7 @@
     name: Webkom
     capacity: 2
     event: 4
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Webkom
 
@@ -188,7 +203,7 @@
     name: Users
     capacity: 10
     event: 5
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Users
 
@@ -199,7 +214,7 @@
     capacity: 3
     event: 5
     counter: 3
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
 
@@ -210,7 +225,18 @@
     capacity: 0
     event: 9
     counter: 0
-    activation_date: '2011-09-01T13:20:30+03:00'
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Abakus
+
+- model: events.Pool
+  pk: 8
+  fields:
+    name: Abakusmember
+    capacity: 2
+    event: 10
+    counter: 2
+    activation_date: "2019-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
 
@@ -220,10 +246,10 @@
     user: 1
     event: 1
     pool: 1
-    registration_date: '2011-09-01T13:20:30+03:00'
-    status: 'SUCCESS_REGISTER'
-    feedback: 'LIKER IKKE PIZZA'
-    presence: 'PRESENT'
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"
+    feedback: "LIKER IKKE PIZZA"
+    presence: "PRESENT"
 
 - model: events.Registration
   pk: 2
@@ -231,9 +257,9 @@
     user: 2
     event: 1
     pool: 1
-    registration_date: '2011-09-01T13:20:30+03:00'
-    status: 'SUCCESS_REGISTER'
-    feedback: 'LIKER IKKE PIZZA'
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"
+    feedback: "LIKER IKKE PIZZA"
 
 - model: events.Registration
   pk: 3
@@ -241,9 +267,9 @@
     user: 1
     event: 5
     pool: 5
-    registration_date: '2011-09-01T13:20:30+03:00'
-    status: 'SUCCESS_REGISTER'
-    payment_status: 'succeeded'
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"
+    payment_status: "succeeded"
 
 - model: events.Registration
   pk: 4
@@ -251,9 +277,9 @@
     user: 2
     event: 5
     pool: 5
-    registration_date: '2011-09-01T13:20:30+03:00'
-    status: 'SUCCESS_REGISTER'
-    payment_status: 'succeeded'
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"
+    payment_status: "succeeded"
 
 - model: events.Registration
   pk: 5
@@ -261,5 +287,14 @@
     user: 3
     event: 5
     pool: 5
-    registration_date: '2011-09-01T13:20:30+03:00'
-    status: 'SUCCESS_REGISTER'
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"
+
+- model: events.Registration
+  pk: 6
+  fields:
+    user: 3
+    event: 10
+    pool: 8
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"

@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from phonenumber_field.modelfields import PhoneNumberField
 
 from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
@@ -305,6 +306,7 @@ class User(
         validators=[email_blacklist_validator],
         error_messages={"unique": "A user with that email already exists."},
     )
+    phone_number = PhoneNumberField(null=True, blank=True, unique=True)
     email_lists_enabled = models.BooleanField(default=True)
     gender = models.CharField(max_length=50, choices=constants.GENDERS)
     picture = FileField(related_name="user_pictures", blank=True)
