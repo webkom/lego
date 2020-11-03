@@ -181,9 +181,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if (
             event.use_contact_tracing
             and request.user == event.created_by
-            and event.end_time
-            <= timezone.now()
-            <= event.end_time + timezone.timedelta(days=14)
+            and timezone.now() <= event.end_time + timezone.timedelta(days=14)
         ):
             serializer = EventAdministrateExportSerializer
         event_data = serializer(event).data
