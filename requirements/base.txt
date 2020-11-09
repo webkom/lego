@@ -46,7 +46,7 @@ django-mptt==0.9.1
 django-filter==2.4.0
 django-environ==0.4.5
 django-redis==4.11.0
-django-ipware==2.1.0
+django-ipware==3.0.2
 django-phonenumber-field[phonenumberslite]==5.0.0
 # djanog-push-notifications cannot be installed on python3.7
 # Wait for this: https://github.com/jazzband/django-push-notifications/pull/492
