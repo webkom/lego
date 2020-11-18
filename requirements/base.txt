@@ -16,7 +16,7 @@ bs4==0.0.1
 bleach==3.1.4
 requests==2.23.0
 ldap3==2.7
-google-api-python-client==1.9.3
+google-api-python-client==1.12.6
 oauth2client
 premailer==3.6.1
 libthumbor==2.0.1
