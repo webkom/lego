@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -11,8 +11,9 @@ from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
+from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import (
     ChangeGradeSerializer,
@@ -26,7 +27,6 @@ log = get_logger()
 
 
 class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     queryset = User.objects.all()
     lookup_field = "username"
     serializer_class = PublicUserSerializer
@@ -176,3 +176,27 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        serializer_class=PhotoConsentSerializer,
+    )
+    def update_photo_consent(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.get_object()
+
+        if not request.user.has_perm(EDIT, user):
+            raise PermissionDenied(detail="Cannot update other user's consent")
+
+        PhotoConsent.objects.update_or_create(
+            user=user,
+            year=serializer.validated_data["year"],
+            semester=serializer.validated_data["semester"],
+            domain=serializer.validated_data["domain"],
+            defaults={"is_consenting": serializer.validated_data["is_consenting"]},
+        )
+
+        return Response(MeSerializer(user).data)

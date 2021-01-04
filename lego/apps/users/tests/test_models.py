@@ -1,12 +1,14 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from unittest import mock
 
 from django.test import override_settings
+from django.utils import timezone
 
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
+from lego.apps.users.constants import SOCIAL_MEDIA_DOMAIN, WEBSITE_DOMAIN
+from lego.apps.users.models import AbakusGroup, Membership, Penalty, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import BaseTestCase, fake_time
 
@@ -381,3 +383,48 @@ class PenaltyTestCase(BaseTestCase):
         self.assertEqual(
             (active.exact_expiration.month, active.exact_expiration.day), (1, 11)
         )
+
+
+class PhotoConsentTestCase(BaseTestCase):
+    fixtures = [
+        "test_users.yaml",
+    ]
+
+    def setUp(self):
+        self.current_semester = (
+            constants.AUTUMN if timezone.now().month > 7 else constants.SPRING
+        )
+        self.current_year = date.today().year
+        self.test_user = User.objects.get(pk=1)
+
+    def test_get_consents_without_prior_consents(self):
+        initial_consents = self.test_user.photo_consents.all()
+        self.assertEqual(len(initial_consents), 0)
+        user_consents = PhotoConsent.get_consents(self, self.test_user)
+        self.assertEqual(len(user_consents), 2)
+        for consent in user_consents:
+            self.assertEqual(consent.semester, self.current_semester)
+            self.assertEqual(consent.year, self.current_year)
+            self.assertEqual(consent.is_consenting, None)
+        self.assertEqual(user_consents[0].domain, SOCIAL_MEDIA_DOMAIN)
+        self.assertEqual(user_consents[1].domain, WEBSITE_DOMAIN)
+
+    def test_get_consents_with_prior_consents(self):
+        PhotoConsent.objects.create(
+            user=self.test_user,
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=WEBSITE_DOMAIN,
+            is_consenting=None,
+        )
+        PhotoConsent.objects.create(
+            user=self.test_user,
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=SOCIAL_MEDIA_DOMAIN,
+            is_consenting=None,
+        )
+        initial_consents = self.test_user.photo_consents.all()
+        self.assertEqual(len(initial_consents), 2)
+        user_consents = PhotoConsent.get_consents(self, self.test_user)
+        self.assertEqual(len(user_consents), 2)

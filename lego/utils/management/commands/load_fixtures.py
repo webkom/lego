@@ -78,6 +78,7 @@ class Command(BaseCommand):
                     "reactions/fixtures/development_reactions.yaml",
                     "joblistings/fixtures/development_joblistings.yaml",
                     "surveys/fixtures/development_surveys.yaml",
+                    "users/fixtures/development_photo_consents.yaml",
                 ]
             )
 

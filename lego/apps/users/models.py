@@ -446,6 +446,14 @@ class User(
         )
         return count or 0
 
+    def has_registered_photo_consents_for_semester(self, event_year, event_semester):
+        return not PhotoConsent.objects.filter(
+            user=self,
+            year=event_year,
+            semester=event_semester,
+            is_consenting__isnull=True,
+        ).exists()
+
     def restricted_lookup(self):
         """
         Restricted mail
@@ -526,3 +534,33 @@ class Penalty(BasisModel):
         elif winter_to < (date.month, date.day) < winter_from:
             return False
         return True
+
+
+class PhotoConsent(BasisModel):
+    user = models.ForeignKey(
+        User, related_name="photo_consents", on_delete=models.CASCADE
+    )
+    semester = models.CharField(max_length=6, choices=constants.SEMESTERS)
+    year = models.PositiveIntegerField()
+    domain = models.CharField(choices=constants.PHOTO_CONSENT_DOMAINS, max_length=100)
+    is_consenting = models.BooleanField(blank=True, null=True, default=None)
+
+    def get_consents(self, user):
+        now = timezone.now()
+        current_semester = constants.AUTUMN if now.month > 7 else constants.SPRING
+        current_year = now.year
+
+        PhotoConsent.objects.get_or_create(
+            user=user,
+            year=current_year,
+            semester=current_semester,
+            domain=constants.SOCIAL_MEDIA_DOMAIN,
+        )
+
+        PhotoConsent.objects.get_or_create(
+            user=user,
+            year=current_year,
+            semester=current_semester,
+            domain=constants.WEBSITE_DOMAIN,
+        )
+        return PhotoConsent.objects.filter(user=user)

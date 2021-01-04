@@ -184,6 +184,7 @@
     cover: test_event_cover.png
     created_by: 3
     require_auth: False
+    use_consent: True
   model: events.Event
   pk: 11
 - fields:
@@ -232,6 +233,7 @@
     cover: test_event_cover.png
     created_by: 3
     require_auth: False
+    use_consent: True
   model: events.Event
   pk: 14
 - fields:

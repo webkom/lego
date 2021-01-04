@@ -29,11 +29,11 @@ class PersonalConsentField(serializers.Field):
     def to_representation(self, value):
         request = self.context.get("request", None)
         if request and request.user.is_authenticated and request.user == value.user:
-            return value.photo_consent
+            return value.LEGACY_photo_consent
 
         user = self.context.get("user", None)
         if user and user == value.user:
-            return value.photo_consent
+            return value.LEGACY_photo_consent
         return None
 
 
@@ -165,7 +165,7 @@ class ConsentField(serializers.ChoiceField):
             and request.user.is_authenticated
             and request.user.has_perm(EDIT, Event)
         ):
-            return getattr(value, "photo_consent", None)
+            return getattr(value, "LEGACY_photo_consent", None)
 
     def to_internal_value(self, data):
         request = self.context.get("request", None)

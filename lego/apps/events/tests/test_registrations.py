@@ -925,14 +925,6 @@ class RegistrationTestCase(BaseTestCase):
         with self.assertRaises(ValueError):
             registration.set_presence("ripvalue")
 
-    def test_consent_method_raises_error_with_illegal_value(self):
-        """Test that consent raises error when given an illegal consent choice"""
-        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
-        registration = event.registrations.first()
-
-        with self.assertRaises(ValueError):
-            registration.set_photo_consent("ripvalue")
-
     def test_bump_on_pool_update(self):
         """Test that waiting registrations are bumped when a pool is expanded"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")

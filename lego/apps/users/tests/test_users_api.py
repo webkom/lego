@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from unittest import mock
 
 from django.contrib.auth import authenticate
@@ -8,7 +8,8 @@ from rest_framework import status
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.constants import AUTUMN, SOCIAL_MEDIA_DOMAIN, WEBSITE_DOMAIN
+from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import BaseAPITestCase, fake_time
 
@@ -476,3 +477,95 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         )
         self.assertEqual(len(response.json()["penalties"]), 1)
         self.assertEqual(len(response.json()["penalties"][0]), 7)
+
+
+class UpdatePhotoConsentTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_users.yaml",
+    ]
+
+    def setUp(self):
+        self.current_semester = AUTUMN
+        self.current_year = date.today().year
+        self.test_user = User.objects.get(pk=1)
+        self.other_user = User.objects.get(pk=2)
+        self.test_user_url = (
+            f"/api/v1/users/{self.test_user.username}/update_photo_consent/"
+        )
+        PhotoConsent.objects.create(
+            user=self.test_user,
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=WEBSITE_DOMAIN,
+            is_consenting=None,
+        )
+
+    def test_update_own_existing_consent(self):
+        self.client.force_authenticate(user=self.test_user)
+        response = self.client.post(
+            self.test_user_url,
+            {
+                "user": self.test_user.id,
+                "year": self.current_year,
+                "semester": self.current_semester,
+                "domain": WEBSITE_DOMAIN,
+                "isConsenting": True,
+            },
+        )
+        updated_consent = self.test_user.photo_consents.get(
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=WEBSITE_DOMAIN,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(updated_consent.is_consenting)
+        self.assertIsNotNone(updated_consent.updated_at)
+
+    def test_update_own_non_existing_consent(self):
+        self.client.force_authenticate(user=self.test_user)
+        consent_exists = self.test_user.photo_consents.filter(
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=SOCIAL_MEDIA_DOMAIN,
+        ).exists()
+        self.assertFalse(consent_exists)
+
+        response = self.client.post(
+            self.test_user_url,
+            {
+                "user": self.test_user.id,
+                "year": self.current_year,
+                "semester": self.current_semester,
+                "domain": SOCIAL_MEDIA_DOMAIN,
+                "isConsenting": False,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        created_consent = self.test_user.photo_consents.get(
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=SOCIAL_MEDIA_DOMAIN,
+        )
+        self.assertFalse(created_consent.is_consenting)
+
+    def test_update_other_user_consent(self):
+        self.client.force_authenticate(user=self.other_user)
+
+        response = self.client.post(
+            self.test_user_url,
+            {
+                "user": self.test_user.id,
+                "year": self.current_year,
+                "semester": self.current_semester,
+                "domain": WEBSITE_DOMAIN,
+                "isConsenting": False,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        consent = self.test_user.photo_consents.get(
+            year=self.current_year,
+            semester=self.current_semester,
+            domain=WEBSITE_DOMAIN,
+        )
+        self.assertIsNone(consent.is_consenting)

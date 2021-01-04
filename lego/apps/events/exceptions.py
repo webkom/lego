@@ -57,6 +57,10 @@ class NoPhoneNumber(ValueError):
     pass
 
 
+class NotRegisteredPhotoConsents(ValueError):
+    pass
+
+
 class NoSuchRegistration(ValueError):
     pass
 
