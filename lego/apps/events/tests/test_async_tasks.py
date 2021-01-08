@@ -158,8 +158,8 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
     def test_isnt_bumped_if_activation_is_far_into_the_future(self):
-        """ Users should not be bumped if the pool is activated more than
-            35 minutes in the future. """
+        """Users should not be bumped if the pool is activated more than
+        35 minutes in the future."""
         self.pool_two.activation_date = timezone.now() + timedelta(minutes=40)
         self.pool_two.save()
 
@@ -178,8 +178,8 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
     def test_isnt_bumped_if_activation_is_far_into_the_past(self):
-        """ Users should not be bumped if the pool is activated more than
-            35 minutes in the past. """
+        """Users should not be bumped if the pool is activated more than
+        35 minutes in the past."""
         users = get_dummy_users(2)
 
         for user in users:
@@ -257,8 +257,8 @@ class PenaltyExpiredTestCase(BaseTestCase):
             pool.save()
 
     def test_is_automatically_bumped_after_penalty_expiration(self):
-        """ Tests that the user that registered with penalties is bumped
-            by the task after penalty expiration"""
+        """Tests that the user that registered with penalties is bumped
+        by the task after penalty expiration"""
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
@@ -350,9 +350,9 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 1)
 
     def test_isnt_bumped_when_not_first_in_line(self):
-        """ Tests that a user isnt bumped when not first in the waiting list.
-            In practice, this should never happen, because the only reason someone
-            is in front of you in the list is if the event is full, which is tested above.
+        """Tests that a user isnt bumped when not first in the waiting list.
+        In practice, this should never happen, because the only reason someone
+        is in front of you in the list is if the event is full, which is tested above.
         """
 
         users = get_dummy_users(3)

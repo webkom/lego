@@ -235,7 +235,7 @@ class SurveyViewSetTestCase(APITestCase):
 
     def test_edit_questions(self):
         """Regular question fields should be updated properly, and then sending
-            a new list of questions should remove and add questions as needed"""
+        a new list of questions should remove and add questions as needed"""
         self.client.force_authenticate(user=self.admin_user)
 
         # First test updating the questions.
@@ -272,7 +272,7 @@ class SurveyViewSetTestCase(APITestCase):
 
     def test_edit_options(self):
         """Regular option fields should be updated properly, and then sending
-            a new list of options should remove and add questions as needed"""
+        a new list of options should remove and add questions as needed"""
         self.client.force_authenticate(user=self.admin_user)
 
         # First test updating the questions.
