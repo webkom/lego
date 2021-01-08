@@ -401,8 +401,8 @@ class User(
         return [self]
 
     def unanswered_surveys(self):
-        from lego.apps.surveys.models import Survey
         from lego.apps.events.models import Registration
+        from lego.apps.surveys.models import Survey
 
         registrations = Registration.objects.filter(user_id=self.id, presence=PRESENT)
         unanswered_surveys = (
