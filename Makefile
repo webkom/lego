@@ -15,7 +15,7 @@ ci_settings:
 	echo "from .test import *" > lego/settings/local.py
 
 fixme:
-	docker run --rm -v "${PWD}:/code" -it python:3.7-slim "bash" "-c" "cd /code && pip install -r requirements/black.txt -r requirements/isort.txt && isort -rc lego && black lego"
+	docker run --rm -v "${PWD}:/code" -it python:3.7-slim "bash" "-c" "cd /code && pip install -r requirements/black.txt -r requirements/isort.txt && isort lego && black lego"
 
 devenv:
 	docker run --net=host --rm -v "${PWD}:/code" -it python:3.7-slim "bash" "-c" "cd /code && pip install -r requirements/dev.txt && exec bash"
