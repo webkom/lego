@@ -30,4 +30,4 @@ class SearchConfig(AppConfig):
             backend.current_backend = search_backed
 
             autodiscover_modules("search_indexes")
-            from .signals import post_save_callback, post_delete_callback  # noqa
+            from .signals import post_delete_callback, post_save_callback  # noqa

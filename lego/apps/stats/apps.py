@@ -11,4 +11,4 @@ class StatsConfig(AppConfig):
         super().ready()
         setup_analytics()
 
-        from .signals import post_save_callback, post_delete_callback  # noqa
+        from .signals import post_delete_callback, post_save_callback  # noqa
