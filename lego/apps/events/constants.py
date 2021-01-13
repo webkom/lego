@@ -120,5 +120,6 @@ SOCKET_UNREGISTRATION_FAILURE = "Event.SOCKET_UNREGISTRATION.FAILURE"
 
 DAYS_BETWEEN_NOTIFY = 1
 
-# Event registration closes a certain amount of hours before the start time
+# Event registration and unregistration closes a certain amount of hours before the start time
 REGISTRATION_CLOSE_TIME = 2
+UNREGISTRATION_CLOSE_TIME = 2
