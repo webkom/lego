@@ -58,6 +58,7 @@ from lego.apps.events.tasks import (
     check_for_bump_on_pool_creation_or_expansion,
     save_and_notify_payment,
 )
+from lego.apps.events.websockets import notify_event_registration
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
@@ -368,6 +369,9 @@ class RegistrationViewSet(
             registration = event.admin_register(
                 admin_user=admin_user, **serializer.validated_data
             )
+            notify_event_registration(
+                constants.SOCKET_REGISTRATION_SUCCESS, registration
+            )
         except NoSuchPool:
             raise APINoSuchPool()
         except RegistrationExists:
@@ -393,6 +397,9 @@ class RegistrationViewSet(
                 and registration.payment_status != constants.PAYMENT_SUCCESS
             ):
                 async_cancel_payment.delay(registration.id)
+            notify_event_registration(
+                constants.SOCKET_UNREGISTRATION_SUCCESS, registration
+            )
         except NoSuchRegistration:
             raise APINoSuchRegistration()
         except RegistrationExists:
