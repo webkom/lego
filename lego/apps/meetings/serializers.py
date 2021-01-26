@@ -68,6 +68,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
         fields = (
             "id",
             "created_by",
+            "description",
             "title",
             "location",
             "start_time",
