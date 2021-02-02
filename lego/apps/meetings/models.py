@@ -22,6 +22,7 @@ class Meeting(BasisModel):
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
+    description = models.TextField(blank=True, default="")
     comments = GenericRelation(Comment)
 
     report = ContentField(blank=True, allow_images=True)
