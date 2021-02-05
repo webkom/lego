@@ -103,6 +103,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     created_by = PublicUserSerializer()
 
     registration_close_time = serializers.DateTimeField(read_only=True)
+    unregistration_close_time = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Event
@@ -123,7 +124,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "pools",
             "registration_close_time",
             "registration_deadline_hours",
+            "unregistration_close_time",
             "unregistration_deadline",
+            "unregistration_deadline_hours",
             "company",
             "responsible_group",
             "active_capacity",
@@ -248,6 +251,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
     is_abakom_only = BooleanField(required=False, default=False)
 
     registration_close_time = serializers.DateTimeField(read_only=True)
+    unregistration_close_time = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Event
@@ -276,12 +280,14 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "tags",
             "pools",
             "unregistration_deadline",
+            "unregistration_deadline_hours",
             "pinned",
             "use_consent",
             "heed_penalties",
             "is_abakom_only",
             "registration_deadline_hours",
             "registration_close_time",
+            "unregistration_close_time",
             "youtube_url",
             "use_contact_tracing",
         )

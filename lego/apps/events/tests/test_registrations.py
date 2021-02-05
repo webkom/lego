@@ -859,6 +859,7 @@ class RegistrationTestCase(BaseTestCase):
 
         current_time = timezone.now()
         event.start_time = current_time + timedelta(hours=1)
+
         event.save()
 
         user = get_dummy_users(1)[0]
@@ -868,6 +869,42 @@ class RegistrationTestCase(BaseTestCase):
         with self.assertRaises(ValueError):
             event.register(registration)
         self.assertEqual(event.number_of_registrations, 0)
+
+    def test_cant_register_after_deadline_hours(self):
+        """Test that a user cannot register after the deadline-hours before the event."""
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+
+        current_time = timezone.now()
+
+        event.start_time = current_time + timedelta(hours=1)
+        event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        with self.assertRaises(ValueError):
+            event.register(registration)
+        self.assertEqual(event.number_of_registrations, 0)
+
+    def test_cant_unregister_after_deadline_hours(self):
+        """Test that a user cannot unregister after the deadline-hours before the event."""
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+        self.assertEqual(event.number_of_registrations, 1)
+
+        current_time = timezone.now()
+
+        event.start_time = current_time + timedelta(hours=2)
+        event.save()
+
+        with self.assertRaises(ValueError):
+            event.unregister(registration)
+        self.assertEqual(event.number_of_registrations, 1)
 
     def test_presence_method_raises_error_with_illegal_value(self):
         """Test that presence raises error when given an illegal presence choice"""

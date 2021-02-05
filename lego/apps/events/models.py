@@ -58,10 +58,17 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     registration_deadline_hours = models.PositiveIntegerField(
         default=constants.REGISTRATION_CLOSE_TIME
     )
+    unregistration_deadline_hours = models.PositiveIntegerField(
+        default=constants.UNREGISTRATION_CLOSE_TIME
+    )
 
     @property
     def registration_close_time(self):
         return self.start_time - timedelta(hours=self.registration_deadline_hours)
+
+    @property
+    def unregistration_close_time(self):
+        return self.start_time - timedelta(hours=self.unregistration_deadline_hours)
 
     penalty_weight = models.PositiveIntegerField(default=1)
     penalty_weight_on_not_present = models.PositiveIntegerField(default=2)
@@ -315,7 +322,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         If the user was in a pool, and not in the waiting list,
         notifies the waiting list that there might be a bump available.
         """
-        if self.start_time < timezone.now():
+        current_time = timezone.now()
+        if self.unregistration_close_time < current_time:
+            raise EventHasClosed()
+        if self.start_time < current_time:
             raise EventHasClosed()
 
         # Locks unregister so that no user can register before bump is executed.
