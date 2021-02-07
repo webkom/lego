@@ -20,7 +20,7 @@ def find_event_groups(user):
     Find all channels groups the user belongs to as a result
     of being signed up to future events.
 
-    Since we use websockets for registrations and event description uptdates, include events
+    Since we use websockets for registrations and event description updates, include events
     that has not started and that started less than two days ago.
     """
     queryset = Event.objects.filter(start_time__gt=datetime.now() - timedelta(days=2))
