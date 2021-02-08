@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (
@@ -19,8 +19,11 @@ def find_event_groups(user):
     """
     Find all channels groups the user belongs to as a result
     of being signed up to future events.
+
+    Since we use websockets for registrations and event description updates, include events
+    that has not started and that started less than two days ago.
     """
-    queryset = Event.objects.filter(start_time__gt=datetime.now())
+    queryset = Event.objects.filter(start_time__gt=datetime.now() - timedelta(days=2))
     if not user.has_perm(LIST, queryset):
         permission_handler = get_permission_handler(queryset.model)
         queryset = permission_handler.filter_queryset(user, queryset)

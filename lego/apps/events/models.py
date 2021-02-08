@@ -55,10 +55,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
     unregistration_deadline = models.DateTimeField(null=True)
-    registration_deadline_hours = models.PositiveIntegerField(
+    registration_deadline_hours = models.IntegerField(
         default=constants.REGISTRATION_CLOSE_TIME
     )
-    unregistration_deadline_hours = models.PositiveIntegerField(
+    unregistration_deadline_hours = models.IntegerField(
         default=constants.UNREGISTRATION_CLOSE_TIME
     )
 
@@ -324,8 +324,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         """
         current_time = timezone.now()
         if self.unregistration_close_time < current_time:
-            raise EventHasClosed()
-        if self.start_time < current_time:
             raise EventHasClosed()
 
         # Locks unregister so that no user can register before bump is executed.
