@@ -22,8 +22,8 @@ class Command(BaseCommand):
     def get_all_users(self):
         return User.objects.all()
 
-    def update_last_login(self, user, time):
-        User.objects.filter(pk=user.pk).update(last_login=time)
+    def update_last_login(self, users, time):
+        users.update(last_login=time)
 
     def run(self, *args, **options):
         is_dryrun = not options["no_dryrun"]
@@ -42,5 +42,4 @@ class Command(BaseCommand):
         )
 
         if not is_dryrun:
-            for user in all_users:
-                self.update_last_login(user, new_time)
+            self.update_last_login(all_users, new_time)
