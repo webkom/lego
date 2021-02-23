@@ -8,7 +8,7 @@ from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.models import RestrictedMail
 from lego.apps.restricted.parser import EmailParser, ParserMessageType
 from lego.apps.restricted.tests.utils import read_file
-from lego.utils.test_utils import BaseTestCase
+from lego.utils.test_utils import BaseTestCase, async_test
 
 
 class MessageProcessorTestCase(BaseTestCase):
@@ -113,9 +113,10 @@ class MessageProcessorTestCase(BaseTestCase):
             first_message.keys(),
         )
 
-    def test_send_wrong_addr(self):
+    @async_test
+    async def test_send_wrong_addr(self):
         """Sending from wrong addr shouldn't crash and burn"""
         processor = MessageProcessor("test-wrong-from-addr@test.com", self.message, {})
-        processor.process_message()
+        await processor.process_message()
 
         self.assertEquals(1, len(mail.outbox))
