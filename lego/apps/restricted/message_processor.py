@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 from django.conf import settings
 from django.core.mail import get_connection
 
+from channels.db import database_sync_to_async
 from structlog import get_logger
 
 from lego.apps.action_handlers.registry import get_handler
@@ -27,6 +28,7 @@ class MessageProcessor:
         self.message_data = message_data
         self.action_handler = get_handler(RestrictedMail)
 
+    @database_sync_to_async
     def process_message(self):
         token = self.get_token(self.message)
         if not token:

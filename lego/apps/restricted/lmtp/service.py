@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from aiosmtpd.controller import Controller
 from aiosmtpd.handlers import Debugging
-from aiosmtpd.lmtp import LMTP
+from aiosmtpd.smtp import SMTP
 from structlog import get_logger
 
 from lego.apps.restricted.exceptions import (
@@ -22,7 +22,7 @@ from lego.utils.management_command import BaseCommand
 from .handler import RestrictedHandler
 from .parser import LMTPEmailParser
 
-smtpd.__version__ = "Lego LMTP"
+smtpd.__version__ = "Lego SMTP"
 log = get_logger()
 
 
@@ -39,19 +39,19 @@ class LMTPService(BaseCommand, Controller):
 
     def run(self, *args, **kwargs):
         self.start()
-        asyncio.new_event_loop().run_forever()
+        asyncio.get_event_loop().run_forever()
 
     def factory(self):
         context = None
-        if hasattr(settings, "LMTP_SSL_CERTIFICATE"):
+        if settings.LMTP_SSL_ENABLE:
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.load_cert_chain(
                 settings.LMTP_SSL_CERTIFICATE, settings.LMTP_SSL_KEY
             )
-        return LMTP(
+        return SMTP(
             self.handler,
-            require_starttls=True,
-            tls_context=context if context is not None else None,
+            require_starttls=False,
+            tls_context=context,
         )
 
     def __init__(self):
@@ -60,5 +60,5 @@ class LMTPService(BaseCommand, Controller):
         log.info("lmtp_server_start", address=hostname, port=port)
 
         handler = RestrictedHandler()
-        Controller.__init__(self, handler, hostname="localhost", port=port)
+        Controller.__init__(self, handler, hostname=hostname, port=port)
         super().__init__()

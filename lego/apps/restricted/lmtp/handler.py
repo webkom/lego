@@ -64,7 +64,7 @@ class RestrictedHandler:
                 }
 
                 message_processor = MessageProcessor(mailfrom, message, message_data)
-                message_processor.process_message()
+                await message_processor.process_message()
 
                 return OK_250
 

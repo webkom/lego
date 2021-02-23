@@ -41,8 +41,7 @@ CACHES = {"default": env.cache()}
 EMAIL_CONFIG = env.email()
 vars().update(EMAIL_CONFIG)
 
-LMTP_SSL_CERTIFICATE = env("LMTP_SSL_CERTIFICATE")
-LMTP_SSL_KEY = env("LMTP_SSL_KEY")
+LMTP_SSL_ENABLE = True
 
 # File Storage
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
