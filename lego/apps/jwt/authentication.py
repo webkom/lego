@@ -1,6 +1,5 @@
-from django.contrib.auth.models import update_last_login
-
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from django.contrib.auth.models import update_last_login
 from structlog import get_logger
 
 log = get_logger()
