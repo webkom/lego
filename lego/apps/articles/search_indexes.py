@@ -1,3 +1,5 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
+
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
@@ -15,8 +17,24 @@ class ArticleModelIndex(SearchIndex):
     def get_autocomplete(self, instance):
         return instance.title
 
+    def search(self, query):
+        return (
+            self.queryset.annotate(search=SearchVector("title", "text"))
+            .filter(search=query)
+            .order_by("-created_at")
+        )
+
     def autocomplete(self, query):
-        return self.queryset.filter(title__istartswith=query)
+        return (
+            self.queryset.annotate(search=SearchVector("title"))
+            .filter(
+                search=SearchQuery(
+                    ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                    search_type="raw",
+                )
+            )
+            .order_by("-created_at")
+        )
 
 
 register(ArticleModelIndex)

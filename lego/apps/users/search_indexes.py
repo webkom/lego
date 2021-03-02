@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
 
@@ -31,12 +32,12 @@ class UserIndex(SearchIndex):
 
     def autocomplete(self, query):
         return self.queryset.annotate(
-            fullname=Concat(F("first_name"), Value(" "), F("last_name"))
+            search=SearchVector("first_name", "last_name", "username")
         ).filter(
-            Q(first_name__istartswith=query)
-            | Q(last_name__istartswith=query)
-            | Q(username__istartswith=query)
-            | Q(fullname__istartswith=query)
+            search=SearchQuery(
+                ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                search_type="raw",
+            )
         )
 
 
@@ -54,7 +55,12 @@ class GroupIndex(SearchIndex):
         return [instance.name] + instance.name.split(" ")
 
     def autocomplete(self, query):
-        return self.queryset.filter(name__icontains=query)
+        return self.queryset.annotate(search=SearchVector("name")).filter(
+            search=SearchQuery(
+                ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                search_type="raw",
+            )
+        )
 
 
 register(GroupIndex)

@@ -33,7 +33,7 @@ class SearchIndex:
 
         if queryset is None:
             raise NotImplementedError(
-                f"You must provide a 'get_qyeryset' method or queryset attribute for the {self} "
+                f"You must provide a 'get_queryset' method or queryset attribute for the {self} "
                 f"index."
             )
         return queryset

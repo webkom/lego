@@ -1,3 +1,5 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
+
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.search import register
@@ -22,8 +24,24 @@ class EventModelIndex(SearchIndex):
     def get_autocomplete(self, instance):
         return instance.title
 
+    def search(self, query):
+        return (
+            self.queryset.annotate(search=SearchVector("title", "description", "text"))
+            .filter(search=query)
+            .order_by("-start_time")
+        )
+
     def autocomplete(self, query):
-        return self.queryset.filter(title__istartswith=query).order_by("-start_time")
+        return (
+            self.queryset.annotate(search=SearchVector("title"))
+            .filter(
+                search=SearchQuery(
+                    ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                    search_type="raw",
+                )
+            )
+            .order_by("-start_time")
+        )
 
 
 register(EventModelIndex)

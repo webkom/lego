@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import Q
 
 from lego.apps.search import register
@@ -14,12 +15,17 @@ class PageModelIndex(SearchIndex):
     result_fields = ("title", "content", "slug", "picture", "category")
     autocomplete_result_fields = ("title", "slug", "picture", "category")
 
+    def search(self, query):
+        return self.queryset.annotate(search=SearchVector("title", "content")).filter(
+            search=query
+        )
+
     def get_autocomplete(self, instance):
         return [instance.title, instance.slug_field]
 
     def autocomplete(self, query):
-        return self.queryset.filter(
-            Q(title__istartswith=query) | Q(slug__istartswith=query)
+        return self.queryset.annotate(search=SearchVector("title", "slug")).filter(
+            search=query
         )
 
 
