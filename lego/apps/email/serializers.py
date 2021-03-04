@@ -12,6 +12,23 @@ from lego.apps.users.models import User
 from .fields import EmailAddressField
 
 
+class PublicEmailListSerializer(serializers.ModelSerializer):
+
+    email = EmailAddressField(read_only=True)
+
+    class Meta:
+        model = EmailList
+        fields = (
+            "id",
+            "users",
+            "name",
+            "email",
+            "groups",
+            "group_roles",
+            "require_internal_address",
+        )
+
+
 class EmailListSerializer(serializers.ModelSerializer):
 
     email = EmailAddressField(read_only=True)

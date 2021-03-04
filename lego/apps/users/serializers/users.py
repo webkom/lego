@@ -1,5 +1,6 @@
 from rest_framework import exceptions, serializers
 
+from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
 from lego.apps.users import constants
@@ -182,6 +183,7 @@ class MeSerializer(serializers.ModelSerializer):
     is_student = serializers.SerializerMethodField()
     is_abakus_member = serializers.BooleanField()
     past_memberships = PastMembershipSerializer(many=True)
+    abakus_email_lists = PublicEmailListSerializer(many=True)
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -228,6 +230,7 @@ class MeSerializer(serializers.ModelSerializer):
             "allergies",
             "is_active",
             "is_student",
+            "abakus_email_lists",
             "abakus_groups",
             "is_abakus_member",
             "is_abakom_member",
