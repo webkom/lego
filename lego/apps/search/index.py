@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.utils.encoding import force_text
 
 from elasticsearch.helpers import BulkIndexError
@@ -106,8 +107,40 @@ class SearchIndex:
         """
         return None
 
+    def search(self, query):
+        """
+        Uses the model to do a full search. This will use the database for search
+        Only works for PostgreSQL
+        """
+        search_fields = getattr(self, "search_fields")
+        if search_fields is None:
+            raise NotImplementedError(
+                "You must provide a 'search_fields' or 'autocomplete_fields' attribute or override this method"
+            )
+
+        return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
+            lego_search=SearchQuery(query)
+        )
+
     def autocomplete(self, query):
-        raise NotImplementedError("You must provide a 'autocomplete' function")
+        """
+        Uses the model to search with autocomplete. This will use the database for search
+        Only works for PostgreSQL
+        """
+        search_fields = getattr(self, "autocomplete_fields")
+        if search_fields is None:
+            search_fields = getattr(self, "search_fields")
+        if search_fields is None:
+            raise NotImplementedError(
+                "You must provide a 'search_fields' or 'autocomplete_fields' attribute or override this method"
+            )
+
+        return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
+            lego_search=SearchQuery(
+                ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                search_type="raw",
+            )
+        )
 
     def should_update(self, instance):
         """

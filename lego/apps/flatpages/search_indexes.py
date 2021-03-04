@@ -14,19 +14,11 @@ class PageModelIndex(SearchIndex):
     serializer_class = PageDetailSerializer
     result_fields = ("title", "content", "slug", "picture", "category")
     autocomplete_result_fields = ("title", "slug", "picture", "category")
-
-    def search(self, query):
-        return self.queryset.annotate(search=SearchVector("title", "content")).filter(
-            search=query
-        )
+    search_fields = ("title", "slug", "content")
+    autocomplete_fields = ("title", "slug")
 
     def get_autocomplete(self, instance):
         return [instance.title, instance.slug_field]
-
-    def autocomplete(self, query):
-        return self.queryset.annotate(search=SearchVector("title", "slug")).filter(
-            search=query
-        )
 
 
 register(PageModelIndex)

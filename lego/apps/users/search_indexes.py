@@ -22,6 +22,8 @@ class UserIndex(SearchIndex):
     )
     autocomplete_result_fields = ("username", "full_name", "profile_picture")
 
+    autocomplete_fields = ("first_name", "last_name", "username")
+
     def get_autocomplete(self, instance):
         return [
             instance.username,
@@ -29,16 +31,6 @@ class UserIndex(SearchIndex):
             instance.last_name,
             instance.first_name,
         ]
-
-    def autocomplete(self, query):
-        return self.queryset.annotate(
-            search=SearchVector("first_name", "last_name", "username")
-        ).filter(
-            search=SearchQuery(
-                ":* & ".join(query.split() + [""]).strip("& ").strip(),
-                search_type="raw",
-            )
-        )
 
 
 register(UserIndex)
@@ -51,16 +43,10 @@ class GroupIndex(SearchIndex):
     result_fields = ("name", "type", "logo")
     autocomplete_result_fields = ("name", "type", "logo")
 
+    autocomplete_fields = ("name",)
+
     def get_autocomplete(self, instance):
         return [instance.name] + instance.name.split(" ")
-
-    def autocomplete(self, query):
-        return self.queryset.annotate(search=SearchVector("name")).filter(
-            search=SearchQuery(
-                ":* & ".join(query.split() + [""]).strip("& ").strip(),
-                search_type="raw",
-            )
-        )
 
 
 register(GroupIndex)
