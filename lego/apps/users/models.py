@@ -6,12 +6,14 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from phonenumber_field.modelfields import PhoneNumberField
 
+from lego.apps.email.models import EmailList
 from lego.apps.events.constants import PRESENT
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
@@ -236,9 +238,33 @@ class PermissionsMixin(CachedModel):
         ).select_related("abakus_group")
 
     @abakus_cached_property
+    def abakus_email_lists(self):
+        email_filter = Q(users__in=[self])
+
+        for membership, groups in self.all_groups_from_memberships.items():
+            email_filter |= Q(
+                groups__in=groups, group_roles__contains=[membership.role]
+            ) | Q(groups__in=groups, group_roles=[])
+
+        if not self.internal_email_address:
+            email_filter &= Q(require_internal_address=False)
+
+        return EmailList.objects.filter(email_filter)
+
+    @abakus_cached_property
     def permissions_per_group(self):
         permissions_per_group = []
-        for membership in self.memberships.select_related("abakus_group"):
+        for membership, groups in self.all_groups_from_memberships.items():
+            parent_permissions = []
+            for group in groups:
+                if group.id is membership.abakus_group.id:
+                    continue
+                parent_permissions += [
+                    {
+                        "abakusGroup": {"id": group.pk, "name": group.name},
+                        "permissions": group.permissions,
+                    }
+                ]
             permissions_per_group += [
                 {
                     "abakusGroup": {
@@ -246,26 +272,36 @@ class PermissionsMixin(CachedModel):
                         "name": membership.abakus_group.name,
                     },
                     "permissions": membership.abakus_group.permissions,
-                    "parentPermissions": membership.abakus_group.parent_permissions,
+                    "parentPermissions": parent_permissions,
                 }
             ]
 
         return permissions_per_group
 
     @abakus_cached_property
-    def all_groups(self):
-        groups = set()
+    def all_groups_from_memberships(self):
+        # Mapping from membership to all ancestor gropus (inclusive group from membership)
+        mapping = {}
 
         memberships = self.memberships.filter(
             abakus_group__deleted=False, deleted=False, is_active=True
         ).select_related("abakus_group")
 
         for membership in memberships:
-            if membership.abakus_group not in groups:
-                groups.add(membership.abakus_group)
-                groups.update(membership.abakus_group.get_ancestors())
+            groups = set()
+            groups.add(membership.abakus_group)
+            groups.update(membership.abakus_group.get_ancestors())
+            mapping[membership] = groups
 
-        return list(groups)
+        return mapping
+
+    @abakus_cached_property
+    def all_groups(self):
+        return [
+            item
+            for sublist in self.all_groups_from_memberships.values()
+            for item in sublist
+        ]
 
 
 class User(
