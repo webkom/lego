@@ -280,7 +280,7 @@ class PermissionsMixin(CachedModel):
 
     @abakus_cached_property
     def all_groups_from_memberships(self):
-        # Mapping from membership to all ancestor gropus (inclusive group from membership)
+        # Mapping from membership to all ancestor groups, with the root node first (inclusive group from membership)
         mapping = {}
 
         memberships = self.memberships.filter(
@@ -288,11 +288,9 @@ class PermissionsMixin(CachedModel):
         ).select_related("abakus_group")
 
         for membership in memberships:
-            groups = set()
-            groups.add(membership.abakus_group)
-            groups.update(membership.abakus_group.get_ancestors())
-            mapping[membership] = groups
-
+            mapping[membership] = list(membership.abakus_group.get_ancestors()) + [
+                membership.abakus_group,
+            ]
         return mapping
 
     @abakus_cached_property
