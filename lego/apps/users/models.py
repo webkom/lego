@@ -249,7 +249,7 @@ class PermissionsMixin(CachedModel):
         if not self.internal_email_address:
             email_filter &= Q(require_internal_address=False)
 
-        return EmailList.objects.filter(email_filter)
+        return EmailList.objects.filter(email_filter).distinct()
 
     @abakus_cached_property
     def permissions_per_group(self):
