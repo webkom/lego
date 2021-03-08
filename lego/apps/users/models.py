@@ -295,11 +295,10 @@ class PermissionsMixin(CachedModel):
 
     @abakus_cached_property
     def all_groups(self):
-        return [
-            item
-            for sublist in self.all_groups_from_memberships.values()
-            for item in sublist
-        ]
+        all_groups = set()
+        for groups in self.all_groups_from_memberships.values():
+            all_groups.update(groups)
+        return list(all_groups)
 
 
 class User(
