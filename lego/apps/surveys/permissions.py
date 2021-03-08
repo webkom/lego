@@ -59,4 +59,4 @@ class SurveyTokenPermissions(permissions.BasePermission):
         if view.action not in ["retrieve"]:
             return False
         survey = Survey.objects.get(id=view.kwargs["pk"])
-        return request.auth and survey.id is request.auth.id
+        return request.auth and survey.id == request.auth.id
