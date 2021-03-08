@@ -30,7 +30,7 @@ class SearchIndex:
         Get the queryset that should be indexed. Override this method or set a queryset attribute
         on this class.
         """
-        queryset = getattr(self, "queryset")
+        queryset = getattr(self, "queryset", None)
 
         if queryset is None:
             raise NotImplementedError(
@@ -51,7 +51,7 @@ class SearchIndex:
         Override this method or set the serializer_class attribute on the class to define the
         serializer.
         """
-        serializer_class = getattr(self, "serializer_class")
+        serializer_class = getattr(self, "serializer_class", None)
         if serializer_class is None:
             raise NotImplementedError(
                 "You must provide a 'get_serializer_class' function or a "
@@ -71,7 +71,7 @@ class SearchIndex:
         """
         Returns a list of fields attached to the search result.
         """
-        result_fields = getattr(self, "result_fields")
+        result_fields = getattr(self, "result_fields", None)
         if result_fields is None:
             raise NotImplementedError(
                 "You must provide a 'get_result_fields' function or a "
@@ -112,7 +112,9 @@ class SearchIndex:
         Uses the model to do a full search. This will use the database for search
         Only works for PostgreSQL
         """
-        search_fields = getattr(self, "search_fields")
+        search_fields = getattr(self, "search_fields", None)
+        if search_fields is None:
+            search_fields = getattr(self, "autocomplete_fields", None)
         if search_fields is None:
             raise NotImplementedError(
                 "You must provide a 'search_fields' or 'autocomplete_fields' attribute or override this method"
@@ -127,9 +129,9 @@ class SearchIndex:
         Uses the model to search with autocomplete. This will use the database for search
         Only works for PostgreSQL
         """
-        search_fields = getattr(self, "autocomplete_fields")
+        search_fields = getattr(self, "autocomplete_fields", None)
         if search_fields is None:
-            search_fields = getattr(self, "search_fields")
+            search_fields = getattr(self, "search_fields", None)
         if search_fields is None:
             raise NotImplementedError(
                 "You must provide a 'search_fields' or 'autocomplete_fields' attribute or override this method"
