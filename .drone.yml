@@ -152,7 +152,7 @@ steps:
   - name: Deploy
     image: plugins/ansible
     environment:
-      USER: drone
+      SLACK_USER: drone
     volumes:
       - name: infrastructure
         path: /infrastructure
@@ -191,4 +191,4 @@ services:
 
 ---
 kind: signature
-hmac: c528d3638f9875a877a38126f8e347c64caa1251ffa53b8d25e667563c08ec22
+hmac: b92b24d65275e4454688010c17c65b3a35fa39606f7ab4867501a3a88b55858a
