@@ -1,3 +1,5 @@
+from django.contrib.auth.models import update_last_login
+
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from structlog import get_logger
 
@@ -15,5 +17,6 @@ class Authentication(JSONWebTokenAuthentication):
         if authentication:
             user = authentication[0]
             log.bind(current_user=user.id)
+            update_last_login(None, user)
 
         return authentication
