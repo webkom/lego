@@ -14,7 +14,7 @@ class ArticleModelIndex(SearchIndex):
     result_fields = ("title", "description", "cover")
     autocomplete_result_fields = ("title",)
 
-    search_fields = ("title", "text")
+    search_fields = ("title", "text", "description")
     autocomplete_fields = ("title",)
 
     def get_autocomplete(self, instance):

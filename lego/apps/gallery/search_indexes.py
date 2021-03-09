@@ -11,6 +11,8 @@ class GalleryIndex(SearchIndex):
     serializer_class = GallerySearchSerializer
     result_fields = ("title", "location", "description")
     autocomplete_result_fields = ("title",)
+
+    search_fields = ("title", "event__title")
     autocomplete_fields = ("title",)
 
     def get_autocomplete(self, instance):

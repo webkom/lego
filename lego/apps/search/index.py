@@ -17,6 +17,7 @@ class SearchIndex:
 
     queryset = None
     serializer_class = None
+    fallback_to_autocomplete = False
 
     def get_backend(self):
         """
@@ -114,10 +115,10 @@ class SearchIndex:
         """
         search_fields = getattr(self, "search_fields", None)
         if search_fields is None:
-            search_fields = getattr(self, "autocomplete_fields", None)
-        if search_fields is None:
+            if self.fallback_to_autocomplete:
+                return self.autocomplete(query)
             raise NotImplementedError(
-                "You must provide a 'search_fields' or 'autocomplete_fields' attribute or override this method"
+                "You must provide a 'search_fields' attribute or override this method"
             )
 
         return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
@@ -131,10 +132,8 @@ class SearchIndex:
         """
         search_fields = getattr(self, "autocomplete_fields", None)
         if search_fields is None:
-            search_fields = getattr(self, "search_fields", None)
-        if search_fields is None:
             raise NotImplementedError(
-                "You must provide a 'search_fields' or 'autocomplete_fields' attribute or override this method"
+                "You must provide a autocomplete_fields' attribute or override this method"
             )
 
         return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(

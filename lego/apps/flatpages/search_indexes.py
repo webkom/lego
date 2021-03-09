@@ -14,6 +14,7 @@ class PageModelIndex(SearchIndex):
     serializer_class = PageDetailSerializer
     result_fields = ("title", "content", "slug", "picture", "category")
     autocomplete_result_fields = ("title", "slug", "picture", "category")
+
     search_fields = ("title", "slug", "content")
     autocomplete_fields = ("title", "slug")
 
