@@ -12,11 +12,14 @@ class GalleryIndex(SearchIndex):
     result_fields = ("title", "location", "description")
     autocomplete_result_fields = ("title",)
 
+    search_fields = ("title", "event__title")
+    autocomplete_fields = ("title",)
+
     def get_autocomplete(self, instance):
         return [instance.title]
 
     def autocomplete(self, query):
-        return self.queryset.filter(title__istartswith=query)
+        return super().autocomplete(query).order_by("-created_at")
 
 
 register(GalleryIndex)

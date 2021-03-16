@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.utils.encoding import force_text
 
 from elasticsearch.helpers import BulkIndexError
@@ -16,6 +17,7 @@ class SearchIndex:
 
     queryset = None
     serializer_class = None
+    fallback_to_autocomplete = False
 
     def get_backend(self):
         """
@@ -29,11 +31,11 @@ class SearchIndex:
         Get the queryset that should be indexed. Override this method or set a queryset attribute
         on this class.
         """
-        queryset = getattr(self, "queryset")
+        queryset = getattr(self, "queryset", None)
 
         if queryset is None:
             raise NotImplementedError(
-                f"You must provide a 'get_qyeryset' method or queryset attribute for the {self} "
+                f"You must provide a 'get_queryset' method or queryset attribute for the {self} "
                 f"index."
             )
         return queryset
@@ -50,7 +52,7 @@ class SearchIndex:
         Override this method or set the serializer_class attribute on the class to define the
         serializer.
         """
-        serializer_class = getattr(self, "serializer_class")
+        serializer_class = getattr(self, "serializer_class", None)
         if serializer_class is None:
             raise NotImplementedError(
                 "You must provide a 'get_serializer_class' function or a "
@@ -70,7 +72,7 @@ class SearchIndex:
         """
         Returns a list of fields attached to the search result.
         """
-        result_fields = getattr(self, "result_fields")
+        result_fields = getattr(self, "result_fields", None)
         if result_fields is None:
             raise NotImplementedError(
                 "You must provide a 'get_result_fields' function or a "
@@ -106,8 +108,40 @@ class SearchIndex:
         """
         return None
 
+    def search(self, query):
+        """
+        Uses the model to do a full search. This will use the database for search
+        Only works for PostgreSQL
+        """
+        search_fields = getattr(self, "search_fields", None)
+        if search_fields is None:
+            if self.fallback_to_autocomplete:
+                return self.autocomplete(query)
+            raise NotImplementedError(
+                "You must provide a 'search_fields' attribute or override this method"
+            )
+
+        return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
+            lego_search=SearchQuery(query)
+        )
+
     def autocomplete(self, query):
-        raise NotImplementedError("You must provide a 'autocomplete' function")
+        """
+        Uses the model to search with autocomplete. This will use the database for search
+        Only works for PostgreSQL
+        """
+        search_fields = getattr(self, "autocomplete_fields", None)
+        if search_fields is None:
+            raise NotImplementedError(
+                "You must provide a autocomplete_fields' attribute or override this method"
+            )
+
+        return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
+            lego_search=SearchQuery(
+                ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                search_type="raw",
+            )
+        )
 
     def should_update(self, instance):
         """

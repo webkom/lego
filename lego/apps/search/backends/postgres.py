@@ -18,10 +18,7 @@ class PostgresBackend(SearchBacked):
     def clear(self):
         pass  # NOOP, we use the native data source
 
-    def search(self, query, content_types=None, filters=None):
-        return self.autocomplete(query, content_types)
-
-    def autocomplete(self, query, content_types=None):
+    def _search(self, query, content_types, autocomplete=False):
         if content_types is None or len(content_types) == 0:
             content_types = registry.index_registry.keys()
 
@@ -29,7 +26,10 @@ class PostgresBackend(SearchBacked):
         results_by_content_type = {content_type: [] for content_type in content_types}
         for content_type in content_types:
             search_index = self.get_search_index(content_type)
-            db_results = search_index.autocomplete(query)[:max_results_per_type]
+            if autocomplete or not hasattr(search_index, "search"):
+                db_results = search_index.autocomplete(query)[:max_results_per_type]
+            else:
+                db_results = search_index.search(query)[:max_results_per_type]
             results_by_content_type[content_type] = list(db_results)
 
         # Interleave results so results are not only of one type if there are many matches
@@ -40,6 +40,12 @@ class PostgresBackend(SearchBacked):
                     results.append(results_by_content_type[content_type].pop(0))
 
         return results
+
+    def search(self, query, content_types=None, filters=None):
+        return self._search(query, content_types)
+
+    def autocomplete(self, query, content_types=None):
+        return self._search(query, content_types, autocomplete=True)
 
     def serialize_object(self, object, search_type):
         from lego.utils.content_types import instance_to_content_type_string

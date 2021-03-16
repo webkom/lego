@@ -12,11 +12,11 @@ class TagIndex(SearchIndex):
     result_fields = ("tag",)
     autocomplete_result_fields = ("tag",)
 
+    autocomplete_fields = ("tag",)
+    fallback_to_autocomplete = True
+
     def get_autocomplete(self, instance):
         return [instance.tag]
-
-    def autocomplete(self, query):
-        return self.queryset.filter(tag__istartswith=query)
 
 
 register(TagIndex)
