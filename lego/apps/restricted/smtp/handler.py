@@ -13,7 +13,7 @@ from lego.apps.restricted.exceptions import (
 from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.restricted.parser import ParserMessageType
 
-from .parser import LMTPEmailParser
+from .parser import SMTPEmailParser
 
 log = get_logger()
 
@@ -33,18 +33,18 @@ class RestrictedHandler:
         mailfrom = envelope.mail_from
         recipients = envelope.rcpt_tos
 
-        parser = LMTPEmailParser(data, mailfrom, ParserMessageType.BYTES)
+        parser = SMTPEmailParser(data, mailfrom, ParserMessageType.BYTES)
 
         try:
             message = parser.parse()
         except ParseEmailException:
-            log.exception("lmtp_email_parse_error")
+            log.exception("smtp_email_parse_error")
             return CRLF.join(ERR_451 for _ in recipients)
         except MessageIDNotExistException:
-            log.exception("lmtp_message_no_message_id")
+            log.exception("smtp_message_no_message_id")
             return CRLF.join(ERR_550_MID for _ in recipients)
         except DefectMessageException:
-            log.exception("lmtp_message_defect")
+            log.exception("smtp_message_defect")
             return CRLF.join(ERR_501 for _ in recipients)
 
         status = []
@@ -70,7 +70,7 @@ class RestrictedHandler:
 
             except Exception:
 
-                log.exception("lmtp_lookup_failure")
+                log.exception("smtp_lookup_failure")
                 status.append(ERR_550)
 
         return CRLF.join(status)

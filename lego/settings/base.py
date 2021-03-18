@@ -174,9 +174,9 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 }
 
 GSUITE_DELEGATED_ACCOUNT = os.environ.get("GSUITE_DELEGATED_ACCOUNT")
-LMTP_SSL_ENABLE = os.environ.get("LMTP_SSL_ENABLE") or False
-LMTP_SSL_CERTIFICATE = os.environ.get("LMTP_SSL_CERTIFICATE")
-LMTP_SSL_KEY = os.environ.get("LMTP_SSL_KEY")
+SMTP_SSL_ENABLE = os.environ.get("SMTP_SSL_ENABLE") or False
+SMTP_SSL_CERTIFICATE = os.environ.get("SMTP_SSL_CERTIFICATE")
+SMTP_SSL_KEY = os.environ.get("SMTP_SSL_KEY")
 
 if os.environ.get("GSUITE_CREDENTIALS"):
     GSUITE_CREDENTIALS = json.loads(

@@ -6,7 +6,7 @@ from lego.apps.restricted.parser import EmailParser
 log = get_logger()
 
 
-class LMTPEmailParser(EmailParser):
+class SMTPEmailParser(EmailParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.log = log
@@ -16,7 +16,7 @@ class LMTPEmailParser(EmailParser):
 
         message_id = msg.get("message-id")
         if message_id is None:
-            # Messages received with LMTP should contain a MESSAGE-ID header.
+            # Messages received with SMTP should contain a MESSAGE-ID header.
             raise MessageIDNotExistException
 
         return msg

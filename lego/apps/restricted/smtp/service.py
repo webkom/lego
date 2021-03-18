@@ -20,22 +20,22 @@ from lego.apps.restricted.parser import ParserMessageType
 from lego.utils.management_command import BaseCommand
 
 from .handler import RestrictedHandler
-from .parser import LMTPEmailParser
+from .parser import SMTPEmailParser
 
 smtpd.__version__ = "Lego SMTP"
 log = get_logger()
 
 
-class LMTPService(BaseCommand, Controller):
+class SMTPService(BaseCommand, Controller):
     """
-    This class provides a interface for transporting mail into LEGO using LMTP.
+    This class provides a interface for transporting mail into LEGO using SMTP.
     Command: manage.py restricted_email
     Settings:
-        LMTP_HOST = 'localhost'
-        LMTP_PORT = 8024
+        SMTP_HOST = 'localhost'
+        SMTP_PORT = 8024
     """
 
-    help = "Start a lmtp server for incoming restricted messages"
+    help = "Start a smtp server for incoming restricted messages"
 
     def run(self, *args, **kwargs):
         self.start()
@@ -43,10 +43,10 @@ class LMTPService(BaseCommand, Controller):
 
     def factory(self):
         context = None
-        if settings.LMTP_SSL_ENABLE:
+        if settings.SMTP_SSL_ENABLE:
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.load_cert_chain(
-                settings.LMTP_SSL_CERTIFICATE, settings.LMTP_SSL_KEY
+                settings.SMTP_SSL_CERTIFICATE, settings.SMTP_SSL_KEY
             )
         return SMTP(
             self.handler,
@@ -55,9 +55,9 @@ class LMTPService(BaseCommand, Controller):
         )
 
     def __init__(self):
-        hostname = settings.LMTP_HOST
-        port = int(settings.LMTP_PORT)
-        log.info("lmtp_server_start", address=hostname, port=port)
+        hostname = settings.SMTP_HOST
+        port = int(settings.SMTP_PORT)
+        log.info("smtp_server_start", address=hostname, port=port)
 
         handler = RestrictedHandler()
         Controller.__init__(self, handler, hostname=hostname, port=port)

@@ -19,7 +19,7 @@ log = get_logger()
 
 class MessageProcessor:
     """
-    Pipeline for message processing after initial parsing is done by the LMTP server.
+    Pipeline for message processing after initial parsing is done by the SMTP server.
     """
 
     def __init__(self, sender, message, message_data):
