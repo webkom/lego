@@ -45,8 +45,8 @@ LDAP_GROUPS = [
     "xcom-komtek",
 ]
 
-LMTP_HOST = "0.0.0.0"
-LMTP_PORT = 8024
+SMTP_HOST = "0.0.0.0"
+SMTP_PORT = 8025
 
 RESTRICTED_ADDRESS = "restricted"
 RESTRICTED_DOMAIN = "abakus.no"

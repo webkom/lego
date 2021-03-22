@@ -1,3 +1,3 @@
-from lego.apps.restricted.lmtp.service import LMTPService
+from lego.apps.restricted.smtp.service import SMTPService
 
-Command = LMTPService
+Command = SMTPService
