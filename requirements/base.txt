@@ -1,4 +1,4 @@
-django==2.2.13
+django==2.2.19
 ipython==7.18.1
 
 
@@ -58,6 +58,6 @@ icalendar==4.0.7
 
 # Docs
 Pygments==2.6.1
-Markdown==3.2.2
+Markdown==3.3.4
 coreapi==2.3.3
 aiosmtpd==1.3.0
