@@ -151,6 +151,9 @@ class MessageProcessor:
             )
         else:
             footer.append("Opprinnelig avsender har valgt å skjule sin adresse.")
+        footer.append(
+            f"Meld deg av her: {settings.FRONTEND_URL}/users/me/settings/notifications"
+        )
 
         footer = "\n".join(footer)
         charset = message.get_content_charset() or "us-ascii"
