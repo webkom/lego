@@ -3,6 +3,11 @@ kind: pipeline
 type: docker
 name: default
 
+trigger:
+  event:
+    exclude:
+      - pull_request
+
 steps:
   - name: setup
     image: abakus/lego-testbase:python3.7
@@ -191,4 +196,4 @@ services:
 
 ---
 kind: signature
-hmac: b92b24d65275e4454688010c17c65b3a35fa39606f7ab4867501a3a88b55858a
+hmac: 2f3fde00d2d5cae00024ebaaea18aa402c81b62f6c21b5d9a369d242d14d9ee9
