@@ -104,7 +104,7 @@ steps:
     image: plugins/docker
     when:
       branch:
-        - prod
+        - build
       status: success
       event: push
     depends_on:
@@ -123,10 +123,10 @@ steps:
       password:
         from_secret: docker_password
       tags:
-        - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+        - version-${DRONE_COMMIT_SHA:0:7}
         - latest
       build_args:
-        - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+        - RELEASE=version-${DRONE_COMMIT_SHA:0:7}
 
   - name: clone_infrastructure
     image: alpine/git
@@ -151,8 +151,7 @@ steps:
         - promote
         - rollback
       branch:
-        - prod
-
+        - build
 
   - name: Deploy
     image: plugins/ansible
@@ -166,7 +165,7 @@ steps:
       tags:
         - lego
       limit: ${DRONE_DEPLOY_TO}
-      extra_vars: lego_version=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+      extra_vars: lego_version=version-${DRONE_COMMIT_SHA:0:7}
       inventory: /infrastructure/inventory
       vault_password:
         from_secret: ansible_vault_password
@@ -177,7 +176,7 @@ steps:
         - promote
         - rollback
       branch:
-        - prod
+        - build
     depends_on:
       - clone_infrastructure
 
@@ -196,4 +195,4 @@ services:
 
 ---
 kind: signature
-hmac: 2f3fde00d2d5cae00024ebaaea18aa402c81b62f6c21b5d9a369d242d14d9ee9
+hmac: 8ecad75c7ab0173ccfa5d05641dac44d9fe043690cc9ac2c0872575e8d2aefff
