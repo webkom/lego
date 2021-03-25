@@ -2,7 +2,7 @@ from smtplib import SMTPException
 
 import celery
 from push_notifications import NotificationError
-from structlog import get_logger
+from structlog import get_context, get_logger
 
 from lego import celery_app
 from lego.apps.users.models import User
@@ -26,7 +26,7 @@ class AbakusTask(celery.Task):
 
     def apply_async(self, args=None, kwargs=None, *arguments, **keyword_arguments):
         logger = log.bind()
-        logger_context = dict(logger._context._dict)
+        logger_context = dict(get_context(logger)._dict)
         kwargs["logger_context"] = logger_context
 
         async_result = super().apply_async(
