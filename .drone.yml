@@ -115,6 +115,9 @@ steps:
       - black
       - docs
       - coverage
+    environment:
+      SENTRY_AUTH_TOKEN:
+        from_secret: sentry_auth_token
     settings:
       registry: https://registry.webkom.dev
       repo: registry.webkom.dev/webkom/lego
@@ -127,6 +130,10 @@ steps:
         - latest
       build_args:
         - RELEASE=version-${DRONE_COMMIT_SHA:0:7}
+        - SENTRY_ORG=abakus
+        - SENTRY_PROJECT=lego
+      build_args_from_env:
+        - SENTRY_AUTH_TOKEN
 
   - name: clone_infrastructure
     image: alpine/git
@@ -195,4 +202,4 @@ services:
 
 ---
 kind: signature
-hmac: 8ecad75c7ab0173ccfa5d05641dac44d9fe043690cc9ac2c0872575e8d2aefff
+hmac: c9e89906376a251272fa64871ac01a847eebbfe8fa95e9b8a106a6b60b5565af

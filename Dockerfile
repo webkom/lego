@@ -1,3 +1,20 @@
+FROM getsentry/sentry-cli:1.63 as sentry
+
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
+ARG RELEASE
+
+ENV SENTRY_AUTH_TOKEN ${SENTRY_AUTH_TOKEN}
+ENV SENTRY_ORG ${SENTRY_ORG}
+ENV SENTRY_PROJECT ${SENTRY_PROJECT}
+ENV RELEASE ${RELEASE}
+
+RUN sentry-cli releases new ${RELEASE}
+RUN sentry-cli releases finalize ${RELEASE}
+RUN sentry-cli releases deploys ${RELEASE} new -e "staging"
+RUN sentry-cli releases deploys ${RELEASE} new -e "production"
+
 FROM python:3.7
 MAINTAINER Abakus Webkom <webkom@abakus.no>
 
