@@ -74,6 +74,7 @@ class EmailList(models.Model):
             unique=False, validators=[email_blacklist_validator], default=""
         ),
         default=list,
+        blank=True,
     )
 
     @property

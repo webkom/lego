@@ -20,4 +20,5 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "lego.utils.exceptions.exception_handler",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "TEST_REQUEST_RENDERER_CLASSES": ["lego.utils.renderers.JSONRenderer"],
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }

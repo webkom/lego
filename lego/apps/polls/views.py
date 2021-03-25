@@ -25,7 +25,9 @@ class PollViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return DetailedPollSerializer
         return PollSerializer
 
-    @decorators.detail_route(methods=["POST"], permission_classes=[IsAuthenticated])
+    @decorators.action(
+        detail=True, methods=["POST"], permission_classes=[IsAuthenticated]
+    )
     def vote(self, request, *args, **kwargs):
         poll = self.get_object()
         poll.vote(request.user, request.data["option_id"])
