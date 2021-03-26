@@ -59,7 +59,7 @@ class EmailList(models.Model):
     users = models.ManyToManyField("users.User", related_name="email_lists", blank=True)
 
     group_roles = ArrayField(
-        models.CharField(max_length=64, choices=ROLES), default=list
+        models.CharField(max_length=64, choices=ROLES), default=list, blank=True
     )
     groups = models.ManyToManyField(
         "users.AbakusGroup", related_name="email_lists", blank=True
