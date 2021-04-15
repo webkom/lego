@@ -100,6 +100,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         models.CharField(validators=[KeywordPermissionValidator()], max_length=50),
         verbose_name="permissions",
         default=list,
+        blank=True,
     )
 
     objects = AbakusGroupManagerWithoutText()

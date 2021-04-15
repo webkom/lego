@@ -31,7 +31,7 @@ HEALTH_CHECK_REMOTE_IPS = ["10.", "127.0.0."]
 
 LDAP_GROUPS = [
     "Ababand",
-    "Fondstyret",
+    "Fondsstyret",
     "Abakus-leder",
     "Hovedstyret",
     "Komiteledere",
