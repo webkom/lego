@@ -17,6 +17,11 @@ class EventPermissionHandler(PermissionHandler):
     perms_without_object = [CREATE, "administrate"]
 
     def event_type_keyword_permissions(self, event_type, perm):
+        """
+        Get the keyword permission string required for a permission for a specific event type
+
+        :return: The keyword permission the user needs
+        """
         from lego.apps.events.models import Event
 
         return self.keyword_permission(Event, perm) + "{event_type}/".format(
@@ -24,6 +29,12 @@ class EventPermissionHandler(PermissionHandler):
         )
 
     def has_event_type_level_permission(self, user, request, perm):
+        """
+        Check if a user has the required event_type
+        permissions for a certain action.
+
+        Return `True` if the user has permission to perform the request
+        """
         if request is None:
             return True
         event_type = request.data.get("event_type")

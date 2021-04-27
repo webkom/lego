@@ -62,6 +62,30 @@ can join that pool is popped. This registration has it's ``waiting_list``, ``wai
 or the first pool that the user can join.
 
 
+Permissions
+-----------
+
+Events mostly uses the default permissions in LEGO, but has some custom permission handlers.
+
+Permissions based on event type
+*******************************
+For events we want to limit the different types of events a user can create or edit. So for
+events, one can add append the `event type` on the ``create`` and ``edit`` keyword permissions.
+F.ex: ``/sudo/admin/events/create/social/`` gives the user only access to create events with
+`event_type = social`. The same goes for ``/sudo/admin/events/edit/social/``.
+
+The custom permissions uses a mixture of a custom permission class for the viewswet:
+
+.. autoclass:: lego.apps.events.permissions.EventTypePermission
+   :members:
+   :show-inheritance:
+
+As well as a custom permission handler:
+
+.. autoclass:: lego.apps.events.permissions.EventPermissionHandler
+   :members:
+   :show-inheritance:
+
 Models
 ------
 .. automodule:: lego.apps.events.models
