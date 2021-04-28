@@ -72,7 +72,10 @@ Permissions based on event type
 For events we want to limit the different types of events a user can create or edit. So for
 events, one can add append the `event type` on the ``create`` and ``edit`` keyword permissions.
 F.ex: ``/sudo/admin/events/create/social/`` gives the user only access to create events with
-`event_type = social`. The same goes for ``/sudo/admin/events/edit/social/``.
+`event_type = social`.
+
+If a user has the ``/sudo/admin/events/edit/social/``, they have access to change an event object's type `to` ``social``.
+This only goes for objects they have object level edit permission on as per the base permission.
 
 The custom permissions uses a mixture of a custom permission class for the viewswet:
 

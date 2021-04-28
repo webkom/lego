@@ -85,8 +85,16 @@ class EventTypePermission(LegoPermissions):
     def has_permission(self, request, view):
         from lego.apps.events.models import Event
 
+        handler = get_permission_handler(Event)
         perm = action_to_permission(view.action)
-        if perm in [CREATE, EDIT]:
-            handler = get_permission_handler(Event)
+
+        # Only check keyword permissions for CREATE
+        if perm is CREATE:
             return handler.has_event_type_level_permission(request.user, request, perm)
+        # The user needs to have permission to edit the event_type AND needs to pass the
+        # main permission check
+        if perm is EDIT:
+            if not handler.has_event_type_level_permission(request.user, request, perm):
+                return False
+
         return super().has_permission(request, view)
