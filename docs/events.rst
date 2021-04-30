@@ -70,12 +70,12 @@ Events mostly uses the default permissions in LEGO, but has some custom permissi
 Permissions based on event type
 *******************************
 For events we want to limit the different types of events a user can create or edit. So for
-events, one can add append the `event type` on the ``create`` and ``edit`` keyword permissions.
+events, one can add append the `event type` on the ``create`` keyword permissions.
 F.ex: ``/sudo/admin/events/create/social/`` gives the user only access to create events with
-`event_type = social`.
+`event_type = social`. The same keyword permission is also used for `EDIT` actions. This means that,
+if a user has permission to edit an event, they can only change the ``event_type`` to the ones
+specified in their ``/sudo/admin/events/create/<event_type>/`` permissions.
 
-If a user has the ``/sudo/admin/events/edit/social/``, they have access to change an event object's type `to` ``social``.
-This only goes for objects they have object level edit permission on as per the base permission.
 
 The custom permissions uses a mixture of a custom permission class for the viewswet:
 
@@ -84,6 +84,11 @@ The custom permissions uses a mixture of a custom permission class for the views
    :show-inheritance:
 
 As well as a custom permission handler:
+
+The methods in the custom permission handler that check permisisons based on ``event_type`` does
+`not` check for object permissions. So any use of
+:meth:`lego.apps.events.permissions.EventPermissionHandler.has_event_type_level_permission` must not
+be used by itself to check permissions on an existing event object.
 
 .. autoclass:: lego.apps.events.permissions.EventPermissionHandler
    :members:

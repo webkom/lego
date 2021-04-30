@@ -33,18 +33,27 @@ class EventPermissionHandler(PermissionHandler):
         Check if a user has the required event_type
         permissions for a certain action.
 
-        Return `True` if the user has permission to perform the request
+        **WARNING**: This method ONLY enforces keyword permissions for event types. It does not
+        check object permissions for the event and shoud not be used on it's own to check
+        permissions on an object.
+
+        Return `True` if the user has permission to perform the request with the specified
+        event_type
         """
+
         if request is None:
-            return True
+            return False
+
         event_type = request.data.get("event_type")
 
         # The request might be a patch without the event_type. This should be allowed
-        if event_type is None:
+        if perm is EDIT and event_type is None:
             return True
 
+        # This only makes sense to use for EDIT and CREATE. And to simplify the permissions, we only
+        # check the CREATE permission for both.
         required_keyword_permissions = self.event_type_keyword_permissions(
-            event_type, perm
+            event_type, CREATE
         )
         return user.has_perm(required_keyword_permissions)
 
