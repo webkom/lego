@@ -76,6 +76,23 @@
   pk: 5
   fields:
     deleted: false
+    name: EventTypeLimitTest
+    description: ''
+    contact_email: ''
+    parent: null
+    logo: null
+    type: annen
+    text: ''
+    permissions: '["/sudo/admin/events/list/", "/sudo/admin/events/view/", "/sudo/admin/events/create/kid_event/"]'
+    show_badge: true
+    lft: 1
+    rght: 2
+    tree_id: 5
+    level: 0
+- model: users.abakusgroup
+  pk: 6
+  fields:
+    deleted: false
     name: CommentTest
     description: ''
     contact_email: ''
@@ -88,10 +105,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 5
+    tree_id: 6
     level: 0
 - model: users.abakusgroup
-  pk: 6
+  pk: 7
   fields:
     deleted: false
     name: APIApplicationTest
@@ -105,10 +122,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 6
+    tree_id: 7
     level: 0
 - model: users.abakusgroup
-  pk: 7
+  pk: 8
   fields:
     deleted: false
     name: QuoteAdminTest
@@ -124,10 +141,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 7
+    tree_id: 8
     level: 0
 - model: users.abakusgroup
-  pk: 8
+  pk: 9
   fields:
     deleted: false
     name: PodcastAdminTest
@@ -141,10 +158,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 8
+    tree_id: 9
     level: 0
 - model: users.abakusgroup
-  pk: 9
+  pk: 10
   fields:
     deleted: false
     name: PollAdminTest
@@ -158,10 +175,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 9
+    tree_id: 10
     level: 0
 - model: users.abakusgroup
-  pk: 10
+  pk: 11
   fields:
     deleted: false
     name: ReactionTest
@@ -175,10 +192,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 10
+    tree_id: 11
     level: 0
 - model: users.abakusgroup
-  pk: 11
+  pk: 12
   fields:
     deleted: false
     name: ReactionAdminTest
@@ -192,10 +209,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 11
+    tree_id: 12
     level: 0
 - model: users.abakusgroup
-  pk: 12
+  pk: 13
   fields:
     deleted: false
     name: InterestGroupAdminTest
@@ -210,10 +227,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 12
+    tree_id: 13
     level: 0
 - model: users.abakusgroup
-  pk: 15
+  pk: 16
   fields:
     deleted: false
     name: GalleryAdminTest
@@ -227,10 +244,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 13
+    tree_id: 14
     level: 0
 - model: users.abakusgroup
-  pk: 16
+  pk: 17
   fields:
     deleted: false
     name: GalleryTest
@@ -244,10 +261,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 14
+    tree_id: 15
     level: 0
 - model: users.abakusgroup
-  pk: 17
+  pk: 18
   fields:
     deleted: false
     name: EmailAdminTest
@@ -261,10 +278,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 15
+    tree_id: 16
     level: 0
 - model: users.abakusgroup
-  pk: 18
+  pk: 19
   fields:
     deleted: false
     name: Users
@@ -278,10 +295,10 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 16
+    tree_id: 17
     level: 0
 - model: users.abakusgroup
-  pk: 19
+  pk: 20
   fields:
     deleted: false
     name: Abakus
@@ -296,16 +313,16 @@
     show_badge: true
     lft: 1
     rght: 20
-    tree_id: 17
+    tree_id: 18
     level: 0
 - model: users.abakusgroup
-  pk: 20
+  pk: 21
   fields:
     deleted: false
     name: Abakom
     description: Medlemmer av Abakom
     contact_email: ''
-    parent: 19
+    parent: 20
     logo: null
     type: annen
     text: ''
@@ -314,16 +331,16 @@
     show_badge: true
     lft: 2
     rght: 9
-    tree_id: 17
+    tree_id: 18
     level: 1
 - model: users.abakusgroup
-  pk: 21
+  pk: 22
   fields:
     deleted: false
     name: Bedkom
     description: ''
     contact_email: ''
-    parent: 20
+    parent: 21
     logo: null
     type: komite
     text: ''
@@ -331,16 +348,16 @@
     show_badge: true
     lft: 3
     rght: 4
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 22
+  pk: 23
   fields:
     deleted: false
     name: Fagkom
     description: ''
     contact_email: ''
-    parent: 20
+    parent: 21
     logo: null
     type: komite
     text: ''
@@ -348,16 +365,16 @@
     show_badge: true
     lft: 5
     rght: 6
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 23
+  pk: 24
   fields:
     deleted: false
     name: Webkom
     description: ''
     contact_email: ''
-    parent: 20
+    parent: 21
     logo: null
     type: komite
     text: ''
@@ -365,16 +382,16 @@
     show_badge: true
     lft: 7
     rght: 8
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 13
+  pk: 14
   fields:
     deleted: false
     name: Interessegrupper
     description: ''
     contact_email: ''
-    parent: 19
+    parent: 20
     logo: null
     type: annen
     text: ''
@@ -382,16 +399,16 @@
     show_badge: true
     lft: 10
     rght: 19
-    tree_id: 17
+    tree_id: 18
     level: 1
 - model: users.abakusgroup
-  pk: 14
+  pk: 15
   fields:
     deleted: false
     name: TestInterestGroup
     description: ''
     contact_email: ''
-    parent: 13
+    parent: 14
     logo: null
     type: annen
     text: ''
@@ -399,16 +416,16 @@
     show_badge: true
     lft: 11
     rght: 12
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 24
+  pk: 25
   fields:
     deleted: false
     name: AbaBrygg
     description: Interessegruppe for AbaBrygg
     contact_email: ''
-    parent: 13
+    parent: 14
     logo: null
     type: interesse
     text: "Hender det seg at du tar en pils? Er lommeboken ofte tom, kanskje p\xE5
@@ -422,16 +439,16 @@
     show_badge: true
     lft: 13
     rght: 14
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 25
+  pk: 26
   fields:
     deleted: false
     name: abaGolf
     description: Interessegruppe for abaGolf
     contact_email: ''
-    parent: 13
+    parent: 14
     logo: null
     type: interesse
     text: "Hei, er du en person som liker \xE5 klaske baller p\xE5 gr\xF8nne baner?Da
@@ -444,16 +461,16 @@
     show_badge: true
     lft: 15
     rght: 16
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 26
+  pk: 27
   fields:
     deleted: false
     name: Turgruppa
     description: Interessegruppe for Turgruppa
     contact_email: ''
-    parent: 13
+    parent: 14
     logo: null
     type: interesse
     text: "Abakus sin turgruppe er for alle som elsker, liker eller har sett norsk
@@ -467,10 +484,10 @@
     show_badge: true
     lft: 17
     rght: 18
-    tree_id: 17
+    tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 27
+  pk: 28
   fields:
     deleted: false
     name: Students
@@ -484,5 +501,5 @@
     show_badge: true
     lft: 1
     rght: 2
-    tree_id: 18
+    tree_id: 19
     level: 0

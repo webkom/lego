@@ -3,6 +3,7 @@ from rest_framework.permissions import BasePermission
 from structlog import get_logger
 
 from lego.apps.permissions.actions import action_to_permission
+from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import PermissionHandler
@@ -26,6 +27,10 @@ class EventPermissionHandler(PermissionHandler):
         if request is None:
             return True
         event_type = request.data.get("event_type")
+
+        # The request might be a patch without the event_type. This should be allowed
+        if event_type is None:
+            return True
 
         required_keyword_permissions = self.event_type_keyword_permissions(
             event_type, perm
@@ -65,7 +70,7 @@ class RegistrationPermissionHandler(PermissionHandler):
         )
 
 
-class EventTypePermission(BasePermission):
+class EventTypePermission(LegoPermissions):
     def has_permission(self, request, view):
         from lego.apps.events.models import Event
 

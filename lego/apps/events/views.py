@@ -78,7 +78,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering_fields = ("start_time", "end_time", "title")
     ordering = "start_time"
 
-    permission_classes = (EventTypePermission,)
+    permission_classes = [EventTypePermission]
 
     def get_queryset(self):
         user = self.request.user
