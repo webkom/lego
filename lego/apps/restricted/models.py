@@ -38,7 +38,7 @@ class RestrictedMail(BasisModel):
     groups = models.ManyToManyField("users.AbakusGroup", blank=True)
     events = models.ManyToManyField("events.Event", blank=True)
     meetings = models.ManyToManyField("meetings.Meeting", blank=True)
-    raw_addresses = ArrayField(models.EmailField(), null=True)
+    raw_addresses = ArrayField(models.EmailField(), null=True, blank=True)
 
     @classmethod
     def get_restricted_mail(cls, from_address, token):
