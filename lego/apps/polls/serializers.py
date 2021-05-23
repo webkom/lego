@@ -14,6 +14,12 @@ class OptionSerializer(BasisModelSerializer):
         fields = ("id", "name", "votes")
 
 
+class HiddenResultsOptionSerializer(BasisModelSerializer):
+    class Meta:
+        model = Option
+        fields = ("id", "name")
+
+
 class OptionUpdateSerializer(OptionSerializer):
 
     id = IntegerField(read_only=False)
@@ -24,7 +30,7 @@ class PollSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
-    options = OptionSerializer(many=True)
+    options = HiddenResultsOptionSerializer(many=True)
     total_votes = IntegerField(read_only=True)
 
     has_answered = serializers.SerializerMethodField()
@@ -32,13 +38,6 @@ class PollSerializer(BasisModelSerializer):
     def get_has_answered(self, obj):
         user = self.context["request"].user
         return obj.get_has_answered(user)
-
-    def to_representation(self, instance):
-        base_representation = super().to_representation(instance)
-        if base_representation["results_hidden"]:
-            for option in base_representation["options"]:
-                option.pop("votes")
-        return base_representation
 
     class Meta:
         model = Poll
@@ -69,13 +68,6 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
 
     has_answered = serializers.SerializerMethodField()
 
-    def to_representation(self, instance):
-        base_representation = super().to_representation(instance)
-        if base_representation["results_hidden"]:
-            for option in base_representation["options"]:
-                option.pop("votes")
-        return base_representation
-
     def get_has_answered(self, obj):
         user = self.context["request"].user
         return obj.get_has_answered(user)
@@ -99,6 +91,10 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
         )
 
 
+class HiddenResultsDetailedPollSerializer(DetailedPollSerializer):
+    options = HiddenResultsOptionSerializer(many=True)
+
+
 class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
 
     options = OptionSerializer(many=True)
@@ -117,13 +113,6 @@ class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
             "pinned",
             "valid_until",
         )
-
-    def to_representation(self, instance):
-        base_representation = super().to_representation(instance)
-        if base_representation["results_hidden"]:
-            for option in base_representation["options"]:
-                option.pop("votes")
-        return base_representation
 
     @transaction.atomic
     def create(self, validated_data):
@@ -151,13 +140,6 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "tags",
             "pinned",
         )
-
-    def to_representation(self, instance):
-        base_representation = super().to_representation(instance)
-        if base_representation["results_hidden"]:
-            for option in base_representation["options"]:
-                option.pop("votes")
-        return base_representation
 
     @transaction.atomic
     def update(self, instance, validated_data):
