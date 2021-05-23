@@ -33,6 +33,13 @@ class PollSerializer(BasisModelSerializer):
         user = self.context["request"].user
         return obj.get_has_answered(user)
 
+    def to_representation(self, instance):
+        base_representation = super().to_representation(instance)
+        if base_representation["results_hidden"]:
+            for option in base_representation["options"]:
+                option.pop("votes")
+        return base_representation
+
     class Meta:
         model = Poll
         fields = (
@@ -42,6 +49,7 @@ class PollSerializer(BasisModelSerializer):
             "title",
             "description",
             "options",
+            "results_hidden",
             "total_votes",
             "tags",
             "comments",
@@ -60,6 +68,13 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
     total_votes = IntegerField(read_only=True)
 
     has_answered = serializers.SerializerMethodField()
+
+    def to_representation(self, instance):
+        base_representation = super().to_representation(instance)
+        if base_representation["results_hidden"]:
+            for option in base_representation["options"]:
+                option.pop("votes")
+        return base_representation
 
     def get_has_answered(self, obj):
         user = self.context["request"].user
@@ -103,6 +118,13 @@ class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
             "valid_until",
         )
 
+    def to_representation(self, instance):
+        base_representation = super().to_representation(instance)
+        if base_representation["results_hidden"]:
+            for option in base_representation["options"]:
+                option.pop("votes")
+        return base_representation
+
     @transaction.atomic
     def create(self, validated_data):
         options_data = validated_data.pop("options")
@@ -129,6 +151,13 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "tags",
             "pinned",
         )
+
+    def to_representation(self, instance):
+        base_representation = super().to_representation(instance)
+        if base_representation["results_hidden"]:
+            for option in base_representation["options"]:
+                option.pop("votes")
+        return base_representation
 
     @transaction.atomic
     def update(self, instance, validated_data):
