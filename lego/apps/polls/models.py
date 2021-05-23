@@ -18,6 +18,8 @@ class Poll(Content, BasisModel):
 
     description = models.TextField(blank=True)
 
+    results_hidden = models.BooleanField(default=False)
+
     valid_until = models.DateTimeField(default=get_time_delta)
 
     answered_users = models.ManyToManyField(User, related_name="answered_polls")
