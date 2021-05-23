@@ -333,7 +333,7 @@ class User(
         max_length=50,
         blank=False,
         choices=constants.THEMES,
-        default=constants.LIGHT_THEME,
+        default=constants.AUTO_THEME,
     )
     email = models.EmailField(
         unique=True,
