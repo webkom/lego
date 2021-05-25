@@ -24,7 +24,13 @@ class PollViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action in ["update", "partial_update"]:
             return PollUpdateSerializer
         if self.action in ["retrieve", "vote"]:
-            poll = self.get_object()
+            # self.get_object() throws error when accessing /api-docs because
+            # no poll is provided when using "vote"-action.
+            # Therefore return the safe serializer.
+            try:
+                poll = self.get_object()
+            except AssertionError:
+                return HiddenResultsDetailedPollSerializer
             if poll.results_hidden and not self.request.user.has_perm(EDIT, poll):
                 return HiddenResultsDetailedPollSerializer
             return DetailedPollSerializer
