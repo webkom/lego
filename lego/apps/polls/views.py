@@ -3,9 +3,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.constants import EDIT
 from lego.apps.polls.models import Poll
 from lego.apps.polls.serializers import (
     DetailedPollSerializer,
+    HiddenResultsDetailedPollSerializer,
     PollCreateSerializer,
     PollSerializer,
     PollUpdateSerializer,
@@ -21,7 +23,16 @@ class PollViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return PollCreateSerializer
         if self.action in ["update", "partial_update"]:
             return PollUpdateSerializer
-        if self.action == "retrieve":
+        if self.action in ["retrieve", "vote"]:
+            # self.get_object() throws error when accessing /api-docs because
+            # no poll is provided when using "vote"-action.
+            # Therefore return the safe serializer.
+            try:
+                poll = self.get_object()
+            except AssertionError:
+                return HiddenResultsDetailedPollSerializer
+            if poll.results_hidden and not self.request.user.has_perm(EDIT, poll):
+                return HiddenResultsDetailedPollSerializer
             return DetailedPollSerializer
         return PollSerializer
 

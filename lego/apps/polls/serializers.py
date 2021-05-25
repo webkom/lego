@@ -14,6 +14,12 @@ class OptionSerializer(BasisModelSerializer):
         fields = ("id", "name", "votes")
 
 
+class HiddenResultsOptionSerializer(BasisModelSerializer):
+    class Meta:
+        model = Option
+        fields = ("id", "name")
+
+
 class OptionUpdateSerializer(OptionSerializer):
 
     id = IntegerField(read_only=False)
@@ -24,7 +30,7 @@ class PollSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
-    options = OptionSerializer(many=True)
+    options = HiddenResultsOptionSerializer(many=True)
     total_votes = IntegerField(read_only=True)
 
     has_answered = serializers.SerializerMethodField()
@@ -42,6 +48,7 @@ class PollSerializer(BasisModelSerializer):
             "title",
             "description",
             "options",
+            "results_hidden",
             "total_votes",
             "tags",
             "comments",
@@ -74,6 +81,7 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "description",
             "options",
+            "results_hidden",
             "total_votes",
             "comments",
             "content_target",
@@ -81,6 +89,10 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
             "has_answered",
             "pinned",
         )
+
+
+class HiddenResultsDetailedPollSerializer(DetailedPollSerializer):
+    options = HiddenResultsOptionSerializer(many=True)
 
 
 class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
@@ -95,6 +107,7 @@ class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "description",
             "options",
+            "results_hidden",
             "total_votes",
             "tags",
             "pinned",
@@ -122,6 +135,7 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "description",
             "options",
+            "results_hidden",
             "total_votes",
             "tags",
             "pinned",
