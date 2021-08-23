@@ -108,6 +108,17 @@ class SearchIndex:
         """
         return None
 
+    def clean_query(self, query):
+        """
+        Clean search query to prepare for pg search.
+        Removes characters like &, | and other chars used in pg full text search.
+        """
+        chars = ["&", "*", ":", "@", "|", "<", ">", "!"]
+        for char in chars:
+            query = query.replace(char, "")
+
+        return query
+
     def search(self, query):
         """
         Uses the model to do a full search. This will use the database for search
@@ -136,9 +147,10 @@ class SearchIndex:
                 "You must provide a autocomplete_fields' attribute or override this method"
             )
 
+        cleaned = self.clean_query(query)
         return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
             lego_search=SearchQuery(
-                ":* & ".join(query.split() + [""]).strip("& ").strip(),
+                ":* & ".join(cleaned.split() + [""]).strip("& ").strip(),
                 search_type="raw",
             )
         )
