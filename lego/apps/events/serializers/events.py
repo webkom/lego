@@ -145,6 +145,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "created_by",
             "is_abakom_only",
             "registration_count",
+            "legacy_registration_count",
             "survey",
             "use_consent",
             "youtube_url",

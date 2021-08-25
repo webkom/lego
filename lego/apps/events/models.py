@@ -95,6 +95,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
     use_contact_tracing = models.BooleanField(default=False)
+    legacy_registration_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         permission_handler = EventPermissionHandler()
@@ -652,7 +653,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def registration_count(self):
         """ Prefetch friendly counting of registrations for an event. """
-        return sum([pool.registrations.all().count() for pool in self.pools.all()])
+        return self.legacy_registration_count + sum(
+            [pool.registrations.all().count() for pool in self.pools.all()],
+            self.legacy_registration_count,
+        )
 
     @property
     def number_of_registrations(self):
@@ -664,6 +668,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             )
             .exclude(pool=None)
             .count()
+            + self.legacy_registration_count
         )
 
     @property
@@ -720,6 +725,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def announcement_lookup(self):
         registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
         return [registration.user for registration in registrations]
+
+    def add_legacy_registration(self):
+        self.legacy_registration_count += 1
+        self.save()
 
 
 class Pool(BasisModel):
