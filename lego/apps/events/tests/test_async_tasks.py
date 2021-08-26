@@ -61,7 +61,7 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.pool_two.save()
 
     def test_users_are_bumped_before_pool_activation(self):
-        """" Tests that users are bumped right before pool activation """
+        """ " Tests that users are bumped right before pool activation"""
         users = get_dummy_users(3)
 
         for user in users:
@@ -76,7 +76,7 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.pool_two.registrations.count(), 2)
 
     def test_users_are_bumped_after_pool_activation(self):
-        """ Tests that users are bumped right after pool activation. """
+        """Tests that users are bumped right after pool activation."""
         users = get_dummy_users(3)
 
         for user in users:
@@ -94,7 +94,7 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.pool_two.registrations.count(), 2)
 
     def test_too_many_users_waiting_for_bump(self):
-        """ Tests that only 2 users are bumped to a new pool with capacity = 2. """
+        """Tests that only 2 users are bumped to a new pool with capacity = 2."""
         users = get_dummy_users(4)
         registrations = []
 
@@ -112,7 +112,7 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertIsNone(registrations[3].pool)
 
     def test_isnt_bumped_without_permission(self):
-        """ Tests that a waiting user isnt bumped to a pool it cant access. """
+        """Tests that a waiting user isnt bumped to a pool it cant access."""
         users = get_dummy_users(2)
 
         for user in users:
@@ -128,7 +128,7 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
     def test_isnt_bumped_with_penalties(self):
-        """ Users should not be bumped if they have 3 penalties. """
+        """Users should not be bumped if they have 3 penalties."""
         self.event.start_time = timezone.now() + timedelta(days=1)
         self.event.merge_time = timezone.now() + timedelta(hours=12)
         self.event.save()
@@ -279,7 +279,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 1)
 
     def test_is_bumped_with_multiple_penalties(self):
-        """ Tests that a user is bumped when going from 4 to 2 active penalties"""
+        """Tests that a user is bumped when going from 4 to 2 active penalties"""
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
@@ -303,7 +303,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 1)
 
     def test_isnt_bumped_with_too_many_penalties(self):
-        """ Tests that a user isn't bumped when going from 4 to 3 active penalties """
+        """Tests that a user isn't bumped when going from 4 to 3 active penalties"""
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
@@ -327,7 +327,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 0)
 
     def test_isnt_bumped_when_full(self):
-        """ Tests that a user isnt bumped when the event is full when penalties expire. """
+        """Tests that a user isnt bumped when the event is full when penalties expire."""
 
         users = get_dummy_users(2)
         for user in users:
@@ -377,7 +377,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 1)
 
     def test_async_bump_post_merge(self):
-        """ Tests that a waiting user with penalties is bumped to any pool after merge"""
+        """Tests that a waiting user with penalties is bumped to any pool after merge"""
         self.event.merge_time = timezone.now()
         self.event.save()
 

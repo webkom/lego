@@ -637,7 +637,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def active_capacity(self):
-        """ Calculation capacity of pools that are active. """
+        """Calculation capacity of pools that are active."""
         aggregate = (
             self.pools.all()
             .filter(activation_date__lte=timezone.now())
@@ -647,12 +647,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def total_capacity(self):
-        """ Prefetch friendly calculation of the total possible capacity of the event. """
+        """Prefetch friendly calculation of the total possible capacity of the event."""
         return sum([pool.capacity for pool in self.pools.all()])
 
     @property
     def registration_count(self):
-        """ Prefetch friendly counting of registrations for an event. """
+        """Prefetch friendly counting of registrations for an event."""
         return self.legacy_registration_count + sum(
             [pool.registrations.all().count() for pool in self.pools.all()],
             self.legacy_registration_count,
@@ -660,7 +660,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     @property
     def number_of_registrations(self):
-        """ Registration count guaranteed not to include unregistered users. """
+        """Registration count guaranteed not to include unregistered users."""
         return (
             self.registrations.filter(
                 unregistration_date=None,

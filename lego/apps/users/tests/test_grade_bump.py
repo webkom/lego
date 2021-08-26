@@ -55,7 +55,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         reset_user_bump_date(self.user)
 
     def test_bump_data(self):
-        """ Data students should be bumped """
+        """Data students should be bumped"""
         user = self.user
         self.data_1.add_user(user)
         self.assertEquals(get_groups(user), [self.data_1])
@@ -81,7 +81,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         self.assertEquals(get_groups(user), [])
 
     def test_bump_komtek(self):
-        """ Komtek students should be bumped """
+        """Komtek students should be bumped"""
         user = self.user
         self.komtek_1.add_user(user)
         self.assertEquals(get_groups(user), [self.komtek_1])
@@ -107,7 +107,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         self.assertEquals(get_groups(user), [])
 
     def test_multibump_should_not_bump(self):
-        """ Bumping multiple times should not bump the same user more than once """
+        """Bumping multiple times should not bump the same user more than once"""
         user = self.user
         self.komtek_1.add_user(user)
         self.assertEquals(get_groups(user), [self.komtek_1])
@@ -117,7 +117,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         self.assertEquals(get_groups(user), [self.komtek_2])
 
     def test_bump_after_recent_bump(self):
-        """ Bumping short after last bump should not bump the same user more than once """
+        """Bumping short after last bump should not bump the same user more than once"""
         user = self.user
         self.komtek_1.add_user(user)
         reset_user_bump_date(user, months=2)
@@ -126,7 +126,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         self.assertEquals(get_groups(user), [self.komtek_1])
 
     def test_discover_users_with_two_grades(self):
-        """ It should exit if a user has two grades """
+        """It should exit if a user has two grades"""
         user = self.user
         self.komtek_1.add_user(user)
         self.data_1.add_user(user)
@@ -134,7 +134,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
             bump_users()
 
     def test_discover_users_in_data_or_komtek_group(self):
-        """ It should exit if a user is member of a grade and the Data/komtek group """
+        """It should exit if a user is member of a grade and the Data/komtek group"""
         user = self.user
         grade = self.komtek_4
         main_group = self.komtek
@@ -147,7 +147,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
             bump_users()
 
     def test_discover_users_in_students_group(self):
-        """ It should exit if a user is member of a grade and the Students group """
+        """It should exit if a user is member of a grade and the Students group"""
         user = self.user
         self.komtek_1.add_user(user)
         self.students.add_user(user)

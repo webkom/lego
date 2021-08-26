@@ -15,7 +15,7 @@ class ICalToken(models.Model):
     token = models.CharField(max_length=64, default=generate_new_token, db_index=True)
 
     def regenerate(self):
-        """ Regenerate the ICalToken """
+        """Regenerate the ICalToken"""
         self.created = timezone.now()
         self.token = generate_new_token()
         self.save()

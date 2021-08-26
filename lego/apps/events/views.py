@@ -149,7 +149,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return super().get_serializer_class()
 
     def update(self, request, *args, **kwargs):
-        """ If the capacity of the event increases we have to bump waiting users. """
+        """If the capacity of the event increases we have to bump waiting users."""
         try:
             event_id = self.kwargs.get("pk", None)
             instance = super().update(request, *args, **kwargs)
