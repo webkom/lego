@@ -76,7 +76,7 @@ class EmailListTestCase(BaseAPITestCase):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_create_list_duplicate_email(self):
-        """ No duplicate in members """
+        """No duplicate in members"""
         response = self.client.post(
             self.url,
             {
@@ -118,7 +118,7 @@ class EmailListTestCase(BaseAPITestCase):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_edit_additional_email(self):
-        """ Test ability to remove an additional email"""
+        """Test ability to remove an additional email"""
         response = self.client.patch(
             f"{self.url}1/", {"additional_emails": ["test@test.no", "test2@test.no"]}
         )
@@ -137,7 +137,7 @@ class EmailListTestCase(BaseAPITestCase):
         )
 
     def test_delete_additional_email(self):
-        """ Test ability to set additional emails to an empty array"""
+        """Test ability to set additional emails to an empty array"""
 
         response = self.client.patch(f"{self.url}1/", {"additional_emails": []})
         self.assertEqual(status.HTTP_200_OK, response.status_code)

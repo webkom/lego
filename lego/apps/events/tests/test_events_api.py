@@ -976,7 +976,7 @@ class RegistrationsTestCase(BaseAPITestCase):
         self.assertEqual(res.json()["feedback"], "UPDATED")
 
     def test_update_presence_without_permission(self, *args):
-        """ Test that abakus user cannot update presence """
+        """Test that abakus user cannot update presence"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
@@ -988,7 +988,7 @@ class RegistrationsTestCase(BaseAPITestCase):
         self.assertEqual(res.status_code, 403)
 
     def test_update_presence_with_permission(self, *args):
-        """ Test that admin can update presence """
+        """Test that admin can update presence"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -1375,7 +1375,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
         self.assertEqual(registration_response.status_code, 403)
 
     def test_without_admin_unregistration_reason(self):
-        """ Test that admin cannot unregister user without unregistration reason"""
+        """Test that admin cannot unregister user without unregistration reason"""
         self.client.force_authenticate(self.webkom_user)
         user = self.event.registrations.exclude(pool=None).first()
 

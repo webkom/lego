@@ -183,7 +183,7 @@ class EventUserRegSerializer(EventReadSerializer):
 
 
 class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
-    """ User specfic event serializer that appends data based on request.user """
+    """User specfic event serializer that appends data based on request.user"""
 
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
