@@ -126,8 +126,12 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     mail = models.EmailField()
     phone = models.CharField(max_length=100, blank=True)
     semesters = models.ManyToManyField(Semester, blank=True)
-    events = ArrayField(models.CharField(max_length=64, choices=COMPANY_EVENTS))
-    other_offers = ArrayField(models.CharField(max_length=64, choices=OTHER_OFFERS))
+    events = ArrayField(
+        models.CharField(max_length=64, choices=COMPANY_EVENTS), null=True, blank=True
+    )
+    other_offers = ArrayField(
+        models.CharField(max_length=64, choices=OTHER_OFFERS), null=True, blank=True
+    )
     comment = models.TextField(blank=True)
 
     class Meta:
