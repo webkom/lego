@@ -1,4 +1,4 @@
-from lego.apps.notifications.constants import PENALTY_CREATION
+from lego.apps.notifications.constants import INACTIVE_WARNING, PENALTY_CREATION
 from lego.apps.notifications.notification import Notification
 
 
@@ -29,4 +29,22 @@ class PenaltyNotification(Notification):
             template="users/push/penalty.txt",
             context={"weight": penalty.weight, "event": penalty.source_event.title},
             instance=penalty,
+        )
+
+
+class InactiveNotification(Notification):
+
+    name = INACTIVE_WARNING
+
+    def generate_mail(self):
+        return self._delay_mail(
+            to_email=self.user.email,
+            context={
+                "name": self.user.full_name,
+                "username": self.user.username,
+                "last_login": str(self.user.last_login),
+            },
+            subject="Du har vært inaktiv lenge",
+            plain_template="users/email/inactive.txt",
+            html_template="users/email/inactive.html",
         )

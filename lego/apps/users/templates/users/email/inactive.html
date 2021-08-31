@@ -1,0 +1,54 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-warning">
+            Du har vært inaktiv lenge.
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Du har vært inaktiv siden {{ last_login }}.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i> Siden du ikke har logget inn på brukeren din på over 6 måneder, kommer vi til å slette brukeren din: {{ username }} innen en måned etter du har blitt tilsendt denne mailen.
+                <br>
+                Dersom du ønsker å beholde brukeren din kan du bare logge inn igjen, og vi kommer ikke til å slette brukeren din før den har vært inaktiv i 6 måneder igjen.
+            </i>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="button">
+          <div>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}/users/me/" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Vis alle prikker</center>
+            </v:roundrect>
+            <![endif]-->
+            <a class="btn-primary" href="{{ frontend_url }}/users/me/"
+                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
+                Logg inn igjen
+            </a>
+          </div>
+        </td>
+    </tr>
+
+
+{% endblock %}

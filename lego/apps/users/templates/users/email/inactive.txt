@@ -1,0 +1,13 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+Du har vært inaktiv siden {{ last_login }}.
+
+Siden du ikke har logget inn på brukeren din på over 6 måneder, kommer vi til å slette brukeren din: {{ username }} innen en måned etter du har blitt tilsendt denne mailen.
+
+Dersom du ønsker å beholde brukeren din kan du bare logge inn igjen, og vi kommer ikke til å slette brukeren din før den har vært inaktiv i 6 måneder igjen.
+
+{% endblock %}
