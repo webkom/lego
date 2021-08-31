@@ -344,7 +344,8 @@ class RegistrationViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if (
-            serializer.validated_data.get("payment_status", None)
+            registration.payment_intent_id
+            and serializer.validated_data.get("payment_status", None)
             == constants.PAYMENT_MANUAL
         ):
             async_cancel_payment.delay(registration.id)
