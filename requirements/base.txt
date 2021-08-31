@@ -53,7 +53,7 @@ django-phonenumber-field[phonenumberslite]==5.2.0
 odinuge-django-push-notifications==1.6.0.post3
 
 # Ical-export
-django-ical==1.7.1
+django-ical==1.8.0
 icalendar==4.0.7
 
 # Docs
