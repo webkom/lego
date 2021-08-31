@@ -1525,7 +1525,8 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
         self.client.delete(f"{_get_registrations_list_url(self.event.id)}{reg.id}/")
 
         self.assertEqual(
-            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"],
+            constants.STRIPE_INTENT_CANCELED,
         )
 
     def test_admin_unregister_with_payment(self):
@@ -1550,7 +1551,61 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
         reg.refresh_from_db()
 
         self.assertEqual(
-            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"], "canceled"
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"],
+            constants.STRIPE_INTENT_CANCELED,
+        )
+
+        stripe_event = stripe.Event.list(limit=1)["data"][0]
+        stripe_webhook_event(
+            event_id=stripe_event["id"], event_type=stripe_event["type"]
+        )
+
+        reg.refresh_from_db()
+        self.assertEqual(reg.payment_status, constants.PAYMENT_CANCELED)
+        self.assertIsNone(reg.payment_intent_id)
+
+    @mock.patch("lego.apps.events.tasks.notify_user_payment_initiated")
+    def test_payment_is_possible_on_re_registration(self, mock_notify):
+        """
+        The user should be able to pay, even if the webhook from stripe on payment cancellation is
+        unsuccessful.
+        - User registers
+        - Payment is initiated, but not completed
+        - User unregisters
+        - User re-registers
+        """
+
+        reg = Registration.objects.get_or_create(
+            event=self.event, user=self.abakus_user_2
+        )[0]
+        self.event.register(reg)
+        self.event.save()
+
+        self.client.force_authenticate(self.abakus_user_2)
+        self.get_payment_intent()
+
+        self.client.delete(f"{_get_registrations_list_url(self.event.id)}{reg.id}/")
+        reg.refresh_from_db()
+        self.assertEqual(
+            stripe.PaymentIntent.retrieve(reg.payment_intent_id)["status"],
+            constants.STRIPE_INTENT_CANCELED,
+        )
+
+        self.event.register(reg)
+        self.get_payment_intent()
+
+        reg.refresh_from_db()
+        stripe_intent = stripe.PaymentIntent.retrieve(reg.payment_intent_id)
+        self.assertNotEqual(
+            stripe_intent["status"],
+            constants.STRIPE_INTENT_CANCELED,
+        )
+
+        mock_notify.assert_called_with(
+            constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
+            reg,
+            success_message="Betaling påbegynt",
+            client_secret=stripe_intent["client_secret"],
         )
 
     def test_cancel_on_payment_manual(self):

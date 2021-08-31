@@ -205,6 +205,20 @@ def async_retrieve_payment(self, registration_id, logger_context=None):
         )
         return
 
+    # If the payment is canceled in stripe and the webhook for some reason
+    # did not go through, we update the registration to match this, and then
+    # initiate a new payment.
+    if payment_intent["status"] == constants.STRIPE_INTENT_CANCELED:
+        self.registration.payment_status = constants.PAYMENT_CANCELED
+        self.registration.payment_intent_id = None
+        self.registration.payment_idempotency_key = None
+        self.registration.save()
+        chain(
+            async_initiate_payment.s(self.registration.id),
+            save_and_notify_payment.s(self.registration.id),
+        ).delay()
+        return
+
     notify_user_payment_initiated(
         constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
         self.registration,
@@ -351,6 +365,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
     if event_type in [
         constants.STRIPE_EVENT_INTENT_SUCCESS,
         constants.STRIPE_EVENT_INTENT_PAYMENT_FAILED,
+        constants.STRIPE_EVENT_INTENT_PAYMENT_CANCELED,
     ]:
 
         serializer = StripePaymentIntentSerializer(data=event.data["object"])
@@ -380,6 +395,11 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
                 registration,
                 error_message="Betaling feilet",
             )
+        elif event_type == constants.STRIPE_EVENT_INTENT_PAYMENT_CANCELED:
+            registration.payment_status = constants.PAYMENT_CANCELED
+            registration.payment_intent_id = None
+            registration.idempotency_key = None
+
         registration.save()
 
     elif event_type in [constants.STRIPE_EVENT_CHARGE_REFUNDED]:

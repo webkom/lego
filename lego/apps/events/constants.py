@@ -85,6 +85,7 @@ PAYMENT_PENDING = "pending"
 PAYMENT_SUCCESS = "succeeded"
 PAYMENT_FAILURE = "failed"
 PAYMENT_MANUAL = "manual"
+PAYMENT_CANCELED = "canceled"
 
 PAYMENT_STATUS_CHOICES = (
     (PAYMENT_MANUAL, PAYMENT_MANUAL),
@@ -95,6 +96,7 @@ PAYMENT_STATUS_CHOICES = (
 
 STRIPE_EVENT_INTENT_SUCCESS = "payment_intent.succeeded"
 STRIPE_EVENT_INTENT_PAYMENT_FAILED = "payment_intent.payment_failed"
+STRIPE_EVENT_INTENT_PAYMENT_CANCELED = "payment_intent.canceled"
 STRIPE_EVENT_CHARGE_REFUNDED = "charge.refunded"
 
 # See https://stripe.com/docs/api/payment_intents/object#payment_intent_object-status
