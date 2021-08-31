@@ -398,7 +398,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
         elif event_type == constants.STRIPE_EVENT_INTENT_PAYMENT_CANCELED:
             registration.payment_status = constants.PAYMENT_CANCELED
             registration.payment_intent_id = None
-            registration.idempotency_key = None
+            registration.payment_idempotency_key = None
 
         registration.save()
 
