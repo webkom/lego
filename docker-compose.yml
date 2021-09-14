@@ -22,7 +22,7 @@ services:
       - postgres
 
   minio:
-    image: minio/minio:edge
+    image: minio/minio
     ports:
       - '127.0.0.1:9000:9000'
     environment:
@@ -54,4 +54,3 @@ services:
       LOADER: tc_aws.loaders.s3_loader
     links:
       - minio
-
