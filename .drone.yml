@@ -135,40 +135,12 @@ steps:
       build_args_from_env:
         - SENTRY_AUTH_TOKEN
 
-  - name: clone_infrastructure
-    image: alpine/git
-    volumes:
-      - name: infrastructure
-        path: /infrastructure
-    environment:
-      INFRA_SSH_KEY:
-        from_secret: infra_deploy_key
-    commands:
-      # These commands configure our authentication against
-      # github so we can clone our infra repo
-      - mkdir -p /root/.ssh
-      - echo -n "$INFRA_SSH_KEY" > /root/.ssh/id_rsa
-      - chmod 600 /root/.ssh/id_rsa
-      - touch /root/.ssh/known_hosts
-      - chmod 600 /root/.ssh/known_hosts
-      - ssh-keyscan -t rsa -H github.com > /etc/ssh/ssh_known_hosts 2> /dev/null
-      - git clone git@github.com:webkom/infrastructure.git /infrastructure
-    when:
-      event:
-        - promote
-        - rollback
-      branch:
-        - build
-
   - name: Deploy
-    image: plugins/ansible
-    environment:
-      SLACK_USER: drone
-    volumes:
-      - name: infrastructure
-        path: /infrastructure
+    image: abakus/ansible-deploy
     settings:
       playbook: /infrastructure/lego/playbooks/deploy.yml
+      repository:
+        from_secret: infra_repository
       tags:
         - lego
       limit: ${DRONE_DEPLOY_TO}
@@ -184,12 +156,6 @@ steps:
         - rollback
       branch:
         - build
-    depends_on:
-      - clone_infrastructure
-
-volumes:
-  - name: infrastructure
-    temp: {}
 
 services:
   - name: database
@@ -202,4 +168,4 @@ services:
 
 ---
 kind: signature
-hmac: c9e89906376a251272fa64871ac01a847eebbfe8fa95e9b8a106a6b60b5565af
+hmac: dc7390493f4ba831e57c617c1c5486591194a6ec3de49f030d0329c82d0f2644
