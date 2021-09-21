@@ -17,6 +17,7 @@ $ python3 -m venv venv
 $ echo "from .development import *" > lego/settings/local.py
 $ source venv/bin/activate
 $ pip install -r requirements/dev.txt
+$ docker-compose up -d
 $ python manage.py initialize_development
 
 # Activate and run (do every time)
