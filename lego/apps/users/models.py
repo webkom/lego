@@ -381,7 +381,6 @@ class User(
             return "default_other_avatar.png"
 
     def delete(self, using=None, force=False):
-        from lego.apps.events import constants
         from lego.apps.events.models import Event
 
         if force:

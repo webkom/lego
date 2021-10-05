@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from lego.apps.notifications.constants import INACTIVE_WARNING, PENALTY_CREATION
 from lego.apps.notifications.notification import Notification
 
@@ -37,12 +39,17 @@ class InactiveNotification(Notification):
     name = INACTIVE_WARNING
 
     def generate_mail(self):
+        max_inactive_days = self.kwargs["max_inactive_days"]
+
         return self._delay_mail(
             to_email=self.user.email,
             context={
                 "name": self.user.full_name,
                 "username": self.user.username,
                 "last_login": str(self.user.last_login),
+                "date_of_deletion": str(
+                    (self.user.last_login + timedelta(max_inactive_days)).date()
+                ),
             },
             subject="Du har vært inaktiv lenge",
             plain_template="users/email/inactive.txt",
