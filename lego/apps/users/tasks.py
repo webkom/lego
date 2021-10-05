@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.db.models import Q
 from django.utils import timezone
 
 from structlog import get_logger
@@ -23,6 +24,17 @@ def send_inactive_reminder_mail(self, logger_context=None):
     for user in users:
         notification = InactiveNotification(user)
         notification.notify()
-        if not user.inactive_notified:
-            user.inactive_notified = True
-            user.save()
+        user.inactive_notified_counter += 1
+        user.save()
+
+    # find all users that have been inactive for more than 4 months and have no notifications
+    users = User.objects.filter(
+        Q(last_login__lte=timezone.now() - timedelta(days=126))
+        and Q(inactive_notified_counter__lt=1)
+    )
+
+    for user in users:
+        notification = InactiveNotification(user)
+        notification.notify()
+        user.inactive_notified_counter += 1
+        user.save()

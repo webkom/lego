@@ -350,7 +350,7 @@ class User(
         help_text="Designates whether this user should be treated as "
         "active. Unselect this instead of deleting accounts.",
     )
-    inactive_notified = models.BooleanField(default=False)
+    inactive_notified_counter = models.IntegerField(default=0)
     date_joined = models.DateTimeField("date joined", default=timezone.now)
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
