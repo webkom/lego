@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.articles.models import Article
 from lego.apps.emojis.models import Emoji
@@ -48,29 +49,29 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
 
     def test_unauthenticated_create(self):
         response = self.client.post(_get_list_url(), self.test_data)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized_create(self):
         self.client.force_authenticate(self.unauthorized_user)
         response = self.client.post(_get_list_url(), self.test_data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authorized_create(self):
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), self.test_data)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_reacting_on_nonexistent_object(self):
         test_data = self.get_test_data(10000)
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_invalid_emoji(self):
         test_data = {**self.test_data, "emoji": "xxxyzb"}
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), test_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_already_reacted(self):
         self.client.force_authenticate(self.authorized_user)
@@ -80,7 +81,7 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
         test_reaction.created_by = self.authorized_user
         test_reaction.save()
         response = self.client.post(_get_list_url(), self.test_data)
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
     def test_reaction_limit(self):
         for emoji in Emoji.objects.all()[:REACTION_COUNT_LIMIT]:
@@ -91,7 +92,7 @@ class CreateReactionsAPITestCase(BaseAPITestCase):
             test_reaction.save()
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(_get_list_url(), self.test_data)
-        self.assertEqual(response.status_code, 413)
+        self.assertEqual(response.status_code, status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
 
 
 class DeleteReactionsAPITestCase(BaseAPITestCase):
@@ -119,7 +120,7 @@ class DeleteReactionsAPITestCase(BaseAPITestCase):
     def successful_delete(self, user):
         self.client.force_authenticate(user=user)
         response = self.client.delete(_get_detail_url(self.test_reaction.pk))
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertRaises(
             Reaction.DoesNotExist, Reaction.objects.get, pk=self.test_reaction.pk
         )
@@ -127,7 +128,7 @@ class DeleteReactionsAPITestCase(BaseAPITestCase):
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.delete(_get_detail_url(self.test_reaction.pk))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_with_owner(self):
         self.successful_delete(self.test_reaction.created_by)

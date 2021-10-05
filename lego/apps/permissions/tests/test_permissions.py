@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from lego.apps.permissions.tests.models import TestModel
@@ -40,7 +41,7 @@ class PermissionTestCase(BaseAPITestCase):
         response = view(request)
         created = response.data
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(created["name"], self.test_update_object["name"])
 
     def test_retrieve_successful(self):
@@ -51,7 +52,7 @@ class PermissionTestCase(BaseAPITestCase):
         response = view(request, pk=self.test_object.pk)
         test_object = response.data
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(test_object["name"], self.test_object.name)
 
     def test_retrieve_unsuccessful(self):
@@ -60,7 +61,7 @@ class PermissionTestCase(BaseAPITestCase):
         view = TestViewSet.as_view({"get": "retrieve"})
 
         response = view(request, pk=self.test_object.pk)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_list_without_auth(self):
         shown_object = TestModel(name="shown", require_auth=False)
@@ -72,7 +73,7 @@ class PermissionTestCase(BaseAPITestCase):
         response = view(request)
         test_objects = response.data["results"]
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(test_objects), 1)
         self.assertEqual(test_objects[0]["name"], shown_object.name)
 
@@ -87,7 +88,7 @@ class PermissionTestCase(BaseAPITestCase):
         response = view(request)
         test_objects = response.data["results"]
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(test_objects), 2)
 
     def test_edit_successful(self):
@@ -98,7 +99,7 @@ class PermissionTestCase(BaseAPITestCase):
         response = view(request, pk=self.test_object.pk)
         edited_object = response.data
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(edited_object["name"], self.test_update_object["name"])
 
     def test_edit_unsuccessful(self):
@@ -108,7 +109,7 @@ class PermissionTestCase(BaseAPITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_edit_own(self):
         request = self.factory.put("/permissiontest/", self.test_update_object)
@@ -118,7 +119,7 @@ class PermissionTestCase(BaseAPITestCase):
         response = view(request, pk=self.test_object.pk)
         edited_object = response.data
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(edited_object["name"], self.test_update_object["name"])
 
     def test_delete_successful(self):
@@ -128,7 +129,7 @@ class PermissionTestCase(BaseAPITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_unsuccessful(self):
         self.test_object.can_view_groups.add(self.webkom)
@@ -139,7 +140,7 @@ class PermissionTestCase(BaseAPITestCase):
 
         response = view(request, pk=self.test_object.pk)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_edit_object_with_require_auth_false(self):
         """
@@ -150,4 +151,4 @@ class PermissionTestCase(BaseAPITestCase):
         response = self.client.put(
             f"/permissiontest/{self.test_object.id}/", self.test_update_object
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -1,6 +1,7 @@
 from unittest import mock
 
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import BaseAPITestCase
@@ -17,15 +18,15 @@ def _get_registration_token_url(token):
 class RetrieveRegistrationAPITestCase(BaseAPITestCase):
     def test_without_token(self):
         response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_empty_token(self):
         response = self.client.get(_get_registration_token_url(""))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_token(self):
         response = self.client.get(_get_registration_token_url("InvalidToken"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_valid_token(self):
         response = self.client.get(
@@ -33,7 +34,7 @@ class RetrieveRegistrationAPITestCase(BaseAPITestCase):
                 Registrations.generate_registration_token("test1@user.com")
             )
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json().get("email"), "test1@user.com")
 
     def test_with_valid_token_and_capitalized_email(self):
@@ -42,7 +43,7 @@ class RetrieveRegistrationAPITestCase(BaseAPITestCase):
                 Registrations.generate_registration_token("Test1@User.CoM")
             )
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json().get("email"), "Test1@User.CoM")
 
 
@@ -57,7 +58,7 @@ class CreateRegistrationAPITestCase(BaseAPITestCase):
 
     def test_without_email(self, *args):
         response = self.client.post(_get_list_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.registration.verify_captcha", return_value=True
@@ -67,7 +68,7 @@ class CreateRegistrationAPITestCase(BaseAPITestCase):
             _get_list_url(),
             {"email": "test1@@user.com", "captcha_response": "testCaptcha"},
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.registration.verify_captcha", return_value=True
@@ -77,18 +78,18 @@ class CreateRegistrationAPITestCase(BaseAPITestCase):
             _get_list_url(),
             {"email": "Test1@User.CoM", "captcha_response": "testCaptcha"},
         )
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
 
     @mock.patch(
         "lego.apps.users.serializers.registration.verify_captcha", return_value=False
     )
     def test_with_invalid_captcha(self, *args):
         response = self.client.post(_get_list_url(), self._test_registration_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.registration.verify_captcha", return_value=True
     )
     def test_with_valid_captcha(self, mock_verify_captcha):
         response = self.client.post(_get_list_url(), self._test_registration_data)
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)

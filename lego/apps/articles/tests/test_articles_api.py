@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
@@ -61,19 +62,19 @@ class ListArticlesTestCase(BaseAPITestCase):
 
     def test_unauthenticated_user(self):
         response = self.client.get(get_list_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 1)
 
     def test_fields(self):
         response = self.client.get(get_list_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         article = response.json()["results"][0]
         self.assertEqual(len(PublicArticleSerializer.Meta.fields), len(article.keys()))
 
     def test_authenticated(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_list_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 2)
 
     def test_with_keyword_permissions(self):
@@ -82,14 +83,14 @@ class ListArticlesTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_list_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 3)
 
     def test_with_object_permissions(self):
         self.permission_group.add_user(self.user)
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_list_url())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 3)
 
 
@@ -109,22 +110,22 @@ class RetrieveArticlesTestCase(BaseAPITestCase):
 
     def test_unauthenticated_public(self):
         response = self.client.get(get_detail_url(self.public_article.pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_unauthenticated(self):
         response = self.client.get(get_detail_url(self.auth_article.pk))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_authenticated(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_detail_url(self.auth_article.pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["id"], self.auth_article.id)
 
     def test_unauthorized(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_detail_url(self.object_permission_article.pk))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_with_keyword_permissions(self):
         self.group.permissions = ["/sudo/admin/articles/view/"]
@@ -132,13 +133,13 @@ class RetrieveArticlesTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_detail_url(self.object_permission_article.pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_with_object_permissions(self):
         self.permission_group.add_user(self.user)
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_detail_url(self.object_permission_article.pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["id"], self.object_permission_article.pk)
 
 
@@ -154,12 +155,12 @@ class CreateArticlesTestCase(BaseAPITestCase):
 
     def test_unauthenticated(self):
         response = self.client.post(get_list_url())
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_authenticated(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(get_list_url())
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_keyword_permissions(self):
         self.group.permissions = ["/sudo/admin/articles/create/"]
@@ -168,7 +169,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         data = get_data_with_author(self.user.pk)
         response = self.client.post(get_list_url(), data)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()["title"], data["title"])
 
     def test_no_title(self):
@@ -180,7 +181,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
         del data["title"]
         response = self.client.post(get_list_url(), data)
         self.assertEqual(response.json(), {"title": ["This field is required."]})
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_wrong_youtube_url(self):
         self.group.permissions = ["/sudo/admin/articles/create/"]
@@ -191,7 +192,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
         data["youtubeUrl"] = "https://www.skra.com/watch?v=KrzIaRwAMvc"
         response = self.client.post(get_list_url(), data)
         self.assertIn("youtubeUrl", response.json())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_correct_youtube_url(self):
         self.group.permissions = ["/sudo/admin/articles/create/"]
@@ -201,7 +202,7 @@ class CreateArticlesTestCase(BaseAPITestCase):
         data = get_data_with_author(self.user.pk)
         data["youtubeUrl"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
         response = self.client.post(get_list_url(), data)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class UpdateArticlesTestCase(BaseAPITestCase):
@@ -218,14 +219,14 @@ class UpdateArticlesTestCase(BaseAPITestCase):
         response = self.client.patch(
             get_detail_url(self.article.pk), get_data_with_author(self.user.pk)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_authenticated(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.patch(
             get_detail_url(self.article.pk), get_data_with_author(self.user.pk)
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_with_keyword_permissions(self):
         self.group.permissions = ["/sudo/admin/articles/edit/"]
@@ -235,7 +236,7 @@ class UpdateArticlesTestCase(BaseAPITestCase):
         response = self.client.patch(
             get_detail_url(self.article.pk), get_data_with_author(self.user.pk)
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_with_object_permissions(self):
         self.permission_group.add_user(self.user)
@@ -243,7 +244,7 @@ class UpdateArticlesTestCase(BaseAPITestCase):
         response = self.client.patch(
             get_detail_url(self.article.pk), get_data_with_author(self.user.pk)
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class RemoveArticlesTestCase(BaseAPITestCase):
@@ -258,12 +259,12 @@ class RemoveArticlesTestCase(BaseAPITestCase):
 
     def test_unauthenticated(self):
         response = self.client.delete(get_detail_url(self.article.pk))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_authenticated(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(get_detail_url(self.article.pk))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_with_keyword_permissions(self):
         self.group.permissions = ["/sudo/admin/articles/delete/"]
@@ -271,10 +272,10 @@ class RemoveArticlesTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(get_detail_url(self.article.pk))
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_with_object_permissions(self):
         self.permission_group.add_user(self.user)
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(get_detail_url(self.article.pk))
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.urls import reverse
 from django.utils import timezone
+from rest_framework import status
 
 from lego.apps.joblistings.models import Joblisting
 from lego.apps.users.models import AbakusGroup, User
@@ -84,12 +85,12 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_list_url())
-        self.assertEqual(joblisting_response.status_code, 200)
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 4)
 
     def test_without_user(self):
         joblisting_response = self.client.get(_get_list_url())
-        self.assertEqual(joblisting_response.status_code, 200)
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 4)
 
     def test_list_after_visible_to(self):
@@ -97,7 +98,7 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         joblisting.visible_to = timezone.now() - timedelta(days=2)
         joblisting.save()
         joblisting_response = self.client.get(_get_list_url())
-        self.assertEqual(joblisting_response.status_code, 200)
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 3)
 
 
@@ -125,13 +126,13 @@ class RetrieveJoblistingsTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_detail_url(1))
         self.assertEqual(joblisting_response.json()["id"], 1)
-        self.assertEqual(joblisting_response.status_code, 200)
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
 
     def test_without_group_permission(self):
         self.client.force_authenticate(self.abakus_user)
         joblisting_response = self.client.get(_get_detail_url(2))
         self.assertEqual(joblisting_response.json()["id"], 2)
-        self.assertEqual(joblisting_response.status_code, 200)
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
 
 
 class CreateJoblistingsTestCase(BaseAPITestCase):
@@ -158,26 +159,26 @@ class CreateJoblistingsTestCase(BaseAPITestCase):
     def test_joblistings_create(self):
         self.client.force_authenticate(user=self.abakom_user)
         res = self.client.post(_get_list_url(), _test_joblistings_data[0])
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_pleb_cannot_create(self):
         self.client.force_authenticate(user=self.not_abakom_user)
         res = self.client.post(_get_list_url(), _test_joblistings_data[0])
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_correct_youtube_url(self):
         self.client.force_authenticate(user=self.abakom_user)
         joblisting = _test_joblistings_data[0].copy()
         joblisting["youtube_url"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
         res = self.client.post(_get_list_url(), joblisting)
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_wrong_youtube_url(self):
         self.client.force_authenticate(user=self.abakom_user)
         joblisting = _test_joblistings_data[0].copy()
         joblisting["youtube_url"] = "skra"
         res = self.client.post(_get_list_url(), joblisting)
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class EditJoblistingsTestCase(BaseAPITestCase):
@@ -205,20 +206,20 @@ class EditJoblistingsTestCase(BaseAPITestCase):
     def test_joblistings_edit_one_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
         res = self.client.put(_get_detail_url(1), _test_joblistings_data[1])
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json().get("workplaces")[0].get("town"), "Trondheim")
 
     def test_joblistings_edit_multiple_workplace(self):
         self.client.force_authenticate(user=self.abakom_user)
         res = self.client.put(_get_detail_url(1), _test_joblistings_data[2])
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual("Itera", res.json().get("title"))
         self.assertEqual(len(res.json().get("workplaces")), 2)
 
     def test_pleb_cannot_edit(self):
         self.client.force_authenticate(user=self.not_abakom_user)
         res = self.client.put(_get_detail_url(1), _test_joblistings_data[1])
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class DeleteJoblistingsTestCase(BaseAPITestCase):
@@ -247,9 +248,9 @@ class DeleteJoblistingsTestCase(BaseAPITestCase):
     def test_can_delete(self):
         self.client.force_authenticate(self.abakom_user)
         res = self.client.delete(_get_detail_url(self.joblisting.pk))
-        self.assertEqual(res.status_code, 204)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_cannot_delete(self):
         self.client.force_authenticate(self.not_abakom_user)
         res = self.client.delete(_get_detail_url(self.joblisting.pk))
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

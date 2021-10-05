@@ -65,18 +65,18 @@ class ListUsersAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.get(_get_list_url())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), len(self.all_users))
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.get(_get_list_url())
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_with_useradmin(self):
         self.successful_list(self.with_permission)
@@ -101,21 +101,21 @@ class RetrieveUsersAPITestCase(BaseAPITestCase):
     def successful_retrieve(self, user):
         self.client.force_authenticate(user=user)
         response = self.client.get(_get_detail_url(self.test_user.username))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_without_auth(self):
         response = self.client.get(_get_detail_url(self.all_users.first().username))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
         response = self.client.get(_get_detail_url(self.test_user.username))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_self_with_normal_user(self):
         self.client.force_authenticate(user=self.without_perm)
         response = self.client.get(_get_detail_url(self.without_perm.username))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_with_useradmin(self):
         self.successful_retrieve(self.with_perm)
@@ -144,73 +144,73 @@ class CreateUsersAPITestCase(BaseAPITestCase):
     def test_with_authenticated_user(self):
         self.client.force_authenticate(user=self.existing_user)
         response = self.client.post(_get_registration_token_url("randomToken"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_without_token(self):
         response = self.client.post(_get_list_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_empty_token(self):
         response = self.client.post(_get_registration_token_url(""))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_token(self):
         response = self.client.post(_get_registration_token_url("InvalidToken"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_no_data(self):
         token = self.create_token()
         response = self.client.post(_get_registration_token_url(token), {})
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_existing_email(self):
         token = self.create_token("test1@user.com")
         response = self.client.post(
             _get_registration_token_url(token), self._test_registration_data
         )
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
     def test_with_existing_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data["username"] = "test1"
         response = self.client.post(_get_registration_token_url(token), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data["username"] = "$@@@@"
         response = self.client.post(_get_registration_token_url(token), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_email_as_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data["username"] = self.new_email_other
         response = self.client.post(_get_registration_token_url(token), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_blank_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data["username"] = ""
         response = self.client.post(_get_registration_token_url(token), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_blank_password(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
         invalid_data["password"] = ""
         response = self.client.post(_get_registration_token_url(token), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_valid_data(self):
         token = self.create_token(self.new_email_other)
         response = self.client.post(
             _get_registration_token_url(token), self._test_registration_data
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         new_user = User.objects.get(email=self.new_email_other)
 
@@ -264,7 +264,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_url(update_object.username), self.modified_user
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         for key, value in self.modified_user.items():
             self.assertEqual(response.json()[key], value)
@@ -282,7 +282,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         )
         user = User.objects.get(pk=self.test_user.pk)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(user, self.test_user)
 
     def test_update_with_super_user(self):
@@ -399,7 +399,7 @@ class DeleteUsersAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.delete(_get_detail_url(self.test_user.username))
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
 
     def test_with_normal_user(self):
@@ -407,7 +407,7 @@ class DeleteUsersAPITestCase(BaseAPITestCase):
         response = self.client.delete(_get_detail_url(self.test_user.username))
         users = User.objects.filter(pk=self.test_user.pk)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertTrue(len(users))
 
     def test_with_useradmin(self):
@@ -429,7 +429,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("api:v1:user-me"))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             len(self.user.penalties.valid()), len(response.json()["penalties"])
         )
@@ -445,7 +445,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
 
     def test_self_unauthed(self):
         response = self.client.get(reverse("api:v1:user-me"))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 1))
     def test_own_penalties_serializer(self, mock_now):
@@ -467,7 +467,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("api:v1:user-me"))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
             len(self.user.penalties.valid()), len(response.json()["penalties"])
