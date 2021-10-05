@@ -16,11 +16,13 @@ from lego.utils.models import BasisModel, PersistentModel, TimeStampModel
 
 from .constants import (
     AUTUMN,
+    COLLABORATIONS,
     COMPANY_EVENTS,
     OTHER_OFFERS,
     SEMESTER,
     SEMESTER_STATUSES,
     SPRING,
+    TRANSLATED_COLLABORATIONS,
     TRANSLATED_EVENTS,
     TRANSLATED_OTHER_OFFERS,
 )
@@ -132,7 +134,14 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     other_offers = ArrayField(
         models.CharField(max_length=64, choices=OTHER_OFFERS), null=True, blank=True
     )
+    collaborations = ArrayField(
+        models.CharField(max_length=64, choices=COLLABORATIONS), null=True, blank=True
+    )
+    target_grades = ArrayField(models.PositiveIntegerField(), null=True, blank=True)
+    participant_range_start = models.IntegerField(null=True, blank=True)
+    participant_range_end = models.IntegerField(null=True, blank=True)
     comment = models.TextField(blank=True)
+    second_comment = models.TextField(blank=True)
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
@@ -154,6 +163,12 @@ class CompanyInterest(PersistentModel, TimeStampModel):
         for offer in self.other_offers:
             others.append(TRANSLATED_OTHER_OFFERS[offer])
 
+        collaborations = []
+        for collab in self.collaborations:
+            collaborations.append(f"Samarbeid med {TRANSLATED_COLLABORATIONS[collab]}")
+
+        grades = [f"{g}.kl" for g in self.target_grades]
+
         return {
             "company_name": self.company_name,
             "contact_person": self.contact_person,
@@ -161,5 +176,9 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             "semesters": ", ".join(semesters),
             "events": ", ".join(events),
             "others": ", ".join(others),
+            "collaborations": ", ".join(collaborations),
+            "target_grades": ", ".join(grades),
+            "participant_range": f"{self.participant_range_start} - {self.participant_range_end}",
             "comment": self.comment,
+            "second_comment": self.second_comment,
         }
