@@ -76,6 +76,10 @@ schedule = {
         "task": "lego.apps.events.tasks.set_all_events_ready_and_bump",
         "schedule": crontab(hour=4, minute=0),
     },
+    "notify_inactive_user": {
+        "task": "lego.apps.users.tasks.send_inactive_reminder_mail",
+        "schedule": crontab(hour=7, minute=0, day_of_week=1),
+    },
 }
 
 app.conf.update(
