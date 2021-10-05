@@ -50,7 +50,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     )
     location = models.CharField(max_length=100)
     cover = FileField(related_name="event_covers")
-
     start_time = models.DateTimeField(db_index=True)
     end_time = models.DateTimeField()
     merge_time = models.DateTimeField(null=True)
@@ -696,24 +695,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def waiting_registration_count(self):
         return self.waiting_registrations.count()
-
-    @property
-    def is_abakom_only(self):
-        return (
-            self.require_auth
-            and self.can_view_groups.count() == 1
-            and self.can_view_groups.filter(name="Abakom").exists()
-        )
-
-    def set_abakom_only(self, abakom_only):
-        abakom_group = AbakusGroup.objects.get(name="Abakom")
-        if abakom_only:
-            self.require_auth = True
-            self.can_view_groups.add(abakom_group)
-        else:
-            self.require_auth = False
-            self.can_view_groups.remove(abakom_group)
-        self.save()
 
     def restricted_lookup(self):
         """
