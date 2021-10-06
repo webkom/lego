@@ -210,7 +210,12 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "semesters",
             "events",
             "other_offers",
+            "collaborations",
+            "target_grades",
+            "participant_range_start",
+            "participant_range_end",
             "comment",
+            "second_comment",
         )
 
     def update_company_interest_bdb(self, company_interest):

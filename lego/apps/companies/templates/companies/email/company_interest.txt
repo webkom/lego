@@ -8,7 +8,11 @@ E-post: {{ mail }}
 Semestere: {{ semesters }}
 Arrangementer: {{ events }}
 Andre ønsker: {{ others }}
+Samarbeid: {{ collaborations }}
+Klassetrinn: {{ target_grades }}
+Deltakere: {{ participants }}
 Kommentar: {{ comment }}
+Kommentar to: {{ second_comment }}
 
 
 Interessemeldingene finnes også på {{ frontend_url }}/companyInterest/
