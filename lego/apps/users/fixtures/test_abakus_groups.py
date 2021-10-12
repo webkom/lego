@@ -40,6 +40,16 @@ test_tree = {
         },
         {},
     ],
+    "EventTypeLimitTest": [
+        {
+            "permissions": [
+                "/sudo/admin/events/list/",
+                "/sudo/admin/events/view/",
+                "/sudo/admin/events/create/kid_event/",
+            ]
+        },
+        {},
+    ],
     "CommentTest": [
         {
             "permissions": [

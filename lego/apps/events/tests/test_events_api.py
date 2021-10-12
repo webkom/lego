@@ -154,6 +154,18 @@ _test_event_data = [
             }
         ],
     },
+    {
+        "title": "Event7",
+        "description": "Ingress7",
+        "text": "Ingress7",
+        "eventType": "kid_event",
+        "eventStatusType": "OPEN",
+        "location": "F252",
+        "startTime": "2015-09-01T13:20:30Z",
+        "endTime": "2015-09-01T13:20:30Z",
+        "mergeTime": "2016-01-01T13:20:30Z",
+        "isAbakomOnly": False,
+    },
 ]
 
 _test_pools_data = [
@@ -765,6 +777,59 @@ class CreateEventsTestCase(BaseAPITestCase):
         test_event["youtubeUrl"] = "skra"
         self.response = self.client.post(_get_list_url(), test_event)
         self.assertEqual(self.response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class EventTypePermissionTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+        AbakusGroup.objects.get(name="EventTypeLimitTest").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        self.event_response = self.client.post(_get_list_url(), _test_event_data[6])
+        self.assertEqual(self.event_response.status_code, 201)
+        self.event_id = self.event_response.json().pop("id", None)
+
+    def test_event_creation_allowed_type(self):
+        """Test event creation for event with allowed type limited keyword permission"""
+        self.assertEqual(self.event_response.status_code, 201)
+        self.assertIsNotNone(self.event_id)
+        self.assertEqual(
+            self.event_response.json()["eventType"], _test_event_data[6]["eventType"]
+        )
+
+    def test_event_update_allowed_type(self):
+        """Test event update for event with allowed type"""
+        self.patch_resp = self.client.patch(
+            _get_detail_url(self.event_id),
+            {"eventStatusType": "NORMAL", "text": "updated text"},
+        )
+        self.assertEqual(self.patch_resp.status_code, 200)
+
+    def test_event_update_allowed_type_to_forbidden_type(self):
+        """Test event update from allowed type to forbidden type"""
+        self.patch_resp = self.client.patch(
+            _get_detail_url(self.event_id), {"eventType": "social"}
+        )
+        self.assertEqual(self.patch_resp.status_code, 403)
+
+    def test_event_creation_forbidden_event_type(self):
+        """
+        Test event creation for event with forbidden type limited keyword permission. Should not
+        be allowed
+        """
+        event_data = _test_event_data[6].copy()
+        event_data["eventType"] = "event"
+        self.event_response = self.client.post(_get_list_url(), event_data)
+        self.assertEqual(self.event_response.status_code, 403)
+        self.event_id = self.event_response.json().pop("id", None)
+        self.assertIsNone(self.event_id)
 
 
 class PoolsTestCase(BaseAPITestCase):

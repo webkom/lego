@@ -26,6 +26,7 @@ from lego.apps.events.exceptions import (
 )
 from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
     EventAdministrateExportSerializer,
     EventAdministrateSerializer,
@@ -76,6 +77,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     )
     ordering_fields = ("start_time", "end_time", "title")
     ordering = "start_time"
+
+    permission_classes = [EventTypePermission]
 
     def get_queryset(self):
         user = self.request.user
