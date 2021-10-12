@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
@@ -53,13 +54,15 @@ class ListCompanyInterestTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         company_interest_list_response = self.client.get(_get_company_interests())
-        self.assertEqual(company_interest_list_response.status_code, 403)
+        self.assertEqual(
+            company_interest_list_response.status_code, status.HTTP_403_FORBIDDEN
+        )
 
     def test_list_with_bedkom_user(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         company_interest_list_response = self.client.get(_get_company_interests())
-        self.assertEqual(company_interest_list_response.status_code, 200)
+        self.assertEqual(company_interest_list_response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(company_interest_list_response.json()["results"]))
 
 
@@ -74,7 +77,7 @@ class CreateCompanyInterestTestCase(BaseAPITestCase):
         response = self.client.post(
             _get_company_interests(), _test_company_interest_data[0]
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class RetrieveSemestersInInterestFormTestCase(BaseAPITestCase):
@@ -86,7 +89,7 @@ class RetrieveSemestersInInterestFormTestCase(BaseAPITestCase):
 
     def test_retrieve_with_any_user(self):
         response = self.client.get(_get_company_semesters())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class DeleteCompanyInterestFromList(BaseAPITestCase):
@@ -103,15 +106,15 @@ class DeleteCompanyInterestFromList(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         response = self.client.delete(_get_detail_company_interest(1))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_with_bedkom_user(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         response = self.client.delete(_get_detail_company_interest(1))
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         get_response = self.client.get(_get_detail_company_interest(1))
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(get_response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class EditCompanyInterest(BaseAPITestCase):
@@ -130,9 +133,9 @@ class EditCompanyInterest(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_company_interest(1), _test_company_interest_data[1]
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         get_response = self.client.get(_get_detail_company_interest(1))
-        self.assertEqual(get_response.status_code, 403)
+        self.assertEqual(get_response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_edit_with_bedkom_user(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
@@ -140,6 +143,6 @@ class EditCompanyInterest(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_company_interest(1), _test_company_interest_data[1]
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         get_response = self.client.get(_get_detail_company_interest(1))
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.status_code, status.HTTP_200_OK)

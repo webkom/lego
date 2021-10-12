@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting
@@ -42,12 +43,12 @@ class CreateMeetingTestCase(BaseAPITestCase):
         """
         self.client.force_authenticate(user=self.abakommer)
         res = self.client.post(_get_list_url(), test_meeting_data[0])
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_pleb_cannot_create(self):
         self.client.force_authenticate(user=self.pleb)
         res = self.client.post(_get_list_url(), test_meeting_data[0])
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class RetrieveMeetingTestCase(BaseAPITestCase):
@@ -67,7 +68,7 @@ class RetrieveMeetingTestCase(BaseAPITestCase):
         self.meeting.invite_user(invited)
         self.client.force_authenticate(invited)
         res = self.client.get(_get_detail_url(self.meeting.id))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_uninvited_cannot_retrieve(self):
         user = self.abakule
@@ -75,12 +76,12 @@ class RetrieveMeetingTestCase(BaseAPITestCase):
         self.meeting.invite_user(user)
         self.meeting.uninvite_user(user)
         res = self.client.get(_get_detail_url(self.meeting.pk))
-        self.assertTrue(res.status_code, 403)
+        self.assertTrue(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_pleb_cannot_retrieve(self):
         self.client.force_authenticate(self.pleb)
         res = self.client.get(_get_detail_url(self.meeting.id))
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_can_see_invitations(self):
         self.meeting.created_by = self.abakule
@@ -96,7 +97,7 @@ class RetrieveMeetingTestCase(BaseAPITestCase):
         for user in [self.abakule, self.abakommer, self.pleb]:
             self.client.force_authenticate(user)
             res = self.client.get(_get_invitations_list_url(self.meeting.id))
-            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.status_code, status.HTTP_200_OK)
             invitations = list(res.json()["results"])
             attending = [
                 inv for inv in invitations if inv["status"] == constants.ATTENDING
@@ -125,18 +126,18 @@ class DeleteMeetingTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.abakommer)
         res = self.client.delete(_get_detail_url(self.meeting.pk))
-        self.assertEqual(res.status_code, 204)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_cannot_delete_when_invited(self):
         self.meeting.invite_user(self.abakommer)
         self.client.force_authenticate(self.abakommer)
         res = self.client.delete(_get_detail_url(self.meeting.pk))
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_cannot_delete_random_meeting(self):
         self.client.force_authenticate(self.abakommer)
         res = self.client.delete(_get_detail_url(self.meeting.pk))
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class InviteToMeetingTestCase(BaseAPITestCase):
@@ -164,7 +165,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         res = self.client.post(
             _get_detail_url(self.meeting.id) + "invite_user/", {"user": self.abakule.id}
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_member_can_invite_to_meeting(self):
         self.meeting.created_by = self.abakule
@@ -177,7 +178,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         res = self.client.post(
             _get_detail_url(self.meeting.id) + "invite_user/", {"user": self.pleb.id}
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_abakulemember_can_invite_to_meeting(self):
         self.meeting.created_by = self.abakommer
@@ -190,7 +191,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         res = self.client.post(
             _get_detail_url(self.meeting.id) + "invite_user/", {"user": self.pleb.id}
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_can_bulk_invite_to_meeting(self):
         self.meeting.created_by = self.abakommer
@@ -204,7 +205,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
             _get_detail_url(self.meeting.id) + "bulk_invite/",
             {"groups": [self.AbaBrygg.id], "users": [self.pleb.id]},
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         for user in self.AbaBrygg.users.all():
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertTrue(present)
@@ -217,7 +218,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
             _get_detail_url(self.meeting.id) + "bulk_invite/",
             {"groups": [self.AbaBrygg.id], "users": [self.pleb.id]},
         )
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
         for user in self.AbaBrygg.users.all():
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertFalse(present)
@@ -229,7 +230,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         res = self.client.post(
             _get_invitations_list_url(self.meeting.id), {"user": self.abakule.id}
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_can_invite_group(self):
         me = self.abakommer
@@ -240,7 +241,7 @@ class InviteToMeetingTestCase(BaseAPITestCase):
         res = self.client.post(
             _get_detail_url(self.meeting.id) + "invite_group/", {"group": webkom.id}
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         for user in webkom.users.all():
             present = self.meeting.invited_users.filter(id=user.id).exists()
             self.assertTrue(present)
@@ -267,7 +268,7 @@ class UpdateInviteTestCase(BaseAPITestCase):
             _get_invitations_list_url(self.meeting.id) + str(me.id) + "/",
             {"status": constants.ATTENDING},
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         invite.refresh_from_db()
         self.assertEqual(invite.status, constants.ATTENDING)
 
@@ -283,7 +284,7 @@ class UpdateInviteTestCase(BaseAPITestCase):
             _get_invitations_list_url(self.meeting.id) + str(me.id) + "/",
             {"status": constants.ATTENDING},
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         invite.refresh_from_db()
         self.assertEqual(invite.status, constants.NO_ANSWER)
 
@@ -307,8 +308,8 @@ class UnauthorizedTestCase(BaseAPITestCase):
 
     def test_can_not_retrieve_list(self):
         res = self.client.get(_get_list_url())
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_can_not_retrieve_meeting(self):
         res = self.client.get(_get_detail_url(self.meeting.id))
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)

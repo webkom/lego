@@ -1,6 +1,7 @@
 from unittest import mock
 
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
@@ -33,7 +34,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
 
     def test_with_unauthenticated_user(self):
         response = self.client.get(_get_list_request_url())
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_without_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -41,7 +42,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
         )
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.get(_get_list_request_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_empty_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -49,7 +50,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
         )
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.get(_get_student_confirmation_token_request_url(""))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -59,7 +60,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.get(
             _get_student_confirmation_token_request_url("InvalidToken")
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_valid_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -73,7 +74,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
                 )
             )
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json().get("studentUsername"), "teststudentusername")
         self.assertEqual(response.json().get("course"), constants.DATA)
         self.assertEqual(response.json().get("member"), True)
@@ -90,7 +91,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
                 )
             )
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json().get("studentUsername"), "teststudentusername")
         self.assertEqual(response.json().get("course"), constants.DATA)
         self.assertEqual(response.json().get("member"), True)
@@ -116,7 +117,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
 
     def test_with_unauthenticated_user(self):
         response = self.client.post(_get_list_request_url())
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_without_data(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -124,7 +125,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         )
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_request_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -144,7 +145,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
                 "captcha_response": "testCaptcha",
             },
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -164,7 +165,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
                 "wrong_captcha_response": "testCaptcha",
             },
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -178,7 +179,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         invalid_data = self._test_student_confirmation_data.copy()
         invalid_data["student_username"] = "test_u$er@"
         response = self.client.post(_get_list_request_url(), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -192,7 +193,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         invalid_data = self._test_student_confirmation_data.copy()
         invalid_data["course"] = "test"
         response = self.client.post(_get_list_request_url(), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -206,7 +207,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         invalid_data = self._test_student_confirmation_data.copy()
         invalid_data["member"] = "test"
         response = self.client.post(_get_list_request_url(), invalid_data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -220,7 +221,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.post(
             _get_list_request_url(), self._test_student_confirmation_data
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -234,7 +235,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.post(
             _get_list_request_url(), self._test_student_confirmation_data
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
@@ -248,7 +249,7 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.post(
             _get_list_request_url(), self._test_student_confirmation_data
         )
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
@@ -275,7 +276,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.post(
             _get_student_confirmation_token_request_url("randomToken")
         )
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_without_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -283,7 +284,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         )
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_perform_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_empty_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -291,7 +292,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         )
         self.client.force_authenticate(self.user_without_student_confirmation)
         response = self.client.post(_get_list_perform_url())
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_invalid_token(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -301,7 +302,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.post(
             _get_student_confirmation_token_perform_url("InvalidToken")
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_with_already_confirmed_student_username(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -310,7 +311,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user_with_student_confirmation)
         token = self.create_token()
         response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_without_abakus_member_checked_and_komtek_course(self):
         AbakusGroup.objects.get(name="Users").add_user(
@@ -319,7 +320,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user_without_student_confirmation)
         token = self.create_token(course=constants.KOMTEK, member=False)
         response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user = self.user_without_student_confirmation
         user_groups = user.all_groups
@@ -349,7 +350,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         )
         token = self.create_token(course=constants.KOMTEK, member=True)
         response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user = self.user_with_grade_group_but_no_student_confirmation
         user_groups = user.all_groups
@@ -376,7 +377,7 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(self.user_without_student_confirmation)
         token = self.create_token()
         response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user = self.user_without_student_confirmation
         user_groups = user.all_groups

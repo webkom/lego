@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.users import constants
 from lego.apps.users.constants import LEADER
@@ -42,7 +43,7 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.get(_get_list_url())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), len(self.all_groups))
 
         for group in response.json()["results"]:
@@ -59,7 +60,7 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_with_auth(self):
         self.successful_list(self.user)
@@ -87,11 +88,11 @@ class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):
     def successful_retrieve(self, user, pk):
         self.client.force_authenticate(user=user)
         response = self.client.get(_get_detail_url(pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_without_auth(self):
         response = self.client.get(_get_detail_url(1))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_with_permission(self):
         self.successful_retrieve(self.with_permission, self.test_group.pk)
@@ -99,14 +100,14 @@ class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):
     def test_own_group(self):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.get(_get_detail_url(self.test_group.pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_without_permission(self):
         new_group = AbakusGroup.objects.create(name="new_group")
 
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.get(_get_detail_url(new_group.pk))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class CreateAbakusGroupAPITestCase(BaseAPITestCase):
@@ -132,7 +133,7 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.post(_get_list_url(), _test_group_data)
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         created_group = AbakusGroup.objects.get(name=_test_group_data["name"])
 
         for key, value in _test_group_data.items():
@@ -154,12 +155,12 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         }
 
         response = self.client.post(_get_list_url(), group)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(expected_data, response.json())
 
     def test_without_auth(self):
         response = self.client.post(_get_list_url(), _test_group_data)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_with_permission(self):
         self.successful_create(self.with_permission)
@@ -168,7 +169,7 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.without_permission)
         response = self.client.post(_get_list_url(), _test_group_data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertRaises(
             AbakusGroup.DoesNotExist,
             AbakusGroup.objects.get,
@@ -209,7 +210,7 @@ class UpdateAbakusGroupAPITestCase(BaseAPITestCase):
         )
         group = AbakusGroup.objects.get(pk=self.test_group.pk)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(group.name, self.modified_group["name"])
         self.assertEqual(group.description, self.modified_group["description"])
@@ -219,7 +220,7 @@ class UpdateAbakusGroupAPITestCase(BaseAPITestCase):
         response = self.client.put(
             _get_detail_url(self.test_group.pk), self.modified_group
         )
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_with_permission(self):
         self.successful_update(self.with_permission)
@@ -230,7 +231,7 @@ class UpdateAbakusGroupAPITestCase(BaseAPITestCase):
             _get_detail_url(self.test_group.pk), self.modified_group
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_as_leader(self):
         self.successful_update(self.leader)
@@ -256,7 +257,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.abakule)
         response = self.client.get(_get_membership_url(self.interest_group.pk))
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_can_join_interest_group(self):
         self.client.force_authenticate(user=self.abakule)
@@ -264,7 +265,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakule.pk, "role": "member"},
         )
-        self.assertEquals(response.status_code, 201)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_leave_interest_group(self):
         self.client.force_authenticate(user=self.abakule)
@@ -273,7 +274,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_detail_url(self.interest_group.pk, membership.pk)
         )
 
-        self.assertEquals(response.status_code, 204)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.abakule)
@@ -281,7 +282,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakommer.pk, "role": "member"},
         )
-        self.assertEquals(response.status_code, 403)
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_cannot_leave_for_another(self):
         self.client.force_authenticate(user=self.abakule)
@@ -289,7 +290,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         response = self.client.delete(
             _get_membership_detail_url(self.interest_group.pk, membership.id)
         )
-        self.assertEquals(response.status_code, 403)
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_leader_can_kick(self):
         self.client.force_authenticate(user=self.leader)
@@ -298,7 +299,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         response = self.client.delete(
             _get_membership_detail_url(self.interest_group.pk, membership.id)
         )
-        self.assertEquals(response.status_code, 204)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_leader_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.leader)
@@ -306,4 +307,4 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakommer.pk, "role": "member"},
         )
-        self.assertEquals(response.status_code, 403)
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)

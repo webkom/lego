@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.urls import reverse
 from django.utils import timezone
+from rest_framework import status
 
 from icalendar import Calendar
 
@@ -113,35 +114,35 @@ class IcalAuthenticationTestCase(BaseAPITestCase):
 
     def test_get_list(self, *args):
         res = self.client.get(_get_ical_list_url(self.token))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         res_token = res.json()["result"]["token"]["token"]
         self.assertEqual(res_token, self.token)
 
         res = self.client.get(_get_ical_list_url(self.token))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_get_with_token(self, *args):
         for url in _get_all_ical_urls(self.token):
             res = self.client.get(url)
-            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.status_code, status.HTTP_200_OK)
             self.help_test_ical_content_permission(res.content, self.user)
 
     def test_get_ical_authenticated(self, *args):
         self.client.force_authenticate(self.user)
         for url in _get_all_ical_urls(""):
             res = self.client.get(url)
-            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.status_code, status.HTTP_200_OK)
             self.help_test_ical_content_permission(res.content, self.user)
 
     def test_get_ical_without_authentication(self, *args):
         for url in _get_all_ical_urls(""):
             res = self.client.get(url)
-            self.assertEqual(res.status_code, 401)
+            self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_ical_with_invalid_token(self, *args):
         for url in _get_all_ical_urls("invalid-token-here"):
             res = self.client.get(url)
-            self.assertEqual(res.status_code, 401)
+            self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class IcalPersonalTestCase(BaseAPITestCase):
@@ -249,7 +250,7 @@ class ICalTokenGenerateTestCase(BaseAPITestCase):
 
         res = self.client.get(_get_token_url())
         token = ICalToken.objects.get(user=self.abakommer)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["token"], token.token)
 
 
@@ -268,7 +269,7 @@ class ICalTokenRegenerateTestCase(BaseAPITestCase):
         new_token = ICalToken.objects.get(user=self.abakommer).token
 
         self.assertNotEqual(old_token, new_token)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["token"], new_token)
         self.assertNotEqual(res.json()["token"], old_token)
 
@@ -280,6 +281,6 @@ class ICalTokenRegenerateTestCase(BaseAPITestCase):
         new_token = ICalToken.objects.get(user=self.abakommer).token
 
         self.assertEqual(old_token, new_token)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["token"], new_token)
         self.assertEqual(res.json()["token"], old_token)

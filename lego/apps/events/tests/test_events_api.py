@@ -5,6 +5,7 @@ from unittest import mock, skipIf
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+from rest_framework import status
 
 import stripe
 from djangorestframework_camel_case.render import camelize
@@ -234,21 +235,21 @@ class ListEventsTestCase(BaseAPITestCase):
 
     def test_with_unauth(self):
         event_response = self.client.get(_get_list_url())
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(event_response.json()["results"]), 6)
 
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(event_response.json()["results"]), 6)
 
     def test_with_webkom_user(self):
         AbakusGroup.objects.get(name="Webkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_list_url())
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(event_response.json()["results"]), 10)
 
 
@@ -266,13 +267,13 @@ class RetrieveEventsTestCase(BaseAPITestCase):
     def test_without_authentication(self):
         """Test that unauth user can retrieve event"""
         event_response = self.client.get(_get_detail_url(2))
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
 
     def test_with_authentication(self):
         """Test that auth user can retrieve event"""
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(2))
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
 
     def test_unauth_cant_see_registrations(self):
         event_response = self.client.get(_get_detail_url(1))
@@ -307,14 +308,14 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event = Event.objects.get(title="ABAKOM_ONLY")
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(event.id))
-        self.assertEqual(event_response.status_code, 404)
+        self.assertEqual(event_response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_without_group_permission_abakom_only(self):
         """Test that auth user cannot retrieve abakom only event"""
         event = Event.objects.get(title="ABAKOM_ONLY")
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(event.id))
-        self.assertEqual(event_response.status_code, 404)
+        self.assertEqual(event_response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_with_group_permission_abakom_only(self):
         """Test that abakom user can retrieve abakom only event"""
@@ -322,7 +323,7 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event = Event.objects.get(title="ABAKOM_ONLY")
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_detail_url(event.id))
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
 
     def test_payment_status_hidden_when_not_priced(self):
         """Test that paymentStatus is hidden when getting nonpriced event"""
@@ -477,13 +478,13 @@ class CreateEventsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Webkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         self.event_response = self.client.post(_get_list_url(), _test_event_data[0])
-        self.assertEqual(self.event_response.status_code, 201)
+        self.assertEqual(self.event_response.status_code, status.HTTP_201_CREATED)
         self.event_id = self.event_response.json().pop("id", None)
 
     def test_event_creation(self):
         """Test event creation with pools"""
         self.assertIsNotNone(self.event_id)
-        self.assertEqual(self.event_response.status_code, 201)
+        self.assertEqual(self.event_response.status_code, status.HTTP_201_CREATED)
         res_event = self.event_response.json()
         expect_event = camelize(_test_event_data[0])
         for key in [
@@ -510,7 +511,7 @@ class CreateEventsTestCase(BaseAPITestCase):
     def test_event_creation_tba(self):
         """Test event creation for TBA status type"""
         self.event_response = self.client.post(_get_list_url(), _test_event_data[2])
-        self.assertEqual(self.event_response.status_code, 201)
+        self.assertEqual(self.event_response.status_code, status.HTTP_201_CREATED)
         event_id = self.event_response.json().pop("id", None)
         self.assertIsNotNone(event_id)
         res_event = self.event_response.json()
@@ -533,7 +534,7 @@ class CreateEventsTestCase(BaseAPITestCase):
     def test_event_creation_open(self):
         """Test event creation for OPEN status type"""
         self.event_response = self.client.post(_get_list_url(), _test_event_data[3])
-        self.assertEqual(self.event_response.status_code, 201)
+        self.assertEqual(self.event_response.status_code, status.HTTP_201_CREATED)
         self.event_id = self.event_response.json().pop("id", None)
         self.assertIsNotNone(self.event_id)
         res_event = self.event_response.json()
@@ -556,7 +557,7 @@ class CreateEventsTestCase(BaseAPITestCase):
     def test_event_creation_infinite(self):
         """Test event creation for INFINITE status type"""
         self.event_response = self.client.post(_get_list_url(), _test_event_data[4])
-        self.assertEqual(self.event_response.status_code, 201)
+        self.assertEqual(self.event_response.status_code, status.HTTP_201_CREATED)
         self.event_id = self.event_response.json().pop("id", None)
         self.assertIsNotNone(self.event_id)
         res_event = self.event_response.json()
@@ -580,7 +581,7 @@ class CreateEventsTestCase(BaseAPITestCase):
     def test_event_create_no_event_status_type(self):
         """Test event creation with no event status type posted"""
         event_response = self.client.post(_get_list_url(), _test_event_data[5])
-        self.assertEqual(event_response.status_code, 201)
+        self.assertEqual(event_response.status_code, status.HTTP_201_CREATED)
         event_id = event_response.json().pop("id", None)
         self.assertIsNotNone(event_id)
         created_event = Event.objects.get(id=event_id)
@@ -589,13 +590,13 @@ class CreateEventsTestCase(BaseAPITestCase):
     def test_event_creation_without_auth(self):
         self.client.logout()
         response = self.client.post(_get_list_url(), _test_event_data[1])
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_event_creation_without_perm(self):
         user = User.objects.get(username="abakule")
         self.client.force_authenticate(user)
         response = self.client.post(_get_list_url(), _test_event_data[1])
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_event_update(self):
         """Test updating event attributes"""
@@ -604,7 +605,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         event_update_response = self.client.put(
             _get_detail_url(self.event_id), expect_event
         )
-        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.event_id, event_update_response.json().pop("id"))
         res_event = event_update_response.json()
         for key in [
@@ -632,7 +633,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         event_update_response = self.client.put(
             _get_detail_url(self.event_id), try_event
         )
-        self.assertEqual(event_update_response.status_code, 403)
+        self.assertEqual(event_update_response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_event_update_without_auth(self):
         """Test updating event attributes without auth is not allowed"""
@@ -642,7 +643,9 @@ class CreateEventsTestCase(BaseAPITestCase):
         event_update_response = self.client.put(
             _get_detail_url(self.event_id), try_event
         )
-        self.assertEqual(event_update_response.status_code, 401)
+        self.assertEqual(
+            event_update_response.status_code, status.HTTP_401_UNAUTHORIZED
+        )
 
     def test_event_partial_update(self):
         """Test patching event attributes"""
@@ -650,7 +653,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         event_update_response = self.client.patch(
             _get_detail_url(self.event_id), {"title": "PATCHED"}
         )
-        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.event_id, event_update_response.json().pop("id"))
         res_event = event_update_response.json()
         self.assertEqual(res_event["title"], "PATCHED")
@@ -675,7 +678,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         event_update_response = self.client.put(
             _get_detail_url(self.event_id), expect_event
         )
-        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.event_id, event_update_response.json().pop("id"))
         res_event = event_update_response.json()
         for key in [
@@ -707,7 +710,7 @@ class CreateEventsTestCase(BaseAPITestCase):
             _get_detail_url(self.event_id), _test_event_data[1]
         )
 
-        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
         res_event = event_update_response.json()
         expect_event = _test_event_data[1]
         for key in [
@@ -734,7 +737,7 @@ class CreateEventsTestCase(BaseAPITestCase):
             _get_detail_url(self.event_id), {"pools": []}
         )
 
-        self.assertEqual(event_update_response.status_code, 200)
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
         res_event = event_update_response.json()
         expect_event = _test_event_data[0]
         for key in [
@@ -755,13 +758,13 @@ class CreateEventsTestCase(BaseAPITestCase):
         test_event = _test_event_data[0].copy()
         test_event["youtubeUrl"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"
         self.response = self.client.post(_get_list_url(), test_event)
-        self.assertEqual(self.response.status_code, 201)
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
 
     def test_event_wrong_youtube_url(self):
         test_event = _test_event_data[0].copy()
         test_event["youtubeUrl"] = "skra"
         self.response = self.client.post(_get_list_url(), test_event)
-        self.assertEqual(self.response.status_code, 400)
+        self.assertEqual(self.response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class PoolsTestCase(BaseAPITestCase):
@@ -779,26 +782,26 @@ class PoolsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Webkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
-        self.assertEqual(pool_response.status_code, 201)
+        self.assertEqual(pool_response.status_code, status.HTTP_201_CREATED)
 
     def test_create_pool_as_bedkom(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
-        self.assertEqual(pool_response.status_code, 201)
+        self.assertEqual(pool_response.status_code, status.HTTP_201_CREATED)
 
     def test_create_failing_pool_as_abakus(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.post(_get_pools_list_url(1), _test_pools_data[0])
-        self.assertEqual(pool_response.status_code, 403)
+        self.assertEqual(pool_response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_pool_with_registrations_as_admin(self):
         """Test that pool deletion is not possible when registrations are attached"""
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.delete(_get_pools_detail_url(1, 1))
-        self.assertEqual(pool_response.status_code, 409)
+        self.assertEqual(pool_response.status_code, status.HTTP_409_CONFLICT)
 
     def test_delete_pool_without_registrations_as_admin(self):
         """Test that pool deletion is possible without attached registrations"""
@@ -809,7 +812,7 @@ class PoolsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.delete(_get_pools_detail_url(1, pool.id))
-        self.assertEqual(pool_response.status_code, 204)
+        self.assertEqual(pool_response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_pool_without_registrations_as_abakus(self):
         """Test that abakususer cannot delete pool"""
@@ -820,7 +823,7 @@ class PoolsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         pool_response = self.client.delete(_get_pools_detail_url(1, pool.id))
-        self.assertEqual(pool_response.status_code, 403)
+        self.assertEqual(pool_response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 @mock.patch("lego.apps.events.views.verify_captcha", return_value=True)
@@ -843,7 +846,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
         reg_status = Registration.objects.get(
             pk=registration_response.json().get("id")
         ).status
@@ -862,7 +865,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
         # We check the status against the database because the response is dependant
         # on whether we run celery in eager mode or not.
         reg_status = Registration.objects.get(
@@ -880,7 +883,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
         reg_status = Registration.objects.get(
             pk=registration_response.json().get("id")
         ).status
@@ -896,7 +899,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
         reg_status = Registration.objects.get(
             pk=registration_response.json().get("id")
         ).status
@@ -912,7 +915,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
         reg_status = Registration.objects.get(
             pk=registration_response.json().get("id")
         ).status
@@ -932,8 +935,8 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         get_unregistered = self.client.get(
             _get_registrations_detail_url(event.id, registration.id)
         )
-        self.assertEqual(registration_response.status_code, 202)
-        self.assertEqual(get_unregistered.status_code, 200)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(get_unregistered.status_code, status.HTTP_200_OK)
         self.assertEqual(get_unregistered.json().get("updatedBy"), self.abakus_user.id)
         self.assertIsNone(get_unregistered.json().get("pool"))
 
@@ -961,7 +964,7 @@ class RegistrationsTestCase(BaseAPITestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(registration_response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_feedback(self, *args):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -972,7 +975,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"feedback": "UPDATED"},
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["feedback"], "UPDATED")
 
     def test_update_presence_without_permission(self, *args):
@@ -985,7 +988,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"presence": "PRESENT"},
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_presence_with_permission(self, *args):
         """Test that admin can update presence"""
@@ -1000,7 +1003,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             {"presence": "PRESENT"},
         )
         registration = Registration.objects.get(id=res.json()["id"])
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["presence"], "PRESENT")
         self.assertEqual(registration.updated_by, self.abakus_user)
 
@@ -1017,7 +1020,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"feedback": "UPDATED"},
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_admin_update_registration(self, *args):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -1033,7 +1036,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             {"feedback": "UPDATED_BY_ADMIN"},
         )
         registration = Registration.objects.get(id=res.json()["id"])
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["feedback"], "UPDATED_BY_ADMIN")
         self.assertEqual(registration.updated_by, self.webkom_user)
 
@@ -1048,7 +1051,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration.id)
         )
 
-        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(registration_response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_required_feedback_failing(self, *args):
         """Test that register returns 400 when not providing feedback when required"""
@@ -1058,7 +1061,7 @@ class RegistrationsTestCase(BaseAPITestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {}
         )
-        self.assertEqual(registration_response.status_code, 400)
+        self.assertEqual(registration_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_required_feedback_success(self, *args):
         """Test that register returns 202 when providing feedback when required"""
@@ -1068,7 +1071,7 @@ class RegistrationsTestCase(BaseAPITestCase):
         registration_response = self.client.post(
             _get_registrations_list_url(event.id), {"feedback": "TEST"}
         )
-        self.assertEqual(registration_response.status_code, 202)
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
 
     def test_update_payment_status_with_permissions(self, mock_verify_captcha):
         """Test user with permission can update payment_status"""
@@ -1082,7 +1085,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"payment_status": "manual"},
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_update_payment_status_wrongly_with_permissions(self, mock_verify_captcha):
         """Test user with permission fails in updating payment_status when giving wrong choice"""
@@ -1097,7 +1100,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"payment_status": "feil-data"},
         )
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_payment_status_without_permissions(self, mock_verify_captcha):
         """Test that user without permission cannot update _status"""
@@ -1109,7 +1112,7 @@ class RegistrationsTestCase(BaseAPITestCase):
             _get_registrations_detail_url(event.id, registration_response.json()["id"]),
             {"payment_status": "manual"},
         )
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class EventAdministrateTestCase(BaseAPITestCase):
@@ -1130,7 +1133,7 @@ class EventAdministrateTestCase(BaseAPITestCase):
         event_response = self.client.get(
             f"{_get_detail_url(self.event.id)}administrate/"
         )
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(event_response.json().get("id"), self.event.id)
         self.assertEqual(len(event_response.json().get("pools")), 2)
 
@@ -1140,7 +1143,7 @@ class EventAdministrateTestCase(BaseAPITestCase):
         event_response = self.client.get(
             f"{_get_detail_url(self.event.id)}administrate/"
         )
-        self.assertEqual(event_response.status_code, 403)
+        self.assertEqual(event_response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class ExportInfoTestCase(BaseAPITestCase):
@@ -1170,7 +1173,7 @@ class ExportInfoTestCase(BaseAPITestCase):
         attendee_email = self.event.pools.first().registrations.first().user.email
 
         self.assertEqual(self.event.use_contact_tracing, True)
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             event_response.json()
             .get("pools")[0]
@@ -1229,7 +1232,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
             },
         )
 
-        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(registration_response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.pool.registrations.count(), 1)
         self.assertEqual(pool_two.registrations.count(), 0)
         self.assertEqual(
@@ -1254,7 +1257,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
             },
         )
 
-        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(registration_response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(self.event.number_of_registrations, 0)
 
     def test_with_nonexistant_pool(self):
@@ -1274,7 +1277,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
             },
         )
 
-        self.assertEqual(registration_response.status_code, 400)
+        self.assertEqual(registration_response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(self.event.number_of_registrations, 0)
 
     def test_with_feedback(self):
@@ -1290,7 +1293,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
             },
         )
 
-        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(registration_response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(registration_response.json().get("feedback"), "TEST")
         self.assertEqual(
             registration_response.json()["createdBy"], self.request_user.id
@@ -1312,7 +1315,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
             },
         )
 
-        self.assertEqual(registration_response.status_code, 400)
+        self.assertEqual(registration_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_ar_to_waiting_list(self):
         AbakusGroup.objects.get(name="Webkom").add_user(self.request_user)
@@ -1324,7 +1327,7 @@ class CreateAdminRegistrationTestCase(BaseAPITestCase):
             {"user": self.user.id, "admin_registration_reason": "test"},
         )
 
-        self.assertEqual(registration_response.status_code, 201)
+        self.assertEqual(registration_response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
 
@@ -1357,7 +1360,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
             {"user": user.id, "admin_unregistration_reason": "test"},
         )
 
-        self.assertEqual(registration_response.status_code, 200)
+        self.assertEqual(registration_response.status_code, status.HTTP_200_OK)
         self.assertEqual(registration_response.json()["updatedBy"], self.webkom_user.id)
         self.assertEqual(self.event.number_of_registrations, registrations_before - 1)
 
@@ -1372,7 +1375,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
             {"user": user.id, "admin_unregistration_reason": "test"},
         )
 
-        self.assertEqual(registration_response.status_code, 403)
+        self.assertEqual(registration_response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_without_admin_unregistration_reason(self):
         """Test that admin cannot unregister user without unregistration reason"""
@@ -1384,7 +1387,7 @@ class AdminUnregistrationTestCase(BaseAPITestCase):
             {"user": user.id, "admin_unregistration_reason": ""},
         )
 
-        self.assertEqual(registration_response.status_code, 400)
+        self.assertEqual(registration_response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 @skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
@@ -1442,7 +1445,7 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
         self.client.force_authenticate(self.abakus_user)
 
         res = self.get_payment_intent()
-        self.assertEqual(res.status_code, 202)
+        self.assertEqual(res.status_code, status.HTTP_202_ACCEPTED)
 
         registration = Registration.objects.get(id=self.registration.id)
 
@@ -1482,13 +1485,13 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
         mock_notify.assert_not_called()
 
         res = self.get_payment_intent()
-        self.assertEqual(res.status_code, 403)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
         make_penalty_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         res = self.get_payment_intent()
-        self.assertEqual(res.status_code, 202)
+        self.assertEqual(res.status_code, status.HTTP_202_ACCEPTED)
         self.assertIsNone(reg.payment_intent_id)
 
         reg.refresh_from_db()
@@ -1724,21 +1727,21 @@ class CapacityExpansionTestCase(BaseAPITestCase):
         self.updated_event["pools"][0]["capacity"] = 11
         response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(self.event.waiting_registrations.count(), 0)
 
     def test_bump_on_pool_creation(self):
         self.updated_event["pools"].append(_test_pools_data[0])
         response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(self.event.waiting_registrations.count(), 0)
 
     def test_no_bump_on_reduced_pool_size(self):
         self.updated_event["pools"][0]["capacity"] = 9
         response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(self.event.waiting_registrations.count(), 1)
 
 
@@ -1777,7 +1780,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
-        self.assertEquals(res.status_code, 200)
+        self.assertEquals(res.status_code, status.HTTP_200_OK)
         self.assertNotEqual(res.json().get("user", None), None)
 
     def test_asd_user(self):
@@ -1786,12 +1789,12 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": "asd007 xXx james bond"},
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_no_username(self):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(_get_registration_search_url(self.event.pk), {})
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_not_registered(self):
         self.client.force_authenticate(self.webkom_user)
@@ -1799,7 +1802,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.webkom_user.username},
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_auth(self):
         self.client.force_authenticate(self.users[0])
@@ -1807,7 +1810,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
-        self.assertEquals(res.status_code, 403)
+        self.assertEquals(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_double_register(self):
         self.client.force_authenticate(self.webkom_user)
@@ -1819,7 +1822,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
-        self.assertEquals(res.status_code, 400)
+        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UpcomingEventsTestCase(BaseAPITestCase):
@@ -1842,7 +1845,7 @@ class UpcomingEventsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_upcoming_url())
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(event_response.json()), 2)
 
     def test_filter_out_old(self):
@@ -1854,10 +1857,10 @@ class UpcomingEventsTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
         event_response = self.client.get(_get_upcoming_url())
-        self.assertEqual(event_response.status_code, 200)
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(event_response.json()), 1)
         self.assertNotEqual(event_response.json()[0]["id"], event.pk)
 
     def test_unauthenticated(self):
         event_response = self.client.get(_get_upcoming_url())
-        self.assertEqual(event_response.status_code, 401)
+        self.assertEqual(event_response.status_code, status.HTTP_401_UNAUTHORIZED)

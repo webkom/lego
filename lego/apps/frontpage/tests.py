@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework import status
 
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
@@ -24,7 +25,7 @@ class FrontpageAPITestCase(BaseAPITestCase):
     def test_pinned_is_first(self):
         self.client.force_authenticate(self.user)
         res = self.client.get(_get_frontpage())
-        self.assertEquals(res.status_code, 200)
+        self.assertEquals(res.status_code, status.HTTP_200_OK)
         events = res.json()["events"]
         self.assertGreater(len(events), 1)
         first = events[0]
@@ -36,7 +37,7 @@ class FrontpageAPITestCase(BaseAPITestCase):
 
     def test_pinned_is_first_not_logged_in(self):
         res = self.client.get(_get_frontpage())
-        self.assertEquals(res.status_code, 200)
+        self.assertEquals(res.status_code, status.HTTP_200_OK)
         events = res.json()["events"]
         self.assertGreater(len(events), 1)
         first = events[0]

@@ -1,5 +1,7 @@
 import uuid
 
+from rest_framework import status
+
 from lego.apps.flatpages.models import Page
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.tests.utils import (
@@ -30,7 +32,7 @@ class PageAPITestCase(BaseAPITestCase):
 
     def test_get_pages(self):
         response = self.client.get("/api/v1/pages/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 4)
         first = response.json()["results"][0]
         self.assertEqual(first["title"], self.pages.first().title)
@@ -41,14 +43,14 @@ class PageAPITestCase(BaseAPITestCase):
         slug = "webkom"
         response = self.client.get("/api/v1/pages/{0}/".format(slug))
         expected = self.pages.get(slug=slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["title"], expected.title)
         self.assertEqual(response.json()["slug"], expected.slug)
         self.assertEqual(response.json()["content"], expected.content)
 
     def test_non_existing_retrieve(self):
         response = self.client.get("/api/v1/pages/badslug/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_unauthenticated(self):
         slug = "webkom"
@@ -56,7 +58,7 @@ class PageAPITestCase(BaseAPITestCase):
         for method in methods:
             call = getattr(self.client, method)
             response = call("/api/v1/pages/{0}/".format(slug))
-            self.assertEqual(response.status_code, 401)
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized(self):
         slug = "webkom"
@@ -66,20 +68,20 @@ class PageAPITestCase(BaseAPITestCase):
         for method in methods:
             call = getattr(self.client, method)
             response = call("/api/v1/pages/{0}/".format(slug))
-            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_page(self):
         page = {"title": "cat", "content": "hei"}
         user = create_user_with_permissions("/sudo/admin/pages/")
         self.client.force_authenticate(user)
         response = self.client.post("/api/v1/pages/", data=page)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_list_with_keyword_permissions(self):
         user = create_user_with_permissions("/sudo/admin/pages/list/")
         self.client.force_authenticate(user)
         response = self.client.get("/api/v1/pages/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 5)
 
     def test_edit_with_object_permissions(self):
@@ -94,7 +96,7 @@ class PageAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             "/api/v1/pages/{0}/".format(slug), get_new_unique_page()
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_edit_without_object_permissions(self):
         slug = "webkom"
@@ -109,4 +111,4 @@ class PageAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             "/api/v1/pages/{0}/".format(slug), get_new_unique_page()
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
