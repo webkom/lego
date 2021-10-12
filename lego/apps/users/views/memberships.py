@@ -17,7 +17,7 @@ class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         filters.OrderingFilter,
         LegoPermissionFilter,
     )
-    ordering = "id"
+    ordering = ["role", "id"]
 
     def get_queryset(self):
         group = self.kwargs["group_pk"]
