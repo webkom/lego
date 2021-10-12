@@ -41,4 +41,5 @@ class RegistrationConfirmationSerializer(serializers.ModelSerializer):
             "gender",
             "password",
             "allergies",
+            "phone_number",
         )
