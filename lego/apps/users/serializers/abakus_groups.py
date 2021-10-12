@@ -55,12 +55,6 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
         )
 
 
-class AbakusGroupNameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AbakusGroup
-        fields = ("name", "id")
-
-
 class PublicListAbakusGroupSerializer(PublicAbakusGroupSerializer):
     logo = ImageField(required=False, options={"height": 400, "width": 400})
 
