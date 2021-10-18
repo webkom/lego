@@ -1,4 +1,5 @@
 from datetime import timedelta
+from math import ceil
 
 from django.db.models import Q
 from django.utils import timezone
@@ -12,16 +13,20 @@ from lego.utils.tasks import AbakusTask
 
 log = get_logger()
 
+MAX_INACTIVE_DAYS = 183
+MIN_INACTIVE_DAYS = 126
+MEDIAN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - ceil(
+    (MAX_INACTIVE_DAYS - MIN_INACTIVE_DAYS) / 2
+)
+
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def send_inactive_reminder_mail(self, logger_context=None):
 
     self.setup_logger(logger_context)
 
-    max_inactive_days = 183
-
     users_to_delete = User.objects.filter(
-        Q(last_login__lte=timezone.now() - timedelta(days=max_inactive_days))
+        Q(last_login__lte=timezone.now() - timedelta(days=MAX_INACTIVE_DAYS))
         and Q(inactive_notified_counter__gte=4)
     )
 
@@ -30,20 +35,20 @@ def send_inactive_reminder_mail(self, logger_context=None):
         user.save()
 
     def send_inactive_notification(user):
-        notification = InactiveNotification(user, max_inactive_days=max_inactive_days)
+        notification = InactiveNotification(user, max_inactive_days=MAX_INACTIVE_DAYS)
         notification.notify()
         user.inactive_notified_counter += 1
         user.save()
 
     users_to_notifiy_weekly = User.objects.filter(
-        last_login__lte=timezone.now() - timedelta(days=156)
+        last_login__lte=timezone.now() - timedelta(days=MEDIAN_INACTIVE_DAYS)
     )
 
     for user in users_to_notifiy_weekly:
         send_inactive_notification(user)
 
     users_to_notifiy_montly = User.objects.filter(
-        Q(last_login__lte=timezone.now() - timedelta(days=126))
+        Q(last_login__lte=timezone.now() - timedelta(days=MIN_INACTIVE_DAYS))
         and Q(inactive_notified_counter=0)
     )
 

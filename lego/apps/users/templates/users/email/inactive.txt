@@ -10,4 +10,6 @@ Brukeren din; {{ username }}, kan bli slettet etter {{ date_of_deletion }}.
 
 Dersom du ønsker å beholde brukeren din kan du bare logge inn igjen, og vi kommer ikke til å slette brukeren din før den har vært inaktiv i 6 måneder igjen. Dette er grunnet vår GDPR-policy.
 
+Logg inn igjen {{ frontend_url }}/users/me
+
 {% endblock %}

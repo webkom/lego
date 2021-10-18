@@ -46,7 +46,7 @@ class InactiveNotification(Notification):
             context={
                 "name": self.user.full_name,
                 "username": self.user.username,
-                "last_login": str(self.user.last_login),
+                "last_login": str(self.user.last_login.date()),
                 "date_of_deletion": str(
                     (self.user.last_login + timedelta(max_inactive_days)).date()
                 ),
