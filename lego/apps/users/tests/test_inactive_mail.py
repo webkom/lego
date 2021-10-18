@@ -21,8 +21,6 @@ class InactiveNotificationTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
-        "test_companies.yaml",
-        "test_events.yaml",
     ]
 
     def setUp(self):
@@ -40,33 +38,18 @@ class InactiveNotificationTestCase(BaseTestCase):
         self.assertIn(content, email_args["html_message"])
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = (
-            "Hei "
-            + str(self.recipient.first_name)
-            + " "
-            + self.recipient.last_name
-            + "!"
-        )
+        opening = f"Hei {self.recipient.first_name} {self.recipient.last_name}!"
         self.assertEmailContains(send_mail_mock, opening)
 
     def test_generate_email_last_login(self, send_mail_mock):
-        last_login = (
-            "Du har ikke logget inn siden "
-            + str(self.recipient.last_login.date())
-            + "."
-        )
+        last_login = f"Du har ikke logget inn siden {self.recipient.last_login.date()}."
         self.assertEmailContains(send_mail_mock, last_login)
 
     def test_generate_email_username_date_of_deletion(self, send_mail_mock):
-        username_deleteion = (
-            "Brukeren din; "
-            + str(self.recipient.username)
-            + ", kan bli slettet etter "
-            + str(
-                (self.recipient.last_login + timedelta(days=MAX_INACTIVE_DAYS)).date()
-            )
-            + "."
-        )
+        last_date_before_deletion = (
+            self.recipient.last_login + timedelta(days=MAX_INACTIVE_DAYS)
+        ).date()
+        username_deleteion = f"Brukeren din; {self.recipient.username}, kan bli slettet etter {last_date_before_deletion}."
         self.assertEmailContains(send_mail_mock, username_deleteion)
 
     def test_generate_email_url(self, send_mail_mock):
