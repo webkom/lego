@@ -1,7 +1,7 @@
 from smtplib import SMTPException
 
 import celery
-from push_notifications import NotificationError
+from push_notifications.exceptions import NotificationError
 from structlog import get_context, get_logger
 
 from lego import celery_app

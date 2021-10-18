@@ -35,7 +35,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "HOST": os.environ.get("DATABASE") or "127.0.0.1",
         "NAME": "lego",
         "USER": "lego",

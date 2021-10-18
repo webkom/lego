@@ -1,5 +1,5 @@
 from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from elasticsearch.helpers import BulkIndexError
 from structlog import get_logger
@@ -177,8 +177,8 @@ class SearchIndex:
             return {key: get_func(key) for key in filter_fields}
 
         prepared_instance = {
-            "content_type": force_text(instance_to_content_type_string(instance)),
-            "pk": force_text(instance.pk),
+            "content_type": force_str(instance_to_content_type_string(instance)),
+            "pk": force_str(instance.pk),
             "data": {
                 "autocomplete": self.get_autocomplete(instance),
                 "filters": {
@@ -240,5 +240,5 @@ class SearchIndex:
 
         self.get_backend().remove(
             content_type=instance_to_content_type_string(self.get_model()),
-            pk=force_text(pk),
+            pk=force_str(pk),
         )
