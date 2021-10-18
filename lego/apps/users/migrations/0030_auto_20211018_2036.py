@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0029_auto_20210921_1835'),
+        ("users", "0029_auto_20210921_1835"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='abakusgroup',
-            name='level',
+            model_name="abakusgroup",
+            name="level",
             field=models.PositiveIntegerField(editable=False),
         ),
         migrations.AlterField(
-            model_name='abakusgroup',
-            name='lft',
+            model_name="abakusgroup",
+            name="lft",
             field=models.PositiveIntegerField(editable=False),
         ),
         migrations.AlterField(
-            model_name='abakusgroup',
-            name='rght',
+            model_name="abakusgroup",
+            name="rght",
             field=models.PositiveIntegerField(editable=False),
         ),
     ]
