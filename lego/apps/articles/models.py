@@ -15,6 +15,13 @@ class Article(Content, BasisModel, ObjectPermissionsModel):
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
 
+    def save(self, *args, **kwargs):
+        if self.pinned:
+            for pinned_item in Article.objects.filter(pinned=True).exclude(pk=self.pk):
+                pinned_item.pinned = False
+                pinned_item.save()
+        super().save(*args, **kwargs)
+
     class Meta:
         abstract = False
 

@@ -279,3 +279,29 @@ class RemoveArticlesTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(get_detail_url(self.article.pk))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class PinnedArticleTestCase(BaseAPITestCase):
+    def setUp(self):
+        self.user = create_user()
+        self.group = create_group()
+        self.group.add_user(self.user)
+        self.permission_group = create_group()
+        self.permission_group.add_user(self.user)
+
+        self.article = create_article(require_auth=True)
+        self.article.can_edit_groups.add(self.permission_group)
+
+    def test_only_one_pinned(self):
+        """
+        When setting an article as pinned, any other pinned articles should set pinned=False
+        """
+        pinned = create_article(pinned=True)
+        self.client.force_authenticate(user=self.user)
+        self.client.patch(get_detail_url(self.article.pk), {"pinned": True})
+
+        self.article.refresh_from_db()
+        pinned.refresh_from_db()
+        self.assertTrue(self.article.pinned)
+        self.assertFalse(pinned.pinned)
+        self.assertEqual(Article.objects.filter(pinned=True).count(), 1)
