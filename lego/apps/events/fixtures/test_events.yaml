@@ -80,7 +80,7 @@
 - model: events.Event
   pk: 6
   fields:
-    title: ABAKOM_ONLY
+    title: GROUP_ONLY
     description: TestIngress6
     text: TestText6
     event_type: 0
@@ -155,6 +155,38 @@
     created_by: 1
     require_auth: False
     use_contact_tracing: True
+
+- model: events.Event
+  pk: 11
+  fields:
+    title: WEBKOM_ONLY
+    description: TestIngress11
+    text: TestText11
+    event_type: 0
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 3
+    require_auth: True
+    can_view_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 12
+  fields:
+    title: BEDKOM_ONLY
+    description: TestIngress11
+    text: TestText11
+    event_type: 0
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 3
+    require_auth: True
+    can_view_groups:
+      - - Bedkom
 
 - model: events.Pool
   pk: 1

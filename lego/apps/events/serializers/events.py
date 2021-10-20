@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.fields import BooleanField, CharField
+from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.companies.fields import CompanyField
@@ -29,7 +29,10 @@ from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
-from lego.utils.serializers import BasisModelSerializer
+from lego.utils.serializers import (
+    BasisModelSerializer,
+    ObjectPermissionsSerializerMixin,
+)
 
 
 class EventPublicSerializer(BasisModelSerializer):
@@ -54,7 +57,9 @@ class EventPublicSerializer(BasisModelSerializer):
         read_only = True
 
 
-class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
+class EventReadSerializer(
+    TagSerializerMixin, BasisModelSerializer, ObjectPermissionsSerializerMixin
+):
     company = CompanyField(queryset=Company.objects.all())
     cover = ImageField(required=False, options={"height": 500})
     cover_placeholder = ImageField(
@@ -89,11 +94,13 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "activation_time",
             "is_admitted",
             "survey",
-        )
+        ) + ObjectPermissionsSerializerMixin.Meta.fields
         read_only = True
 
 
-class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
+class EventReadDetailedSerializer(
+    TagSerializerMixin, BasisModelSerializer, ObjectPermissionsSerializerMixin
+):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
     cover = ImageField(required=False, options={"height": 500})
@@ -151,7 +158,6 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "is_merged",
             "heed_penalties",
             "created_by",
-            "is_abakom_only",
             "registration_count",
             "legacy_registration_count",
             "survey",
@@ -268,14 +274,15 @@ class EventAdministrateExportSerializer(EventAdministrateSerializer):
     waiting_registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
-class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
+class EventCreateAndUpdateSerializer(
+    TagSerializerMixin, BasisModelSerializer, ObjectPermissionsSerializerMixin
+):
     cover = ImageField(required=False, options={"height": 500})
     responsible_group = AbakusGroupField(
         queryset=AbakusGroup.objects.all(), required=False, allow_null=True
     )
     pools = PoolCreateAndUpdateSerializer(many=True, required=False)
     text = ContentSerializerField()
-    is_abakom_only = BooleanField(required=False, default=False)
 
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
@@ -311,14 +318,13 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "pinned",
             "use_consent",
             "heed_penalties",
-            "is_abakom_only",
             "registration_deadline_hours",
             "registration_close_time",
             "unregistration_close_time",
             "youtube_url",
             "use_contact_tracing",
             "mazemap_poi",
-        )
+        ) + ObjectPermissionsSerializerMixin.Meta.fields
 
     def validate(self, data):
         """
@@ -347,10 +353,11 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
     def create(self, validated_data):
         pools = validated_data.pop("pools", [])
-        is_abakom_only = validated_data.pop("is_abakom_only", False)
         event_status_type = validated_data.get(
             "event_status_type", Event._meta.get_field("event_status_type").default
         )
+        require_auth = validated_data.get("require_auth", False)
+        validated_data["require_auth"] = require_auth
         if event_status_type == constants.TBA:
             pools = []
             validated_data["location"] = "TBA"
@@ -365,12 +372,10 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                 permission_groups = pool.pop("permission_groups")
                 created_pool = Pool.objects.create(event=event, **pool)
                 created_pool.permission_groups.set(permission_groups)
-            event.set_abakom_only(is_abakom_only)
             return event
 
     def update(self, instance, validated_data):
         pools = validated_data.pop("pools", None)
-        is_abakom_only = validated_data.pop("is_abakom_only", False)
         event_status_type = validated_data.get(
             "event_status_type", Event._meta.get_field("event_status_type").default
         )
@@ -402,7 +407,6 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
                     created_pool.permission_groups.set(permission_groups)
                 for pool_id in existing_pools:
                     Pool.objects.get(id=pool_id).delete()
-            instance.set_abakom_only(is_abakom_only)
             return super().update(instance, validated_data)
 
 
