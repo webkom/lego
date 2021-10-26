@@ -113,7 +113,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             for pool in self.pools.select_for_update().all():
                 pool.counter = pool.registrations.count()
                 pool.save(update_fields=["counter"])
-            return super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
+
+        if self.pinned:
+            for pinned_item in Event.objects.filter(pinned=True).exclude(pk=self.pk):
+                pinned_item.pinned = False
+                pinned_item.save()
 
     def user_should_see_regs(self, user):
         return (

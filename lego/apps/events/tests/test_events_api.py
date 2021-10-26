@@ -681,6 +681,13 @@ class CreateEventsTestCase(BaseAPITestCase):
         event = Event.objects.get(id=self.event_id)
         self.assertEqual(0, event.can_view_groups.count())
 
+    def test_event_pinned_only_one(self):
+        """Test that there is only one pinned event at a time"""
+        self.client.patch(_get_detail_url(self.event_id), {"pinned": True})
+        event = Event.objects.get(id=self.event_id)
+        self.assertTrue(event.pinned)
+        self.assertEqual(Event.objects.filter(pinned=True).count(), 1)
+
     def test_event_update_with_pool_creation(self):
         """Test updating event attributes and add a pool"""
         expect_event = _test_event_data[1]
