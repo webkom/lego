@@ -35,7 +35,6 @@ class Migration(migrations.Migration):
                     models.TextField(
                         blank=True,
                         help_text="Allowed URIs list, space separated",
-                        validators=[oauth2_provider.validators.validate_uris],
                     ),
                 ),
                 (
