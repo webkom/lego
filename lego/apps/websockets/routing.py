@@ -19,13 +19,15 @@ class HTTPConsumer:
     def __init__(self, *args, **kwargs):
         pass
 
-    async def __call__(self, receive, send):
+    async def __call__(self, scope):
         log.warn("http_disabled_daphne")
         raise ValueError
 
 
 protocols = {
-    "websocket": JWTAuthenticationMiddleware(URLRouter([url("^$", GroupConsumer)]))
+    "websocket": JWTAuthenticationMiddleware(
+        URLRouter([url("^$", GroupConsumer.as_asgi())])
+    )
 }
 
 if settings.DAPHNE_SERVER:
