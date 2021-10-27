@@ -22,7 +22,7 @@ class JWTQSAuthentication(Authentication):
 
     @database_sync_to_async
     def authenticate(self, request):
-        super().authenticate(self, request)
+        return super().authenticate(request)
 
 
 class JWTAuthenticationMiddleware:
