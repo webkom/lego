@@ -70,6 +70,12 @@ LOGGING = {
         "botocore": {"level": "WARNING", "propagate": True},
         "boto3": {"level": "WARNING", "propagate": True},
         "cssutils": {"level": "CRITICAL", "propagate": True},
+        "daphne": {
+            "handlers": [
+                "console",
+            ],
+            "level": "ERROR",
+        },
     },
 }
 

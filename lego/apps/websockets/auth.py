@@ -3,6 +3,8 @@ from urllib.parse import parse_qs
 from django.db import close_old_connections
 from rest_framework import exceptions
 
+from channels.db import database_sync_to_async
+
 from lego.apps.jwt.authentication import Authentication
 
 
@@ -18,18 +20,22 @@ class JWTQSAuthentication(Authentication):
             raise exceptions.AuthenticationFailed("Invalid JWT query param")
         return jwt_param[0]
 
+    @database_sync_to_async
+    def authenticate(self, request):
+        super().authenticate(self, request)
+
 
 class JWTAuthenticationMiddleware:
     def __init__(self, inner):
         self.inner = inner
         self.authentication = JWTQSAuthentication()
 
-    def __call__(self, scope):
+    async def __call__(self, scope, receive, send):
 
         # If there are old connecions in the database,
         # authentication will fail. So we make sure to clean up.
         close_old_connections()
-        user, token = self.authentication.authenticate(scope)
+        user, token = await self.authentication.authenticate(scope)
         scope["user"] = user
         scope["token"] = token
-        return self.inner(scope)
+        return await self.inner(scope, receive, send)
