@@ -1,6 +1,10 @@
 from datetime import timedelta
 
-from lego.apps.notifications.constants import INACTIVE_WARNING, PENALTY_CREATION
+from lego.apps.notifications.constants import (
+    DELETED_WARNING,
+    INACTIVE_WARNING,
+    PENALTY_CREATION,
+)
 from lego.apps.notifications.notification import Notification
 
 
@@ -54,4 +58,22 @@ class InactiveNotification(Notification):
             subject="Du har vært inaktiv lenge",
             plain_template="users/email/inactive.txt",
             html_template="users/email/inactive.html",
+        )
+
+
+class DeletedUserNotification(Notification):
+
+    name = DELETED_WARNING
+
+    def generate_mail(self):
+
+        return self._delay_mail(
+            to_email=self.user.email,
+            context={
+                "name": self.user.full_name,
+                "username": self.user.username,
+            },
+            subject="Din bruker har blitt slettet",
+            plain_template="users/email/deleted.txt",
+            html_template="users/email/deleted.html",
         )

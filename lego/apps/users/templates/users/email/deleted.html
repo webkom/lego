@@ -4,7 +4,7 @@
 
     <tr>
         <td class="alert alert-warning">
-            Du har vært inaktiv lenge.
+            Brukeren din har blitt slettet.
         </td>
     </tr>
 
@@ -20,15 +20,14 @@
 
     <tr>
         <td class="content-block">
-            Du har ikke logget inn siden {{ last_login }}.
+            Du har ikke logget inn på over et halvt år.
         </td>
     </tr>
 
     <tr>
         <td class="content-block">
-            <i> Brukeren din; {{ username }}, kan bli slettet etter {{ date_of_deletion }}.
-                <br>
-                Dersom du ønsker å beholde brukeren din kan du bare logge inn igjen, og vi kommer ikke til å slette brukeren din før den har vært inaktiv i 6 måneder igjen. Dette er grunnet vår GDPR-policy.
+            <i> Brukeren din; {{ username }}, har blitt slettet grunnet GDPR.
+                Du skal ha fått flere advarsler om dette. Dersom du tror en feil har skjedd, vennligst ta kontakt via. webkom@abakus.no
             </i>
         </td>
     </tr>
@@ -37,13 +36,13 @@
         <td class="button">
           <div>
             <!--[if mso]>
-            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}/users/me/" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
                 <w:anchorlock/>
             </v:roundrect>
             <![endif]-->
-            <a class="btn-primary" href="{{ frontend_url }}/users/me/"
+            <a class="btn-primary" href="{{ frontend_url }}"
                 style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
-                Logg inn igjen
+               Til forsiden
             </a>
           </div>
         </td>

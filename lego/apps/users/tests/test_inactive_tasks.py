@@ -14,7 +14,7 @@ from lego.utils.test_utils import BaseTestCase
 
 
 @mock.patch("lego.apps.users.tasks.InactiveNotification.notify")
-class RegistrationReminderTestCase(BaseTestCase):
+class InactiveNotificationTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
@@ -26,18 +26,6 @@ class RegistrationReminderTestCase(BaseTestCase):
     def test_all_users_active(self, mock_notification):
         send_inactive_reminder_mail.delay()
         mock_notification.assert_not_called()
-
-    def test_one_user_to_be_deleted(self, mock_notification):
-        num_users_before = len(User.objects.all())
-        inactive_user = User.objects.first()
-        last_login_date = timezone.now() - timedelta(days=MAX_INACTIVE_DAYS)
-        inactive_user.last_login = last_login_date
-        inactive_user.inactive_notified_counter = 5
-        inactive_user.save()
-        send_inactive_reminder_mail.delay()
-        mock_notification.assert_not_called()
-        num_users_after = len(User.objects.all())
-        self.assertNotEqual(num_users_before, num_users_after)
 
     def test_one_user_monthly_have_not_been_notified(self, mock_notification):
         inactive_user = User.objects.first()
@@ -92,3 +80,26 @@ class RegistrationReminderTestCase(BaseTestCase):
         self.assertEqual(counter_before + 1, counter_after)
         num_users_after = len(User.objects.all())
         self.assertEqual(num_users_before, num_users_after)
+
+
+@mock.patch("lego.apps.users.tasks.DeletedUserNotification.notify")
+class DeletedUserNotificationTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+    ]
+
+    def setUp(self):
+        User.objects.all().update(last_login=timezone.now())
+
+    def test_one_user_to_be_deleted(self, mock_notification):
+        num_users_before = len(User.objects.all())
+        inactive_user = User.objects.first()
+        last_login_date = timezone.now() - timedelta(days=MAX_INACTIVE_DAYS)
+        inactive_user.last_login = last_login_date
+        inactive_user.inactive_notified_counter = 5
+        inactive_user.save()
+        send_inactive_reminder_mail.delay()
+        mock_notification.assert_called()
+        num_users_after = len(User.objects.all())
+        self.assertNotEqual(num_users_before, num_users_after)

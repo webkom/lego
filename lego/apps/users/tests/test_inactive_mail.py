@@ -1,18 +1,12 @@
 from datetime import timedelta
-from unittest import mock
 from unittest.mock import patch
 
 from django.conf import settings
 from django.utils import timezone
 
 from lego.apps.events.tests.utils import get_dummy_users
-from lego.apps.users.models import User
 from lego.apps.users.notifications import InactiveNotification
-from lego.apps.users.tasks import (
-    MAX_INACTIVE_DAYS,
-    MIN_INACTIVE_DAYS,
-    send_inactive_reminder_mail,
-)
+from lego.apps.users.tasks import MAX_INACTIVE_DAYS, MIN_INACTIVE_DAYS
 from lego.utils.test_utils import BaseTestCase
 
 

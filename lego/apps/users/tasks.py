@@ -8,7 +8,7 @@ from structlog import get_logger
 
 from lego import celery_app
 from lego.apps.users.models import User
-from lego.apps.users.notifications import InactiveNotification
+from lego.apps.users.notifications import DeletedUserNotification, InactiveNotification
 from lego.utils.tasks import AbakusTask
 
 log = get_logger()
@@ -31,6 +31,8 @@ def send_inactive_reminder_mail(self, logger_context=None):
     )
 
     for user in users_to_delete:
+        notification = DeletedUserNotification(user)
+        notification.notify()
         user.delete(force=True)
 
     def send_inactive_notification(user):
