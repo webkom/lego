@@ -27,12 +27,11 @@ def send_inactive_reminder_mail(self, logger_context=None):
 
     users_to_delete = User.objects.filter(
         Q(last_login__lte=timezone.now() - timedelta(days=MAX_INACTIVE_DAYS))
-        and Q(inactive_notified_counter__gte=4)
+        & Q(inactive_notified_counter__gte=4)
     )
 
     for user in users_to_delete:
         user.delete(force=True)
-        user.save()
 
     def send_inactive_notification(user):
         notification = InactiveNotification(user, max_inactive_days=MAX_INACTIVE_DAYS)
@@ -49,7 +48,7 @@ def send_inactive_reminder_mail(self, logger_context=None):
 
     users_to_notifiy_montly = User.objects.filter(
         Q(last_login__lte=timezone.now() - timedelta(days=MIN_INACTIVE_DAYS))
-        and Q(inactive_notified_counter=0)
+        & Q(inactive_notified_counter=0)
     )
 
     for user in users_to_notifiy_montly:
