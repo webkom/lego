@@ -103,3 +103,19 @@ class DeletedUserNotificationTestCase(BaseTestCase):
         mock_notification.assert_called()
         num_users_after = len(User.objects.all())
         self.assertNotEqual(num_users_before, num_users_after)
+
+    def test_one_user_max_inactive_single_notification(self, mock_notification):
+        num_users_before = len(User.objects.all())
+        inactive_user = User.objects.first()
+        last_login_date = timezone.now() - timedelta(days=2 * MAX_INACTIVE_DAYS)
+        inactive_user.last_login = last_login_date
+        inactive_user.inactive_notified_counter = 1
+        inactive_user.save()
+        counter_before = inactive_user.inactive_notified_counter
+        send_inactive_reminder_mail.delay()
+        mock_notification.assert_not_called()
+        inactive_user.refresh_from_db()
+        counter_after = inactive_user.inactive_notified_counter
+        self.assertEqual(counter_before + 1, counter_after)
+        num_users_after = len(User.objects.all())
+        self.assertEqual(num_users_before, num_users_after)
