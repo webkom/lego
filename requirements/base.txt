@@ -20,7 +20,7 @@ google-api-python-client==1.12.8
 oauth2client
 premailer==3.10.0
 libthumbor==2.0.1
-django-health-check==3.16.3
+django-health-check==3.16.4
 
 # Logging/errors
 structlog==21.1.0
