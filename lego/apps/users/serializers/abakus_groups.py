@@ -25,6 +25,7 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
             "logo",
             "number_of_users",
             "show_badge",
+            "active",
         )
 
     def create(self, validated_data):
@@ -52,6 +53,7 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
             "logo",
             "type",
             "show_badge",
+            "active",
         )
 
 

@@ -107,6 +107,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
     objects_with_text = AbakusGroupManager()
 
     show_badge = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         permission_handler = AbakusGroupPermissionHandler()
