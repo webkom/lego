@@ -56,6 +56,6 @@ icalendar==4.0.7
 
 # Docs
 Pygments==2.10.0
-Markdown==3.3.4
+Markdown==3.3.5
 coreapi==2.3.3
 aiosmtpd==1.4.2
