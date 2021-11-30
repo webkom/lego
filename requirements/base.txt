@@ -4,7 +4,7 @@ ipython==7.22.0
 
 psycopg2-binary==2.8.6
 unicode-slugify==0.1.5
-pyyaml==5.4.1
+pyyaml==6.0
 redis==3.5.3
 hiredis==2.0.0
 certifi==2021.5.30
