@@ -1,4 +1,4 @@
 -r base.txt
 
 uwsgi
-flower==0.9.7
+flower==1.0.0
