@@ -1,8 +1,8 @@
-# LEGO [![Build Status](https://ci.webkom.dev/api/badges/webkom/lego/status.svg)](https://ci.webkom.dev/webkom/lego) [![Requirements Status](https://requires.io/github/webkom/lego/requirements.svg?branch=master)](https://requires.io/github/webkom/lego/requirements/?branch=master)
+# LEGO
 
 > Open source backend for abakus.no, frontend located at [webkom/lego-webapp](https://github.com/webkom/lego-webapp)
 
-[![MIT](https://badgen.net/badge/license/MIT/blue)](https://en.wikipedia.org/wiki/MIT_License) [![last commit](https://badgen.net/github/last-commit/webkom/lego/)](https://github.com/webkom/lego/commits/master) [![contributors](https://badgen.net/github/contributors/webkom/lego)](https://github.com/webkom/lego/graphs/contributors)
+[![MIT](https://badgen.net/badge/license/MIT/blue)](https://en.wikipedia.org/wiki/MIT_License) [![last commit](https://badgen.net/github/last-commit/webkom/lego/)](https://github.com/webkom/lego/commits/master) [![contributors](https://badgen.net/github/contributors/webkom/lego)](https://github.com/webkom/lego/graphs/contributors) [![Build Status](https://ci.webkom.dev/api/badges/webkom/lego/status.svg)](https://ci.webkom.dev/webkom/lego)
 
 > LEGO Er Ganske Oppdelt
 
