@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import permissions
 
-from ipware.ip import get_ip
+from ipware import get_client_ip
 
 
 class HealthChecksPermission(permissions.BasePermission):
@@ -13,7 +13,7 @@ class HealthChecksPermission(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        remote_ip = get_ip(request)
+        remote_ip, _ = get_client_ip(request)
         if remote_ip:
             allowed_ips = [ip.lower() for ip in settings.HEALTH_CHECK_REMOTE_IPS]
             for allowed_ip in allowed_ips:
