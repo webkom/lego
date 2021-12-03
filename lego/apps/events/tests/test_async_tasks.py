@@ -489,7 +489,7 @@ class PaymentDueTestCase(BaseTestCase):
         self.event.merge_time = timezone.now() + timedelta(hours=12)
         self.event.payment_due_date = timezone.now() + timedelta(days=2)
         self.event.save()
-        self.registration = self.event.registrations.first()
+        self.registration = self.event.registrations.get(pk=5)
 
     @mock.patch("lego.apps.events.tasks.handle_event")
     def test_user_notification_when_overdue_payment_and_in_waiting_list(
