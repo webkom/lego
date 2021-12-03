@@ -42,7 +42,7 @@ steps:
     depends_on:
       - setup
     commands:
-      - tox -e tests
+      - tox -e tests -- --parallel
 
   - name: isort
     image: abakus/lego-testbase:python3.7
@@ -169,4 +169,4 @@ services:
 
 ---
 kind: signature
-hmac: 3fbbe19f1b292de7b0530c934bdb6354cb5a606398e65a5fd3914514ddd52dff
+hmac: 16c01c9f2cf93b583ab3fbe2f4f2450d718cbab9d72d2c1b2fb99c2a30a291ac

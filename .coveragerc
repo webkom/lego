@@ -1,3 +1,7 @@
+[run]
+concurrency = multiprocessing
+parallel = True
+
 [report]
 exclude_lines =
     pragma: no cover
