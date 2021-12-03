@@ -143,6 +143,7 @@ steps:
         from_secret: infra_repository
       tags:
         - lego
+        - ci
       limit: ${DRONE_DEPLOY_TO}
       extra_vars: lego_version=version-${DRONE_COMMIT_SHA:0:7}
       inventory: /infrastructure/inventory
@@ -168,4 +169,4 @@ services:
 
 ---
 kind: signature
-hmac: dc7390493f4ba831e57c617c1c5486591194a6ec3de49f030d0329c82d0f2644
+hmac: 8d9f3d659a8cf5d283dbf031dc49bbf4643ea5ba948f2a36b31e446e536d64b7
