@@ -46,7 +46,7 @@ django-mptt==0.13.4
 django-filter==21.1
 django-environ==0.8.1
 django-redis==5.1.0
-django-ipware==2.1.0
+django-ipware==4.0.0
 django-phonenumber-field[phonenumberslite]==6.0.0
 django-push-notifications==2.0.0
 
