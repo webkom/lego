@@ -1,12 +1,22 @@
 from unittest import mock
 
+from django.db import models
+
 from lego.utils.models import PersistentModel, TimeStampModel
 from lego.utils.test_utils import BaseTestCase
 
 
+class TestTimeStampModel(TimeStampModel):
+    name = models.CharField("name", max_length=30)
+
+
+class TestPersistentModel(PersistentModel):
+    name = models.CharField("name", max_length=30)
+
+
 class TimeStampModelTestCase(BaseTestCase):
     def setUp(self):
-        self.instance = TimeStampModel()
+        self.instance = TestTimeStampModel()
 
     @mock.patch("lego.utils.models.timezone.now")
     @mock.patch("lego.utils.models.models.Model.save")
@@ -18,7 +28,7 @@ class TimeStampModelTestCase(BaseTestCase):
 
 class PersistentModelTestCase(BaseTestCase):
     def setUp(self):
-        self.instance = PersistentModel()
+        self.instance = TestPersistentModel()
 
     @mock.patch("lego.utils.models.models.Model.save")
     def test_restore(self, mock_save):
