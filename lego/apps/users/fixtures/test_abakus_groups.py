@@ -195,7 +195,7 @@ test_tree = {
                             "permissions": [],
                             "description": "Interessegruppe for abaGolf",
                             "text": "Hei, er du en person som liker å klaske baller på grønne "
-                            "baner?Da er Abakus golf gruppa for deg.\nVi tenker at dette vil "
+                            "baner? Da er Abakus golf gruppa for deg.\nVi tenker at dette vil "
                             "være en portal for oss som ønsker åkomme oss ut på banene med "
                             "noen hyggelige folk fra Abakus.\nDet vil også bli blestet om "
                             "eventuelleturnerninger som måtte dukke opp.\nSamt vil det være "

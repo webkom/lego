@@ -16,7 +16,7 @@ class CommentNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "target": target_string,
                 "author_name": author.full_name,
                 "text": text,
@@ -42,7 +42,7 @@ class CommentReplyNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "target": target_string,
                 "author_name": author.full_name,
                 "text": text,

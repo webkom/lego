@@ -40,5 +40,5 @@ class MeetingInvitationNotificationTestCase(BaseTestCase):
         self.assertEmailContains(send_mail_mock, content)
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = "Hei test user1!"
+        opening = "Hei, test!"
         self.assertEmailContains(send_mail_mock, opening)

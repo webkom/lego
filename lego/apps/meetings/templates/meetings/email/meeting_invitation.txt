@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 {{owner}} inviterte deg til et møte med tittel {{meeting_title}}.
 

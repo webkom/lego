@@ -21,7 +21,11 @@ class EventBumpNotification(Notification):
 
         return self._delay_mail(
             to_email=self.user.email,
-            context={"event": event.title, "name": self.user.full_name, "id": event.id},
+            context={
+                "event": event.title,
+                "first_name": self.user.first_name,
+                "id": event.id,
+            },
             subject=f"Du er flyttet opp fra ventelisten på arrangementet {event.title}",
             plain_template="events/email/bump.txt",
             html_template="events/email/bump.html",
@@ -54,7 +58,7 @@ class EventPaymentOverdueNotification(Notification):
             to_email=self.user.email,
             context={
                 "event": event.title,
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "due_date": due_date,
                 "id": event.id,
             },
@@ -86,7 +90,7 @@ class EventPaymentOverdueCreatorNotification(Notification):
             context={
                 "event": event.title,
                 "users": users,
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "id": event.id,
             },
             subject=f"Følgende registrerte har ikke betalt påmeldingen til arrangementet"
@@ -108,7 +112,7 @@ class EventAdminRegistrationNotification(Notification):
             to_email=self.user.email,
             context={
                 "event": event.title,
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "reason": reason,
                 "id": event.id,
             },
@@ -142,7 +146,7 @@ class EventAdminUnregistrationNotification(Notification):
                 "event": event.title,
                 "creator_name": creator.full_name,
                 "creator_email": creator.email,
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "reason": reason,
                 "id": event.id,
             },

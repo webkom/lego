@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 En administrator har meldt deg på arrangementet {{ event }} på grunn av:
 
