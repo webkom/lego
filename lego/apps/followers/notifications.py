@@ -12,7 +12,7 @@ class RegistrationReminderNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "event": event.title,
                 "event_id": event.id,
             },
@@ -26,6 +26,6 @@ class RegistrationReminderNotification(Notification):
 
         return self._delay_push(
             template="followers/email/reminder.txt",
-            context={"name": self.user.full_name, "event": event.title},
+            context={"first_name": self.user.first_name, "event": event.title},
             instance=event,
         )

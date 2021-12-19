@@ -4,7 +4,7 @@
 
     <tr>
         <td class="alert alert-info">
-            Bekreft student kontoen din på Abakus.no
+            Bekreft studentkontoen din på Abakus.no
         </td>
     </tr>
 
@@ -14,13 +14,13 @@
 
     <tr>
         <td class="content-block">
-            Hei {{ first_name }},
+            Hei, {{ first_name }}!
         </td>
     </tr>
 
     <tr>
         <td class="content-block">
-            <p>For å bekrefte NTNU student kontoen din, trykk på knappen under.</p>
+            <p>For å bekrefte NTNU studentkontoen din, trykk på knappen under.</p>
         </td>
     </tr>
 
@@ -30,12 +30,12 @@
             <!--[if mso]>
             <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}/users/me/settings/student-confirmation/?token={{ token }}" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
                 <w:anchorlock/>
-                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Bekreft student konto</center>
+                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Bekreft studentkonto</center>
             </v:roundrect>
             <![endif]-->
             <a class="btn-primary" href="{{ frontend_url }}/users/me/settings/student-confirmation/?token={{ token }}"
                 style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
-                Bekreft student konto
+                Bekreft studentkonto
             </a>
           </div>
         </td>

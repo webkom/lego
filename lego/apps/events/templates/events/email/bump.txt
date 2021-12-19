@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 Du har blitt flyttet opp fra ventelisten på arrangementet {{ event }}.
 

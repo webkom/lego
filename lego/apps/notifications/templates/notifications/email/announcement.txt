@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 {{ sender }} sendte deg en viktig melding.
 

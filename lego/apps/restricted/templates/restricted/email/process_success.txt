@@ -2,8 +2,8 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
-Begrenset epost er nå sendt ut til alle mottakere.
+Begrenset e-post er nå sendt ut til alle mottakere.
 
 {% endblock %}

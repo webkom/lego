@@ -26,7 +26,7 @@ class MeetingInvitationNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email_address,
             context={
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "owner": meeting.created_by.full_name,
                 "meeting_id": meeting.id,
                 "meeting_title": meeting.title,

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei, {{ name }}!
+Hei, {{ first_name }}!
 
 {{ author_name }} har kommentert på {{ target }}:
 

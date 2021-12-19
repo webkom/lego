@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei, {{ name }}!
+Hei, {{ first_name }}!
 
 Nå er det under en time til påmelding til {{ event }} starter.
 

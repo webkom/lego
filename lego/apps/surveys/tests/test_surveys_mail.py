@@ -30,9 +30,7 @@ class SurveyMailTestCase(BaseTestCase):
         self.assertIn(content, email_args["html_message"])
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = (
-            "Hei, " + self.recipient.first_name + " " + self.recipient.last_name + "!"
-        )
+        opening = "Hei, " + self.recipient.first_name + "!"
         self.assertEmailContains(send_mail_mock, opening)
 
     def test_generate_email_event(self, send_mail_mock):

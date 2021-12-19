@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 Her er en liste over de som ikke har betalt for {{ event }}:
 

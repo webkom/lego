@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 En administrator har fjernet deg fra arrangementet {{ event }} på grunn av:
 

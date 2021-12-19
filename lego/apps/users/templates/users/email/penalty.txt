@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei {{ name }}!
+Hei, {{ first_name }}!
 
 Du har fått en prikk med vekt {{ weight }} fra {{ event }} på grunn av:
 

@@ -57,9 +57,7 @@ class CommentNotificationTestCase(BaseTestCase):
         self.assertEmailContains(send_mail_mock, content)
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = (
-            "Hei, " + self.recipient.first_name + " " + self.recipient.last_name + "!"
-        )
+        opening = "Hei, " + self.recipient.first_name + "!"
         self.assertEmailContains(send_mail_mock, opening)
 
     def test_generate_email_url(self, send_mail_mock):
@@ -114,9 +112,7 @@ class CommentReplyNotificationTestCase(BaseTestCase):
         self.assertEmailContains(send_mail_mock, content)
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = (
-            "Hei, " + self.recipient.first_name + " " + self.recipient.last_name + "!"
-        )
+        opening = "Hei, " + self.recipient.first_name + "!"
         self.assertEmailContains(send_mail_mock, opening)
 
     def test_generate_email_url(self, send_mail_mock):

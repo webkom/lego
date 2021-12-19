@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Hei, {{ name }}!
+Hei, {{ first_name }}!
 
 Du har en ny undersøkelse å svare på for arrangementet {{ event }}. 
 

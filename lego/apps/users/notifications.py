@@ -12,7 +12,7 @@ class PenaltyNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                "name": self.user.full_name,
+                "first_name": self.user.first_name,
                 "weight": penalty.weight,
                 "event": penalty.source_event.title,
                 "reason": penalty.reason,
