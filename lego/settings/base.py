@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "lego.apps.websockets",
 ]
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 AUTH_USER_MODEL = "users.User"
 AUTHENTICATION_BACKENDS = ("lego.apps.permissions.backends.LegoPermissionBackend",)

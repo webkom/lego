@@ -1,4 +1,3 @@
-from django.contrib.postgres.fields import JSONField
 from django.db import IntegrityError, models
 
 from lego.apps.feeds.activity import Activity
@@ -14,7 +13,7 @@ class FeedBase(models.Model):
     feed_id = models.CharField(max_length=64, db_index=True)
     group = models.CharField(max_length=128)
 
-    activity_store = JSONField(default=list)
+    activity_store = models.JSONField(default=list)
     minimized_activities = models.PositiveIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)

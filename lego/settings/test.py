@@ -56,7 +56,6 @@ ELASTICSEARCH = "localhost"
 SEARCH_BACKEND = "postgres"
 
 CELERY_TASK_ALWAYS_EAGER = True
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
 CHANNEL_LAYERS["default"]["CONFIG"] = {"hosts": [f"redis://{CACHE}/5"]}
 
