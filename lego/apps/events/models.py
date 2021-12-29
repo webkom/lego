@@ -98,7 +98,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     legacy_registration_count = models.PositiveIntegerField(default=0)
     mazemap_poi = models.PositiveIntegerField(null=True)
 
-
     class Meta:
         permission_handler = EventPermissionHandler()
 

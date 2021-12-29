@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0031_event_legacy_registration_count'),
+        ("events", "0031_event_legacy_registration_count"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='mazemap_poi',
+            model_name="event",
+            name="mazemap_poi",
             field=models.PositiveIntegerField(null=True),
         ),
     ]
