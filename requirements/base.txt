@@ -8,7 +8,7 @@ pyyaml==6.0
 redis==3.5.3
 hiredis==2.0.0
 certifi==2021.10.8
-elasticsearch==7.12.0
+elasticsearch==7.16.2
 celery==5.2.2
 stripe==2.63.0
 boto3==1.20.20
@@ -46,7 +46,7 @@ django-mptt==0.13.4
 django-filter==21.1
 django-environ==0.8.1
 django-redis==5.1.0
-django-ipware==4.0.0
+django-ipware==4.0.2
 django-phonenumber-field[phonenumberslite]==6.0.0
 django-push-notifications==2.0.0
 
