@@ -659,7 +659,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def registration_count(self):
         """Prefetch friendly counting of registrations for an event."""
-        return self.legacy_registration_count + sum(
+        return sum(
             [pool.registrations.all().count() for pool in self.pools.all()],
             self.legacy_registration_count,
         )

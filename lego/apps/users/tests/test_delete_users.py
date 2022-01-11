@@ -80,8 +80,8 @@ class DeleteUserTestCase(BaseTestCase):
         self.assertEqual(
             no_of_waiting_registrations_after, no_of_waiting_registrations_before
         )
-        # Check that users have not been bumped
         self.assertEqual(event.number_of_registrations, no_of_regs_before)
+        self.assertEqual(event.registration_count, no_of_regs_before)
         # Verify that the event still exists
         self.assertEqual(len(Event.objects.all().filter(id=event_id)), 1)
         # Verify that user is deleted
