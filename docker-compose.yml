@@ -36,14 +36,15 @@ services:
       - '127.0.0.1:6379:6379'
 
   thumbor:
-    image: apsl/thumbor:latest
+    image: minimalcompact/thumbor:6.7.5
     ports:
-      - "127.0.0.1:10000:8000"
+      - "127.0.0.1:10000:80"
     environment:
       SECURITY_KEY: 'lego-dev'
       MAX_WIDTH: 1000
       MAX_HEIGHT: 800
       QUALITY: 98
+      AUTO_WEBP: 'True'
       ALLOW_UNSAFE_URL: 0
       ALLOW_OLD_URLS: 0
       AWS_ACCESS_KEY_ID: 'lego-dev'
