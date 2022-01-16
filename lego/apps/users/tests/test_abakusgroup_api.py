@@ -53,9 +53,14 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
             fields = list(PublicAbakusGroupSerializer.Meta.fields)
             fields.remove("contact_email")
             fields.remove("show_badge")
+            fields.remove("logo_placeholder")
 
             self.assertEqual(
-                keys, set(fields + ["numberOfUsers", "contactEmail", "showBadge"])
+                keys,
+                set(
+                    fields
+                    + ["numberOfUsers", "contactEmail", "showBadge", "logoPlaceholder"]
+                ),
             )
 
     def test_without_auth(self):
