@@ -11,7 +11,7 @@ from lego.utils.test_utils import BaseTestCase
 
 
 @patch("lego.utils.email.django_send_mail")
-class InactiveNotificationTestCase(BaseTestCase):
+class InactiveMailTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",

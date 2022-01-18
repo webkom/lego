@@ -1,0 +1,33 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-warning">
+            Brukere har blitt slettet
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Følgende brukere har blitt slettet:
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <ul>
+                {% for username in userlist%}
+                    <li>{{ username }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+
+    <tr>
+
+{% endblock %}
