@@ -4,7 +4,7 @@
 
 Hei {{ name }}!
 
-Du har ikke logget inn på over et halvt år.
+Du har ikke logget inn på over {{ max_inactive_days }} dager.
 
 
 Brukeren din; {{ username }}, har blitt slettet grunnet GDPR.

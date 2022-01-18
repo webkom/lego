@@ -4,6 +4,7 @@ from django.conf import settings
 
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.users.notifications import DeletedUserNotification
+from lego.apps.users.tasks import MAX_INACTIVE_DAYS
 from lego.utils.test_utils import BaseTestCase
 
 
@@ -16,7 +17,9 @@ class DeletedUserNotificationTestCase(BaseTestCase):
 
     def setUp(self):
         self.recipient = get_dummy_users(1)[0]
-        self.notifier = DeletedUserNotification(self.recipient)
+        self.notifier = DeletedUserNotification(
+            self.recipient, max_inactive_days=MAX_INACTIVE_DAYS
+        )
 
     def assertEmailContains(self, send_mail_mock, content):
         self.notifier.generate_mail()
@@ -25,8 +28,12 @@ class DeletedUserNotificationTestCase(BaseTestCase):
         self.assertIn(content, email_args["html_message"])
 
     def test_generate_email_name(self, send_mail_mock):
-        opening = f"Hei {self.recipient.first_name} {self.recipient.last_name}!"
+        opening = f"Hei {self.recipient.first_name}!"
         self.assertEmailContains(send_mail_mock, opening)
+
+    def test_generate_max_inactive_days(self, send_mail_mock):
+        max_days = f"Du har ikke logget inn på over {MAX_INACTIVE_DAYS} dager."
+        self.assertEmailContains(send_mail_mock, max_days)
 
     def test_generate_email_username(self, send_mail_mock):
         username_deleteion = (

@@ -13,8 +13,8 @@ from lego.utils.tasks import AbakusTask
 
 log = get_logger()
 
-MAX_INACTIVE_DAYS = 183
-MIN_INACTIVE_DAYS = 126
+MAX_INACTIVE_DAYS = 365
+MIN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - 2 * 30
 MEDIAN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - ceil(
     (MAX_INACTIVE_DAYS - MIN_INACTIVE_DAYS) / 2
 )
@@ -31,7 +31,9 @@ def send_inactive_reminder_mail(self, logger_context=None):
     )
 
     for user in users_to_delete:
-        notification = DeletedUserNotification(user)
+        notification = DeletedUserNotification(
+            user, max_inactive_days=MAX_INACTIVE_DAYS
+        )
         notification.notify()
         user.delete(force=True)
 

@@ -48,12 +48,13 @@ class InactiveNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                "name": self.user.full_name,
+                "name": self.user.first_name,
                 "username": self.user.username,
                 "last_login": str(self.user.last_login.date()),
                 "date_of_deletion": str(
                     (self.user.last_login + timedelta(max_inactive_days)).date()
                 ),
+                "max_inactive_days": max_inactive_days,
             },
             subject="Du har vært inaktiv lenge",
             plain_template="users/email/inactive.txt",
@@ -66,12 +67,14 @@ class DeletedUserNotification(Notification):
     name = DELETED_WARNING
 
     def generate_mail(self):
+        max_inactive_days = self.kwargs["max_inactive_days"]
 
         return self._delay_mail(
             to_email=self.user.email,
             context={
-                "name": self.user.full_name,
+                "name": self.user.first_name,
                 "username": self.user.username,
+                "max_inactive_days": max_inactive_days,
             },
             subject="Din bruker har blitt slettet",
             plain_template="users/email/deleted.txt",
