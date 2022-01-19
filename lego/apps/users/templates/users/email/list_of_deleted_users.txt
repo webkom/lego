@@ -1,20 +1,5 @@
-{% extends "email/base.txt" %}
-
-
-{% block alert %}
-
-    Brukere har blitt slettet
-
-{% endblock %}
-
-{% block content %}
-
-Brukere har blitt slettet
-
 Følgende brukere har blitt slettet:
 
 {% for username in userlist%}
     {{ username }}
 {% endfor %}
-
-{% endblock %}
