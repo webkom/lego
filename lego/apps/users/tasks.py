@@ -47,15 +47,16 @@ def send_inactive_reminder_mail(self, logger_context=None):
         notification.notify()
         user.delete(force=True)
 
-    send_email.delay(
-        to_email=f"daemon@{settings.GSUITE_DOMAIN}",
-        context={
-            "userlist": list_usernames_to_delete,
-        },
-        subject=f"{num_users_to_delete} brukere har blitt slettet.",
-        plain_template="users/email/list_of_deleted_users.txt",
-        html_template="users/email/list_of_deleted_users.html",
-    )
+    if len(users_to_delete) > 0:
+        send_email.delay(
+            to_email=f"daemon@{settings.GSUITE_DOMAIN}",
+            context={
+                "userlist": list_usernames_to_delete,
+            },
+            subject=f"{num_users_to_delete} brukere har blitt slettet.",
+            plain_template="users/email/list_of_deleted_users.txt",
+            html_template="users/email/list_of_deleted_users.html",
+        )
 
     def send_inactive_notification(user):
         notification = InactiveNotification(user, max_inactive_days=MAX_INACTIVE_DAYS)
