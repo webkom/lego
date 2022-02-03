@@ -342,6 +342,20 @@ def save_and_notify_payment(self, result, registration_id, logger_context=None):
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
+def set_all_events_ready_and_bump(self, logger_context=None):
+    """Task to bump all tasks to is_ready=True in case of error"""
+    self.setup_logger(logger_context)
+
+    # Find all events that are set to "is_ready=False" and are not awaiting automatic celery task (have just been edited)
+    now = timezone.now()
+    corrupt_events = Event.objects.filter(is_ready=False).filter(
+        updated_at__lt=now - timedelta(minutes=5)
+    )
+    for event in corrupt_events:
+        check_for_bump_on_pool_creation_or_expansion(event.pk, logger_context)
+
+
+@celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def check_for_bump_on_pool_creation_or_expansion(self, event_id, logger_context=None):
     """Task checking for bumps when event and pools are updated"""
     self.setup_logger(logger_context)

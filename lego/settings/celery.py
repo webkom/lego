@@ -72,6 +72,10 @@ schedule = {
         "task": "lego.apps.followers.tasks.send_registration_reminder_mail",
         "schedule": crontab(minute="*/30"),
     },
+    "set_all_events_ready_and_bump": {
+        "task": "lego.apps.events.tasks.set_all_events_ready_and_bump",
+        "schedule": crontab(hour=4, minute=0),
+    },
 }
 
 app.conf.update(

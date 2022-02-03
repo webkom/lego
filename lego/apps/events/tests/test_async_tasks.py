@@ -20,6 +20,7 @@ from lego.apps.events.tasks import (
     notify_event_creator_when_payment_overdue,
     notify_user_when_payment_soon_overdue,
     save_and_notify_payment,
+    set_all_events_ready_and_bump,
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
@@ -235,6 +236,27 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
 
         check_that_pool_counters_match_registration_number()
+
+    def test_set_all_events_ready_and_bump(self):
+        """Test that events are set as ready when task is complete"""
+
+        Event.objects.filter(pk=8).update(
+            is_ready=True, updated_at=timezone.now() - timedelta(minutes=3)
+        )
+        Event.objects.filter(pk=9).update(
+            is_ready=False, updated_at=timezone.now() - timedelta(minutes=3)
+        )
+        Event.objects.filter(pk=10).update(
+            is_ready=False, updated_at=timezone.now() - timedelta(minutes=10)
+        )
+
+        self.assertTrue(Event.objects.get(pk=8).is_ready)
+        self.assertFalse(Event.objects.get(pk=9).is_ready)
+        self.assertFalse(Event.objects.get(pk=10).is_ready)
+        set_all_events_ready_and_bump()
+        self.assertTrue(Event.objects.get(pk=8).is_ready)
+        self.assertFalse(Event.objects.get(pk=9).is_ready)
+        self.assertTrue(Event.objects.get(pk=10).is_ready)
 
 
 class PenaltyExpiredTestCase(BaseTestCase):
