@@ -44,7 +44,7 @@ class Activity:
 
         if not self.object_id:
             raise TypeError("Cant serialize activities without a object")
-        if self.object_id >= 10 ** 10 or self.verb.id >= 10 ** 3:
+        if self.object_id >= 10**10 or self.verb.id >= 10**3:
             raise TypeError("Fatal: object_id / verb have too many digits!")
         if not self.time:
             raise TypeError("Cant serialize activities without a time")
