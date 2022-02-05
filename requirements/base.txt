@@ -51,7 +51,7 @@ django-phonenumber-field[phonenumberslite]==6.0.0
 django-push-notifications==2.0.0
 
 # Ical-export
-django-ical==1.8.2
+django-ical==1.8.3
 icalendar==4.0.9
 
 # Docs
