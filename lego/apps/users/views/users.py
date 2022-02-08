@@ -175,9 +175,4 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return Response(MeSerializer(user).data)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def perform_destroy(self, instance):
-        instance.delete(force=True)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
