@@ -150,6 +150,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "use_consent",
             "youtube_url",
             "use_contact_tracing",
+            "mazemap_poi",
         )
         read_only = True
 
@@ -291,6 +292,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
             "unregistration_close_time",
             "youtube_url",
             "use_contact_tracing",
+            "mazemap_poi",
         )
 
     def validate(self, data):
