@@ -1,4 +1,4 @@
-django==3.2.11
+django==3.2.12
 ipython==7.31.1
 
 
