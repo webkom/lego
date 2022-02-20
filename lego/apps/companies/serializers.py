@@ -86,6 +86,9 @@ class CompanyFileSerializer(serializers.ModelSerializer):
 
 class CompanyListSerializer(BasisModelSerializer):
     logo = ImageField(required=False, options={"height": 500})
+    logo_placeholder = ImageField(
+        source="logo", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
     thumbnail = ImageField(
         source="logo",
         required=False,
@@ -113,6 +116,7 @@ class CompanyListSerializer(BasisModelSerializer):
             "company_type",
             "address",
             "logo",
+            "logo_placeholder",
             "thumbnail",
             "active",
         )
@@ -136,6 +140,9 @@ class CompanyAdminListSerializer(BasisModelSerializer):
 
 class CompanyDetailSerializer(BasisModelSerializer):
     logo = ImageField(required=False, options={"height": 500})
+    logo_placeholder = ImageField(
+        source="logo", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
 
     class Meta:
         model = Company
@@ -148,6 +155,7 @@ class CompanyDetailSerializer(BasisModelSerializer):
             "website",
             "address",
             "logo",
+            "logo_placeholder",
         )
 
 

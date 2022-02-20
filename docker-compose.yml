@@ -45,7 +45,7 @@ services:
       MAX_HEIGHT: 800
       QUALITY: 98
       AUTO_WEBP: 'True'
-      ALLOW_UNSAFE_URL: 0
+      ALLOW_UNSAFE_URL: 1
       ALLOW_OLD_URLS: 0
       AWS_ACCESS_KEY_ID: 'lego-dev'
       AWS_SECRET_ACCESS_KEY: 'lego-dev'

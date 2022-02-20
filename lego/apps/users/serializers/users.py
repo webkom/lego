@@ -20,6 +20,11 @@ class DetailedUserSerializer(serializers.ModelSerializer):
     past_memberships = PastMembershipSerializer(many=True)
     penalties = serializers.SerializerMethodField("get_valid_penalties")
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture_placeholder = ImageField(
+        source="profile_picture",
+        required=False,
+        options={"height": 20, "width": 20, "filters": ["blur(20)"]},
+    )
 
     def get_valid_penalties(self, user):
         qs = Penalty.objects.valid().filter(user=user)
@@ -39,6 +44,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             "email_address",
             "email_lists_enabled",
             "profile_picture",
+            "profile_picture_placeholder",
             "allergies",
             "is_active",
             "penalties",
@@ -51,6 +57,11 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 class PublicUserSerializer(serializers.ModelSerializer):
 
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture_placeholder = ImageField(
+        source="profile_picture",
+        required=False,
+        options={"height": 20, "width": 20, "filters": ["blur(20)"]},
+    )
 
     class Meta:
         model = User
@@ -62,6 +73,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "full_name",
             "gender",
             "profile_picture",
+            "profile_picture_placeholder",
             "internal_email_address",
         )
         read_only_fields = ("username",)
@@ -111,6 +123,11 @@ class AdministrateUserExportSerializer(PublicUserSerializer):
 class SearchUserSerializer(serializers.ModelSerializer):
 
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
+    profile_picture_placeholder = ImageField(
+        source="profile_picture",
+        required=False,
+        options={"height": 20, "width": 20, "filters": ["blur(20)"]},
+    )
 
     class Meta:
         model = User
@@ -122,6 +139,7 @@ class SearchUserSerializer(serializers.ModelSerializer):
             "full_name",
             "gender",
             "profile_picture",
+            "profile_picture_placeholder",
         )
 
 
@@ -178,6 +196,11 @@ class MeSerializer(serializers.ModelSerializer):
     profile_picture = ImageField(
         required=False, options={"height": 200, "width": 200}, allow_null=True
     )
+    profile_picture_placeholder = ImageField(
+        source="profile_picture",
+        required=False,
+        options={"height": 20, "width": 20, "filters": ["blur(20)"]},
+    )
     ical_token = serializers.SerializerMethodField("get_user_ical_token")
     penalties = serializers.SerializerMethodField("get_valid_penalties")
     is_student = serializers.SerializerMethodField()
@@ -226,6 +249,7 @@ class MeSerializer(serializers.ModelSerializer):
             "phone_number",
             "email_lists_enabled",
             "profile_picture",
+            "profile_picture_placeholder",
             "gender",
             "allergies",
             "is_active",

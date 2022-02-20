@@ -57,6 +57,9 @@ class EventPublicSerializer(BasisModelSerializer):
 class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
     company = CompanyField(queryset=Company.objects.all())
     cover = ImageField(required=False, options={"height": 500})
+    cover_placeholder = ImageField(
+        source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
     thumbnail = ImageField(
         source="cover",
         required=False,
@@ -72,6 +75,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "description",
             "cover",
+            "cover_placeholder",
             "event_type",
             "event_status_type",
             "location",
@@ -93,6 +97,9 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
     cover = ImageField(required=False, options={"height": 500})
+    cover_placeholder = ImageField(
+        source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
     company = CompanyField(queryset=Company.objects.all())
     responsible_group = AbakusGroupField(
         queryset=AbakusGroup.objects.all(), required=False, allow_null=True
@@ -112,6 +119,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "description",
             "cover",
+            "cover_placeholder",
             "text",
             "event_type",
             "event_status_type",
@@ -383,6 +391,9 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
 class FrontpageEventSerializer(serializers.ModelSerializer):
     cover = ImageField(required=False, options={"height": 500})
+    cover_placeholder = ImageField(
+        source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
     thumbnail = ImageField(
         source="cover",
         required=False,
@@ -399,6 +410,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "cover",
+            "cover_placeholder",
             "text",
             "event_type",
             "event_status_type",

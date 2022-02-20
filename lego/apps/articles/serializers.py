@@ -17,6 +17,9 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
     comments = CommentSerializer(read_only=True, many=True)
     cover = ImageField(required=False, options={"height": 500})
+    cover_placeholder = ImageField(
+        source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
     content_target = CharField(read_only=True)
     content = ContentSerializerField(source="text")
     reactions_grouped = serializers.SerializerMethodField()
@@ -31,6 +34,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "id",
             "title",
             "cover",
+            "cover_placeholder",
             "author",
             "description",
             "comments",
@@ -75,6 +79,9 @@ class SearchArticleSerializer(BasisModelSerializer):
 class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
 
     cover = ImageField(required=False, options={"height": 300})
+    cover_placeholder = ImageField(
+        source="cover", required=False, options={"height": 30, "filters": ["blur(20)"]}
+    )
     author = PublicUserSerializer(read_only=True, source="created_by")
 
     class Meta:
@@ -83,6 +90,7 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "id",
             "title",
             "cover",
+            "cover_placeholder",
             "author",
             "description",
             "tags",

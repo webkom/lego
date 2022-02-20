@@ -41,6 +41,11 @@ class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
 
 class PublicAbakusGroupSerializer(serializers.ModelSerializer):
     logo = ImageField(required=False, options={"height": 400, "width": 400})
+    logo_placeholder = ImageField(
+        source="logo",
+        required=False,
+        options={"height": 40, "width": 40, "filters": ["blur(20)"]},
+    )
 
     class Meta:
         model = AbakusGroup
@@ -51,6 +56,7 @@ class PublicAbakusGroupSerializer(serializers.ModelSerializer):
             "contact_email",
             "parent",
             "logo",
+            "logo_placeholder",
             "type",
             "show_badge",
             "active",
