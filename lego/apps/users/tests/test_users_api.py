@@ -29,6 +29,8 @@ _test_pool = {
     "permission_groups": [1],
 }
 
+_test_password = "test123"
+
 
 def _get_list_url():
     return reverse("api:v1:user-list")
@@ -40,6 +42,10 @@ def _get_registration_token_url(token):
 
 def _get_detail_url(username):
     return reverse("api:v1:user-detail", kwargs={"username": username})
+
+
+def _get_delete_url():
+    return "/api/v1/user-delete"
 
 
 def get_test_user():
@@ -378,40 +384,37 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
 class DeleteUsersAPITestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
-    _test_user_data = {
-        "username": "new_testuser",
-        "first_name": "new",
-        "last_name": "test_user",
-        "email": "new@testuser.com",
-    }
-
     def setUp(self):
-        self.all_users = User.objects.all()
+        self.test_user = User.objects.create_user(
+            **_test_user_data, password=_test_password
+        )
+        self.test_pass = _test_password
 
-        self.with_perm = self.all_users.get(username="useradmin_test")
-        self.useradmin_test_group = AbakusGroup.objects.get(name="UserAdminTest")
-        self.useradmin_test_group.add_user(self.with_perm)
-        self.without_perm = self.all_users.exclude(pk=self.with_perm.pk).first()
-
-        self.test_user = get_test_user()
-
-    def successful_delete(self, user):
-        self.client.force_authenticate(user=user)
-        response = self.client.delete(_get_detail_url(self.test_user.username))
+    def successful_delete(self):
+        self.client.force_authenticate(user=self.test_user)
+        response = self.client.post(_get_delete_url(), {"password": self.test_pass})
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertRaises(User.DoesNotExist, User.objects.get, pk=self.test_user.pk)
 
-    def test_with_normal_user(self):
-        self.client.force_authenticate(user=self.without_perm)
+    def unsuccessful_delete(self):
+        self.client.force_authenticate(user=self.test_user)
+        response = self.client.post(_get_delete_url(), {"password": "wrongPassword123"})
+        users = User.objects.filter(pk=self.test_user.pk)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(len(users))
+
+    def test_obsolete_endpoint(self):
+        self.with_perm = User.objects.all().get(username="useradmin_test")
+        self.useradmin_test_group = AbakusGroup.objects.get(name="UserAdminTest")
+        self.useradmin_test_group.add_user(self.with_perm)
+        self.client.force_authenticate(user=self.with_perm)
         response = self.client.delete(_get_detail_url(self.test_user.username))
         users = User.objects.filter(pk=self.test_user.pk)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         self.assertTrue(len(users))
-
-    def test_with_useradmin(self):
-        self.successful_delete(self.with_perm)
 
 
 class RetrieveSelfTestCase(BaseAPITestCase):
