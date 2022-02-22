@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 
 from lego.apps.action_handlers.handler import Handler
 from lego.apps.action_handlers.registry import register_handler
@@ -43,21 +44,36 @@ class CompanyInterestHandler(Handler):
         #    notification.notify()
 
         mail_context = instance.generate_mail_context()
+        recipients = [f"bedriftskontakt@{settings.GSUITE_DOMAIN}"]
 
-        send_email.delay(
-            to_email=f"bedriftskontakt@{settings.GSUITE_DOMAIN}",
-            context=mail_context,
-            subject="En ny bedrift har meldt sin interesse",
-            plain_template="companies/email/response_mail_bedkom.txt",
-            html_template="companies/email/response_mail_bedkom.html",
-        )
-        
-        send_email.delay(
-            to_email= [mail_context["mail"], "lederreadme@abakus.no"] if mail_context["readme"] else mail_context["mail"],
-            context=mail_context,
-            subject="Takk for din interesse!",
-            plain_template="companies/email/response_mail_company.txt",
-            html_template="companies/email/response_mail_company.html",
-        )
+        current_date = timezone.now()
+        booking_period_from, booking_period_to = settings.BEDKOM_BOOKING_PERIOD
+
+        if (
+            booking_period_from
+            <= (current_date.month, current_date.day)
+            <= booking_period_to
+        ):
+            # If a company sends in an interest form within bedkoms booking period, an automatic reply is sent to them (and bedkom)
+            recipients.append(mail_context["mail"])
+            if mail_context["readme"]:
+                recipients.append(f"lederreadme@{settings.GSUITE_DOMAIN}")
+            send_email.delay(
+                to_email=recipients,
+                context=mail_context,
+                subject="Takk for din interesse!",
+                plain_template="companies/email/response_mail_company.txt",
+                html_template="companies/email/response_mail_company.html",
+            )
+        else:
+            # If a company sends in an interest form outside of bedkoms booking period, the answers from the form is forwarded to bedkom so they can reply manually
+            send_email.delay(
+                to_email=recipients,
+                context=mail_context,
+                subject="En ny bedrift har meldt sin interesse",
+                plain_template="companies/email/response_mail_bedkom.txt",
+                html_template="companies/email/response_mail_bedkom.html",
+            )
+
 
 register_handler(CompanyInterestHandler)
