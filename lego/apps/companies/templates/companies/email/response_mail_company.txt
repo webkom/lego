@@ -1,0 +1,20 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+{% spaceless %}
+
+Hei {{ contact_person }}
+Viser til meldt interesse på abakus.no.
+
+Vi har notert oss interessen, samt hvilke typer arrangementer dere ønsker.
+
+{% if collaborations != "" %}Hvis dere får tilbud til arrangement med oss, kommer vi til å kontakte aktuelle linjeforeninger for å avtale nærmere.{% endif %}
+
+{% if readme %}Ser også at dere har huket av for annonsering i readme. Jeg legger derfor ved redaktøren av readme i tråden, slik at dere kan starte en dialog angående mulighetene for dette.{% endif %}
+
+{% if comment|length > 10 %}Takk for utfyllende informasjon i kommentarfeltet!{% endif %}
+
+Har dere noen spørsmål kan dere henvende dere til bedriftskontakt@abakus.no
+
+{% endspaceless %}
+{% endblock %}

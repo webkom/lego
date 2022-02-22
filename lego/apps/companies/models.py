@@ -169,6 +169,8 @@ class CompanyInterest(PersistentModel, TimeStampModel):
 
         grades = [f"{g}.kl" for g in self.target_grades]
 
+        readme = "readme" in self.other_offers
+
         return {
             "company_name": self.company_name,
             "contact_person": self.contact_person,
@@ -181,4 +183,5 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             "participant_range": f"{self.participant_range_start} - {self.participant_range_end}",
             "comment": self.comment,
             "second_comment": self.second_comment,
+            "readme": readme,
         }
