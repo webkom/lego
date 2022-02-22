@@ -20,19 +20,14 @@
             <p>Viser til meldt interesse på abakus.no.</p>
             
             <p>Vi har notert oss interessen for {{ semesters }}, samt hvilke typer arrangementer dere ønsker.</p>
-
-            {% if collaborations != "" %} 
-                <p>Hvis dere får tilbud til arrangement med oss, kommer vi til å kontakte aktuelle linjeforeninger for å avtale nærmere.</p> 
-            {% endif %}
-
-            {% if readme %}
-                <p>Ser også at dere har huket av for annonsering i readme. Jeg legger derfor ved redaktøren av readme i tråden, slik at dere kan starte en dialog angående mulighetene for dette.</p>
-            {% endif %}
-
-            {% if comment|length > 10 %} 
-                <p>Takk for utfyllende informasjon i kommentarfeltet!</p>
-            {% endif %}
-
+            
+            {% if collaborations != "" %}<p>Hvis dere får tilbud til arrangement med oss, kommer vi til å kontakte aktuelle linjeforeninger for å avtale nærmere.</p>{% endif %}
+            
+            {% if readme %}<p>Ser også at dere har huket av for annonsering i readme. Jeg legger derfor ved redaktøren av readme i tråden, slik at dere kan starte en dialog angående mulighetene for dette.</p>{% endif %}
+            
+            {% if comment|length > 10 %}<p>Takk for utfyllende informasjon i kommentarfeltet!</p>{% endif %}
+            
+            <p>Har dere noen spørsmål kan dere henvende dere til bedriftskontakt@abakus.no</p>
         </td>
     </tr>
 
