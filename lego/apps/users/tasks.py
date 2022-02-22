@@ -33,7 +33,7 @@ def send_inactive_reminder_mail(self, logger_context=None):
 
     list_usernames_to_delete = list(map(lambda u: u.username, users_to_delete))
     num_users_to_delete = len(users_to_delete)
-    if len(list_usernames_to_delete) != num_users_to_delete:
+    if len(set(list_usernames_to_delete)) != num_users_to_delete:
         log.error(
             "Length of list of usernames to be deleted is not equal to number of users to be deleted",
             list_usernames_to_delete=list_usernames_to_delete,
