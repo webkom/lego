@@ -8,7 +8,7 @@ from lego.apps.users.tasks import (
     MAX_INACTIVE_DAYS,
     MEDIAN_INACTIVE_DAYS,
     MIN_INACTIVE_DAYS,
-    send_inactive_reminder_mail,
+    send_inactive_reminder_mail_and_delete_users,
 )
 from lego.utils.test_utils import BaseTestCase
 
@@ -24,7 +24,7 @@ class InactiveNotificationTestCase(BaseTestCase):
         User.objects.all().update(last_login=timezone.now())
 
     def test_all_users_active(self, mock_notification):
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_not_called()
 
     def test_one_user_monthly_have_not_been_notified(self, mock_notification):
@@ -33,7 +33,7 @@ class InactiveNotificationTestCase(BaseTestCase):
         inactive_user.last_login = last_login_date
         inactive_user.save()
         counter_before = inactive_user.inactive_notified_counter
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_called_once()
         inactive_user.refresh_from_db()
         counter_after = inactive_user.inactive_notified_counter
@@ -46,7 +46,7 @@ class InactiveNotificationTestCase(BaseTestCase):
         inactive_user.inactive_notified_counter = 1
         inactive_user.save()
         counter_before = inactive_user.inactive_notified_counter
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_not_called()
         inactive_user.refresh_from_db()
         counter_after = inactive_user.inactive_notified_counter
@@ -59,7 +59,7 @@ class InactiveNotificationTestCase(BaseTestCase):
         inactive_user.inactive_notified_counter = 1
         inactive_user.save()
         counter_before = inactive_user.inactive_notified_counter
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_called_once()
         inactive_user.refresh_from_db()
         counter_after = inactive_user.inactive_notified_counter
@@ -73,7 +73,7 @@ class InactiveNotificationTestCase(BaseTestCase):
         inactive_user.inactive_notified_counter = 1
         inactive_user.save()
         counter_before = inactive_user.inactive_notified_counter
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_called_once()
         inactive_user.refresh_from_db()
         counter_after = inactive_user.inactive_notified_counter
@@ -99,7 +99,7 @@ class DeletedUserNotificationTestCase(BaseTestCase):
         inactive_user.last_login = last_login_date
         inactive_user.inactive_notified_counter = 5
         inactive_user.save()
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_called()
         num_users_after = len(User.objects.all())
         self.assertNotEqual(num_users_before, num_users_after)
@@ -112,7 +112,7 @@ class DeletedUserNotificationTestCase(BaseTestCase):
         inactive_user.inactive_notified_counter = 1
         inactive_user.save()
         counter_before = inactive_user.inactive_notified_counter
-        send_inactive_reminder_mail.delay()
+        send_inactive_reminder_mail_and_delete_users.delay()
         mock_notification.assert_not_called()
         inactive_user.refresh_from_db()
         counter_after = inactive_user.inactive_notified_counter

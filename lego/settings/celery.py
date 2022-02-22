@@ -77,7 +77,7 @@ schedule = {
         "schedule": crontab(hour=4, minute=0),
     },
     "notify_inactive_user": {
-        "task": "lego.apps.users.tasks.send_inactive_reminder_mail",
+        "task": "lego.apps.users.tasks.send_inactive_reminder_mail_and_delete_users",
         "schedule": crontab(hour=7, minute=0, day_of_week=1),
     },
 }

@@ -56,7 +56,7 @@ class InactiveNotification(Notification):
                 ),
                 "max_inactive_days": max_inactive_days,
             },
-            subject="Du har vært inaktiv lenge",
+            subject="Din konto på Abakus.no vil snart bli slettet.",
             plain_template="users/email/inactive.txt",
             html_template="users/email/inactive.html",
         )

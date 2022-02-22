@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0029_user_inactive_notified_counter'),
-        ('users', '0031_abakusgroup_active'),
+        ("users", "0029_user_inactive_notified_counter"),
+        ("users", "0031_abakusgroup_active"),
     ]
 
-    operations = [
-    ]
+    operations = []

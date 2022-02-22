@@ -1,4 +1,3 @@
-from datetime import timedelta
 from math import ceil
 
 from django.conf import settings
@@ -21,18 +20,25 @@ MEDIAN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - ceil(
 )
 
 
+def send_inactive_notification(user):
+    notification = InactiveNotification(user, max_inactive_days=MAX_INACTIVE_DAYS)
+    notification.notify()
+    user.inactive_notified_counter += 1
+    user.save()
+
+
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def send_inactive_reminder_mail(self, logger_context=None):
+def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
 
     self.setup_logger(logger_context)
 
     users_to_delete = User.objects.filter(
-        Q(last_login__lte=timezone.now() - timedelta(days=MAX_INACTIVE_DAYS))
+        Q(last_login__lte=timezone.now() - timezone.timedelta(days=MAX_INACTIVE_DAYS))
         & Q(inactive_notified_counter__gte=4)
     )
 
     list_usernames_to_delete = list(map(lambda u: u.username, users_to_delete))
-    num_users_to_delete = len(users_to_delete)
+    num_users_to_delete = users_to_delete.count()
     if len(set(list_usernames_to_delete)) != num_users_to_delete:
         log.error(
             "Length of list of usernames to be deleted is not equal to number of users to be deleted",
@@ -58,21 +64,15 @@ def send_inactive_reminder_mail(self, logger_context=None):
             html_template="users/email/list_of_deleted_users.html",
         )
 
-    def send_inactive_notification(user):
-        notification = InactiveNotification(user, max_inactive_days=MAX_INACTIVE_DAYS)
-        notification.notify()
-        user.inactive_notified_counter += 1
-        user.save()
-
     users_to_notifiy_weekly = User.objects.filter(
-        last_login__lte=timezone.now() - timedelta(days=MEDIAN_INACTIVE_DAYS)
+        last_login__lte=timezone.now() - timezone.timedelta(days=MEDIAN_INACTIVE_DAYS)
     )
 
     for user in users_to_notifiy_weekly:
         send_inactive_notification(user)
 
     users_to_notifiy_montly = User.objects.filter(
-        Q(last_login__lte=timezone.now() - timedelta(days=MIN_INACTIVE_DAYS))
+        Q(last_login__lte=timezone.now() - timezone.timedelta(days=MIN_INACTIVE_DAYS))
         & Q(inactive_notified_counter=0)
     )
 
