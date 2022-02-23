@@ -81,7 +81,7 @@ class SemesterStatus(TimeStampModel):
     )
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
     contacted_status = ArrayField(
-        models.CharField(choices=SEMESTER_STATUSES, max_length=64)
+        models.CharField(choices=SEMESTER_STATUSES, max_length=64), blank=True
     )
     contract = FileField(related_name="semester_status_contracts")
     statistics = FileField(related_name="semester_status_statistics")
