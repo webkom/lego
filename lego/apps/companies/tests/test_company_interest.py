@@ -1,12 +1,12 @@
 from django.urls import reverse
 from rest_framework import status
 
+from lego.apps.companies.models import CompanyInterest
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
 _test_company_interest_data = [
     {
-        "id": 1,
         "company_name": "BEKK",
         "contact_person": "Bill Gates",
         "mail": "bekk@abakus.no",
@@ -18,6 +18,16 @@ _test_company_interest_data = [
     {
         "id": 1,
         "company_name": "BEKKerino",
+        "contact_person": "Bill Gutes",
+        "mail": "bekk@webkom.no",
+        "semesters": [1, 2, 3, 4],
+        "events": ["course", "lunch_presentation"],
+        "other_offers": ["collaboration", "itdagene"],
+        "comment": "webkom",
+    },
+    {
+        "company_name": "",
+        "company": 1,
         "contact_person": "Bill Gutes",
         "mail": "bekk@webkom.no",
         "semesters": [1, 2, 3, 4],
@@ -70,6 +80,7 @@ class CreateCompanyInterestTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_company_interest.yaml",
+        "test_companies.yaml",
         "test_users.yaml",
     ]
 
@@ -78,6 +89,20 @@ class CreateCompanyInterestTestCase(BaseAPITestCase):
             _get_company_interests(), _test_company_interest_data[0]
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_with_existing_company_any_user(self):
+        response = self.client.post(
+            _get_company_interests(), _test_company_interest_data[2]
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_company_search_any_user(self):
+        """Company search is required for company interest form to function as intended"""
+        search_response = self.client.post(
+            reverse("api:v1:autocomplete-list"),
+            {"types": ["companies.company"], "query": "web"},
+        )
+        self.assertEqual(search_response.json()[0]["name"], "Webkom")
 
 
 class RetrieveSemestersInInterestFormTestCase(BaseAPITestCase):

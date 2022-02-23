@@ -231,7 +231,9 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
         for semester in company_interest.semesters.all():
             if company:
                 semester_status, created = SemesterStatus.objects.get_or_create(
-                    semester=semester, company=company
+                    semester=semester,
+                    company=company,
+                    defaults={"contacted_status": []},
                 )
                 if len(semester_status.contacted_status) == 0:
                     semester_status.contacted_status.append(INTERESTED)
