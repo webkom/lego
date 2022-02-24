@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -10,7 +11,7 @@ from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events import constants
 from lego.apps.events.constants import PRESENT
 from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
-from lego.apps.events.models import Event, Pool
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
     PoolAdministrateExportSerializer,
     PoolAdministrateSerializer,
@@ -197,6 +198,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
     spots_left = SpotsLeftField()
+    pending_registration = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
 
     class Meta(EventReadDetailedSerializer.Meta):
@@ -205,12 +207,28 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
             "activation_time",
             "is_admitted",
             "spots_left",
+            "pending_registration",
         )
 
     def get_price(self, obj):
         request = self.context.get("request", None)
         if request:
             return obj.get_price(user=request.user)
+
+    def get_pending_registration(self, obj):
+        request = self.context.get("request", None)
+        if not request or not request.user.is_authenticated:
+            return None
+
+        try:
+            reg = Registration.objects.get(
+                event_id=obj.id,
+                user_id=request.user.id,
+            )
+
+            return RegistrationReadDetailedSerializer(reg).data
+        except ObjectDoesNotExist:
+            return None
 
 
 class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
