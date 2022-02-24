@@ -1,4 +1,4 @@
-from lego.apps.permissions.constants import CREATE, LIST
+from lego.apps.permissions.constants import CREATE, LIST, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 from lego.apps.permissions.utils import get_permission_handler
 
@@ -6,6 +6,13 @@ from lego.apps.permissions.utils import get_permission_handler
 class CompanyPermissionHandler(PermissionHandler):
 
     default_keyword_permission = "/sudo/admin/companies/{perm}/"
+
+    authentication_map = {LIST: False, VIEW: False}
+
+
+class CompanyAdminPermissionHandler(PermissionHandler):
+
+    default_keyword_permission = "/sudo/admin/bdb/{perm}/"
 
 
 class NestedCompanyPermissionHandler(CompanyPermissionHandler):
