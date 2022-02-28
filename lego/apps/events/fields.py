@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Registration
 from lego.apps.permissions.constants import EDIT
 
 
