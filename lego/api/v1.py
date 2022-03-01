@@ -77,6 +77,7 @@ from lego.apps.users.views.student_confirmation import (
     StudentConfirmationPerformViewSet,
     StudentConfirmationRequestViewSet,
 )
+from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
 
@@ -200,6 +201,7 @@ router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, basename="submission"
 )
 router.register(r"tags", TagViewSet)
+router.register(r"user-delete", UserDeleteViewSet, basename="user-delete")
 router.register(r"users", UsersViewSet)
 router.register(
     r"users-registration-request",

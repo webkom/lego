@@ -173,3 +173,6 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 newGrade.add_user(user)
 
         return Response(MeSerializer(user).data)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
