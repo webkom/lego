@@ -21,6 +21,12 @@ MEETING_INVITE = "meeting_invite"
 # Penalty
 PENALTY_CREATION = "penalty_creation"
 
+# Inactive user
+INACTIVE_WARNING = "inactive_warning"
+
+# Delete user
+DELETED_WARNING = "deleted_warning"
+
 # Restricted Mail
 RESTRICTED_MAIL_SENT = "restricted_mail_sent"
 
@@ -56,6 +62,8 @@ NOTIFICATION_TYPES = [
     ANNOUNCEMENT,
     SURVEY_CREATED,
     REGISTRATION_REMINDER,
+    INACTIVE_WARNING,
+    DELETED_WARNING,
 ]
 
 NOTIFICATION_CHOICES = [

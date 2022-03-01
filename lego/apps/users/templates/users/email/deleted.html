@@ -1,0 +1,52 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-warning">
+            Brukeren din har blitt slettet.
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei {{ name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Du har ikke logget inn på over {{ max_inactive_days }} dager.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            <i> Brukeren din; {{ username }}, har blitt slettet grunnet GDPR.
+                Du skal ha fått flere advarsler om dette. Dersom du tror en feil har skjedd, vennligst ta kontakt via. webkom@abakus.no
+            </i>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="button">
+          <div>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                <w:anchorlock/>
+            </v:roundrect>
+            <![endif]-->
+            <a class="btn-primary" href="{{ frontend_url }}"
+                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
+               Til forsiden
+            </a>
+          </div>
+        </td>
+    </tr>
+
+
+{% endblock %}

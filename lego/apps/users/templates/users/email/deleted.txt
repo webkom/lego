@@ -1,0 +1,15 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei {{ name }}!
+
+Du har ikke logget inn på over {{ max_inactive_days }} dager.
+
+
+Brukeren din; {{ username }}, har blitt slettet grunnet GDPR.
+Du skal ha fått flere advarsler om dette. Dersom du tror en feil har skjedd, vennligst ta kontakt via. webkom@abakus.no
+
+Til forsiden {{ frontend_url }}
+
+{% endblock %}

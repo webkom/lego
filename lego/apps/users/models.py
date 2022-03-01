@@ -350,6 +350,7 @@ class User(
         help_text="Designates whether this user should be treated as "
         "active. Unselect this instead of deleting accounts.",
     )
+    inactive_notified_counter = models.IntegerField(default=0)
     date_joined = models.DateTimeField("date joined", default=timezone.now)
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
@@ -380,7 +381,6 @@ class User(
             return "default_other_avatar.png"
 
     def delete(self, using=None, force=False):
-        from lego.apps.events import constants
         from lego.apps.events.models import Event
 
         if force:

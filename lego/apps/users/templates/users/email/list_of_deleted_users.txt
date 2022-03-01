@@ -1,0 +1,5 @@
+Følgende brukere har blitt slettet:
+
+{% for username in userlist %}
+    {{ username }}
+{% endfor %}
