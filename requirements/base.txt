@@ -11,7 +11,7 @@ certifi==2021.10.8
 elasticsearch==7.16.2
 celery==5.2.3
 stripe==2.64.0
-boto3==1.21.7
+boto3==1.21.10
 bs4==0.0.1
 bleach==4.1.0
 requests==2.27.1
