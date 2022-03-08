@@ -33,6 +33,8 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=["PUT"])
     def approve(self, *args, **kwargs):
         instance = self.get_object()
+        if instance.created_by == self.request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         instance.approve()
         return Response(status=status.HTTP_200_OK)
 
