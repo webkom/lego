@@ -1,3 +1,7 @@
+from functools import reduce
+
+from rest_framework import exceptions
+
 from lego.apps.events.fields import PublicEventListField
 from lego.apps.meetings.fields import MeetingListField
 from lego.apps.restricted.models import RestrictedMail
@@ -27,6 +31,18 @@ class RestrictedMailSerializer(RestrictedMailListSerializer):
             "weekly",
             "hide_sender",
         )
+
+    def create(self, validated_data):
+        groups = validated_data["groups"]
+        events = validated_data["events"]
+        MaxPermittedAmout = 500
+        num = reduce((lambda a, b: a + b.number_of_users), groups, 0)
+        num += reduce((lambda a, b: a + b.registration_count), events, 0)
+        if num > MaxPermittedAmout:
+            raise exceptions.ValidationError(
+                f"The number of students in selected groups/events exceed the permitted amount which is {MaxPermittedAmout}"
+            )
+        return super().create(validated_data)
 
 
 class RestrictedMailDetailSerializer(RestrictedMailSerializer):
