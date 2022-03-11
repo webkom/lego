@@ -20,7 +20,7 @@ else:
     else:
         try:
             from .local import *  # noqa
-        except ImportError:
-            raise ImportError("Couldn't load local settings lego.settings.local")
+        except ImportError as e:
+            raise ImportError("Couldn't load local settings lego.settings.local") from e
 
 DEFAULT_FROM_EMAIL = SERVER_EMAIL  # noqa

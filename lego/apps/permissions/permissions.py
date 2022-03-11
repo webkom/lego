@@ -97,7 +97,7 @@ class PermissionHandler:
         if obj is not None:
             if isinstance(obj, ObjectPermissionsModel):
                 return True
-            if getattr(obj, "created_by") == user:
+            if obj.created_by == user:
                 return True
 
         if queryset is not None and issubclass(queryset.model, ObjectPermissionsModel):

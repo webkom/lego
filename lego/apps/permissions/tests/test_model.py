@@ -9,12 +9,10 @@ class ObjectPermissionsModelTestCase(BaseTestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def assertFieldsEqual(self, expected, actual):
-        expected_deconstructed = set(
-            [":".join(field.deconstruct()[0:2]) for field in expected]
-        )
-        actual_deconstructed = set(
-            [":".join(field.deconstruct()[0:2]) for field in actual]
-        )
+        expected_deconstructed = {
+            ":".join(field.deconstruct()[0:2]) for field in expected
+        }
+        actual_deconstructed = {":".join(field.deconstruct()[0:2]) for field in actual}
         self.assertSetEqual(expected_deconstructed, actual_deconstructed)
 
     def setUp(self):

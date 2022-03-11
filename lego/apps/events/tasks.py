@@ -102,7 +102,7 @@ def async_register(self, registration_id, logger_context=None):
         log.error(
             "registration_error", exception=e, registration_id=self.registration.id
         )
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask, default_retry_delay=30)
@@ -174,21 +174,21 @@ def async_retrieve_payment(self, registration_id, logger_context=None):
         self.registration.save()
     except stripe.error.StripeError as e:
         log.error("stripe_error", exception=e, registration_id=self.registration.id)
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except stripe.error.APIConnectionError as e:
         log.error(
             "stripe_APIConnectionError",
             exception=e,
             registration_id=self.registration.id,
         )
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except Exception as e:
         log.error(
             "Exception on creating a payment intent",
             exception=e,
             registration=self.registration.id,
         )
-        raise self.retry(exc=e)
+        raise self.retry(exc=e) from e
 
     # Check that the payment intent is not already confirmed
     # If so, update the payment status to reflect reality
@@ -268,21 +268,21 @@ def async_initiate_payment(self, registration_id, logger_context=None):
         self.registration.save()
     except stripe.error.StripeError as e:
         log.error("stripe_error", exception=e, registration_id=self.registration.id)
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except stripe.error.APIConnectionError as e:
         log.error(
             "stripe_APIConnectionError",
             exception=e,
             registration_id=self.registration.id,
         )
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except Exception as e:
         log.error(
             "Exception on creating a payment intent",
             exception=e,
             registration=self.registration.id,
         )
-        raise self.retry(exc=e)
+        raise self.retry(exc=e) from e
 
 
 @celery_app.task(bind=True, base=AbakusTask)
@@ -331,7 +331,7 @@ def save_and_notify_payment(self, result, registration_id, logger_context=None):
         log.error(
             "registration_save_error", exception=e, registration_id=registration_id
         )
-        raise self.retry(exc=e)
+        raise self.retry(exc=e) from e
 
     notify_user_payment_initiated(
         constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
@@ -450,7 +450,7 @@ def check_events_for_registrations_with_expired_penalties(self, logger_context=N
             if locked_event.waiting_registrations.exists():
                 for pool in locked_event.pools.all():
                     if pool.is_activated and not pool.is_full:
-                        for i in range(locked_event.waiting_registrations.count()):
+                        for _ in range(locked_event.waiting_registrations.count()):
                             locked_event.check_for_bump_or_rebalance(pool)
                             if pool.is_full:
                                 break

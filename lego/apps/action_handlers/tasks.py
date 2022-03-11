@@ -15,7 +15,7 @@ def execute_action_handler(self, instance, action, kwargs, logger_context=None):
         instance = string_to_instance(instance)
     except ObjectDoesNotExist as e:
         # Retry, the object may not be present in DB
-        raise self.retry(exc=e, max_retries=3, countdown=20)
+        raise self.retry(exc=e, max_retries=3, countdown=20) from e
 
     handler = registry.get_handler_by_instance(instance)
     return handler.run(instance, action, **kwargs)

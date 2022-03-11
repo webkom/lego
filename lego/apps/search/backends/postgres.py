@@ -34,7 +34,7 @@ class PostgresBackend(SearchBacked):
 
         # Interleave results so results are not only of one type if there are many matches
         results = []
-        for i in range(max_results_per_type):
+        for _ in range(max_results_per_type):
             for content_type in content_types:
                 if len(results_by_content_type[content_type]):
                     results.append(results_by_content_type[content_type].pop(0))

@@ -24,7 +24,7 @@ class ReactionSerializer(BasisModelSerializer):
     def create(self, validated_data):
         try:
             return super().create(validated_data)
-        except ReactionExists:
-            raise APIReactionExists()
-        except TooManyReactions:
-            raise APITooManyReactions()
+        except ReactionExists as e:
+            raise APIReactionExists() from e
+        except TooManyReactions as e:
+            raise APITooManyReactions() from e

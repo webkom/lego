@@ -28,8 +28,8 @@ class EmailValidatorWithBlacklist:
     def __call__(self, value):
         try:
             _, domain_part = value.rsplit("@", 1)
-        except ValueError:
-            raise ValidationError("Invalid email", code=self.code)
+        except ValueError as e:
+            raise ValidationError("Invalid email", code=self.code) from e
 
         if domain_part.lower() in self.domain_blacklist:
             message = "You can't use a {} email for your personal account.".format(
