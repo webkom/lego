@@ -7,3 +7,4 @@ tox==3.24.5
 -r flake8.txt
 -r isort.txt
 -r black.txt
+-r mypy.txt
