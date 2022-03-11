@@ -21,7 +21,7 @@ class Comment(BasisModel):
     content_object = GenericForeignKey()
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
 
-    objects = CommentManager()
+    objects = CommentManager()  # type: ignore
 
     class Meta:
         ordering = ("created_at",)

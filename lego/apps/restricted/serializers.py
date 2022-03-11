@@ -22,7 +22,7 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 
 class RestrictedMailSerializer(RestrictedMailListSerializer):
     class Meta(RestrictedMailListSerializer.Meta):
-        fields = RestrictedMailListSerializer.Meta.fields + (
+        fields = RestrictedMailListSerializer.Meta.fields + (  # type: ignore
             "users",
             "groups",
             "events",
@@ -52,4 +52,4 @@ class RestrictedMailDetailSerializer(RestrictedMailSerializer):
     meetings = MeetingListField({"read_only": True})
 
     class Meta(RestrictedMailSerializer.Meta):
-        fields = RestrictedMailSerializer.Meta.fields + ("token_query_param",)
+        fields = RestrictedMailSerializer.Meta.fields + ("token_query_param",)  # type: ignore

@@ -100,7 +100,7 @@ class BasisModel(PersistentModel, TimeStampModel):
         on_delete=models.SET_NULL,
     )
 
-    objects = BasisModelManager()
+    objects = BasisModelManager()  # type: ignore
 
     class Meta:
         abstract = True

@@ -61,7 +61,7 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.redirects.RedirectsPanel",
 ]
 
-REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += [
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += [  # type: ignore
     # "rest_framework.renderers.BrowsableAPIRenderer"
     "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer"
 ]

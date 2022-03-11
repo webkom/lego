@@ -39,7 +39,7 @@ class PoolReadAuthSerializer(PoolReadSerializer):
     registrations = serializers.SerializerMethodField()
 
     class Meta(PoolReadSerializer.Meta):
-        fields = PoolReadSerializer.Meta.fields + ("registrations",)
+        fields = PoolReadSerializer.Meta.fields + ("registrations",)  # type: ignore
 
     def get_registrations(self, obj):
         queryset = obj.registrations.all()
@@ -53,11 +53,11 @@ class PoolReadAuthSerializer(PoolReadSerializer):
 
 
 class PoolAdministrateSerializer(PoolReadAuthSerializer):
-    registrations = RegistrationReadDetailedSerializer(many=True)
+    registrations = RegistrationReadDetailedSerializer(many=True)  # type: ignore
 
 
 class PoolAdministrateExportSerializer(PoolAdministrateSerializer):
-    registrations = RegistrationReadDetailedExportSerializer(many=True)
+    registrations = RegistrationReadDetailedExportSerializer(many=True)  # type: ignore
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):

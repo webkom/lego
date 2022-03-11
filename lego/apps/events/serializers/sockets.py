@@ -31,15 +31,15 @@ class WebsocketSerializer(serializers.Serializer):
 
 
 class RegistrationReadSocketSerializer(WebsocketSerializer):
-    payload = RegistrationPublicReadSerializer()
+    payload = RegistrationPublicReadSerializer()  # type: ignore
 
 
 class RegistrationReadAnonymizedSocketSerializer(WebsocketSerializer):
-    payload = RegistrationAnonymizedReadSerializer()
+    payload = RegistrationAnonymizedReadSerializer()  # type: ignore
 
 
 class RegistrationPaymentReadSocketSerializer(WebsocketSerializer):
-    payload = RegistrationPaymentReadSerializer()
+    payload = RegistrationPaymentReadSerializer()  # type: ignore
 
 
 class RegistrationPaymentReadErrorSerializer(RegistrationPaymentReadSocketSerializer):
@@ -53,4 +53,4 @@ class RegistrationPaymentInitiateSocketSerializer(
 
 
 class EventReadDetailedSocketSerializer(WebsocketSerializer):
-    payload = EventReadDetailedSerializer()
+    payload = EventReadDetailedSerializer()  # type: ignore
