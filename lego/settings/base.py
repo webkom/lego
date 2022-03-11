@@ -117,7 +117,8 @@ JWT_AUTH = {
     # Tokens will expire after 14 days
     "JWT_EXPIRATION_DELTA": datetime.timedelta(days=14),
     "JWT_RESPONSE_PAYLOAD_HANDLER": "lego.apps.jwt.handlers.response_handler",
-    # Allow refresh. Tokens can be refreshed for 180 days after initial login, so users must login ~twice a year
+    # Allow refresh. Tokens can be refreshed for 180 days after initial login,
+    # so users must login ~twice a year
     "JWT_ALLOW_REFRESH": True,
     "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=180),
 }
@@ -127,7 +128,10 @@ OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth.APIApplication"
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 86400 * 7,
     "SCOPES": {
-        "user": "Enkel brukerinfo. Dette gir lesetilgang til ditt navn, brukernavn, profilbilde, epost, kjønn og dine medlemskap",
+        "user": (
+            "Enkel brukerinfo. Dette gir lesetilgang til ditt navn, "
+            "brukernavn, profilbilde, epost, kjønn og dine medlemskap"
+        ),
         "all": "Gir tilgang til all brukerinfo. Kan også gjøre ting som deg",
     },
 }
