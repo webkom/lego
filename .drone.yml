@@ -10,7 +10,7 @@ trigger:
 
 steps:
   - name: setup
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -19,7 +19,7 @@ steps:
       - make ci_settings
 
   - name: missing-migrations
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -32,7 +32,7 @@ steps:
       - tox -e missing-migrations
 
   - name: tests
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -45,7 +45,7 @@ steps:
       - tox -e tests -- --parallel
 
   - name: isort
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -56,7 +56,7 @@ steps:
       - tox -e isort
 
   - name: flake8
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -67,7 +67,7 @@ steps:
       - tox -e flake8
 
   - name: black
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     pull: true
     when:
       event: push
@@ -79,7 +79,7 @@ steps:
       - tox -e black
 
   - name: mypy
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     pull: true
     when:
       event: push
@@ -91,7 +91,7 @@ steps:
       - tox -e mypy
 
   - name: docs
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -102,7 +102,7 @@ steps:
       - tox -e docs
 
   - name: coverage
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:

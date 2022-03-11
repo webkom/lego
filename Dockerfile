@@ -15,7 +15,7 @@ RUN sentry-cli releases finalize ${RELEASE}
 RUN sentry-cli releases deploys ${RELEASE} new -e "staging"
 RUN sentry-cli releases deploys ${RELEASE} new -e "production"
 
-FROM python:3.7
+FROM python:3.9
 MAINTAINER Abakus Webkom <webkom@abakus.no>
 
 ARG RELEASE
