@@ -346,7 +346,8 @@ def set_all_events_ready_and_bump(self, logger_context=None):
     """Task to bump all tasks to is_ready=True in case of error"""
     self.setup_logger(logger_context)
 
-    # Find all events that are set to "is_ready=False" and are not awaiting automatic celery task (have just been edited)
+    # Find all events that are set to "is_ready=False" and are not awaiting automatic
+    # celery task (have just been edited)
     now = timezone.now()
     corrupt_events = Event.objects.filter(is_ready=False).filter(
         updated_at__lt=now - timedelta(minutes=5)

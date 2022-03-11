@@ -2,8 +2,10 @@ import operator
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin as DjangoPermissionMixin,
+)
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import Q
@@ -282,7 +284,8 @@ class PermissionsMixin(CachedModel):
 
     @abakus_cached_property
     def all_groups_from_memberships(self):
-        # Mapping from membership to all ancestor groups, with the root node first (inclusive group from membership)
+        # Mapping from membership to all ancestor groups, with the root
+        # node first (inclusive group from membership)
         mapping = {}
 
         memberships = self.memberships.filter(

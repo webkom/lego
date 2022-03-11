@@ -40,7 +40,8 @@ class RestrictedMailSerializer(RestrictedMailListSerializer):
         num += reduce((lambda a, b: a + b.registration_count), events, 0)
         if num > MaxPermittedAmout:
             raise exceptions.ValidationError(
-                f"The number of students in selected groups/events exceed the permitted amount which is {MaxPermittedAmout}"
+                f"The number of students in selected groups/events exceed "
+                f"the permitted amount which is {MaxPermittedAmout}"
             )
         return super().create(validated_data)
 

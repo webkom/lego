@@ -49,7 +49,8 @@ class CompanyInterestHandler(Handler):
             <= (current_date.month, current_date.day)
             <= booking_period_to
         ):
-            # If a company sends in an interest form within bedkoms booking period, an automatic reply is sent to them (and bedkom)
+            # If a company sends in an interest form within bedkoms booking period, an automatic
+            # reply is sent to them (and bedkom)
             recipients.append(mail_context["mail"])
             if mail_context["readme"]:
                 recipients.append(f"lederreadme@{settings.GSUITE_DOMAIN}")
@@ -61,7 +62,8 @@ class CompanyInterestHandler(Handler):
                 html_template="companies/email/response_mail_company.html",
             )
         else:
-            # If a company sends in an interest form outside of bedkoms booking period, the answers from the form is forwarded to bedkom so they can reply manually
+            # If a company sends in an interest form outside of bedkoms booking
+            # period, the answers from the form is forwarded to bedkom so they can reply manually
             send_email.delay(
                 to_email=recipients,
                 context=mail_context,
