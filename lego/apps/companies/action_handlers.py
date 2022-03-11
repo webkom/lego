@@ -4,12 +4,7 @@ from django.utils import timezone
 from lego.apps.action_handlers.handler import Handler
 from lego.apps.action_handlers.registry import register_handler
 from lego.apps.companies.models import CompanyInterest
-from lego.apps.companies.notifications import CompanyInterestNotification
-from lego.apps.feeds.activity import Activity
 from lego.apps.feeds.feed_manager import feed_manager
-from lego.apps.feeds.models import NotificationFeed
-from lego.apps.feeds.verbs import CompanyInterestVerb
-from lego.apps.users.models import AbakusGroup
 from lego.utils.tasks import send_email
 
 

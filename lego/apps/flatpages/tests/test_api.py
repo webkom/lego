@@ -3,12 +3,8 @@ import uuid
 from rest_framework import status
 
 from lego.apps.flatpages.models import Page
-from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.tests.utils import (
-    create_normal_user,
-    create_super_user,
-    create_user_with_permissions,
-)
+from lego.apps.users.models import AbakusGroup
+from lego.apps.users.tests.utils import create_normal_user, create_user_with_permissions
 from lego.utils.test_utils import BaseAPITestCase
 
 

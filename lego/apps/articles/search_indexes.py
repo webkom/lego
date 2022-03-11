@@ -1,5 +1,3 @@
-from django.contrib.postgres.search import SearchQuery, SearchVector
-
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 

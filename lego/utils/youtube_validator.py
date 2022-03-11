@@ -1,5 +1,3 @@
-import re
-
 from django.core.validators import RegexValidator
 
 youtube_validator = RegexValidator(

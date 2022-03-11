@@ -1,8 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-
 from lego.apps.reactions.exceptions import (
     APIReactionExists,
     APITooManyReactions,
@@ -10,7 +5,6 @@ from lego.apps.reactions.exceptions import (
     TooManyReactions,
 )
 from lego.apps.reactions.models import Reaction
-from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer, GenericRelationField
 
 

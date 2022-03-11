@@ -5,10 +5,8 @@ from django.utils import timezone
 from structlog import get_logger
 
 from lego import celery_app
-from lego.apps.action_handlers.events import handle_event
 from lego.apps.events.models import Pool
 from lego.apps.followers.notifications import RegistrationReminderNotification
-from lego.apps.stats.utils import track
 from lego.utils.tasks import AbakusTask
 
 log = get_logger()
