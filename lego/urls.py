@@ -36,12 +36,12 @@ urlpatterns = [
     url(r"^health/", include("health_check.urls")),
     url(
         r"^api-docs/",
-        include_docs_urls(
+        include_docs_urls(  # type: ignore
             title=settings.SITE["name"],
             description=settings.SITE["slogan"],
             patterns=api,
             schema_url="/api",
-        ),  # type: ignore
+        ),
     ),
     url(r"^$", TemplateView.as_view(template_name="landing.html"), name="landing_page"),
 ]
