@@ -78,6 +78,18 @@ steps:
     commands:
       - tox -e black
 
+  - name: mypy
+    image: abakus/lego-testbase:python3.7
+    pull: true
+    when:
+      event: push
+    environment:
+      LANG: C.UTF-8
+    depends_on:
+      - setup
+    commands:
+      - tox -e mypy
+
   - name: docs
     image: abakus/lego-testbase:python3.7
     when:
@@ -113,6 +125,7 @@ steps:
       - isort
       - flake8
       - black
+      - mypy
       - docs
       - coverage
     environment:

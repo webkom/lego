@@ -46,6 +46,12 @@ To check if it is formatted properly, run:
 $ tox -e isort -e flake8 -e black
 ```
 
+To check if code is typed properly, run:
+
+```bash
+$ tox -e mypy
+```
+
 ## Tests
 
 If you want to run a specific test class you can run
