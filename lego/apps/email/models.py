@@ -5,7 +5,7 @@ from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 
 from lego.apps.users.constants import ROLES
-from lego.apps.users.validators import email_blacklist_validator, username_validator
+from lego.apps.users.validators import email_blacklist_validator
 from lego.utils.validators import ReservedNameValidator
 
 

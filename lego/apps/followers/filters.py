@@ -3,7 +3,7 @@ from django_filters.filterset import FilterSet
 
 from lego.apps.events.models import Event
 
-from .models import FollowCompany, FollowEvent, FollowUser
+from .models import FollowCompany, FollowUser
 
 
 class FollowUserFilterSet(FilterSet):

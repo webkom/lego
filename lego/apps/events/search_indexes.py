@@ -1,5 +1,3 @@
-from django.contrib.postgres.search import SearchQuery, SearchVector
-
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.events import EventSearchSerializer
 from lego.apps.search import register

@@ -1,7 +1,6 @@
-from rest_framework import mixins, viewsets
+from rest_framework import viewsets
 
 from lego.apps.emojis.models import Emoji
-from lego.apps.emojis.permissions import EmojiPermissionHandler
 from lego.apps.emojis.serializers import EmojiSerializer
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 

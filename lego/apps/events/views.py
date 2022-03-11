@@ -48,7 +48,6 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadSerializer,
     RegistrationSearchReadSerializer,
     RegistrationSearchSerializer,
-    StripePaymentIntentSerializer,
 )
 from lego.apps.events.tasks import (
     async_cancel_payment,

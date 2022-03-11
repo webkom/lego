@@ -4,10 +4,7 @@ from rest_framework import status
 from lego.apps.users import constants
 from lego.apps.users.constants import LEADER
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.serializers.abakus_groups import (
-    DetailedAbakusGroupSerializer,
-    PublicAbakusGroupSerializer,
-)
+from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.utils.test_utils import BaseAPITestCase
 
 _test_group_data = {"name": "testgroup", "description": "test group"}

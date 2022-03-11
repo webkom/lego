@@ -11,10 +11,7 @@ import stripe
 from djangorestframework_camel_case.render import camelize
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (
-    UnansweredSurveyException,
-    WebhookDidNotFindRegistration,
-)
+from lego.apps.events.exceptions import UnansweredSurveyException
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tasks import (
     check_events_for_registrations_with_expired_penalties,
@@ -25,8 +22,6 @@ from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
-
-from .utils import create_token
 
 _test_event_data = [
     {

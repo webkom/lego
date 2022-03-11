@@ -1,11 +1,8 @@
-from rest_framework.permissions import BasePermission
-
 from structlog import get_logger
 
 from lego.apps.permissions.actions import action_to_permission
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
-from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import PermissionHandler
 from lego.apps.permissions.utils import get_permission_handler
 

@@ -1,6 +1,5 @@
 from rest_framework import mixins, viewsets
 
-from lego.apps.events.models import Event
 from lego.apps.followers.models import FollowCompany, FollowEvent, FollowUser
 from lego.apps.followers.serializers import (
     FollowCompanySerializer,

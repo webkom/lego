@@ -1,6 +1,4 @@
 import os
-import re
-from urllib.parse import urlparse
 
 import environ
 import sentry_sdk
@@ -8,13 +6,7 @@ import stripe
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from lego.settings import (
-    BASE_DIR,
-    CHANNEL_LAYERS,
-    INSTALLED_APPS,
-    MIDDLEWARE,
-    PUSH_NOTIFICATIONS_SETTINGS,
-)
+from lego.settings import BASE_DIR, CHANNEL_LAYERS, PUSH_NOTIFICATIONS_SETTINGS
 from lego.utils.cors import generate_cors_origin_regex_list
 
 from .secure import *  # noqa

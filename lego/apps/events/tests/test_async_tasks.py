@@ -4,14 +4,11 @@ from unittest import mock, skipIf
 from django.utils import timezone
 
 import stripe
-from celery import chain
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
-    async_cancel_payment,
-    async_initiate_payment,
     async_register,
     async_retrieve_payment,
     bump_waiting_users_to_new_pool,
@@ -19,7 +16,6 @@ from lego.apps.events.tasks import (
     check_that_pool_counters_match_registration_number,
     notify_event_creator_when_payment_overdue,
     notify_user_when_payment_soon_overdue,
-    save_and_notify_payment,
     set_all_events_ready_and_bump,
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire

@@ -10,7 +10,6 @@ from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
-from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.test_utils import BaseAPITestCase, fake_time
 
 _test_user_data = {

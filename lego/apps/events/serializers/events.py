@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import BooleanField, CharField
 

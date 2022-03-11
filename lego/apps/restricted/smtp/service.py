@@ -3,24 +3,14 @@ import smtpd
 import ssl
 
 from django.conf import settings
-from django.utils import timezone
 
 from aiosmtpd.controller import Controller
-from aiosmtpd.handlers import Debugging
 from aiosmtpd.smtp import SMTP
 from structlog import get_logger
 
-from lego.apps.restricted.exceptions import (
-    DefectMessageException,
-    MessageIDNotExistException,
-    ParseEmailException,
-)
-from lego.apps.restricted.message_processor import MessageProcessor
-from lego.apps.restricted.parser import ParserMessageType
 from lego.utils.management_command import BaseCommand
 
 from .handler import RestrictedHandler
-from .parser import SMTPEmailParser
 
 smtpd.__version__ = "Lego SMTP"  # type: ignore
 log = get_logger()

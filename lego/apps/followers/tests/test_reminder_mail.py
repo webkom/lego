@@ -1,16 +1,13 @@
 from datetime import timedelta
-from unittest import mock
 from unittest.mock import patch
 
 from django.conf import settings
 from django.utils import timezone
 
-from lego.apps.events.models import Event, Pool
+from lego.apps.events.models import Pool
 from lego.apps.events.tests.utils import get_dummy_users
-from lego.apps.followers.models import FollowEvent
 from lego.apps.followers.notifications import RegistrationReminderNotification
-from lego.apps.followers.tasks import send_registration_reminder_mail
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup
 from lego.utils.test_utils import BaseTestCase
 
 
