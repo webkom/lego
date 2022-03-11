@@ -34,7 +34,7 @@ class LegoPermissions(permissions.BasePermission):
         has_perm = permission_handler.has_perm(
             user, permission, queryset=queryset, view=view, request=request
         )
-        setattr(request, "user_has_perm", has_perm)
+        request.user_has_perm = has_perm
 
         if has_perm:
             return True

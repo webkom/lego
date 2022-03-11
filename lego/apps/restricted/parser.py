@@ -35,8 +35,8 @@ class EmailParser:
                 msg = email.message_from_binary_file(self.raw_message, Message)
             else:
                 raise ValueError("Invalid message_type, could not parse message.")
-        except Exception:
-            raise ParseEmailException
+        except Exception as e:
+            raise ParseEmailException from e
 
         # Do basic post-processing of the message, checking it for defects or
         # other missing information.

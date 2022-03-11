@@ -16,7 +16,7 @@ class SurveyPermissions(permissions.BasePermission):
             return True
         elif view.action in ["retrieve"]:
             survey = Survey.objects.get(id=view.kwargs["pk"])
-            event = getattr(survey, "event")
+            event = survey.event
             user_attended_event = Registration.objects.filter(
                 event=event.id, user=user.id, presence=constants.PRESENT
             ).exists()
@@ -30,7 +30,7 @@ class SubmissionPermissions(permissions.BasePermission):
         from lego.apps.surveys.models import Survey
 
         survey = Survey.objects.get(id=view.kwargs["survey_pk"])
-        event = getattr(survey, "event")
+        event = survey.event
         user = request.user
         user_attended_event = Registration.objects.filter(
             event=event.id, user=user.id, presence=constants.PRESENT

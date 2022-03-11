@@ -39,8 +39,8 @@ class FileViewSet(viewsets.GenericViewSet):
             file_key, url, fields, token = prepare_file_upload(
                 key, request.user, public
             )
-        except UnknownFileType:
-            raise exceptions.ParseError
+        except UnknownFileType as e:
+            raise exceptions.ParseError from e
 
         return Response(
             {"url": url, "file_key": file_key, "file_token": token, "fields": fields},

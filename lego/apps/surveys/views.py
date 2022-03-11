@@ -177,8 +177,8 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             raise exceptions.NotAcceptable("No answer specified")
         try:
             answer = submission.answers.get(pk=answer_pk)
-        except Answer.DoesNotExist:
-            raise exceptions.NotFound("Answer not found")
+        except Answer.DoesNotExist as e:
+            raise exceptions.NotFound("Answer not found") from e
         if answer.question.question_type != TEXT_FIELD:
             raise exceptions.NotAcceptable("Only text answers can be hidden")
         return submission, answer

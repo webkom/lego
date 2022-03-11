@@ -158,8 +158,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             instance = super().update(request, *args, **kwargs)
             check_for_bump_on_pool_creation_or_expansion.delay(event_id)
             return instance
-        except RegistrationsExistInPool:
-            raise APIRegistrationsExistsInPool()
+        except RegistrationsExistInPool as e:
+            raise APIRegistrationsExistsInPool() from e
 
     def perform_update(self, serializer):
         """
@@ -274,8 +274,8 @@ class PoolViewSet(
     def destroy(self, request, *args, **kwargs):
         try:
             return super().destroy(request, *args, **kwargs)
-        except ValueError:
-            raise APIRegistrationsExistsInPool
+        except ValueError as e:
+            raise APIRegistrationsExistsInPool from e
 
 
 class RegistrationViewSet(
@@ -365,8 +365,8 @@ class RegistrationViewSet(
         event_id = self.kwargs.get("event_pk", None)
         try:
             event = Event.objects.get(id=event_id)
-        except Event.DoesNotExist:
-            raise APIEventNotFound()
+        except Event.DoesNotExist as e:
+            raise APIEventNotFound() from e
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
@@ -376,10 +376,10 @@ class RegistrationViewSet(
             notify_event_registration(
                 constants.SOCKET_REGISTRATION_SUCCESS, registration
             )
-        except NoSuchPool:
-            raise APINoSuchPool()
-        except RegistrationExists:
-            raise APIRegistrationExists()
+        except NoSuchPool as e:
+            raise APINoSuchPool() from e
+        except RegistrationExists as e:
+            raise APIRegistrationExists() from e
         reg_data = RegistrationReadDetailedSerializer(registration).data
         return Response(data=reg_data, status=status.HTTP_201_CREATED)
 
@@ -404,10 +404,10 @@ class RegistrationViewSet(
             notify_event_registration(
                 constants.SOCKET_UNREGISTRATION_SUCCESS, registration
             )
-        except NoSuchRegistration:
-            raise APINoSuchRegistration()
-        except RegistrationExists:
-            raise APIRegistrationExists()
+        except NoSuchRegistration as e:
+            raise APINoSuchRegistration() from e
+        except RegistrationExists as e:
+            raise APIRegistrationExists() from e
         reg_data = RegistrationReadDetailedSerializer(registration).data
 
         return Response(data=reg_data, status=status.HTTP_200_OK)
@@ -430,23 +430,23 @@ class RegistrationSearchViewSet(
 
         try:
             user = User.objects.get(username=username)
-        except User.DoesNotExist:
+        except User.DoesNotExist as e:
             raise ValidationError(
                 {
                     "error": f"There is no user with username {username}",
                     "error_code": "no_user",
                 }
-            )
+            ) from e
 
         try:
             reg = self.get_queryset().get(user=user)
-        except Registration.DoesNotExist:
+        except Registration.DoesNotExist as e:
             raise ValidationError(
                 {
                     "error": "The registration does not exist",
                     "error_code": "not_registered",
                 }
-            )
+            ) from e
 
         if not get_permission_handler(Event).has_perm(
             request.user, "EDIT", obj=reg.event
@@ -503,23 +503,23 @@ class RegistrationConsentViewSet(
 
         try:
             user = User.objects.get(username=username)
-        except User.DoesNotExist:
+        except User.DoesNotExist as e:
             raise ValidationError(
                 {
                     "error": f"There is no user with username {username}",
                     "error_code": "no_user",
                 }
-            )
+            ) from e
 
         try:
             reg = self.get_queryset().get(user=user)
-        except Registration.DoesNotExist:
+        except Registration.DoesNotExist as e:
             raise ValidationError(
                 {
                     "error": "The registration does not exist",
                     "error_code": "not_registered",
                 }
-            )
+            ) from e
 
         if not get_permission_handler(Event).has_perm(
             request.user, "EDIT", obj=reg.event

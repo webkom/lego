@@ -91,9 +91,9 @@ class File(TimeStampModel):
 
         try:
             return known_mime_types[mime_type]
-        except KeyError:
+        except KeyError as e:
             log.warn("file_unknown_type", file_name=file_name, mime_type=mime_type)
-            raise UnknownFileType
+            raise UnknownFileType from e
 
     def get_file_token(self):
         return f"{self.key}:{self.token}"
