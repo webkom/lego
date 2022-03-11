@@ -83,7 +83,7 @@ class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)  # type: ignore
 
 
 class PublicUserWithGroupsSerializer(PublicUserSerializer):
@@ -92,7 +92,7 @@ class PublicUserWithGroupsSerializer(PublicUserSerializer):
     memberships = MembershipSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + (
+        fields = PublicUserSerializer.Meta.fields + (  # type: ignore
             "abakus_groups",
             "past_memberships",
             "memberships",
@@ -105,7 +105,7 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + (
+        fields = PublicUserSerializer.Meta.fields + (  # type: ignore
             "abakus_groups",
             "allergies",
         )
@@ -117,7 +117,7 @@ class AdministrateUserExportSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")
+        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")  # type: ignore
 
 
 class SearchUserSerializer(serializers.ModelSerializer):

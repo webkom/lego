@@ -23,7 +23,7 @@ class Reaction(BasisModel):
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
 
-    objects = ReactionManager()
+    objects = ReactionManager()  # type: ignore
 
     class Meta:
         permission_handler = ReactionPermissionHandler()

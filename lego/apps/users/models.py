@@ -49,7 +49,7 @@ class MembershipHistory(models.Model):
 
 
 class Membership(BasisModel):
-    objects = MembershipManager()
+    objects = MembershipManager()  # type: ignore
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
@@ -355,7 +355,7 @@ class User(
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
 
-    objects = AbakusUserManager()
+    objects = AbakusUserManager()  # type: ignore
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
@@ -421,7 +421,7 @@ class User(
             return internal_address
         return self.email
 
-    @profile_picture.setter
+    @profile_picture.setter  # type: ignore
     def profile_picture(self, value):
         self.picture = value
 
@@ -478,7 +478,7 @@ class Penalty(BasisModel):
         "events.Event", related_name="penalties", on_delete=models.CASCADE
     )
 
-    objects = UserPenaltyManager()
+    objects = UserPenaltyManager()  # type: ignore
 
     def expires(self):
         dt = Penalty.penalty_offset(self.created_at) - (

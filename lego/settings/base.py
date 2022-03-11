@@ -182,7 +182,7 @@ SMTP_SSL_KEY = os.environ.get("SMTP_SSL_KEY")
 
 if os.environ.get("GSUITE_CREDENTIALS"):
     GSUITE_CREDENTIALS = json.loads(
-        base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")), strict=False
+        base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")), strict=False  # type: ignore
     )
 else:
     GSUITE_CREDENTIALS = None

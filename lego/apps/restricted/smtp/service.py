@@ -22,7 +22,7 @@ from lego.utils.management_command import BaseCommand
 from .handler import RestrictedHandler
 from .parser import SMTPEmailParser
 
-smtpd.__version__ = "Lego SMTP"
+smtpd.__version__ = "Lego SMTP"  # type: ignore
 log = get_logger()
 
 

@@ -41,7 +41,7 @@ urlpatterns = [
             description=settings.SITE["slogan"],
             patterns=api,
             schema_url="/api",
-        ),
+        ),  # type: ignore
     ),
     url(r"^$", TemplateView.as_view(template_name="landing.html"), name="landing_page"),
 ]
@@ -49,4 +49,4 @@ urlpatterns = [
 if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
-    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns  # type: ignore

@@ -92,7 +92,7 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
 
 
 class HiddenResultsDetailedPollSerializer(DetailedPollSerializer):
-    options = HiddenResultsOptionSerializer(many=True)
+    options = HiddenResultsOptionSerializer(many=True)  # type: ignore
 
 
 class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):

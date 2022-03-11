@@ -7,7 +7,7 @@ class FollowersPermissionHandler(PermissionHandler):
     default_keyword_permission = "/sudo/admin/followers/{perm}"
     force_object_permission_check = True
 
-    permission_map = {CREATE: []}
+    permission_map = {CREATE: []}  # type: ignore
 
     def filter_queryset(self, user, queryset, **kwargs):
         if user.is_authenticated:

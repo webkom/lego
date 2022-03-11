@@ -31,6 +31,6 @@ protocols = {
 }
 
 if settings.DAPHNE_SERVER:
-    protocols["http"] = HTTPConsumer
+    protocols["http"] = HTTPConsumer  # type: ignore
 
 application = ProtocolTypeRouter(protocols)

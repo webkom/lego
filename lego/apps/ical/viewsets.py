@@ -48,7 +48,7 @@ class ICalViewset(viewsets.ViewSet):
     """
 
     permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [
+    authentication_classes = api_settings.DEFAULT_AUTHENTICATION_CLASSES + [  # type: ignore
         ICalTokenAuthentication
     ]
 
