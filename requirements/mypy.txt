@@ -11,4 +11,4 @@ types-pytz==2021.3.5
 types-PyYAML==6.0.4
 types-requests==2.27.11
 types-six==1.16.12
-types-urllib3==1.26.10
+types-urllib3==1.26.11
