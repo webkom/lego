@@ -88,6 +88,16 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         quote = Quote.objects.get(id=3)
         self.assertTrue(quote.approved)
 
+    def test_approve_permission(self):
+        """Users should not have permission to approve their own quotes"""
+        self.client.force_authenticate(self.authenticated_user)
+        self.client.post(_get_list_url(), self.quote_data)
+        response = self.client.put(_get_approve_url(4))
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        quote = Quote.objects.get(id=4)
+        self.assertFalse(quote.approved)
+
     def test_approve_unauthenticated(self):
         """Users with no permissions should not be able to approve quotes"""
         self.client.force_authenticate(self.unauthenticated_user)
