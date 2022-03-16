@@ -69,7 +69,7 @@ If you want to check your test coverage, you can do the following
 
 ```bash
 # Install the packages needed
-$ pip install -r requirments/coverage.txt
+$ pip install -r requirements/coverage.txt
 
 # Run a full test run with coverage. This will run all tests in LEGO.
 $ coverage run --source=lego ./manage.py test
