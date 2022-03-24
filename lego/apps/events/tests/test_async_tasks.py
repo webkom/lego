@@ -9,6 +9,7 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
+    AsyncRegister,
     async_register,
     async_retrieve_payment,
     bump_waiting_users_to_new_pool,
@@ -21,6 +22,104 @@ from lego.apps.events.tasks import (
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.users.models import AbakusGroup, Penalty
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
+
+
+class AsyncRegisterTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+        "test_companies.yaml",
+    ]
+
+    def setUp(self):
+        self.event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        self.event.start_time = timezone.now() + timedelta(days=1)
+        self.event.merge_time = timezone.now() + timedelta(hours=12)
+        self.event.save()
+
+        self.pool_one = self.event.pools.get(name="Abakusmember")
+
+        self.pool_one.activation_date = timezone.now() - timedelta(days=1)
+        self.pool_one.capacity = 10
+        self.pool_one.save()
+
+    def test_async_register(self):
+        """"""
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        async_register(registration.id)
+
+        self.assertEqual(self.event.number_of_registrations, 1)
+        self.assertEqual(
+            self.event.registrations.first().status, constants.SUCCESS_REGISTER
+        )
+
+    def test_async_register_idempotent(self):
+        """"""
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        async_register(registration.id)
+
+        self.assertEqual(self.event.number_of_registrations, 1)
+        self.assertEqual(
+            self.event.registrations.first().status, constants.SUCCESS_REGISTER
+        )
+
+        # When re-regestering, the case with is_admitted = True is handled the
+        # same as if there are no possible pools.
+        with self.assertRaisesRegex(ValueError, "No available pools"):
+            async_register(registration.id)
+
+        self.assertEqual(self.event.number_of_registrations, 1)
+        self.assertEqual(
+            self.event.registrations.first().status, constants.SUCCESS_REGISTER
+        )
+
+    def test_async_register_on_failure(self):
+        """"""
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+
+        async_register(registration.id)
+
+        with mock.patch("lego.utils.tasks.AbakusTask") as mocked_cls:
+            with mock.patch("celery.app.task.Task.request") as mocked_request:
+                mocked_request.return_value = mocked_request
+                mocked_request.retries = 3
+
+                mocked_cls._get_request.return_value = mocked_request
+                task = AsyncRegister()
+                task.max_retries = 3
+
+                task.registration = registration
+
+                self.assertEqual(self.event.number_of_registrations, 1)
+                self.assertEqual(
+                    self.event.registrations.first().status, constants.SUCCESS_REGISTER
+                )
+
+                task.on_failure()
+
+                self.assertEqual(self.event.number_of_registrations, 1)
+                self.assertEqual(
+                    self.event.registrations.first().status, constants.SUCCESS_REGISTER
+                )
 
 
 class PoolActivationTestCase(BaseAPITestCase):

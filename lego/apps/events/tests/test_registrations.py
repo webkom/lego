@@ -85,6 +85,17 @@ class RegistrationTestCase(BaseTestCase):
         event.register(registration)
         self.assertEqual(pool.registrations.count(), event.number_of_registrations)
 
+    def test_can_reregister_single_pool(self):
+        """Test reregistering user to event with only a single pool"""
+        user = get_dummy_users(1)[0]
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        pool = event.pools.first()
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+        self.assertEqual(pool.registrations.count(), event.number_of_registrations)
+
     def test_can_register_to_single_open_pool(self):
         """Test registering user to event with only one pool with spots left"""
         users = get_dummy_users(10)
