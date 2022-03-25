@@ -8,7 +8,7 @@ class RestrictedMailSentNotification(Notification):
 
     def generate_mail(self):
         return self._delay_mail(
-            to_email=self.user.email.address,
+            to_email=self.user.email,
             context={"first_name": self.user.first_name},
             subject="Begrenset epost sendt ut",
             plain_template="restricted/email/process_success.txt",
