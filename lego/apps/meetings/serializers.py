@@ -107,3 +107,18 @@ class MeetingListSerializer(BasisModelSerializer):
             "report_author",
             "mazemap_poi",
         )
+
+
+class MeetingSearchSerializer(serializers.ModelSerializer):
+    report = ContentSerializerField()
+
+    class Meta:
+        model = Meeting
+        fields = (
+            "id",
+            "title",
+            "description",
+            "report",
+            "start_time",
+        )
+        read_only = True
