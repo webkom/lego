@@ -41,8 +41,13 @@ class AsyncRegister(AbakusTask):
 
     def on_failure(self, *args):
         if self.request.retries == self.max_retries:
-            self.registration.status = constants.FAILURE_REGISTER
-            self.registration.save()
+            with transaction.atomic():
+                registration = Registration.objects.select_for_update().get(
+                    id=self.registration.id
+                )
+                if registration.status != constants.SUCCESS_REGISTER:
+                    registration.status = constants.FAILURE_REGISTER
+                    registration.save()
             notify_user_registration(
                 constants.SOCKET_REGISTRATION_FAILURE,
                 self.registration,
@@ -76,9 +81,11 @@ class Payment(AbakusTask):
 def async_register(self, registration_id, logger_context=None):
     self.setup_logger(logger_context)
 
-    self.registration = Registration.objects.get(id=registration_id)
     try:
         with transaction.atomic():
+            self.registration = Registration.objects.select_for_update().get(
+                id=registration_id
+            )
             self.registration.event.register(self.registration)
             transaction.on_commit(
                 lambda: notify_event_registration(
