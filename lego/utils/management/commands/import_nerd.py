@@ -115,13 +115,15 @@ class Command(BaseCommand):
             if k == key:
                 yield v, path + [k]
             elif isinstance(v, dict):
-                for result, path in self.find_group_path(key, v, path + [k]):
-                    yield result, path
+                for result, path_str in self.find_group_path(key, v, path + [k]):
+                    yield result, path_str
             elif isinstance(v, list):
                 for d in v:
                     if isinstance(d, dict):
-                        for result, path in self.find_group_path(key, d, path + [k]):
-                            yield result, path
+                        for result, path_str in self.find_group_path(
+                            key, d, path + [k]
+                        ):
+                            yield result, path_str
 
     def upload_files(self, uploads_bucket, directory):
         for file in os.listdir(directory):
