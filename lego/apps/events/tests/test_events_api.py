@@ -992,6 +992,28 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         )
         self.assertEqual(res.json()["status"], constants.FAILURE_REGISTER)
 
+    def test_successive_registrations(self, *args):
+        """Test that multiple requests to register should fail gracefully"""
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        registration_response = self.client.post(
+            _get_registrations_list_url(event.id), {}
+        )
+        self.assertEqual(registration_response.status_code, status.HTTP_202_ACCEPTED)
+        reg_status = Registration.objects.get(
+            pk=registration_response.json().get("id")
+        ).status
+        self.assertEqual(reg_status, constants.SUCCESS_REGISTER)
+
+        # Second call to register
+        second_response = self.client.post(_get_registrations_list_url(event.id), {})
+        self.assertEqual(second_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Second failing request should not affect status of registration
+        res = self.client.get(
+            _get_registrations_detail_url(event.id, registration_response.json()["id"])
+        )
+        self.assertEqual(res.json()["status"], constants.SUCCESS_REGISTER)
+
     def test_unregister(self, *args):
         event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
         registration = Registration.objects.get(user=self.abakus_user, event=event)

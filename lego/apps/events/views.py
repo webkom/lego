@@ -312,14 +312,21 @@ class RegistrationViewSet(
         current_user = request.user
 
         with transaction.atomic():
-            registration = Registration.objects.get_or_create(
+            registration, is_new = Registration.objects.get_or_create(
                 event_id=event_id,
                 user_id=current_user.id,
                 defaults={"updated_by": current_user, "created_by": current_user},
-            )[0]
+            )
             feedback = serializer.data.get("feedback", "")
             if registration.event.feedback_required and not feedback:
                 raise ValidationError({"error": "Feedback is required"})
+            if not is_new and registration.status in [
+                constants.PENDING_REGISTER,
+                constants.SUCCESS_REGISTER,
+            ]:
+                raise APIRegistrationExists(
+                    {"error": "User has already requested to register for this event"}
+                )
             registration.status = constants.PENDING_REGISTER
             registration.feedback = feedback
             registration.save(current_user=current_user)
