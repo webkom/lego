@@ -61,6 +61,9 @@ COURSES_LONG = ((DATA_LONG, DATA_LONG), (KOMTEK_LONG, KOMTEK_LONG))
 FIRST_GRADE_DATA = "1. klasse Datateknologi"
 FIRST_GRADE_KOMTEK = "1. klasse Kommunikasjonsteknologi"
 
+FOURTH_GRADE_DATA = "4. klasse Datateknologi"
+FOURTH_GRADE_KOMTEK = "4. klasse Kommunikasjonsteknologi"
+
 FIRST_GRADES = (
     (FIRST_GRADE_DATA, FIRST_GRADE_DATA),
     (FIRST_GRADE_KOMTEK, FIRST_GRADE_KOMTEK),
