@@ -8,7 +8,7 @@ pyyaml==6.0
 redis==3.5.3
 hiredis==2.0.0
 certifi==2021.10.8
-elasticsearch==7.16.2
+elasticsearch==8.1.1
 celery==5.2.3
 stripe==2.64.0
 boto3==1.21.29
