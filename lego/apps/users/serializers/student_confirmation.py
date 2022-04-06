@@ -16,6 +16,7 @@ class StudentConfirmationSerializer(serializers.Serializer):
     captcha_response = serializers.CharField()
 
     course = serializers.ChoiceField(choices=(constants.DATA, constants.KOMTEK))
+    is_two_years = serializers.BooleanField(default=False)
     member = serializers.BooleanField()
 
     def validate_student_username(self, value):

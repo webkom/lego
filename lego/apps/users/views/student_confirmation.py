@@ -54,6 +54,7 @@ class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
             student_username,
             serializer.validated_data.get("course"),
             serializer.validated_data.get("member"),
+            serializer.validated_data.get("is_two_years"),
         )
 
         send_email.delay(
@@ -93,14 +94,31 @@ class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
 
         user.student_username = student_confirmation["student_username"]
         course = student_confirmation["course"].lower()
+        is_two_years = student_confirmation["is_two_years"]
 
         if not user.has_grade_group:
             if course == constants.DATA:
-                grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
-                grade_group.add_user(user)
+                if is_two_years:
+                    grade_group = AbakusGroup.objects.get(
+                        name=constants.FOURTH_GRADE_DATA
+                    )
+                    grade_group.add_user(user)
+                else:
+                    grade_group = AbakusGroup.objects.get(
+                        name=constants.FIRST_GRADE_DATA
+                    )
+                    grade_group.add_user(user)
             else:
-                grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
-                grade_group.add_user(user)
+                if is_two_years:
+                    grade_group = AbakusGroup.objects.get(
+                        name=constants.FOURTH_GRADE_KOMTEK
+                    )
+                    grade_group.add_user(user)
+                else:
+                    grade_group = AbakusGroup.objects.get(
+                        name=constants.FIRST_GRADE_KOMTEK
+                    )
+                    grade_group.add_user(user)
 
         if student_confirmation["member"]:
             member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)

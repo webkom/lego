@@ -70,7 +70,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.get(
             _get_student_confirmation_token_request_url(
                 Registrations.generate_student_confirmation_token(
-                    "teststudentusername", constants.DATA, True
+                    "teststudentusername", constants.DATA, True, False
                 )
             )
         )
@@ -87,7 +87,7 @@ class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
         response = self.client.get(
             _get_student_confirmation_token_request_url(
                 Registrations.generate_student_confirmation_token(
-                    "TestStudentUsername", constants.DATA, True
+                    "TestStudentUsername", constants.DATA, True, False
                 )
             )
         )
@@ -266,10 +266,14 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         )
 
     def create_token(
-        self, student_username="newstudentusername", course=constants.DATA, member=True
+        self,
+        student_username="newstudentusername",
+        course=constants.DATA,
+        member=True,
+        is_two_years=False,
     ):
         return Registrations.generate_student_confirmation_token(
-            student_username, course, member
+            student_username, course, member, is_two_years
         )
 
     def test_without_authenticated_user(self):
@@ -369,6 +373,55 @@ class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
         self.assertEqual(user.is_abakus_member, True)
         member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
         self.assertEqual(member_group in user_groups, True)
+
+    def test_with_two_year_masters_checked_komtek(self):
+        """Users should be able to check that they are starting on a two year masters programme and
+        be enrolled into fourth grade"""
+        AbakusGroup.objects.get(name="Users").add_user(
+            self.user_without_student_confirmation
+        )
+        self.client.force_authenticate(self.user_without_student_confirmation)
+        token = self.create_token(
+            course=constants.KOMTEK, member=False, is_two_years=True
+        )
+        response = self.client.post(_get_student_confirmation_token_perform_url(token))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        user = self.user_without_student_confirmation
+        user_groups = user.all_groups
+
+        # Test course groups
+        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
+        self.assertEqual(course_group in user_groups, True)
+        grade_group = AbakusGroup.objects.get(name=constants.FOURTH_GRADE_KOMTEK)
+        self.assertEqual(grade_group in user_groups, True)
+
+        # Test member group
+        self.assertEqual(user.is_abakus_member, False)
+        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
+        self.assertEqual(member_group in user_groups, False)
+
+    def test_with_two_year_masters_checked_data(self):
+        """Users should be able to check that they are starting on a two year masters programme and
+        be enrolled into fourth grade"""
+        AbakusGroup.objects.get(name="Users").add_user(
+            self.user_without_student_confirmation
+        )
+        self.client.force_authenticate(self.user_without_student_confirmation)
+        token = self.create_token(
+            course=constants.DATA, member=False, is_two_years=True
+        )
+        response = self.client.post(_get_student_confirmation_token_perform_url(token))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        user = self.user_without_student_confirmation
+        user_groups = user.all_groups
+
+        # Test course groups
+        course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
+        self.assertEqual(course_group in user_groups, True)
+        grade_group = AbakusGroup.objects.get(name=constants.FOURTH_GRADE_DATA)
+        self.assertEqual(grade_group in user_groups, True)
 
     def test_with_abakus_member_checked(self):
         AbakusGroup.objects.get(name="Users").add_user(
