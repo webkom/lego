@@ -35,6 +35,8 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     filter_class = SurveyFilterSet
     filter_backends = (DjangoFilterBackend,)
 
+    ordering = ("-active_from", "title")
+
     def get_serializer_class(self):
         if self.action in ["create"]:
             return SurveyCreateSerializer
