@@ -3,11 +3,14 @@ from django.db.models import TextField
 from rest_framework import serializers
 
 from bs4 import BeautifulSoup
+from structlog import get_logger
 
 from lego.apps.content.utils import sanitize_html
 from lego.apps.files.constants import IMAGE, READY
 from lego.apps.files.models import File
 from lego.apps.files.thumbor import generate_url
+
+log = get_logger()
 
 
 class ContentField(TextField):
@@ -48,8 +51,8 @@ class ContentField(TextField):
             if data_key is not None:
                 images.append(data_key)
             else:
-                raise ValidationError(
-                    "Found img tag without the data-file-key property"
+                log.warn(
+                    f"Found img tag without the data-file-key property in ContentField with value: {value}"
                 )
 
         if images:
