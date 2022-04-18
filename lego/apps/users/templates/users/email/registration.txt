@@ -9,7 +9,7 @@ For å fullføre registreringen, trykk på lenken under:
 
 {{ frontend_url }}/users/registration/?token={{ token }}
 
-Staret ikke du registreringen? Ignorer denne mailen. Du kan eventuelt ta kontakt
-med {{ owner }} om du har spørsmål ({{ contact_email }}).
+Startet ikke du registreringen? Ignorer denne mailen. Du kan eventuelt ta kontakt
+med Webkom om du har spørsmål ({{ contact_email }}).
 
 {% endblock %}
