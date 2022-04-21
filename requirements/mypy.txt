@@ -9,6 +9,6 @@ types-Markdown==3.3.13
 types-python-slugify==5.0.4
 types-pytz==2021.3.6
 types-PyYAML==6.0.7
-types-requests==2.27.19
+types-requests==2.27.20
 types-six==1.16.15
 types-urllib3==1.26.13
