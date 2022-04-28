@@ -3,12 +3,12 @@ mypy-extensions==0.4.3
 django-stubs==1.10.1
 djangorestframework-stubs==1.5.0
 types-bleach==5.0.2
-types-certifi==2021.10.8.1
+types-certifi==2021.10.8.2
 types-docutils==0.18.3
-types-Markdown==3.3.13
+types-Markdown==3.3.14
 types-python-slugify==5.0.4
 types-pytz==2021.3.6
 types-PyYAML==6.0.7
-types-requests==2.27.20
+types-requests==2.27.23
 types-six==1.16.15
 types-urllib3==1.26.13
