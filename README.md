@@ -96,7 +96,7 @@ How to deploy:
 1.  Make sure the changes is pushed to master and the test passes.
 2.  Have you added some new settings in `settings/`? If so make sure the `Ansible variables` reflects these changes.
 3.  We run migrations automatically, make sure they work!
-4.  Push to the `build` branch. From master: `git push origin master:prod`
+4.  Push to the `build` branch. From master: `git push origin master:build`
 5.  Wait for the `build` build to complete. The last step will be `docker build`
 6.  Go to [ci.webkom.dev](https://ci.webkom.dev/webkom/lego/) and use the promote feature to deploy the staging/production build.
 
