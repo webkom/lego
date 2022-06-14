@@ -13,7 +13,7 @@ celery==5.2.6
 stripe==2.64.0
 boto3==1.23.9
 bs4==0.0.1
-bleach==4.1.0
+bleach==5.0.0
 requests==2.27.1
 ldap3==2.9.1
 google-api-python-client==2.50.0
