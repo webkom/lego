@@ -7,7 +7,7 @@ types-certifi==2021.10.8.2
 types-docutils==0.18.3
 types-Markdown==3.3.29
 types-python-slugify==5.0.4
-types-pytz==2021.3.8
+types-pytz==2022.1.1
 types-PyYAML==6.0.7
 types-requests==2.27.25
 types-six==1.16.16
