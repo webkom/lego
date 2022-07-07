@@ -395,7 +395,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
 
         metadata = serializer.data["metadata"]
         registration = Registration.objects.filter(
-            event_id=metadata["EVENT_ID"], user__email=metadata["EMAIL"]
+            event_id=metadata["EVENT_ID"], user__id=metadata["USER_ID"]
         ).first()
         if not registration:
             log.error("stripe_webhook_error", event_id=event_id, metadata=metadata)
@@ -430,7 +430,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
 
         metadata = serializer.data["metadata"]
         registration = Registration.objects.filter(
-            event_id=metadata["EVENT_ID"], user__email=metadata["EMAIL"]
+            event_id=metadata["EVENT_ID"], user__id=metadata["USER_ID"]
         ).first()
         if not registration:
             log.error("stripe_webhook_error", event_id=event_id, metadata=metadata)

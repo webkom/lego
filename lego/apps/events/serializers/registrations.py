@@ -161,6 +161,7 @@ class RegistrationReadDetailedExportSerializer(RegistrationReadDetailedSerialize
 
 class StripeMetaSerializer(serializers.Serializer):
     EVENT_ID = serializers.IntegerField()
+    USER_ID = serializers.IntegerField()
     USER = serializers.CharField()
     EMAIL = serializers.EmailField()
 
