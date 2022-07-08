@@ -114,11 +114,16 @@ steps:
       event: push
     environment:
       LANG: C.UTF-8
+      CACHE: cache
+      CODECOV_TOKEN:
+        from_secret: codecov_token
     depends_on:
       - tests
     commands:
       - pip install tox
       - tox -e coverage
+      # Upload coverage to Codecov
+      - codecov -t ${CODECOV_TOKEN} -f "coverage.xml"
 
   - name: docker
     image: plugins/docker
@@ -190,4 +195,4 @@ services:
 
 ---
 kind: signature
-hmac: 38a22c24e963a667013c35a2113df448f2c0b534d098b8cd3c5424bedefedec0
+hmac: 51c80c10b5360d90aa1e6c0361519fb3b7485f2782830e492d3580774625483a
