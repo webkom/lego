@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import Field
 
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.registrations import (
@@ -16,7 +17,7 @@ class PoolReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Pool
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "name",
             "capacity",
@@ -36,10 +37,10 @@ class PoolReadSerializer(BasisModelSerializer):
 
 
 class PoolReadAuthSerializer(PoolReadSerializer):
-    registrations = serializers.SerializerMethodField()
+    registrations: Field = serializers.SerializerMethodField()
 
     class Meta(PoolReadSerializer.Meta):
-        fields = PoolReadSerializer.Meta.fields + ("registrations",)  # type: ignore
+        fields = PoolReadSerializer.Meta.fields + ("registrations",)
 
     def get_registrations(self, obj):
         queryset = obj.registrations.all()
@@ -53,11 +54,11 @@ class PoolReadAuthSerializer(PoolReadSerializer):
 
 
 class PoolAdministrateSerializer(PoolReadAuthSerializer):
-    registrations = RegistrationReadDetailedSerializer(many=True)  # type: ignore
+    registrations = RegistrationReadDetailedSerializer(many=True)
 
 
 class PoolAdministrateExportSerializer(PoolAdministrateSerializer):
-    registrations = RegistrationReadDetailedExportSerializer(many=True)  # type: ignore
+    registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class PoolCreateAndUpdateSerializer(BasisModelSerializer):

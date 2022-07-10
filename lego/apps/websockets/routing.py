@@ -1,3 +1,5 @@
+from typing import Type, Union
+
 from django.conf import settings
 from django.conf.urls import url
 
@@ -24,13 +26,13 @@ class HTTPConsumer:
         raise ValueError
 
 
-protocols = {
+protocols: dict[str, Union[JWTAuthenticationMiddleware, Type[HTTPConsumer]]] = {
     "websocket": JWTAuthenticationMiddleware(
         URLRouter([url("^$", GroupConsumer.as_asgi())])
     )
 }
 
 if settings.DAPHNE_SERVER:
-    protocols["http"] = HTTPConsumer  # type: ignore
+    protocols["http"] = HTTPConsumer
 
 application = ProtocolTypeRouter(protocols)

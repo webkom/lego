@@ -32,14 +32,14 @@ authorization_urlpatterns = [
 
 urlpatterns = [
     url(r"^api/", include("lego.api.urls", namespace="api")),
-    url(r"^authorization/", include(authorization_urlpatterns)),
+    url(r"^authorization/", include(authorization_urlpatterns)),  # type: ignore
     url(r"^health/", include("health_check.urls")),
     url(
         r"^api-docs/",
-        include_docs_urls(  # type: ignore
+        include_docs_urls(
             title=settings.SITE["name"],
             description=settings.SITE["slogan"],
-            patterns=api,
+            patterns=api,  # type: ignore
             schema_url="/api",
         ),
     ),

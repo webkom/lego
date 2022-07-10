@@ -32,10 +32,13 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(
-        required=False, max_length=Registration._meta.get_field("feedback").max_length
+        required=False,
+        max_length=(Registration._meta.get_field("feedback").max_length or 255),
     )
     admin_registration_reason = serializers.CharField(
-        max_length=Registration._meta.get_field("admin_registration_reason").max_length,
+        max_length=(
+            Registration._meta.get_field("admin_registration_reason").max_length or 255
+        ),
         required=True,
     )
 
@@ -52,7 +55,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "feedback",
             "presence",
@@ -74,7 +77,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
 class RegistrationAnonymizedReadSerializer(BasisModelSerializer):
     class Meta:
         model = Registration
-        fields = ("id", "pool", "status")
+        fields: tuple[str, ...] = ("id", "pool", "status")
         read_only = True
 
 
@@ -83,7 +86,7 @@ class RegistrationPublicReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Registration
-        fields = ("id", "user", "pool", "status")
+        fields: tuple[str, ...] = ("id", "user", "pool", "status")
         read_only = True
 
 
@@ -94,7 +97,7 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
     shared_memberships = serializers.IntegerField(required=False)
 
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + (  # type: ignore
+        fields = RegistrationPublicReadSerializer.Meta.fields + (
             "feedback",
             "shared_memberships",
             "presence",
@@ -106,7 +109,7 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
 
 class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + (  # type: ignore
+        fields = RegistrationPublicReadSerializer.Meta.fields + (
             "presence",
             "photo_consent",
         )
@@ -125,11 +128,11 @@ class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
     payment_status = PersonalPaymentStatusField()
 
     class Meta(RegistrationReadSerializer.Meta):
-        fields = RegistrationReadSerializer.Meta.fields + ("payment_status",)  # type: ignore
+        fields = RegistrationReadSerializer.Meta.fields + ("payment_status",)
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
-    user = AdministrateUserSerializer()
+    user: PublicUserSerializer = AdministrateUserSerializer()
 
     class Meta:
         model = Registration
@@ -156,7 +159,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
 
 class RegistrationReadDetailedExportSerializer(RegistrationReadDetailedSerializer):
-    user = AdministrateUserExportSerializer()  # type: ignore
+    user = AdministrateUserExportSerializer()
 
 
 class StripeMetaSerializer(serializers.Serializer):
