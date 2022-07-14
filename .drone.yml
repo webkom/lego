@@ -10,7 +10,7 @@ trigger:
 
 steps:
   - name: setup
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -19,7 +19,7 @@ steps:
       - make ci_settings
 
   - name: missing-migrations
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -29,11 +29,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e missing-migrations
 
   - name: tests
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -43,11 +42,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e tests -- --parallel
 
   - name: isort
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -55,11 +53,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e isort
 
   - name: flake8
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -67,11 +64,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e flake8
 
   - name: black
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     pull: true
     when:
       event: push
@@ -80,11 +76,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e black
 
   - name: mypy
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     pull: true
     when:
       event: push
@@ -93,11 +88,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e mypy
 
   - name: docs
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -105,11 +99,10 @@ steps:
     depends_on:
       - setup
     commands:
-      - pip install tox
       - tox -e docs
 
   - name: coverage
-    image: python:3.9
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -120,7 +113,6 @@ steps:
     depends_on:
       - tests
     commands:
-      - pip install tox
       - tox -e coverage
       # Upload coverage to Codecov
       - codecov -t ${CODECOV_TOKEN} -f "coverage.xml"
@@ -195,4 +187,4 @@ services:
 
 ---
 kind: signature
-hmac: 51c80c10b5360d90aa1e6c0361519fb3b7485f2782830e492d3580774625483a
+hmac: d24fc7701282f352982ca8f2568b40d10700e600895e57d6efa47d8b6bfcc674
