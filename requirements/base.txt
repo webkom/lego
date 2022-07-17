@@ -44,7 +44,7 @@ django-oauth-toolkit==1.6.3
 django-cors-headers==3.12.0
 django-mptt==0.13.4
 django-filter==21.1
-django-environ==0.8.1
+django-environ==0.9.0
 django-redis==5.2.0
 django-ipware==4.0.2
 django-phonenumber-field[phonenumberslite]==6.3.0
