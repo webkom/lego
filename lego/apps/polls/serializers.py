@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.fields import CharField, IntegerField
@@ -149,8 +151,9 @@ class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
         super().update(instance, validated_data)
 
         # Delete options that aren't in the received list
-        options_with_ids = filter(lambda q: "id" in q, options)
-        existing_options_ids = map(lambda q: q["id"], options_with_ids)
+        existing_options_ids: Iterator[int] = (
+            option["id"] for option in options if "id" in option
+        )
         for old_option in instance.options.all():
             if old_option.id not in existing_options_ids:
                 old_option.delete()

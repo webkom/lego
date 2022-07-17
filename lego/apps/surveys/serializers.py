@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 
@@ -190,8 +192,9 @@ class SurveyUpdateSerializer(BasisModelSerializer):
 
         # Delete questions that aren't in the received list
         for old_question in instance.questions.all():
-            questions_with_ids = filter(lambda q: "id" in q, questions)
-            existing_question_ids = map(lambda q: q["id"], questions_with_ids)
+            existing_question_ids: Iterator[int] = (
+                question["id"] for question in questions if "id" in question
+            )
             if old_question.id not in existing_question_ids:
                 old_question.delete()
 
@@ -208,8 +211,9 @@ class SurveyUpdateSerializer(BasisModelSerializer):
             if options is not None:
                 # Delete options that aren't in the received list
                 for old_option in new_question.options.all():
-                    options_with_ids = filter(lambda o: "id" in o, options)
-                    new_option_ids = map(lambda o: o["id"], options_with_ids)
+                    new_option_ids: Iterator[int] = (
+                        option["id"] for option in options if "id" in option
+                    )
                     if old_option.id not in new_option_ids:
                         old_option.delete()
 
