@@ -2,7 +2,11 @@
 
 > Open source backend for abakus.no, frontend located at [webkom/lego-webapp](https://github.com/webkom/lego-webapp)
 
-[![MIT](https://badgen.net/badge/license/MIT/blue)](https://en.wikipedia.org/wiki/MIT_License) [![last commit](https://badgen.net/github/last-commit/webkom/lego/)](https://github.com/webkom/lego/commits/master) [![contributors](https://badgen.net/github/contributors/webkom/lego)](https://github.com/webkom/lego/graphs/contributors) [![Build Status](https://ci.webkom.dev/api/badges/webkom/lego/status.svg)](https://ci.webkom.dev/webkom/lego)
+[![MIT](https://badgen.net/badge/license/MIT/blue)](https://en.wikipedia.org/wiki/MIT_License)
+[![last commit](https://badgen.net/github/last-commit/webkom/lego/)](https://github.com/webkom/lego/commits/master)
+[![contributors](https://badgen.net/github/contributors/webkom/lego)](https://github.com/webkom/lego/graphs/contributors)
+[![Build Status](https://ci.webkom.dev/api/badges/webkom/lego/status.svg)](https://ci.webkom.dev/webkom/lego)
+[![codecov](https://codecov.io/gh/webkom/lego/branch/master/graph/badge.svg?token=4JI1CMu58M)](https://codecov.io/gh/webkom/lego)
 
 > LEGO Er Ganske Oppdelt
 
@@ -78,8 +82,13 @@ If you want to check your test coverage, you can do the following
 # Install the packages needed
 $ pip install -r requirements/coverage.txt
 
-# Run a full test run with coverage. This will run all tests in LEGO.
+# Run all tests in LEGO. Remember to add the recommended flags mentioned above
+$ tox -e tests --
+# or run without tox
 $ coverage run --source=lego ./manage.py test
+
+# If you now have multiple coverage files or a .coverage.* file, you'll have to combine it in order to output report
+$ coverage combine
 
 # Then you can output the full coverage report
 $ coverage report
