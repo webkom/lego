@@ -30,7 +30,7 @@ analytics-python==1.2.9
 
 # channels
 channels==3.0.4
-channels_redis==3.4.0
+channels_redis==3.4.1
 daphne==3.0.2
 # Implicit dependency
 flatbuffers==2.0
