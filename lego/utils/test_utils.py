@@ -1,7 +1,7 @@
 import functools
+from datetime import datetime, timezone
 
 from django.test import TestCase
-from django.utils import timezone
 from rest_framework.test import APITestCase, APITransactionTestCase
 
 
@@ -23,9 +23,8 @@ class ViewTestCase(BaseTestCase):
 
 
 def fake_time(y, m, d):
-    dt = timezone.datetime(y, m, d)
-    dt = timezone.pytz.timezone("UTC").localize(dt)
-    return dt
+    dt = datetime(y, m, d)
+    return dt.replace(tzinfo=timezone.utc)
 
 
 def async_test(f):
