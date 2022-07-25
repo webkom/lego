@@ -37,14 +37,14 @@ class Survey(BasisModel):
         for question in self.questions.all():
             options = {}
             if question.question_type == TEXT_FIELD:
-                text_answers = list(
-                    map(
-                        lambda answer: answer.answer_text,
+                text_answers: list[str] = [
+                    answer.answer_text
+                    for answer in (
                         Answer.objects.filter(question=question).exclude(
                             hide_from_public=True
                         ),
                     )
-                )
+                ]
                 shuffle(text_answers)
                 options["answers"] = text_answers
             else:

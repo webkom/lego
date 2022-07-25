@@ -62,13 +62,11 @@ class PostgresBackend(SearchBacked):
         result.update({"id": object.pk, "content_type": content_type, "text": "text"})
         return result
 
-    def serialize(self, objects, search_type="autocomplete"):
-        return list(
-            map(
-                lambda o: self.serialize_object(o, search_type),
-                objects[: self.max_results],
-            )
-        )
+    def serialize(self, objects, search_type="autocomplete") -> list[dict]:
+        return [
+            self.serialize_object(object, search_type)
+            for object in objects[: self.max_results]
+        ]
 
     def get_django_object(self, el):
         return el

@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework import status
@@ -193,7 +195,9 @@ class CreateCommentsAPITestCase(BaseAPITestCase):
     def test_with_user_who_cannot_see_parent(self):
         self.client.force_authenticate(user=self.with_permission)
 
-        with_permission_group_ids = map(lambda g: g.id, self.with_permission.all_groups)
+        with_permission_group_ids: Iterator[int] = (
+            group.id for group in self.with_permission.all_groups
+        )
 
         group = AbakusGroup.objects.exclude(id__in=with_permission_group_ids).first()
         """
