@@ -1,6 +1,6 @@
-from django.utils import timezone
+from zoneinfo import ZoneInfo
 
-import pytz
+from django.utils import timezone
 
 from lego.apps.notifications.constants import MEETING_INVITE
 from lego.apps.notifications.notification import Notification
@@ -15,7 +15,7 @@ class MeetingInvitationNotification(Notification):
         meeting = meeting_invitation.meeting
         token = meeting_invitation.generate_invitation_token()
         time = timezone.localtime(
-            value=meeting.start_time, timezone=pytz.timezone("Europe/Oslo")
+            value=meeting.start_time, timezone=ZoneInfo("Europe/Oslo")
         )
         author = (
             meeting.report_author.full_name if meeting.report_author else "Ikke valgt"

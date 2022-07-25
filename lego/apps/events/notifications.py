@@ -1,6 +1,6 @@
-from django.utils import timezone
+from zoneinfo import ZoneInfo
 
-import pytz
+from django.utils import timezone
 
 from lego.apps.notifications.constants import (
     EVENT_ADMIN_REGISTRATION,
@@ -49,7 +49,7 @@ class EventPaymentOverdueNotification(Notification):
         event = self.kwargs["event"]
 
         date = timezone.localtime(
-            value=event.payment_due_date, timezone=pytz.timezone("Europe/Oslo")
+            value=event.payment_due_date, timezone=ZoneInfo("Europe/Oslo")
         )
 
         due_date = date.strftime("%d.%m.%y, kl. %H:%M")
