@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from rest_framework_jwt.serializers import User
+from rest_framework_jwt.serializers import ImpersonateAuthTokenSerializer
 
 from lego.apps.events import constants
 from lego.apps.events.fields import (
@@ -14,6 +14,7 @@ from lego.apps.events.fields import (
     SetPaymentStatusField,
 )
 from lego.apps.events.models import Pool, Registration
+from lego.apps.users.models import User as user_model
 from lego.apps.users.serializers.users import (
     AdministrateUserExportSerializer,
     AdministrateUserSerializer,
@@ -21,6 +22,8 @@ from lego.apps.users.serializers.users import (
 )
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
+
+User: user_model = ImpersonateAuthTokenSerializer.User
 
 
 class AdminUnregisterSerializer(serializers.Serializer):
