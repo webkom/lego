@@ -6,8 +6,3 @@ updates:
       interval: daily
       time: "10:00"
     open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: django
-        versions:
-          - ">= 3.a"
-          - "< 4"
