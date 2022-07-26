@@ -1,7 +1,7 @@
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls import include
 from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import path
+from django.urls import path, re_path
 from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 
@@ -14,27 +14,27 @@ from rest_framework_jwt.views import (
 from lego.api.urls import urlpatterns as api
 
 jwt_urlpatterns = [
-    url(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),
-    url(r"^token-auth/refresh/$", refresh_jwt_token, name="refresh_jwt_token"),
-    url(r"^token-auth/verify/$", verify_jwt_token, name="verify_jwt_token"),
+    re_path(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),
+    re_path(r"^token-auth/refresh/$", refresh_jwt_token, name="refresh_jwt_token"),
+    re_path(r"^token-auth/verify/$", verify_jwt_token, name="verify_jwt_token"),
 ]
 
 authorization_urlpatterns = [
-    url(r"^oauth2/", include("lego.apps.oauth.urls")),
-    url(r"", include((jwt_urlpatterns, "jwt"), namespace="jwt")),
-    url(
+    re_path(r"^oauth2/", include("lego.apps.oauth.urls")),
+    re_path(r"", include((jwt_urlpatterns, "jwt"), namespace="jwt")),
+    re_path(
         r"^login/",
         LoginView.as_view(template_name="authorization/login.html"),
         name="login",
     ),
-    url(r"^logout/", LogoutView.as_view(next_page="/"), name="logout"),
+    re_path(r"^logout/", LogoutView.as_view(next_page="/"), name="logout"),
 ]
 
 urlpatterns = [
-    url(r"^api/", include("lego.api.urls", namespace="api")),
-    url(r"^authorization/", include(authorization_urlpatterns)),
-    url(r"^health/", include("health_check.urls")),
-    url(
+    re_path(r"^api/", include("lego.api.urls", namespace="api")),
+    re_path(r"^authorization/", include(authorization_urlpatterns)),
+    re_path(r"^health/", include("health_check.urls")),
+    re_path(
         r"^api-docs/",
         include_docs_urls(  # type: ignore
             title=settings.SITE["name"],
@@ -43,7 +43,9 @@ urlpatterns = [
             schema_url="/api",
         ),
     ),
-    url(r"^$", TemplateView.as_view(template_name="landing.html"), name="landing_page"),
+    re_path(
+        r"^$", TemplateView.as_view(template_name="landing.html"), name="landing_page"
+    ),
 ]
 
 if "debug_toolbar" in settings.INSTALLED_APPS:
