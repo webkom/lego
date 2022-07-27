@@ -83,7 +83,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         """Users with permissions should be able to approve quotes"""
         self.client.force_authenticate(self.authenticated_user)
         response = self.client.put(_get_approve_url(3))
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         quote = Quote.objects.get(id=3)
         self.assertTrue(quote.approved)
@@ -93,7 +93,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.authenticated_user)
         self.client.post(_get_list_url(), self.quote_data)
         response = self.client.put(_get_approve_url(4))
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         quote = Quote.objects.get(id=4)
         self.assertFalse(quote.approved)
@@ -102,7 +102,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         """Users with no permissions should not be able to approve quotes"""
         self.client.force_authenticate(self.unauthenticated_user)
         response = self.client.put(_get_approve_url(3))
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_unapproved_authenticated(self):
         """Users with permissions should be able to see unapproved quotes"""
@@ -118,7 +118,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.unauthenticated_user)
 
         response = self.client.get(_get_list_unapproved_url())
-        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_list_approved_unauthorized(self):
         """Users with regular permissions should be able to see approved quotes"""
@@ -127,7 +127,7 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.authenticated_user)
 
         response = self.client.get(_get_list_approved_url())
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(len(response.json()["results"]) > 0)
 
     def test_list_unapproved_unauthorized(self):
@@ -137,5 +137,5 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.authenticated_user)
 
         response = self.client.get(_get_list_unapproved_url())
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
-        self.assertEquals(len(response.json()["results"]), 0)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(len(response.json()["results"]), 0)

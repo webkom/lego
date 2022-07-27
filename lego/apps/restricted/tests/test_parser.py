@@ -19,6 +19,6 @@ class EmailParserTestCase(BaseTestCase):
         message = parser.parse()
 
         self.assertIsInstance(message, Message)
-        self.assertEquals(message.original_size, len(raw_message))
-        self.assertEquals(message["X-MailFrom"], "test@test.com")
-        self.assertEquals(message["To"], "restricted@abakus.no")
+        self.assertEqual(message.original_size, len(raw_message))
+        self.assertEqual(message["X-MailFrom"], "test@test.com")
+        self.assertEqual(message["To"], "restricted@abakus.no")

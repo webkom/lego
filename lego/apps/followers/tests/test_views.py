@@ -22,40 +22,40 @@ class FollowEventViewTestCase(BaseAPITestCase):
     def test_list(self):
         """Try to list the follower apis with and without auth."""
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
         """Try to follow an event, we should always store the follower as request.user"""
         response = self.client.post(self.url, {"target": 1})
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
         response = self.client.post(self.url, {"target": 1})
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Always use request.user to set the follower
         response = self.client.post(self.url, {"target": 2, "follower": 2})
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         result_id = response.json()["id"]
-        self.assertEquals(FollowEvent.objects.get(id=result_id).follower, self.user)
+        self.assertEqual(FollowEvent.objects.get(id=result_id).follower, self.user)
 
     def test_delete(self):
         """Try to delete follow items"""
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         denied_user = User.objects.get(id=2)
         self.client.force_authenticate(denied_user)
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_authenticate(self.user)
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class FollowUserViewTestCase(BaseAPITestCase):
@@ -69,40 +69,40 @@ class FollowUserViewTestCase(BaseAPITestCase):
     def test_list(self):
         """Try to list the follower apis with and without auth."""
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
         """Try to follow a user, we should always store the follower as request.user"""
         response = self.client.post(self.url, {"target": 1})
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
         response = self.client.post(self.url, {"target": 1})
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Always use request.user to set the follower
         response = self.client.post(self.url, {"target": 2, "follower": 2})
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         result_id = response.json()["id"]
-        self.assertEquals(FollowUser.objects.get(id=result_id).follower, self.user)
+        self.assertEqual(FollowUser.objects.get(id=result_id).follower, self.user)
 
     def test_delete(self):
         """Try to delete follow items"""
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         denied_user = User.objects.get(id=2)
         self.client.force_authenticate(denied_user)
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_authenticate(self.user)
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class FollowCompanyViewTestCase(BaseAPITestCase):
@@ -121,37 +121,37 @@ class FollowCompanyViewTestCase(BaseAPITestCase):
     def test_list(self):
         """Try to list the follower apis with and without auth."""
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create(self):
         """Try to follow a user, we should always store the follower as request.user"""
         response = self.client.post(self.url, {"target": 1})
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
         response = self.client.post(self.url, {"target": 1})
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Always use request.user to set the follower
         response = self.client.post(self.url, {"target": 2, "follower": 2})
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         result_id = response.json()["id"]
-        self.assertEquals(FollowCompany.objects.get(id=result_id).follower, self.user)
+        self.assertEqual(FollowCompany.objects.get(id=result_id).follower, self.user)
 
     def test_delete(self):
         """Try to delete follow items"""
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         denied_user = User.objects.get(id=2)
         self.client.force_authenticate(denied_user)
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         self.client.force_authenticate(self.user)
         response = self.client.delete(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

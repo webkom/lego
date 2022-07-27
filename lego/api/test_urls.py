@@ -16,5 +16,5 @@ class VersionRedirectTestCase(BaseTestCase):
 
     def test_default_router_redirect(self):
         response = self.client.get("/api/")
-        self.assertEquals(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertIn(settings.API_VERSION, response.url)

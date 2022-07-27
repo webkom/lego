@@ -1806,7 +1806,7 @@ class CapacityExpansionTestCase(BaseAPITestCase):
                 event=self.event, user=user
             )[0]
             self.event.register(registration)
-        self.assertEquals(self.event.waiting_registrations.count(), 1)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
         self.updated_event = deepcopy(event_data)
         self.updated_event["pools"][0]["id"] = self.event_response.json()["pools"][0][
             "id"
@@ -1816,22 +1816,22 @@ class CapacityExpansionTestCase(BaseAPITestCase):
         self.updated_event["pools"][0]["capacity"] = 11
         response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
 
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-        self.assertEquals(self.event.waiting_registrations.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.event.waiting_registrations.count(), 0)
 
     def test_bump_on_pool_creation(self):
         self.updated_event["pools"].append(_test_pools_data[0])
         response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
 
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-        self.assertEquals(self.event.waiting_registrations.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.event.waiting_registrations.count(), 0)
 
     def test_no_bump_on_reduced_pool_size(self):
         self.updated_event["pools"][0]["capacity"] = 9
         response = self.client.put(_get_detail_url(self.event.id), self.updated_event)
 
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-        self.assertEquals(self.event.waiting_registrations.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
 
 
 class RegistrationSearchTestCase(BaseAPITestCase):
@@ -1869,7 +1869,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
-        self.assertEquals(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertNotEqual(res.json().get("user", None), None)
 
     def test_asd_user(self):
@@ -1878,12 +1878,12 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": "asd007 xXx james bond"},
         )
-        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_no_username(self):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(_get_registration_search_url(self.event.pk), {})
-        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_not_registered(self):
         self.client.force_authenticate(self.webkom_user)
@@ -1891,7 +1891,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.webkom_user.username},
         )
-        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_auth(self):
         self.client.force_authenticate(self.users[0])
@@ -1899,7 +1899,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
-        self.assertEquals(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_double_register(self):
         self.client.force_authenticate(self.webkom_user)
@@ -1911,7 +1911,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
-        self.assertEquals(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UpcomingEventsTestCase(BaseAPITestCase):

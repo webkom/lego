@@ -154,13 +154,13 @@ class SubmissionViewSetTestCase(APITestCase):
         """Users who attended the event should not be able to see list view"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_list_url(1))
-        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_list_regular(self):
         """Regular users should not be able to see submissions list view"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url(1))
-        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     # Edit
     def test_edit_admin(self):

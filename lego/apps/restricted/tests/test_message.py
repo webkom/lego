@@ -12,14 +12,14 @@ class MessageTestCase(BaseTestCase):
 
     def test_create_message(self):
         """Test message properties"""
-        self.assertEquals(self.message.recipient, "recipient")
-        self.assertEquals(self.message.from_email, "sender")
+        self.assertEqual(self.message.recipient, "recipient")
+        self.assertEqual(self.message.from_email, "sender")
         self.assertIsInstance(self.message.msg, Message)
-        self.assertEquals(self.message.msg["To"], "recipient")
+        self.assertEqual(self.message.msg["To"], "recipient")
 
     def test_recipients(self):
         """The recipient function returns a list with all recipients"""
-        self.assertEquals(self.message.recipients(), ["recipient"])
+        self.assertEqual(self.message.recipients(), ["recipient"])
 
     def test_message(self):
         """

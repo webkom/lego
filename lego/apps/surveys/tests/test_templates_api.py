@@ -99,7 +99,7 @@ class SurveyTemplateViewSetTestCase(APITestCase):
         """Regular users should not be able to see templates list view"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url())
-        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     # Edit permissions
     def test_edit_admin(self):

@@ -16,7 +16,7 @@ class StripeWebhookTestCase(BaseAPITestCase):
     def test_post_no_signature_header(self):
         """The api returns 403 when no header is provided"""
         response = self.client.post(self.url, {})
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @mock.patch(
         "lego.apps.events.webhooks.WebhookSignature.verify_header",
@@ -25,7 +25,7 @@ class StripeWebhookTestCase(BaseAPITestCase):
     def test_signature_verification_fails(self, mock_verify_header):
         """The api returns 403 when an invalid header is provided"""
         response = self.client.post(self.url, {}, HTTP_STRIPE_SIGNATURE="invalid")
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         mock_verify_header.assert_called_once_with("{}", "invalid", "test_secret", 300)
 
@@ -40,7 +40,7 @@ class StripeWebhookTestCase(BaseAPITestCase):
         payload = {"id": "id", "type": "charge.refunded"}
 
         response = self.client.post(self.url, payload, HTTP_STRIPE_SIGNATURE="valid")
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         mock_task.assert_called_once_with(event_id="id", event_type="charge.refunded")
         mock_verify_header.assert_called_once_with(
@@ -54,4 +54,4 @@ class StripeWebhookTestCase(BaseAPITestCase):
         payload = {"id": "id", "type": "charge.refunded"}
 
         response = self.client.post(self.url, payload, HTTP_STRIPE_SIGNATURE="valid")
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
