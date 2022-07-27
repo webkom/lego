@@ -126,6 +126,9 @@ JWT_AUTH = {
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth.APIApplication"
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = "oauth2_provider.RefreshToken"
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = "oauth2_provider.IDToken"
 # Tokens is valid for 7 days.
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 86400 * 7,
