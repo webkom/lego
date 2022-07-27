@@ -68,7 +68,7 @@ from lego.utils.functions import verify_captcha
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    filter_class = EventsFilterSet
+    filterset_class = EventsFilterSet
     filter_backends = (
         DjangoFilterBackend,
         filters.OrderingFilter,

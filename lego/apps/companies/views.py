@@ -94,7 +94,7 @@ class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 
 class SemesterViewSet(viewsets.ModelViewSet):
-    filter_class = SemesterFilterSet
+    filterset_class = SemesterFilterSet
 
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
@@ -108,7 +108,7 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     ordering = "-created_at"
     queryset = CompanyInterest.objects.all()
-    filter_class = CompanyInterestFilterSet
+    filterset_class = CompanyInterestFilterSet
 
     def get_serializer_class(self):
         if self.action == "list":

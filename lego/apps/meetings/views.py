@@ -20,7 +20,7 @@ from lego.apps.permissions.utils import get_permission_handler
 
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    filter_class = MeetingFilterSet
+    filterset_class = MeetingFilterSet
     serializer_class = MeetingDetailSerializer
 
     def get_queryset(self):

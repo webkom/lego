@@ -10,7 +10,7 @@ from lego.apps.users.serializers.memberships import MembershipSerializer
 
 class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = MembershipSerializer
-    filter_class = MembershipFilterSet
+    filterset_class = MembershipFilterSet
     ordering_fields = ["id", "role"]
     filter_backends = (
         DjangoFilterBackend,

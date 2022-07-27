@@ -21,7 +21,7 @@ class RestrictedMailViewSet(
     viewsets.GenericViewSet,
 ):
 
-    filter_class = RestrictedMailFilterSet
+    filterset_class = RestrictedMailFilterSet
 
     def get_queryset(self):
         if self.request.user.is_authenticated:

@@ -15,7 +15,7 @@ from lego.apps.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteSe
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Quote.objects.all().prefetch_related("tags")
-    filter_class = QuotesFilterSet
+    filterset_class = QuotesFilterSet
     ordering = "-created_at"
 
     def get_queryset(self):

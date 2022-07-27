@@ -13,7 +13,7 @@ class MembershipHistoryViewSet(
 
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MembershipHistorySerializer
-    filter_class = MembershipHistoryFilterSet
+    filterset_class = MembershipHistoryFilterSet
     ordering = "id"
 
     def get_queryset(self):
