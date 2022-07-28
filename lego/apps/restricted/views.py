@@ -24,6 +24,9 @@ class RestrictedMailViewSet(
     filterset_class = RestrictedMailFilterSet
 
     def get_queryset(self):
+        if self.request is None:
+            return RestrictedMail.objects.none()
+
         if self.request.user.is_authenticated:
             queryset = RestrictedMail.objects.filter(created_by=self.request.user)
             if self.action == "retrieve":

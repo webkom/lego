@@ -17,6 +17,9 @@ class MembershipHistoryViewSet(
     ordering = "id"
 
     def get_queryset(self):
+        if self.request is None:
+            return MembershipHistory.objects.none()
+
         queryset = MembershipHistory.objects.filter(
             abakus_group__deleted=False
         ).select_related("user", "abakus_group")

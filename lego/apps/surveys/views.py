@@ -153,6 +153,9 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
+        if self.request is None:
+            return Submission.objects.none()
+
         survey_id = self.kwargs["survey_pk"]
         return Submission.objects.filter(survey=survey_id)
 

@@ -19,6 +19,9 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = "-created_at"
 
     def get_queryset(self):
+        if self.request is None:
+            return Quote.objects.none()
+
         access_unapproved = self.request.user.has_perm(EDIT, self.queryset)
 
         if not access_unapproved:

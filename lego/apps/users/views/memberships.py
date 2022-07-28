@@ -20,6 +20,9 @@ class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = "id"
 
     def get_queryset(self):
+        if self.request is None:
+            return Membership.objects.none()
+
         group = self.kwargs["group_pk"]
         descendants = self.request.query_params.get("descendants", None)
         if descendants == "true":
