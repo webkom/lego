@@ -3,18 +3,18 @@
   fields:
     title: Webkommøte
     location: Webkomkontoret
-    start_time: '2016-09-30T16:15:00+00:00'
-    end_time: '2016-10-01T02:00:00+00:00'
-    report: '# Plebkomworkshop! Halla damer, dette var et bra event.'
+    start_time: "2016-09-30T16:15:00+00:00"
+    end_time: "2016-10-01T02:00:00+00:00"
+    report: "<h2>Plebkomworkshop!</h2> <p>Halla damer, dette var et bra event.</p>"
     report_author: 1
 - model: meetings.Meeting
   pk: 2
   fields:
     title: Samf
     location: hehe
-    start_time: '2016-10-30T16:15:00+00:00'
-    end_time: '2017-10-01T02:00:00+00:00'
-    report: '# xdddd   hehe hva skjer a  ;)'
+    start_time: "2016-10-30T16:15:00+00:00"
+    end_time: "2017-10-01T02:00:00+00:00"
+    report: "<p>xdddd   hehe hva skjer a  ;)</p>"
     report_author: 1
 
 - model: meetings.MeetingInvitation
