@@ -32,7 +32,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "recipient_group": None,
             },
         )
-        self.assertEquals(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         mock_verify_captcha.assert_called_once()
 
     @mock.patch("lego.apps.contact.views.send_message")
@@ -48,7 +48,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "recipient_group": None,
             },
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     @mock.patch("lego.apps.contact.views.send_message")
     @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=True)
@@ -64,7 +64,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "recipient_group": None,
             },
         )
-        self.assertEquals(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         mock_verify_captcha.assert_called_once()
         mock_send_message.assert_called_once_with(
             "title", "message", self.user, True, None
@@ -84,7 +84,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "recipient_group": None,
             },
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         mock_verify_captcha.assert_called_once()
 
     @mock.patch("lego.apps.contact.views.send_message")
@@ -105,7 +105,7 @@ class ContactViewSetTestCase(BaseAPITestCase):
                 "recipient_group": webkom_id,
             },
         )
-        self.assertEquals(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         mock_verify_captcha.assert_called_once()
         mock_send_message.assert_called_once_with(
             "title", "message", self.user, True, webkom

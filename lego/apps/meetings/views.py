@@ -20,10 +20,13 @@ from lego.apps.permissions.utils import get_permission_handler
 
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
-    filter_class = MeetingFilterSet
+    filterset_class = MeetingFilterSet
     serializer_class = MeetingDetailSerializer
 
     def get_queryset(self):
+        if self.request is None:
+            return Meeting.objects.none()
+
         permission_handler = get_permission_handler(Meeting)
         return permission_handler.filter_queryset(
             self.request.user,
@@ -93,6 +96,9 @@ class MeetingInvitationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return MeetingInvitationSerializer
 
     def get_queryset(self):
+        if self.request is None:
+            return MeetingInvitation.objects.none()
+
         return MeetingInvitation.objects.filter(meeting=self.kwargs["meeting_pk"])
 
 

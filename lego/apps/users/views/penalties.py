@@ -16,4 +16,4 @@ class PenaltyViewSet(
 ):
     queryset = Penalty.objects.all()
     serializer_class = PenaltySerializer
-    filter_class = PenaltyFilterSet
+    filterset_class = PenaltyFilterSet

@@ -18,7 +18,7 @@ class NotificationSettingTestCase(BaseTestCase):
         notification_type
         """
         user = User.objects.get(pk=1)
-        self.assertEquals(
+        self.assertEqual(
             NotificationSetting.active_channels(user, constants.WEEKLY_MAIL),
             constants.CHANNELS,
         )
@@ -35,10 +35,10 @@ class NotificationSettingTestCase(BaseTestCase):
         user2 = User.objects.get(pk=2)
         user3 = User.objects.get(pk=3)
 
-        self.assertEquals(
+        self.assertEqual(
             NotificationSetting.active_channels(user2, constants.WEEKLY_MAIL), []
         )
-        self.assertEquals(
+        self.assertEqual(
             NotificationSetting.active_channels(user3, constants.WEEKLY_MAIL), []
         )
 
@@ -46,7 +46,7 @@ class NotificationSettingTestCase(BaseTestCase):
         """enabled=True should return a list with valid channels"""
         user = User.objects.get(pk=4)
 
-        self.assertEquals(
+        self.assertEqual(
             NotificationSetting.active_channels(user, constants.WEEKLY_MAIL),
             [constants.EMAIL],
         )

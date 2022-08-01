@@ -1,4 +1,4 @@
-import asyncio
+import functools
 
 from django.test import TestCase
 from django.utils import timezone
@@ -29,10 +29,11 @@ def fake_time(y, m, d):
 
 
 def async_test(f):
-    def wrapper(*args, **kwargs):
-        coro = asyncio.coroutine(f)
-        future = coro(*args, **kwargs)
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(future)
+    def wrapper(f):
+        @functools.wraps(f)
+        async def wrapped(*args, **kwargs):
+            return await f(*args, **kwargs)
+
+        return wrapped
 
     return wrapper

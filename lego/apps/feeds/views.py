@@ -126,6 +126,9 @@ class UserFeedViewSet(FeedViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if self.request is None:
+            return UserFeed.objects.none()
+
         user_id = self.kwargs["user_pk"]
         return feed_manager.retrieve_feed(UserFeed, user_id)
 
@@ -138,6 +141,9 @@ class PersonalFeedViewSet(FeedViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if self.request is None:
+            return PersonalFeed.objects.none()
+
         return feed_manager.retrieve_feed(PersonalFeed, self.request.user.id)
 
 
@@ -149,4 +155,7 @@ class NotificationsViewSet(FeedMarkerViewSet, FeedViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if self.request is None:
+            return NotificationFeed.objects.none()
+
         return feed_manager.retrieve_feed(NotificationFeed, self.request.user.id)

@@ -21,11 +21,11 @@ class TagsTestCase(BaseAPITestCase):
         del event_data["cover"]
         # Make sure that we're not adding a tag which is there already.
         # The simplest way to do this is to ensure that the event has no tags.
-        self.assertEquals(len(event_data.pop("tags")), 0)
+        self.assertEqual(len(event_data.pop("tags")), 0)
         tag = Tag.objects.first()
         event_data["tags"] = [tag.tag]
         res = self.client.put(event_api._get_detail_url(pk), event_data)
-        self.assertEquals(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(tag.tag in res.json().pop("tags"))
 
     def test_remove_tag(self):
@@ -37,7 +37,7 @@ class TagsTestCase(BaseAPITestCase):
         removed = tags.pop()
         event_data["tags"] = tags
         res = self.client.put(event_api._get_detail_url(pk), event_data)
-        self.assertEquals(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertFalse(removed in res.json().pop("tags"))
 
     def test_add_duplicate_tag(self):
@@ -50,10 +50,10 @@ class TagsTestCase(BaseAPITestCase):
         event_data["tags"] = tags + tags
         total_tags_before = Tag.objects.count()
         res = self.client.put(event_api._get_detail_url(pk), event_data)
-        self.assertEquals(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         total_tags_after = Tag.objects.count()
-        self.assertEquals(total_tags_before, total_tags_after)
-        self.assertEquals(res.json()["tags"], tags)
+        self.assertEqual(total_tags_before, total_tags_after)
+        self.assertEqual(res.json()["tags"], tags)
 
     def test_add_new_tag(self):
         pk = 1
@@ -66,7 +66,7 @@ class TagsTestCase(BaseAPITestCase):
 
         event_data["tags"] = [tag]
         res = self.client.put(event_api._get_detail_url(pk), event_data)
-        self.assertEquals(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(tag in res.json().pop("tags"))
         self.assertIsNotNone(Tag.objects.filter(tag=tag).first())
 
@@ -77,7 +77,7 @@ class TagsTestCase(BaseAPITestCase):
 
         event_data["tags"] = ["invalid tag with space"]
         response = self.client.patch(event_api._get_detail_url(pk), event_data)
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_preserve_tags(self):
         """Preserve tags when no tags is posted"""
@@ -91,11 +91,11 @@ class TagsTestCase(BaseAPITestCase):
         del event_data["cover"]
         del event_data["tags"]
         response = self.client.patch(event_api._get_detail_url(event.pk), event_data)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-        self.assertEquals(
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
             list(event.tags.values_list("pk", flat=True)), response.json()["tags"]
         )
-        self.assertEquals(len(response.json()["tags"]), 1)
+        self.assertEqual(len(response.json()["tags"]), 1)
 
     def test_clear_tags(self):
         """Clear tags when [] is posted"""
@@ -106,7 +106,7 @@ class TagsTestCase(BaseAPITestCase):
         del event_data["cover"]
         event_data["tags"] = []
         response = self.client.patch(event_api._get_detail_url(event.pk), event_data)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         event.refresh_from_db()
-        self.assertEquals(list(event.tags.values_list("pk", flat=True)), [])
+        self.assertEqual(list(event.tags.values_list("pk", flat=True)), [])

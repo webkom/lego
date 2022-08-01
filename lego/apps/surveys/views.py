@@ -32,7 +32,7 @@ from lego.apps.surveys.serializers import (
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Survey.objects.all().prefetch_related("questions", "submissions")
     permission_classes = [SurveyPermissions]
-    filter_class = SurveyFilterSet
+    filterset_class = SurveyFilterSet
     filter_backends = (DjangoFilterBackend,)
 
     ordering = ("-active_from", "title")
@@ -148,11 +148,14 @@ class SurveyTemplateViewSet(
 class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     permission_classes = [SubmissionPermissions]
-    filter_class = SubmissionFilterSet
+    filterset_class = SubmissionFilterSet
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
+        if self.request is None:
+            return Submission.objects.none()
+
         survey_id = self.kwargs["survey_pk"]
         return Submission.objects.filter(survey=survey_id)
 

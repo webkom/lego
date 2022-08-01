@@ -16,7 +16,7 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Article.objects.all()
     ordering = "-created_at"
     serializer_class = DetailedArticleSerializer
-    filter_class = ArticleFilterSet
+    filterset_class = ArticleFilterSet
 
     def get_queryset(self):
         queryset = self.queryset.select_related("created_by").prefetch_related("tags")

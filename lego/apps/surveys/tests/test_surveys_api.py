@@ -194,13 +194,13 @@ class SurveyViewSetTestCase(APITestCase):
         """Regular users should not be able to see surveys list view"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url())
-        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_list_attended(self):
         """Users who attended an event should not be able to see surveys list view"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_list_url())
-        self.assertEquals(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     # Edit permissions
     def test_edit_admin(self):
@@ -348,7 +348,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertTrue(response.json())
-        self.assertNotEquals(response.json()["token"], None)
+        self.assertNotEqual(response.json()["token"], None)
 
     def test_survey_hiding(self):
         """Test that you can remove a token to unshare an event"""
@@ -360,7 +360,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.post(_get_detail_url(response.json()["id"]) + "hide/")
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertTrue(response.json())
-        self.assertEquals(response.json()["token"], None)
+        self.assertEqual(response.json()["token"], None)
 
     def test_survey_export_admin(self):
         """Test that admins can export a survey as csv"""

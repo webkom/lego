@@ -20,13 +20,13 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
 
     def test_no_auth(self):
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.client.post(
             self.url,
             {"notificationType": "weekly_mail", "enabled": True, "channels": ["email"]},
         )
-        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list(self):
         self.client.force_authenticate(self.user)
@@ -34,7 +34,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
     def test_alternatives(self):
         self.client.force_authenticate(self.user)
         response = self.client.get(f"{self.url}alternatives/")
-        self.assertEquals(
+        self.assertEqual(
             response.json(),
             {
                 "notificationTypes": constants.NOTIFICATION_TYPES,
@@ -48,7 +48,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
         response = self.client.post(
             self.url, {"notificationType": "weekly_mail", "enabled": True}
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json(),
             {
                 "notificationType": "weekly_mail",
@@ -65,7 +65,7 @@ class NotificationSettingsViewSetTestCase(BaseAPITestCase):
             self.url, {"notificationType": constants.MEETING_INVITE}
         )
 
-        self.assertEquals(
+        self.assertEqual(
             response.json(),
             {
                 "notificationType": constants.MEETING_INVITE,
@@ -107,7 +107,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
         response = self.client.post(
             self.url, {"message": "test_message", "groups": [2], "events": [1]}
         )
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authorized_create(self):
         """
@@ -120,13 +120,13 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
             self.url,
             {"message": message, "groups": [2], "events": [1], "fromGroup": 11},
         )
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        self.assertEquals(response.data["from_group"]["id"], 11)
-        self.assertEquals(response.data["message"], message)
-        self.assertEquals(len(response.data["groups"]), 1)
-        self.assertEquals(response.data["groups"][0]["id"], 2)
-        self.assertEquals(len(response.data["events"]), 1)
-        self.assertEquals(response.data["events"][0]["id"], 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["from_group"]["id"], 11)
+        self.assertEqual(response.data["message"], message)
+        self.assertEqual(len(response.data["groups"]), 1)
+        self.assertEqual(response.data["groups"][0]["id"], 2)
+        self.assertEqual(len(response.data["events"]), 1)
+        self.assertEqual(response.data["events"][0]["id"], 1)
 
     def test_authorized_create_from_nonexistent_group(self):
         """
@@ -139,7 +139,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
             self.url,
             {"message": "test_message", "groups": [2], "events": [1], "fromGroup": 29},
         )
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_authorized_create_invalid_recipient_groups(self):
         """
@@ -152,7 +152,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
             self.url,
             {"message": "test_message", "groups": [59], "events": [3], "fromGroup": 11},
         )
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_authorized_patch(self):
         """
@@ -169,7 +169,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
                 "events": [1],
             },
         )
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authorized_list_own(self):
         """
@@ -178,9 +178,9 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.authorized_user_2)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-        self.assertEquals(len(response.data["results"]), 1)
-        self.assertEquals(response.data["results"][0]["id"], 6)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], 6)
 
     def test_authorized_detail_not_own(self):
         """
@@ -190,7 +190,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.authorized_user)
         response = self.client.get(f"{self.url}1/")
-        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_authorized_detail_own(self):
         """
@@ -200,7 +200,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.authorized_user)
         response = self.client.get(f"{self.url}5/")
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_unauthorized_list(self):
         """
@@ -209,7 +209,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.unauthorized_user)
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_send_own_announcement_authorized(self):
         """
@@ -218,7 +218,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(f"{self.url}{self.unsent_announcement.id}/send/")
-        self.assertEquals(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertTrue(Announcement.objects.get(pk=self.unsent_announcement.id).sent)
 
     def test_send_not_own_announcement_authorized(self):
@@ -230,7 +230,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
         response = self.client.post(
             f"{self.url}{self.unsent_not_own_announcement.id}/send/"
         )
-        self.assertEquals(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_send_announcement_unauthorized(self):
         """
@@ -239,4 +239,4 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
 
         self.client.force_authenticate(self.unauthorized_user)
         response = self.client.post(f"{self.url}{self.unsent_announcement.id}/send/")
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

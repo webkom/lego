@@ -18,9 +18,9 @@ class EmailTokenTestCase(BaseTestCase):
         payloads = len(message.get_payload())
 
         token = get_mail_token(message)
-        self.assertEquals("test_token", token)
+        self.assertEqual("test_token", token)
 
-        self.assertEquals(len(message.get_payload()), payloads - 1)
+        self.assertEqual(len(message.get_payload()), payloads - 1)
 
     def test_parse_message_no_token(self):
         """Parsing a message with no token has no effect, the function returns None"""

@@ -28,7 +28,7 @@ class EmailListViewSet(
 
     queryset = EmailList.objects.all()
     ordering = "id"
-    filter_class = EmailListFilterSet
+    filterset_class = EmailListFilterSet
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -58,7 +58,7 @@ class UserEmailViewSet(
     )
     serializer_class = UserEmailSerializer
     ordering = "id"
-    filter_class = EmailUserFilterSet
+    filterset_class = EmailUserFilterSet
     permission_handler = UserEmailPermissionHandler()
 
     def get_serializer_class(self):

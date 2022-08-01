@@ -58,63 +58,63 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         """Data students should be bumped"""
         user = self.user
         self.data_1.add_user(user)
-        self.assertEquals(get_groups(user), [self.data_1])
+        self.assertEqual(get_groups(user), [self.data_1])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.data_2])
+        self.assertEqual(get_groups(user), [self.data_2])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.data_3])
+        self.assertEqual(get_groups(user), [self.data_3])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.data_4])
+        self.assertEqual(get_groups(user), [self.data_4])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.data_5])
+        self.assertEqual(get_groups(user), [self.data_5])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [])
+        self.assertEqual(get_groups(user), [])
 
     def test_bump_komtek(self):
         """Komtek students should be bumped"""
         user = self.user
         self.komtek_1.add_user(user)
-        self.assertEquals(get_groups(user), [self.komtek_1])
+        self.assertEqual(get_groups(user), [self.komtek_1])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.komtek_2])
+        self.assertEqual(get_groups(user), [self.komtek_2])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.komtek_3])
+        self.assertEqual(get_groups(user), [self.komtek_3])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.komtek_4])
+        self.assertEqual(get_groups(user), [self.komtek_4])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [self.komtek_5])
+        self.assertEqual(get_groups(user), [self.komtek_5])
 
         bump_users()
         reset_user_bump_date(user)
-        self.assertEquals(get_groups(user), [])
+        self.assertEqual(get_groups(user), [])
 
     def test_multibump_should_not_bump(self):
         """Bumping multiple times should not bump the same user more than once"""
         user = self.user
         self.komtek_1.add_user(user)
-        self.assertEquals(get_groups(user), [self.komtek_1])
+        self.assertEqual(get_groups(user), [self.komtek_1])
         bump_users()
         bump_users()
         bump_users()
-        self.assertEquals(get_groups(user), [self.komtek_2])
+        self.assertEqual(get_groups(user), [self.komtek_2])
 
     def test_bump_after_recent_bump(self):
         """Bumping short after last bump should not bump the same user more than once"""
@@ -123,7 +123,7 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         reset_user_bump_date(user, months=2)
         bump_users()
         bump_users()
-        self.assertEquals(get_groups(user), [self.komtek_1])
+        self.assertEqual(get_groups(user), [self.komtek_1])
 
     def test_discover_users_with_two_grades(self):
         """It should exit if a user has two grades"""
