@@ -70,7 +70,7 @@ class EventReadSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "title",
             "description",
@@ -114,7 +114,7 @@ class EventReadDetailedSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "title",
             "description",
@@ -201,7 +201,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     price = serializers.SerializerMethodField()
 
     class Meta(EventReadDetailedSerializer.Meta):
-        fields = EventReadDetailedSerializer.Meta.fields + (  # type: ignore
+        fields = EventReadDetailedSerializer.Meta.fields + (
             "price",
             "activation_time",
             "is_admitted",
@@ -236,7 +236,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
     unanswered_surveys = serializers.SerializerMethodField()
 
     class Meta(EventReadUserDetailedSerializer.Meta):
-        fields = EventReadUserDetailedSerializer.Meta.fields + (  # type: ignore
+        fields = EventReadUserDetailedSerializer.Meta.fields + (
             "waiting_registrations",
             "unanswered_surveys",
         )
@@ -252,7 +252,7 @@ class EventAdministrateSerializer(EventReadSerializer):
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
 
     class Meta(EventReadSerializer.Meta):
-        fields = EventReadSerializer.Meta.fields + (  # type: ignore
+        fields = EventReadSerializer.Meta.fields + (
             "pools",
             "unregistered",
             "waiting_registrations",
@@ -282,7 +282,7 @@ class EventCreateAndUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
 
     class Meta:
         model = Event
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "title",
             "cover",
@@ -422,7 +422,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "title",
             "description",
@@ -452,7 +452,7 @@ class EventSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "title",
             "description",

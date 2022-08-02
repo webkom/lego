@@ -30,7 +30,7 @@ class PermissionHandler:
     default_keyword_permission = "/sudo/admin/{model_name}s/{perm}/"
     default_require_auth = True
 
-    permission_map = {}
+    permission_map: dict[str, list] = {}
     authentication_map = {}
     safe_methods = [VIEW, LIST]
 

@@ -63,7 +63,7 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
-    options = OptionSerializer(many=True)
+    options: BasisModelSerializer = OptionSerializer(many=True)
     total_votes = IntegerField(read_only=True)
 
     has_answered = serializers.SerializerMethodField()
@@ -92,7 +92,7 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
 
 
 class HiddenResultsDetailedPollSerializer(DetailedPollSerializer):
-    options = HiddenResultsOptionSerializer(many=True)  # type: ignore
+    options = HiddenResultsOptionSerializer(many=True)
 
 
 class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):

@@ -65,7 +65,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "username",
             "first_name",
@@ -83,7 +83,7 @@ class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)  # type: ignore
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)
 
 
 class PublicUserWithGroupsSerializer(PublicUserSerializer):
@@ -92,7 +92,7 @@ class PublicUserWithGroupsSerializer(PublicUserSerializer):
     memberships = MembershipSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + (  # type: ignore
+        fields = PublicUserSerializer.Meta.fields + (
             "abakus_groups",
             "past_memberships",
             "memberships",
@@ -105,7 +105,7 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + (  # type: ignore
+        fields = PublicUserSerializer.Meta.fields + (
             "abakus_groups",
             "allergies",
         )
@@ -117,7 +117,7 @@ class AdministrateUserExportSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")  # type: ignore
+        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")
 
 
 class SearchUserSerializer(serializers.ModelSerializer):
@@ -131,7 +131,7 @@ class SearchUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "username",
             "first_name",
@@ -238,7 +238,7 @@ class MeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
+        fields: tuple[str, ...] = (
             "id",
             "username",
             "first_name",

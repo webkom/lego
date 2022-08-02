@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, fields
 
 from lego.apps.events.serializers.events import EventReadDetailedSerializer
 from lego.apps.events.serializers.registrations import (
@@ -27,19 +27,19 @@ class PaymentErrorSerialzer(MetaSerializer):
 class WebsocketSerializer(serializers.Serializer):
     type = serializers.CharField()
     meta = MetaSerializer()
-    payload = serializers.DictField()
+    payload: fields.Field = serializers.DictField()
 
 
 class RegistrationReadSocketSerializer(WebsocketSerializer):
-    payload = RegistrationPublicReadSerializer()  # type: ignore
+    payload = RegistrationPublicReadSerializer()
 
 
 class RegistrationReadAnonymizedSocketSerializer(WebsocketSerializer):
-    payload = RegistrationAnonymizedReadSerializer()  # type: ignore
+    payload = RegistrationAnonymizedReadSerializer()
 
 
 class RegistrationPaymentReadSocketSerializer(WebsocketSerializer):
-    payload = RegistrationPaymentReadSerializer()  # type: ignore
+    payload = RegistrationPaymentReadSerializer()
 
 
 class RegistrationPaymentReadErrorSerializer(RegistrationPaymentReadSocketSerializer):
@@ -53,4 +53,4 @@ class RegistrationPaymentInitiateSocketSerializer(
 
 
 class EventReadDetailedSocketSerializer(WebsocketSerializer):
-    payload = EventReadDetailedSerializer()  # type: ignore
+    payload = EventReadDetailedSerializer()

@@ -12,7 +12,14 @@ from lego.utils.serializers import BasisModelSerializer
 class RestrictedMailListSerializer(BasisModelSerializer):
     class Meta:
         model = RestrictedMail
-        fields = ("id", "from_address", "hide_sender", "used", "created_at", "weekly")
+        fields: tuple[str, ...] = (
+            "id",
+            "from_address",
+            "hide_sender",
+            "used",
+            "created_at",
+            "weekly",
+        )
         read_only_fields = ("used", "created_at")
 
     def save(self, **kwargs):
@@ -22,7 +29,7 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 
 class RestrictedMailSerializer(RestrictedMailListSerializer):
     class Meta(RestrictedMailListSerializer.Meta):
-        fields = RestrictedMailListSerializer.Meta.fields + (  # type: ignore
+        fields = RestrictedMailListSerializer.Meta.fields + (
             "users",
             "groups",
             "events",
@@ -53,4 +60,4 @@ class RestrictedMailDetailSerializer(RestrictedMailSerializer):
     meetings = MeetingListField({"read_only": True})
 
     class Meta(RestrictedMailSerializer.Meta):
-        fields = RestrictedMailSerializer.Meta.fields + ("token_query_param",)  # type: ignore
+        fields = RestrictedMailSerializer.Meta.fields + ("token_query_param",)
