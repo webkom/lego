@@ -12,14 +12,15 @@ from rest_framework_jwt.views import (
 )
 
 from lego.api.urls import urlpatterns as api
+from lego.utils.types import URLList
 
-jwt_urlpatterns = [
+jwt_urlpatterns: URLList = [
     url(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),
     url(r"^token-auth/refresh/$", refresh_jwt_token, name="refresh_jwt_token"),
     url(r"^token-auth/verify/$", verify_jwt_token, name="verify_jwt_token"),
 ]
 
-authorization_urlpatterns = [
+authorization_urlpatterns: URLList = [
     url(r"^oauth2/", include("lego.apps.oauth.urls")),
     url(r"", include((jwt_urlpatterns, "jwt"), namespace="jwt")),
     url(
@@ -30,9 +31,9 @@ authorization_urlpatterns = [
     url(r"^logout/", LogoutView.as_view(next_page="/"), name="logout"),
 ]
 
-urlpatterns = [
+urlpatterns: URLList = [
     url(r"^api/", include("lego.api.urls", namespace="api")),
-    url(r"^authorization/", include(authorization_urlpatterns)),  # type: ignore
+    url(r"^authorization/", include(authorization_urlpatterns)),
     url(r"^health/", include("health_check.urls")),
     url(
         r"^api-docs/",
@@ -49,4 +50,4 @@ urlpatterns = [
 if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
-    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns  # type: ignore
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls)), *urlpatterns]

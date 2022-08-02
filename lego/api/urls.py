@@ -5,6 +5,8 @@ from django.urls import resolve
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 
+from lego.utils.types import URLList
+
 from .v1 import router as v1
 
 
@@ -21,7 +23,7 @@ def version_redirect(request, path):
 
 
 app_name = "api"
-urlpatterns = [
+urlpatterns: URLList = [
     url(r"^v1/", include((v1.urls, "v1"), namespace="v1")),
     url(
         r"^$", RedirectView.as_view(url=f"/api/{settings.API_VERSION}/"), name="default"
