@@ -4,7 +4,7 @@
 
 Hei, {{ first_name }}!
 
-For å bekrefte NTNU studentkontoen din, trykk på lenken under:
+For å verifisere statusen din som NTNU-student for Abakus-kontoen din, trykk på lenken under:
 
 {{ frontend_url }}/users/me/settings/student-confirmation/?token={{ token }}
 

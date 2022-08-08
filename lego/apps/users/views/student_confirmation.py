@@ -60,7 +60,7 @@ class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
         send_email.delay(
             to_email=f"{student_username}@{constants.STUDENT_EMAIL_DOMAIN}",
             context={"token": token, "full_name": user.get_full_name()},
-            subject="Bekreft student kontoen din på Abakus.no",
+            subject="Verifiser studentstatusen din på Abakus.no",
             plain_template="users/email/student_confirmation.txt",
             html_template="users/email/student_confirmation.html",
             from_email=None,
