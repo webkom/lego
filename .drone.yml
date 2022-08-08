@@ -10,7 +10,7 @@ trigger:
 
 steps:
   - name: setup
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -19,7 +19,7 @@ steps:
       - make ci_settings
 
   - name: missing-migrations
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -32,7 +32,7 @@ steps:
       - tox -e missing-migrations
 
   - name: tests
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -45,7 +45,7 @@ steps:
       - tox -e tests -- --parallel
 
   - name: isort
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -56,7 +56,7 @@ steps:
       - tox -e isort
 
   - name: flake8
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -67,7 +67,7 @@ steps:
       - tox -e flake8
 
   - name: black
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     pull: true
     when:
       event: push
@@ -78,8 +78,20 @@ steps:
     commands:
       - tox -e black
 
+  - name: mypy
+    image: abakus/lego-testbase:python3.9
+    pull: true
+    when:
+      event: push
+    environment:
+      LANG: C.UTF-8
+    depends_on:
+      - setup
+    commands:
+      - tox -e mypy
+
   - name: docs
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
@@ -90,15 +102,20 @@ steps:
       - tox -e docs
 
   - name: coverage
-    image: abakus/lego-testbase:python3.7
+    image: abakus/lego-testbase:python3.9
     when:
       event: push
     environment:
       LANG: C.UTF-8
+      CACHE: cache
+      CODECOV_TOKEN:
+        from_secret: codecov_token
     depends_on:
       - tests
     commands:
       - tox -e coverage
+      # Upload coverage to Codecov
+      - codecov -t ${CODECOV_TOKEN} -f "coverage.xml"
 
   - name: docker
     image: plugins/docker
@@ -113,6 +130,7 @@ steps:
       - isort
       - flake8
       - black
+      - mypy
       - docs
       - coverage
     environment:
@@ -169,4 +187,4 @@ services:
 
 ---
 kind: signature
-hmac: 16c01c9f2cf93b583ab3fbe2f4f2450d718cbab9d72d2c1b2fb99c2a30a291ac
+hmac: d24fc7701282f352982ca8f2568b40d10700e600895e57d6efa47d8b6bfcc674

@@ -41,8 +41,13 @@ class AsyncRegister(AbakusTask):
 
     def on_failure(self, *args):
         if self.request.retries == self.max_retries:
-            self.registration.status = constants.FAILURE_REGISTER
-            self.registration.save()
+            with transaction.atomic():
+                registration = Registration.objects.select_for_update().get(
+                    id=self.registration.id
+                )
+                if registration.status != constants.SUCCESS_REGISTER:
+                    registration.status = constants.FAILURE_REGISTER
+                    registration.save()
             notify_user_registration(
                 constants.SOCKET_REGISTRATION_FAILURE,
                 self.registration,
@@ -76,9 +81,11 @@ class Payment(AbakusTask):
 def async_register(self, registration_id, logger_context=None):
     self.setup_logger(logger_context)
 
-    self.registration = Registration.objects.get(id=registration_id)
     try:
         with transaction.atomic():
+            self.registration = Registration.objects.select_for_update().get(
+                id=registration_id
+            )
             self.registration.event.register(self.registration)
             transaction.on_commit(
                 lambda: notify_event_registration(
@@ -102,7 +109,7 @@ def async_register(self, registration_id, logger_context=None):
         log.error(
             "registration_error", exception=e, registration_id=self.registration.id
         )
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask, default_retry_delay=30)
@@ -174,21 +181,21 @@ def async_retrieve_payment(self, registration_id, logger_context=None):
         self.registration.save()
     except stripe.error.StripeError as e:
         log.error("stripe_error", exception=e, registration_id=self.registration.id)
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except stripe.error.APIConnectionError as e:
         log.error(
             "stripe_APIConnectionError",
             exception=e,
             registration_id=self.registration.id,
         )
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except Exception as e:
         log.error(
             "Exception on creating a payment intent",
             exception=e,
             registration=self.registration.id,
         )
-        raise self.retry(exc=e)
+        raise self.retry(exc=e) from e
 
     # Check that the payment intent is not already confirmed
     # If so, update the payment status to reflect reality
@@ -268,21 +275,21 @@ def async_initiate_payment(self, registration_id, logger_context=None):
         self.registration.save()
     except stripe.error.StripeError as e:
         log.error("stripe_error", exception=e, registration_id=self.registration.id)
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except stripe.error.APIConnectionError as e:
         log.error(
             "stripe_APIConnectionError",
             exception=e,
             registration_id=self.registration.id,
         )
-        raise self.retry(exc=e, max_retries=3)
+        raise self.retry(exc=e, max_retries=3) from e
     except Exception as e:
         log.error(
             "Exception on creating a payment intent",
             exception=e,
             registration=self.registration.id,
         )
-        raise self.retry(exc=e)
+        raise self.retry(exc=e) from e
 
 
 @celery_app.task(bind=True, base=AbakusTask)
@@ -331,7 +338,7 @@ def save_and_notify_payment(self, result, registration_id, logger_context=None):
         log.error(
             "registration_save_error", exception=e, registration_id=registration_id
         )
-        raise self.retry(exc=e)
+        raise self.retry(exc=e) from e
 
     notify_user_payment_initiated(
         constants.SOCKET_INITIATE_PAYMENT_SUCCESS,
@@ -346,7 +353,8 @@ def set_all_events_ready_and_bump(self, logger_context=None):
     """Task to bump all tasks to is_ready=True in case of error"""
     self.setup_logger(logger_context)
 
-    # Find all events that are set to "is_ready=False" and are not awaiting automatic celery task (have just been edited)
+    # Find all events that are set to "is_ready=False" and are not awaiting automatic
+    # celery task (have just been edited)
     now = timezone.now()
     corrupt_events = Event.objects.filter(is_ready=False).filter(
         updated_at__lt=now - timedelta(minutes=5)
@@ -387,7 +395,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
 
         metadata = serializer.data["metadata"]
         registration = Registration.objects.filter(
-            event_id=metadata["EVENT_ID"], user__email=metadata["EMAIL"]
+            event_id=metadata["EVENT_ID"], user__id=metadata["USER_ID"]
         ).first()
         if not registration:
             log.error("stripe_webhook_error", event_id=event_id, metadata=metadata)
@@ -422,7 +430,7 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
 
         metadata = serializer.data["metadata"]
         registration = Registration.objects.filter(
-            event_id=metadata["EVENT_ID"], user__email=metadata["EMAIL"]
+            event_id=metadata["EVENT_ID"], user__id=metadata["USER_ID"]
         ).first()
         if not registration:
             log.error("stripe_webhook_error", event_id=event_id, metadata=metadata)
@@ -450,7 +458,7 @@ def check_events_for_registrations_with_expired_penalties(self, logger_context=N
             if locked_event.waiting_registrations.exists():
                 for pool in locked_event.pools.all():
                     if pool.is_activated and not pool.is_full:
-                        for i in range(locked_event.waiting_registrations.count()):
+                        for _ in range(locked_event.waiting_registrations.count()):
                             locked_event.check_for_bump_or_rebalance(pool)
                             if pool.is_full:
                                 break

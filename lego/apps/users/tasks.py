@@ -32,16 +32,17 @@ def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
 
     self.setup_logger(logger_context)
 
-    users_to_delete = User.objects.filter(
+    users_to_delete: list[User] = User.objects.filter(
         Q(last_login__lte=timezone.now() - timezone.timedelta(days=MAX_INACTIVE_DAYS))
         & Q(inactive_notified_counter__gte=4)
     )
 
-    list_usernames_to_delete = list(map(lambda u: u.username, users_to_delete))
+    list_usernames_to_delete: list[str] = [user.username for user in users_to_delete]
     num_users_to_delete = users_to_delete.count()
     if len(set(list_usernames_to_delete)) != num_users_to_delete:
         log.error(
-            "Length of list of usernames to be deleted is not equal to number of users to be deleted",
+            "Length of list of usernames to be deleted is not equal "
+            "to number of users to be deleted",
             list_usernames_to_delete=list_usernames_to_delete,
             users_to_delete=users_to_delete,
         )

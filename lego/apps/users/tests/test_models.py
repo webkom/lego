@@ -196,7 +196,7 @@ class UserTestCase(BaseTestCase):
 
     def test_validate_student_confirmation_token(self):
         student_confirmation_token = Registrations.generate_student_confirmation_token(
-            "teststudentusername", constants.DATA, True
+            "teststudentusername", constants.DATA, True, False
         )
         token = Registrations.validate_student_confirmation_token(
             student_confirmation_token
@@ -206,7 +206,7 @@ class UserTestCase(BaseTestCase):
         self.assertEqual(token["member"], True)
 
         student_confirmation_token = Registrations.generate_student_confirmation_token(
-            "teststudentusername", constants.DATA, True
+            "teststudentusername", constants.DATA, True, False
         )
         token = Registrations.validate_student_confirmation_token(
             student_confirmation_token

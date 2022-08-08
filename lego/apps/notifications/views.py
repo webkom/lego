@@ -2,7 +2,9 @@ from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.response import Response
 
 from push_notifications.api.rest_framework import (
+    APNSDevice,
     APNSDeviceAuthorizedViewSet,
+    GCMDevice,
     GCMDeviceAuthorizedViewSet,
 )
 
@@ -34,6 +36,9 @@ class NotificationSettingsViewSet(
     pagination_class = None
 
     def get_queryset(self):
+        if self.request is None:
+            return NotificationSetting.objects.none()
+
         user = self.request.user
         return NotificationSetting.objects.filter(user=user)
 
@@ -77,10 +82,20 @@ class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
 
     ordering = ("date_created",)
 
+    def get_queryset(self):
+        if self.request is None:
+            return APNSDevice.objects.none()
+        return APNSDevice.get_queryset()
+
 
 class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
 
     ordering = ("date_created",)
+
+    def get_queryset(self):
+        if self.request is None:
+            return GCMDevice.objects.none()
+        return GCMDevice.get_queryset()
 
 
 class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -88,6 +103,9 @@ class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = AnnouncementDetailSerializer
 
     def get_queryset(self):
+        if self.request is None:
+            return Announcement.objects.none()
+
         if self.request.user.is_authenticated:
             return Announcement.objects.filter(
                 created_by=self.request.user

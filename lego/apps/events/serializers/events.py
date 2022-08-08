@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import BooleanField, CharField
 
@@ -202,7 +201,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
     price = serializers.SerializerMethodField()
 
     class Meta(EventReadDetailedSerializer.Meta):
-        fields = EventReadDetailedSerializer.Meta.fields + (
+        fields = EventReadDetailedSerializer.Meta.fields + (  # type: ignore
             "price",
             "activation_time",
             "is_admitted",
@@ -237,7 +236,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
     unanswered_surveys = serializers.SerializerMethodField()
 
     class Meta(EventReadUserDetailedSerializer.Meta):
-        fields = EventReadUserDetailedSerializer.Meta.fields + (
+        fields = EventReadUserDetailedSerializer.Meta.fields + (  # type: ignore
             "waiting_registrations",
             "unanswered_surveys",
         )
@@ -253,7 +252,7 @@ class EventAdministrateSerializer(EventReadSerializer):
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
 
     class Meta(EventReadSerializer.Meta):
-        fields = EventReadSerializer.Meta.fields + (
+        fields = EventReadSerializer.Meta.fields + (  # type: ignore
             "pools",
             "unregistered",
             "waiting_registrations",

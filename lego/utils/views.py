@@ -4,7 +4,6 @@ from rest_framework.response import Response
 
 from lego.apps.companies.models import Company
 from lego.apps.email.models import EmailList
-from lego.apps.gallery.models import Gallery
 from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST

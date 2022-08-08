@@ -2,8 +2,10 @@ import operator
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin as DjangoPermissionMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin as DjangoPermissionMixin,
+)
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import Q
@@ -49,7 +51,7 @@ class MembershipHistory(models.Model):
 
 
 class Membership(BasisModel):
-    objects = MembershipManager()
+    objects = MembershipManager()  # type: ignore
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
@@ -282,7 +284,8 @@ class PermissionsMixin(CachedModel):
 
     @abakus_cached_property
     def all_groups_from_memberships(self):
-        # Mapping from membership to all ancestor groups, with the root node first (inclusive group from membership)
+        # Mapping from membership to all ancestor groups, with the root
+        # node first (inclusive group from membership)
         mapping = {}
 
         memberships = self.memberships.filter(
@@ -355,7 +358,7 @@ class User(
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
 
-    objects = AbakusUserManager()
+    objects = AbakusUserManager()  # type: ignore
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
@@ -421,7 +424,7 @@ class User(
             return internal_address
         return self.email
 
-    @profile_picture.setter
+    @profile_picture.setter  # type: ignore
     def profile_picture(self, value):
         self.picture = value
 
@@ -478,7 +481,7 @@ class Penalty(BasisModel):
         "events.Event", related_name="penalties", on_delete=models.CASCADE
     )
 
-    objects = UserPenaltyManager()
+    objects = UserPenaltyManager()  # type: ignore
 
     def expires(self):
         dt = Penalty.penalty_offset(self.created_at) - (

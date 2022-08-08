@@ -27,7 +27,7 @@ class PushMessage:
         """
 
         message = render_to_string(self.template, self.context).strip()
-        extra = dict()
+        extra = {}
         if self.target:
             extra["target"] = self.target
 

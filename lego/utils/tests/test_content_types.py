@@ -18,16 +18,16 @@ class ContentTypesTestCase(BaseTestCase):
         )
 
     def test_split_string(self):
-        self.assertEquals(
+        self.assertEqual(
             content_types.split_string("test.model-1"), ("test.model", "1")
         )
 
-        self.assertEquals(
+        self.assertEqual(
             content_types.split_string("test.model-1-2"), ("test.model", "1-2")
         )
 
     def test_string_to_model_cls(self):
-        self.assertEquals(content_types.string_to_model_cls("users.user"), User)
+        self.assertEqual(content_types.string_to_model_cls("users.user"), User)
 
         self.assertRaises(
             content_types.VALIDATION_EXCEPTIONS,

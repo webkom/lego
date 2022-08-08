@@ -1,7 +1,6 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError, models
-from rest_framework.exceptions import ValidationError
+from django.db import models
 
 from lego.apps.emojis.models import Emoji
 from lego.apps.reactions.constants import REACTION_COUNT_LIMIT
@@ -23,7 +22,7 @@ class Reaction(BasisModel):
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
 
-    objects = ReactionManager()
+    objects = ReactionManager()  # type: ignore
 
     class Meta:
         permission_handler = ReactionPermissionHandler()

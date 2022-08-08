@@ -20,12 +20,15 @@ class Registrations:
             return None
 
     @staticmethod
-    def generate_student_confirmation_token(student_username, course, member):
+    def generate_student_confirmation_token(
+        student_username, course, member, is_two_years
+    ):
         data = signing.dumps(
             {
                 "student_username": student_username.lower(),
                 "course": course,
                 "member": member,
+                "is_two_years": is_two_years,
             }
         )
         token = TimestampSigner().sign(data)

@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db.models import CharField
-from rest_framework.exceptions import ValidationError
 
 from lego.apps.content.models import Content
 from lego.apps.files.models import FileField

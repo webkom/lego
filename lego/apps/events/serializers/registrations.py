@@ -94,7 +94,7 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
     shared_memberships = serializers.IntegerField(required=False)
 
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + (
+        fields = RegistrationPublicReadSerializer.Meta.fields + (  # type: ignore
             "feedback",
             "shared_memberships",
             "presence",
@@ -106,7 +106,7 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
 
 class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
     class Meta(RegistrationPublicReadSerializer.Meta):
-        fields = RegistrationPublicReadSerializer.Meta.fields + (
+        fields = RegistrationPublicReadSerializer.Meta.fields + (  # type: ignore
             "presence",
             "photo_consent",
         )
@@ -125,7 +125,7 @@ class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
     payment_status = PersonalPaymentStatusField()
 
     class Meta(RegistrationReadSerializer.Meta):
-        fields = RegistrationReadSerializer.Meta.fields + ("payment_status",)
+        fields = RegistrationReadSerializer.Meta.fields + ("payment_status",)  # type: ignore
 
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
@@ -156,11 +156,12 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
 
 class RegistrationReadDetailedExportSerializer(RegistrationReadDetailedSerializer):
-    user = AdministrateUserExportSerializer()
+    user = AdministrateUserExportSerializer()  # type: ignore
 
 
 class StripeMetaSerializer(serializers.Serializer):
     EVENT_ID = serializers.IntegerField()
+    USER_ID = serializers.IntegerField()
     USER = serializers.CharField()
     EMAIL = serializers.EmailField()
 

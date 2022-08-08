@@ -65,6 +65,9 @@ class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = "id"
 
     def get_queryset(self):
+        if self.request is None:
+            return CompanyFile.objects.none()
+
         company_id = self.kwargs["company_pk"]
         return CompanyFile.objects.filter(company=company_id)
 
@@ -74,6 +77,9 @@ class SemesterStatusViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = SemesterStatusDetailSerializer
 
     def get_queryset(self):
+        if self.request is None:
+            return SemesterStatus.objects.none()
+
         company_id = self.kwargs["company_pk"]
         return SemesterStatus.objects.filter(company=company_id)
 
@@ -89,12 +95,15 @@ class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = CompanyContactSerializer
 
     def get_queryset(self):
+        if self.request is None:
+            return CompanyContact.objects.none()
+
         company_id = self.kwargs["company_pk"]
         return CompanyContact.objects.filter(company=company_id)
 
 
 class SemesterViewSet(viewsets.ModelViewSet):
-    filter_class = SemesterFilterSet
+    filterset_class = SemesterFilterSet
 
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
@@ -108,7 +117,7 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     ordering = "-created_at"
     queryset = CompanyInterest.objects.all()
-    filter_class = CompanyInterestFilterSet
+    filterset_class = CompanyInterestFilterSet
 
     def get_serializer_class(self):
         if self.action == "list":

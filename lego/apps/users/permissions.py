@@ -7,7 +7,7 @@ EDIT_ROLES = (constants.LEADER, constants.CO_LEADER)
 
 class UserPermissionHandler(PermissionHandler):
 
-    permission_map = {VIEW: []}
+    permission_map = {VIEW: []}  # type: ignore
 
     allowed_individual = [VIEW, EDIT]
     force_object_permission_check = True
@@ -38,7 +38,7 @@ class UserPermissionHandler(PermissionHandler):
 
 class AbakusGroupPermissionHandler(PermissionHandler):
 
-    permission_map = {LIST: [], VIEW: []}
+    permission_map = {LIST: [], VIEW: []}  # type: ignore
 
     force_object_permission_check = True
     default_keyword_permission = "/sudo/admin/groups/{perm}/"

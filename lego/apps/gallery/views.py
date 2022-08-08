@@ -22,7 +22,7 @@ from .serializers import (
 class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Gallery.objects.all().select_related("event", "cover")
-    filter_class = GalleryFilterSet
+    filterset_class = GalleryFilterSet
     serializer_class = GallerySerializer
     ordering = "-taken_at"
 

@@ -15,7 +15,6 @@ from lego.apps.polls.serializers import (
     DetailedPollSerializer,
     HiddenResultsDetailedPollSerializer,
 )
-from lego.apps.users.models import User
 
 
 class FrontpageViewSet(viewsets.ViewSet):

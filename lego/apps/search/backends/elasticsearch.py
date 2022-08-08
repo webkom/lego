@@ -110,7 +110,7 @@ class ElasticsearchBackend(SearchBacked):
     def update_many(self, tuple_list):
         def create_operation(data_tuple):
             content_type, pk, data = data_tuple
-            data_fields = dict()
+            data_fields = {}
 
             # Add fields to the operation payload
             data_fields.update(data.get("fields", {}))

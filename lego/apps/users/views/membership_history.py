@@ -13,10 +13,13 @@ class MembershipHistoryViewSet(
 
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MembershipHistorySerializer
-    filter_class = MembershipHistoryFilterSet
+    filterset_class = MembershipHistoryFilterSet
     ordering = "id"
 
     def get_queryset(self):
+        if self.request is None:
+            return MembershipHistory.objects.none()
+
         queryset = MembershipHistory.objects.filter(
             abakus_group__deleted=False
         ).select_related("user", "abakus_group")

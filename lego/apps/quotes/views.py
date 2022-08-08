@@ -15,10 +15,13 @@ from lego.apps.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteSe
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Quote.objects.all().prefetch_related("tags")
-    filter_class = QuotesFilterSet
+    filterset_class = QuotesFilterSet
     ordering = "-created_at"
 
     def get_queryset(self):
+        if self.request is None:
+            return Quote.objects.none()
+
         access_unapproved = self.request.user.has_perm(EDIT, self.queryset)
 
         if not access_unapproved:
@@ -33,6 +36,8 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=["PUT"])
     def approve(self, *args, **kwargs):
         instance = self.get_object()
+        if instance.created_by == self.request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         instance.approve()
         return Response(status=status.HTTP_200_OK)
 
@@ -47,7 +52,8 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         seen_query_param = request.query_params.get("seen", "[]")
         seen = ast.literal_eval(seen_query_param)
         queryset = self.get_queryset().filter(approved=True)
-        # Check if there are more "fresh", ie unseen, quotes. Otherwise, we have no choice but to show a stale one.
+        # Check if there are more "fresh", ie unseen, quotes. Otherwise,
+        # we have no choice but to show a stale one.
         if len(seen) < len(queryset):
             queryset = queryset.exclude(pk__in=seen)
         values = queryset.values_list("pk", flat=True)

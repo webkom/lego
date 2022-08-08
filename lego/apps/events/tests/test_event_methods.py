@@ -324,14 +324,14 @@ class EventMethodTest(BaseTestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
-        self.assertEquals(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 1)
 
         pool.capacity = pool.capacity + 1
         pool.save()
 
         event.bump_on_pool_creation_or_expansion()
 
-        self.assertEquals(event.waiting_registrations.count(), 0)
+        self.assertEqual(event.waiting_registrations.count(), 0)
 
     def test_bump_on_pool_creation(self):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -343,7 +343,7 @@ class EventMethodTest(BaseTestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
-        self.assertEquals(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 1)
 
         pool = Pool.objects.create(
             name="Pool1",
@@ -355,7 +355,7 @@ class EventMethodTest(BaseTestCase):
 
         event.bump_on_pool_creation_or_expansion()
 
-        self.assertEquals(event.waiting_registrations.count(), 0)
+        self.assertEqual(event.waiting_registrations.count(), 0)
 
     def test_bump_on_pool_expansion_or_creation_when_no_change(self):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -366,11 +366,11 @@ class EventMethodTest(BaseTestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
-        self.assertEquals(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 1)
 
         event.bump_on_pool_creation_or_expansion()
 
-        self.assertEquals(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 1)
 
     def test_bump_on_pool_expansion_or_creation_when_no_change_post_merge(self):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -383,10 +383,10 @@ class EventMethodTest(BaseTestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
-        self.assertEquals(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 1)
 
         last_user = users[-1]
         AbakusGroup.objects.get(name="Webkom").add_user(last_user)
         event.bump_on_pool_creation_or_expansion()
 
-        self.assertEquals(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 1)

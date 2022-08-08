@@ -3,9 +3,9 @@
   fields:
     title: Bra møte
     location: TBA
-    start_time: '2016-10-01T17:15:00+00:00'
-    end_time: '2016-10-01T18:00:00+00:00'
-    report: '# Fresh\n\n halla hva skjer a?'
+    start_time: "2016-10-01T17:15:00+00:00"
+    end_time: "2016-10-01T18:00:00+00:00"
+    report: "<h2>Fresh</h2> <p>halla hva skjer a?</p>"
     report_author: 1
 
 - model: meetings.Meeting
@@ -13,9 +13,9 @@
   fields:
     title: Genvors
     location: EL5
-    start_time: '2017-02-01T17:15:00+00:00'
-    end_time: '2017-02-01T23:59:00+00:00'
-    report: '#Genvors\n\nVi fikk en fin gjeng til neste HS :)'
+    start_time: "2017-02-01T17:15:00+00:00"
+    end_time: "2017-02-01T23:59:00+00:00"
+    report: "<h2>Genvors</h2> <p>Vi fikk en fin gjeng til neste HS :)</p>"
     report_author: 3
 
 - model: meetings.Meeting
@@ -23,7 +23,7 @@
   fields:
     title: Tomt møte
     location: "null"
-    start_time: '2010-02-01T17:15:00+00:00'
-    end_time: '2011-02-01T23:59:00+00:00'
-    report: 'tomp'
+    start_time: "2010-02-01T17:15:00+00:00"
+    end_time: "2011-02-01T23:59:00+00:00"
+    report: "tomp"
     report_author: 3

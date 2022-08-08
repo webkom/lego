@@ -18,5 +18,7 @@ class Authentication(JSONWebTokenAuthentication):
             user = authentication[0]
             log.bind(current_user=user.id)
             update_last_login(None, user)
+            user.inactive_notified_counter = 0
+            user.save()
 
         return authentication

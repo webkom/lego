@@ -1,7 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
 
-from lego.apps.companies.models import CompanyInterest
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 

@@ -36,7 +36,7 @@ urlpatterns = [
     url(r"^health/", include("health_check.urls")),
     url(
         r"^api-docs/",
-        include_docs_urls(
+        include_docs_urls(  # type: ignore
             title=settings.SITE["name"],
             description=settings.SITE["slogan"],
             patterns=api,
@@ -49,4 +49,4 @@ urlpatterns = [
 if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
-    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns  # type: ignore

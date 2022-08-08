@@ -1,11 +1,7 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres import fields
-from django.db import IntegrityError, models
-from rest_framework.exceptions import ValidationError
+from django.db import models
 
 from lego.apps.emojis.permissions import EmojiPermissionHandler
-from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel
 
 

@@ -40,14 +40,21 @@ class InactiveMailTestCase(BaseTestCase):
         self.assertEmailContains(send_mail_mock, last_login)
 
     def test_generate_email_max_inactive_days(self, send_mail_mock):
-        max_inactive = f"Dersom du ønsker å beholde brukeren din kan du bare logge inn igjen, og vi kommer ikke til å slette brukeren din før den har vært inaktiv i {MAX_INACTIVE_DAYS} dager igjen. Dette er grunnet vår GDPR-policy."
+        max_inactive = (
+            f"Dersom du ønsker å beholde brukeren din kan du bare logge inn "
+            f"igjen, og vi kommer ikke til å slette brukeren din før den har "
+            f"vært inaktiv i {MAX_INACTIVE_DAYS} dager igjen. Dette er grunnet vår GDPR-policy."
+        )
         self.assertEmailContains(send_mail_mock, max_inactive)
 
     def test_generate_email_username_date_of_deletion(self, send_mail_mock):
         last_date_before_deletion = (
             self.recipient.last_login + timedelta(days=MAX_INACTIVE_DAYS)
         ).date()
-        username_deleteion = f"Brukeren din; {self.recipient.username}, kan bli slettet etter {last_date_before_deletion}."
+        username_deleteion = (
+            f"Brukeren din; {self.recipient.username}, kan bli "
+            f"slettet etter {last_date_before_deletion}."
+        )
         self.assertEmailContains(send_mail_mock, username_deleteion)
 
     def test_generate_email_url(self, send_mail_mock):

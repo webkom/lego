@@ -1,3 +1,7 @@
+from functools import reduce
+
+from rest_framework import exceptions
+
 from lego.apps.events.fields import PublicEventListField
 from lego.apps.meetings.fields import MeetingListField
 from lego.apps.restricted.models import RestrictedMail
@@ -18,7 +22,7 @@ class RestrictedMailListSerializer(BasisModelSerializer):
 
 class RestrictedMailSerializer(RestrictedMailListSerializer):
     class Meta(RestrictedMailListSerializer.Meta):
-        fields = RestrictedMailListSerializer.Meta.fields + (
+        fields = RestrictedMailListSerializer.Meta.fields + (  # type: ignore
             "users",
             "groups",
             "events",
@@ -28,6 +32,19 @@ class RestrictedMailSerializer(RestrictedMailListSerializer):
             "hide_sender",
         )
 
+    def create(self, validated_data):
+        groups = validated_data["groups"]
+        events = validated_data["events"]
+        MaxPermittedAmout = 500
+        num = reduce((lambda a, b: a + b.number_of_users), groups, 0)
+        num += reduce((lambda a, b: a + b.registration_count), events, 0)
+        if num > MaxPermittedAmout:
+            raise exceptions.ValidationError(
+                f"The number of students in selected groups/events exceed "
+                f"the permitted amount which is {MaxPermittedAmout}"
+            )
+        return super().create(validated_data)
+
 
 class RestrictedMailDetailSerializer(RestrictedMailSerializer):
     users = PublicUserListField({"read_only": True})
@@ -36,4 +53,4 @@ class RestrictedMailDetailSerializer(RestrictedMailSerializer):
     meetings = MeetingListField({"read_only": True})
 
     class Meta(RestrictedMailSerializer.Meta):
-        fields = RestrictedMailSerializer.Meta.fields + ("token_query_param",)
+        fields = RestrictedMailSerializer.Meta.fields + ("token_query_param",)  # type: ignore

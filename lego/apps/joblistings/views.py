@@ -13,7 +13,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     pagination_class = None
-    filter_class = JoblistingFilterSet
+    filterset_class = JoblistingFilterSet
     ordering = "-created_at"
 
     def get_serializer_class(self):

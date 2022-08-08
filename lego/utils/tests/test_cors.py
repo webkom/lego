@@ -1,16 +1,6 @@
-from datetime import timedelta
-
 from django.test.utils import override_settings
-from django.utils import timezone
 
-from corsheaders.middleware import (
-    ACCESS_CONTROL_ALLOW_CREDENTIALS,
-    ACCESS_CONTROL_ALLOW_HEADERS,
-    ACCESS_CONTROL_ALLOW_METHODS,
-    ACCESS_CONTROL_ALLOW_ORIGIN,
-    ACCESS_CONTROL_EXPOSE_HEADERS,
-    ACCESS_CONTROL_MAX_AGE,
-)
+from corsheaders.middleware import ACCESS_CONTROL_ALLOW_ORIGIN
 
 from lego.utils.cors import generate_cors_origin_regex_list
 from lego.utils.test_utils import BaseTestCase
@@ -44,8 +34,8 @@ invalid_origins = [
     "http://random-website.no",
     "http://invalid.random-website.no",
     "http://randomdomain.no",
-    "https://www.test.012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
-    "https://012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789.com",
+    "https://www.test.012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",  # noqa
+    "https://012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789.com",  # noqa
     "http://m*y.example.com",
     "http://*my.example.com",
     "http://.example.com",

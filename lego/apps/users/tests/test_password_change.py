@@ -18,7 +18,7 @@ class TestPasswordChange(BaseAPITestCase):
             self.url,
             {"password": "test", "newPassword": "test1", "retypeNewPassword": "test1"},
         )
-        self.assertEquals(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_invalid_password(self):
         self.client.force_authenticate(self.user)
@@ -26,7 +26,7 @@ class TestPasswordChange(BaseAPITestCase):
             self.url,
             {"password": "error", "newPassword": "test1", "retypeNewPassword": "test1"},
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_not_equal_new_passwords(self):
         self.client.force_authenticate(self.user)
@@ -38,14 +38,14 @@ class TestPasswordChange(BaseAPITestCase):
                 "retypeNewPassword": "not_equal_new_password",
             },
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_new_password_not_valid(self):
         self.client.force_authenticate(self.user)
         response = self.client.post(
             self.url, {"password": "test", "newPassword": "x", "retypeNewPassword": "x"}
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_new_password_success(self):
         self.client.force_authenticate(self.user)
@@ -57,7 +57,7 @@ class TestPasswordChange(BaseAPITestCase):
                 "retypeNewPassword": "new_secret_password123",
             },
         )
-        self.assertEquals(status.HTTP_204_NO_CONTENT, response.status_code)
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
         self.assertTrue(
             authenticate(username="test1", password="new_secret_password123")
         )

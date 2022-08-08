@@ -4,10 +4,7 @@ from rest_framework import status
 from lego.apps.users import constants
 from lego.apps.users.constants import LEADER
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.serializers.abakus_groups import (
-    DetailedAbakusGroupSerializer,
-    PublicAbakusGroupSerializer,
-)
+from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.utils.test_utils import BaseAPITestCase
 
 _test_group_data = {"name": "testgroup", "description": "test group"}
@@ -154,7 +151,8 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         expected_data = {
             "permissions": {
                 "1": [
-                    "Keyword permissions can only contain forward slashes and letters and must begin and end with a forward slash"
+                    "Keyword permissions can only contain forward slashes and letters "
+                    "and must begin and end with a forward slash"
                 ]
             }
         }
@@ -262,7 +260,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.abakule)
         response = self.client.get(_get_membership_url(self.interest_group.pk))
 
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_can_join_interest_group(self):
         self.client.force_authenticate(user=self.abakule)
@@ -270,7 +268,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakule.pk, "role": "member"},
         )
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_leave_interest_group(self):
         self.client.force_authenticate(user=self.abakule)
@@ -279,7 +277,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_detail_url(self.interest_group.pk, membership.pk)
         )
 
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.abakule)
@@ -287,7 +285,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakommer.pk, "role": "member"},
         )
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_cannot_leave_for_another(self):
         self.client.force_authenticate(user=self.abakule)
@@ -295,7 +293,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         response = self.client.delete(
             _get_membership_detail_url(self.interest_group.pk, membership.id)
         )
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_leader_can_kick(self):
         self.client.force_authenticate(user=self.leader)
@@ -304,7 +302,7 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         response = self.client.delete(
             _get_membership_detail_url(self.interest_group.pk, membership.id)
         )
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_leader_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.leader)
@@ -312,4 +310,4 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakommer.pk, "role": "member"},
         )
-        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

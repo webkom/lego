@@ -1,26 +1,23 @@
-from lego.apps.events.models import Event
-from lego.apps.events.serializers.events import EventSearchSerializer
+from lego.apps.meetings.models import Meeting
+from lego.apps.meetings.serializers import MeetingSearchSerializer
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
 
-class EventModelIndex(SearchIndex):
+class MeetingModelIndex(SearchIndex):
 
-    queryset = Event.objects.all()
-    serializer_class = EventSearchSerializer
+    queryset = Meeting.objects.all()
+    serializer_class = MeetingSearchSerializer
     result_fields = (
         "title",
         "description",
-        "text",
-        "cover",
-        "location",
+        "report",
         "start_time",
-        "end_time",
     )
     autocomplete_result_fields = ("title", "start_time")
 
-    autocomplete_fields = ("title",)
-    search_fields = ("title", "description", "text")
+    autocomplete_fields = ("title", "description")
+    search_fields = ("title", "description", "report")
 
     def get_autocomplete(self, instance):
         return instance.title
@@ -32,4 +29,4 @@ class EventModelIndex(SearchIndex):
         return super().autocomplete(query).order_by("-start_time")
 
 
-register(EventModelIndex)
+register(MeetingModelIndex)

@@ -10,7 +10,6 @@ from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.apps.users.registrations import Registrations
-from lego.apps.users.serializers.users import MeSerializer
 from lego.utils.test_utils import BaseAPITestCase, fake_time
 
 _test_user_data = {
@@ -323,7 +322,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
             _get_detail_url(self.without_perm.username),
             {"username": "usEradmin_TeSt"},  # Existing username with other casing
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_username_to_self(self):
         """Try to change casing on the current username"""
@@ -332,7 +331,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
             _get_detail_url(self.without_perm.username),
             {"username": self.without_perm.username.upper()},
         )
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_update_abakus_membership(self):
         """Try to change the is_abakus_member"""
@@ -341,15 +340,15 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_url(self.without_perm.username), {"isAbakusMember": True}
         )
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         response = self.client.patch(
             _get_detail_url(self.without_perm.username), {"isAbakusMember": False}
         )
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         response = self.client.patch(
             _get_detail_url(self.without_perm.username), {"isAbakusMember": True}
         )
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.json()["isAbakusMember"], True)
 
     def test_update_abakus_membership_when_not_student(self):
@@ -359,7 +358,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_url(user.username), {"is_abakus_member": True}
         )
-        self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_update_not_failing_when_not_student(self):
         """Test the update method not failing when the user is not a student"""
@@ -375,7 +374,7 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         response = self.client.patch(
             _get_detail_url(user.username), {"profilePicture": None}
         )
-        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(
             response.json()["profilePicture"].endswith(user.get_default_picture())
         )

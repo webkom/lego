@@ -44,6 +44,9 @@ class AccessTokenViewSet(
     ordering = "id"
 
     def get_queryset(self):
+        if self.request is None:
+            return AccessToken.objects.none()
+
         return AccessToken.objects.filter(user=self.request.user).select_related(
             "application"
         )

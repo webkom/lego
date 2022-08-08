@@ -28,8 +28,10 @@ class PasswordResetRequestViewSet(viewsets.GenericViewSet):
         email = serializer.validated_data["email"]
         try:
             user = User.objects.get(email__iexact=email)
-        except User.DoesNotExist:
-            raise ValidationError({"email": "User with that email does not exist"})
+        except User.DoesNotExist as e:
+            raise ValidationError(
+                {"email": "User with that email does not exist"}
+            ) from e
         token = PasswordReset.generate_reset_token(email)
         send_email.delay(
             to_email=email,
@@ -60,8 +62,10 @@ class PasswordResetPerformViewSet(viewsets.GenericViewSet):
 
         try:
             user = User.objects.get(email__iexact=email)
-        except User.DoesNotExist:
-            raise ValidationError({"email": "User with that email does not exist"})
+        except User.DoesNotExist as e:
+            raise ValidationError(
+                {"email": "User with that email does not exist"}
+            ) from e
 
         user.set_password(password)
         user.save()

@@ -37,7 +37,7 @@ class MessageProcessorTestCase(BaseTestCase):
         Return sender configured in the settings when RESTRICTED_ALLOW_ORIGINAL_SENDER is False
         """
         restricted_mail = RestrictedMail.objects.get(id=1)
-        self.assertEquals(
+        self.assertEqual(
             "restricted@test.com", self.processor.get_sender(restricted_mail)
         )
 
@@ -47,7 +47,7 @@ class MessageProcessorTestCase(BaseTestCase):
     def test_get_sender(self):
         """Return the original sender when the settings allow it"""
         restricted_mail = RestrictedMail.objects.get(id=1)
-        self.assertEquals("test@test.com", self.processor.get_sender(restricted_mail))
+        self.assertEqual("test@test.com", self.processor.get_sender(restricted_mail))
 
     @override_settings(
         RESTRICTED_ALLOW_ORIGINAL_SENDER=True, RESTRICTED_FROM="restricted@test.com"
@@ -58,7 +58,7 @@ class MessageProcessorTestCase(BaseTestCase):
         restricted_mail.hide_sender = True
         restricted_mail.save()
 
-        self.assertEquals(
+        self.assertEqual(
             "restricted@test.com", self.processor.get_sender(restricted_mail)
         )
 
@@ -104,7 +104,7 @@ class MessageProcessorTestCase(BaseTestCase):
         messages = self.processor.send(
             ["test1@test.com", "test2@test.com"], "test@test.com", new_message
         )
-        self.assertEquals(2, messages)
+        self.assertEqual(2, messages)
 
         outbox = mail.outbox
         first_message = outbox[0].message()
@@ -119,4 +119,4 @@ class MessageProcessorTestCase(BaseTestCase):
         processor = MessageProcessor("test-wrong-from-addr@test.com", self.message, {})
         await processor.process_message()
 
-        self.assertEquals(1, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))

@@ -1,7 +1,3 @@
-from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import F, Q, Value
-from django.db.models.functions import Concat
-
 from lego.apps.search import register
 from lego.apps.search.index import SearchIndex
 
