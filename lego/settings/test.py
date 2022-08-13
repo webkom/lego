@@ -1,11 +1,8 @@
-import logging
 import os
 
 import stripe
 
 from .base import CHANNEL_LAYERS, INSTALLED_APPS
-
-logging.disable(logging.CRITICAL)
 
 # Disable migrations for all apps (not on CI):
 if "DRONE" not in os.environ:
