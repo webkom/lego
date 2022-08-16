@@ -55,7 +55,7 @@ django-ical==1.8.3
 icalendar==4.1.0
 
 # Docs
-Pygments==2.12.0
+Pygments==2.13.0
 Markdown==3.4.1
 coreapi==2.3.3
 aiosmtpd==1.4.2
