@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "oauth2_provider",
     "rest_framework",
+    "rest_framework_jwt",
+    "rest_framework_jwt.blacklist",  # Not used, but needed to avoid db issues.
     "corsheaders",
     "mptt",
     "channels",
@@ -114,9 +116,9 @@ TEMPLATES = [
 ]
 
 JWT_AUTH = {
+    "JWT_RESPONSE_PAYLOAD_HANDLER": "lego.apps.jwt.handlers.response_handler",
     # Tokens will expire after 14 days
     "JWT_EXPIRATION_DELTA": datetime.timedelta(days=14),
-    "JWT_RESPONSE_PAYLOAD_HANDLER": "lego.apps.jwt.handlers.response_handler",
     # Allow refresh. Tokens can be refreshed for 180 days after initial login,
     # so users must login ~twice a year
     "JWT_ALLOW_REFRESH": True,
@@ -124,6 +126,9 @@ JWT_AUTH = {
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth.APIApplication"
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = "oauth2_provider.RefreshToken"
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = "oauth2_provider.IDToken"
 # Tokens is valid for 7 days.
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 86400 * 7,

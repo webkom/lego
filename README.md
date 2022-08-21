@@ -79,9 +79,6 @@ You can add flags to speed up the tests
 If you want to check your test coverage, you can do the following
 
 ```bash
-# Install the packages needed
-$ pip install -r requirements/coverage.txt
-
 # Run all tests in LEGO. Remember to add the recommended flags mentioned above
 $ tox -e tests --
 # or run without tox

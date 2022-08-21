@@ -1,8 +1,8 @@
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "lego.apps.oauth.authentication.Authentication",
-        "rest_framework.authentication.SessionAuthentication",
         "lego.apps.jwt.authentication.Authentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_RENDERER_CLASSES": ["lego.utils.renderers.JSONRenderer"],
     "DEFAULT_PARSER_CLASSES": [

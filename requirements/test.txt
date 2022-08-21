@@ -1,3 +1,0 @@
--r base.txt
-# Stack traces for --parallel tests:
-tblib

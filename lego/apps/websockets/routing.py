@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 
 from channels.routing import ProtocolTypeRouter, URLRouter
 from structlog import get_logger
@@ -26,7 +26,7 @@ class HTTPConsumer:
 
 protocols = {
     "websocket": JWTAuthenticationMiddleware(
-        URLRouter([url("^$", GroupConsumer.as_asgi())])
+        URLRouter([re_path("^$", GroupConsumer.as_asgi())])
     )
 }
 
