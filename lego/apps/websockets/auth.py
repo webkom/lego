@@ -9,7 +9,8 @@ from lego.apps.jwt.authentication import Authentication
 
 
 class JWTQSAuthentication(Authentication):
-    def get_jwt_value(self, scope):
+    @classmethod
+    def get_token_from_request(cls, scope):
         if scope.get("type") != "websocket":
             raise exceptions.AuthenticationFailed("Websocket connection i required")
 
