@@ -74,7 +74,7 @@ LOGGING = {
             "handlers": [
                 "console",
             ],
-            "level": "CRITICAL",
+            "level": "INFO",
         },
     },
 }
