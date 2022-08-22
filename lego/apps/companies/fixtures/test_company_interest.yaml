@@ -29,7 +29,12 @@
     contact_person: 'Bekksen'
     mail: 'bekk@bekksen.no'
     semesters: [1,4]
-    events: ['company_presentation', 'course', 'lunch_presentation']
+    events: [
+      'company_presentation',
+      'course',
+      'lunch_presentation',
+      'breakfast_talk',
+    ]
     other_offers: ['labamba_sponsor']
     comment: 'webkom webkom'
 
@@ -40,7 +45,11 @@
     contact_person: 'Iteraz'
     mail: 'bekk@itera.no'
     semesters: [1, 2, 3, 4]
-    events: ['company_presentation', 'course']
+    events: [
+      'company_presentation',
+      'course',
+      'breakfast_talk',
+    ]
     other_offers: ['itdagene']
     comment: 'webkom webkom webkom'
 
@@ -54,3 +63,4 @@
     events: ['bedex', 'other']
     other_offers: ['collaboration', 'readme']
     comment: 'webkom'
+

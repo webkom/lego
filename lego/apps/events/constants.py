@@ -2,6 +2,7 @@ COMPANY_PRESENTATION = "company_presentation"
 LUNCH_PRESENTATION = "lunch_presentation"
 ALTERNATIVE_PRESENTATION = "alternative_presentation"
 COURSE = "course"
+BREAKFAST_TALK = "breakfast_talk"
 KID_EVENT = "kid_event"
 PARTY = "party"
 SOCIAL = "social"
@@ -13,6 +14,7 @@ EVENT_TYPES = (
     (LUNCH_PRESENTATION, LUNCH_PRESENTATION),
     (ALTERNATIVE_PRESENTATION, ALTERNATIVE_PRESENTATION),
     (COURSE, COURSE),
+    (BREAKFAST_TALK, BREAKFAST_TALK),
     (KID_EVENT, KID_EVENT),
     (PARTY, PARTY),
     (SOCIAL, SOCIAL),
