@@ -42,7 +42,9 @@
     start_time: "2118-09-03T13:20:30+03:00"
     end_time: "2118-09-03T15:20:30+03:00"
     created_by: 1
-    require_auth: False
+    require_auth: True
+    can_view_groups:
+      - - Webkom
 
 - model: events.Event
   pk: 4
@@ -104,10 +106,8 @@
     location: blabla
     start_time: "2011-09-01T13:20:30+03:00"
     end_time: "2012-09-01T13:20:30+03:00"
+    require_auth: False
     created_by: 3
-    require_auth: True
-    can_view_groups:
-      - - Abakom
 
 - model: events.Event
   pk: 8
@@ -120,10 +120,8 @@
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
     end_time: "2012-09-01T13:20:30+03:00"
+    require_auth: False
     created_by: 3
-    require_auth: True
-    can_view_groups:
-      - - Abakom
 
 - model: events.Event
   pk: 9
@@ -136,10 +134,8 @@
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
     end_time: "2012-09-01T13:20:30+03:00"
+    require_auth: False
     created_by: 3
-    require_auth: True
-    can_view_groups:
-      - - Abakom
 
 - model: events.Event
   pk: 10

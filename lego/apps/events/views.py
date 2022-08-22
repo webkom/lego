@@ -61,6 +61,7 @@ from lego.apps.events.tasks import (
 from lego.apps.events.websockets import notify_event_registration
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.constants import EDIT, VIEW
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.models import User
 from lego.utils.functions import verify_captcha
@@ -307,6 +308,10 @@ class RegistrationViewSet(
         serializer.is_valid(raise_exception=True)
         event_id = self.kwargs.get("event_pk", None)
         event = Event.objects.get(id=event_id)
+
+        if not get_permission_handler(Event).has_perm(request.user, VIEW, obj=event):
+            raise PermissionDenied()
+
         if event.use_captcha and not verify_captcha(
             serializer.data.get("captcha_response", None)
         ):
@@ -458,7 +463,7 @@ class RegistrationSearchViewSet(
             ) from e
 
         if not get_permission_handler(Event).has_perm(
-            request.user, "EDIT", obj=reg.event
+            request.user, EDIT, obj=reg.event
         ):
             raise PermissionDenied()
 
