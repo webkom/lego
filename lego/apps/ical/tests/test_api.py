@@ -185,21 +185,24 @@ class IcalEventsTestCase(BaseAPITestCase):
         self.token = ICalToken.objects.get_or_create(user=self.user)[0].token
         self.events_url = _get_ical_events_url(self.token)
         self.registrations_url = _get_ical_registrations_url(self.token)
+        abakom_group = AbakusGroup.objects.get(name="Abakom")
         self.event = Event.objects.create(
             title="AbakomEvent",
             event_type=0,
             start_time=timezone.now() + timedelta(hours=7),
             end_time=timezone.now() + timedelta(hours=10),
-            require_auth=False,
+            require_auth=True,
         )
+        self.event.can_view_groups.add(abakom_group)
+        self.event.save()
         self.pool = Pool.objects.create(
             name="Webkom",
             capacity=1,
             event=self.event,
             activation_date=(timezone.now() + timedelta(hours=3)),
         )
-        self.pool.permission_groups.add(AbakusGroup.objects.get(name="Abakom"))
-        self.event.set_abakom_only(True)
+        self.pool.permission_groups.add(abakom_group)
+        self.pool.save()
 
     def test_non_abakom_user(self):
         for url in [self.events_url, self.registrations_url]:
@@ -207,7 +210,8 @@ class IcalEventsTestCase(BaseAPITestCase):
             self.assertEqual(len(ical_events), 0)
 
     def test_public_event_can_register(self):
-        self.event.set_abakom_only(False)
+        self.event.require_auth = False
+        self.event.save()
         self.pool.permission_groups.add(AbakusGroup.objects.get(name="Abakus"))
         for url in [self.events_url, self.registrations_url]:
 
@@ -218,7 +222,8 @@ class IcalEventsTestCase(BaseAPITestCase):
             self.assertEqual(int(pk), self.event.pk)
 
     def test_public_event_can_view_not_register(self):
-        self.event.set_abakom_only(False)
+        self.event.require_auth = False
+        self.event.save()
 
         ical_events = _get_ical_events(self.events_url, self.client)
         self.assertEqual(len(ical_events), 1)
