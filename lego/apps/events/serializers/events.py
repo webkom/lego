@@ -121,7 +121,7 @@ class EventReadDetailedSerializer(
 
     class Meta:
         model = Event
-        fields = (
+        fields = ObjectPermissionsSerializerMixin.Meta.fields + (
             "id",
             "title",
             "description",
