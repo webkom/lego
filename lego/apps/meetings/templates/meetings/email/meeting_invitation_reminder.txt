@@ -1,0 +1,17 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei, {{ first_name }}!
+
+Du har enda ikke svart på møteinnkalling til møtet med tittel {{meeting_title}}!
+
+Tid: {{ meeting_start_time }}
+Referent: {{ report_author }}
+
+Delta på møtet: {{frontend_url}}/meetings/{{meeting_id}}?action=accept&token={{token}}
+Ikke delta på møtet: {{frontend_url}}/meetings/{{meeting_id}}?action=reject&token={{token}}
+
+Les mer på {{ frontend_url }}/meetings/{{meeting_id}}/
+
+{% endblock %}

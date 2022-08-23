@@ -1,0 +1,1 @@
+Du har enda ikke svart på møteinnkalling til møtet {{ meeting_title }} - {{ meeting_start_time }}!
