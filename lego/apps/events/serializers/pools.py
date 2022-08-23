@@ -41,7 +41,7 @@ class PoolReadAuthSerializer(PoolReadSerializer):
     class Meta(PoolReadSerializer.Meta):
         fields = PoolReadSerializer.Meta.fields + ("registrations",)  # type: ignore
 
-    def get_registrations(self, obj):
+    def get_registrations(self, obj: Pool):
         queryset = obj.registrations.all()
         if obj.event.is_priced:
             return RegistrationPaymentReadSerializer(
