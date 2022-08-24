@@ -33,7 +33,7 @@ channels==3.0.5
 channels_redis==3.4.1
 daphne==3.0.2
 # Implicit dependency
-flatbuffers==2.0
+flatbuffers==2.0.7
 
 djangorestframework==3.13.1
 drf-jwt==1.19.2
