@@ -10,6 +10,13 @@ username_validator = validators.RegexValidator(
     "invalid",
 )
 
+student_username_validator = validators.RegexValidator(
+    r"^[a-zA-Z0-9_\.]+$",
+    "Enter a valid username. This value may contain only letters, numbers, _ and . "
+    "characters.",
+    "invalid",
+)
+
 
 @deconstructible
 class EmailValidatorWithBlacklist:
