@@ -185,6 +185,20 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
         "lego.apps.users.serializers.student_confirmation.verify_captcha",
         return_value=True,
     )
+    def test_with_student_username_with_period(self, *args):
+        AbakusGroup.objects.get(name="Users").add_user(
+            self.user_without_student_confirmation
+        )
+        self.client.force_authenticate(self.user_without_student_confirmation)
+        data = self._test_student_confirmation_data.copy()
+        data["student_username"] = "test.user"
+        response = self.client.post(_get_list_request_url(), data)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    @mock.patch(
+        "lego.apps.users.serializers.student_confirmation.verify_captcha",
+        return_value=True,
+    )
     def test_with_invalid_course(self, *args):
         AbakusGroup.objects.get(name="Users").add_user(
             self.user_without_student_confirmation

@@ -37,7 +37,11 @@ from lego.utils.decorators import abakus_cached_property
 from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
-from .validators import email_blacklist_validator, username_validator
+from .validators import (
+    email_blacklist_validator,
+    student_username_validator,
+    username_validator,
+)
 
 
 class MembershipHistory(models.Model):
@@ -326,7 +330,7 @@ class User(
         unique=True,
         null=True,
         help_text="30 characters or fewer. Letters, digits and _ only.",
-        validators=[username_validator, ReservedNameValidator()],
+        validators=[student_username_validator, ReservedNameValidator()],
         error_messages={"unique": "A user has already verified that student username."},
     )
     first_name = models.CharField("first name", max_length=50, blank=False)
