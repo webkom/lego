@@ -8,7 +8,6 @@ from lego import celery_app
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.meetings.notifications import MeetingInvitationReminderNotification
-from lego.apps.users.models import User
 from lego.utils.tasks import AbakusTask
 
 log = get_logger()
@@ -31,19 +30,16 @@ def notify_user_of_unanswered_meeting_invitation(self, logger_context=None):
         if (meeting.start_time.day - timezone.now().day) % 2 == 0:
             continue
 
-        users: list[User] = meeting.invited_users.filter(
-            invitations__status=constants.NO_ANSWER
+        meeting_invitations: list[MeetingInvitation] = meeting.invitations.filter(
+            status=constants.NO_ANSWER
         )
-        for user in users:
+        for meeting_invitation in meeting_invitations:
             log.info(
                 "user_notified_of_unanswered_meeting_invitation",
                 meeting_id=meeting.id,
-                user_id=user.id,
+                user_id=meeting_invitation.user.id,
             )
-            meeting_invitation = MeetingInvitation.objects.filter(
-                meeting=meeting, user=user
-            ).first()
             notification = MeetingInvitationReminderNotification(
-                user, meeting_invitation=meeting_invitation
+                meeting_invitation.user, meeting_invitation=meeting_invitation
             )
             notification.notify()
