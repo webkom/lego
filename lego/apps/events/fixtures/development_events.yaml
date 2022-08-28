@@ -1383,6 +1383,7 @@
     cover: test_event_cover.png
     company: 1
     created_by: 3
+    responsible_group: 6
     require_auth: False
   model: events.Event
   pk: 50
@@ -1450,6 +1451,7 @@
     price_guest: 35000
     cover: test_event_cover.png
     created_by: 3
+    responsible_group: 4
     require_auth: False
   model: events.Event
   pk: 54
