@@ -15,6 +15,7 @@ class AbakusGroupField(serializers.PrimaryKeyRelatedField):
             "id": value.id,
             "name": value.name,
             "contact_email": value.contact_email,
+            "type": value.type,
         }
 
 
