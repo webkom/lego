@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 
 from django.utils import timezone
 
@@ -27,7 +27,10 @@ def notify_user_of_unanswered_meeting_invitation(self, logger_context=None):
 
     for meeting in meetings:
         # Only send reminder if it's 7, 5, 3 or 1 day till start
-        if (meeting.start_time.day - timezone.now().day) % 2 == 0:
+        if (
+            datetime.combine(meeting.start_time, time(0))
+            - datetime.combine(timezone.now(), time(0))
+        ).days not in [7, 5, 3, 1]:
             continue
 
         meeting_invitations: list[MeetingInvitation] = meeting.invitations.filter(
