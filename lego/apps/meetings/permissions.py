@@ -29,6 +29,11 @@ class MeetingPermissionHandler(PermissionHandler):
         if not user.is_authenticated:
             return False
 
+        # Check object permissions before keywork perms
+        if obj is not None:
+            if self.has_object_permissions(user, perm, obj):
+                return True
+
         has_perm = super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
@@ -36,10 +41,10 @@ class MeetingPermissionHandler(PermissionHandler):
         if has_perm:
             return True
 
-        if obj is not None:
-            return perm != DELETE and obj.invited_users.filter(id=user.id).exists()
-
         return False
+
+    def has_object_permissions(self, user, perm, obj):
+        return perm != DELETE and obj.invited_users.filter(id=user.id).exists()
 
 
 class MeetingInvitationPermissionHandler(PermissionHandler):
