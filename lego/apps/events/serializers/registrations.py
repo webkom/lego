@@ -5,7 +5,6 @@ from rest_framework_jwt.serializers import ImpersonateAuthTokenSerializer
 
 from lego.apps.events import constants
 from lego.apps.events.fields import (
-    ConsentField,
     PersonalConsentField,
     PersonalFeedbackField,
     PersonalPaymentStatusField,
@@ -49,9 +48,6 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         required=False, choices=constants.PAYMENT_STATUS_CHOICES
     )
     presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
-    photo_consent = ConsentField(
-        required=False, choices=constants.PHOTO_CONSENT_CHOICES
-    )
 
     class Meta:
         model = Registration
@@ -59,7 +55,6 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
             "id",
             "feedback",
             "presence",
-            "photo_consent",
             "captcha_response",
             "payment_status",
         )
@@ -93,7 +88,7 @@ class RegistrationPublicReadSerializer(BasisModelSerializer):
 class RegistrationReadSerializer(RegistrationPublicReadSerializer):
     feedback = PersonalFeedbackField()
     presence = PersonalPresenceField()
-    photo_consent = PersonalConsentField()
+    LEGACY_photo_consent = PersonalConsentField()
     shared_memberships = serializers.IntegerField(required=False)
 
     class Meta(RegistrationPublicReadSerializer.Meta):
@@ -101,7 +96,7 @@ class RegistrationReadSerializer(RegistrationPublicReadSerializer):
             "feedback",
             "shared_memberships",
             "presence",
-            "photo_consent",
+            "LEGACY_photo_consent",
             "status",
             "event",
         )
@@ -111,7 +106,7 @@ class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
     class Meta(RegistrationPublicReadSerializer.Meta):
         fields = RegistrationPublicReadSerializer.Meta.fields + (  # type: ignore
             "presence",
-            "photo_consent",
+            "LEGACY_photo_consent",
         )
 
 
@@ -121,7 +116,7 @@ class RegistrationSearchSerializer(serializers.Serializer):
 
 class RegistrationConsentSerializer(serializers.Serializer):
     username = serializers.CharField()
-    photo_consent = serializers.CharField()
+    LEGACY_photo_consent = serializers.CharField()
 
 
 class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
@@ -153,7 +148,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "payment_status",
             "payment_amount",
             "payment_amount_refunded",
-            "photo_consent",
+            "LEGACY_photo_consent",
         )
         read_only = True
 

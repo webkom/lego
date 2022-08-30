@@ -1,0 +1,143 @@
+- model: users.PhotoConsent
+  pk: 1
+  fields:
+    user: 1
+    semester: spring
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 2
+  fields:
+    user: 1
+    semester: spring
+    year: 2021
+    domain: WEBSITE
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 3
+  fields:
+    user: 2
+    semester: spring
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: false
+
+- model: users.PhotoConsent
+  pk: 4
+  fields:
+    user: 2
+    semester: spring
+    year: 2021
+    domain: WEBSITE
+    is_consenting: false
+
+- model: users.PhotoConsent
+  pk: 5
+  fields:
+    user: 3
+    semester: autumn
+    year: 2020
+    domain: WEBSITE
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 6
+  fields:
+    user: 3
+    semester: autumn
+    year: 2020
+    domain: SOCIAL_MEDIA
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 7
+  fields:
+    user: 3
+    semester: spring
+    year: 2021
+    domain: WEBSITE
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 8
+  fields:
+    user: 3
+    semester: spring
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 9
+  fields:
+    user: 3
+    semester: autumn
+    year: 2021
+    domain: WEBSITE
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 10
+  fields:
+    user: 3
+    semester: autumn
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: false
+
+- model: users.PhotoConsent
+  pk: 11
+  fields:
+    user: 4
+    semester: spring
+    year: 2021
+    domain: WEBSITE
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 12
+  fields:
+    user: 4
+    semester: spring
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: true
+
+- model: users.PhotoConsent
+  pk: 13
+  fields:
+    user: 5
+    semester: spring
+    year: 2021
+    domain: WEBSITE
+    is_consenting: null
+
+- model: users.PhotoConsent
+  pk: 14
+  fields:
+    user: 5
+    semester: spring
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: null
+
+- model: users.PhotoConsent
+  pk: 15
+  fields:
+    user: 6
+    semester: spring
+    year: 2021
+    domain: WEBSITE
+    is_consenting: false
+
+- model: users.PhotoConsent
+  pk: 16
+  fields:
+    user: 6
+    semester: spring
+    year: 2021
+    domain: SOCIAL_MEDIA
+    is_consenting: null
