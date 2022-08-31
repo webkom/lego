@@ -11,7 +11,7 @@ certifi==2022.6.15
 elasticsearch==7.16.2
 celery==5.2.7
 stripe==3.4.0
-boto3==1.24.61
+boto3==1.24.63
 beautifulsoup4==4.11.1
 bleach==5.0.1
 requests==2.28.1
@@ -25,7 +25,7 @@ django-health-check==3.16.5
 # Logging/errors
 structlog==21.5.0
 structlog-sentry==1.4.0
-sentry-sdk==1.9.5
+sentry-sdk==1.9.6
 analytics-python==1.2.9
 
 # channels
