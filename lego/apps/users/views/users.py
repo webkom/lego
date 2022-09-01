@@ -11,7 +11,7 @@ from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, PhotoConsent, User
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
@@ -184,19 +184,15 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer_class=PhotoConsentSerializer,
     )
     def update_photo_consent(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         user = self.get_object()
 
         if not request.user.has_perm(EDIT, user):
             raise PermissionDenied(detail="Cannot update other user's consent")
 
-        PhotoConsent.objects.update_or_create(
-            user=user,
-            year=serializer.validated_data["year"],
-            semester=serializer.validated_data["semester"],
-            domain=serializer.validated_data["domain"],
-            defaults={"is_consenting": serializer.validated_data["is_consenting"]},
-        )
+        serializer = self.get_serializer(data={"user": user, **request.data})
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
 
         return Response(MeSerializer(user).data)

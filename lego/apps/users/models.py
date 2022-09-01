@@ -549,6 +549,9 @@ class PhotoConsent(BasisModel):
     domain = models.CharField(choices=constants.PHOTO_CONSENT_DOMAINS, max_length=100)
     is_consenting = models.BooleanField(blank=True, null=True, default=None)
 
+    class Meta:
+        unique_together = ("semester", "year", "domain", "user")
+
     def get_consents(self, user):
         now = timezone.now()
         current_semester = constants.AUTUMN if now.month > 7 else constants.SPRING
