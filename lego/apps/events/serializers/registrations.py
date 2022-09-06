@@ -9,6 +9,7 @@ from lego.apps.events.fields import (
     PersonalFeedbackField,
     PersonalPaymentStatusField,
     PersonalPresenceField,
+    PhotoConsentField,
     PresenceField,
     SetPaymentStatusField,
 )
@@ -128,6 +129,7 @@ class RegistrationPaymentReadSerializer(RegistrationReadSerializer):
 
 class RegistrationReadDetailedSerializer(BasisModelSerializer):
     user = AdministrateUserSerializer()
+    photo_consents = PhotoConsentField()
 
     class Meta:
         model = Registration
@@ -149,6 +151,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "payment_amount",
             "payment_amount_refunded",
             "LEGACY_photo_consent",
+            "photo_consents",
         )
         read_only = True
 

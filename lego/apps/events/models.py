@@ -28,6 +28,7 @@ from lego.apps.events.permissions import (
 from lego.apps.files.models import FileField
 from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.users.constants import AUTUMN, SPRING
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
@@ -273,11 +274,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.use_contact_tracing and user.phone_number is None:
             raise NoPhoneNumber()
 
-        from lego.apps.users import constants
-
-        current_semester = (
-            constants.AUTUMN if self.start_time.month > 7 else constants.SPRING
-        )
+        current_semester = AUTUMN if self.start_time.month > 7 else SPRING
         if self.use_consent and not user.has_registered_photo_consents_for_semester(
             self.start_time.year,
             current_semester,

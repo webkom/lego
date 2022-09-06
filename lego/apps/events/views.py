@@ -62,7 +62,7 @@ from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT, VIEW
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User
+from lego.apps.users.models import PhotoConsent, User
 from lego.utils.functions import verify_captcha
 
 
@@ -174,12 +174,20 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get("pk", None)
         serializer = EventAdministrateSerializer
+        event = Event.objects.get(pk=event_id)
         queryset = Event.objects.filter(pk=event_id).prefetch_related(
             "pools__permission_groups",
             Prefetch(
                 "pools__registrations",
                 queryset=Registration.objects.select_related("user").prefetch_related(
-                    "user__abakus_groups"
+                    "user__abakus_groups",
+                    Prefetch(
+                        "user__photo_consents",
+                        queryset=PhotoConsent.objects.filter(
+                            year=event.start_time.year,
+                            semester=PhotoConsent.get_semester(event.start_time),
+                        ),
+                    ),
                 ),
             ),
             Prefetch(

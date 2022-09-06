@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Registration
 from lego.apps.permissions.constants import EDIT
+from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 
 
 # Personal....Fields for registrations will only return values if the authenticated
@@ -176,6 +177,15 @@ class ConsentField(serializers.ChoiceField):
         ):
             return super().to_internal_value(data)
         raise PermissionDenied()
+
+
+class PhotoConsentField(serializers.Field):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value: Registration):
+        instances = value.user.photo_consents  # type: ignore
+        return PhotoConsentSerializer(instances, many=True).data
 
 
 class PublicEventField(serializers.PrimaryKeyRelatedField):
