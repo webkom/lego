@@ -1,0 +1,7 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei, for å lese ukesmail er du nødt til å åpne mailen i noe som støtter html
+
+{% endblock %}

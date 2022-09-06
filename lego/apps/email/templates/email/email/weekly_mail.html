@@ -1,0 +1,77 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+    {%if events %}
+    <tr>
+        <td class="content-block">
+            <h3 style="margin: 20px 0 10px 0;">Arrangementer med påmelding neste uke:</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table style="width: 100%; table-layout: fixed;">
+                {% for event in events%}
+                    <tr>
+                        <td style="text-align:left; width: 70%;">
+                            <a href="{{event.url}}">
+                                <h4 style="margin: 10px 0 2px 0;">{{event.title}}</h4>
+                            </a>
+                        </td>
+                        <td style="text-align:left; width: 40%; vertical-align: bottom;"> {{event.type}}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left;">
+                    {% for pool in event.pools %}
+                        Påmelding åpner for {{pool.name}} {{pool.activation_date}} <br/>
+                    {% endfor %}
+                        </td>
+                        <td style="text-align:left; width: 40%; vertical-align: top;"> Finner sted {{event.start_time}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </td>
+    </tr>
+    {% endif %}
+    {%if joblistings %}
+    <tr>
+        <td class="content-block">
+            <h3 style="margin: 20px 0 10px 0;" colspan=5>Nye jobbannonser</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table style="width: 100%;">
+                <tr>
+                    <th style="text-align: left;">Tittel</th>
+                    <th style="text-align: left;">Bedrift</th>
+                    <th style="text-align: left;">Type</th>
+                </tr>
+    {% endif %}
+    {% for joblisting in joblistings%}
+                <tr>
+                    <td style="text-align: left; padding-right: 10px;">
+                        <a href="https://abakus.no/joblistings/{{joblisting.id}}">{{joblisting.title}}</a>
+                    </td>
+                    <td style="text-align: left; padding-right: 10px; min-width: 70px; word-break: break-all;">
+                        {{joblisting.company_name}} 
+                    </td>
+                    <td style="text-align: left; padding-right: 10px; min-width: 70px; word-break: break-all;">
+                     {{joblisting.type}}
+                    </td>
+                </tr>
+    {% endfor %}
+            </table>
+        </td>
+    </tr>
+                
+
+    {% if todays_weekly != "" %}
+    <tr>
+        <td class="content-block">
+            <h3 style="margin: 20px 0 10px 0">Klikk deg inn for å lese <a href="{{todays_weekly}}">ukas weekly</a></h3>
+        </td>
+    </tr>
+    {% endif %}
+
+
+{% endblock %}

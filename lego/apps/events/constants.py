@@ -22,6 +22,19 @@ EVENT_TYPES = (
     (EVENT, EVENT),
 )
 
+EVENT_TYPE_TRANSLATIONS = {
+    COMPANY_PRESENTATION: "Bedriftspresentasjon",
+    LUNCH_PRESENTATION: "Lunchpresentasjon",
+    ALTERNATIVE_PRESENTATION: "Alternativ presentasjon",
+    COURSE: "Kurs",
+    BREAKFAST_TALK: "Frokostforedrag",
+    KID_EVENT: "KID-arrangement",
+    PARTY: "Fest",
+    SOCIAL: "Sosialt",
+    OTHER: "Annet",
+    EVENT: "Arrangement",
+}
+
 """
 Events marked as NORMAL are events that can have infinite pools.
 This even status type should be used for most events.

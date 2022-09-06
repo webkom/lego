@@ -84,6 +84,10 @@ schedule = {
         "task": "lego.apps.meetings.tasks.notify_user_of_unanswered_meeting_invitation",
         "schedule": crontab(hour=10, minute=0),
     },
+    "send_weekly_email": {
+        "task": "lego.apps.email.tasks.send_weekly_email",
+        "schedule": crontab(hour=19, minute=0, day_of_week=0),
+    },
 }
 
 app.conf.update(

@@ -1,3 +1,7 @@
+- model: tags.Tag
+  fields:
+    tag: weekly
+
 - model: articles.Article
   pk: 1
   fields:
@@ -29,3 +33,18 @@
     description: Håper jeg ..
     text: huehehehuuehhuehuehuehuehue
     require_auth: False
+
+- model: articles.Article
+  pk: 4
+  fields:
+    title: Ukens Weekly
+    created_by: 1
+    description: Skjedd sykt mye bra denne uken
+    text: >
+      HS har snakket om at de skal få flere daljer, backup har
+      snakket om hvorfor de skal ha bånd. Revyen har blitt glemt og
+      alle de inkluderte har diskutert inkludering. IDI har ikke svart
+      på mail og kontoret er rotete.
+    require_auth: False
+    tags:
+      - weekly

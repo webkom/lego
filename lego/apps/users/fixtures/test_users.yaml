@@ -81,3 +81,12 @@
     first_name: Web
     last_name: Commer
     email: webk@m.no
+
+- model: users.User
+  pk: 10
+  fields:
+    username: prmedlem
+    gender: female
+    first_name: pr
+    last_name: meldem
+    email: pr@abakus.no

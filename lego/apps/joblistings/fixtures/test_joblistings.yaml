@@ -1,0 +1,64 @@
+- model: joblistings.Workplace
+  pk: 1
+  fields:
+    town: Trondheim
+
+- model: joblistings.Workplace
+  pk: 2
+  fields:
+    town: Oslo
+
+- model: joblistings.Workplace
+  pk: 3
+  fields:
+    town: Bergen
+    
+- model: joblistings.Workplace
+  pk: 4
+  fields:
+    town: Pyongyang
+
+- model: joblistings.Joblisting
+  pk: 1
+  fields:
+    title: 'Gutta Consulting sommerjobb'
+    description: '<p>Samme gutta som var på bussen</p>'
+    text: '<p>Gutta consulting er et konsulenthus som utelukkende har fokuserer
+    på guttastemning. Vi tar inn kandidater basert på hvor gode de er på å chugge,
+    hvilken buss de var på og lengden på midtskillen. Vi ser etter deg som er på
+    jakt etter guttastemning og progging.</p>'
+    company: 1
+    responsible: 1
+    deadline: '2016-11-03T02:00:00+00:00'
+    visible_from: '2016-09-30T16:15:00+00:00'
+    visible_to: '2030-09-30T16:15:00+00:00'
+    job_type: summer_job
+    workplaces:
+      - 2
+    from_year: 3
+    to_year: 5
+    application_url: 'https://guttaconsulting.no'
+
+- model: joblistings.Joblisting
+  pk: 2
+  fields:
+    title: 'North Korean embassy'
+    description: '<p>Best Korean embassy summer job</p>'
+    text: '<p>This summer job will give you the opportunity to work for our
+    GLORIOUS LEADER and his quest to end american imperialism once and for all. 
+    We have employees in concentration camps around the globe. We believe in supporting
+    non profits and we are proud sponsors of both ISIS and Al-Qaeda. We are looking
+    for someone with unquestionable loyalty towards the great leader and unending
+    hatred against the USA.</p>'
+    company: 2
+    responsible: 1
+    contact_mail: 'kimyungerling@nesetett.no'
+    deadline: '2016-11-01T02:00:00+00:00'
+    visible_from: '2016-09-30T16:15:00+00:00'
+    visible_to: '2030-09-30T16:15:00+00:00'
+    job_type: part_time
+    workplaces:
+      - 4
+    from_year: 2
+    to_year: 5
+    application_url: 'https://longlivekimilsung.no'

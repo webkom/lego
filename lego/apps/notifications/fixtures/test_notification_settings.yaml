@@ -22,3 +22,12 @@
     enabled: true
     channels:
       - email
+
+- model: notifications.NotificationSetting
+  pk: 4
+  fields:
+    user: 10
+    notification_type: weekly_mail
+    enabled: true
+    channels:
+      - email
