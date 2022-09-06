@@ -109,14 +109,7 @@ class AdministrateUserSerializer(PublicUserSerializer):
         fields = PublicUserSerializer.Meta.fields + (  # type: ignore
             "abakus_groups",
             "allergies",
-            "photo_consents",
         )
-
-    photo_consents = serializers.SerializerMethodField()
-
-    def get_photo_consents(self, user):
-        pc = PhotoConsent.get_consents(self, user)
-        return PhotoConsentSerializer(instance=pc, many=True).data
 
 
 class AdministrateUserExportSerializer(PublicUserSerializer):

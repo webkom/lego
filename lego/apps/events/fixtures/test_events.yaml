@@ -59,6 +59,7 @@
     end_time: "2012-09-01T13:20:30+03:00"
     created_by: 1
     require_auth: False
+    use_consent: true
 
 - model: events.Event
   pk: 5

@@ -1,5 +1,5 @@
 import operator
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import (
@@ -554,7 +554,7 @@ class PhotoConsent(BasisModel):
 
     def get_consents(self, user):
         now = timezone.now()
-        current_semester = constants.AUTUMN if now.month > 7 else constants.SPRING
+        current_semester = PhotoConsent.get_semester(now)
         current_year = now.year
 
         PhotoConsent.objects.get_or_create(
@@ -571,3 +571,7 @@ class PhotoConsent(BasisModel):
             domain=constants.WEBSITE_DOMAIN,
         )
         return PhotoConsent.objects.filter(user=user)
+
+    @staticmethod
+    def get_semester(time: datetime):
+        return constants.AUTUMN if time.month > 7 else constants.SPRING
