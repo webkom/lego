@@ -16,7 +16,7 @@ beautifulsoup4==4.11.1
 bleach==5.0.1
 requests==2.28.1
 ldap3==2.9.1
-google-api-python-client==2.61.0
+google-api-python-client==2.62.0
 oauth2client
 premailer==3.10.0
 libthumbor==2.0.2
