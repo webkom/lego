@@ -31,7 +31,7 @@ $ python manage.py runserver
 
 # Note 1: Whenever you switch branches you might need to make minor changes
 $ pip install -r requirements/dev.txt # If the branch has changes in the dependencies
-$ python manage.py migrate # If the branch has a database in another state then yours
+$ python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
 $ python manage.py makemigrations # Creates one or more new files that must be commited
