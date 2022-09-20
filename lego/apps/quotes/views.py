@@ -1,7 +1,9 @@
 import ast
 from random import choice
 
-from rest_framework import status, viewsets
+from django.db.models import Count
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -16,17 +18,23 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     queryset = Quote.objects.all().prefetch_related("tags")
     filterset_class = QuotesFilterSet
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+    )
+    ordering_fields = ["reaction_count"]
     ordering = "-created_at"
 
     def get_queryset(self):
         if self.request is None:
             return Quote.objects.none()
-
         access_unapproved = self.request.user.has_perm(EDIT, self.queryset)
 
+        queryset = self.queryset.annotate(reaction_count=Count("reactions"))
+
         if not access_unapproved:
-            return self.queryset.filter(approved=True)
-        return self.queryset
+            return queryset.filter(approved=True)
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
