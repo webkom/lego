@@ -43,6 +43,7 @@ services:
       SECURITY_KEY: 'lego-dev'
       MAX_WIDTH: 1000
       MAX_HEIGHT: 800
+      MAX_PIXELS: 110_000_000.0
       QUALITY: 98
       AUTO_WEBP: 'True'
       ALLOW_UNSAFE_URL: 1
