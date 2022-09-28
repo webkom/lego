@@ -92,7 +92,12 @@ class CompanyListSerializer(BasisModelSerializer):
     thumbnail = ImageField(
         source="logo",
         required=False,
-        options={"height": 500, "width": 500, "smart": True},
+        options={
+            "fit_in": True,
+            "height": 500,
+            "width": 500,
+            "filters": ["fill(white)"],
+        },
     )
 
     event_count = serializers.SerializerMethodField()
