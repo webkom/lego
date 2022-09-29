@@ -226,7 +226,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             is_admitted = self.is_admitted(user)
         if is_admitted:
             return []
-        queryset = all_pools.filter(permission_groups__in=user.all_groups)
+        queryset = all_pools.filter(permission_groups__in=user.all_groups).distinct()
         if future:
             return queryset
         return queryset.filter(activation_date__lte=timezone.now())

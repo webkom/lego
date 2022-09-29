@@ -97,7 +97,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                         "pools",
                         queryset=Pool.objects.filter(
                             permission_groups__in=self.request.user.all_groups
-                        ),
+                        ).distinct(),
                         to_attr="possible_pools",
                     ),
                     Prefetch(
