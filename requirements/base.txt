@@ -7,7 +7,7 @@ unicode-slugify==0.1.5
 pyyaml==6.0
 redis==3.5.3
 hiredis==2.0.0
-certifi==2022.9.14
+certifi==2022.9.24
 elasticsearch==7.16.2
 celery==5.2.7
 stripe==3.4.0
