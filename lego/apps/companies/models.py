@@ -143,7 +143,9 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     participant_range_start = models.IntegerField(null=True, blank=True)
     participant_range_end = models.IntegerField(null=True, blank=True)
     comment = models.TextField(blank=True)
-    second_comment = models.TextField(blank=True)
+    course_comment = models.TextField(blank=True)
+    breakfast_talk_comment = models.TextField(blank=True)
+    other_event_comment = models.TextField(blank=True)
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
@@ -184,6 +186,8 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             "target_grades": ", ".join(grades),
             "participant_range": f"{self.participant_range_start} - {self.participant_range_end}",
             "comment": self.comment,
-            "second_comment": self.second_comment,
+            "course_comment": self.course_comment,
+            "breakfast_talk_comment": self.breakfast_talk_comment,
+            "other_event_comment": self.other_event_comment,
             "readme": readme,
         }
