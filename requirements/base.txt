@@ -2,10 +2,10 @@ django==4.0.6
 ipython==8.5.0
 
 
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.4
 unicode-slugify==0.1.5
 pyyaml==6.0
-redis==3.5.3
+redis==4.3.4
 hiredis==2.0.0
 certifi==2022.9.24
 elasticsearch==7.16.2
