@@ -19,8 +19,8 @@ from lego.apps.events.tasks import (
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.surveys.models import Submission, Survey
-from lego.apps.users.constants import GROUP_GRADE
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.constants import GROUP_GRADE, PHOTO_CONSENT_DOMAINS
+from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
 
 _test_event_data = [
@@ -2034,3 +2034,104 @@ class UpcomingEventsTestCase(BaseAPITestCase):
     def test_unauthenticated(self):
         event_response = self.client.get(_get_upcoming_url())
         self.assertEqual(event_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class EventPhotoConsentTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
+        date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
+        for event in Event.objects.all():
+            event.start_time = date + timedelta(days=10)
+            event.end_time = date + timedelta(days=10, hours=4)
+            event.save()
+
+    def test_event_with_consent_in_future(self):
+        """
+        Getting an event that is some time in the future that the user can register for should
+        create the applicable consent objects, given the event has use_consent=True
+        """
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.save()
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+        self.assertEqual(len(user_consents), len(PHOTO_CONSENT_DOMAINS))
+
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+        self.assertEqual(
+            len(user_consents),
+            len(PHOTO_CONSENT_DOMAINS) * 2,
+            "User should have an extra semester worths of consents",
+        )
+
+        for consent in event_response.json()["photoConsents"]:
+            self.assertIn(
+                (consent["year"], consent["semester"], consent["domain"]),
+                [(c.year, c.semester, c.domain) for c in user_consents],
+                "The users consent should exist on the event response",
+            )
+
+    def test_event_with_consent_in_future_no_registration_right(self):
+        """
+        Getting an event that is some time in the future that the user can NOT register for should
+        not create new consent objects or return photoConsents on the response
+        """
+        event = Event.objects.get(title="NO_POOLS_ABAKUS")
+        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.save()
+
+        user_consents_before = PhotoConsent.get_consents(self.abakus_user)
+
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+        self.assertEqual(
+            len(user_consents),
+            len(user_consents_before),
+            "User should have the same amount of consent objects",
+        )
+
+        self.assertEquals(
+            len(event_response.json()["photoConsents"]),
+            0,
+            "photoConsents should not exist on the event response",
+        )
+
+    def test_event_without_consent_in_future(self):
+        """
+        PhotoConsents should not be created or returned for events that do not use consent
+        """
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.use_consent = False
+        event.save()
+
+        user_consents_before = PhotoConsent.get_consents(self.abakus_user)
+
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+        self.assertEqual(
+            len(user_consents),
+            len(user_consents_before),
+            "User should have the same amount of consent objects",
+        )
+
+        self.assertEquals(
+            len(event_response.json()["photoConsents"]),
+            0,
+            "photoConsents should not exist on the event response",
+        )

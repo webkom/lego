@@ -1,13 +1,17 @@
-from datetime import date, timedelta
 from unittest import mock
 
 from django.test import override_settings
 from django.utils import timezone
+from django.utils.timezone import timedelta
 
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
-from lego.apps.users.constants import SOCIAL_MEDIA_DOMAIN, WEBSITE_DOMAIN
+from lego.apps.users.constants import (
+    PHOTO_CONSENT_DOMAINS,
+    SOCIAL_MEDIA_DOMAIN,
+    WEBSITE_DOMAIN,
+)
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import BaseTestCase, fake_time
@@ -394,13 +398,13 @@ class PhotoConsentTestCase(BaseTestCase):
         self.current_semester = (
             constants.AUTUMN if timezone.now().month > 7 else constants.SPRING
         )
-        self.current_year = date.today().year
+        self.current_year = timezone.now().year
         self.test_user = User.objects.get(pk=1)
 
     def test_get_consents_without_prior_consents(self):
         initial_consents = self.test_user.photo_consents.all()
         self.assertEqual(len(initial_consents), 0)
-        user_consents = PhotoConsent.get_consents(self, self.test_user)
+        user_consents = PhotoConsent.get_consents(self.test_user)
         self.assertEqual(len(user_consents), 2)
         for consent in user_consents:
             self.assertEqual(consent.semester, self.current_semester)
@@ -426,5 +430,22 @@ class PhotoConsentTestCase(BaseTestCase):
         )
         initial_consents = self.test_user.photo_consents.all()
         self.assertEqual(len(initial_consents), 2)
-        user_consents = PhotoConsent.get_consents(self, self.test_user)
+        user_consents = PhotoConsent.get_consents(self.test_user)
         self.assertEqual(len(user_consents), 2)
+
+    def test_get_consents_for_past(self):
+        """
+        It should not be possible to generate new consents for the past.
+        """
+        user_consents = PhotoConsent.get_consents(self.test_user)
+        self.assertEqual(len(user_consents), 2)
+
+        today = timezone.now()
+
+        consents = PhotoConsent.get_consents(
+            self.test_user, time=today - timedelta(weeks=52)
+        )
+        self.assertEqual(len(consents), 0)
+        self.assertEqual(
+            len(PhotoConsent.get_consents(self.test_user)), len(PHOTO_CONSENT_DOMAINS)
+        )

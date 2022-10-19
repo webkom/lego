@@ -220,7 +220,7 @@ class MeSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_photo_consents(self, user):
-        pc = PhotoConsent.get_consents(self, user)
+        pc = PhotoConsent.get_consents(user)
         return PhotoConsentSerializer(instance=pc, many=True).data
 
     def get_is_student(self, user):
