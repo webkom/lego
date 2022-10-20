@@ -99,8 +99,8 @@ Lego runs in `Docker Swarm` and deploys are managed by `Drone` and `Ansible`.
 
 How to deploy:
 
-1.  Make sure the changes is pushed to master and the test passes.
-2.  Have you added some new settings in `settings/`? If so make sure the `Ansible variables` reflects these changes.
+1.  Make sure the changes are pushed to master and the test passes.
+2.  Have you added some new settings in `settings/`? If so, make sure the `Ansible variables` reflects these changes.
 3.  We run migrations automatically, make sure they work!
 4.  Push to the `build` branch. From master: `git push origin master:build`
 5.  Wait for the `build` build to complete. The last step will be `docker build`
@@ -112,7 +112,7 @@ Ansible will automatically run the playbook for deploying the new build to `stag
 
 ### Testing with elasticsearch
 
-By default, development and production uses postgres for search. We can still enable elasicsearch backend in prod, so you can test things locally with elasticsearch. In order to do so, you need to run elasticsearch from `docker-compose.extra.yml` by running `docker-compose -f docker-compose.extra.yml up -d`. Then you need to run lego with the env variable `SEARCH_BACKEND=elasticsearch`. You might need to run the migrate_search and rebuild_index commands to get elasticsearch up to date.
+By default, development and production uses postgres for search. We can still enable elasticsearch backend in prod, so you can test things locally with elasticsearch. In order to do so, you need to run elasticsearch from `docker-compose.extra.yml` by running `docker-compose -f docker-compose.extra.yml up -d`. Then you need to run lego with the env variable `SEARCH_BACKEND=elasticsearch`. You might need to run the migrate_search and rebuild_index commands to get elasticsearch up to date.
 
 </details>
 
@@ -128,7 +128,7 @@ $ apt-get install libpq-dev python3-dev
 
 > For MACOS you need to `brew install postgresql`
 
-If you get an error while running initialize_development mentioning `elasticsearch`, you probably need run the following code, and then start over from `docker-compose up -d`. [Read why and how to make it permanent on Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
+If you get an error while running initialize_development mentioning `elasticsearch`, you probably need to run the following code, and then start over from `docker-compose up -d`. [Read why and how to make it permanent on Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
 
 ```bash
 $ sysctl -w vm.max_map_count=262144
