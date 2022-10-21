@@ -42,7 +42,7 @@ class Survey(BasisModel):
                     for answer in (
                         Answer.objects.filter(question=question).exclude(
                             hide_from_public=True
-                        ),
+                        )
                     )
                 ]
                 shuffle(text_answers)
