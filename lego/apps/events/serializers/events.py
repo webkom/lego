@@ -246,7 +246,10 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
 
         # Only return consents for events that use consent
         # and the user is allowed to register
-        if not obj.use_consent or len(obj.get_possible_pools(request.user)) == 0:
+        if (
+            not obj.use_consent
+            or len(obj.get_possible_pools(request.user, future=True)) == 0
+        ):
             return []
 
         pc = PhotoConsent.get_consents(request.user, time=obj.start_time)
