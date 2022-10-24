@@ -1,5 +1,4 @@
 import operator
-from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import (
@@ -10,6 +9,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.timezone import datetime, timedelta
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -552,24 +552,32 @@ class PhotoConsent(BasisModel):
     class Meta:
         unique_together = ("semester", "year", "domain", "user")
 
-    def get_consents(self, user):
+    @staticmethod
+    def get_consents(user, *, time=None):
         now = timezone.now()
-        current_semester = PhotoConsent.get_semester(now)
-        current_year = now.year
+        consent_time = time if time is not None else now
+        consent_semester = PhotoConsent.get_semester(consent_time)
+        consent_year = consent_time.year
 
-        PhotoConsent.objects.get_or_create(
-            user=user,
-            year=current_year,
-            semester=current_semester,
-            domain=constants.SOCIAL_MEDIA_DOMAIN,
-        )
+        # Don't create PhotoConsent objects for the past
+        if consent_time >= now:
+            PhotoConsent.objects.get_or_create(
+                user=user,
+                year=consent_year,
+                semester=consent_semester,
+                domain=constants.SOCIAL_MEDIA_DOMAIN,
+            )
 
-        PhotoConsent.objects.get_or_create(
-            user=user,
-            year=current_year,
-            semester=current_semester,
-            domain=constants.WEBSITE_DOMAIN,
-        )
+            PhotoConsent.objects.get_or_create(
+                user=user,
+                year=consent_year,
+                semester=consent_semester,
+                domain=constants.WEBSITE_DOMAIN,
+            )
+        if time is not None:
+            return PhotoConsent.objects.filter(
+                user=user, year=consent_year, semester=consent_semester
+            )
         return PhotoConsent.objects.filter(user=user)
 
     @staticmethod
