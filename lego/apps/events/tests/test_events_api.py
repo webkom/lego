@@ -2053,6 +2053,11 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
             event.end_time = date + timedelta(days=10, hours=4)
             event.save()
 
+            # Make sure that we test for pools that are not open yet
+            for pool in event.pools.all():
+                pool.activation_date = date + timedelta(days=1)
+                pool.save()
+
     def test_event_with_consent_in_future(self):
         """
         Getting an event that is some time in the future that the user can register for should
