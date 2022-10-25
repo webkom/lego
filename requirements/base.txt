@@ -2,7 +2,7 @@ django==4.0.8
 ipython==8.5.0
 
 
-psycopg2-binary==2.9.4
+psycopg2-binary==2.9.5
 unicode-slugify==0.1.5
 pyyaml==6.0
 redis==4.3.4
