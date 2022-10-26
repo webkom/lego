@@ -45,6 +45,7 @@ LDAP_GROUPS = [
     "RevyStyret",
     "xcom-data",
     "xcom-komtek",
+    "Nestledere",
 ]
 
 SMTP_HOST = "0.0.0.0"
