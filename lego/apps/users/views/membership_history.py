@@ -1,7 +1,7 @@
 from rest_framework import mixins, permissions, viewsets
 
 from lego.apps.permissions.constants import EDIT
-from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST
+from lego.apps.users.constants import PUBLIC_GROUPS
 from lego.apps.users.filters import MembershipHistoryFilterSet
 from lego.apps.users.models import Membership, MembershipHistory
 from lego.apps.users.serializers.membership_history import MembershipHistorySerializer
@@ -25,8 +25,6 @@ class MembershipHistoryViewSet(
         ).select_related("user", "abakus_group")
 
         if not self.request.user.has_perm(EDIT, Membership):
-            return queryset.filter(
-                abakus_group__type__in=(GROUP_COMMITTEE, GROUP_INTEREST)
-            )
+            return queryset.filter(abakus_group__type__in=PUBLIC_GROUPS)
 
         return queryset
