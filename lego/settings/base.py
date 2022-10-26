@@ -174,7 +174,7 @@ CHANNEL_LAYERS = {
 
 LDAP_BASE_DN = "dc=abakus,dc=no"
 
-CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify"
+CAPTCHA_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
 PUSH_NOTIFICATIONS_SETTINGS = {
     "APNS_USE_SANDBOX": False,

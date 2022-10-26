@@ -17,9 +17,7 @@ SECRET_KEY = "secret"
 
 stripe.api_key = os.environ.get("STRIPE_TEST_KEY")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
-CAPTCHA_KEY = (
-    os.environ.get("CAPTCHA_KEY") or "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-)
+CAPTCHA_KEY = os.environ.get("CAPTCHA_KEY") or "1x0000000000000000000000000000000AA"
 
 SESSION_COOKIE_SECURE = False
 DATABASES = {
