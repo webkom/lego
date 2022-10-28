@@ -413,6 +413,9 @@ class User(
 
     @property
     def profile_picture(self):
+        if settings.ENVIRONMENT_NAME == "staging":
+            return self.get_default_picture()
+
         return self.picture_id or self.get_default_picture()
 
     @property
