@@ -4,7 +4,7 @@ from lego.apps.feeds.activity import Activity
 from lego.apps.feeds.feed_manager import feed_manager
 from lego.apps.feeds.models import NotificationFeed, PersonalFeed, UserFeed
 from lego.apps.feeds.verbs import GroupJoinVerb, PenaltyVerb
-from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST
+from lego.apps.users.constants import PUBLIC_GROUPS
 from lego.apps.users.models import Membership, Penalty
 from lego.apps.users.notifications import PenaltyNotification
 
@@ -15,7 +15,7 @@ class MembershipHandler(Handler):
 
     def handle_create(self, instance, **kwargs):
         group = instance.abakus_group
-        if group.type not in (GROUP_COMMITTEE, GROUP_INTEREST):
+        if group.type not in PUBLIC_GROUPS:
             return
 
         activity = self.get_activity(instance)
