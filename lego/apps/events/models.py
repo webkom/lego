@@ -605,6 +605,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return self.user_reg[0].pool is not None
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
+    def is_on_waiting_list(self, user):
+        return self.registrations.filter(
+            user=user, pool=None, status=constants.SUCCESS_REGISTER
+        ).exists()
+
     def get_registration(self, user):
         return self.registrations.filter(user=user).exclude(pool=None).first()
 

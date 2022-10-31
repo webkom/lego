@@ -191,7 +191,16 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 ),
             ),
             Prefetch(
-                "registrations", queryset=Registration.objects.select_related("user")
+                "registrations",
+                queryset=Registration.objects.select_related("user").prefetch_related(
+                    Prefetch(
+                        "user__photo_consents",
+                        queryset=PhotoConsent.objects.filter(
+                            year=event.start_time.year,
+                            semester=PhotoConsent.get_semester(event.start_time),
+                        ),
+                    ),
+                ),
             ),
         )
         event = queryset.first()

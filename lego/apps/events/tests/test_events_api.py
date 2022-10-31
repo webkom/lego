@@ -2140,3 +2140,72 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
             0,
             "photoConsents should not exist on the event response",
         )
+
+    def test_event_consent_admitted(self):
+        """
+        PhotoConsents should return consents if the user is admitted
+        """
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        for pool in event.pools.all():
+            pool.activation_date = timezone.now() - timedelta(days=1)
+            pool.save()
+        event.save()
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+
+        event.register(
+            Registration.objects.get_or_create(event=event, user=self.abakus_user)[0]
+        )
+
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+        self.assertEqual(
+            len(user_consents),
+            len(PHOTO_CONSENT_DOMAINS) * 2,
+            "User should have an extra semester worths of consents",
+        )
+
+        for consent in event_response.json()["photoConsents"]:
+            self.assertIn(
+                (consent["year"], consent["semester"], consent["domain"]),
+                [(c.year, c.semester, c.domain) for c in user_consents],
+                "The users consent should exist on the event response",
+            )
+
+    def test_event_consent_waiting_list(self):
+        """
+        PhotoConsents should return consents if the user is on the waiting list
+        """
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        for pool in event.pools.all():
+            pool.activation_date = timezone.now() - timedelta(days=1)
+            pool.capacity = 0
+            pool.save()
+        event.save()
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+
+        event.register(
+            Registration.objects.get_or_create(event=event, user=self.abakus_user)[0]
+        )
+
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(event.id))
+
+        user_consents = PhotoConsent.get_consents(self.abakus_user)
+        self.assertEqual(
+            len(user_consents),
+            len(PHOTO_CONSENT_DOMAINS) * 2,
+            "User should have an extra semester worths of consents",
+        )
+
+        for consent in event_response.json()["photoConsents"]:
+            self.assertIn(
+                (consent["year"], consent["semester"], consent["domain"]),
+                [(c.year, c.semester, c.domain) for c in user_consents],
+                "The users consent should exist on the event response",
+            )
