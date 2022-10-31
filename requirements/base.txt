@@ -1,5 +1,5 @@
 django==4.0.8
-ipython==8.5.0
+ipython==8.6.0
 
 
 psycopg2-binary==2.9.5
