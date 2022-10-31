@@ -245,10 +245,15 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
             return []
 
         # Only return consents for events that use consent
-        # and the user is allowed to register
+        if not obj.use_consent:
+            return []
+
+        # If the user is not allowed to register and is not registered,
+        # there is no need for consents
         if (
-            not obj.use_consent
-            or len(obj.get_possible_pools(request.user, future=True)) == 0
+            not obj.is_admitted(request.user)
+            and not obj.is_on_waiting_list(request.user)
+            and len(obj.get_possible_pools(request.user, future=True)) == 0
         ):
             return []
 
