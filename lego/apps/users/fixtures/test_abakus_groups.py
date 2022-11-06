@@ -165,6 +165,17 @@ test_tree = {
                         },
                         {},
                     ],
+                    "PR": [
+                        {
+                            "type": GROUP_COMMITTEE,
+                            "permissions": [
+                                "/sudo/admin/companyinterest/",
+                                "/sudo/admin/surveys/",
+                                "/sudo/admin/submissions/",
+                            ],
+                        },
+                        {},
+                    ],
                     "Webkom": [
                         {"type": GROUP_COMMITTEE, "permissions": ["/sudo/"]},
                         {},

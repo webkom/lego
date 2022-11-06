@@ -174,7 +174,7 @@ _test_event_data = [
         "startTime": "2015-09-01T13:20:30Z",
         "endTime": "2015-09-01T13:20:30Z",
         "mergeTime": "2016-01-01T13:20:30Z",
-        "canViewGroups": [21, 25],  # Abakus & ababrygg
+        "canViewGroups": [21, 26],  # Abakus & ababrygg
         "requireAuth": True,
         "pools": [
             {

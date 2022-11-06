@@ -4,7 +4,7 @@
     title: POOLS_WITH_REGISTRATIONS
     description: TestIngress1
     text: TestText1
-    event_type: 0
+    event_type: company_presentation
     event_status_type: NORMAL
     location: R1
     company: 1
@@ -19,7 +19,7 @@
     title: NO_POOLS_ABAKUS
     description: TestIngress2
     text: TestText2
-    event_type: 3
+    event_type: company_presentation
     event_status_type: NORMAL
     location: F254
     company: 2
@@ -35,7 +35,7 @@
     title: NO_POOLS_WEBKOM
     description: TestIngress3
     text: TestText3
-    event_type: 3
+    event_type: company_presentation
     event_status_type: NORMAL
     location: F254
     company: 3
@@ -52,7 +52,7 @@
     title: POOLS_NO_REGISTRATIONS
     description: TestIngress4
     text: TestText4
-    event_type: 4
+    event_type: company_presentation
     event_status_type: NORMAL
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -67,7 +67,7 @@
     title: POOLS_AND_PRICED
     description: TestIngress5
     text: TestText5
-    event_type: 0
+    event_type: party
     event_status_type: NORMAL
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -86,7 +86,7 @@
     title: GROUP_ONLY
     description: TestIngress6
     text: TestText6
-    event_type: 0
+    event_type: party
     event_status_type: NORMAL
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -102,7 +102,7 @@
     title: TBA_EVENT
     description: TestIngress7
     text: TestText7
-    event_type: 0
+    event_type: party
     event_status_type: "TBA"
     location: blabla
     start_time: "2011-09-01T13:20:30+03:00"
@@ -116,7 +116,7 @@
     title: OPEN_EVENT
     description: TestIngress8
     text: TestText8
-    event_type: 0
+    event_type: party
     event_status_type: "OPEN"
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -130,7 +130,7 @@
     title: INFINITE_EVENT
     description: TestIngress9
     text: TestText9
-    event_type: 0
+    event_type: party
     event_status_type: "INFINITE"
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -144,7 +144,7 @@
     title: EXPORT_INFO_EVENT
     description: RonaTime
     text: RonaParty
-    event_type: 0
+    event_type: party
     event_status_type: NORMAL
     location: "Scandic Lerkendal"
     start_time: "2118-09-01T13:20:30+03:00"
@@ -159,7 +159,7 @@
     title: WEBKOM_ONLY
     description: TestIngress11
     text: TestText11
-    event_type: 0
+    event_type: party
     event_status_type: NORMAL
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -175,7 +175,7 @@
     title: BEDKOM_ONLY
     description: TestIngress11
     text: TestText11
-    event_type: 0
+    event_type: party
     event_status_type: NORMAL
     location: R1
     start_time: "2011-09-01T13:20:30+03:00"
@@ -232,7 +232,7 @@
     name: Users
     capacity: 10
     event: 5
-    activation_date: "2011-09-01T13:20:30+03:00"
+    activation_date: "2016-01-01T13:20:30+03:00"
     permission_groups:
       - - Users
 

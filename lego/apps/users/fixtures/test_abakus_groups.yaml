@@ -330,7 +330,7 @@
     show_badge: true
     active: true
     lft: 1
-    rght: 20
+    rght: 22
     tree_id: 18
     level: 0
 - model: users.abakusgroup
@@ -349,7 +349,7 @@
     show_badge: true
     active: true
     lft: 2
-    rght: 9
+    rght: 11
     tree_id: 18
     level: 1
 - model: users.abakusgroup
@@ -393,6 +393,24 @@
   pk: 24
   fields:
     deleted: false
+    name: PR
+    description: ''
+    contact_email: ''
+    parent: 21
+    logo: null
+    type: komite
+    text: ''
+    permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/", "/sudo/admin/submissions/"]'
+    show_badge: true
+    active: true
+    lft: 7
+    rght: 8
+    tree_id: 18
+    level: 2
+- model: users.abakusgroup
+  pk: 25
+  fields:
+    deleted: false
     name: Webkom
     description: ''
     contact_email: ''
@@ -403,8 +421,8 @@
     permissions: '["/sudo/"]'
     show_badge: true
     active: true
-    lft: 7
-    rght: 8
+    lft: 9
+    rght: 10
     tree_id: 18
     level: 2
 - model: users.abakusgroup
@@ -421,8 +439,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 10
-    rght: 19
+    lft: 12
+    rght: 21
     tree_id: 18
     level: 1
 - model: users.abakusgroup
@@ -439,12 +457,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 11
-    rght: 12
+    lft: 13
+    rght: 14
     tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 25
+  pk: 26
   fields:
     deleted: false
     name: AbaBrygg
@@ -471,12 +489,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 13
-    rght: 14
+    lft: 15
+    rght: 16
     tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 26
+  pk: 27
   fields:
     deleted: false
     name: abaGolf
@@ -500,12 +518,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 15
-    rght: 16
+    lft: 17
+    rght: 18
     tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 27
+  pk: 28
   fields:
     deleted: false
     name: Turgruppa
@@ -523,12 +541,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 17
-    rght: 18
+    lft: 19
+    rght: 20
     tree_id: 18
     level: 2
 - model: users.abakusgroup
-  pk: 28
+  pk: 29
   fields:
     deleted: false
     name: Students

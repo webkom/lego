@@ -137,7 +137,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.authorized_user)
         response = self.client.post(
             self.url,
-            {"message": "test_message", "groups": [2], "events": [1], "fromGroup": 29},
+            {"message": "test_message", "groups": [2], "events": [1], "fromGroup": 999},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
