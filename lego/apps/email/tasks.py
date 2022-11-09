@@ -132,4 +132,5 @@ def send_weekly_email(self, logger_context=None):
         for user in recipients
     )
     datatuple = tuple(tuppel for tuppel in datatuple if tuppel[1] is not None)
-    MessageProcessor.send_mass_mail_html(datatuple)
+    if datatuple:
+        MessageProcessor.send_mass_mail_html(datatuple)

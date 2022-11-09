@@ -134,11 +134,13 @@ class MessageProcessor:
         return connection.send_messages(messages)
 
     @staticmethod
-    def send_mass_mail_html(datatuple):
+    def send_mass_mail_html(datatuple: tuple[tuple[str, str, str, list[str]]]):
 
         messages = []
         for subject, html, from_email, recipients in datatuple:
-            message = EmailMultiAlternatives(subject, html, from_email, recipients)
+            message: EmailMultiAlternatives = EmailMultiAlternatives(
+                subject, html, from_email, recipients
+            )
             message.content_subtype = "html"
             messages.append(message)
 
