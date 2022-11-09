@@ -11,7 +11,7 @@ from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseTestCase
 
 
-@patch("lego.apps.email.tasks.send_mass_mail")
+@patch("lego.apps.restricted.message_processor.MessageProcessor.send_mass_mail_html")
 class WeeklyEmailTestCase(BaseTestCase):
     fixtures = [
         "test_users.yaml",
@@ -59,7 +59,7 @@ class WeeklyEmailTestCase(BaseTestCase):
         self.assertTrue(send_mail_mock.called)
 
 
-@patch("lego.apps.email.tasks.send_mass_mail")
+@patch("lego.apps.restricted.message_processor.MessageProcessor.send_mass_mail_html")
 class WeeklyEmailTestCaseNoWeekly(WeeklyEmailTestCase):
     fixtures = [
         "test_users.yaml",
@@ -97,7 +97,7 @@ class WeeklyEmailTestCaseNoWeekly(WeeklyEmailTestCase):
         self.assertEmailContains(send_mail_mock, "Gutta Consulting")
 
 
-@patch("lego.apps.email.tasks.send_mass_mail")
+@patch("lego.apps.restricted.message_processor.MessageProcessor.send_mass_mail_html")
 class WeeklyEmailTestCaseNoEventsOrWeekly(WeeklyEmailTestCase):
     fixtures = [
         "test_users.yaml",
@@ -131,7 +131,7 @@ class WeeklyEmailTestCaseNoEventsOrWeekly(WeeklyEmailTestCase):
         self.assertEmailContains(send_mail_mock, "Gutta Consulting")
 
 
-@patch("lego.apps.email.tasks.send_mass_mail")
+@patch("lego.apps.restricted.message_processor.MessageProcessor.send_mass_mail_html")
 class WeeklyEmailTestCaseNothing(BaseTestCase):
     fixtures = [
         "test_users.yaml",
@@ -143,10 +143,10 @@ class WeeklyEmailTestCaseNothing(BaseTestCase):
 
     def test_send_mail(self, send_mass_mail_mock):
         send_weekly_email()
-        self.assertEquals(len(send_mass_mail_mock.call_args.args[0]), 0)
+        self.assertFalse(send_mass_mail_mock.called)
 
 
-@patch("lego.apps.email.tasks.send_mass_mail")
+@patch("lego.apps.restricted.message_processor.MessageProcessor.send_mass_mail_html")
 class WeeklyEmailTaskTest(BaseTestCase):
     fixtures = [
         "test_users.yaml",
@@ -178,4 +178,4 @@ class WeeklyEmailTaskTest(BaseTestCase):
             notification_setting.save()
 
         send_weekly_email()
-        self.assertEquals(len(send_mass_mail_mock.call_args.args[0]), 0)
+        self.assertFalse(send_mass_mail_mock.called)
