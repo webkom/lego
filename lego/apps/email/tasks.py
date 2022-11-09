@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.core.mail import send_mass_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -16,6 +15,7 @@ from lego.apps.joblistings.models import Joblisting
 from lego.apps.notifications.constants import EMAIL, WEEKLY_MAIL
 from lego.apps.notifications.models import NotificationSetting
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.restricted.message_processor import MessageProcessor
 from lego.apps.tags.models import Tag
 from lego.apps.users.models import AbakusGroup
 from lego.utils.tasks import AbakusTask
@@ -132,4 +132,4 @@ def send_weekly_email(self, logger_context=None):
         for user in recipients
     )
     datatuple = tuple(tuppel for tuppel in datatuple if tuppel[1] is not None)
-    send_mass_mail(datatuple, fail_silently=False)
+    MessageProcessor.send_mass_mail_html(datatuple)
