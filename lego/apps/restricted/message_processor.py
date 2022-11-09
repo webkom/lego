@@ -3,7 +3,7 @@ from email.message import Message
 from email.mime.text import MIMEText
 
 from django.conf import settings
-from django.core.mail import get_connection
+from django.core.mail import EmailMultiAlternatives, get_connection
 
 from channels.db import database_sync_to_async
 from structlog import get_logger
@@ -131,6 +131,19 @@ class MessageProcessor:
         log.info(
             "restricted_mail_process_messages", sender=sender, recipients=len(messages)
         )
+        return connection.send_messages(messages)
+
+    @staticmethod
+    def send_mass_mail_html(datatuple):
+
+        messages = []
+        for subject, html, from_email, recipients in datatuple:
+            message = EmailMultiAlternatives(subject, html, from_email, recipients)
+            message.content_subtype = "html"
+            messages.append(message)
+
+        connection = get_connection(fail_silently=False)
+        log.info("restricted_mail_mass_html_message", recipients=len(messages))
         return connection.send_messages(messages)
 
     @staticmethod
