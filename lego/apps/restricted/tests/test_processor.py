@@ -113,6 +113,43 @@ class MessageProcessorTestCase(BaseTestCase):
             first_message.keys(),
         )
 
+    def test_send_mass_html(self):
+        """Test the outbox and make sure we have correct headers in the messages."""
+
+        messages = self.processor.send_mass_mail_html(
+            (
+                (
+                    "test",
+                    "<h1>test</h1>",
+                    "test@test.com",
+                    ["test1@test.com", "test2@test.com"],
+                ),
+                (
+                    "test",
+                    "<h1>test2</h1>",
+                    "test@test.com",
+                    ["test1@test.com", "test2@test.com"],
+                ),
+            ),
+        )
+        self.assertEqual(2, messages)
+
+        outbox = mail.outbox
+        first_message = outbox[0].message()
+        self.assertSequenceEqual(
+            [
+                "Content-Type",
+                "MIME-Version",
+                "Content-Transfer-Encoding",
+                "Subject",
+                "From",
+                "To",
+                "Date",
+                "Message-ID",
+            ],
+            first_message.keys(),
+        )
+
     @async_test
     async def test_send_wrong_addr(self):
         """Sending from wrong addr shouldn't crash and burn"""
