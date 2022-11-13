@@ -35,7 +35,7 @@
     show_badge: true
     active: true
     lft: 1
-    rght: 26
+    rght: 28
     tree_id: 2
     level: 0
 - model: users.abakusgroup
@@ -54,7 +54,7 @@
     show_badge: true
     active: true
     lft: 2
-    rght: 23
+    rght: 25
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -97,14 +97,14 @@
   pk: 6
   fields:
     deleted: false
-    name: Bedkom
+    name: Bankkom
     description: ''
     contact_email: ''
     parent: 3
-    logo: abakus_bedkom.png
+    logo: abakus_bankkom.png
     type: komite
     text: ''
-    permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/", "/sudo/admin/submissions/"]'
+    permissions: '[]'
     show_badge: true
     active: true
     lft: 7
@@ -115,11 +115,11 @@
   pk: 7
   fields:
     deleted: false
-    name: Fagkom
+    name: Bedkom
     description: ''
     contact_email: ''
     parent: 3
-    logo: abakus_fagkom.png
+    logo: abakus_bedkom.png
     type: komite
     text: ''
     permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/", "/sudo/admin/submissions/"]'
@@ -133,14 +133,14 @@
   pk: 8
   fields:
     deleted: false
-    name: Koskom
+    name: Fagkom
     description: ''
     contact_email: ''
     parent: 3
-    logo: abakus_koskom.png
+    logo: abakus_fagkom.png
     type: komite
     text: ''
-    permissions: '[]'
+    permissions: '["/sudo/admin/companyinterest/", "/sudo/admin/surveys/", "/sudo/admin/submissions/"]'
     show_badge: true
     active: true
     lft: 11
@@ -151,11 +151,11 @@
   pk: 9
   fields:
     deleted: false
-    name: LaBamba
+    name: Koskom
     description: ''
     contact_email: ''
     parent: 3
-    logo: abakus_labamba.png
+    logo: abakus_koskom.png
     type: komite
     text: ''
     permissions: '[]'
@@ -169,11 +169,11 @@
   pk: 10
   fields:
     deleted: false
-    name: PR
+    name: LaBamba
     description: ''
     contact_email: ''
     parent: 3
-    logo: abakus_pr.png
+    logo: abakus_labamba.png
     type: komite
     text: ''
     permissions: '[]'
@@ -187,11 +187,11 @@
   pk: 11
   fields:
     deleted: false
-    name: readme
+    name: PR
     description: ''
     contact_email: ''
     parent: 3
-    logo: abakus_readme.png
+    logo: abakus_pr.png
     type: komite
     text: ''
     permissions: '[]'
@@ -205,6 +205,24 @@
   pk: 12
   fields:
     deleted: false
+    name: readme
+    description: ''
+    contact_email: ''
+    parent: 3
+    logo: abakus_readme.png
+    type: komite
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 19
+    rght: 20
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 13
+  fields:
+    deleted: false
     name: Webkom
     description: ''
     contact_email: ''
@@ -215,12 +233,12 @@
     permissions: '["/sudo/"]'
     show_badge: true
     active: true
-    lft: 19
-    rght: 20
+    lft: 21
+    rght: 22
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 13
+  pk: 14
   fields:
     deleted: false
     name: Hovedstyret
@@ -233,12 +251,12 @@
     permissions: '["/sudo/admin/"]'
     show_badge: true
     active: true
-    lft: 21
-    rght: 22
+    lft: 23
+    rght: 24
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 14
+  pk: 15
   fields:
     deleted: false
     name: Interessegrupper
@@ -251,12 +269,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 24
-    rght: 25
+    lft: 26
+    rght: 27
     tree_id: 2
     level: 1
 - model: users.abakusgroup
-  pk: 15
+  pk: 16
   fields:
     deleted: false
     name: Students
@@ -274,13 +292,13 @@
     tree_id: 3
     level: 0
 - model: users.abakusgroup
-  pk: 16
+  pk: 17
   fields:
     deleted: false
     name: Datateknologi
     description: ''
     contact_email: ''
-    parent: 15
+    parent: 16
     logo: null
     type: annen
     text: ''
@@ -292,13 +310,13 @@
     tree_id: 3
     level: 1
 - model: users.abakusgroup
-  pk: 17
+  pk: 18
   fields:
     deleted: false
     name: 1. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 17
     logo: null
     type: klasse
     text: ''
@@ -310,13 +328,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 18
+  pk: 19
   fields:
     deleted: false
     name: 2. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 17
     logo: null
     type: klasse
     text: ''
@@ -328,13 +346,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 19
+  pk: 20
   fields:
     deleted: false
     name: 3. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 17
     logo: null
     type: klasse
     text: ''
@@ -346,13 +364,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 20
+  pk: 21
   fields:
     deleted: false
     name: 4. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 17
     logo: null
     type: klasse
     text: ''
@@ -364,13 +382,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 21
+  pk: 22
   fields:
     deleted: false
     name: 5. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 17
     logo: null
     type: klasse
     text: ''
@@ -382,13 +400,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 22
+  pk: 23
   fields:
     deleted: false
     name: Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 15
+    parent: 16
     logo: null
     type: annen
     text: ''
@@ -400,13 +418,13 @@
     tree_id: 3
     level: 1
 - model: users.abakusgroup
-  pk: 23
+  pk: 24
   fields:
     deleted: false
     name: 1. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 22
+    parent: 23
     logo: null
     type: klasse
     text: ''
@@ -418,13 +436,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 24
+  pk: 25
   fields:
     deleted: false
     name: 2. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 22
+    parent: 23
     logo: null
     type: klasse
     text: ''
@@ -436,13 +454,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 25
+  pk: 26
   fields:
     deleted: false
     name: 3. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 22
+    parent: 23
     logo: null
     type: klasse
     text: ''
@@ -454,13 +472,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 26
+  pk: 27
   fields:
     deleted: false
     name: 4. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 22
+    parent: 23
     logo: null
     type: klasse
     text: ''
@@ -472,13 +490,13 @@
     tree_id: 3
     level: 2
 - model: users.abakusgroup
-  pk: 27
+  pk: 28
   fields:
     deleted: false
     name: 5. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 22
+    parent: 23
     logo: null
     type: klasse
     text: ''
