@@ -26,6 +26,13 @@
     file_type: image
     token: token
     public: true
+- pk: abakus_bankkom.png
+  model: files.File
+  fields:
+    state: ready
+    file_type: image
+    token: token
+    public: true
 - pk: abakus_bedkom.png
   model: files.File
   fields:

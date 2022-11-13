@@ -16,6 +16,10 @@
 
 - model: tags.Tag
   fields:
+    tag: bankkom
+
+- model: tags.Tag
+  fields:
     tag: bedkom
 
 - model: tags.Tag
