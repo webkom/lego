@@ -58,6 +58,10 @@ initial_tree = {
                         {"type": GROUP_COMMITTEE, "logo_id": "abakus_backup.png"},
                         {},
                     ],
+                    "Bankkom": [
+                        {"type": GROUP_COMMITTEE, "logo_id": "abakus_bankkom.png"},
+                        {},
+                    ],
                     "Bedkom": [
                         {
                             "type": GROUP_COMMITTEE,
