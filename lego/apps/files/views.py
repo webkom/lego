@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from lego.apps.files.exceptions import UnknownFileType
 
 from .models import File
-from .serializers import FileUploadSerializer
+from .serializers import FileSaveForUseSerializer, FileUploadSerializer
 from .utils import prepare_file_upload
 from .validators import KEY_REGEX_RAW
 
@@ -45,6 +45,17 @@ class FileViewSet(viewsets.GenericViewSet):
             {"url": url, "file_key": file_key, "file_token": token, "fields": fields},
             status=status.HTTP_201_CREATED,
         )
+
+    @decorators.action(detail=True, methods=["PATCH"])
+    def set_save_for_use(self, request, *args, **kwargs):
+        file = self.get_object()
+        serializer = FileSaveForUseSerializer(data=request.data)
+        if serializer.is_valid():
+            file.save_for_use = serializer.validated_data["save_for_use"]
+            file.save()
+            return Response({"Success"})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @decorators.action(
         detail=True,
