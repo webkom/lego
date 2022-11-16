@@ -25,6 +25,7 @@ from lego.apps.events.exceptions import (
     RegistrationsExistInPool,
 )
 from lego.apps.events.filters import EventsFilterSet
+from lego.apps.files.models import File
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
@@ -35,6 +36,7 @@ from lego.apps.events.serializers.events import (
     EventReadSerializer,
     EventReadUserDetailedSerializer,
     EventUserRegSerializer,
+    ImageGallerySerializer,
     populate_event_registration_users_with_grade,
 )
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
@@ -270,6 +272,20 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             registrations__status=constants.SUCCESS_REGISTER,
             registrations__user=request.user,
             start_time__gt=timezone.now(),
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @decorators.action(
+        detail=False,
+        serializer_class=ImageGallerySerializer,
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def imagegallery(self, request):
+        queryset = File.objects.filter(
+            file_type=constants.IMAGE,
+            public=True,
+            save_for_use=True,
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
