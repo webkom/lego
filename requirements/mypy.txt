@@ -10,4 +10,4 @@ types-python-slugify==6.1.0
 types-PyYAML==6.0.12.2
 types-requests==2.28.11.4
 types-six==1.16.21.3
-types-urllib3==1.26.25.1
+types-urllib3==1.26.25.4
