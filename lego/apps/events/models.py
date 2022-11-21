@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Union
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -364,8 +365,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     )
 
             with transaction.atomic():
+                # This select_for_update will lock both the event row, and the pool
+                # uregistered from. This makes sure that noone can register while we are bumping.
                 locked_event = Event.objects.select_for_update().get(pk=self.id)
-                locked_pool = locked_event.pools.get(id=pool_id)
+                locked_pool = locked_event.pools.select_for_update().get(id=pool_id)
                 locked_event.check_for_bump_or_rebalance(locked_pool)
                 follow_event_item = FollowEvent.objects.filter(
                     follower=registration.user, target=locked_event
@@ -373,7 +376,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if follow_event_item:
                     follow_event_item.delete()
 
-    def check_for_bump_or_rebalance(self, open_pool):
+    def check_for_bump_or_rebalance(self, open_pool: "Pool"):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
@@ -382,7 +385,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         If no one is waiting for `open_pool`, check if anyone is waiting for
         any of the other pools and attempt to rebalance.
 
-        NOTE: Remember to lock the event using select_for_update!
+        NOTE: Remember to lock the event using select_for_update! AND lock the
+        corresponding pools by including all pools in the select statement.
 
         :param open_pool: The pool where the unregistration happened.
         """
@@ -395,7 +399,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                         return self.bump(to_pool=open_pool)
                 self.try_to_rebalance(open_pool=open_pool)
 
-    def bump(self, to_pool=None):
+    def bump(self, to_pool: "Pool" = None):
         """
         Pops the appropriate registration from the waiting list,
         and moves the registration from the waiting list to `to pool`.
@@ -403,21 +407,22 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param to_pool: A pool with a free slot. If the event is merged, this will be null.
         """
         if self.waiting_registrations.exists():
-            first_waiting = self.pop_from_waiting_list(to_pool)
-            if first_waiting:
-                new_pool = None
-                if to_pool:
-                    new_pool = to_pool
-                    new_pool.increment()
-                else:
-                    for pool in self.pools.all():
-                        if self.can_register(first_waiting.user, pool):
-                            new_pool = pool
-                            new_pool.increment()
-                            break
-                first_waiting.pool = new_pool
-                first_waiting.save(update_fields=["pool"])
-                handle_event(first_waiting, "bump")
+            with transaction.atomic():
+                first_waiting = self.pop_from_waiting_list(to_pool)
+                if first_waiting:
+                    new_pool = None
+                    if to_pool:
+                        new_pool = to_pool
+                        new_pool.increment()
+                    else:
+                        for pool in self.pools.select_for_update().all():
+                            if self.can_register(first_waiting.user, pool):
+                                new_pool = pool
+                                new_pool.increment()
+                                break
+                    first_waiting.pool = new_pool
+                    first_waiting.save(update_fields=["pool"])
+                    handle_event(first_waiting, "bump")
 
     def early_bump(self, opening_pool):
         """
@@ -526,7 +531,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             },
         )[0]
 
-    def pop_from_waiting_list(self, to_pool=None):
+    def pop_from_waiting_list(self, to_pool=None) -> Union["Registration", None]:
         """
         Pops the first user in the waiting list that can join `to_pool`.
         If `from_pool=None`, pops the first user in the waiting list overall.
