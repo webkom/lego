@@ -264,7 +264,7 @@
     name: Abakusmember
     capacity: 2
     event: 10
-    counter: 2
+    counter: 1
     activation_date: "2019-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
