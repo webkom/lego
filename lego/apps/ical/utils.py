@@ -16,9 +16,9 @@ def add_events_to_ical_feed(
         add_event_to_ical_feed(feed, event, price, title, ical_starttime, ical_endtime)
 
 
-def add_meetings_to_ical_feed(feed, meetings):
+def add_meetings_to_ical_feed(feed, meetings, user):
     for meeting in meetings:
-        add_meeting_to_ical_feed(feed, meeting)
+        add_meeting_to_ical_feed(feed, meeting, user)
 
 
 def add_event_to_ical_feed(
@@ -40,7 +40,7 @@ def add_event_to_ical_feed(
     )
 
 
-def add_meeting_to_ical_feed(feed, meeting):
+def add_meeting_to_ical_feed(feed, meeting, user):
     desc_context = {
         "title": meeting.title,
         "report": meeting.report,
@@ -59,6 +59,7 @@ def add_meeting_to_ical_feed(feed, meeting):
         start_datetime=meeting.start_time,
         end_datetime=meeting.end_time,
         location=meeting.location,
+        transparency="OPAQUE" if user in meeting.participants else "TRANSPARENT",
     )
 
 
