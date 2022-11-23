@@ -95,7 +95,7 @@ class ICalViewset(viewsets.ViewSet):
         meetings = permission_handler.filter_queryset(request.user, Meeting.objects)
 
         utils.add_events_to_ical_feed(feed, following_events)
-        utils.add_meetings_to_ical_feed(feed, meetings)
+        utils.add_meetings_to_ical_feed(feed, meetings, request.user)
 
         return utils.render_ical_response(feed, calendar_type)
 
