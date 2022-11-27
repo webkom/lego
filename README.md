@@ -12,7 +12,7 @@
 
 ## Getting started
 
-LEGO requires `python3.9`, `python3.9-venv`, `docker` and `docker-compose`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `python3.11-venv`, `docker` and `docker-compose`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
 
 ```bash
 # Initial setup (only need to once)
