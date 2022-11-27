@@ -125,7 +125,7 @@ def send_weekly_email(self, logger_context=None):
     datatuple = (
         (
             f"Ukesmail uke {week_number}",
-            transform(create_weekly_mail(user)),
+            transform(html) if (html := create_weekly_mail(user)) is not None else None,
             settings.DEFAULT_FROM_EMAIL,
             [user.email],
         )
