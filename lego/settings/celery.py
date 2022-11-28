@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import os
 
-import celery  # noqa
+from celery.app import Celery
 from celery.schedules import crontab
 from celery.signals import (
     beat_init,
@@ -13,7 +13,7 @@ from celery.signals import (
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lego.settings")
 
-app = celery.Celery("lego")
+app = Celery("lego")
 
 
 @eventlet_pool_started.connect()

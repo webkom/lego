@@ -1,4 +1,5 @@
-from django.core.validators import RegexValidator, _lazy_re_compile
+from django.core.validators import RegexValidator
+from django.utils.regex_helper import _lazy_re_compile
 
 slug_re = _lazy_re_compile(r"^[-a-zA-ZæøåÆØÅ0-9]+\Z")
 validate_tag = RegexValidator(

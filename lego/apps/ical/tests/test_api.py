@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 
-from icalendar import Calendar
+from icalendar.cal import Calendar
 
 from lego.apps.events.models import Event, Pool
 from lego.apps.ical.models import ICalToken
