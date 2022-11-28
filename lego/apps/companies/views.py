@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 
 from lego.apps.companies.filters import CompanyInterestFilterSet, SemesterFilterSet
 from lego.apps.companies.models import (
@@ -45,8 +46,8 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 class CompanyViewSet(
     AllowedPermissionsMixin,
-    viewsets.mixins.ListModelMixin,
-    viewsets.mixins.RetrieveModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
     queryset = Company.objects.all().filter(active=True)

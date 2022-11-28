@@ -1,4 +1,5 @@
 from rest_framework import decorators, exceptions, permissions, status, viewsets
+from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
 from push_notifications.api.rest_framework import (
@@ -21,9 +22,7 @@ from .serializers import (
 )
 
 
-class NotificationSettingsViewSet(
-    viewsets.mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class NotificationSettingsViewSet(ListModelMixin, viewsets.GenericViewSet):
     """
     Manage the notification channels to the authenticated users.
     The default is to send all notifications on all channels.

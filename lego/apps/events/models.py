@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from datetime import timedelta
-from typing import Union
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -376,7 +377,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if follow_event_item:
                     follow_event_item.delete()
 
-    def check_for_bump_or_rebalance(self, open_pool: "Pool"):
+    def check_for_bump_or_rebalance(self, open_pool: Pool):
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
@@ -399,7 +400,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                         return self.bump(to_pool=open_pool)
                 self.try_to_rebalance(open_pool=open_pool)
 
-    def bump(self, to_pool: "Pool" = None):
+    def bump(self, to_pool: Pool | None = None):
         """
         Pops the appropriate registration from the waiting list,
         and moves the registration from the waiting list to `to pool`.
@@ -531,7 +532,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             },
         )[0]
 
-    def pop_from_waiting_list(self, to_pool=None) -> Union["Registration", None]:
+    def pop_from_waiting_list(self, to_pool: Pool | None = None) -> Registration | None:
         """
         Pops the first user in the waiting list that can join `to_pool`.
         If `from_pool=None`, pops the first user in the waiting list overall.

@@ -35,10 +35,13 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
     user = PrimaryKeyRelatedFieldNoPKOpt(queryset=User.objects.all())
     pool = PrimaryKeyRelatedFieldNoPKOpt(queryset=Pool.objects.all(), required=False)
     feedback = serializers.CharField(
-        required=False, max_length=Registration._meta.get_field("feedback").max_length
+        required=False,
+        max_length=Registration._meta.get_field("feedback").max_length or 255,
     )
     admin_registration_reason = serializers.CharField(
-        max_length=Registration._meta.get_field("admin_registration_reason").max_length,
+        max_length=(
+            Registration._meta.get_field("admin_registration_reason").max_length or 255
+        ),
         required=True,
     )
 

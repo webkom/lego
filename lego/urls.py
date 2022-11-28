@@ -12,14 +12,15 @@ from rest_framework_jwt.views import (
 )
 
 from lego.api.urls import urlpatterns as api
+from lego.utils.types import URLList
 
-jwt_urlpatterns = [
+jwt_urlpatterns: URLList = [
     re_path(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),
     re_path(r"^token-auth/refresh/$", refresh_jwt_token, name="refresh_jwt_token"),
     re_path(r"^token-auth/verify/$", verify_jwt_token, name="verify_jwt_token"),
 ]
 
-authorization_urlpatterns = [
+authorization_urlpatterns: URLList = [
     re_path(r"^oauth2/", include("lego.apps.oauth.urls")),
     re_path(r"", include((jwt_urlpatterns, "jwt"), namespace="jwt")),
     re_path(
@@ -30,16 +31,16 @@ authorization_urlpatterns = [
     re_path(r"^logout/", LogoutView.as_view(next_page="/"), name="logout"),
 ]
 
-urlpatterns = [
+urlpatterns: URLList = [
     re_path(r"^api/", include("lego.api.urls", namespace="api")),
-    re_path(r"^authorization/", include(authorization_urlpatterns)),
+    re_path(r"^authorization/", include(authorization_urlpatterns)),  # type: ignore
     re_path(r"^health/", include("health_check.urls")),
     re_path(
         r"^api-docs/",
-        include_docs_urls(  # type: ignore
+        include_docs_urls(
             title=settings.SITE["name"],
             description=settings.SITE["slogan"],
-            patterns=api,
+            patterns=api,  # type: ignore
             schema_url="/api",
         ),
     ),
@@ -51,4 +52,4 @@ urlpatterns = [
 if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
-    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns  # type: ignore
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls)), *urlpatterns]

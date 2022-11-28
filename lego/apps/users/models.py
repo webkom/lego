@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 import operator
 
 from django.conf import settings
