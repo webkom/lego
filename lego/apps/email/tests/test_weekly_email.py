@@ -139,6 +139,8 @@ class WeeklyEmailTestCaseNothing(BaseTestCase):
     ]
 
     def setUp(self):
+        pr = AbakusGroup.objects.get(name="PR")
+        pr.add_user(User.objects.get(pk=10))
         return
 
     def test_send_mail(self, send_mass_mail_mock):
