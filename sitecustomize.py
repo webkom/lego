@@ -1,2 +1,3 @@
-import coverage
-coverage.process_startup()
+from coverage.control import process_startup
+
+process_startup()

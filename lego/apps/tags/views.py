@@ -1,5 +1,6 @@
 from django.db.models import Count
 from rest_framework import decorators, permissions, viewsets
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 
 from lego.apps.tags.models import Tag
@@ -7,8 +8,8 @@ from lego.apps.tags.serializers import TagDetailSerializer, TagListSerializer
 
 
 class TagViewSet(
-    viewsets.mixins.ListModelMixin,
-    viewsets.mixins.RetrieveModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
 

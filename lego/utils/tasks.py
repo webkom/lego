@@ -1,6 +1,6 @@
 from smtplib import SMTPException
 
-import celery
+from celery.app.task import Task
 from push_notifications.exceptions import NotificationError
 from structlog import get_context, get_logger
 
@@ -13,7 +13,7 @@ from .push import PushMessage
 log = get_logger()
 
 
-class AbakusTask(celery.Task):
+class AbakusTask(Task):
     """
     This base task supplies the logger_context to the underlying worker.
 

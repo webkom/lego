@@ -7,7 +7,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 
-from celery import chain
+from celery.canvas import chain
 
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (

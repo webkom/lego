@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 import stripe
-from celery import chain
+from celery.canvas import chain
 from structlog import get_logger
 
 from lego import celery_app
