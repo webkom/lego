@@ -89,6 +89,7 @@ steps:
       - setup
     commands:
       - tox -e mypy
+    failure: ignore
 
   - name: docs
     image: abakus/lego-testbase:python3.11
@@ -187,4 +188,4 @@ services:
 
 ---
 kind: signature
-hmac: 2b32f45fb6e5972e0ac2aa407b21d5f1be7ed3acb02fb08cc44e37a390efc747
+hmac: 0fd8d6e640a9ff231772b9c1e6237716cfb9198778fa3c7f8a69f2a99ef4ca5e
