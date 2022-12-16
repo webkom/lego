@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import Any
 
 from django.conf import settings
 
@@ -14,7 +15,7 @@ def disable_on_test(signal_handler):
     """
 
     @wraps(signal_handler)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any):
         if kwargs.get("raw") or settings.TESTING:
             return
         return signal_handler(*args, **kwargs)
@@ -23,7 +24,7 @@ def disable_on_test(signal_handler):
 
 
 @disable_on_test
-def call_handler(instance, action, **kwargs):
+def call_handler(instance: object(), action: str, **kwargs: Any):
     """
     The call_handler executes the delete action sync because the instance is removed from the DB
     before a worker is able to process the event.
@@ -41,17 +42,17 @@ def call_handler(instance, action, **kwargs):
         )
 
 
-def handle_event(instance, action, **kwargs):
+def handle_event(instance: object(), action: str, **kwargs: Any):
     return call_handler(instance, action, **kwargs)
 
 
-def handle_create(instance):
+def handle_create(instance: object()):
     return handle_event(instance, "create")
 
 
-def handle_update(instance):
+def handle_update(instance: object()):
     return handle_event(instance, "update")
 
 
-def handle_delete(instance):
+def handle_delete(instance: object()):
     return handle_event(instance, "delete")

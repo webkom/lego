@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_delete, pre_delete
@@ -21,7 +23,7 @@ class CachedModel(models.Model):
                 if isinstance(v, abakus_cached_property):
                     self._cached_properties[k] = v
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
         for cached_property, decorator in self._cached_properties.items():
             if cached_property in self.__dict__:
@@ -42,7 +44,7 @@ class TimeStampModel(CachedModel):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)
 
@@ -62,7 +64,7 @@ class PersistentModel(CachedModel):
         abstract = True
         default_manager_name = "objects"
 
-    def delete(self, using=None, force=False):
+    def delete(self, using=None, force=False) -> tuple[int, dict[str, int]]:
         if force:
             super().delete(using)
         else:
@@ -71,7 +73,7 @@ class PersistentModel(CachedModel):
             self.save()
             post_delete.send(sender=self.__class__, instance=self)
 
-    def restore(self, *args, **kwargs):
+    def restore(self, *args: Any, **kwargs: Any):
         self.deleted = False
         self.save(*args, **kwargs)
 
@@ -106,7 +108,7 @@ class BasisModel(PersistentModel, TimeStampModel):
         abstract = True
         default_manager_name = "objects"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         try:
             current_user = kwargs.pop("current_user", None) or self.current_user
             if not self.id:
