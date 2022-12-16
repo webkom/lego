@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import date, datetime, timedelta
+from typing import Any, Optional
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import CharField, Count, Sum
+from django.db.models import CharField, Count, QuerySet, Sum
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event
@@ -67,11 +68,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     )
 
     @property
-    def registration_close_time(self):
+    def registration_close_time(self) -> date:
         return self.start_time - timedelta(hours=self.registration_deadline_hours)
 
     @property
-    def unregistration_close_time(self):
+    def unregistration_close_time(self) -> date:
         return self.start_time - timedelta(hours=self.unregistration_deadline_hours)
 
     penalty_weight = models.PositiveIntegerField(default=1)
@@ -105,10 +106,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     class Meta:
         permission_handler = EventPermissionHandler()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """
         By re-setting the pool counters on save, we can ensure that counters are updated if an
         event that has been merged gets un-merged. We want to avoid having to increment counters
@@ -125,16 +126,21 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 pinned_item.pinned = False
                 pinned_item.save()
 
-    def user_should_see_regs(self, user):
+    def user_should_see_regs(self, user: User) -> bool:
         return (
             self.get_possible_pools(user, future=True, is_admitted=False).exists()
             or user.is_abakom_member
-            or self.created_by.id == user.id
+            or (self.created_by is not None and self.created_by.id == user.id)
         )
 
     def admin_register(
-        self, admin_user, user, admin_registration_reason, pool=None, feedback=""
-    ):
+        self,
+        admin_user: User,
+        user: User,
+        admin_registration_reason: str,
+        pool: Optional[Pool] = None,
+        feedback: str = "",
+    ) -> Registration:
         """
         Used to force registration for a user, even if the event is full
         or if the user isn't allowed to register.
@@ -174,9 +180,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             handle_event(registration, "admin_registration")
             return registration
 
-    def admin_unregister(self, admin_user, user, admin_unregistration_reason):
+    def admin_unregister(
+        self, admin_user: User, user: User, admin_unregistration_reason: str
+    ) -> Registration:
         with transaction.atomic():
-            registration = self.registrations.filter(user=user).first()
+            registration: Optional[Registration] = self.registrations.filter(
+                user=user
+            ).first()
             if not registration:
                 raise NoSuchRegistration()
             self.unregister(
@@ -187,10 +197,16 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             handle_event(registration, "admin_unregistration")
             return registration
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return f"{settings.FRONTEND_URL}/events/{self.id}/"
 
-    def can_register(self, user, pool, future=False, is_admitted=None):
+    def can_register(
+        self,
+        user: User,
+        pool: Pool,
+        future: bool = False,
+        is_admitted: Optional[bool] = None,
+    ) -> bool:
         if not pool.is_activated and not future:
             return False
 
@@ -205,13 +221,18 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 return True
         return False
 
-    def get_earliest_registration_time(self, user, pools=None, penalties=None):
+    def get_earliest_registration_time(
+        self,
+        user: User,
+        pools: Optional[QuerySet[Pool] | list[Pool]] = None,
+        penalties: Optional[int] = None,
+    ) -> date | None:
 
         if pools is None:
             pools = self.get_possible_pools(user, future=True)
         if len(pools) == 0:
             return None
-        reg_time = min(pool.activation_date for pool in pools)
+        reg_time: date = min(pool.activation_date for pool in pools)
         if self.heed_penalties:
             if penalties is None:
                 penalties = user.number_of_penalties()
@@ -221,19 +242,27 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 return reg_time + timedelta(hours=3)
         return reg_time
 
-    def get_possible_pools(self, user, future=False, all_pools=None, is_admitted=None):
+    def get_possible_pools(
+        self,
+        user: User,
+        future: bool = False,
+        all_pools: Optional[QuerySet[Pool]] = None,
+        is_admitted: Optional[bool] = None,
+    ) -> QuerySet[Pool]:
         if not all_pools:
             all_pools = self.pools.all()
         if is_admitted is None:
             is_admitted = self.is_admitted(user)
         if is_admitted:
-            return []
-        queryset = all_pools.filter(permission_groups__in=user.all_groups).distinct()
+            return Pool.objects.none()
+        queryset: QuerySet[Pool] = all_pools.filter(
+            permission_groups__in=user.all_groups
+        ).distinct()
         if future:
             return queryset
         return queryset.filter(activation_date__lte=timezone.now())
 
-    def register(self, registration):
+    def register(self, registration: Registration) -> Registration:
         """
         Evaluates a pending registration for the event,
         and automatically selects the optimal pool for the registration.
@@ -260,8 +289,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :param registration: The registration that gets evaluated
         :return: The registration (in the chosen pool)
         """
-        user = registration.user
-        penalties = 0
+        user: User = registration.user
+        penalties: int = 0
 
         unanswered_surveys = user.unanswered_surveys()
         if len(unanswered_surveys) > 0:
@@ -283,7 +312,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         ):
             raise NotRegisteredPhotoConsents()
 
-        all_pools = self.pools.all()
+        all_pools: QuerySet[Pool] = self.pools.all()
         possible_pools = self.get_possible_pools(
             user, all_pools=all_pools, is_admitted=registration.is_admitted
         )
@@ -291,10 +320,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             raise EventNotReady()
         if not possible_pools:
             raise ValueError("No available pools")
-        if (
-            self.get_earliest_registration_time(user, possible_pools, penalties)
-            > current_time
-        ):
+        earliest_reg: Optional[date] = self.get_earliest_registration_time(
+            user, possible_pools, penalties
+        )
+        if earliest_reg and earliest_reg > current_time:
             raise ValueError("Not open yet")
 
         # Make the user follow the event
@@ -325,7 +354,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             return registration.add_to_pool(open_pools[0])
 
         # Returns a list of the pool(s) with the least amount of potential members
-        exclusive_pools = self.find_most_exclusive_pools(open_pools)
+        exclusive_pools: list[Pool] = self.find_most_exclusive_pools(open_pools)
 
         if len(exclusive_pools) == 1:
             chosen_pool = exclusive_pools[0]
@@ -334,7 +363,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         return registration.add_to_pool(chosen_pool)
 
-    def unregister(self, registration, updated_by=None, admin_unregistration_reason=""):
+    def unregister(
+        self,
+        registration: Registration,
+        updated_by: Optional[User] = None,
+        admin_unregistration_reason: str = "",
+    ) -> None:
         """
         Pulls the registration, and clears relevant fields. Sets unregistration date.
         If the user was in a pool, and not in the waiting list,
@@ -377,7 +411,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if follow_event_item:
                     follow_event_item.delete()
 
-    def check_for_bump_or_rebalance(self, open_pool: Pool):
+    def check_for_bump_or_rebalance(self, open_pool: Pool) -> None:
         """
         Checks if there is an available spot in the event.
         If so, and the event is merged, bumps the first person in the waiting list.
@@ -400,7 +434,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                         return self.bump(to_pool=open_pool)
                 self.try_to_rebalance(open_pool=open_pool)
 
-    def bump(self, to_pool: Pool | None = None):
+    def bump(self, to_pool: Optional[Pool] = None) -> None:
         """
         Pops the appropriate registration from the waiting list,
         and moves the registration from the waiting list to `to pool`.
@@ -411,7 +445,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             with transaction.atomic():
                 first_waiting = self.pop_from_waiting_list(to_pool)
                 if first_waiting:
-                    new_pool = None
+                    new_pool: Optional[Pool] = None
                     if to_pool:
                         new_pool = to_pool
                         new_pool.increment()
@@ -425,13 +459,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     first_waiting.save(update_fields=["pool"])
                     handle_event(first_waiting, "bump")
 
-    def early_bump(self, opening_pool):
+    def early_bump(self, opening_pool: Pool) -> None:
         """
         Used when bumping users from waiting list to a pool that is about to be activated,
         using an async task. This is done to make sure these existing registrations are given
         the spot ahead of users that register at activation time.
+
         :param opening_pool: The pool about to be activated.
-        :return:
         """
         for reg in self.waiting_registrations:
             if opening_pool.is_full:
@@ -444,7 +478,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 handle_event(reg, "bump")
         self.check_for_bump_or_rebalance(opening_pool)
 
-    def bump_on_pool_creation_or_expansion(self):
+    def bump_on_pool_creation_or_expansion(self) -> None:
         """
         Used when a pool's capacity is expanded or a new pool is created,
         so that waiting registrations are bumped before anyone else can fill
@@ -452,9 +486,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         This method does the same as `early_bump`, but only accepts people that can be bumped now,
         not people that can be bumped in the future.
-        :return:
         """
-        open_pools = [pool for pool in self.pools.all() if not pool.is_full]
+        open_pools: list[Pool] = [pool for pool in self.pools.all() if not pool.is_full]
         for pool in open_pools:
             for reg in self.waiting_registrations:
                 if self.is_full or pool.is_full:
@@ -467,7 +500,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     handle_event(reg, "bump")
             self.check_for_bump_or_rebalance(pool)
 
-    def try_to_rebalance(self, open_pool):
+    def try_to_rebalance(self, open_pool: Pool) -> None:
         """
         Pull the top waiting registrations for all pools, and try to
         move users in the pools they are waiting for to `open_pool` so
@@ -475,8 +508,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         :param open_pool: The pool where the unregistration happened.
         """
-        balanced_pools = []
-        bumped = False
+        balanced_pools: list[Pool] = []
+        bumped: bool = False
 
         for waiting_registration in self.waiting_registrations:
             for full_pool in self.get_possible_pools(waiting_registration.user):
@@ -488,7 +521,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if bumped:
                     return
 
-    def rebalance_pool(self, from_pool, to_pool):
+    def rebalance_pool(self, from_pool: Pool, to_pool: Pool) -> bool:
         """
         Iterates over registrations in a full pool, and checks
         if they can be moved to the open pool. If possible, moves
@@ -499,11 +532,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         :return: Boolean, whether or not `bump()` has been called.
         """
         to_pool_permissions = to_pool.permission_groups.all()
-        bumped = False
+        bumped: bool = False
         for old_registration in self.registrations.filter(pool=from_pool):
             if to_pool.is_full:
                 break
-            moveable = False
+            moveable: bool = False
             user_groups = old_registration.user.all_groups
             for group in to_pool_permissions:
                 if group in user_groups:
@@ -515,7 +548,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 bumped = True
         return bumped
 
-    def add_to_waiting_list(self, user):
+    def add_to_waiting_list(self, user: User) -> Registration:
         """
         Adds a user to the waiting list.
 
@@ -532,7 +565,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             },
         )[0]
 
-    def pop_from_waiting_list(self, to_pool: Pool | None = None) -> Registration | None:
+    def pop_from_waiting_list(
+        self, to_pool: Optional[Pool] = None
+    ) -> Registration | None:
         """
         Pops the first user in the waiting list that can join `to_pool`.
         If `from_pool=None`, pops the first user in the waiting list overall.
@@ -544,11 +579,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if to_pool:
             for registration in self.waiting_registrations:
                 if self.heed_penalties:
-                    penalties = registration.user.number_of_penalties()
-                    earliest_reg = self.get_earliest_registration_time(
+                    penalties: int = registration.user.number_of_penalties()
+                    earliest_reg: Optional[date] = self.get_earliest_registration_time(
                         registration.user, [to_pool], penalties
                     )
-                    if penalties < 3 and earliest_reg < timezone.now():
+                    if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
                         if self.can_register(registration.user, to_pool):
                             return registration
                 elif self.can_register(registration.user, to_pool):
@@ -561,23 +596,23 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 earliest_reg = self.get_earliest_registration_time(
                     registration.user, None, penalties
                 )
-                if penalties < 3 and earliest_reg < timezone.now():
+                if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
                     return registration
             return None
 
         return self.waiting_registrations.first()
 
     @staticmethod
-    def has_pool_permission(user, pool):
+    def has_pool_permission(user: User, pool: Pool) -> bool:
         for group in pool.permission_groups.all():
             if group in user.all_groups:
                 return True
         return False
 
     @staticmethod
-    def calculate_full_pools(pools):
-        full_pools = []
-        open_pools = []
+    def calculate_full_pools(pools: QuerySet[Pool]) -> tuple[list[Pool], list[Pool]]:
+        full_pools: list[Pool] = []
+        open_pools: list[Pool] = []
         for pool in pools:
             if pool.is_full:
                 full_pools.append(pool)
@@ -586,12 +621,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return full_pools, open_pools
 
     @staticmethod
-    def find_most_exclusive_pools(pools):
-        lowest = float("inf")
-        equal = []
+    def find_most_exclusive_pools(pools: list[Pool]) -> list[Pool]:
+        lowest: float | int = float("inf")
+        equal: list[Pool] = []
         for pool in pools:
-            groups = pool.permission_groups.all()
-            users = sum(g.number_of_users for g in groups)
+            groups: QuerySet[AbakusGroup] = pool.permission_groups.all()
+            users: int = sum(g.number_of_users for g in groups)
             if users == lowest:
                 equal.append(pool)
             elif users < lowest:
@@ -600,34 +635,33 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return equal
 
     @staticmethod
-    def select_highest_capacity(pools):
-        capacities = [pool.capacity for pool in pools]
+    def select_highest_capacity(pools: list[Pool]) -> Pool:
+        capacities: list[int] = [pool.capacity for pool in pools]
         return pools[capacities.index(max(capacities))]
 
-    def is_admitted(self, user):
+    def is_admitted(self, user: User) -> bool:
         if hasattr(self, "user_reg"):
             if len(self.user_reg) == 0:
                 return False
             return self.user_reg[0].pool is not None
         return self.registrations.filter(user=user).exclude(pool=None).exists()
 
-    def is_on_waiting_list(self, user):
+    def is_on_waiting_list(self, user: User) -> bool:
         return self.registrations.filter(
             user=user, pool=None, status=constants.SUCCESS_REGISTER
         ).exists()
 
-    def get_registration(self, user):
+    def get_registration(self, user: User) -> Optional[Registration]:
         return self.registrations.filter(user=user).exclude(pool=None).first()
 
-    def get_price(self, user):
+    def get_price(self, user: User) -> int:
         if user.is_authenticated and user.is_abakus_member:
             return self.price_member
         return self.price_guest
 
-    def spots_left_for_user(self, user):
-
-        all_pools = self.pools.all()
-        pools = self.get_possible_pools(user, all_pools=all_pools)
+    def spots_left_for_user(self, user: User) -> int | None | Any:
+        all_pools: QuerySet[Pool] = self.pools.all()
+        pools: QuerySet[Pool] = self.get_possible_pools(user, all_pools=all_pools)
         if not pools:
             return None
 
@@ -639,30 +673,30 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return sum([pool.spots_left() for pool in pools])
 
     @property
-    def is_merged(self):
+    def is_merged(self) -> bool:
         if self.merge_time is None:
             return False
         return timezone.now() >= self.merge_time
 
-    def get_is_full(self, queryset=None):
+    def get_is_full(self, queryset: Optional[QuerySet[Pool]] = None) -> bool:
         if queryset is None:
             queryset = self.pools.filter(activation_date__lte=timezone.now())
         query = queryset.annotate(Count("registrations")).aggregate(
             active_capacity=Sum("capacity"),
             registrations_count=Sum("registrations__count"),
         )
-        active_capacity = query["active_capacity"] or 0
-        registrations_count = query["registrations_count"] or 0
+        active_capacity: int = query["active_capacity"] or 0
+        registrations_count: int = query["registrations_count"] or 0
         if active_capacity == 0:
             return False
         return active_capacity <= registrations_count
 
     @property
-    def is_full(self):
+    def is_full(self) -> bool:
         return self.get_is_full()
 
     @property
-    def active_capacity(self):
+    def active_capacity(self) -> int:
         """Calculation capacity of pools that are active."""
         aggregate = (
             self.pools.all()
@@ -672,12 +706,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return aggregate["capacity__sum"] or 0
 
     @property
-    def total_capacity(self):
+    def total_capacity(self) -> int:
         """Prefetch friendly calculation of the total possible capacity of the event."""
         return sum([pool.capacity for pool in self.pools.all()])
 
     @property
-    def registration_count(self):
+    def registration_count(self) -> int:
         """Prefetch friendly counting of registrations for an event."""
         return sum(
             [pool.registrations.all().count() for pool in self.pools.all()],
@@ -685,7 +719,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
 
     @property
-    def number_of_registrations(self):
+    def number_of_registrations(self) -> int:
         """Registration count guaranteed not to include unregistered users."""
         return (
             self.registrations.filter(
@@ -698,7 +732,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
 
     @property
-    def unregistered(self):
+    def unregistered(self) -> QuerySet[Registration]:
         return self.registrations.filter(
             pool=None,
             unregistration_date__isnull=False,
@@ -706,13 +740,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
 
     @property
-    def passed_unregistration_deadline(self):
+    def passed_unregistration_deadline(self) -> bool:
         if self.unregistration_deadline:
             return self.unregistration_deadline < timezone.now()
         return False
 
     @property
-    def waiting_registrations(self):
+    def waiting_registrations(self) -> QuerySet[Registration]:
         return self.registrations.filter(
             pool=None,
             unregistration_date=None,
@@ -720,21 +754,25 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
 
     @property
-    def waiting_registration_count(self):
+    def waiting_registration_count(self) -> int:
         return self.waiting_registrations.count()
 
-    def restricted_lookup(self):
+    def restricted_lookup(self) -> tuple[list[User], list]:
         """
         Restricted Mail
         """
-        registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
+        registrations: QuerySet[Registration] = self.registrations.filter(
+            status=constants.SUCCESS_REGISTER
+        )
         return [registration.user for registration in registrations], []
 
-    def announcement_lookup(self):
-        registrations = self.registrations.filter(status=constants.SUCCESS_REGISTER)
+    def announcement_lookup(self) -> list[User]:
+        registrations: QuerySet[Registration] = self.registrations.filter(
+            status=constants.SUCCESS_REGISTER
+        )
         return [registration.user for registration in registrations]
 
-    def add_legacy_registration(self):
+    def add_legacy_registration(self) -> None:
         self.legacy_registration_count += 1
         self.save()
 
@@ -755,40 +793,40 @@ class Pool(BasisModel):
     class Meta:
         ordering = ["id"]
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
         if not self.registrations.exists():
-            super().delete(*args, **kwargs)
+            return super().delete(*args, **kwargs)
         else:
             raise RegistrationsExistInPool("Registrations exist in Pool")
 
     @property
-    def is_full(self):
+    def is_full(self) -> bool:
         if self.capacity == 0:
             return False
         return self.registrations.count() >= self.capacity
 
-    def spots_left(self):
+    def spots_left(self) -> int:
         return self.capacity - self.registrations.count()
 
     @property
-    def is_activated(self):
+    def is_activated(self) -> bool:
         return self.activation_date <= timezone.now()
 
     @property
-    def registration_count(self):
+    def registration_count(self) -> int:
         return self.registrations.count()
 
-    def increment(self):
+    def increment(self) -> Pool:
         self.counter += 1
         self.save(update_fields=["counter"])
         return self
 
-    def decrement(self):
+    def decrement(self) -> Pool:
         self.counter -= 1
         self.save(update_fields=["counter"])
         return self
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -835,32 +873,32 @@ class Registration(BasisModel):
         ordering = ["registration_date"]
         permission_handler = RegistrationPermissionHandler()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str({"user": self.user, "pool": self.pool})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.validate()
         super().save(*args, **kwargs)
 
     @property
-    def is_admitted(self):
+    def is_admitted(self) -> bool:
         return self.pool is not None
 
     @property
-    def can_pay(self):
+    def can_pay(self) -> bool:
         return self.is_admitted and self.event.is_priced and self.event.use_stripe
 
-    def validate(self):
+    def validate(self) -> None:
         if self.pool and self.unregistration_date:
             raise ValidationError("Pool and unregistration_date should not both be set")
 
-    def has_paid(self):
+    def has_paid(self) -> bool:
         return self.payment_status in [
             constants.PAYMENT_SUCCESS,
             constants.PAYMENT_MANUAL,
         ]
 
-    def should_notify(self, time=None):
+    def should_notify(self, time: Optional[datetime] = None) -> bool:
         if not time:
             time = timezone.now()
         if not self.has_paid():
@@ -871,12 +909,12 @@ class Registration(BasisModel):
             )
         return False
 
-    def set_payment_success(self):
+    def set_payment_success(self) -> Registration:
         self.payment_status = constants.PAYMENT_MANUAL
         self.save()
         return self
 
-    def set_presence(self, presence):
+    def set_presence(self, presence: str) -> None:
         """Wrap this method in a transaction"""
         if presence not in dict(constants.PRESENCE_CHOICES):
             raise ValueError("Illegal presence choice")
@@ -884,7 +922,7 @@ class Registration(BasisModel):
         self.handle_user_penalty(presence)
         self.save()
 
-    def handle_user_penalty(self, presence):
+    def handle_user_penalty(self, presence: str) -> None:
         if (
             self.event.heed_penalties
             and presence == constants.NOT_PRESENT
@@ -901,10 +939,10 @@ class Registration(BasisModel):
             for penalty in self.user.penalties.filter(source_event=self.event):
                 penalty.delete()
 
-    def add_to_pool(self, pool):
-        allowed = False
+    def add_to_pool(self, pool: Pool) -> Registration:
+        allowed: bool = False
         with transaction.atomic():
-            locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
+            locked_pool: Pool = Pool.objects.select_for_update().get(pk=pool.id)
             if locked_pool.capacity == 0 or locked_pool.counter < locked_pool.capacity:
                 locked_pool.increment()
                 allowed = True
@@ -913,7 +951,7 @@ class Registration(BasisModel):
             return self.add_direct_to_pool(pool)
         return self.add_to_waiting_list()
 
-    def add_direct_to_pool(self, pool, **kwargs):
+    def add_direct_to_pool(self, pool: Pool, **kwargs: Any) -> Registration:
         return self.set_values(
             pool=pool,
             registration_date=timezone.now(),
@@ -922,7 +960,7 @@ class Registration(BasisModel):
             **kwargs,
         )
 
-    def add_to_waiting_list(self, **kwargs):
+    def add_to_waiting_list(self, **kwargs: Any) -> Registration:
         return self.set_values(
             pool=None,
             registration_date=timezone.now(),
@@ -932,12 +970,17 @@ class Registration(BasisModel):
         )
 
     def unregister(
-        self, is_merged=None, updated_by=None, admin_unregistration_reason=""
-    ):
+        self,
+        is_merged: bool = False,
+        updated_by: Optional[User] = None,
+        admin_unregistration_reason: str = "",
+    ) -> Registration:
         # We do not care about the counter if the event is merged or pool is None
         if self.pool and not is_merged:
             with transaction.atomic():
-                locked_pool = Pool.objects.select_for_update().get(pk=self.pool.id)
+                locked_pool: Pool = Pool.objects.select_for_update().get(
+                    pk=self.pool.id
+                )
                 locked_pool.decrement()
         return self.set_values(
             pool=None,
@@ -947,7 +990,7 @@ class Registration(BasisModel):
             updated_by=updated_by if updated_by is not None else self.user,
         )
 
-    def set_values(self, **kwargs):
+    def set_values(self, **kwargs: Any) -> Registration:
         for key, value in kwargs.items():
             setattr(self, key, value)
         self.save(update_fields=kwargs.keys())

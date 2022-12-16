@@ -36,7 +36,7 @@ class SlugModel(models.Model):
         slice_index = slug.rindex("-")
         return slug[0:slice_index]
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         # Save first to generate primary key:
         super().save(*args, **kwargs)
         if not self.slug:

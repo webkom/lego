@@ -134,14 +134,14 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         return registrations
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> BaseSerializer:
         if self.action in ["create", "partial_update", "update"]:
             return EventCreateAndUpdateSerializer
         if self.action == "list":
             return EventReadSerializer
         if self.action == "retrieve":
-            user = self.request.user
-            event = Event.objects.get(id=self.kwargs.get("pk", None))
+            user: User = self.request.user
+            event: Event = Event.objects.get(id=self.kwargs.get("pk", None))
             if (
                 event
                 and user
@@ -156,7 +156,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         """If the capacity of the event increases we have to bump waiting users."""
         try:
-            event_id = self.kwargs.get("pk", None)
+            event_id: int = self.kwargs.get("pk", None)
             instance = super().update(request, *args, **kwargs)
             check_for_bump_on_pool_creation_or_expansion.delay(event_id)
             return instance
