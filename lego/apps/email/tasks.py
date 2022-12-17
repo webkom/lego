@@ -93,6 +93,7 @@ def create_weekly_mail(user):
             if todays_weekly is None
             else todays_weekly.get_absolute_url(),
             "joblistings": joblistings,
+            "frontend_url": settings.FRONTEND_URL,
         },
     )
     if events or joblistings or todays_weekly:
