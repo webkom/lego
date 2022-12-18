@@ -12,6 +12,7 @@ ALLOWED_HOSTS = ["*"]
 SHELL_PLUS = "ipython"
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
