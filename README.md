@@ -12,7 +12,7 @@
 
 ## Getting started
 
-LEGO requires `python3.11`, `python3.11-venv`, `docker` and `docker-compose`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `python3.11-venv`, `docker`, `docker-compose` and `pdm`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
 
 ```bash
 # Initial setup (only need to once)
@@ -20,7 +20,7 @@ $ git clone git@github.com:webkom/lego.git && cd lego/
 $ python3 -m venv venv
 $ echo "from .development import *" > lego/settings/local.py
 $ source venv/bin/activate
-$ pip install -r requirements/dev.txt
+$ pdm install
 $ docker-compose up -d
 $ python manage.py initialize_development
 
@@ -30,7 +30,7 @@ $ source venv/bin/activate
 $ python manage.py runserver
 
 # Note 1: Whenever you switch branches you might need to make minor changes
-$ pip install -r requirements/dev.txt # If the branch has changes in the dependencies
+$ pdm install # If the branch has changes in the dependencies
 $ python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
@@ -120,7 +120,7 @@ By default, development and production uses postgres for search. We can still en
 
 ### Debugging
 
-If you get an error while installing requirements, you might be missing some dependencies on your system.
+If you get an error while installing project dependencies, you might be missing some dependencies on your system.
 
 ```bash
 $ apt-get install libpq-dev python3-dev

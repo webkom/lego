@@ -27,7 +27,6 @@ ENV ENV_CONFIG 1
 ENV RELEASE ${RELEASE}
 
 RUN mkdir /app
-COPY requirements /app/requirements
 WORKDIR /app
 
 RUN pip install pdm

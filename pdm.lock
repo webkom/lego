@@ -1513,7 +1513,7 @@ dependencies = [
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:103037ece1fea58fc06597b5c4009f03358be89ab65fa5ee197151fdec7058f5"
+content_hash = "sha256:bbcf51b2e0bae55251456d7fa6ca79305ffebc73fe9e357cf9917376f59fc148"
 
 [metadata.files]
 "aiosmtpd 1.4.2" = [
@@ -2179,6 +2179,7 @@ content_hash = "sha256:103037ece1fea58fc06597b5c4009f03358be89ab65fa5ee197151fde
     {url = "https://files.pythonhosted.org/packages/8b/4b/ea4db497722076e4352f8d43eae4f0064c2072897383c92bb19b3e50c7cf/lxml-4.9.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.manylinux_2_24_aarch64.whl", hash = "sha256:e5168986b90a8d1f2f9dc1b841467c74221bd752537b99761a93d2d981e04889"},
     {url = "https://files.pythonhosted.org/packages/95/2c/b6326b95954fcd2d1133ff60e7c10af8d7dd17b52d09eaa6db828fd13afb/lxml-4.9.2-cp38-cp38-win_amd64.whl", hash = "sha256:9b22c5c66f67ae00c0199f6055705bc3eb3fcb08d03d2ec4059a2b1b25ed48d7"},
     {url = "https://files.pythonhosted.org/packages/95/79/450c6284d26f7f2abd1ec3506f494b6d848eed3ff7233be60220fef70c85/lxml-4.9.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:5b4545b8a40478183ac06c073e81a5ce4cf01bf1734962577cf2bb569a5b3bbf"},
+    {url = "https://files.pythonhosted.org/packages/96/57/1f945e3f8068a5b2a299a10946dfe0c192c701bd707d2bada0e81c0067eb/lxml-4.9.2-cp36-cp36m-win_amd64.whl", hash = "sha256:3ab9fa9d6dc2a7f29d7affdf3edebf6ece6fb28a6d80b14c3b2fb9d39b9322c3"},
     {url = "https://files.pythonhosted.org/packages/98/9c/fbbbcafca14a8711c8a036375389cb8c5b1d40185357ae6fbb62d9658d41/lxml-4.9.2-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:a08cff61517ee26cb56f1e949cca38caabe9ea9fbb4b1e10a805dc39844b7d5c"},
     {url = "https://files.pythonhosted.org/packages/9e/86/e1f135e123344e32dd9bfcbf420dcc2566fa3894fda78b27f981e26c170d/lxml-4.9.2-cp311-cp311-win_amd64.whl", hash = "sha256:3818b8e2c4b5148567e1b09ce739006acfaa44ce3156f8cbbc11062994b8e8dd"},
     {url = "https://files.pythonhosted.org/packages/9f/ec/28eb72dd6365a74a6e8ea4b459ab6f02b7dfb0540c24d9b27eb95e6793b9/lxml-4.9.2-cp39-cp39-win32.whl", hash = "sha256:6b418afe5df18233fc6b6093deb82a32895b6bb0b1155c2cdb05203f583053f1"},
@@ -2192,6 +2193,7 @@ content_hash = "sha256:103037ece1fea58fc06597b5c4009f03358be89ab65fa5ee197151fde
     {url = "https://files.pythonhosted.org/packages/bb/8f/e164d5177dd6ffc64a80d5b088f3ecd327f5765a8c2d7b867291dadb1bd1/lxml-4.9.2-cp27-cp27m-macosx_10_15_x86_64.whl", hash = "sha256:76cf573e5a365e790396a5cc2b909812633409306c6531a6877c59061e42c4f2"},
     {url = "https://files.pythonhosted.org/packages/bd/4b/f3122ba68422b29537f38f8871e92d829a28c2b1295545406d893dc6d0ec/lxml-4.9.2-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:880bbbcbe2fca64e2f4d8e04db47bcdf504936fa2b33933efd945e1b429bea8c"},
     {url = "https://files.pythonhosted.org/packages/be/42/57fa86961a28a58a207577e6ab91bac2cd6aa04f17494d1b9f54bb394369/lxml-4.9.2-cp311-cp311-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_24_i686.whl", hash = "sha256:c83203addf554215463b59f6399835201999b5e48019dc17f182ed5ad87205c9"},
+    {url = "https://files.pythonhosted.org/packages/c2/84/e9a7b24051364c4c90ed5f8b981bc35206ccd78b942d3a077133cb350c29/lxml-4.9.2-cp35-cp35m-win_amd64.whl", hash = "sha256:998c7c41910666d2976928c38ea96a70d1aa43be6fe502f21a651e17483a43c5"},
     {url = "https://files.pythonhosted.org/packages/c3/5b/2847940c3b94a9475e867c53208fc94cddd0716fce104dce2f599a065ed7/lxml-4.9.2-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:f49e52d174375a7def9915c9f06ec4e569d235ad428f70751765f48d5926678c"},
     {url = "https://files.pythonhosted.org/packages/cb/b0/ceeddfabbfa5f8484526a32f25cbff31968674582895c2ee7a5df55b5d4a/lxml-4.9.2-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:689bb688a1db722485e4610a503e3e9210dcc20c520b45ac8f7533c837be76fe"},
     {url = "https://files.pythonhosted.org/packages/cc/1f/79e12599f48515178471af9c79444528bd3f70c67c450907c6489590f94f/lxml-4.9.2-cp311-cp311-win32.whl", hash = "sha256:da248f93f0418a9e9d94b0080d7ebc407a9a5e6d0b57bb30db9b5cc28de1ad33"},

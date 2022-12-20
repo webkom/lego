@@ -57,6 +57,11 @@ target/
 # Pycharm
 .idea/
 
+# PDM
+.pdm.toml
+__pypackages__
+
+.venv/
 venv/
 lego/settings/local.py
 lego/db.sqlite

@@ -15,8 +15,11 @@ steps:
       event: push
     environment:
       LANG: C.UTF-8
+      CACHE: cache
     commands:
       - pdm run ci_settings
+      - pdm venv activate in-project
+      - pdm install
 
   - name: missing-migrations
     image: abakus/lego-testbase:latest
@@ -187,4 +190,6 @@ services:
 
 ---
 kind: signature
-hmac: 398d4188172ca938d782d05d2f3b29181b7e93c14527ee475cfc156502d4a933
+hmac: 122e3a0e796afbb024bdf63a098d46a1cf4d0e6f3b9859d1b476d585c1867179
+
+...

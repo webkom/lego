@@ -73,8 +73,8 @@ docs = { shell = "cd docs; make html && open _build/html/index.html", help = "bu
 
 [too.pdm.optional-dependencies]
 prod = [
-    "uwsgi",
     "flower==1.2.0",
+    "uwsgi>=2.0.21",
 ]
 
 [tool.pdm.dev-dependencies]
@@ -86,6 +86,7 @@ test = [
 ]
 tox = [    
     "tox==4.0.11",
+    "tox-pdm>=0.6.1",
 ]
 mypy = [
     "mypy==0.991",
