@@ -16,7 +16,7 @@ RUN sentry-cli releases deploys ${RELEASE} new -e "staging"
 RUN sentry-cli releases deploys ${RELEASE} new -e "production"
 
 FROM python:3.11
-MAINTAINER Abakus Webkom <webkom@abakus.no>
+LABEL org.opencontainers.image.authors="webkom@abakus.no"
 
 ARG RELEASE
 
@@ -30,9 +30,10 @@ RUN mkdir /app
 COPY requirements /app/requirements
 WORKDIR /app
 
-RUN set -e \
-    && pip install --no-cache -r requirements/prod.txt \
-    && pip install --no-cache -r requirements/docs.txt
+RUN pip install pdm
+
+# Install prod deps, "prod" from optional section and only "docs" from dev section
+RUN pdm install -G prod -G docs
 
 COPY . /app/
 
