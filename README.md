@@ -47,7 +47,7 @@ This codebase uses the PEP 8 code style. We enforce this with isort, black & fla
 Format the code with black & isort
 
 ```bash
-$ make fixme
+$ pdm format
 ```
 
 To check if it is formatted properly, run:

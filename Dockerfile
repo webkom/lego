@@ -40,4 +40,4 @@ COPY . /app/
 RUN set -e \
     && echo 'SECRET_KEY="secret"; SERVER_EMAIL="no-reply@abakus.no"' > lego/settings/local.py \
     && ENV_CONFIG=0 python manage.py collectstatic --noinput \
-    && ENV_CONFIG=0 make -C docs html
+    && ENV_CONFIG=0 pdm run docs

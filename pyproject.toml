@@ -64,6 +64,13 @@ Homepage = "https://lego.abakus.no"
 Repository = "https://github.com/webkom/lego"
 Documentation = "https://lego.abakus.no/docs/"
  
+[tool.pdm.scripts]
+start = "python manage.py runserver"
+format = { shell = "black ./lego && isort ./lego", help = "fix code formatting"}
+ci_settings = { shell = "echo 'from .test import *' > lego/settings/local.py", help = "create a lego/settings/local.py for ci" }
+docs = { shell = "cd docs; make html && open _build/html/index.html", help = "build and display docs" }
+'lego/settings/local.py' = { shell = "touch lego/settings/local.py", help = "create empty lego/settings/local.py for testing" }
+
 [too.pdm.optional-dependencies]
 prod = [
     "uwsgi",

@@ -16,7 +16,7 @@ steps:
     environment:
       LANG: C.UTF-8
     commands:
-      - make ci_settings
+      - pdm run ci_settings
 
   - name: missing-migrations
     image: abakus/lego-testbase:latest
@@ -187,4 +187,4 @@ services:
 
 ---
 kind: signature
-hmac: 2b32f45fb6e5972e0ac2aa407b21d5f1be7ed3acb02fb08cc44e37a390efc747
+hmac: 398d4188172ca938d782d05d2f3b29181b7e93c14527ee475cfc156502d4a933
