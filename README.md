@@ -12,30 +12,37 @@
 
 ## Getting started
 
-LEGO requires `python3.11`, `python3.11-venv`, `docker`, `docker-compose` and `pdm`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `docker`, `docker-compose` and `pdm`. Services like Postgres, Redis, Thumbor and Minio run inside docker. The virtual environment (_virtualenv_) is created by `pdm`, but you can manually create a _venv_ or _conda_ if this is desired for you.
+
+### Initial setup (only needed once)
 
 ```bash
-# Initial setup (only need to once)
 $ git clone git@github.com:webkom/lego.git && cd lego/
-$ python3 -m venv venv
 $ echo "from .development import *" > lego/settings/local.py
-$ source venv/bin/activate
 $ pdm install
+$ source .venv/bin/activate
 $ docker-compose up -d
 $ python manage.py initialize_development
+```
 
-# Activate and run (do every time)
+### Activate and run (every time)
+
+```bash
 $ docker-compose up -d
-$ source venv/bin/activate
+$ source .venv/bin/activate
 $ python manage.py runserver
+```
 
+### Notes
+
+```bash
 # Note 1: Whenever you switch branches you might need to make minor changes
 $ pdm install # If the branch has changes in the dependencies
 $ python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
 $ python manage.py makemigrations # Creates one or more new files that must be commited
-# Remember to format generated migrations! (using f.ex: make fixme)
+# Remember to format generated migrations! (using e.g.: `pdm format`)
 ```
 
 > If you get problems it can be a solution to delete the `venv`, and do a fresh setup
