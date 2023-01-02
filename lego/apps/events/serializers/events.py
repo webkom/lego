@@ -96,6 +96,7 @@ class EventReadSerializer(
             "activation_time",
             "is_admitted",
             "survey",
+            "is_priced",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
         read_only = True
 
