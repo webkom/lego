@@ -8,6 +8,7 @@ from django.utils import timezone
 from rest_framework import status
 
 import stripe
+from dateutil.relativedelta import relativedelta
 from djangorestframework_camel_case.render import camelize
 
 from lego.apps.events import constants
@@ -2064,7 +2065,7 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
         create the applicable consent objects, given the event has use_consent=True
         """
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
-        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.start_time = event.start_time + relativedelta(months=+7)
         event.save()
 
         user_consents = PhotoConsent.get_consents(self.abakus_user)
@@ -2093,7 +2094,7 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
         not create new consent objects or return photoConsents on the response
         """
         event = Event.objects.get(title="NO_POOLS_ABAKUS")
-        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.start_time = event.start_time + relativedelta(months=+7)
         event.save()
 
         user_consents_before = PhotoConsent.get_consents(self.abakus_user)
@@ -2119,7 +2120,7 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
         PhotoConsents should not be created or returned for events that do not use consent
         """
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
-        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.start_time = event.start_time + relativedelta(months=+7)
         event.use_consent = False
         event.save()
 
@@ -2146,7 +2147,7 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
         PhotoConsents should return consents if the user is admitted
         """
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
-        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.start_time = event.start_time + relativedelta(months=+7)
         for pool in event.pools.all():
             pool.activation_date = timezone.now() - timedelta(days=1)
             pool.save()
@@ -2180,7 +2181,7 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
         PhotoConsents should return consents if the user is on the waiting list
         """
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
-        event.start_time = event.start_time + timedelta(weeks=4 * 6)  # ~6 months
+        event.start_time = event.start_time + relativedelta(months=+7)
         for pool in event.pools.all():
             pool.activation_date = timezone.now() - timedelta(days=1)
             pool.capacity = 0
