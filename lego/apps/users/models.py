@@ -17,7 +17,7 @@ from mptt.models import MPTTModel
 from phonenumber_field.modelfields import PhoneNumberField
 
 from lego.apps.email.models import EmailList
-from lego.apps.events.constants import PRESENT
+from lego.apps.events.constants import PRESENCE_CHOICES
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
@@ -162,7 +162,7 @@ class AbakusGroup(MPTTModel, PersistentModel):
         return parent_permissions
 
     @abakus_cached_property
-    def number_of_users(self):
+    def number_of_users(self) -> int:
         return self.memberships.distinct("user").count()
 
     def add_user(self, user, **kwargs):
@@ -442,7 +442,7 @@ class User(
     def natural_key(self):
         return (self.username,)
 
-    def number_of_penalties(self):
+    def number_of_penalties(self) -> int:
         # Returns the total penalty weight for this user
         count = (
             Penalty.objects.valid()
@@ -451,7 +451,9 @@ class User(
         )
         return count or 0
 
-    def has_registered_photo_consents_for_semester(self, event_year, event_semester):
+    def has_registered_photo_consents_for_semester(
+        self, event_year: int, event_semester: str
+    ) -> bool:
         return not PhotoConsent.objects.filter(
             user=self,
             year=event_year,
@@ -468,11 +470,13 @@ class User(
     def announcement_lookup(self):
         return [self]
 
-    def unanswered_surveys(self):
+    def unanswered_surveys(self) -> list:
         from lego.apps.events.models import Registration
         from lego.apps.surveys.models import Survey
 
-        registrations = Registration.objects.filter(user_id=self.id, presence=PRESENT)
+        registrations = Registration.objects.filter(
+            user_id=self.id, presence=PRESENCE_CHOICES.PRESENT
+        )
         unanswered_surveys = (
             Survey.objects.filter(
                 event__registrations__in=registrations,

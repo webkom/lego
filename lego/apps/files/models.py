@@ -1,5 +1,6 @@
 from datetime import timedelta
 from mimetypes import guess_type
+from typing import Any
 
 from django.conf import settings
 from django.db import models, transaction
@@ -104,7 +105,7 @@ class FileField(models.ForeignKey):
     FileField with reasonable defaults.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         kwargs["to"] = "files.File"
         kwargs["on_delete"] = models.SET_NULL
         kwargs["null"] = True

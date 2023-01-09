@@ -419,9 +419,13 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         user, event = self.unanswered_surveys_setup()
 
         Survey.objects.create(event=event)
-        Registration.objects.create(event=event, user=user, presence=constants.UNKNOWN)
         Registration.objects.create(
-            event=event, user=User.objects.get(pk=2), presence=constants.PRESENT
+            event=event, user=user, presence=constants.PRESENCE_CHOICES.UNKNOWN
+        )
+        Registration.objects.create(
+            event=event,
+            user=User.objects.get(pk=2),
+            presence=constants.PRESENCE_CHOICES.PRESENT,
         )
         self.client.get(_get_detail_url(event.id))
         unanswered_surveys = user.unanswered_surveys()
@@ -439,7 +443,9 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         """Test that attending an event means you do get an unanswered survey"""
         user, event = self.unanswered_surveys_setup()
 
-        Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
+        Registration.objects.create(
+            event=event, user=user, presence=constants.PRESENCE_CHOICES.PRESENT
+        )
         survey = Survey.objects.create(event=event)
         self.client.get(_get_detail_url(event.id))
         unanswered_surveys = user.unanswered_surveys()
@@ -449,7 +455,9 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         """Test that having an unanswered survey means you can't register for events"""
         user, event = self.unanswered_surveys_setup()
 
-        Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
+        Registration.objects.create(
+            event=event, user=user, presence=constants.PRESENCE_CHOICES.PRESENT
+        )
         Survey.objects.create(event=event)
         self.client.get(_get_detail_url(event.id))
 
@@ -462,7 +470,9 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         """Test that answering the survey lets you register again"""
         user, event = self.unanswered_surveys_setup()
 
-        Registration.objects.create(event=event, user=user, presence=constants.PRESENT)
+        Registration.objects.create(
+            event=event, user=user, presence=constants.PRESENCE_CHOICES.PRESENT
+        )
         survey = Survey.objects.create(event=event)
         self.client.get(_get_detail_url(event.id))
 

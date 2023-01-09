@@ -9,7 +9,7 @@ def register_handler(handler_cls):
     handler_registry[model] = handler_cls()
 
 
-def handler_exists(instance):
+def handler_exists(instance: object()):
     return instance._meta.model in handler_registry.keys()
 
 

@@ -3,7 +3,7 @@ from django.utils import timezone
 from structlog import get_logger
 
 from lego import celery_app
-from lego.apps.events.constants import PRESENT
+from lego.apps.events.constants import PRESENCE_CHOICES
 from lego.apps.stats.utils import track
 from lego.apps.surveys.models import Survey
 from lego.apps.surveys.notifications import SurveyNotification
@@ -20,7 +20,9 @@ def send_survey_mail(self, logger_context=None):
         active_from__lte=timezone.now(), sent=False, template_type=None
     )
     for survey in surveys.all():
-        for registration in survey.event.registrations.filter(presence=PRESENT):
+        for registration in survey.event.registrations.filter(
+            presence=PRESENCE_CHOICES.PRESENT
+        ):
             notification = SurveyNotification(registration.user, survey=survey)
             notification.notify()
             track(

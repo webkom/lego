@@ -365,7 +365,9 @@ def set_all_events_ready_and_bump(self, logger_context=None):
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def check_for_bump_on_pool_creation_or_expansion(self, event_id, logger_context=None):
+def check_for_bump_on_pool_creation_or_expansion(
+    self, event_id: int, logger_context=None
+):
     """Task checking for bumps when event and pools are updated"""
     self.setup_logger(logger_context)
 
