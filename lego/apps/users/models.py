@@ -17,7 +17,7 @@ from mptt.models import MPTTModel
 from phonenumber_field.modelfields import PhoneNumberField
 
 from lego.apps.email.models import EmailList
-from lego.apps.events.constants import PRESENT
+from lego.apps.events.constants import PRESENCE_CHOICES
 from lego.apps.external_sync.models import GSuiteAddress, PasswordHashUser
 from lego.apps.files.models import FileField
 from lego.apps.permissions.validators import KeywordPermissionValidator
@@ -474,7 +474,9 @@ class User(
         from lego.apps.events.models import Registration
         from lego.apps.surveys.models import Survey
 
-        registrations = Registration.objects.filter(user_id=self.id, presence=PRESENT)
+        registrations = Registration.objects.filter(
+            user_id=self.id, presence=PRESENCE_CHOICES.PRESENT
+        )
         unanswered_surveys = (
             Survey.objects.filter(
                 event__registrations__in=registrations,

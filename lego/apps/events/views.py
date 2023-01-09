@@ -501,7 +501,7 @@ class RegistrationSearchViewSet(
                 }
             )
 
-        if reg.presence != constants.UNKNOWN:
+        if reg.presence != constants.PRESENCE_CHOICES.UNKNOWN:
             raise ValidationError(
                 {
                     "error": f"User {reg.user.username} is already present.",
@@ -509,7 +509,7 @@ class RegistrationSearchViewSet(
                 }
             )
 
-        reg.presence = constants.PRESENT
+        reg.presence = constants.PRESENCE_CHOICES.PRESENT
         reg.save()
         data = RegistrationSearchReadSerializer(reg).data
         return Response(data=data, status=status.HTTP_200_OK)

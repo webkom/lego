@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from lego.apps.events import constants
+from lego.apps.events.constants import PRESENCE_CHOICES
 from lego.apps.events.models import Registration
 from lego.apps.permissions.constants import EDIT
 from lego.apps.surveys.models import Survey
@@ -18,7 +18,7 @@ class SurveyPermissions(permissions.BasePermission):
             survey = Survey.objects.get(id=view.kwargs["pk"])
             event = survey.event
             user_attended_event = Registration.objects.filter(
-                event=event.id, user=user.id, presence=constants.PRESENT
+                event=event.id, user=user.id, presence=PRESENCE_CHOICES.PRESENT
             ).exists()
 
             return user_attended_event
@@ -33,7 +33,7 @@ class SubmissionPermissions(permissions.BasePermission):
         event = survey.event
         user = request.user
         user_attended_event = Registration.objects.filter(
-            event=event.id, user=user.id, presence=constants.PRESENT
+            event=event.id, user=user.id, presence=PRESENCE_CHOICES.PRESENT
         ).exists()
 
         if view.action in ["update", "partial_update"]:
