@@ -853,7 +853,9 @@ class Registration(BasisModel):
         max_length=20, default=constants.PENDING_REGISTER, choices=constants.STATUSES
     )
     presence = models.CharField(
-        max_length=20, default=constants.UNKNOWN, choices=constants.PRESENCE_CHOICES
+        max_length=20,
+        default=constants.PRESENCE_CHOICES.UNKNOWN,
+        choices=constants.PRESENCE_CHOICES.choices,
     )
     LEGACY_photo_consent = models.CharField(
         max_length=20,
@@ -914,18 +916,18 @@ class Registration(BasisModel):
         self.save()
         return self
 
-    def set_presence(self, presence: str) -> None:
+    def set_presence(self, presence: constants.PRESENCE_CHOICES) -> None:
         """Wrap this method in a transaction"""
-        if presence not in dict(constants.PRESENCE_CHOICES):
+        if presence not in constants.PRESENCE_CHOICES:
             raise ValueError("Illegal presence choice")
         self.presence = presence
         self.handle_user_penalty(presence)
         self.save()
 
-    def handle_user_penalty(self, presence: str) -> None:
+    def handle_user_penalty(self, presence: constants.PRESENCE_CHOICES) -> None:
         if (
             self.event.heed_penalties
-            and presence == constants.NOT_PRESENT
+            and presence == constants.PRESENCE_CHOICES.NOT_PRESENT
             and self.event.penalty_weight_on_not_present
         ):
             if not self.user.penalties.filter(source_event=self.event).exists():

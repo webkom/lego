@@ -51,7 +51,7 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
     payment_status = SetPaymentStatusField(
         required=False, choices=constants.PAYMENT_STATUS_CHOICES
     )
-    presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES)
+    presence = PresenceField(required=False, choices=constants.PRESENCE_CHOICES.choices)
 
     class Meta:
         model = Registration

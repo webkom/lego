@@ -9,7 +9,7 @@ from lego.apps.companies.fields import CompanyField
 from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events import constants
-from lego.apps.events.constants import PRESENT
+from lego.apps.events.constants import PRESENCE_CHOICES
 from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
@@ -184,7 +184,7 @@ class EventForSurveySerializer(EventReadSerializer):
         read_only = True
 
     def get_attended_count(self, event):
-        return event.registrations.filter(presence=PRESENT).count()
+        return event.registrations.filter(presence=PRESENCE_CHOICES.PRESENT).count()
 
 
 class ImageGallerySerializer(BasisModelSerializer):

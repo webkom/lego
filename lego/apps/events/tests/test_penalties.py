@@ -379,7 +379,7 @@ class PenaltyTestCase(BaseTestCase):
         registration = event.registrations.first()
         penalties_before = registration.user.number_of_penalties()
 
-        registration.set_presence(constants.NOT_PRESENT)
+        registration.set_presence(constants.PRESENCE_CHOICES.NOT_PRESENT)
 
         penalties_after = registration.user.number_of_penalties()
         self.assertEqual(penalties_before, 0)
@@ -392,7 +392,7 @@ class PenaltyTestCase(BaseTestCase):
         registration = event.registrations.first()
         penalties_before = registration.user.number_of_penalties()
 
-        registration.set_presence(constants.NOT_PRESENT)
+        registration.set_presence(constants.PRESENCE_CHOICES.NOT_PRESENT)
 
         penalties_after = registration.user.number_of_penalties()
         self.assertEqual(penalties_before, 0)
@@ -402,10 +402,10 @@ class PenaltyTestCase(BaseTestCase):
         """Test that penalties for not_present gets removed when resetting presence"""
         event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
         registration = event.registrations.first()
-        registration.set_presence(constants.NOT_PRESENT)
+        registration.set_presence(constants.PRESENCE_CHOICES.NOT_PRESENT)
 
         penalties_before = registration.user.number_of_penalties()
-        registration.set_presence(constants.UNKNOWN)
+        registration.set_presence(constants.PRESENCE_CHOICES.UNKNOWN)
 
         penalties_after = registration.user.number_of_penalties()
         self.assertEqual(penalties_before, event.penalty_weight_on_not_present)
@@ -417,7 +417,7 @@ class PenaltyTestCase(BaseTestCase):
         other_event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
         registration = event.registrations.first()
 
-        registration.set_presence(constants.NOT_PRESENT)
+        registration.set_presence(constants.PRESENCE_CHOICES.NOT_PRESENT)
         penalties_before = registration.user.number_of_penalties()
         penalties_object_before = list(registration.user.penalties.all())
 
@@ -430,7 +430,7 @@ class PenaltyTestCase(BaseTestCase):
         penalties_during = registration.user.number_of_penalties()
         penalties_objects_during = list(registration.user.penalties.all())
 
-        registration.set_presence(constants.UNKNOWN)
+        registration.set_presence(constants.PRESENCE_CHOICES.UNKNOWN)
         penalties_after = registration.user.number_of_penalties()
         penalties_object_after = list(registration.user.penalties.all())
 
