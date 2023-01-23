@@ -52,7 +52,7 @@ django-push-notifications==3.0.0
 
 # Ical-export
 django-ical==1.8.3
-icalendar==5.0.3
+icalendar==5.0.4
 
 # Docs
 Pygments==2.13.0
