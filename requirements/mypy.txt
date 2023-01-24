@@ -4,7 +4,7 @@ django-stubs==1.13.1
 djangorestframework-stubs==1.8.0
 types-bleach==5.0.3.1
 types-certifi==2021.10.8.3
-types-docutils==0.19.1.1
+types-docutils==0.19.1.2
 types-Markdown==3.4.2.1
 types-python-slugify==7.0.0.1
 types-PyYAML==6.0.12.2
