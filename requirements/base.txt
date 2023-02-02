@@ -47,7 +47,7 @@ django-filter==22.1
 django-environ==0.9.0
 django-redis==5.2.0
 django-ipware==4.0.2
-django-phonenumber-field[phonenumberslite]==7.0.1
+django-phonenumber-field[phonenumberslite]==7.0.2
 django-push-notifications==3.0.0
 
 # Ical-export
