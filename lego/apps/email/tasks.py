@@ -23,6 +23,10 @@ from lego.utils.tasks import AbakusTask
 log = get_logger()
 
 
+def add_source_to_url(url):
+    return f"{url}?utm_source=WeeklyMail&utm_campaign=Email"
+
+
 def create_weekly_mail(user):
     three_days_ago_timestamp = timezone.now() - timedelta(days=3)
     last_sunday_timestamp = timezone.now() - timedelta(days=7)
@@ -80,7 +84,7 @@ def create_weekly_mail(user):
                 "id": event.id,
                 "pools": pools,
                 "start_time": event.start_time.strftime("%d/%m kl %H:%M"),
-                "url": event.get_absolute_url(),
+                "url": add_source_to_url(event.get_absolute_url()),
                 "type": EVENT_TYPE_TRANSLATIONS[event.event_type],
             }
         )
@@ -91,7 +95,7 @@ def create_weekly_mail(user):
             "events": events,
             "todays_weekly": ""
             if todays_weekly is None
-            else todays_weekly.get_absolute_url(),
+            else add_source_to_url(todays_weekly.get_absolute_url()),
             "joblistings": joblistings,
             "frontend_url": settings.FRONTEND_URL,
         },
