@@ -1,4 +1,5 @@
 from datetime import timedelta
+from zoneinfo import ZoneInfo
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -74,7 +75,9 @@ def create_weekly_mail(user):
             pools.append(
                 {
                     "name": pool.name,
-                    "activation_date": pool.activation_date.strftime("%d/%m kl. %H:%M"),
+                    "activation_date": pool.activation_date.astimezone(
+                        ZoneInfo("Europe/Oslo")
+                    ).strftime("%d.%m kl. %H:%M"),
                 }
             )
 
@@ -83,7 +86,9 @@ def create_weekly_mail(user):
                 "title": event.title,
                 "id": event.id,
                 "pools": pools,
-                "start_time": event.start_time.strftime("%d/%m kl %H:%M"),
+                "start_time": event.start_time.astimezone(
+                    ZoneInfo("Europe/Oslo")
+                ).strftime("%d.%m kl %H:%M"),
                 "url": add_source_to_url(event.get_absolute_url()),
                 "type": EVENT_TYPE_TRANSLATIONS[event.event_type],
             }
