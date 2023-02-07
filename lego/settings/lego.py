@@ -42,6 +42,7 @@ LDAP_GROUPS = [
     "Kasserere",
     "Ordenen",
     "PR-ansvarlige",
+    "Revy",
     "RevyStyret",
     "xcom-data",
     "xcom-komtek",
