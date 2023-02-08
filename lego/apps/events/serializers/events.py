@@ -29,6 +29,7 @@ from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import AbakusGroup, PhotoConsent
+from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
@@ -111,9 +112,7 @@ class EventReadDetailedSerializer(
         source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
     )
     company = CompanyField(queryset=Company.objects.all())
-    responsible_group = AbakusGroupField(
-        queryset=AbakusGroup.objects.all(), required=False, allow_null=True
-    )
+    responsible_group = PublicAbakusGroupSerializer(read_only=True)
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
