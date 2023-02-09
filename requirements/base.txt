@@ -5,7 +5,7 @@ ipython==8.8.0
 psycopg2-binary==2.9.5
 unicode-slugify==0.1.5
 pyyaml==6.0
-redis==4.4.0
+redis==4.5.1
 hiredis==2.1.0
 certifi==2022.12.7
 elasticsearch==7.16.2
