@@ -11,6 +11,7 @@ from lego.apps.meetings.permissions import (
     MeetingInvitationPermissionHandler,
     MeetingPermissionHandler,
 )
+from lego.apps.reactions.models import Reaction
 from lego.apps.stats.utils import track
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
@@ -25,6 +26,7 @@ class Meeting(BasisModel):
     description = models.TextField(blank=True, default="")
     comments = GenericRelation(Comment)
     mazemap_poi = models.PositiveIntegerField(null=True)
+    reactions = GenericRelation(Reaction)
 
     report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(
@@ -40,6 +42,26 @@ class Meeting(BasisModel):
         related_name="meeting_invitation",
         through_fields=("meeting", "user"),
     )
+
+    def get_reactions_grouped(self, user):
+        grouped = {}
+        for reaction in self.reactions.all():
+            if reaction.emoji.pk not in grouped:
+                grouped[reaction.emoji.pk] = {
+                    "emoji": reaction.emoji.pk,
+                    "unicode_string": reaction.emoji.unicode_string,
+                    "count": 0,
+                    "has_reacted": False,
+                    "reaction_id": None,
+                }
+
+            grouped[reaction.emoji.pk]["count"] += 1
+
+            if reaction.created_by == user:
+                grouped[reaction.emoji.pk]["has_reacted"] = True
+                grouped[reaction.emoji.pk]["reaction_id"] = reaction.id
+
+        return sorted(grouped.values(), key=lambda kv: kv["count"], reverse=True)
 
     class Meta:
         permission_handler = MeetingPermissionHandler()
