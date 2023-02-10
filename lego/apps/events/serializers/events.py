@@ -10,7 +10,12 @@ from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.events import constants
 from lego.apps.events.constants import PRESENCE_CHOICES
-from lego.apps.events.fields import ActivationTimeField, IsAdmittedField, SpotsLeftField
+from lego.apps.events.fields import (
+    ActivationTimeField,
+    FollowingField,
+    IsAdmittedField,
+    SpotsLeftField,
+)
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
     PoolAdministrateExportSerializer,
@@ -204,6 +209,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
 
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    following = FollowingField()
     spots_left = SpotsLeftField()
     pending_registration = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
@@ -214,6 +220,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
             "price",
             "activation_time",
             "is_admitted",
+            "following",
             "spots_left",
             "pending_registration",
             "photo_consents",

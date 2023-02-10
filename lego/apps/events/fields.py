@@ -79,6 +79,17 @@ class IsAdmittedField(serializers.Field):
         return value.is_admitted(request.user)
 
 
+class FollowingField(serializers.Field):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get("request", None)
+        if not request or not request.user.is_authenticated:
+            return False
+        return value.following(request.user)
+
+
 class ActivationTimeField(serializers.Field):
     def get_attribute(self, instance):
         return instance
