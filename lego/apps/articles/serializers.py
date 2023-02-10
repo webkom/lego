@@ -6,6 +6,8 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
+from lego.apps.users.fields import PublicUserField
+from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
     BasisModelSerializer,
@@ -14,7 +16,6 @@ from lego.utils.serializers import (
 
 
 class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
-    author = PublicUserSerializer(read_only=True, source="created_by")
     comments = CommentSerializer(read_only=True, many=True)
     cover = ImageField(required=False, options={"height": 500})
     cover_placeholder = ImageField(
@@ -23,6 +24,9 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     content_target = CharField(read_only=True)
     content = ContentSerializerField(source="text")
     reactions_grouped = serializers.SerializerMethodField()
+    authors = PublicUserField(
+        queryset=User.objects.all(), allow_null=False, required=True, many=True
+    )
 
     def get_reactions_grouped(self, obj):
         user = self.context["request"].user
@@ -35,7 +39,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "cover",
             "cover_placeholder",
-            "author",
+            "authors",
             "description",
             "comments",
             "content_target",
@@ -82,7 +86,7 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
     cover_placeholder = ImageField(
         source="cover", required=False, options={"height": 30, "filters": ["blur(20)"]}
     )
-    author = PublicUserSerializer(read_only=True, source="created_by")
+    authors = PublicUserSerializer(many=True)
 
     class Meta:
         model = Article
@@ -91,7 +95,7 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "title",
             "cover",
             "cover_placeholder",
-            "author",
+            "authors",
             "description",
             "tags",
             "created_at",

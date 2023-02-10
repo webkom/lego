@@ -1,9 +1,10 @@
 from django.conf import settings
-from django.db.models import CharField
+from django.db.models import CharField, ManyToManyField
 
 from lego.apps.content.models import Content
 from lego.apps.files.models import FileField
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
 
@@ -13,6 +14,7 @@ class Article(Content, BasisModel, ObjectPermissionsModel):
     youtube_url = CharField(
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
+    authors = ManyToManyField(User)
 
     def save(self, *args, **kwargs):
         if self.pinned:
