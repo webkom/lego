@@ -1,10 +1,15 @@
 {% extends "email/base.html" %}
 
 {% block content %}
+    <tr>
+        <td class="content-block">
+            <h1 style="margin: 20px 0 10px 0;">Ukesmail uke {{week_number}}</h1>
+        </td>
+    </tr>
     {%if events %}
     <tr>
         <td class="content-block">
-            <h3 style="margin: 20px 0 10px 0;">Arrangementer med påmelding neste uke:</h3>
+            <h3 style="margin: 20px 0 10px 0;">Arrangementer med påmelding neste uke</h3>
         </td>
     </tr>
     <tr>
@@ -35,7 +40,7 @@
     {%if joblistings %}
     <tr>
         <td class="content-block">
-            <h3 style="margin: 20px 0 10px 0;" colspan=5>Nye jobbannonser</h3>
+            <h3 style="margin: 35px 0 10px 0;" colspan=5>Nye jobbannonser</h3>
         </td>
     </tr>
     <tr>
@@ -49,13 +54,13 @@
     {% endif %}
     {% for joblisting in joblistings%}
                 <tr>
-                    <td style="text-align: left; padding-right: 10px;">
+                    <td style="padding-top: 5px; text-align: left; padding-right: 10px;">
                         <a href="https://abakus.no/joblistings/{{joblisting.id}}?utm_source=WeeklyMail&utm_campaign=Email">{{joblisting.title}}</a>
                     </td>
-                    <td style="text-align: left; padding-right: 10px; min-width: 120px; word-break: break-word;">
+                    <td style="padding-top: 5px; text-align: left; padding-right: 10px; min-width: 140px; word-break: break-word;">
                         {{joblisting.company_name}} 
                     </td>
-                    <td style="text-align: left; padding-right: 10px; min-width: 120px; word-break: break-word;">
+                    <td style="padding-top: 5px; text-align: left; padding-right: 10px; min-width: 120px; word-break: break-word;">
                      {{joblisting.type}}
                     </td>
                 </tr>

@@ -29,6 +29,8 @@ def add_source_to_url(url):
 
 
 def create_weekly_mail(user):
+    week_number = timezone.now().isocalendar().week
+
     three_days_ago_timestamp = timezone.now() - timedelta(days=3)
     last_sunday_timestamp = timezone.now() - timedelta(days=7)
 
@@ -97,6 +99,7 @@ def create_weekly_mail(user):
     html_body = render_to_string(
         "email/email/weekly_mail.html",
         {
+            "week_number": week_number,
             "events": events,
             "todays_weekly": ""
             if todays_weekly is None
