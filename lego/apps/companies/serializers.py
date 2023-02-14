@@ -65,7 +65,7 @@ class CompanyContactSerializer(BasisModelSerializer):
         model = CompanyContact
         fields = ("id", "name", "role", "mail", "phone", "mobile")
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> any:
         company = Company.objects.get(pk=self.context["view"].kwargs["company_pk"])
         validated_data["company"] = company
         return super().create(validated_data)
@@ -224,6 +224,7 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "events",
             "other_offers",
             "collaborations",
+            "company_type",
             "target_grades",
             "participant_range_start",
             "participant_range_end",
@@ -231,6 +232,13 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "course_comment",
             "breakfast_talk_comment",
             "other_event_comment",
+            "startup_comment",
+            "company_to_company_comment",
+            "lunch_presentation_comment",
+            "company_presentation_comment",
+            "bedex_comment",
+            "company_course_themes",
+            "office_in_trondheim",
         )
 
     def update_company_interest_bdb(self, company_interest):
