@@ -25,7 +25,6 @@ from lego.apps.events.exceptions import (
     RegistrationsExistInPool,
 )
 from lego.apps.events.filters import EventsFilterSet
-from lego.apps.files.models import File
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
@@ -60,6 +59,7 @@ from lego.apps.events.tasks import (
     save_and_notify_payment,
 )
 from lego.apps.events.websockets import notify_event_registration
+from lego.apps.files.models import File
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT, VIEW
