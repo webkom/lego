@@ -1,3 +1,5 @@
+from django.db import models
+
 SPRING = "spring"
 AUTUMN = "autumn"
 
@@ -82,6 +84,28 @@ TRANSLATED_COLLABORATIONS = {
     COLLABORATION_ANNIVERSARY: "Abakus jubileum",
     COLLABORATION_REVUE_ANNIVERSARY: "Abakusrevy jubileum",
 }
+
+
+class COMPANY_TYPES(models.TextChoices):
+    SMALL_CONSULTANT = "company_types_small_consultant"
+    MEDIUM_CONSULTANT = "company_types_medium_consultant"
+    LARGE_CONSULTANT = "company_types_large_consultant"
+    INHOUSE = "company_types_inhouse"
+    TYPES_OTHERS = "company_types_others"
+    START_UP = "company_types_start_up"
+    GOVERNMENTAL = "company_types_governmental"
+
+
+class COMPANY_COURSE_THEMES(models.TextChoices):
+    SECURITY = "company_survey_security"
+    AI = "company_survey_ai"
+    DATA = "company_survey_big_data"
+    END = "company_survey_front_back_end"
+    IOT = "company_survey_iot"
+    GAMEDEV = "company_survey_gamedev"
+    SOFTSKILLS = "company_survey_softskills"
+    FINTECH = "company_survey_fintech"
+
 
 CONTACT_IN_OSLO = "contact_in_oslo"
 INTERESTED = "interested"

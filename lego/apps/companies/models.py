@@ -17,7 +17,9 @@ from lego.utils.models import BasisModel, PersistentModel, TimeStampModel
 from .constants import (
     AUTUMN,
     COLLABORATIONS,
+    COMPANY_COURSE_THEMES,
     COMPANY_EVENTS,
+    COMPANY_TYPES,
     OTHER_OFFERS,
     SEMESTER,
     SEMESTER_STATUSES,
@@ -61,12 +63,12 @@ class Company(BasisModel):
         permission_handler = CompanyPermissionHandler()
 
     @property
-    def content_target(self):
+    def content_target(self) -> str:
         return "{0}.{1}-{2}".format(
             self._meta.app_label, self._meta.model_name, self.pk
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -139,6 +141,16 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     collaborations = ArrayField(
         models.CharField(max_length=64, choices=COLLABORATIONS), null=True, blank=True
     )
+    company_type = models.CharField(
+        max_length=64, null=True, choices=COMPANY_TYPES.choices, blank=True
+    )
+    company_course_themes = ArrayField(
+        models.CharField(max_length=64, choices=COMPANY_COURSE_THEMES.choices),
+        null=True,
+        blank=True,
+    )
+    office_in_trondheim = models.BooleanField(default=False, blank=True)
+
     target_grades = ArrayField(models.PositiveIntegerField(), null=True, blank=True)
     participant_range_start = models.IntegerField(null=True, blank=True)
     participant_range_end = models.IntegerField(null=True, blank=True)
@@ -146,6 +158,11 @@ class CompanyInterest(PersistentModel, TimeStampModel):
     course_comment = models.TextField(blank=True)
     breakfast_talk_comment = models.TextField(blank=True)
     other_event_comment = models.TextField(blank=True)
+    startup_comment = models.TextField(blank=True)
+    company_to_company_comment = models.TextField(blank=True)
+    lunch_presentation_comment = models.TextField(blank=True)
+    company_presentation_comment = models.TextField(blank=True)
+    bedex_comment = models.TextField(blank=True)
 
     class Meta:
         permission_handler = CompanyInterestPermissionHandler()
@@ -189,5 +206,10 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             "course_comment": self.course_comment,
             "breakfast_talk_comment": self.breakfast_talk_comment,
             "other_event_comment": self.other_event_comment,
+            "startup_comment": self.startup_comment,
+            "company_to_company_comment": self.company_to_company_comment,
+            "lunch_presentation_comment": self.lunch_presentation_comment,
+            "company_presentation_comment": self.company_presentation_comment,
+            "bedex_comment": self.bedex_comment,
             "readme": readme,
         }

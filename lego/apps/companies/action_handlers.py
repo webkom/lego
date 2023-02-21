@@ -53,7 +53,8 @@ class CompanyInterestHandler(Handler):
             # reply is sent to them (and bedkom)
             recipients.append(mail_context["mail"])
             if mail_context["readme"]:
-                recipients.append(f"lederreadme@{settings.GSUITE_DOMAIN}")
+                # recipients.append(f"lederreadme@{settings.GSUITE_DOMAIN}")
+                recipients.append("redaktor@abakus.no")
             send_email.delay(
                 to_email=recipients,
                 context=mail_context,
