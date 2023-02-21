@@ -118,7 +118,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     "can_edit_users",
                     "can_edit_groups",
                     Prefetch("pools__registrations", queryset=reg_queryset),
-                    Prefetch("registrations", queryset=reg_queryset),
+                    Prefetch(
+                        "registrations", queryset=Registration.objects.filter(pool=None)
+                    ),
                 )
         else:
             queryset = Event.objects.all()
