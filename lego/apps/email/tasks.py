@@ -29,6 +29,8 @@ def add_source_to_url(url):
 
 
 def create_weekly_mail(user):
+    week_number = timezone.now().isocalendar().week
+
     three_days_ago_timestamp = timezone.now() - timedelta(days=3)
     last_sunday_timestamp = timezone.now() - timedelta(days=7)
 
@@ -97,6 +99,7 @@ def create_weekly_mail(user):
     html_body = render_to_string(
         "email/email/weekly_mail.html",
         {
+            "week_number": week_number,
             "events": events,
             "todays_weekly": ""
             if todays_weekly is None
@@ -117,10 +120,7 @@ def send_weekly_email(self, logger_context=None):
     week_number = timezone.now().isocalendar().week
 
     # Set to just PR and Webkom for testing purposes
-    all_users = set(
-        AbakusGroup.objects.get(name="Webkom").restricted_lookup()[0]
-        + AbakusGroup.objects.get(name="PR").restricted_lookup()[0]
-    )
+    all_users = AbakusGroup.objects.get(name="Abakus").restricted_lookup()[0]
     recipients = []
 
     for user in all_users:
