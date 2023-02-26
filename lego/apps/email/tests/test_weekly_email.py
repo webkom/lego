@@ -31,6 +31,8 @@ class WeeklyEmailTestCase(BaseTestCase):
         joblisting.save()
         pr = AbakusGroup.objects.get(name="PR")
         pr.add_user(User.objects.get(pk=10))
+        students = AbakusGroup.objects.get(name="Students")
+        students.add_user(User.objects.get(pk=10))
 
     def assertEmailContains(self, send_mass_mail_mock, content):
         message = send_mass_mail_mock.call_args.args[0][0][1]
@@ -78,6 +80,8 @@ class WeeklyEmailTestCaseNoWeekly(WeeklyEmailTestCase):
         joblisting.save()
         pr = AbakusGroup.objects.get(name="PR")
         pr.add_user(User.objects.get(pk=10))
+        students = AbakusGroup.objects.get(name="Students")
+        students.add_user(User.objects.get(pk=10))
 
     def test_generate_weekly(self, send_mail_mock):
         send_weekly_email()
@@ -112,6 +116,8 @@ class WeeklyEmailTestCaseNoEventsOrWeekly(WeeklyEmailTestCase):
         joblisting.save()
         pr = AbakusGroup.objects.get(name="PR")
         pr.add_user(User.objects.get(pk=10))
+        students = AbakusGroup.objects.get(name="Students")
+        students.add_user(User.objects.get(pk=10))
 
     def test_generate_weekly(self, send_mail_mock):
         send_weekly_email()
@@ -141,6 +147,8 @@ class WeeklyEmailTestCaseNothing(BaseTestCase):
     def setUp(self):
         pr = AbakusGroup.objects.get(name="PR")
         pr.add_user(User.objects.get(pk=10))
+        students = AbakusGroup.objects.get(name="Students")
+        students.add_user(User.objects.get(pk=10))
         return
 
     def test_send_mail(self, send_mass_mail_mock):
@@ -169,6 +177,8 @@ class WeeklyEmailTaskTest(BaseTestCase):
         joblisting.save()
         pr = AbakusGroup.objects.get(name="PR")
         pr.add_user(User.objects.get(pk=10))
+        students = AbakusGroup.objects.get(name="Students")
+        students.add_user(User.objects.get(pk=10))
 
     def test_email_sent(self, send_mass_mail_mock):
         send_weekly_email()
