@@ -62,6 +62,11 @@ class MeetingDetailSerializer(BasisModelSerializer):
     created_by = PublicUserField(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
+    reactions_grouped = serializers.SerializerMethodField()
+
+    def get_reactions_grouped(self, obj):
+        user = self.context["request"].user
+        return obj.get_reactions_grouped(user)
 
     class Meta:
         model = Meeting
@@ -79,6 +84,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
             "comments",
             "content_target",
             "mazemap_poi",
+            "reactions_grouped",
         )
         read_only = True
 
