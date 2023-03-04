@@ -1,5 +1,10 @@
-from rest_framework import viewsets
+import csv
+
+from django.http import HttpResponse
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.response import Response
 
 from lego.apps.companies.filters import CompanyInterestFilterSet, SemesterFilterSet
 from lego.apps.companies.models import (
@@ -26,6 +31,15 @@ from lego.apps.companies.serializers import (
     SemesterStatusSerializer,
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
+from lego.apps.permissions.constants import EDIT
+
+from .constants import (
+    AUTUMN,
+    SPRING,
+    TRANSLATED_COLLABORATIONS,
+    TRANSLATED_EVENTS,
+    TRANSLATED_OTHER_OFFERS,
+)
 
 
 class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -38,10 +52,11 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_handler = CompanyAdminPermissionHandler()
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return CompanyAdminListSerializer
-
-        return CompanyAdminDetailSerializer
+        return (
+            CompanyAdminListSerializer
+            if self.action == "list"
+            else CompanyAdminDetailSerializer
+        )
 
 
 class CompanyViewSet(
@@ -54,10 +69,102 @@ class CompanyViewSet(
     ordering = "name"
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return CompanyListSerializer
+        return (
+            CompanyListSerializer if self.action == "list" else CompanyDetailSerializer
+        )
 
-        return CompanyDetailSerializer
+    @action(detail=True, methods=["GET"])
+    def csv(self, *args, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Company)
+
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        semester_year = kwargs["pk"].split("_")
+        semester = Semester.objects.get(
+            year=semester_year[0], semester=semester_year[1]
+        )
+
+        if len(semester_year) == 3:
+            companyInterests = CompanyInterest.objects.filter(
+                semesters__in=[semester]
+            ).filter(events__contains=[semester_year[2]])
+        else:
+            companyInterests = CompanyInterest.objects.filter(semesters__in=[semester])
+
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{kwargs["pk"]}.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Company name:",
+                "Contact person:",
+                "Mail:",
+                "Phone",
+                "Company info",
+                "Semesters:",
+                "Events:",
+                "Other offers:",
+                "Collaborations:",
+                "Company type:",
+                "Company course themes:",
+                "Accommodating in Trondheim:",
+                "Target grades:",
+                "participant range:",
+                "Company info:",
+                "Course comment:",
+                "Breakfast talk comment:",
+                "Other event comment:",
+                "Startup comment:",
+                "Company to company comment:",
+                "Lunch presentation comment:",
+                "Company presentation comment:",
+                "Bedex comment:",
+            ]
+        )
+        for ci in companyInterests:
+            writer.writerow(
+                [
+                    ci.company_name,
+                    ci.contact_person,
+                    ci.mail,
+                    ci.phone,
+                    ci.comment,
+                    [
+                        f"Vår {semester.year}"
+                        if semester.semester == SPRING
+                        else f"Høst {semester.year}"
+                        for semester in ci.semesters.all()
+                    ],
+                    ", ".join([TRANSLATED_EVENTS[event] for event in ci.events]),
+                    ", ".join(
+                        [TRANSLATED_OTHER_OFFERS[offer] for offer in ci.other_offers]
+                    ),
+                    ", ".join(
+                        [
+                            TRANSLATED_COLLABORATIONS[collab]
+                            for collab in ci.collaborations
+                        ]
+                    ),
+                    ci.company_type,
+                    ", ".join(ci.company_course_themes),
+                    ci.office_in_trondheim,
+                    ", ".join([f"{grade}.kl" for grade in ci.target_grades]),
+                    f"{ci.participant_range_start} - {ci.participant_range_end}",
+                    ci.course_comment,
+                    ci.breakfast_talk_comment,
+                    ci.other_event_comment,
+                    ci.startup_comment,
+                    ci.company_to_company_comment,
+                    ci.lunch_presentation_comment,
+                    ci.company_presentation_comment,
+                    ci.bedex_comment,
+                ]
+            )
+
+        return response
 
 
 class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
