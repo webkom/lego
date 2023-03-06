@@ -96,6 +96,17 @@ class COMPANY_TYPES(models.TextChoices):
     GOVERNMENTAL = "company_types_governmental"
 
 
+TRANSLATED_COMPANY_TYPES = {
+    COMPANY_TYPES.SMALL_CONSULTANT: "Liten Konsulentbedrift",
+    COMPANY_TYPES.MEDIUM_CONSULTANT: "Medium konsulentbedrift",
+    COMPANY_TYPES.LARGE_CONSULTANT: "Stor konsulentbedrift",
+    COMPANY_TYPES.INHOUSE: "Inhouse",
+    COMPANY_TYPES.TYPES_OTHERS: "Annet",
+    COMPANY_TYPES.START_UP: "Start-up",
+    COMPANY_TYPES.GOVERNMENTAL: "Statlig",
+}
+
+
 class COMPANY_COURSE_THEMES(models.TextChoices):
     SECURITY = "company_survey_security"
     AI = "company_survey_ai"
@@ -106,6 +117,17 @@ class COMPANY_COURSE_THEMES(models.TextChoices):
     SOFTSKILLS = "company_survey_softskills"
     FINTECH = "company_survey_fintech"
 
+
+TRANSLATED_COURSE_THEMES = {
+    COMPANY_COURSE_THEMES.SECURITY: "Sikkerhet",
+    COMPANY_COURSE_THEMES.AI: "Kunstlig intellligens",
+    COMPANY_COURSE_THEMES.DATA: "Big data",
+    COMPANY_COURSE_THEMES.END: "Front end/Back end",
+    COMPANY_COURSE_THEMES.IOT: "Internet of things",
+    COMPANY_COURSE_THEMES.GAMEDEV: "Spillutvikling",
+    COMPANY_COURSE_THEMES.SOFTSKILLS: "Softskills",
+    COMPANY_COURSE_THEMES.FINTECH: "Finansiell teknologi",
+}
 
 CONTACT_IN_OSLO = "contact_in_oslo"
 INTERESTED = "interested"
