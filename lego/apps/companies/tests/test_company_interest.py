@@ -49,6 +49,11 @@ def _get_detail_company_interest(pk):
     return reverse("api:v1:company-interest-detail", kwargs={"pk": pk})
 
 
+def _get_export_company_interest():
+
+    return reverse("api:v1:company-interest-csv")
+
+
 class ListCompanyInterestTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
@@ -73,6 +78,36 @@ class ListCompanyInterestTestCase(BaseAPITestCase):
         company_interest_list_response = self.client.get(_get_company_interests())
         self.assertEqual(company_interest_list_response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(company_interest_list_response.json()["results"]))
+
+    def test_export_to_csv_with_abakus_user(self):
+        AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_interest_export_responce = self.client.get(
+            _get_export_company_interest()
+        )
+        self.assertEqual(
+            company_interest_export_responce.status_code, status.HTTP_403_FORBIDDEN
+        )
+
+    def test_export_to_csv_with_bedkom_user(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_interest_export_responce = self.client.get(
+            f"{_get_export_company_interest()}?year=2017&semester=autumn"
+        )
+        self.assertEqual(
+            company_interest_export_responce.status_code, status.HTTP_200_OK
+        )
+
+    def test_export_to_csv_with_missing_query_parameters(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_interest_export_responce = self.client.get(
+            _get_export_company_interest()
+        )
+        self.assertEqual(
+            company_interest_export_responce.status_code, status.HTTP_400_BAD_REQUEST
+        )
 
 
 class CreateCompanyInterestTestCase(BaseAPITestCase):
