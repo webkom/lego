@@ -248,7 +248,16 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 if companyInterest.target_grades
                 else ""
             )
-            company_type = TRANSLATED_COMPANY_TYPES[companyInterest.company_type]
+            company_type = (
+                TRANSLATED_COMPANY_TYPES[companyInterest.company_type]
+                if companyInterest.company_type
+                else ""
+            )
+            office_in_trondheim = (
+                companyInterest.office_in_trondheim
+                if companyInterest.office_in_trondheim
+                else ""
+            )
             writer.writerow(
                 [
                     companyInterest.company_name,
@@ -262,7 +271,7 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     collaborations,
                     company_type,
                     company_course_themes,
-                    companyInterest.office_in_trondheim,
+                    office_in_trondheim,
                     target_grades,
                     f"{participant_range_start} - {participant_range_end}",
                     companyInterest.course_comment,
