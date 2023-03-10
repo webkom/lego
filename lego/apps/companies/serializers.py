@@ -292,5 +292,6 @@ class CompanyInterestListSerializer(serializers.ModelSerializer):
             "mail",
             "phone",
             "semesters",
+            "events",
             "created_at",
         )
