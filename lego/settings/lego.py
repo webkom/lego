@@ -62,4 +62,4 @@ GSUITE_DOMAIN = "abakus.no"
 GSUITE_GROUPS = []
 
 #  External users in GSuite not managed by lego. (Don't suspend these.)
-GSUITE_EXTERNAL_USERS = ["admin@abakus.no", "noreply@abakus.no"]
+GSUITE_EXTERNAL_USERS = ["admin@abakus.no", "noreply@abakus.no", "sofaktura@abakus.no"]
