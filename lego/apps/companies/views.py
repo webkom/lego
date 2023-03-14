@@ -196,6 +196,11 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             ]
         )
         for companyInterest in companyInterests:
+            company_name = (
+                companyInterest.company.name
+                if companyInterest.company
+                else companyInterest.company_name
+            )
             participant_range_start = companyInterest.participant_range_start
             participant_range_end = companyInterest.participant_range_end
             semesters = ", ".join(
@@ -260,7 +265,7 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
             writer.writerow(
                 [
-                    companyInterest.company_name,
+                    company_name,
                     companyInterest.contact_person,
                     companyInterest.mail,
                     companyInterest.phone,
