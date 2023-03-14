@@ -1,4 +1,4 @@
-from django_filters import BooleanFilter, FilterSet
+from django_filters import BooleanFilter, CharFilter, FilterSet
 
 from lego.apps.companies.models import CompanyInterest, Semester
 
@@ -12,6 +12,8 @@ class SemesterFilterSet(FilterSet):
 
 
 class CompanyInterestFilterSet(FilterSet):
+    events = CharFilter(lookup_expr="icontains")
+
     class Meta:
         model = CompanyInterest
-        fields = ("semesters",)
+        fields = ("semesters", "events")
