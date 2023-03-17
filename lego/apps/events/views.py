@@ -28,6 +28,7 @@ from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
+    EventAdministrateAllergiesSerializer,
     EventAdministrateExportSerializer,
     EventAdministrateSerializer,
     EventCreateAndUpdateSerializer,
@@ -206,6 +207,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             ),
         )
         event = queryset.first()
+        if request.user == event.created_by:
+            serializer = EventAdministrateAllergiesSerializer
         if (
             event.use_contact_tracing
             and request.user == event.created_by

@@ -185,6 +185,20 @@
     can_view_groups:
       - - Bedkom
 
+- model: events.Event
+  pk: 13
+  fields:
+    title: ALLERGIES_EVENT
+    description: TestIngress13
+    text: TestIngress13
+    event_type: party
+    event_status_type: NORMAL
+    location: "F252"
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T15:20:30+03:00"
+    created_by: 1
+    require_auth: False
+  
 - model: events.Pool
   pk: 1
   fields:
@@ -269,6 +283,17 @@
     permission_groups:
       - - Abakus
 
+- model: events.Pool
+  pk: 9
+  fields:
+    name: Abakusmember
+    capacity: 1 
+    event: 13
+    counter: 1 
+    activation_date: "2019-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Abakus
+
 - model: events.Registration
   pk: 1
   fields:
@@ -325,5 +350,14 @@
     user: 3
     event: 10
     pool: 8
+    registration_date: "2011-09-01T13:20:30+03:00"
+    status: "SUCCESS_REGISTER"
+
+- model: events.Registration
+  pk: 7
+  fields:
+    user: 11
+    event: 13
+    pool: 9
     registration_date: "2011-09-01T13:20:30+03:00"
     status: "SUCCESS_REGISTER"
