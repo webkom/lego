@@ -24,7 +24,7 @@ def get_data_with_author(author_pk):
         "title": "test article",
         "description": "good article",
         "content": "the best article",
-        "author": author_pk,
+        "authors": [author_pk],
     }
 
 
