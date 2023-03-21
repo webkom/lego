@@ -10,7 +10,7 @@ hiredis==2.2.2
 certifi==2022.12.7
 elasticsearch==7.16.2
 celery==5.2.7
-stripe==3.4.0
+stripe==5.2.0
 boto3==1.26.51
 beautifulsoup4==4.12.0
 bleach==5.0.1
