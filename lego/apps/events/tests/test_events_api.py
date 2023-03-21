@@ -19,6 +19,7 @@ from lego.apps.events.tasks import (
     stripe_webhook_event,
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
+from lego.apps.followers.models import FollowEvent
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE, PHOTO_CONSENT_DOMAINS
 from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
@@ -992,6 +993,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         "test_companies.yaml",
         "test_users.yaml",
         "test_events.yaml",
+        "test_followevent.yaml",
     ]
 
     def setUp(self):
@@ -1109,6 +1111,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
     def test_unregister(self, *args):
         event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
         registration = Registration.objects.get(user=self.abakus_user, event=event)
+
         registration_response = self.client.delete(
             _get_registrations_detail_url(event.id, registration.id)
         )
@@ -1120,6 +1123,23 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         self.assertEqual(get_unregistered.status_code, status.HTTP_200_OK)
         self.assertEqual(get_unregistered.json().get("updatedBy"), self.abakus_user.id)
         self.assertIsNone(get_unregistered.json().get("pool"))
+
+    def test_unregister_method(self, *args):
+        """Test the Registration.unregister() method"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        registration = Registration.objects.get(user=self.abakus_user, event=event)
+
+        follow_event = FollowEvent.objects.filter(
+            follower=self.abakus_user, target=event
+        )
+        self.assertTrue(follow_event.exists())
+
+        registration.unregister()
+
+        self.assertIsNone(registration.pool)
+        self.assertEqual(registration.status, constants.SUCCESS_UNREGISTER)
+        with self.assertRaises(FollowEvent.DoesNotExist):
+            FollowEvent.objects.get(follower=self.abakus_user, target=event),
 
 
 @mock.patch("lego.apps.events.views.verify_captcha", return_value=True)

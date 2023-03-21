@@ -981,6 +981,13 @@ class Registration(BasisModel):
         updated_by: Optional[User] = None,
         admin_unregistration_reason: str = "",
     ) -> Registration:
+        # Unfollow event
+        followEvent = FollowEvent.objects.filter(
+            follower=self.user, target=self.event
+        ).first()
+        if followEvent is not None:
+            followEvent.delete()
+
         # We do not care about the counter if the event is merged or pool is None
         if self.pool and not is_merged:
             with transaction.atomic():
