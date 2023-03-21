@@ -18,29 +18,3 @@ class Registrations:
             )["email"]
         except (BadSignature, SignatureExpired):
             return None
-
-    @staticmethod
-    def generate_student_confirmation_token(
-        student_username, course, member, is_two_years
-    ):
-        data = signing.dumps(
-            {
-                "student_username": student_username.lower(),
-                "course": course,
-                "member": member,
-                "is_two_years": is_two_years,
-            }
-        )
-        token = TimestampSigner().sign(data)
-        return token
-
-    @staticmethod
-    def validate_student_confirmation_token(token):
-        try:
-            return signing.loads(
-                TimestampSigner().unsign(
-                    token, max_age=settings.STUDENT_CONFIRMATION_TIMEOUT
-                )
-            )
-        except (BadSignature, SignatureExpired):
-            return None

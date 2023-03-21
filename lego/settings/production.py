@@ -26,8 +26,10 @@ ENVIRONMENT_NAME = env("ENVIRONMENT_NAME", default="production")
 DATABASES = {"default": env.db()}
 
 # Cache
-CACHES = {"default": env.cache(backend="django_redis.cache.RedisCache")}
-
+CACHES = {
+    "default": env.cache(backend="django_redis.cache.RedisCache"),
+    "oauth": env.cache(env("OAUTH_CACHE"), backend="django_redis.cache.RedisCache"),
+}
 # Email / We may enable the celery email backend.
 # See https://github.com/joke2k/django-environ#email-settings for how to configure
 EMAIL_CONFIG = env.email()

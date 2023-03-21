@@ -222,8 +222,7 @@ class PermissionsMixin(CachedModel):
 
     @property
     def has_grade_group(self):
-        # from first_true @ https://docs.python.org/3/library/itertools.html
-        return bool(next(filter(lambda group: group.is_grade, self.all_groups), False))
+        return self.abakus_groups.filter(type=constants.GROUP_GRADE).exists()
 
     get_group_permissions = DjangoPermissionMixin.get_group_permissions
     get_all_permissions = DjangoPermissionMixin.get_all_permissions
@@ -334,6 +333,7 @@ class User(
         validators=[student_username_validator, ReservedNameValidator()],
         error_messages={"unique": "A user has already verified that student username."},
     )
+    student_verification_status = models.BooleanField(null=True, blank=True)
     first_name = models.CharField("first name", max_length=50, blank=False)
     last_name = models.CharField("last name", max_length=30, blank=False)
     allergies = models.CharField("allergies", max_length=500, blank=True)
@@ -441,8 +441,33 @@ class User(
     def profile_picture(self, value):
         self.picture = value
 
+    def verify_student(self, feide_groups) -> bool:
+        # if self.is_verified_student():
+        # return True
+
+        if self.has_grade_group:
+            self.student_verification_status = True
+            self.save()
+            return True
+
+        for group in feide_groups:
+            if group["id"] in constants.FSGroup.values():
+                grade_group = AbakusGroup.objects.get(
+                    name=constants.AbakusGradeFSMapping[constants.FSGroup(group["id"])]
+                )
+                grade_group.add_user(self)
+                self.student_verification_status = True
+                self.save()
+                return True
+
+        # Student has no allowed groups
+        self.student_verification_status = False
+        self.save()
+        return False
+
     def is_verified_student(self):
-        return self.student_username is not None
+        return False
+        return self.student_verification_status
 
     def get_short_name(self):
         return self.first_name

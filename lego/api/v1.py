@@ -65,6 +65,7 @@ from lego.apps.tags.views import TagViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.membership_history import MembershipHistoryViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
+from lego.apps.users.views.oidc import OIDCViewSet
 from lego.apps.users.views.password_change import ChangePasswordViewSet
 from lego.apps.users.views.password_reset import (
     PasswordResetPerformViewSet,
@@ -212,4 +213,5 @@ router.register(
     StudentConfirmationRequestViewSet,
     basename="student-confirmation-request",
 )
+router.register(r"oidc", OIDCViewSet, basename="oidc")
 router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")

@@ -1,3 +1,5 @@
+from enum import Enum
+
 MALE = "male"
 FEMALE = "female"
 OTHER = "other"
@@ -71,6 +73,25 @@ FIRST_GRADES = (
 
 USER_GROUP = "Users"
 MEMBER_GROUP = "Abakus"
+
+
+class FSGroup(Enum):
+    @classmethod
+    def values(cls) -> list[str]:
+        return [e.value for e in cls]
+
+    MTDT = "fc:fs:fs:prg:ntnu.no:MTDT"
+    MTKOM = "fc:fs:fs:prg:ntnu.no:MTKOM"
+    MIDT = "fc:fs:fs:prg:ntnu.no:MIDT"
+    MSTCNNS = "fc:fs:fs:prg:ntnu.no:mstcnns"
+
+
+AbakusGradeFSMapping = {
+    FSGroup.MTDT: FIRST_GRADE_DATA,
+    FSGroup.MTKOM: FIRST_GRADE_KOMTEK,
+    FSGroup.MIDT: FOURTH_GRADE_DATA,
+    FSGroup.MSTCNNS: FOURTH_GRADE_KOMTEK,
+}
 
 STUDENT_EMAIL_DOMAIN = "stud.ntnu.no"
 
