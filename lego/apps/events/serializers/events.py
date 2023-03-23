@@ -299,6 +299,7 @@ class EventAdministrateSerializer(EventReadSerializer):
             "use_consent",
             "use_contact_tracing",
             "created_by",
+            "feedback_required",
         )
 
 

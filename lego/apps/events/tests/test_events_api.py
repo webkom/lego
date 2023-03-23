@@ -1402,9 +1402,7 @@ class AllergiesTestCase(BaseAPITestCase):
         AbakusGroup.objects.get(name="Abakom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
-        event_response = self.client.get(
-            f"{_get_detail_url(self.event.id)}administrate/"
-        )
+        event_response = self.client.get(f"{_get_detail_url(self.event.id)}allergies/")
 
         attendee_allergies = (
             self.event.pools.first().registrations.first().user.allergies
