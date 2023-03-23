@@ -1,5 +1,7 @@
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
@@ -78,6 +80,21 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     permission_classes = [EventTypePermission]
 
+    def get_object(self):
+        queryset = self.get_queryset()
+        pk = self.kwargs.get("pk")
+
+        try:
+            obj = queryset.get(id=pk)
+        except (TypeError, ValueError, OverflowError, Event.DoesNotExist):
+            obj = get_object_or_404(queryset, slug=pk)
+        # check if user has permission to view the event or return 404
+        try:
+            self.check_object_permissions(self.request, obj)
+        except PermissionDenied:
+            raise Http404("Not found") from None
+        return obj
+
     def get_queryset(self):
         if self.request is None:
             return Event.objects.none()
@@ -144,7 +161,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return EventReadSerializer
         if self.action == "retrieve":
             user: User = self.request.user
-            event: Event = Event.objects.get(id=self.kwargs.get("pk", None))
+            pk = self.kwargs.get("pk", None)
+            event = (
+                Event.objects.get(id=pk) if pk.isdigit() else Event.objects.get(slug=pk)
+            )
             if (
                 event
                 and user
