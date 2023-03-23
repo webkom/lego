@@ -36,6 +36,8 @@
       - lorem
       - ipsum
       - sample-text
+    created_by_id: 1
+    authors: [1]
 
 - model: articles.Article
   pk: 2
@@ -58,6 +60,8 @@
     tags:
       - lorem
       - ipsum
+    created_by_id: 1
+    authors: [1]
 
 - model: articles.Article
   pk: 3
@@ -81,6 +85,8 @@
       - lorem
       - ipsum
     youtube_url: https://www.youtube.com/watch?v=bLHL75H_VEM
+    created_by_id: 1
+    authors: [1]
 
 - model: articles.Article
   pk: 4
@@ -102,6 +108,8 @@
       - - Users
     tags:
       - weekly
+    created_by_id: 1
+    authors: [1]
 
 - model: articles.Article
   pk: 5
@@ -124,6 +132,8 @@
     tags:
       - lorem
       - ipsum
+    created_by_id: 1
+    authors: [1]
 
 - model: articles.Article
   pk: 6
@@ -145,3 +155,5 @@
     tags:
       - lorem
       - ipsum
+    created_by_id: 1
+    authors: [1]
