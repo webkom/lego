@@ -7,6 +7,7 @@
   fields:
     title: faget get rekt
     created_by: 1
+    authors: [1]
     description: much good
     text: >
       Lorem ipsum dolor sit amet, consectetur adipisicing elit,
@@ -20,6 +21,7 @@
   fields:
     title: Ikkje løye det!
     created_by: 1
+    authors: [1]
     description: Om du e Tore?
     text: Tore Tang, en gammal mann. Hele webkom kjenner han.
     can_view_groups:
@@ -30,6 +32,7 @@
   fields:
     title: Alle kan se!
     created_by: 1
+    authors: [1]
     description: Håper jeg ..
     text: huehehehuuehhuehuehuehuehue
     require_auth: False
@@ -39,6 +42,7 @@
   fields:
     title: Ukens Weekly
     created_by: 1
+    authors: [1]
     description: Skjedd sykt mye bra denne uken
     text: >
       HS har snakket om at de skal få flere daljer, backup har
