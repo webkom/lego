@@ -7,7 +7,7 @@ from django.db import migrations
 def merge_authors(apps, schema_editor):
     Article = apps.get_model("articles", "Article")
     for e in Article.objects.all():
-        if e.created_by != None and e.authors == None:
+        if e.created_by != None and e.authors.count() == 0:
             e.authors.add(e.created_by)
             e.save()
 
