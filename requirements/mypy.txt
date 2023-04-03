@@ -2,7 +2,7 @@ mypy==0.991
 mypy-extensions==0.4.3
 django-stubs==1.13.2
 djangorestframework-stubs==1.8.0
-types-bleach==5.0.3.1
+types-bleach==6.0.0.2
 types-certifi==2021.10.8.3
 types-docutils==0.19.1.6
 types-Markdown==3.4.2.1
