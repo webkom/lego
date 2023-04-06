@@ -7,4 +7,4 @@
 -r mypy.txt
 
 django-debug-toolbar==3.8.1
-tox==4.4.7
+tox==4.4.11
