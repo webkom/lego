@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0020_abakusgroup_show_badge"),
         ("notifications", "0008_auto_20181011_1734"),

@@ -6,7 +6,6 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class EmailAddressTestCase(BaseTestCase):
-
     fixtures = ["test_email_addresses.yaml", "test_email_lists.yaml"]
 
     def test_create_duplicate(self):
@@ -28,7 +27,6 @@ class EmailAddressTestCase(BaseTestCase):
 
 
 class EmailListTestCase(BaseTestCase):
-
     fixtures = [
         "initial_files.yaml",
         "initial_abakus_groups.yaml",

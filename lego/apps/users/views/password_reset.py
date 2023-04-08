@@ -18,7 +18,6 @@ log = get_logger()
 
 
 class PasswordResetRequestViewSet(viewsets.GenericViewSet):
-
     serializer_class = PasswordResetRequestSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -46,7 +45,6 @@ class PasswordResetRequestViewSet(viewsets.GenericViewSet):
 
 
 class PasswordResetPerformViewSet(viewsets.GenericViewSet):
-
     serializer_class = PasswordResetPerformSerializer
     permission_classes = [permissions.AllowAny]
 

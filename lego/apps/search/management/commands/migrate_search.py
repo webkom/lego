@@ -7,7 +7,6 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     help = "Migrate the configured search backend."
 
     def run(self, *args, **options):

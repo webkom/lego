@@ -6,7 +6,6 @@ from .serializers import PageDetailSerializer
 
 
 class PageModelIndex(SearchIndex):
-
     queryset = Page.objects.all()
     serializer_class = PageDetailSerializer
     result_fields = ("title", "content", "slug", "picture", "category")

@@ -3,7 +3,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class RestrictedMailSentNotification(Notification):
-
     name = RESTRICTED_MAIL_SENT
 
     def generate_mail(self):

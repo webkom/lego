@@ -32,7 +32,6 @@ class JWTAuthenticationMiddleware:
         self.authentication = JWTQSAuthentication()
 
     async def __call__(self, scope, receive, send):
-
         # If there are old connecions in the database,
         # authentication will fail. So we make sure to clean up.
         close_old_connections()

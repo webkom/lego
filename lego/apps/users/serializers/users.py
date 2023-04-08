@@ -16,7 +16,6 @@ from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 
 
 class DetailedUserSerializer(serializers.ModelSerializer):
-
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     past_memberships = PastMembershipSerializer(many=True)
     penalties = serializers.SerializerMethodField("get_valid_penalties")
@@ -56,7 +55,6 @@ class DetailedUserSerializer(serializers.ModelSerializer):
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
-
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
     profile_picture_placeholder = ImageField(
         source="profile_picture",
@@ -122,7 +120,6 @@ class AdministrateUserExportSerializer(PublicUserSerializer):
 
 
 class SearchUserSerializer(serializers.ModelSerializer):
-
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
     profile_picture_placeholder = ImageField(
         source="profile_picture",

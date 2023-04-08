@@ -9,7 +9,6 @@ import lego.utils.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("users", "0004_abakusgroup_logo")]
 
     operations = [

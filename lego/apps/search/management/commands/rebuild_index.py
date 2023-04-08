@@ -8,7 +8,6 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     help = "Rebuild all search indexes."
 
     def run(self, *args, **options):

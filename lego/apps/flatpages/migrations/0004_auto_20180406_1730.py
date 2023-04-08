@@ -6,7 +6,6 @@ import lego.apps.content.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("flatpages", "0003_auto_20171210_1610")]
 
     operations = [

@@ -15,7 +15,6 @@ def get_time_delta():
 
 
 class Poll(Content, BasisModel):
-
     description = models.TextField(blank=True)
 
     results_hidden = models.BooleanField(default=False)
@@ -59,7 +58,6 @@ class Poll(Content, BasisModel):
 
 
 class Option(BasisModel):
-
     name = models.CharField(max_length=30)
     votes = models.IntegerField(default=0)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="options")

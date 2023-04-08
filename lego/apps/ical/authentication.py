@@ -5,7 +5,6 @@ from lego.apps.ical.models import ICalToken
 
 class ICalTokenAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-
         raw_token = request.GET.get("token")
         if not raw_token:
             return

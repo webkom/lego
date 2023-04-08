@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("events", "0035_rename_photo_consent_registration_legacy_photo_consent"),
     ]

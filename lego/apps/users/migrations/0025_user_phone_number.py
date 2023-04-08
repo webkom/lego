@@ -6,7 +6,6 @@ import phonenumber_field.modelfields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0024_auto_20200910_1530"),
     ]

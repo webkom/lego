@@ -9,7 +9,6 @@ from lego.apps.notifications.notifications import AnnouncementNotification
 
 
 class AnnouncementHandler(Handler):
-
     model = Announcement
     manager = feed_manager
 

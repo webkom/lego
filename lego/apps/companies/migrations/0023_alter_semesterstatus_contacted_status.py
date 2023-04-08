@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("companies", "0022_alter_semesterstatus_contacted_status"),
     ]

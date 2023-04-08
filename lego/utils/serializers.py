@@ -7,7 +7,6 @@ from lego.utils.content_types import string_to_instance
 
 
 class GenericRelationField(serializers.CharField):
-
     default_error_messages = {
         "does_not_exist": "Invalid model data <{data}> - object does not exist.",
         "incorrect_type": 'Source should be in the form "[AppLabel].[ModelName]-[ObjectId]"',

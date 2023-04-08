@@ -191,7 +191,6 @@ class AbakusGroup(MPTTModel, PersistentModel):
 
 
 class PermissionsMixin(CachedModel):
-
     abakus_groups = models.ManyToManyField(
         AbakusGroup,
         through="Membership",
@@ -490,7 +489,6 @@ class User(
 
 
 class Penalty(BasisModel):
-
     user = models.ForeignKey(User, related_name="penalties", on_delete=models.CASCADE)
     reason = models.CharField(max_length=1000)
     weight = models.IntegerField(default=1)
@@ -516,7 +514,6 @@ class Penalty(BasisModel):
 
     @staticmethod
     def penalty_offset(start_date, forwards=True):
-
         remaining_days = settings.PENALTY_DURATION.days
         offset_days = 0
         multiplier = 1 if forwards else -1

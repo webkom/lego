@@ -3,7 +3,6 @@ from lego.apps.permissions.permissions import PermissionHandler
 
 
 class FollowersPermissionHandler(PermissionHandler):
-
     default_keyword_permission = "/sudo/admin/followers/{perm}"
     force_object_permission_check = True
 
@@ -34,7 +33,6 @@ class FollowersPermissionHandler(PermissionHandler):
             return True
 
         if self.is_authenticated(user):
-
             if perm == LIST:
                 return True
 

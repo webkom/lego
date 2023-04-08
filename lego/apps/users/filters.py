@@ -6,7 +6,6 @@ from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, P
 
 
 class MembershipFilterSet(FilterSet):
-
     userUsername = CharFilter(field_name="user__username", lookup_expr="icontains")
     userFullname = CharFilter(field_name="userFullname", method="user__fullname")
     abakusGroupName = CharFilter(

@@ -7,7 +7,6 @@ from lego.utils.functions import verify_captcha
 
 
 class ContactFormSerializer(serializers.Serializer):
-
     title = serializers.CharField(max_length=80)
     message = serializers.CharField()
     anonymous = serializers.BooleanField()

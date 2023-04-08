@@ -17,7 +17,6 @@ from .validators import KEY_REGEX_RAW
 
 
 class FileViewSet(viewsets.GenericViewSet):
-
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [renderers.JSONRenderer]
     queryset = File.objects.all()

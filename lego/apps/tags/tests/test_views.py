@@ -3,7 +3,6 @@ from rest_framework.test import APITestCase
 
 
 class TagViewsTestCase(APITestCase):
-
     fixtures = ["test_abakus_groups.yaml", "test_tags_data.yaml", "initial_tags.yaml"]
 
     def test_fetch_popular(self):

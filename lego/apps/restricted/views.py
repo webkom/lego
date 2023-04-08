@@ -20,7 +20,6 @@ class RestrictedMailViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-
     filterset_class = RestrictedMailFilterSet
 
     def get_queryset(self):

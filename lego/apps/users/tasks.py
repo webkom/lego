@@ -29,7 +29,6 @@ def send_inactive_notification(user):
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
-
     self.setup_logger(logger_context)
 
     users_to_delete: list[User] = User.objects.filter(

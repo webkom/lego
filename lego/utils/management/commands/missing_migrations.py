@@ -24,12 +24,10 @@ class Command(BaseCommand):
     help = "Detect if any apps have missing migration files"
 
     def run(self, *args, **kwargs):
-
         changed = set()
 
         log.info("Checking DB migrations")
         for db in settings.DATABASES.keys():
-
             try:
                 executor = MigrationExecutor(connections[db])
             except OperationalError:

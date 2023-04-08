@@ -7,7 +7,6 @@ import lego.apps.files.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("users", "0022_user_selected_theme")]
 
     operations = [

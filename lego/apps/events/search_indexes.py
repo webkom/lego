@@ -5,7 +5,6 @@ from lego.apps.search.index import SearchIndex
 
 
 class EventModelIndex(SearchIndex):
-
     queryset = Event.objects.all()
     serializer_class = EventSearchSerializer
     result_fields = (

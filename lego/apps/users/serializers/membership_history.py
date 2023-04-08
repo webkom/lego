@@ -5,7 +5,6 @@ from lego.apps.users.models import MembershipHistory
 
 
 class MembershipHistorySerializer(serializers.ModelSerializer):
-
     abakus_group = AbakusGroupField(read_only=True)
     user = PublicUserField(read_only=True)
 

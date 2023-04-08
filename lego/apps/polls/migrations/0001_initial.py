@@ -10,7 +10,6 @@ import lego.apps.polls.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [

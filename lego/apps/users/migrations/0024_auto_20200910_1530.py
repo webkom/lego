@@ -26,7 +26,6 @@ def migrate_usernames(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0023_auto_20200311_2323"),
     ]

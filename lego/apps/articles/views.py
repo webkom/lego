@@ -12,7 +12,6 @@ from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
 
 
 class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     queryset = Article.objects.all()
     ordering = "-created_at"
     serializer_class = DetailedArticleSerializer

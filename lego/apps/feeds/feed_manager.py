@@ -5,7 +5,6 @@ from .utils import chunks
 
 
 class FeedManager:
-
     fanout_chunk_size = 10
 
     def add_activity(self, activity, recipients, feed_classes):

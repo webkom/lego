@@ -5,7 +5,6 @@ from lego.apps.users.serializers.user_delete import UserDeleteSerializer
 
 
 class UserDeleteViewSet(viewsets.ViewSet):
-
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):

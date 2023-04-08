@@ -14,7 +14,6 @@ from lego.apps.users.models import AbakusGroup, Penalty, User
 
 
 class SiteMetaViewSet(viewsets.ViewSet):
-
     permission_classes = [permissions.AllowAny]
 
     def list(self, request):

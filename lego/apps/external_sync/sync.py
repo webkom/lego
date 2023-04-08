@@ -31,7 +31,6 @@ class Sync:
         return users, groups
 
     def sync(self):
-
         users, groups = self.lookup_querysets()
 
         for system in self.systems:

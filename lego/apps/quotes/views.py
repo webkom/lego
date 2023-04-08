@@ -15,7 +15,6 @@ from lego.apps.quotes.serializers import QuoteCreateAndUpdateSerializer, QuoteSe
 
 
 class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     queryset = Quote.objects.all().prefetch_related("tags")
     filterset_class = QuotesFilterSet
     filter_backends = (

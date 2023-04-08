@@ -27,7 +27,6 @@ class NotificationSettingCreateSerializer(serializers.ModelSerializer):
 
 
 class AnnouncementListSerializer(BasisModelSerializer):
-
     users = PublicUserSerializer(many=True, read_only=True)
     groups = PublicAbakusGroupSerializer(many=True, read_only=True)
     events = EventReadSerializer(many=True, read_only=True)

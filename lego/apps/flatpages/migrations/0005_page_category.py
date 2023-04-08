@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("flatpages", "0004_auto_20180406_1730")]
 
     operations = [

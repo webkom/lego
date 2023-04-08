@@ -13,7 +13,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class EventBumpNotification(Notification):
-
     name = EVENT_BUMP
 
     def generate_mail(self):
@@ -42,7 +41,6 @@ class EventBumpNotification(Notification):
 
 
 class EventPaymentOverdueNotification(Notification):
-
     name = EVENT_PAYMENT_OVERDUE
 
     def generate_mail(self):
@@ -78,7 +76,6 @@ class EventPaymentOverdueNotification(Notification):
 
 
 class EventPaymentOverdueCreatorNotification(Notification):
-
     name = EVENT_PAYMENT_OVERDUE_CREATOR
 
     def generate_mail(self):
@@ -101,7 +98,6 @@ class EventPaymentOverdueCreatorNotification(Notification):
 
 
 class EventAdminRegistrationNotification(Notification):
-
     name = EVENT_ADMIN_REGISTRATION
 
     def generate_mail(self):
@@ -132,7 +128,6 @@ class EventAdminRegistrationNotification(Notification):
 
 
 class EventAdminUnregistrationNotification(Notification):
-
     name = EVENT_ADMIN_UNREGISTRATION
 
     def generate_mail(self):

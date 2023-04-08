@@ -14,7 +14,6 @@ from lego.apps.users.serializers.abakus_groups import (
 
 
 class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     queryset = AbakusGroup.objects.all()
     ordering = "id"
     filterset_class = AbakusGroupFilterSet

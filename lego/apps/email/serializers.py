@@ -13,7 +13,6 @@ from .fields import EmailAddressField
 
 
 class PublicEmailListSerializer(serializers.ModelSerializer):
-
     email = EmailAddressField(read_only=True)
 
     class Meta:
@@ -30,7 +29,6 @@ class PublicEmailListSerializer(serializers.ModelSerializer):
 
 
 class EmailListSerializer(serializers.ModelSerializer):
-
     email = EmailAddressField(read_only=True)
 
     class Meta:
@@ -86,7 +84,6 @@ class GSuiteAddressSerializer(serializers.ModelSerializer):
 
 
 class UserEmailSerializer(GSuiteAddressSerializer):
-
     user = PublicUserWithGroupsField(read_only=True, source="*")
     internal_email = EmailAddressField(
         queryset=EmailAddress.objects.all(), validators=[]
@@ -98,7 +95,6 @@ class UserEmailSerializer(GSuiteAddressSerializer):
 
 
 class UserEmailCreateSerializer(serializers.Serializer):
-
     user = PublicUserWithGroupsField(queryset=User.objects.all())
     internal_email = EmailAddressField(queryset=EmailAddress.objects.all())
     internal_email_enabled = serializers.BooleanField()

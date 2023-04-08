@@ -13,7 +13,6 @@ class JSONWebTokenTestCase(BaseAPITestCase):
         self.user_data = {"username": self.user.username, "password": "test"}
 
     def check_user(self, user):
-
         # Pulled from DetailedUserSerializer
         fields = (
             "id",

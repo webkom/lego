@@ -12,7 +12,6 @@ class TagViewSet(
     RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-
     queryset = Tag.objects.all()
     ordering = "tag"
     serializer_class = TagListSerializer

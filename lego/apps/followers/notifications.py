@@ -3,7 +3,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class RegistrationReminderNotification(Notification):
-
     name = REGISTRATION_REMINDER
 
     def generate_mail(self):

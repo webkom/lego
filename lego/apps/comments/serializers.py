@@ -45,7 +45,6 @@ class CommentSerializer(BasisModelSerializer):
 
 
 class UpdateCommentSerializer(BasisModelSerializer):
-
     text = ContentSerializerField()
 
     class Meta:

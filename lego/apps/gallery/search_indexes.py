@@ -6,7 +6,6 @@ from .serializers import GallerySearchSerializer
 
 
 class GalleryIndex(SearchIndex):
-
     queryset = Gallery.objects.all()
     serializer_class = GallerySearchSerializer
     result_fields = ("title", "location", "description")

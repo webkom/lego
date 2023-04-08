@@ -10,7 +10,6 @@ from lego.apps.podcasts.serializers import (
 
 
 class PodcastViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     ordering = "created_at"
 
     queryset = Podcast.objects.all()

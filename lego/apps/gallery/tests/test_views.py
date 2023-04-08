@@ -11,7 +11,6 @@ from lego.utils.test_utils import BaseAPITestCase
     "lego.apps.files.fields.storage.generate_signed_url", return_value="signed_url"
 )
 class GalleryViewSetTestCase(BaseAPITestCase):
-
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
@@ -145,7 +144,6 @@ class GalleryViewSetTestCase(BaseAPITestCase):
     "lego.apps.files.fields.storage.generate_signed_url", return_value="signed_url"
 )
 class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
-
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
@@ -294,7 +292,6 @@ class GalleryViewSetTestCaseRequireAuthFalse(BaseAPITestCase):
 
 
 class GalleryViewSetMetadataTestCase(BaseAPITestCase):
-
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml", "test_galleries.yaml"]
 
     def setUp(self):

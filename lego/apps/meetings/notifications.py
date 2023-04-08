@@ -11,7 +11,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class MeetingInvitationNotification(Notification):
-
     name = MEETING_INVITE
 
     def generate_mail(self):
@@ -59,7 +58,6 @@ class MeetingInvitationNotification(Notification):
 
 
 class MeetingInvitationReminderNotification(Notification):
-
     name = MEETING_INVITATION_REMINDER
 
     def generate_mail(self):

@@ -5,7 +5,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("feeds", "0004_auto_20180425_1530")]
 
     operations = [

@@ -15,7 +15,6 @@ class PhotoConsentSerializer(BasisModelSerializer):
         )
 
     def __init__(self, instance=None, **kwargs):
-
         data = kwargs.get("data", None)
         if data:
             user = data.get("user", None)

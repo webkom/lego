@@ -6,7 +6,6 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 class FollowEventViewTestCase(BaseAPITestCase):
-
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
@@ -59,7 +58,6 @@ class FollowEventViewTestCase(BaseAPITestCase):
 
 
 class FollowUserViewTestCase(BaseAPITestCase):
-
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml", "test_followuser.yaml"]
     url = "/api/v1/followers-user/"
 
@@ -106,7 +104,6 @@ class FollowUserViewTestCase(BaseAPITestCase):
 
 
 class FollowCompanyViewTestCase(BaseAPITestCase):
-
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",

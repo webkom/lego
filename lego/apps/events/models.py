@@ -227,7 +227,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         pools: Optional[QuerySet[Pool] | list[Pool]] = None,
         penalties: Optional[int] = None,
     ) -> date | None:
-
         if pools is None:
             pools = self.get_possible_pools(user, future=True)
         if len(pools) == 0:
@@ -513,7 +512,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         for waiting_registration in self.waiting_registrations:
             for full_pool in self.get_possible_pools(waiting_registration.user):
-
                 if full_pool not in balanced_pools:
                     balanced_pools.append(full_pool)
                     bumped = self.rebalance_pool(from_pool=full_pool, to_pool=open_pool)

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("joblistings", "0006_joblisting_contact_mail")]
 
     operations = [

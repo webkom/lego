@@ -19,7 +19,6 @@ from lego.apps.permissions.utils import get_permission_handler
 
 
 class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     filterset_class = MeetingFilterSet
     serializer_class = MeetingDetailSerializer
 
@@ -86,7 +85,6 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 
 class MeetingInvitationViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     queryset = MeetingInvitation.objects.select_related("user")
     lookup_field = "user__id"
 

@@ -8,7 +8,6 @@ def update_login(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0025_user_phone_number"),
     ]

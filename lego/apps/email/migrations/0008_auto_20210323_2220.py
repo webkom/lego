@@ -7,7 +7,6 @@ import lego.apps.users.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("email", "0007_emaillist_additional_emails"),
     ]

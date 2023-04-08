@@ -35,7 +35,6 @@ class Command(BaseCommand):
         )
 
     def run(self, *args, **options):
-
         user_group = AbakusGroup.objects.get_or_create(name="Users")[0]
         abakus_group = AbakusGroup.objects.get_or_create(name="Abakus")[0]
         users = []
@@ -76,7 +75,6 @@ class Command(BaseCommand):
         pool2.permission_groups.set([abakus_group.id])
 
         def single_benchmark(event, user):
-
             reg = Registration.objects.get_or_create(event=event, user=user)[0]
 
             pr = cProfile.Profile()
@@ -87,7 +85,6 @@ class Command(BaseCommand):
             pr.dump_stats(f"single{event.id}.pstat")
 
         def single_benchmark_avg(event, users):
-
             regs = []
             for user in users:
                 reg = Registration.objects.get_or_create(event=event, user=user)[0]
@@ -101,7 +98,6 @@ class Command(BaseCommand):
             pr.dump_stats(f"single_avg{event.id}.pstat")
 
         def benchmark(event, users):
-
             regs = []
             for user in users:
                 reg = Registration.objects.get_or_create(event=event, user=user)[0]

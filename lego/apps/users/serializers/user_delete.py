@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 
 class UserDeleteSerializer(serializers.Serializer):
-
     password = serializers.CharField(style={"input_type": "password"})
     default_error_messages = {
         "invalid_password": "Invalid password.",

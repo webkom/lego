@@ -6,7 +6,6 @@ import lego.apps.content.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("comments", "0006_auto_20180207_1611")]
 
     operations = [

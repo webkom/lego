@@ -4,7 +4,6 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
 class CommentPermissionHandler(PermissionHandler):
-
     # force_queryset_filtering forces the has_perm to be called with an object.
     # This is required to enable users to edit comments they have created.
     force_queryset_filtering = True

@@ -3,7 +3,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class CompanyInterestNotification(Notification):
-
     name = COMPANY_INTEREST_CREATED
 
     def generate_mail(self):

@@ -18,7 +18,6 @@ from lego.apps.polls.serializers import (
 
 
 class FrontpageViewSet(viewsets.ViewSet):
-
     permission_classes = (permissions.AllowAny,)
 
     def list(self, request):

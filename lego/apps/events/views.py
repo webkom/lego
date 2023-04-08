@@ -67,7 +67,6 @@ from lego.utils.functions import verify_captcha
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     filterset_class = EventsFilterSet
     filter_backends = (
         DjangoFilterBackend,
@@ -85,7 +84,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         user = self.request.user
         if self.action in ["list", "upcoming", "previous"]:
-            queryset = Event.objects.select_related("company",).prefetch_related(
+            queryset = Event.objects.select_related(
+                "company",
+            ).prefetch_related(
                 "pools",
                 "pools__registrations",
                 "tags",

@@ -3,7 +3,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class SurveyNotification(Notification):
-
     name = SURVEY_CREATED
 
     def generate_mail(self):

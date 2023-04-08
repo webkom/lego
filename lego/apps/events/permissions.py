@@ -10,7 +10,6 @@ log = get_logger()
 
 
 class EventPermissionHandler(PermissionHandler):
-
     perms_without_object = [CREATE, "administrate"]
 
     def event_type_keyword_permissions(self, event_type, perm):
@@ -56,7 +55,6 @@ class EventPermissionHandler(PermissionHandler):
 
 
 class RegistrationPermissionHandler(PermissionHandler):
-
     allowed_individual = [VIEW, EDIT, DELETE]
     perms_without_object = [CREATE, "admin_register", "admin_unregister"]
     force_object_permission_check = True
@@ -77,7 +75,6 @@ class RegistrationPermissionHandler(PermissionHandler):
         check_keyword_permissions=True,
         **kwargs,
     ):
-
         is_self = self.is_self(perm, user, obj)
         if is_self:
             return True

@@ -5,7 +5,6 @@ from lego.apps.search.index import SearchIndex
 
 
 class MeetingModelIndex(SearchIndex):
-
     queryset = Meeting.objects.all()
     serializer_class = MeetingSearchSerializer
     result_fields = (

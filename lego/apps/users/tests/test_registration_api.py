@@ -48,7 +48,6 @@ class RetrieveRegistrationAPITestCase(BaseAPITestCase):
 
 
 class CreateRegistrationAPITestCase(BaseAPITestCase):
-
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     _test_registration_data = {

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("notifications", "0009_announcement_from_group")]
 
     operations = [

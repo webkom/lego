@@ -9,7 +9,6 @@ import lego.apps.files.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("files", "0002_file_user"), ("users", "0003_auto_20170903_2206")]
 
     operations = [

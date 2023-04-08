@@ -4,14 +4,12 @@ from lego.apps.permissions.utils import get_permission_handler
 
 
 class CompanyPermissionHandler(PermissionHandler):
-
     default_keyword_permission = "/sudo/admin/companies/{perm}/"
 
     authentication_map = {LIST: False, VIEW: False}
 
 
 class CompanyAdminPermissionHandler(PermissionHandler):
-
     default_keyword_permission = "/sudo/admin/bdb/{perm}/"
 
 
@@ -43,7 +41,6 @@ class NestedCompanyPermissionHandler(CompanyPermissionHandler):
 
 
 class SemesterPermissionHandler(PermissionHandler):
-
     default_keyword_permission = "/sudo/admin/companies/{perm}/"
 
     authentication_map = {LIST: False}

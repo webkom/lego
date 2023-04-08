@@ -44,7 +44,6 @@ from lego.utils.serializers import (
 
 
 class EventPublicSerializer(BasisModelSerializer):
-
     thumbnail = ImageField(
         source="cover",
         required=False,
