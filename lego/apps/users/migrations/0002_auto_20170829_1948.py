@@ -9,7 +9,6 @@ import lego.apps.permissions.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("users", "0001_initial")]
 
     operations = [

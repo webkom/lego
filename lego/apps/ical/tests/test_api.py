@@ -214,7 +214,6 @@ class IcalEventsTestCase(BaseAPITestCase):
         self.event.save()
         self.pool.permission_groups.add(AbakusGroup.objects.get(name="Abakus"))
         for url in [self.events_url, self.registrations_url]:
-
             ical_events = _get_ical_events(url, self.client)
             self.assertEqual(len(ical_events), 1)
 

@@ -7,7 +7,6 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class FileModelTestCase(BaseTestCase):
-
     fixtures = ["test_users.yaml", "test_files.yaml"]
 
     def test_get_file_type(self):

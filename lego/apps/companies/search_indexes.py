@@ -6,7 +6,6 @@ from .serializers import CompanySearchSerializer
 
 
 class CompanyModelIndex(SearchIndex):
-
     queryset = Company.objects.all()
     serializer_class = CompanySearchSerializer
     result_fields = ("name", "description")

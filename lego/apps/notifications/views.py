@@ -78,7 +78,6 @@ class NotificationSettingsViewSet(ListModelMixin, viewsets.GenericViewSet):
 
 
 class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
-
     ordering = ("date_created",)
 
     def get_queryset(self):
@@ -88,7 +87,6 @@ class APNSDeviceViewSet(APNSDeviceAuthorizedViewSet):
 
 
 class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
-
     ordering = ("date_created",)
 
     def get_queryset(self):
@@ -98,7 +96,6 @@ class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
 
 
 class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     serializer_class = AnnouncementDetailSerializer
 
     def get_queryset(self):

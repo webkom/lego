@@ -17,7 +17,6 @@ from .models import Gallery, GalleryPicture
 
 
 class GalleryCoverSerializer(serializers.ModelSerializer):
-
     file = ImageField(required=False, options={"height": 700, "smart": True})
 
     thumbnail = ImageField(
@@ -32,7 +31,6 @@ class GalleryCoverSerializer(serializers.ModelSerializer):
 
 
 class GalleryListSerializer(BasisModelSerializer):
-
     picture_count = serializers.SerializerMethodField()
     cover = GalleryCoverSerializer()
 
@@ -53,7 +51,6 @@ class GalleryListSerializer(BasisModelSerializer):
 
 
 class GalleryPictureSerializer(serializers.ModelSerializer):
-
     file = ImageField(required=True, options={"height": 700, "smart": True})
     thumbnail = ImageField(
         source="file",
@@ -87,7 +84,6 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
 
 
 class GallerySerializer(BasisModelSerializer):
-
     cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
     photographers = PublicUserField(many=True, queryset=User.objects.all())
     event = PublicEventField(queryset=Event.objects.all(), required=False)
@@ -125,7 +121,6 @@ class GallerySearchSerializer(serializers.ModelSerializer):
 
 
 class GalleryMetadataSerializer(serializers.ModelSerializer):
-
     cover = GalleryCoverField(queryset=GalleryPicture.objects.all(), required=False)
 
     class Meta:

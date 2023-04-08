@@ -14,7 +14,6 @@ url_validator = URLValidator()
 
 
 class FileField(serializers.PrimaryKeyRelatedField):
-
     default_error_messages = {
         "required": "This field is required.",
         "does_not_exist": 'Invalid pk "{pk_value}" - object does not exist.',

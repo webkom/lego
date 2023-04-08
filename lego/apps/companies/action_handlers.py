@@ -9,12 +9,10 @@ from lego.utils.tasks import send_email
 
 
 class CompanyInterestHandler(Handler):
-
     model = CompanyInterest
     manager = feed_manager
 
     def handle_create(self, instance, **kwargs):
-
         # activity = Activity(
         #    actor=instance,
         #    verb=CompanyInterestVerb,

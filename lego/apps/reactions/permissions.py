@@ -4,7 +4,6 @@ from lego.utils.content_types import VALIDATION_EXCEPTIONS, string_to_instance
 
 
 class ReactionPermissionHandler(PermissionHandler):
-
     default_keyword_permission = "/sudo/admin/reactions/{perm}"
     force_object_permission_check = True
 
@@ -22,7 +21,6 @@ class ReactionPermissionHandler(PermissionHandler):
         check_keyword_permissions=True,
         **kwargs
     ):
-
         has_perm = super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
@@ -31,7 +29,6 @@ class ReactionPermissionHandler(PermissionHandler):
             return True
 
         if user.is_authenticated:
-
             if perm == LIST:
                 # The filter removes unwanted objects.
                 return True

@@ -9,7 +9,6 @@ import lego.utils.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("users", "0012_membership_email_lists_enabled")]
 
     operations = [

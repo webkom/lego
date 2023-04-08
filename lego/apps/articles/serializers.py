@@ -81,7 +81,6 @@ class SearchArticleSerializer(BasisModelSerializer):
 
 
 class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
-
     cover = ImageField(required=False, options={"height": 300})
     cover_placeholder = ImageField(
         source="cover", required=False, options={"height": 30, "filters": ["blur(20)"]}

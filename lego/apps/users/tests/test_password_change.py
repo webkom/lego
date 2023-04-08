@@ -6,7 +6,6 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 class TestPasswordChange(BaseAPITestCase):
-
     fixtures = ["test_users.yaml"]
 
     def setUp(self):

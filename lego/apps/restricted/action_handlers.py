@@ -10,7 +10,6 @@ from lego.utils.tasks import send_email
 
 
 class RestrictedHandler(Handler):
-
     model = RestrictedMail
     manager = feed_manager
 

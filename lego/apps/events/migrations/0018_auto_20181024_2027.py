@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("events", "0017_event_registration_close_time")]
 
     operations = [

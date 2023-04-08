@@ -15,7 +15,6 @@ default_values = {
 
 
 class SendTestCase(BaseTestCase):
-
     fixtures = [
         "initial_files.yaml",
         "initial_abakus_groups.yaml",

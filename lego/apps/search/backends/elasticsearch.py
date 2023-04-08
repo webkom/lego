@@ -10,7 +10,6 @@ from lego.apps.search.backend import SearchBacked
 
 
 class ElasticsearchBackend(SearchBacked):
-
     name = "elasticsearch"
 
     connection = None

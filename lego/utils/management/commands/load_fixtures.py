@@ -19,7 +19,6 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     help = "Loads initial data from fixtures."
 
     def add_arguments(self, parser):

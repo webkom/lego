@@ -21,7 +21,6 @@ from lego.apps.feeds.verbs import (
 
 
 class EventHandler(Handler):
-
     model = Event
     manager = feed_manager
 
@@ -65,7 +64,6 @@ register_handler(EventHandler)
 
 
 class RegistrationHandler(Handler):
-
     model = Registration
     manager = feed_manager
 

@@ -9,7 +9,6 @@ from lego.apps.meetings.notifications import MeetingInvitationNotification
 
 
 class MeetingInvitationHandler(Handler):
-
     model = MeetingInvitation
     manager = feed_manager
 

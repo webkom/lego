@@ -8,7 +8,6 @@ from lego.apps.users.models import User
 
 
 class EmailListFilterSet(FilterSet):
-
     name = CharFilter(lookup_expr="icontains")
     email = CharFilter(lookup_expr="icontains", field_name="email__email")
     requireInternalAddress = BooleanFilter(field_name="require_internal_address")
@@ -19,7 +18,6 @@ class EmailListFilterSet(FilterSet):
 
 
 class EmailUserFilterSet(FilterSet):
-
     email = CharFilter(field_name="internal_email__email", lookup_expr="icontains")
     userUsername = CharFilter(field_name="username", lookup_expr="icontains")
     userFullname = CharFilter(field_name="userFullname", method="fullname")

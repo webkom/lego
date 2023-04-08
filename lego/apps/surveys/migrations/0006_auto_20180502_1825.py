@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("surveys", "0005_answer_hide_from_public")]
 
     operations = [

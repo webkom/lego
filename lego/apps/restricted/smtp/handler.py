@@ -47,7 +47,6 @@ class RestrictedHandler:
 
         status = []
         for recipient in recipients:
-
             if recipient not in [
                 settings.RESTRICTED_ADDRESS,
                 f"{settings.RESTRICTED_ADDRESS}@{settings.RESTRICTED_DOMAIN}",
@@ -67,7 +66,6 @@ class RestrictedHandler:
                 return OK_250
 
             except Exception:
-
                 log.exception("smtp_lookup_failure")
                 status.append(ERR_550)
 

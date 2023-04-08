@@ -18,7 +18,6 @@ from lego.utils.models import BasisModel
 
 
 class Meeting(BasisModel):
-
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
@@ -115,7 +114,6 @@ class Meeting(BasisModel):
 
 
 class MeetingInvitation(BasisModel):
-
     meeting = models.ForeignKey(
         Meeting, related_name="invitations", on_delete=models.CASCADE
     )

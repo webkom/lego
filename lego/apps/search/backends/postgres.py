@@ -4,7 +4,6 @@ from .. import registry
 
 
 class PostgresBackend(SearchBacked):
-
     name = "postgres"
 
     max_results = 10

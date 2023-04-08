@@ -6,7 +6,6 @@ from .serializers import TagSearchSerializer
 
 
 class TagIndex(SearchIndex):
-
     queryset = Tag.objects.all()
     serializer_class = TagSearchSerializer
     result_fields = ("tag",)

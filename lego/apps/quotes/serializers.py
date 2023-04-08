@@ -31,7 +31,6 @@ class QuoteSerializer(TagSerializerMixin, BasisModelSerializer):
 
 
 class QuoteCreateAndUpdateSerializer(BasisModelSerializer):
-
     text = ContentSerializerField()
 
     class Meta:

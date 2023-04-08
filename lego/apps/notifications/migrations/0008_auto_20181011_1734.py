@@ -7,7 +7,6 @@ import lego.apps.notifications.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("notifications", "0007_auto_20180226_2130")]
 
     operations = [

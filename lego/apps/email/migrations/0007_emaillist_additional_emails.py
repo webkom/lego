@@ -7,7 +7,6 @@ import lego.apps.users.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("email", "0006_emaillist_require_internal_address")]
 
     operations = [

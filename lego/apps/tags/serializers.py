@@ -28,7 +28,6 @@ class TagSerializer(ModelSerializer):
 
 
 class TagListSerializer(serializers.ModelSerializer):
-
     usages = serializers.IntegerField()
 
     class Meta:
@@ -37,7 +36,6 @@ class TagListSerializer(serializers.ModelSerializer):
 
 
 class TagDetailSerializer(serializers.ModelSerializer):
-
     usages = serializers.IntegerField()
 
     class Meta:

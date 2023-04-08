@@ -168,7 +168,6 @@ class CompanyInterest(PersistentModel, TimeStampModel):
         permission_handler = CompanyInterestPermissionHandler()
 
     def generate_mail_context(self):
-
         semesters = []
         for semester in self.semesters.all():
             if semester.semester == SPRING:

@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("email", "0004_auto_20171011_2112")]
 
     operations = [

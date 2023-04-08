@@ -6,7 +6,6 @@ from .serializers import ContactFormSerializer
 
 
 class ContactFormViewSet(viewsets.GenericViewSet):
-
     permission_classes = (permissions.AllowAny,)
     serializer_class = ContactFormSerializer
 

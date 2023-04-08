@@ -8,7 +8,6 @@ import lego.apps.content.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("articles", "0005_auto_20171026_2017")]
 
     operations = [

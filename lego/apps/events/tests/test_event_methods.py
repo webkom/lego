@@ -294,7 +294,6 @@ class EventMethodTest(BaseTestCase):
         self.assertEqual(event.is_full, True)
 
     def test_is_full_when_unlimited(self):
-
         event = Event.objects.get(title="NO_POOLS_ABAKUS")
 
         pool = Pool.objects.create(

@@ -392,7 +392,6 @@ def stripe_webhook_event(self, event_id, event_type, logger_context=None):
         constants.STRIPE_EVENT_INTENT_PAYMENT_FAILED,
         constants.STRIPE_EVENT_INTENT_PAYMENT_CANCELED,
     ]:
-
         serializer = StripePaymentIntentSerializer(data=event.data["object"])
         serializer.is_valid(raise_exception=True)
 

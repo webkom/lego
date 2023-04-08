@@ -14,7 +14,6 @@ class CommentManager(BasisModelManager):
 
 
 class Comment(BasisModel):
-
     text = ContentField(allow_images=False, null=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)

@@ -8,7 +8,6 @@ import mptt.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("users", "0013_auto_20171114_1750")]
 
     operations = [

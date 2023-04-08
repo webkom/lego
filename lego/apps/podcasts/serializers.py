@@ -7,7 +7,6 @@ from lego.utils.serializers import BasisModelSerializer
 
 
 class PodcastSerializer(BasisModelSerializer):
-
     description = ContentSerializerField()
     authors = PublicUserSerializer(many=True)
     thanks = PublicUserSerializer(many=True)
@@ -18,7 +17,6 @@ class PodcastSerializer(BasisModelSerializer):
 
 
 class DetailedPodcastSerializer(BasisModelSerializer):
-
     description = ContentSerializerField()
     authors = PublicUserSerializer(many=True)
     thanks = PublicUserSerializer(many=True)
@@ -29,7 +27,6 @@ class DetailedPodcastSerializer(BasisModelSerializer):
 
 
 class PodcastCreateAndUpdateSerializer(BasisModelSerializer):
-
     description = ContentSerializerField()
     authors = PublicUserField(many=True, queryset=User.objects.all())
     thanks = PublicUserField(many=True, queryset=User.objects.all())

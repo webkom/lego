@@ -6,7 +6,6 @@ from .serializers.users import SearchGroupSerializer, SearchUserSerializer
 
 
 class UserIndex(SearchIndex):
-
     queryset = User.objects.all()
     serializer_class = SearchUserSerializer
     result_fields = (
@@ -34,7 +33,6 @@ register(UserIndex)
 
 
 class GroupIndex(SearchIndex):
-
     queryset = AbakusGroup.objects.all()
     serializer_class = SearchGroupSerializer
     result_fields = ("name", "type", "logo")

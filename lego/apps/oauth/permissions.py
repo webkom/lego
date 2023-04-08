@@ -2,7 +2,6 @@ from lego.apps.permissions.permissions import PermissionHandler
 
 
 class APIApplicationPermissionHandler(PermissionHandler):
-
     force_queryset_filtering = True
 
     def filter_queryset(self, user, queryset, **kwargs):

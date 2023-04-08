@@ -10,7 +10,6 @@ from lego.apps.users.serializers.membership_history import MembershipHistorySeri
 class MembershipHistoryViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
-
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MembershipHistorySerializer
     filterset_class = MembershipHistoryFilterSet

@@ -8,7 +8,6 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class FileFieldTestCase(BaseTestCase):
-
     fixtures = ["test_users.yaml", "test_files.yaml"]
 
     def setUp(self):

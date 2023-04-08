@@ -23,12 +23,10 @@ class HiddenResultsOptionSerializer(BasisModelSerializer):
 
 
 class OptionUpdateSerializer(OptionSerializer):
-
     id = IntegerField(read_only=False)
 
 
 class PollSerializer(BasisModelSerializer):
-
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
@@ -61,7 +59,6 @@ class PollSerializer(BasisModelSerializer):
 
 
 class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
-
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
@@ -98,7 +95,6 @@ class HiddenResultsDetailedPollSerializer(DetailedPollSerializer):
 
 
 class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
-
     options = OptionSerializer(many=True)
 
     class Meta:
@@ -126,7 +122,6 @@ class PollCreateSerializer(TagSerializerMixin, BasisModelSerializer):
 
 
 class PollUpdateSerializer(TagSerializerMixin, BasisModelSerializer):
-
     options = OptionUpdateSerializer(many=True)
 
     class Meta:

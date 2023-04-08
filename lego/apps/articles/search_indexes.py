@@ -6,7 +6,6 @@ from .serializers import SearchArticleSerializer
 
 
 class ArticleModelIndex(SearchIndex):
-
     queryset = Article.objects.all()
     serializer_class = SearchArticleSerializer
     result_fields = ("title", "description", "cover")

@@ -18,7 +18,6 @@ log = get_logger()
 
 
 class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
-
     serializer_class = StudentConfirmationSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -73,7 +72,6 @@ class StudentConfirmationRequestViewSet(viewsets.GenericViewSet):
 
 
 class StudentConfirmationPerformViewSet(viewsets.GenericViewSet):
-
     serializer_class = StudentConfirmationSerializer
     permission_classes = (IsAuthenticated,)
 

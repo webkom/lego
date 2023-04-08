@@ -52,7 +52,6 @@ class UserEmailViewSet(
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
-
     queryset = User.objects.filter(internal_email__isnull=False).prefetch_related(
         "abakus_groups"
     )

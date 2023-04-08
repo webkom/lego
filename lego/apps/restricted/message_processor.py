@@ -135,7 +135,6 @@ class MessageProcessor:
 
     @staticmethod
     def send_mass_mail_html(datatuple: tuple[tuple[str, str, str, list[str]]]):
-
         messages = []
         for subject, html, from_email, recipients in datatuple:
             message: EmailMultiAlternatives = EmailMultiAlternatives(

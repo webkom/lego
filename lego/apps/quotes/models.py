@@ -8,7 +8,6 @@ from .permissions import QuotePermissionHandler
 
 
 class Quote(BasisModel, Content):
-
     source = models.CharField(max_length=255)
     approved = models.BooleanField(default=False)
 

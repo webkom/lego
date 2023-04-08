@@ -5,7 +5,6 @@ from lego.apps.users.fields import PublicUserField
 
 
 class FollowerSerializer(serializers.ModelSerializer):
-
     follower = PublicUserField(read_only=True)
 
     class Meta:

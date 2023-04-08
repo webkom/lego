@@ -3,11 +3,9 @@ from lego.apps.notifications.notification import Notification
 
 
 class CommentNotification(Notification):
-
     name = COMMENT
 
     def generate_mail(self):
-
         target = self.kwargs["target"]
         target_string = str(target)
         author = self.kwargs["author"]
@@ -29,11 +27,9 @@ class CommentNotification(Notification):
 
 
 class CommentReplyNotification(Notification):
-
     name = COMMENT_REPLY
 
     def generate_mail(self):
-
         target = self.kwargs["target"]
         target_string = str(target)
         author = self.kwargs["author"]

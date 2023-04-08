@@ -6,7 +6,6 @@ from lego.apps.permissions.utils import get_permission_handler
 
 
 class MeetingPermissionHandler(PermissionHandler):
-
     force_object_permission_check = True
     force_queryset_filtering = True
 
@@ -48,7 +47,6 @@ class MeetingPermissionHandler(PermissionHandler):
 
 
 class MeetingInvitationPermissionHandler(PermissionHandler):
-
     default_keyword_permission = "/sudo/admin/meetings/{perm}/"
     force_object_permission_check = True
 

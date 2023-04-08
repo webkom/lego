@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("surveys", "0010_alter_answer_created_by_alter_answer_updated_by_and_more"),
     ]

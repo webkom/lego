@@ -9,7 +9,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tags", "0002_auto_20170908_1651")]
 
     operations = [

@@ -99,7 +99,6 @@ class AggregatedFeedManager(models.Manager):
 
 
 class AggregatedFeedBase(FeedBase):
-
     objects = AggregatedFeedManager()
 
     class Meta(FeedBase.Meta):
@@ -108,7 +107,6 @@ class AggregatedFeedBase(FeedBase):
 
 
 class NotificationFeedBase(FeedBase, MarkerModelMixin):
-
     objects = AggregatedFeedManager()
 
     class Meta(FeedBase.Meta):

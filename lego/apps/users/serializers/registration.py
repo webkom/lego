@@ -19,7 +19,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class RegistrationConfirmationSerializer(serializers.ModelSerializer):
-
     password = serializers.CharField(required=True, write_only=True)
 
     def validate_username(self, username):

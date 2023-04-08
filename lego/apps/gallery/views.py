@@ -20,7 +20,6 @@ from .serializers import (
 
 
 class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-
     queryset = Gallery.objects.all().select_related("event", "cover")
     filterset_class = GalleryFilterSet
     serializer_class = GallerySerializer

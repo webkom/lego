@@ -7,7 +7,6 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 class ContactViewSetTestCase(BaseAPITestCase):
-
     fixtures = [
         "initial_files.yaml",
         "initial_abakus_groups.yaml",

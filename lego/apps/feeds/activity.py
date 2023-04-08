@@ -6,7 +6,6 @@ from . import verbs
 
 
 class Activity:
-
     object_id = None
     object_content_type = None
 

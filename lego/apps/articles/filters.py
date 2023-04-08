@@ -5,7 +5,6 @@ from lego.apps.tags.filters import TagFilter
 
 
 class ArticleFilterSet(filterset.FilterSet):
-
     tag = TagFilter()
 
     class Meta:

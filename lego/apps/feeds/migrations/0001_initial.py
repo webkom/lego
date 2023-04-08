@@ -7,7 +7,6 @@ import lego.apps.feeds.marker
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []

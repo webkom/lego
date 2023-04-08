@@ -43,7 +43,6 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         EDIT permission.
         """
         if self.action in ["retrieve", "update", "partial_update"]:
-
             try:
                 instance = self.get_object()
             except AssertionError:

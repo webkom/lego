@@ -5,7 +5,6 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class NotificationSettingTestCase(BaseTestCase):
-
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",

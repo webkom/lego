@@ -7,7 +7,6 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 class OauthViewsTestCase(BaseAPITestCase):
-
     fixtures = ["test_users.yaml", "test_applications.yaml", "test_access_tokens.yaml"]
 
     def setUp(self):
@@ -47,7 +46,6 @@ class OauthViewsTestCase(BaseAPITestCase):
 
 
 class OauthApplicationViewsTestCase(BaseAPITestCase):
-
     fixtures = [
         "test_users.yaml",
         "test_abakus_groups.yaml",

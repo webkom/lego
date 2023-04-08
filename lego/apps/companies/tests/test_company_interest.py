@@ -50,7 +50,6 @@ def _get_detail_company_interest(pk):
 
 
 def _get_export_company_interest():
-
     return reverse("api:v1:company-interest-csv")
 
 

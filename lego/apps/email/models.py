@@ -47,7 +47,6 @@ class EmailAddress(models.Model):
 
 
 class EmailList(models.Model):
-
     name = models.CharField(max_length=64)
     email = models.OneToOneField(
         EmailAddress,

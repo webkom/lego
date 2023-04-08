@@ -7,7 +7,6 @@ from lego.utils.functions import verify_captcha
 
 
 class StudentConfirmationSerializer(serializers.Serializer):
-
     student_username = serializers.CharField(
         max_length=30,
         help_text="30 characters or fewer. Letters, digits and _ only.",

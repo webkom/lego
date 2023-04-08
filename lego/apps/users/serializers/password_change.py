@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-
     password = serializers.CharField(style={"input_type": "password"})
     new_password = serializers.CharField(style={"input_type": "password"})
     retype_new_password = serializers.CharField(style={"input_type": "password"})

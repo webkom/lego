@@ -14,7 +14,6 @@ from .logging import *  # noqa
 if TESTING:
     from .test import *  # noqa
 else:
-
     if os.environ.get("ENV_CONFIG") in ["1", "True", "true"]:
         from .production import *  # noqa
     else:

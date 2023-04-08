@@ -14,7 +14,6 @@ class Workplace(BasisModel):
 
 
 class Joblisting(Content, BasisModel):
-
     company = models.ForeignKey(
         Company, related_name="joblistings", on_delete=models.CASCADE
     )

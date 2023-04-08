@@ -9,7 +9,6 @@ from lego.apps.notifications.notification import Notification
 
 
 class PenaltyNotification(Notification):
-
     name = PENALTY_CREATION
 
     def generate_mail(self):
@@ -39,7 +38,6 @@ class PenaltyNotification(Notification):
 
 
 class InactiveNotification(Notification):
-
     name = INACTIVE_WARNING
 
     def generate_mail(self):
@@ -63,7 +61,6 @@ class InactiveNotification(Notification):
 
 
 class DeletedUserNotification(Notification):
-
     name = DELETED_WARNING
 
     def generate_mail(self):

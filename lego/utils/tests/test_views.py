@@ -5,7 +5,6 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 class SiteMetaViewSetTestCase(BaseAPITestCase):
-
     fixtures = ["test_users.yaml"]
 
     def setUp(self):
