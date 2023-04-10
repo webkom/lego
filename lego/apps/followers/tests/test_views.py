@@ -29,11 +29,11 @@ class FollowEventViewTestCase(BaseAPITestCase):
 
     def test_create(self):
         """Try to follow an event, we should always store the follower as request.user"""
-        response = self.client.post(self.url, {"target": 1})
+        response = self.client.post(self.url, {"target": 4})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         self.client.force_authenticate(self.user)
-        response = self.client.post(self.url, {"target": 1})
+        response = self.client.post(self.url, {"target": 4})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Always use request.user to set the follower

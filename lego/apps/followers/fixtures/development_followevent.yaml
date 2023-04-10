@@ -2,14 +2,9 @@
   pk: 1
   fields:
     follower: 1
-    target: 3
+    target: 1
 - model: followers.FollowEvent
   pk: 2
   fields:
-    follower: 5
-    target: 4
-- model: followers.FollowEvent
-  pk: 3
-  fields:
-    follower: 1
+    follower: 3
     target: 1
