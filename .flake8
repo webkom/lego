@@ -1,0 +1,20 @@
+[flake8]
+exclude =
+    venv/*,
+    .tox/*,
+    lego/settings/local.py,
+    migrations,
+    wsgi.py,
+    docs/*
+extend-ignore =
+    # W503: Line break before binary operator
+    W503,
+    # E203: Whitespace before ':' (not PEP 8 compliant)
+    E203,
+    # C901: Function too complex (McCabe complexity)
+    C901,
+    # B907: Implicit string concatenation found in a list
+    B907
+select = B,C,E,F,W,T4,B9
+max-line-length = 100
+max-complexity = 18
