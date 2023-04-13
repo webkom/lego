@@ -1,4 +1,4 @@
-from urllib.parse import urlparse
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -83,7 +83,7 @@ def render_ical_response(feed, calendar_type):
 
 
 def get_frontend_domain():
-    return urlparse(settings.FRONTEND_URL).netloc
+    return urlsplit(settings.FRONTEND_URL).netloc
 
 
 def get_calendar_name(calendar_type):
