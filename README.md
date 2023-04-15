@@ -12,39 +12,50 @@
 
 ## Getting started
 
-LEGO requires `python3.11`, `python3.11-venv`, `docker` and `docker-compose`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `python3.11-venv`, `docker` and `poetry`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+
+### Initial setup (only needed once)
 
 ```bash
-# Initial setup (only need to once)
 $ git clone git@github.com:webkom/lego.git && cd lego/
 $ python3 -m venv venv
 $ echo "from .development import *" > lego/settings/local.py
 $ source venv/bin/activate
-$ pip install -r requirements/dev.txt
-$ docker-compose up -d
+$ poetry install
+$ docker compose up -d
 $ python manage.py initialize_development
+```
 
-# Activate and run (do every time)
-$ docker-compose up -d
+### Activate and run (every time)
+
+```bash
+$ docker compose up -d
 $ source venv/bin/activate
 $ python manage.py runserver
+```
 
+#### Notes
+
+```bash
 # Note 1: Whenever you switch branches you might need to make minor changes
-$ pip install -r requirements/dev.txt # If the branch has changes in the dependencies
+
+$ poetry install # If the branch has changes in the dependencies
 $ python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
+
 $ python manage.py makemigrations # Creates one or more new files that must be commited
-# Remember to format generated migrations! (using f.ex: make fixme)
+
+# Remember to format generated migrations! (using e.g. `make fixme`)
 ```
 
 > If you get problems it can be a solution to delete the `venv`, and do a fresh setup
 
 ## Code Style
 
-This codebase uses the PEP 8 code style. We enforce this with isort, black & flake8. In addition to the standards outlined in PEP 8, we have a few guidelines (see `setup.cfg` for more info):
+This codebase uses the PEP 8 code style. We enforce this with `isort`, `black` & `flake8`. In addition to the standards outlined in PEP 8, we have a few guidelines (see `pyproject.toml` for more info):
 
-Format the code with black & isort
+Format the code with `isort` & `black`
 
 ```bash
 $ make fixme
@@ -53,10 +64,10 @@ $ make fixme
 To check if it is formatted properly, run:
 
 ```bash
-$ tox -e isort -e flake8 -e black
+$ tox -e isort -e black -e flake8
 ```
 
-To check if code is typed properly, run:
+To check if it is typed properly, run:
 
 ```bash
 $ tox -e mypy
@@ -95,7 +106,7 @@ $ coverage report | grep [some string]
 
 ## Deployment
 
-Lego runs in `Docker Swarm` and deploys are managed by `Drone` and `Ansible`.
+LEGO runs in `Docker Swarm` and deploys are managed by `Drone` and `Ansible`.
 
 How to deploy:
 
@@ -120,7 +131,7 @@ By default, development and production uses postgres for search. We can still en
 
 ### Debugging
 
-If you get an error while installing requirements, you might be missing some dependencies on your system.
+If you get an error while installing project dependencies, you might be missing some on your system.
 
 ```bash
 $ apt-get install libpq-dev python3-dev
