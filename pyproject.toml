@@ -65,7 +65,7 @@ aiosmtpd = "1.4.4.post2"
 premailer = "3.10.0"
 #
 # Docs
-Pygments = "2.14.0"
+Pygments = "2.15.0"
 Markdown = "3.4.3"
 coreapi = "2.3.3"
 
