@@ -3491,14 +3491,14 @@ files = [
 
 [[package]]
 name = "types-python-slugify"
-version = "7.0.0.1"
+version = "8.0.0.2"
 description = "Typing stubs for python-slugify"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-python-slugify-7.0.0.1.tar.gz", hash = "sha256:6b2d16e1465896df0e3685bd38eab7b8f945a3a7c18c4a2c2ef391b0e48dfce8"},
-    {file = "types_python_slugify-7.0.0.1-py3-none-any.whl", hash = "sha256:3644bb44a25847ba5c8f9d15757f1d4b76064857c30e93517723618bd1152a19"},
+    {file = "types-python-slugify-8.0.0.2.tar.gz", hash = "sha256:de237b01c69ad3a57ae36a0e8a6a0c65b47bac529483007c1cae2d424cb07cc8"},
+    {file = "types_python_slugify-8.0.0.2-py3-none-any.whl", hash = "sha256:9e81f49eac8c805f924695de559fb8dc123ccbd15adb47d40ceaec51c739f044"},
 ]
 
 [[package]]
@@ -3849,4 +3849,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a9a0f535ee0b048131fa7fa7a464c4f725703ccb0202275f43c0533f0c13deb1"
+content-hash = "ccd3d0bcfdfce55e60032b46494c153ea6d8926bf13de77ec3e86d4487561635"
