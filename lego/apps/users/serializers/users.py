@@ -104,10 +104,7 @@ class AdministrateUserSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + (  # type: ignore
-            "abakus_groups",
-            "allergies",
-        )
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)  # type: ignore
 
 
 class AdministrateUserExportSerializer(PublicUserSerializer):
@@ -116,7 +113,19 @@ class AdministrateUserExportSerializer(PublicUserSerializer):
     """
 
     class Meta(PublicUserSerializer.Meta):
-        fields = AdministrateUserSerializer.Meta.fields + ("email", "phone_number")  # type: ignore
+        fields = AdministrateUserSerializer.Meta.fields + (
+            "email",
+            "phone_number",
+        )  # type: ignore
+
+
+class AdministrateUserAllergiesSerializer(PublicUserSerializer):
+    """
+    Used by the events app when listing user allergies.
+    """
+
+    class Meta(PublicUserSerializer.Meta):
+        fields = AdministrateUserSerializer.Meta.fields + ("allergies",)  # type: ignore
 
 
 class SearchUserSerializer(serializers.ModelSerializer):

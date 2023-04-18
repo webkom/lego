@@ -90,3 +90,13 @@
     first_name: pr
     last_name: meldem
     email: pr@abakus.no
+
+- model: users.User
+  pk: 11
+  fields:
+    username: allergiesmedlem
+    gender: female
+    first_name: allergies
+    last_name: medlem
+    email: allergies@abakus.no
+    allergies: "Vegetar"

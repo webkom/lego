@@ -30,6 +30,7 @@ from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
+    EventAdministrateAllergiesSerializer,
     EventAdministrateExportSerializer,
     EventAdministrateSerializer,
     EventCreateAndUpdateSerializer,
@@ -235,6 +236,18 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             serializer = EventAdministrateExportSerializer
         event_data = serializer(event).data
         event_data = populate_event_registration_users_with_grade(event_data)
+        return Response(event_data)
+
+    @decorators.action(detail=True, methods=["GET"])
+    def allergies(self, request, *args, **kwargs):
+        event_id = self.kwargs.get("pk", None)
+        serializer = EventAdministrateSerializer
+        event = Event.objects.get(pk=event_id)
+
+        if request.user == event.created_by:
+            serializer = EventAdministrateAllergiesSerializer
+
+        event_data = serializer(event).data
         return Response(event_data)
 
     @decorators.action(detail=True, methods=["POST"], serializer_class=BaseSerializer)

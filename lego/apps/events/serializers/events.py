@@ -18,6 +18,7 @@ from lego.apps.events.fields import (
 )
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
+    PoolAdministrateAllergiesSerializer,
     PoolAdministrateExportSerializer,
     PoolAdministrateSerializer,
     PoolCreateAndUpdateSerializer,
@@ -25,6 +26,7 @@ from lego.apps.events.serializers.pools import (
     PoolReadSerializer,
 )
 from lego.apps.events.serializers.registrations import (
+    RegistrationReadDetailedAllergiesSerializer,
     RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
@@ -297,6 +299,7 @@ class EventAdministrateSerializer(EventReadSerializer):
             "use_consent",
             "use_contact_tracing",
             "created_by",
+            "feedback_required",
         )
 
 
@@ -304,6 +307,11 @@ class EventAdministrateExportSerializer(EventAdministrateSerializer):
     pools = PoolAdministrateExportSerializer(many=True)
     unregistered = RegistrationReadDetailedExportSerializer(many=True)
     waiting_registrations = RegistrationReadDetailedExportSerializer(many=True)
+
+
+class EventAdministrateAllergiesSerializer(EventAdministrateSerializer):
+    pools = PoolAdministrateAllergiesSerializer(many=True)
+    waiting_registrations = RegistrationReadDetailedAllergiesSerializer(many=True)
 
 
 class EventCreateAndUpdateSerializer(

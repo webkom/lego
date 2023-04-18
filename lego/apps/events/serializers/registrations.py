@@ -16,6 +16,7 @@ from lego.apps.events.fields import (
 from lego.apps.events.models import Pool, Registration
 from lego.apps.users.models import User as user_model
 from lego.apps.users.serializers.users import (
+    AdministrateUserAllergiesSerializer,
     AdministrateUserExportSerializer,
     AdministrateUserSerializer,
     PublicUserSerializer,
@@ -161,6 +162,10 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
 
 class RegistrationReadDetailedExportSerializer(RegistrationReadDetailedSerializer):
     user = AdministrateUserExportSerializer()  # type: ignore
+
+
+class RegistrationReadDetailedAllergiesSerializer(RegistrationReadDetailedSerializer):
+    user = AdministrateUserAllergiesSerializer()  # type: ignore
 
 
 class StripeMetaSerializer(serializers.Serializer):
