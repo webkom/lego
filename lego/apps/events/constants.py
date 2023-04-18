@@ -10,7 +10,6 @@ PARTY = "party"
 SOCIAL = "social"
 OTHER = "other"
 EVENT = "event"
-IMAGE = "image"
 
 EVENT_TYPES = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),

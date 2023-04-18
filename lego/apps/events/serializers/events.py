@@ -198,6 +198,9 @@ class EventForSurveySerializer(EventReadSerializer):
 
 class ImageGallerySerializer(BasisModelSerializer):
     cover = ImageField(source="key", required=True, options={"height": 500})
+    cover_placeholder = ImageField(
+        source="key", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
 
     class Meta:
         model = File
@@ -209,6 +212,7 @@ class ImageGallerySerializer(BasisModelSerializer):
             "save_for_use",
             "cover",
             "token",
+            "cover_placeholder",
         )
         read_only = True
 

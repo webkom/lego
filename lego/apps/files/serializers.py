@@ -1,6 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
-from lego.apps.files.fields import ImageField
 from lego.apps.files.models import File
 
 from .validators import KEY_REGEX
@@ -11,34 +11,19 @@ class FileUploadSerializer(serializers.Serializer):
     public = serializers.BooleanField(required=True)
 
 
-class ImageGalleryCoverSerializer(serializers.ModelSerializer):
-
-    file = ImageField(
-        source="self", required=False, options={"height": 700, "smart": True}
-    )
-
-    thumbnail = ImageField(
-        source="self",
-        read_only=True,
-        options={"height": 300, "width": 300, "smart": True},
-    )
-
-    class Meta:
-        model = File
-        fields = (
-            "thumbnail",
-            "id",
-            "key",
-        )
-
-
 class FileSaveForUseSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-
         save_for_use = serializers.BooleanField(required=True)
 
         fields = (
             "token",
             "save_for_use",
         )
+
+    def validate(self, data):
+        if self.instance.token != data["token"]:
+            raise PermissionDenied()
+        if "save_for_use" not in data:
+            raise ValidationError()
+        return data

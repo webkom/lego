@@ -67,6 +67,7 @@ from lego.apps.events.tasks import (
     save_and_notify_payment,
 )
 from lego.apps.events.websockets import notify_event_registration
+from lego.apps.files.constants import IMAGE
 from lego.apps.files.models import File
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -352,10 +353,11 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer_class=ImageGallerySerializer,
         permission_classes=[permissions.IsAuthenticated],
     )
-    def imagegallery(self, request):
+    def cover_image_gallery(self, request):
+        if request.user.has_perm(EDIT, Event) is False:
+            raise PermissionDenied()
         queryset = File.objects.filter(
-            file_type=constants.IMAGE,
-            public=True,
+            file_type=IMAGE,
             save_for_use=True,
         )
         serializer = self.get_serializer(queryset, many=True)
