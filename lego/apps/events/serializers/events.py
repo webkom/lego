@@ -130,6 +130,7 @@ class EventReadDetailedSerializer(
         fields = ObjectPermissionsSerializerMixin.Meta.fields + (
             "id",
             "title",
+            "slug",
             "description",
             "cover",
             "cover_placeholder",
