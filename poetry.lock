@@ -3467,14 +3467,14 @@ files = [
 
 [[package]]
 name = "types-markdown"
-version = "3.4.2.1"
+version = "3.4.2.7"
 description = "Typing stubs for Markdown"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-Markdown-3.4.2.1.tar.gz", hash = "sha256:03c0904cf5886a7d8193e2f50bcf842afc89e0ab80f060f389f6c2635c65628f"},
-    {file = "types_Markdown-3.4.2.1-py3-none-any.whl", hash = "sha256:b2333f6f4b8f69af83de359e10a097e4a3f14bbd6d2484e1829d9b0ec56fa0cb"},
+    {file = "types-Markdown-3.4.2.7.tar.gz", hash = "sha256:ecea668b1e5aaa8fb4f7067622af3c3341cb9145baa4d939b7c75d3e1eb26f7f"},
+    {file = "types_Markdown-3.4.2.7-py3-none-any.whl", hash = "sha256:7fd3ecb487f1d41c043fa24c00258ab7e1fe37585ee6ad016a1a3c03bca34f73"},
 ]
 
 [[package]]
@@ -3849,4 +3849,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1596134550ae3d038f32f5ef85a61c9f1dfb044044719c3c1a59dc0d929780d0"
+content-hash = "5a2cb118c2b2fcbfbe312dbc113ba2b98ad42e2183f3f39b5b3230292a8a55b2"
