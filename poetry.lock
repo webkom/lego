@@ -1038,18 +1038,18 @@ test = ["celery", "pytest", "pytest-cov", "pytest-django", "redis"]
 
 [[package]]
 name = "django-ical"
-version = "1.8.3"
+version = "1.9.0"
 description = "iCal feeds for Django based on Django's syndication feed framework."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-ical-1.8.3.tar.gz", hash = "sha256:0d5595c5bc954e401b59b27a9a86962557f0d3b965e9f5860244cd6bc450e8ab"},
-    {file = "django_ical-1.8.3-py3-none-any.whl", hash = "sha256:d3f97d163c03ea795e0722d5031e7f3806037ac913c814b0cfee54464f06978e"},
+    {file = "django-ical-1.9.0.tar.gz", hash = "sha256:1527f88372350833fc54c05accd80633d91f589a9d43fd481a12e0ce86d8977e"},
+    {file = "django_ical-1.9.0-py3-none-any.whl", hash = "sha256:bdd2e80939b0c954f8228bfc6378e8101371a0d1bf0683d4d07ec16e8c01d1e6"},
 ]
 
 [package.dependencies]
-django = ">=2.2"
+django = ">=3.2"
 django-recurrence = ">=1.11.1"
 icalendar = ">=4.0.3"
 
@@ -3849,4 +3849,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5a2cb118c2b2fcbfbe312dbc113ba2b98ad42e2183f3f39b5b3230292a8a55b2"
+content-hash = "d46658ed19ee6eb6add6c599d4a2428c191cc2edef0b2f94b6bd0c42ab5514b4"
