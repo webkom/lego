@@ -58,7 +58,7 @@ flatbuffers = "23.3.3"
 #
 # Ical-export
 django-ical = "1.9.0"
-icalendar = "5.0.4"
+icalendar = "5.0.5"
 #
 # Email
 aiosmtpd = "1.4.4.post2"
