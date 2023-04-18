@@ -2,6 +2,7 @@
   pk: 1
   fields:
     title: 'BEKK - sommerjobb 2017!'
+    slug: '1-bekk-sommerjobb-2017'
     description: '<p>En bedrift.</p>'
     text: '<p>BEKK er et solid programvarehus i kraftig vekst.
       Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
@@ -24,6 +25,7 @@
   pk: 2
   fields:
     title: 'Iterate - deltidsstilling!'
+    slug: '2-iterate-deltidsstilling'
     description: '<p>En bedrift.</p>'
     text: '<p>Iterate er et solid programvarehus i kraftig vekst.
       Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
@@ -48,6 +50,7 @@
   pk: 3
   fields:
     title: 'Acando - fulltid stilling!'
+    slug: '3-acando-fulltid-stilling'
     description: '<p>En bedrift.</p>'
     text: '<p>Acando er et solid programvarehus i kraftig vekst.
       Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
@@ -70,6 +73,7 @@
   pk: 4
   fields:
     title: 'Acando - fulltid stilling!'
+    slug: '4-acando-fulltid-stilling'
     description: '<p> En bedrift. </p>'
     text: '<p>Acando er et solid programvarehus i kraftig vekst.
       Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og
@@ -91,6 +95,7 @@
   pk: 5
   fields:
     title: 'Acando - fulltid stilling!'
+    slug: '5-acando-fulltid-stilling'
     description: '<p> En bedrift. </p>'
     text: '<p>Acando er et solid programvarehus i kraftig vekst.
       Vi er 245 dyktige medarbeidere, fordelt på hovedkontoret i Bodø og

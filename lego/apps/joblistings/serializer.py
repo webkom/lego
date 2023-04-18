@@ -20,6 +20,7 @@ class JoblistingSerializer(BasisModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "company",
             "deadline",
             "job_type",
@@ -41,6 +42,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "text",
             "company",
             "responsible",

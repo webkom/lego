@@ -87,6 +87,7 @@ class EventReadSerializer(
         fields = (
             "id",
             "title",
+            "slug",
             "description",
             "cover",
             "cover_placeholder",

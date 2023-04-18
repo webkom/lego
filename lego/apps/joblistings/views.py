@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import viewsets
 
@@ -15,6 +16,17 @@ class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     pagination_class = None
     filterset_class = JoblistingFilterSet
     ordering = "-created_at"
+
+    def get_object(self) -> Joblisting:
+        queryset = self.get_queryset()
+        pk = self.kwargs.get("pk")
+
+        try:
+            obj = queryset.get(id=pk)
+        except (TypeError, ValueError, OverflowError, Joblisting.DoesNotExist):
+            obj = get_object_or_404(queryset, slug=pk)
+
+        return obj
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
