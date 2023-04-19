@@ -59,7 +59,8 @@ def add_meeting_to_ical_feed(feed, meeting, user):
         start_datetime=meeting.start_time,
         end_datetime=meeting.end_time,
         location=meeting.location,
-        transparency="OPAQUE" if user in meeting.participants else "TRANSPARENT",
+        # This uses an annotation on the queryset for performance reasons
+        transparency="OPAQUE" if meeting.user_participating else "TRANSPARENT",
     )
 
 

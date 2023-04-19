@@ -9,7 +9,7 @@ from lego.apps.permissions.utils import get_permission_handler
 log = get_logger()
 
 
-class EventPermissionHandler(PermissionHandler):
+class EventPermissionHandler(PermissionHandler["Event"]):
     perms_without_object = [CREATE, "administrate"]
 
     def event_type_keyword_permissions(self, event_type, perm):

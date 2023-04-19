@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.db.models import FilteredRelation, Q
 from django.utils import timezone
 from rest_framework import decorators, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,8 @@ from lego.apps.ical import constants, utils
 from lego.apps.ical.authentication import ICalTokenAuthentication
 from lego.apps.ical.models import ICalToken
 from lego.apps.ical.serializers import ICalTokenSerializer
-from lego.apps.meetings.models import Meeting
+from lego.apps.meetings import constants as meeting_constants
+from lego.apps.meetings.models import Meeting, MeetingInvitation
 from lego.apps.permissions.utils import get_permission_handler
 
 
@@ -86,13 +88,24 @@ class ICalViewset(viewsets.ViewSet):
         calendar_type = constants.TYPE_PERSONAL
         feed = utils.generate_ical_feed(request, calendar_type)
 
-        permission_handler = get_permission_handler(Event)
-        following_events = permission_handler.filter_queryset(
+        event_permission_handler = get_permission_handler(Event)
+        following_events = event_permission_handler.filter_queryset(
             request.user, Event.objects.filter(followers__follower_id=request.user.id)
         )
 
-        permission_handler = get_permission_handler(Meeting)
-        meetings = permission_handler.filter_queryset(request.user, Meeting.objects)
+        meeting_permission_handler = get_permission_handler(Meeting)
+
+        attending_invites = MeetingInvitation.objects.filter(
+            status=meeting_constants.ATTENDING, user=request.user
+        )
+        meetings = meeting_permission_handler.filter_queryset(
+            request.user,
+            Meeting.objects.annotate(
+                # Annotate the queryset with participating status for use in the feed generation.
+                # Otherwise lookups are very expensive
+                user_participating=Q(invitations__in=attending_invites)
+            ),
+        )
 
         utils.add_events_to_ical_feed(feed, following_events)
         utils.add_meetings_to_ical_feed(feed, meetings, request.user)
