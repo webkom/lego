@@ -27,7 +27,7 @@ ENV ENV_CONFIG 1
 ENV RELEASE ${RELEASE}
 
 RUN mkdir /app
-COPY requirements /app/requirements
+COPY pyproject.toml /app/pyproject.toml
 WORKDIR /app
 
 RUN pip install poetry
