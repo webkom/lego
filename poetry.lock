@@ -926,14 +926,14 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-autoslug"
-version = "1.9.8"
+version = "1.9.9"
 description = "An automated slug field for Django."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-autoslug-1.9.8.tar.gz", hash = "sha256:bae66c27d35615f472865b99c4d107f3b3add3d22ee337e84960fc07694abd45"},
-    {file = "django_autoslug-1.9.8-py2.py3-none-any.whl", hash = "sha256:26459eeddec207e307c55777a10fc25d17f4978753695340b16a17ed248a6f70"},
+    {file = "django-autoslug-1.9.9.tar.gz", hash = "sha256:79f88e9433c1c88d8d3f2bec60d65ca98bffaff6c072b78aa5fd99d0e84a13dd"},
+    {file = "django_autoslug-1.9.9-py2.py3-none-any.whl", hash = "sha256:81cb018944498f27f439d439687cf902212cafbdb8c74c8ca0307543a3d82907"},
 ]
 
 [package.extras]
@@ -3855,4 +3855,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "acaca07e9400fc9e19bcbad176bc2fd9b243c728cca62028aa0a221a91e9087b"
+content-hash = "5909a4f20e1f92eb7b1bb3812b81f34e72d6ed4354b16362fc4d7496462f9a13"
