@@ -1263,14 +1263,14 @@ files = [
 
 [[package]]
 name = "djangorestframework-stubs"
-version = "1.8.0"
+version = "1.10.0"
 description = "PEP-484 stubs for django-rest-framework"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "djangorestframework-stubs-1.8.0.tar.gz", hash = "sha256:9abf25d54a11930fe0fc97d0769e1ed58db8dfc134b1fdbd76bbbaaa932ef180"},
-    {file = "djangorestframework_stubs-1.8.0-py3-none-any.whl", hash = "sha256:690739501b06c1b5a7b25e1b50abb9719abebef2e02bcad8c5a5464e5cd52543"},
+    {file = "djangorestframework-stubs-1.10.0.tar.gz", hash = "sha256:69e8a1ea7eb815cbe35155c27eee72522d7c8666d3cbdacb9997ab88c7b4202c"},
+    {file = "djangorestframework_stubs-1.10.0-py3-none-any.whl", hash = "sha256:433edd7f10786914138b300b9be5aba1ebc80c471b5156934664afd7e9df9fd6"},
 ]
 
 [package.dependencies]
@@ -1282,7 +1282,7 @@ types-requests = ">=0.1.12"
 typing-extensions = ">=3.10.0"
 
 [package.extras]
-compatible-mypy = ["mypy (>=0.991,<0.1000)"]
+compatible-mypy = ["mypy (>=1.1.1,<1.2)"]
 coreapi = ["coreapi (>=2.0.0)"]
 markdown = ["types-Markdown (>=0.1.5)"]
 
@@ -3855,4 +3855,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a35a9fb44d6a9f6eab4153946557b863417f515e2c6f66011602f96040729983"
+content-hash = "4ad0e68c64d8d8b121ad47ecc8d91fd613590fe694b8e6e3ff4c96763f6fece9"
