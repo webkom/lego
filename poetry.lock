@@ -321,18 +321,18 @@ dev = ["Sphinx (==4.3.2)", "black (==22.3.0)", "build (==0.8.0)", "flake8 (==4.0
 
 [[package]]
 name = "boto3"
-version = "1.26.115"
+version = "1.26.119"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.115-py3-none-any.whl", hash = "sha256:deb53ad15ff0e75ae0be6d7115a2d34e4bafb0541484485f0feb61dabdfb5513"},
-    {file = "boto3-1.26.115.tar.gz", hash = "sha256:2272a060005bf8299f7342cbf1344304eb44b7060cddba6784f676e3bc737bb8"},
+    {file = "boto3-1.26.119-py3-none-any.whl", hash = "sha256:c7104f4f805df011dd5528aff63d712ff5261294e547724d03a3b5639bd164ac"},
+    {file = "boto3-1.26.119.tar.gz", hash = "sha256:13a041885068d0bfc2104255f2bcb06a1e0c036bcd009ef018f9953b31c20dde"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.115,<1.30.0"
+botocore = ">=1.29.119,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -341,14 +341,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.115"
+version = "1.29.119"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.115-py3-none-any.whl", hash = "sha256:dff327977d7c9f98f2dc54b51b8f70326952dd50ae23b885fdfa8bfeec014b76"},
-    {file = "botocore-1.29.115.tar.gz", hash = "sha256:58eee8cf8f4f3e515df29f6dc535dd86ed3f4cea40999c5bc74640ff40bdc71f"},
+    {file = "botocore-1.29.119-py3-none-any.whl", hash = "sha256:c45709682e8c9a945a7cdfa0846599aa4c90403ffbcef8cbc412a6ea92a21d45"},
+    {file = "botocore-1.29.119.tar.gz", hash = "sha256:cd79c7ecf1888dc982ed7e005515324c0e2d7f8aa9ab03a8ee8ece8a2dd3297c"},
 ]
 
 [package.dependencies]
@@ -3855,4 +3855,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "05b3dafd4783d4b4cc769a46f9a52de13d051283e4dbc5489c5ff677323be14b"
+content-hash = "af560adad0e625abd4013a864d01fbfae649fe50b60ff6b675431b5c51d51837"
