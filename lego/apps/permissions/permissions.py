@@ -1,14 +1,25 @@
-from django.db.models import Q
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Generic, Iterable, Sequence, Type, TypeVar
+
+from django.db.models import Q, QuerySet
 
 from lego.apps.permissions.constants import CREATE, LIST, VIEW
 from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.utils.models import BasisModel
+
+if TYPE_CHECKING:
+    from lego.apps.users.models import User
 
 
-def _check_intersection(first, second):
+def _check_intersection(first, second) -> bool:
     return len(set(first).intersection(set(second))) > 0
 
 
-class PermissionHandler:
+T = TypeVar("T", bound=BasisModel)
+
+
+class PermissionHandler(Generic[T]):
     """
     The permission handler defines how permissions should be handled on a model
 
@@ -45,13 +56,19 @@ class PermissionHandler:
 
     perms_without_object = [CREATE]
 
-    def permissions_grant(self, permissions, user, obj=None, queryset=None):
+    def permissions_grant(
+        self,
+        permissions: Sequence[str],
+        user: User,
+        obj: T | None = None,
+        queryset: QuerySet[T] | None = None,
+    ) -> list[str]:
         """
         Lookup possible permissions the user has access to.
         """
         permissions = list(set(permissions))
 
-        filtered_permissions = []
+        filtered_permissions: Iterable[str] = []
         if obj is not None:
             filtered_permissions = filter(
                 lambda perm: user.has_perm(perm, obj), permissions
@@ -63,7 +80,13 @@ class PermissionHandler:
 
         return list(filtered_permissions)
 
-    def has_object_level_permissions(self, user, perm, obj=None, queryset=None):
+    def has_object_level_permissions(
+        self,
+        user: User,
+        perm: str,
+        obj: T | None = None,
+        queryset: QuerySet[T] | None = None,
+    ) -> bool:
         """
         Check whether the queryset or object requires a permission check at object level.
         This function should only be used by the api permission backend.
@@ -107,13 +130,13 @@ class PermissionHandler:
 
     def has_perm(
         self,
-        user,
-        perm,
-        obj=None,
-        queryset=None,
+        user: User,
+        perm: str,
+        obj: T | None = None,
+        queryset: QuerySet[T] | None = None,
         check_keyword_permissions=True,
-        **kwargs
-    ):
+        **kwargs,
+    ) -> bool:
         """
         Check permission on a object.
         """
@@ -161,7 +184,9 @@ class PermissionHandler:
 
         return False
 
-    def filter_queryset(self, user, queryset, **kwargs):
+    def filter_queryset(
+        self, user: User, queryset: QuerySet[T], **kwargs
+    ) -> QuerySet[T]:
         """
         Filter queryset based on object-level permissions.
         We currently only supports queryset filtering on ObjectPermissionsModels.
@@ -184,7 +209,9 @@ class PermissionHandler:
 
         return queryset
 
-    def require_auth(self, perm, obj=None, queryset=None):
+    def require_auth(
+        self, perm: str, obj: T | None = None, queryset: QuerySet[T] | None = None
+    ) -> bool:
         require_auth = self.authentication_map.get(perm, self.default_require_auth)
         if not require_auth:
             return False
@@ -197,10 +224,10 @@ class PermissionHandler:
 
         return True
 
-    def is_authenticated(self, user):
+    def is_authenticated(self, user: User) -> bool:
         return user and user.is_authenticated
 
-    def keyword_permission(self, model, perm):
+    def keyword_permission(self, model: Type[BasisModel], perm: str) -> str:
         """
         Create default permission string based on the model class, action and default_permission
         format. This is used when no permission is provided for a action in the permission_map.
@@ -212,7 +239,9 @@ class PermissionHandler:
         }
         return self.default_keyword_permission.format(**kwargs)
 
-    def required_keyword_permissions(self, model, perm):
+    def required_keyword_permissions(
+        self, model: Type[BasisModel], perm: str
+    ) -> list[str]:
         """
         Get required keyword permissions based on the action and model class.
         Override the permission_map to create custom permissions, the default_keyword_permission
@@ -221,11 +250,11 @@ class PermissionHandler:
 
         return self.permission_map.get(perm, [self.keyword_permission(model, perm)])
 
-    def created_by(self, user, obj):
+    def created_by(self, user: User, obj: T) -> bool:
         created_by = getattr(obj, "created_by_id", None)
         return created_by == user.id
 
-    def has_object_permissions(self, user, perm, obj):
+    def has_object_permissions(self, user: User, perm: str, obj: T) -> bool:
         if perm in self.safe_methods:
             # Check can_view
             if _check_intersection(
