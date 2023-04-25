@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import FilteredRelation, Q
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework import decorators, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
