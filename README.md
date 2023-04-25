@@ -49,6 +49,22 @@ $ python manage.py makemigrations # Creates one or more new files that must be c
 # Remember to format generated migrations! (using e.g. `make fixme`)
 ```
 
+**`poetry.lock` conflicts**
+
+If you have updated dependencies it's likely you might get conflicts in the Poetry lock file.
+This solution should resolve most conflicts quite well:
+
+```bash
+$ git rebase origin/master
+
+# If conflicts
+$ git checkout --theirs poetry.lock
+
+$ poetry lock --no-update
+
+# The conflicts should be resolved
+```
+
 > If you get problems it can be a solution to delete the `venv`, and do a fresh setup
 
 ## Code Style
