@@ -1,3 +1,7 @@
+from datetime import datetime
+from urllib.parse import quote
+
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.http import Http404
@@ -9,6 +13,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 
+import requests
 from celery.canvas import chain
 
 from lego.apps.events import constants
@@ -249,6 +254,36 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         event_data = serializer(event).data
         return Response(event_data)
+
+    @decorators.action(detail=True, methods=["GET"])
+    def statistics(self, request, *args, **kwargs):
+        event_id = self.kwargs.get("pk", None)
+        event = Event.objects.get(pk=event_id)
+
+        headers = {
+            "Authorization": f"Bearer {settings.PLAUSIBLE_KEY}",
+            "Content-Type": "application/json",
+        }
+
+        created_at = event.created_at.strftime("%Y-%m-%d")
+        now = datetime.now().strftime("%Y-%m-%d")
+        # Plausible wants the date on this schema: YYYY-MM-DD,YYYY-MM-DD
+        date = f"{created_at},{now}"
+
+        url_path = f"/events/{event.id}"
+
+        filters = f"event:page=={quote(url_path)}"
+        api_url = (
+            "https://ls.webkom.dev/api/v1/stats/timeseries"
+            "?site_id=abakus.no"
+            "&metrics=visitors,pageviews,bounce_rate,visit_duration"
+            "&period=custom&date={date}"
+            "&filters={filters}"
+        ).format(date=date, filters=filters)
+
+        response = requests.get(api_url, headers=headers)
+
+        return Response(response.json())
 
     @decorators.action(detail=True, methods=["POST"], serializer_class=BaseSerializer)
     def payment(self, request, *args, **kwargs):
