@@ -232,13 +232,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if len(pools) == 0:
             return None
         reg_time: date = min(pool.activation_date for pool in pools)
+
         if self.heed_penalties:
             if penalties is None:
                 penalties = user.number_of_penalties()
-            if penalties == 2:
-                return reg_time + timedelta(hours=12)
-            elif penalties == 1:
-                return reg_time + timedelta(hours=3)
+            return reg_time + timedelta(hours=5) if penalties >= 1 else reg_time
         return reg_time
 
     def get_possible_pools(
@@ -327,9 +325,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         # Make the user follow the event
         FollowEvent.objects.get_or_create(follower=user, target=self)
-
-        if penalties >= 3:
-            return registration.add_to_waiting_list()
 
         # If the event is merged or has only one pool we can skip a lot of logic
         if all_pools.count() == 1:
@@ -469,8 +464,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         for reg in self.waiting_registrations:
             if opening_pool.is_full:
                 break
-            if self.heed_penalties and reg.user.number_of_penalties() >= 3:
-                continue
             if self.can_register(reg.user, opening_pool, future=True):
                 reg.pool = opening_pool
                 reg.save()
@@ -491,8 +484,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             for reg in self.waiting_registrations:
                 if self.is_full or pool.is_full:
                     break
-                if self.heed_penalties and reg.user.number_of_penalties() >= 3:
-                    continue
                 if self.can_register(reg.user, pool, future=True):
                     reg.pool = pool
                     reg.save()
@@ -576,28 +567,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if to_pool:
             for registration in self.waiting_registrations:
-                if self.heed_penalties:
-                    penalties: int = registration.user.number_of_penalties()
-                    earliest_reg: Optional[date] = self.get_earliest_registration_time(
-                        registration.user, [to_pool], penalties
-                    )
-                    if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
-                        if self.can_register(registration.user, to_pool):
-                            return registration
-                elif self.can_register(registration.user, to_pool):
+                if self.can_register(registration.user, to_pool):
                     return registration
             return None
-
-        if self.heed_penalties:
-            for registration in self.waiting_registrations:
-                penalties = registration.user.number_of_penalties()
-                earliest_reg = self.get_earliest_registration_time(
-                    registration.user, None, penalties
-                )
-                if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
-                    return registration
-            return None
-
         return self.waiting_registrations.first()
 
     @staticmethod

@@ -495,30 +495,43 @@ class Penalty(BasisModel):
     source_event = models.ForeignKey(
         "events.Event", related_name="penalties", on_delete=models.CASCADE
     )
+    activation_time = models.DateTimeField("date created", null=True, default=None)
 
     objects = UserPenaltyManager()  # type: ignore
 
-    def expires(self):
-        dt = Penalty.penalty_offset(self.created_at) - (
-            timezone.now() - self.created_at
+    # add ingore previous instances that dont have activation_time
+    def save(self, *args, **kwargs):
+        last_penalty_to_be_expired = Penalty.objects.filter(user=self.user).order_by(
+            "-activation_time"
         )
-        return dt.days
+        self.activation_time = (
+            last_penalty_to_be_expired[0].exact_expiration
+            if len(last_penalty_to_be_expired) != 0
+            else self.created_at
+        )
+        super().save(*args, **kwargs)
+
+    def expires(self):
+        expirationDate = Penalty.penalty_offset(
+            self.activation_time, weight=self.weight
+        ) - (timezone.now() - self.activation_time)
+        return expirationDate.days
 
     @property
     def exact_expiration(self):
         """Returns the exact time of expiration"""
-        dt = Penalty.penalty_offset(self.created_at) - (
-            timezone.now() - self.created_at
+        dt = Penalty.penalty_offset(self.activation_time, weight=self.weight) - (
+            timezone.now() - self.activation_time
         )
         return timezone.now() + dt
 
     @staticmethod
-    def penalty_offset(start_date, forwards=True):
+    def penalty_offset(start_date, forwards=True, weight=1):
         remaining_days = settings.PENALTY_DURATION.days
         offset_days = 0
         multiplier = 1 if forwards else -1
 
-        date_to_check = start_date + (multiplier * timedelta(days=offset_days))
+        date_to_check = start_date + (multiplier * weight * timedelta(days=offset_days))
         ignore_date = Penalty.ignore_date(date_to_check)
         while remaining_days > 0 or ignore_date:
             if not ignore_date:

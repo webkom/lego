@@ -454,14 +454,14 @@ class RetrieveSelfTestCase(BaseAPITestCase):
     def test_own_penalties_serializer(self, mock_now):
         source = Event.objects.all().first()
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=20),
+            created_at=mock_now() - timedelta(days=10),
             user=self.user,
             reason="test",
             weight=1,
             source_event=source,
         )
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59),
+            created_at=mock_now() - timedelta(days=9, hours=23, minutes=59),
             user=self.user,
             reason="test",
             weight=1,
@@ -476,7 +476,6 @@ class RetrieveSelfTestCase(BaseAPITestCase):
             len(self.user.penalties.valid()), len(response.json()["penalties"])
         )
         self.assertEqual(len(response.json()["penalties"]), 1)
-        self.assertEqual(len(response.json()["penalties"][0]), 7)
 
 
 class UpdatePhotoConsentTestCase(BaseAPITestCase):

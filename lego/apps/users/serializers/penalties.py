@@ -13,5 +13,6 @@ class PenaltySerializer(serializers.ModelSerializer):
             "reason",
             "weight",
             "source_event",
+            "activation_time",
             "exact_expiration",
         )

@@ -53,7 +53,11 @@ class PenaltyHandler(Handler):
             object=penalty,
             target=penalty.user,
             time=penalty.created_at,
-            extra_context={"reason": penalty.reason, "weight": penalty.weight},
+            extra_context={
+                "reason": penalty.reason,
+                "weight": penalty.weight,
+                "expiration_date": penalty.exact_expiration.days,
+            },
         )
 
     def handle_create(self, instance, **kwargs):
