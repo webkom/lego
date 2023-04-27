@@ -70,7 +70,7 @@ coreapi = "2.3.3"
 
 [tool.poetry.group.dev.dependencies]
 django-debug-toolbar = "4.0.0"
-tox = "4.5.0"
+tox = "4.5.1"
 tblib = "^1.7.0"
 
 [tool.poetry.group.coverage.dependencies]
