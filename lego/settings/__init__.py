@@ -3,7 +3,7 @@ import os
 import sys
 
 TESTING = "test" in sys.argv[:2]
-DAPHNE_SERVER = "daphne" in sys.argv
+DAPHNE_SERVER = "daphne" in sys.argv[0]
 
 from .base import *  # noqa
 from .lego import *  # noqa
