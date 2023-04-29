@@ -74,7 +74,7 @@ tox = "4.5.1"
 tblib = "^1.7.0"
 
 [tool.poetry.group.coverage.dependencies]
-coverage = "7.2.3"
+coverage = "7.2.4"
 
 [tool.poetry.group.mypy.dependencies]
 mypy = "1.2.0"
