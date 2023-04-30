@@ -3,8 +3,8 @@ from unittest import mock
 from django.test import override_settings
 from django.utils import timezone
 from django.utils.timezone import timedelta
-from lego import settings
 
+from lego import settings
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
@@ -306,6 +306,119 @@ class PenaltyTestCase(BaseTestCase):
             source_event=self.source,
         )
         self.assertEqual(self.test_user.number_of_penalties(), 1)
+
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
+    def test_penalty_deletion_after_6_events(self, mock_now):
+        """Tests that The first active penalty is
+        removed and the rest are adjusted after 6 events"""
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=8),
+            user=self.test_user,
+            reason="first test penalty",
+            weight=1,
+            source_event=self.source,
+        )
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=5),
+            user=self.test_user,
+            reason="second test penalty",
+            weight=1,
+            source_event=self.source,
+        )
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=5),
+            user=self.test_user,
+            reason="third test penalty",
+            weight=1,
+            source_event=self.source,
+        )
+
+        for _i in range(5):
+            Event.objects.create(
+                title="AbakomEvent",
+                event_type=0,
+                start_time=mock_now() - timedelta(days=6),
+                end_time=mock_now() - timedelta(days=6),
+            )
+
+        self.test_user.check_for_deletable_penalty()
+
+        """Tests first that nothing is changed after 5 events"""
+        self.assertEqual(self.test_user.number_of_penalties(), 3)
+
+        Event.objects.create(
+            title="AbakomEvent",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=6),
+            end_time=mock_now() - timedelta(days=6),
+        )
+        self.test_user.check_for_deletable_penalty()
+        """Tests that the changes happened after 6 events"""
+        self.assertEqual(self.test_user.number_of_penalties(), 2)
+        self.assertEqual(
+            (
+                Penalty.objects.get(reason="second test penalty").activation_time.day,
+                Penalty.objects.get(reason="second test penalty").exact_expiration.day,
+                Penalty.objects.get(reason="third test penalty").exact_expiration.day,
+            ),
+            (10, 20, 30),
+        )
+
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
+    def test_penalty_weight_decrementing_after_6_events(self, mock_now):
+        """Tests that The weight of the first active penalty
+        is decremented and the rest are adjusted after 6 events"""
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=8),
+            user=self.test_user,
+            reason="first test penalty",
+            weight=2,
+            source_event=self.source,
+        )
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=5),
+            user=self.test_user,
+            reason="second test penalty",
+            weight=1,
+            source_event=self.source,
+        )
+
+        for _i in range(5):
+            Event.objects.create(
+                title="AbakomEvent",
+                event_type=0,
+                start_time=mock_now() - timedelta(days=6),
+                end_time=mock_now() - timedelta(days=6),
+            )
+
+        self.test_user.check_for_deletable_penalty()
+
+        """Tests first that nothing is changed after 5 events"""
+        self.assertEqual(self.test_user.number_of_penalties(), 3)
+        self.assertEqual(
+            (
+                Penalty.objects.get(reason="first test penalty").exact_expiration.day,
+                Penalty.objects.get(reason="second test penalty").exact_expiration.day,
+            ),
+            (22, 1),
+        )
+
+        Event.objects.create(
+            title="AbakomEvent",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=6),
+            end_time=mock_now() - timedelta(days=6),
+        )
+        self.test_user.check_for_deletable_penalty()
+        """Tests that the changes happened after 6 events"""
+        self.assertEqual(self.test_user.number_of_penalties(), 2)
+        self.assertEqual(
+            (
+                Penalty.objects.get(reason="first test penalty").exact_expiration.day,
+                Penalty.objects.get(reason="second test penalty").exact_expiration.day,
+            ),
+            (20, 30),
+        )
 
     @override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10)))
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 12, 10))

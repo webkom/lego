@@ -8,7 +8,7 @@ from django.contrib.auth.models import (
 )
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
 
@@ -487,6 +487,30 @@ class User(
         )
         return list(unanswered_surveys.values_list("id", flat=True))
 
+    def check_for_deletable_penalty(self):
+        from lego.apps.events.models import Event
+
+        # TODO: filter so that only one penalty is returned. the penalty now() is at
+        current_active_penalty = (
+            Penalty.objects.valid().filter(user=self).order_by("activation_time")
+        )
+
+        # TODO: add check for all he events the user can be registered at
+        # get a list of all penalties and in the Event.filter()
+        # and check that the event is in the penalties events
+        eligable_passed_events = Event.objects.filter(
+            heed_penalties=True,
+            start_time__range=(
+                current_active_penalty[0].activation_time
+                - timedelta(hours=1) * F("unregistration_deadline_hours"),
+                current_active_penalty[0].exact_expiration
+                - timedelta(hours=1) * F("unregistration_deadline_hours"),
+            ),
+        )
+
+        if len(eligable_passed_events) >= 6:
+            current_active_penalty[0].delete_and_adjust_future_activation_times()
+
 
 class Penalty(BasisModel):
     user = models.ForeignKey(User, related_name="penalties", on_delete=models.CASCADE)
@@ -499,11 +523,11 @@ class Penalty(BasisModel):
 
     objects = UserPenaltyManager()  # type: ignore
 
-    # add ingore previous instances that dont have activation_time
     def save(self, *args, **kwargs):
-        last_penalty_to_be_expired = Penalty.objects.filter(user=self.user).order_by(
-            "-activation_time"
-        )
+        last_penalty_to_be_expired = Penalty.objects.filter(
+            user=self.user, activation_time__lte=timezone.now()
+        ).order_by("-activation_time")
+
         self.activation_time = (
             last_penalty_to_be_expired[0].exact_expiration
             if len(last_penalty_to_be_expired) != 0
@@ -511,27 +535,51 @@ class Penalty(BasisModel):
         )
         super().save(*args, **kwargs)
 
-    def expires(self):
-        expirationDate = Penalty.penalty_offset(
-            self.activation_time, weight=self.weight
-        ) - (timezone.now() - self.activation_time)
-        return expirationDate.days
+    def default_save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    def delete_and_adjust_future_activation_times(self):
+        if self.weight == 1:
+            new_activation_time = timezone.now()
+            future_penalties = Penalty.objects.filter(
+                user=self.user, activation_time__gt=new_activation_time
+            ).order_by("activation_time")
+
+            for penalty in future_penalties:
+                penalty.activation_time = new_activation_time
+                penalty.default_save()
+                new_activation_time = penalty.exact_expiration
+
+            self.delete()
+        else:
+            self.weight -= 1
+            self.activation_time = timezone.now()
+            future_penalties = Penalty.objects.filter(
+                user=self.user, activation_time__gt=self.activation_time
+            ).order_by("activation_time")
+            new_activation_time = self.exact_expiration
+            self.default_save()
+
+            for penalty in future_penalties:
+                penalty.activation_time = new_activation_time
+                penalty.default_save()
+                new_activation_time = penalty.exact_expiration
 
     @property
     def exact_expiration(self):
         """Returns the exact time of expiration"""
-        dt = Penalty.penalty_offset(self.activation_time, weight=self.weight) - (
-            timezone.now() - self.activation_time
+        return (
+            Penalty.penalty_offset(self.activation_time, weight=self.weight)
+            + self.activation_time
         )
-        return timezone.now() + dt
 
     @staticmethod
     def penalty_offset(start_date, forwards=True, weight=1):
-        remaining_days = settings.PENALTY_DURATION.days
+        remaining_days = settings.PENALTY_DURATION.days * weight
         offset_days = 0
         multiplier = 1 if forwards else -1
 
-        date_to_check = start_date + (multiplier * weight * timedelta(days=offset_days))
+        date_to_check = start_date + (multiplier * timedelta(days=offset_days))
         ignore_date = Penalty.ignore_date(date_to_check)
         while remaining_days > 0 or ignore_date:
             if not ignore_date:
