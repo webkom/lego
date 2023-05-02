@@ -76,6 +76,8 @@ THUMBOR_SECURITY_KEY = "lego-dev"
 CELERY_BROKER_URL = "redis://127.0.0.1"
 CELERY_TASK_ALWAYS_EAGER = True
 
+PLAUSIBLE_KEY = "lego-dev"
+
 ELASTICSEARCH = "127.0.0.1"
 SEARCH_BACKEND = os.environ.get("SEARCH_BACKEND", "postgres")
 
