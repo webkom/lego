@@ -3455,14 +3455,14 @@ files = [
 
 [[package]]
 name = "types-docutils"
-version = "0.19.1.7"
+version = "0.19.1.8"
 description = "Typing stubs for docutils"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-docutils-0.19.1.7.tar.gz", hash = "sha256:cb6e0dd1c895c723002ec4dc8334bf9df04726ef0cf13f5597501578b47eef30"},
-    {file = "types_docutils-0.19.1.7-py3-none-any.whl", hash = "sha256:bbf89cf3b9460ce780434f8cc52ce846b0f14505ff3496fc6a17acd9967aee9e"},
+    {file = "types-docutils-0.19.1.8.tar.gz", hash = "sha256:975f8a78a2f422d8c6e776a09988e25565f54f7971a9384bbe8b004a1e3b0f90"},
+    {file = "types_docutils-0.19.1.8-py3-none-any.whl", hash = "sha256:008094d649bb728ff3736ff69b09cf62c04d651c577109ea4ae0f381621a7509"},
 ]
 
 [[package]]
@@ -3849,4 +3849,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "857d8f37167a8a27079984461ddb9a2657ecf6d44daac0e09e0f36bfb8f66a11"
+content-hash = "4c12e3a4c6ae50ba70bbd7e3d6c9b7ebf3daa2731e4503d700003f351c53ff85"
