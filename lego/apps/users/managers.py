@@ -1,6 +1,8 @@
 from django.contrib.auth.models import UserManager
-from django.db.models import Q
+from django.db.models import Q, F, DateTimeField, ExpressionWrapper
 from django.utils import timezone
+from django.conf import settings
+
 
 from mptt.managers import TreeManager
 

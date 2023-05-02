@@ -78,3 +78,9 @@ def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
 
     for user in users_to_notifiy_montly:
         send_inactive_notification(user)
+
+
+@celery_app.task(serializer="json", bind=True, base=AbakusTask)
+def expire_penalties_if_six_events_has_passed(self, logger_context=None):
+    me = "happy"
+    # go through all users with penalties and run the expire penalty function on them

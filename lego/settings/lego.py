@@ -18,6 +18,7 @@ ADMINS = (("Webkom", "webkom@abakus.no"),)
 MANAGERS = ADMINS
 
 PENALTY_DURATION = timedelta(days=10)
+PENALTY_DELAY_DURATION = 3
 # Tuples for ignored (month, day) intervals
 PENALTY_IGNORE_SUMMER = ((6, 1), (8, 15))
 PENALTY_IGNORE_WINTER = ((12, 1), (1, 10))

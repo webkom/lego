@@ -3,9 +3,10 @@ from unittest import mock
 from django.test import override_settings
 from django.utils import timezone
 from django.utils.timezone import timedelta
+from django.db.models import F, Q
 
 from lego import settings
-from lego.apps.events.models import Event
+from lego.apps.events.models import Event, Pool
 from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.constants import (
@@ -289,28 +290,46 @@ class PenaltyTestCase(BaseTestCase):
 
         self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
 
-    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 1))
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
     def test_only_count_active_penalties(self, mock_now):
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=10),
+            created_at=mock_now() - timedelta(days=21),
             user=self.test_user,
             reason="test",
             weight=1,
             source_event=self.source,
         )
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=9, hours=23, minutes=59),
+            created_at=mock_now() - timedelta(days=9),
             user=self.test_user,
             reason="test",
             weight=1,
             source_event=self.source,
         )
-        self.assertEqual(self.test_user.number_of_penalties(), 1)
+        Penalty.objects.create(
+            created_at=mock_now() - timedelta(days=5),
+            user=self.test_user,
+            reason="test",
+            weight=1,
+            source_event=self.source,
+        )
+        Penalty.objects.create(
+            created_at=mock_now(),
+            user=self.test_user,
+            reason="test",
+            weight=1,
+            source_event=self.source,
+        )
+
+        self.assertEqual(self.test_user.number_of_penalties(), 3)
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
     def test_penalty_deletion_after_6_events(self, mock_now):
         """Tests that The first active penalty is
         removed and the rest are adjusted after 6 events"""
+
+        self.test_user.check_for_expirable_penalty()
+
         Penalty.objects.create(
             created_at=mock_now() - timedelta(days=8),
             user=self.test_user,
@@ -333,27 +352,29 @@ class PenaltyTestCase(BaseTestCase):
             source_event=self.source,
         )
 
-        for _i in range(5):
-            Event.objects.create(
+        webkom_group = AbakusGroup.objects.get(name="Webkom")
+        webkom_group.add_user(self.test_user)
+        webkom_group.save()
+        self.test_user.save()
+
+        for _i in range(6):
+            event = Event.objects.create(
                 title="AbakomEvent",
                 event_type=0,
                 start_time=mock_now() - timedelta(days=6),
                 end_time=mock_now() - timedelta(days=6),
             )
+            pool = Pool.objects.create(
+                name="Pool1",
+                event=event,
+                capacity=0,
+                activation_date=timezone.now() - timedelta(days=1),
+            )
 
-        self.test_user.check_for_deletable_penalty()
+            pool.permission_groups.set([webkom_group])
 
-        """Tests first that nothing is changed after 5 events"""
-        self.assertEqual(self.test_user.number_of_penalties(), 3)
-
-        Event.objects.create(
-            title="AbakomEvent",
-            event_type=0,
-            start_time=mock_now() - timedelta(days=6),
-            end_time=mock_now() - timedelta(days=6),
-        )
-        self.test_user.check_for_deletable_penalty()
-        """Tests that the changes happened after 6 events"""
+        self.test_user.check_for_expirable_penalty()
+        # Tests that the changes happened after 6 events
         self.assertEqual(self.test_user.number_of_penalties(), 2)
         self.assertEqual(
             (
@@ -383,15 +404,28 @@ class PenaltyTestCase(BaseTestCase):
             source_event=self.source,
         )
 
+        webkom_group = AbakusGroup.objects.get(name="Webkom")
+        webkom_group.add_user(self.test_user)
+        webkom_group.save()
+        self.test_user.save()
+
         for _i in range(5):
-            Event.objects.create(
+            event = Event.objects.create(
                 title="AbakomEvent",
                 event_type=0,
                 start_time=mock_now() - timedelta(days=6),
                 end_time=mock_now() - timedelta(days=6),
             )
+            pool = Pool.objects.create(
+                name="Pool1",
+                event=event,
+                capacity=0,
+                activation_date=timezone.now() - timedelta(days=1),
+            )
 
-        self.test_user.check_for_deletable_penalty()
+            pool.permission_groups.set([webkom_group])
+
+        self.test_user.check_for_expirable_penalty()
 
         """Tests first that nothing is changed after 5 events"""
         self.assertEqual(self.test_user.number_of_penalties(), 3)
@@ -403,13 +437,22 @@ class PenaltyTestCase(BaseTestCase):
             (22, 1),
         )
 
-        Event.objects.create(
+        event = Event.objects.create(
             title="AbakomEvent",
             event_type=0,
             start_time=mock_now() - timedelta(days=6),
             end_time=mock_now() - timedelta(days=6),
         )
-        self.test_user.check_for_deletable_penalty()
+        pool = Pool.objects.create(
+            name="Pool1",
+            event=event,
+            capacity=0,
+            activation_date=timezone.now() - timedelta(days=1),
+        )
+
+        pool.permission_groups.set([webkom_group])
+
+        self.test_user.check_for_expirable_penalty()
         """Tests that the changes happened after 6 events"""
         self.assertEqual(self.test_user.number_of_penalties(), 2)
         self.assertEqual(
@@ -490,18 +533,16 @@ class PenaltyTestCase(BaseTestCase):
             (12, inactive.created_at.day + settings.PENALTY_DURATION.days),
         )
 
-        # This penalty is set to expire the same day as the freeze
         active = Penalty.objects.create(
-            created_at=mock_now().replace(day=5),
+            created_at=mock_now().replace(day=15),
             user=self.test_user,
             reason="active",
             weight=1,
             source_event=self.source,
         )
-        # 19 = 11: end of holiday + 10: penalty time - 2: from activation time to start of holiday
         self.assertEqual(
             (active.exact_expiration.month, active.exact_expiration.day),
-            (1, 19),
+            (1, 14),
         )
 
 

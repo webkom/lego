@@ -487,29 +487,39 @@ class User(
         )
         return list(unanswered_surveys.values_list("id", flat=True))
 
-    def check_for_deletable_penalty(self):
-        from lego.apps.events.models import Event
+    def check_for_expirable_penalty(self):
+        from lego.apps.events.models import Event, Pool
+        from django.db.models import Subquery
 
-        # TODO: filter so that only one penalty is returned. the penalty now() is at
         current_active_penalty = (
-            Penalty.objects.valid().filter(user=self).order_by("activation_time")
+            Penalty.objects.valid()
+            .filter(
+                user=self,
+                activation_time__lte=timezone.now(),
+                activation_time__gte=timezone.now()
+                - F("weight") * timedelta(days=settings.PENALTY_DURATION.days),
+            )
+            .first()
         )
+        if current_active_penalty is None:
+            return
 
-        # TODO: add check for all he events the user can be registered at
-        # get a list of all penalties and in the Event.filter()
-        # and check that the event is in the penalties events
-        eligable_passed_events = Event.objects.filter(
+        # TODO: add test for this
+        pools = Pool.objects.filter(permission_groups__in=self.all_groups).distinct()
+
+        number_of_eligable_passed_events = Event.objects.filter(
             heed_penalties=True,
             start_time__range=(
-                current_active_penalty[0].activation_time
+                current_active_penalty.activation_time
                 - timedelta(hours=1) * F("unregistration_deadline_hours"),
-                current_active_penalty[0].exact_expiration
+                current_active_penalty.exact_expiration
                 - timedelta(hours=1) * F("unregistration_deadline_hours"),
             ),
-        )
+            pools__in=Subquery(pools.values("pk")),
+        ).count()
 
-        if len(eligable_passed_events) >= 6:
-            current_active_penalty[0].delete_and_adjust_future_activation_times()
+        if number_of_eligable_passed_events >= 6:
+            current_active_penalty.expire_and_adjust_future_activation_times()
 
 
 class Penalty(BasisModel):
@@ -519,51 +529,48 @@ class Penalty(BasisModel):
     source_event = models.ForeignKey(
         "events.Event", related_name="penalties", on_delete=models.CASCADE
     )
-    activation_time = models.DateTimeField("date created", null=True, default=None)
+    activation_time = models.DateTimeField(null=True, default=None)
+    # add weightZ
 
     objects = UserPenaltyManager()  # type: ignore
 
-    def save(self, *args, **kwargs):
-        last_penalty_to_be_expired = Penalty.objects.filter(
-            user=self.user, activation_time__lte=timezone.now()
-        ).order_by("-activation_time")
+    def save(self, manual_activation_time=False, *args, **kwargs):
+        if not manual_activation_time:
+            current_and_future_penalties = Penalty.objects.filter(
+                user=self.user,
+                activation_time__gte=timezone.now()
+                - F("weight") * settings.PENALTY_DURATION.days * timedelta(days=1),
+            ).order_by("-activation_time")
 
-        self.activation_time = (
-            last_penalty_to_be_expired[0].exact_expiration
-            if len(last_penalty_to_be_expired) != 0
-            else self.created_at
-        )
+            self.activation_time = (
+                current_and_future_penalties.first().exact_expiration
+                if current_and_future_penalties.exists()
+                else self.created_at
+            )
+
         super().save(*args, **kwargs)
 
-    def default_save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def expire_and_adjust_future_activation_times(self):
+        new_activation_time = timezone.now()
+        future_penalties = Penalty.objects.filter(
+            user=self.user, activation_time__gt=new_activation_time
+        ).order_by("activation_time")
 
-    def delete_and_adjust_future_activation_times(self):
         if self.weight == 1:
-            new_activation_time = timezone.now()
-            future_penalties = Penalty.objects.filter(
-                user=self.user, activation_time__gt=new_activation_time
-            ).order_by("activation_time")
+            self.activation_time = timezone.now() - timedelta(days=30)
+            self.created_at = timezone.now() - timedelta(days=30)
 
-            for penalty in future_penalties:
-                penalty.activation_time = new_activation_time
-                penalty.default_save()
-                new_activation_time = penalty.exact_expiration
-
-            self.delete()
         else:
             self.weight -= 1
             self.activation_time = timezone.now()
-            future_penalties = Penalty.objects.filter(
-                user=self.user, activation_time__gt=self.activation_time
-            ).order_by("activation_time")
             new_activation_time = self.exact_expiration
-            self.default_save()
 
-            for penalty in future_penalties:
-                penalty.activation_time = new_activation_time
-                penalty.default_save()
-                new_activation_time = penalty.exact_expiration
+        self.save(manual_activation_time=True)
+
+        for penalty in future_penalties:
+            penalty.activation_time = new_activation_time
+            penalty.save(manual_activation_time=True)
+            new_activation_time = penalty.exact_expiration
 
     @property
     def exact_expiration(self):
@@ -601,6 +608,11 @@ class Penalty(BasisModel):
         elif winter_to < (date.month, date.day) < winter_from:
             return False
         return True
+
+
+# Generated by Django 4.0.10 on 2023-05-01 16:33
+
+from django.db import models
 
 
 class PhotoConsent(BasisModel):

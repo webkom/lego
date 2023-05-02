@@ -8,6 +8,12 @@ class Migration(migrations.Migration):
         ("users", "0038_alter_abakusgroup_type"),
     ]
 
+    def update_current_ative_penalties(apps, schema_editor):
+        from django.db.models import F
+
+        Penalty = apps.get_model("users", "Penalty")
+        Penalty.objects.all().update(activation_time=F("created_at"))
+
     operations = [
         migrations.AddField(
             model_name="penalty",
@@ -16,4 +22,5 @@ class Migration(migrations.Migration):
                 default=None, null=True, verbose_name="date created"
             ),
         ),
+        migrations.RunPython(update_current_ative_penalties),
     ]

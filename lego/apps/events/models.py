@@ -236,7 +236,11 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if self.heed_penalties:
             if penalties is None:
                 penalties = user.number_of_penalties()
-            return reg_time + timedelta(hours=5) if penalties >= 1 else reg_time
+            return (
+                reg_time + timedelta(hours=settings.PENALTY_DELAY_DURATION)
+                if penalties >= 1
+                else reg_time
+            )
         return reg_time
 
     def get_possible_pools(

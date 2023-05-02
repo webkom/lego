@@ -1,4 +1,5 @@
 from datetime import timedelta
+from django.conf import settings
 
 from django.utils import timezone
 
@@ -42,7 +43,7 @@ class PenaltyTestCase(BaseTestCase):
         )
         self.assertEqual(earliest_reg, current_time)
 
-    def test_get_earliest_registration_time_one_penalty(self):
+    def test_get_earliest_registration_time_one_or_more_penalty(self):
         """Test method calculating the earliest
         registration time for user with one or more penalties"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -57,6 +58,15 @@ class PenaltyTestCase(BaseTestCase):
         Penalty.objects.create(
             user=user, reason="first test penalty", weight=1, source_event=event
         )
+        penalties = user.number_of_penalties()
+
+        earliest_reg = event.get_earliest_registration_time(
+            user, [webkom_pool], penalties
+        )
+        self.assertEqual(
+            earliest_reg,
+            current_time + timedelta(hours=settings.PENALTY_DELAY_DURATION),
+        )
         Penalty.objects.create(
             user=user, reason="second test penalty", weight=2, source_event=event
         )
@@ -65,9 +75,12 @@ class PenaltyTestCase(BaseTestCase):
         earliest_reg = event.get_earliest_registration_time(
             user, [webkom_pool], penalties
         )
-        self.assertEqual(earliest_reg, current_time + timedelta(hours=5))
+        self.assertEqual(
+            earliest_reg,
+            current_time + timedelta(hours=settings.PENALTY_DELAY_DURATION),
+        )
 
-    def test_cant_register_with_one_penalty_before_delay(self):
+    def test_cant_register_with_one_or_more_penalty_before_delay(self):
         """Test that user can not register
         before (5 hour) delay when having one or more penalties"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
@@ -90,14 +103,16 @@ class PenaltyTestCase(BaseTestCase):
             registration = Registration.objects.get_or_create(event=event, user=user)[0]
             event.register(registration)
 
-    def test_can_register_with_one_penalty_after_delay(self):
+    def test_can_register_with_one_or_more_penalty_after_delay(self):
         """Test that user can register after (5 hour)
         delay has passed having one or more penalties"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
 
         current_time = timezone.now()
         abakus_pool = event.pools.get(name="Abakusmember")
-        abakus_pool.activation_date = current_time - timedelta(hours=5)
+        abakus_pool.activation_date = current_time - timedelta(
+            hours=settings.PENALTY_DELAY_DURATION
+        )
         abakus_pool.save()
 
         user = get_dummy_users(1)[0]
