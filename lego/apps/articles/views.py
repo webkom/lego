@@ -17,6 +17,17 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = DetailedArticleSerializer
     filterset_class = ArticleFilterSet
 
+    def get_object(self) -> Article:
+        queryset = self.get_queryset()
+        pk = self.kwargs.get("pk")
+
+        try:
+            obj = queryset.get(id=pk)
+        except (TypeError, ValueError, OverflowError, Article.DoesNotExist):
+            obj = queryset.get(slug=pk)
+
+        return obj
+
     def get_queryset(self):
         queryset = self.queryset.select_related("created_by").prefetch_related("tags")
 

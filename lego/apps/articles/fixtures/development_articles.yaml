@@ -18,6 +18,7 @@
   pk: 1
   fields:
     title: Ny komité i Abakus
+    slug: 1-ny-komite-i-abakus
     cover: test_article_cover.png
     description: "Etter langt å lenge har HS endelig blitt enig."
     text:
@@ -43,6 +44,7 @@
   pk: 2
   fields:
     title: Dette er en syk artikkel
+    slug: 2-dette-er-en-syk-artikkel
     cover: test_article_cover.png
     description: "Hurr durr durr"
     text:
@@ -67,6 +69,7 @@
   pk: 3
   fields:
     title: Artikkel med youtube cover
+    slug: 3-artikkel-med-youtube-cover
     cover: test_article_cover.png
     description: "Eller hur hur hur hur."
     text:
@@ -92,6 +95,7 @@
   pk: 4
   fields:
     title: Weekly - UKE 37
+    slug: 4-weekly-uke-37
     cover: test_article_cover.png
     description: "Takket være de flinke medlemmene i itDAGENE så fikk vi en pangstart"
     text:
@@ -115,6 +119,7 @@
   pk: 5
   fields:
     title: Ganske sjuk artikkel her også.
+    slug: 5-ganske-sjuk-artikkel-her-ogsa
     cover: test_article_cover.png
     description: "Eller hur hur hur hur."
     text:
@@ -139,6 +144,7 @@
   pk: 6
   fields:
     title: Artikkel uten AUTH
+    slug: 6-artikkel-uten-auth
     cover: test_article_cover.png
     description: "Eller hur hur hur hur."
     text:
