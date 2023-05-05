@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import viewsets
@@ -23,9 +24,13 @@ class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         try:
             obj = queryset.get(id=pk)
-        except (TypeError, ValueError, OverflowError, Joblisting.DoesNotExist):
+        except Joblisting.DoesNotExist:
             obj = get_object_or_404(queryset, slug=pk)
 
+        try:
+            self.check_object_permissions(self.request, obj)
+        except PermissionError:
+            raise Http404
         return obj
 
     def get_serializer_class(self):

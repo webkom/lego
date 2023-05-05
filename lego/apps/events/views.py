@@ -92,13 +92,13 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         try:
             obj = queryset.get(id=pk)
-        except (TypeError, ValueError, OverflowError, Event.DoesNotExist):
+        except Event.DoesNotExist:
             obj = get_object_or_404(queryset, slug=pk)
         # check if user has permission to view the event or return 404
         try:
             self.check_object_permissions(self.request, obj)
         except PermissionDenied:
-            raise Http404("Not found") from None
+            raise Http404
         return obj
 
     def get_queryset(self):

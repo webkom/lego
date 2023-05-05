@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import viewsets
 
 from lego.apps.articles.filters import ArticleFilterSet
@@ -26,6 +27,10 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         except (TypeError, ValueError, OverflowError, Article.DoesNotExist):
             obj = queryset.get(slug=pk)
 
+        try:
+            self.check_object_permissions(self.request, obj)
+        except PermissionError:
+            raise Http404
         return obj
 
     def get_queryset(self):
