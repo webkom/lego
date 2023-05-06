@@ -10,6 +10,7 @@ def sanitize_html(value, allow_images=True):
         "b",
         "i",
         "u",
+        "s",
         "h1",
         "h2",
         "h3",
