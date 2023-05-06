@@ -56,7 +56,7 @@ channels_redis = "4.1.0"
 flatbuffers = "23.3.3"
 #
 # Ical-export
-django-ical = "1.9.0"
+django-ical = "1.9.1"
 icalendar = "5.0.5"
 #
 # Email
