@@ -19,8 +19,8 @@ from lego.apps.events.tasks import (
     notify_user_when_payment_soon_overdue,
     set_all_events_ready_and_bump,
 )
-from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
-from lego.apps.users.models import AbakusGroup, Penalty
+from lego.apps.events.tests.utils import get_dummy_users, make_penalty_group_expire
+from lego.apps.users.models import AbakusGroup, PenaltyGroup
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
@@ -350,7 +350,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        penalty_group = PenaltyGroup.objects.create(
             user=user, reason="test", weight=3, source_event=self.event
         )
 
@@ -359,7 +359,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         ]
         async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(penalty_group)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
@@ -371,10 +371,10 @@ class PenaltyExpiredTestCase(BaseTestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=user, reason="test", weight=2, source_event=self.event
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="test2", weight=2, source_event=self.event
         )
 
@@ -383,7 +383,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         ]
         async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
@@ -396,7 +396,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         for user in users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=users[1], reason="test", weight=3, source_event=self.event
         )
 
@@ -406,7 +406,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
             )[0]
             async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -422,7 +422,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         for user in users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=users[2], reason="test", weight=3, source_event=self.event
         )
 
@@ -432,7 +432,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
             )[0]
             async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -448,7 +448,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         for user in users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        penalty_group = PenaltyGroup.objects.create(
             user=users[1], reason="test", weight=3, source_event=self.event
         )
 
@@ -458,7 +458,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
             )[0]
             async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(penalty_group)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(user=users[1]).pool)
@@ -526,7 +526,7 @@ class StripePaymentTestCase(BaseTestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="test", weight=3, source_event=self.event
         )
 

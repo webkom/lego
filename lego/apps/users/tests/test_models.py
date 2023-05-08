@@ -3,7 +3,6 @@ from unittest import mock
 from django.test import override_settings
 from django.utils import timezone
 from django.utils.timezone import timedelta
-from django.db.models import F, Q
 
 from lego import settings
 from lego.apps.events.models import Event, Pool
@@ -14,9 +13,17 @@ from lego.apps.users.constants import (
     SOCIAL_MEDIA_DOMAIN,
     WEBSITE_DOMAIN,
 )
-from lego.apps.users.models import AbakusGroup, Membership, Penalty, PhotoConsent, User
+from lego.apps.users.models import (
+    AbakusGroup,
+    Membership,
+    Penalty,
+    PenaltyGroup,
+    PhotoConsent,
+    User,
+)
 from lego.apps.users.registrations import Registrations
-from lego.utils.test_utils import BaseTestCase, fake_time
+from lego.apps.users.tasks import expire_penalties_if_six_events_has_passed
+from lego.utils.test_utils import BaseAPITestCase, BaseTestCase, fake_time
 
 
 class AbakusGroupTestCase(BaseTestCase):
@@ -224,6 +231,63 @@ class UserTestCase(BaseTestCase):
         self.assertNotEqual(token["member"], False)
 
 
+class AsyncTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_users.yaml",
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.test_user = User.objects.get(pk=1)
+        self.source = Event.objects.all().first()
+
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
+    def test_async_expire_penalties_if_six_events_has_passed(self, mock_now):
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=8),
+            user=self.test_user,
+            reason="first_penalty",
+            weight=1,
+            source_event=self.source,
+        )
+
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=5),
+            user=self.test_user,
+            reason="second_penalty",
+            weight=2,
+            source_event=self.source,
+        )
+        self.assertEqual(self.test_user.number_of_penalties(), 3)
+
+        webkom_group = AbakusGroup.objects.get(name="Webkom")
+        webkom_group.add_user(self.test_user)
+        webkom_group.save()
+        self.test_user.save()
+
+        for _i in range(6):
+            event = Event.objects.create(
+                title="AbakomEvent",
+                event_type=0,
+                start_time=mock_now(),
+                end_time=mock_now(),
+            )
+            pool = Pool.objects.create(
+                name="Pool1",
+                event=event,
+                capacity=0,
+                activation_date=timezone.now() - timedelta(days=1),
+            )
+
+            pool.permission_groups.set([webkom_group])
+
+        expire_penalties_if_six_events_has_passed()
+
+        self.assertEqual(self.test_user.number_of_penalties(), 2)
+
+
 class MembershipTestCase(BaseTestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
@@ -266,54 +330,59 @@ class PenaltyTestCase(BaseTestCase):
         self.test_user = User.objects.get(pk=1)
         self.source = Event.objects.all().first()
 
-    def test_create_penalty(self):
-        penalty = Penalty.objects.create(
-            user=self.test_user, reason="test", weight=1, source_event=self.source
+    def test_create_penalty_group(self):
+        penalty_group = PenaltyGroup.objects.create(
+            user=self.test_user, reason="test", source_event=self.source, weight=1
         )
 
+        penalties = Penalty.objects.filter(penalty_group__user=self.test_user)
+
+        self.assertEqual(len(penalties), 1)
+
         self.assertEqual(self.test_user.number_of_penalties(), 1)
-        self.assertEqual(self.test_user, penalty.user)
-        self.assertEqual("test", penalty.reason)
-        self.assertEqual(1, penalty.weight)
-        self.assertEqual(self.source, penalty.source_event)
-        self.assertEqual(self.source.id, penalty.source_event.id)
+        self.assertEqual(self.test_user, penalty_group.user)
+        self.assertEqual("test", penalty_group.reason)
+        self.assertEqual(1, penalty_group.weight)
+        self.assertEqual(self.source, penalty_group.source_event)
+        self.assertEqual(self.source.id, penalty_group.source_event.id)
 
     def test_count_weights(self):
         weights = [1, 2]
         for weight in weights:
-            Penalty.objects.create(
+            PenaltyGroup.objects.create(
                 user=self.test_user,
                 reason="test",
-                weight=weight,
                 source_event=self.source,
+                weight=weight,
             )
 
         self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
     def test_only_count_active_penalties(self, mock_now):
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=21),
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=11),
             user=self.test_user,
             reason="test",
             weight=1,
             source_event=self.source,
         )
-        Penalty.objects.create(
+
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=9),
             user=self.test_user,
             reason="test",
             weight=1,
             source_event=self.source,
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=5),
             user=self.test_user,
             reason="test",
             weight=1,
             source_event=self.source,
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             created_at=mock_now(),
             user=self.test_user,
             reason="test",
@@ -324,33 +393,65 @@ class PenaltyTestCase(BaseTestCase):
         self.assertEqual(self.test_user.number_of_penalties(), 3)
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
-    def test_penalty_deletion_after_6_events(self, mock_now):
+    def test_penalty_group_activation_period(self, mock_now):
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=8),
+            user=self.test_user,
+            reason="first_penalty",
+            weight=1,
+            source_event=self.source,
+        )
+
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=2),
+            user=self.test_user,
+            reason="second_penalty",
+            weight=2,
+            source_event=self.source,
+        )
+
+        self.assertEqual(
+            (
+                PenaltyGroup.objects.get(reason="first_penalty").activation_time.day,
+                PenaltyGroup.objects.get(reason="first_penalty").exact_expiration.day,
+            ),
+            (2, 12),
+        )
+        self.assertEqual(
+            (
+                PenaltyGroup.objects.get(reason="second_penalty").activation_time.day,
+                PenaltyGroup.objects.get(reason="second_penalty").exact_expiration.day,
+            ),
+            (12, 1),
+        )
+
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
+    def test_penalty_expiration_after_6_events_on_penalty_with_weight_one(
+        self, mock_now
+    ):
         """Tests that The first active penalty is
-        removed and the rest are adjusted after 6 events"""
+        expired and the rest are adjusted after 6 events"""
 
         self.test_user.check_for_expirable_penalty()
 
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=8),
             user=self.test_user,
-            reason="first test penalty",
+            reason="first_penalty",
             weight=1,
             source_event=self.source,
         )
-        Penalty.objects.create(
+
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=5),
             user=self.test_user,
-            reason="second test penalty",
-            weight=1,
+            reason="second_penalty",
+            weight=2,
             source_event=self.source,
         )
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=5),
-            user=self.test_user,
-            reason="third test penalty",
-            weight=1,
-            source_event=self.source,
-        )
+
+        # The timeline currently is: 1: 2-12, 2: 12-22, 3: 22-1
+        self.assertEqual(self.test_user.number_of_penalties(), 3)
 
         webkom_group = AbakusGroup.objects.get(name="Webkom")
         webkom_group.add_user(self.test_user)
@@ -361,8 +462,8 @@ class PenaltyTestCase(BaseTestCase):
             event = Event.objects.create(
                 title="AbakomEvent",
                 event_type=0,
-                start_time=mock_now() - timedelta(days=6),
-                end_time=mock_now() - timedelta(days=6),
+                start_time=mock_now(),
+                end_time=mock_now(),
             )
             pool = Pool.objects.create(
                 name="Pool1",
@@ -375,31 +476,35 @@ class PenaltyTestCase(BaseTestCase):
 
         self.test_user.check_for_expirable_penalty()
         # Tests that the changes happened after 6 events
+        # The timeline now should be is: 1: 10-20, 2: 20-30
         self.assertEqual(self.test_user.number_of_penalties(), 2)
         self.assertEqual(
             (
-                Penalty.objects.get(reason="second test penalty").activation_time.day,
-                Penalty.objects.get(reason="second test penalty").exact_expiration.day,
-                Penalty.objects.get(reason="third test penalty").exact_expiration.day,
+                Penalty.objects.valid()[0].activation_time.day,
+                Penalty.objects.valid()[0].exact_expiration.day,
+                Penalty.objects.valid()[1].exact_expiration.day,
             ),
             (10, 20, 30),
         )
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 10))
-    def test_penalty_weight_decrementing_after_6_events(self, mock_now):
+    def test_penalty_expiration_after_6_events_on_penalty_with_weight_two(
+        self, mock_now
+    ):
         """Tests that The weight of the first active penalty
         is decremented and the rest are adjusted after 6 events"""
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=8),
             user=self.test_user,
-            reason="first test penalty",
+            reason="first_penalty",
             weight=2,
             source_event=self.source,
         )
-        Penalty.objects.create(
+
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=5),
             user=self.test_user,
-            reason="second test penalty",
+            reason="second_penalty",
             weight=1,
             source_event=self.source,
         )
@@ -427,14 +532,15 @@ class PenaltyTestCase(BaseTestCase):
 
         self.test_user.check_for_expirable_penalty()
 
-        """Tests first that nothing is changed after 5 events"""
+        # Tests first that nothing is changed after 5 events
         self.assertEqual(self.test_user.number_of_penalties(), 3)
         self.assertEqual(
             (
-                Penalty.objects.get(reason="first test penalty").exact_expiration.day,
-                Penalty.objects.get(reason="second test penalty").exact_expiration.day,
+                Penalty.objects.valid()[0].exact_expiration.day,
+                Penalty.objects.valid()[1].exact_expiration.day,
+                Penalty.objects.valid()[2].exact_expiration.day,
             ),
-            (22, 1),
+            (12, 22, 1),
         )
 
         event = Event.objects.create(
@@ -449,53 +555,61 @@ class PenaltyTestCase(BaseTestCase):
             capacity=0,
             activation_date=timezone.now() - timedelta(days=1),
         )
+        self.test_user.check_for_expirable_penalty()
+        # Tests that the new event is not counted if
+        # the users does not have permission to the pool
+        self.assertEqual(self.test_user.number_of_penalties(), 3)
 
         pool.permission_groups.set([webkom_group])
 
         self.test_user.check_for_expirable_penalty()
-        """Tests that the changes happened after 6 events"""
+
+        # Tests that the changes happened after 6 events
         self.assertEqual(self.test_user.number_of_penalties(), 2)
         self.assertEqual(
             (
-                Penalty.objects.get(reason="first test penalty").exact_expiration.day,
-                Penalty.objects.get(reason="second test penalty").exact_expiration.day,
+                Penalty.objects.valid()[0].exact_expiration.day,
+                Penalty.objects.valid()[1].exact_expiration.day,
             ),
             (20, 30),
         )
 
     @override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10)))
-    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 12, 10))
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 12, 20))
     def test_frozen_penalties_count_as_active_winter(self, mock_now):
-        # This penalty is created slightly less than 10 days from the freeze-point.
-        # It should be counted as active.
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=10, hours=23, minutes=59),
+        penalty1 = PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59),
             user=self.test_user,
-            reason="active",
+            reason="penalty1",
             weight=1,
             source_event=self.source,
         )
 
-        # This penalty is created exactly 10 days from the freeze-point.
-        # It should be counted as inactive.
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=11),
+        penalty2 = PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=20),
             user=self.test_user,
-            reason="inactive",
+            reason="penalty2",
             weight=1,
             source_event=self.source,
         )
 
-        self.assertEqual(self.test_user.number_of_penalties(), 1)
-        self.assertEqual(self.test_user.penalties.valid().first().reason, "active")
+        self.assertEqual(self.test_user.number_of_penalties(), 2)
+        self.assertEqual(
+            (penalty1.activation_time.day, penalty1.activation_time.month),
+            (30, 11),
+        )
+        self.assertEqual(
+            (penalty2.activation_time.day, penalty2.activation_time.month),
+            (11, 1),
+        )
 
     @override_settings(PENALTY_IGNORE_SUMMER=((6, 12), (8, 15)))
-    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 6, 12))
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 6, 22))
     def test_frozen_penalties_count_as_active_summer(self, mock_now):
         # This penalty is created slightly less than 10 days from the freeze-point.
         # It should be counted as active.
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=10, hours=23, minutes=59),
+        penalty1 = PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59),
             user=self.test_user,
             reason="active",
             weight=1,
@@ -504,23 +618,30 @@ class PenaltyTestCase(BaseTestCase):
 
         # This penalty is created exactly 10 days from the freeze-point.
         # It should be counted as inactive.
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=11),
+        penalty2 = PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=20),
             user=self.test_user,
             reason="inactive",
             weight=1,
             source_event=self.source,
         )
 
-        self.assertEqual(self.test_user.number_of_penalties(), 1)
-        self.assertEqual(self.test_user.penalties.valid().first().reason, "active")
+        self.assertEqual(self.test_user.number_of_penalties(), 2)
+        self.assertEqual(
+            (penalty1.activation_time.day, penalty1.activation_time.month),
+            (2, 6),
+        )
+        self.assertEqual(
+            (penalty2.activation_time.day, penalty2.activation_time.month),
+            (16, 8),
+        )
 
     @override_settings(PENALTY_IGNORE_WINTER=((12, 22), (1, 10)))
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2019, 12, 23))
     def test_penalty_offset_is_calculated_correctly(self, mock_now):
         # This penalty is set to expire the day before the penalty freeze
         # It should not be active
-        inactive = Penalty.objects.create(
+        inactive = PenaltyGroup.objects.create(
             created_at=mock_now().replace(day=10),
             user=self.test_user,
             reason="inactive",
@@ -533,7 +654,7 @@ class PenaltyTestCase(BaseTestCase):
             (12, inactive.created_at.day + settings.PENALTY_DURATION.days),
         )
 
-        active = Penalty.objects.create(
+        active = PenaltyGroup.objects.create(
             created_at=mock_now().replace(day=15),
             user=self.test_user,
             reason="active",
@@ -542,8 +663,45 @@ class PenaltyTestCase(BaseTestCase):
         )
         self.assertEqual(
             (active.exact_expiration.month, active.exact_expiration.day),
-            (1, 14),
+            (1, 19),
         )
+
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2019, 10, 10))
+    def test_penalty_group_valid_with_one_weight(self, mock_now):
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=10),
+            user=self.test_user,
+            reason="test",
+            weight=1,
+            source_event=self.source,
+        )
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=9, hours=59, seconds=59),
+            user=self.test_user,
+            reason="test",
+            weight=1,
+            source_event=self.source,
+        )
+
+        self.assertEqual(len(PenaltyGroup.objects.valid()), 1)
+
+    @mock.patch("django.utils.timezone.now", return_value=fake_time(2019, 10, 10))
+    def test_penalty_group_valid_with_two_weight(self, mock_now):
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=20),
+            user=self.test_user,
+            reason="test",
+            weight=2,
+            source_event=self.source,
+        )
+        PenaltyGroup.objects.create(
+            created_at=mock_now() - timedelta(days=15),
+            user=self.test_user,
+            reason="test",
+            weight=2,
+            source_event=self.source,
+        )
+        self.assertEqual(len(PenaltyGroup.objects.valid()), 1)
 
 
 class PhotoConsentTestCase(BaseTestCase):

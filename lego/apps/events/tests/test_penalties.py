@@ -1,11 +1,11 @@
 from datetime import timedelta
-from django.conf import settings
 
+from django.conf import settings
 from django.utils import timezone
 
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
-from lego.apps.users.models import AbakusGroup, Penalty
+from lego.apps.users.models import AbakusGroup, PenaltyGroup
 from lego.utils.test_utils import BaseTestCase
 
 from .utils import get_dummy_users
@@ -35,7 +35,9 @@ class PenaltyTestCase(BaseTestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Webkom").add_user(user)
-        Penalty.objects.create(user=user, reason="test", weight=1, source_event=event)
+        PenaltyGroup.objects.create(
+            user=user, reason="test", weight=1, source_event=event
+        )
         penalties = user.number_of_penalties()
 
         earliest_reg = event.get_earliest_registration_time(
@@ -55,7 +57,7 @@ class PenaltyTestCase(BaseTestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Webkom").add_user(user)
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="first test penalty", weight=1, source_event=event
         )
         penalties = user.number_of_penalties()
@@ -67,7 +69,7 @@ class PenaltyTestCase(BaseTestCase):
             earliest_reg,
             current_time + timedelta(hours=settings.PENALTY_DELAY_DURATION),
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="second test penalty", weight=2, source_event=event
         )
         penalties = user.number_of_penalties()
@@ -92,10 +94,10 @@ class PenaltyTestCase(BaseTestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="first test penalty", weight=1, source_event=event
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="second test penalty", weight=2, source_event=event
         )
 
@@ -117,10 +119,10 @@ class PenaltyTestCase(BaseTestCase):
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="first test penalty", weight=1, source_event=event
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="second test penalty", weight=2, source_event=event
         )
 
@@ -193,20 +195,20 @@ class PenaltyTestCase(BaseTestCase):
 
         registration.set_presence(constants.PRESENCE_CHOICES.NOT_PRESENT)
         penalties_before = registration.user.number_of_penalties()
-        penalties_object_before = list(registration.user.penalties.all())
+        penalties_object_before = list(registration.user.penalty_groups.all())
 
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=registration.user,
             reason="OTHER EVENT",
             weight=2,
             source_event=other_event,
         )
         penalties_during = registration.user.number_of_penalties()
-        penalties_objects_during = list(registration.user.penalties.all())
+        penalties_objects_during = list(registration.user.penalty_groups.all())
 
         registration.set_presence(constants.PRESENCE_CHOICES.UNKNOWN)
         penalties_after = registration.user.number_of_penalties()
-        penalties_object_after = list(registration.user.penalties.all())
+        penalties_object_after = list(registration.user.penalty_groups.all())
 
         self.assertEqual(penalties_object_before[0].source_event, event)
         self.assertEqual(penalties_object_after[0].source_event, other_event)
@@ -229,7 +231,7 @@ class PenaltyTestCase(BaseTestCase):
         event.save()
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Webkom").add_user(user)
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="TEST", weight=3, source_event=other_event
         )
 

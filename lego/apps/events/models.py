@@ -32,7 +32,7 @@ from lego.apps.files.models import FileField
 from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.constants import AUTUMN, SPRING
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, PenaltyGroup, User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
 
@@ -389,8 +389,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 and self.heed_penalties
                 and self.passed_unregistration_deadline
             ):
-                if not registration.user.penalties.filter(source_event=self).exists():
-                    Penalty.objects.create(
+                if not registration.user.penalty_groups.filter(
+                    source_event=self
+                ).exists():
+                    PenaltyGroup.objects.create(
                         user=registration.user,
                         reason=f"Meldte seg av {self.title} for sent.",
                         weight=1,
@@ -910,16 +912,18 @@ class Registration(BasisModel):
             and presence == constants.PRESENCE_CHOICES.NOT_PRESENT
             and self.event.penalty_weight_on_not_present
         ):
-            if not self.user.penalties.filter(source_event=self.event).exists():
-                Penalty.objects.create(
+            if not self.user.penalty_groups.filter(source_event=self.event).exists():
+                PenaltyGroup.objects.create(
                     user=self.user,
                     reason=f"Møtte ikke opp på {self.event.title}.",
                     weight=self.event.penalty_weight_on_not_present,
                     source_event=self.event,
                 )
         else:
-            for penalty in self.user.penalties.filter(source_event=self.event):
-                penalty.delete()
+            for penalty_group in self.user.penalty_groups.filter(
+                source_event=self.event
+            ):
+                penalty_group.delete()
 
     def add_to_pool(self, pool: Pool) -> Registration:
         allowed: bool = False

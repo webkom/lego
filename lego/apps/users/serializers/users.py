@@ -4,13 +4,19 @@ from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
 from lego.apps.users import constants
-from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
+from lego.apps.users.models import (
+    AbakusGroup,
+    Penalty,
+    PenaltyGroup,
+    PhotoConsent,
+    User,
+)
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.memberships import (
     MembershipSerializer,
     PastMembershipSerializer,
 )
-from lego.apps.users.serializers.penalties import PenaltySerializer
+from lego.apps.users.serializers.penalties import PenaltyGroupSerializer
 from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 
@@ -27,8 +33,8 @@ class DetailedUserSerializer(serializers.ModelSerializer):
     )
 
     def get_valid_penalties(self, user):
-        qs = Penalty.objects.valid().filter(user=user)
-        serializer = PenaltySerializer(instance=qs, many=True)
+        qs = Penalty.objects.valid().filter(penalty_group__user=user)
+        serializer = PenaltyGroupSerializer(instance=qs, many=True)
         return serializer.data
 
     class Meta:
@@ -225,8 +231,8 @@ class MeSerializer(serializers.ModelSerializer):
         return ical_token.token
 
     def get_valid_penalties(self, user):
-        qs = Penalty.objects.valid().filter(user=user)
-        serializer = PenaltySerializer(instance=qs, many=True)
+        qs = PenaltyGroup.objects.valid().filter(user=user)
+        serializer = PenaltyGroupSerializer(instance=qs, many=True)
         return serializer.data
 
     def get_photo_consents(self, user):

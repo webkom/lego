@@ -18,11 +18,11 @@ from lego.apps.events.tasks import (
     check_events_for_registrations_with_expired_penalties,
     stripe_webhook_event,
 )
-from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
+from lego.apps.events.tests.utils import get_dummy_users, make_penalty_group_expire
 from lego.apps.followers.models import FollowEvent
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE, PHOTO_CONSENT_DOMAINS
-from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
+from lego.apps.users.models import AbakusGroup, PenaltyGroup, PhotoConsent, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
 
 _test_event_data = [
@@ -1727,7 +1727,7 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
 
         self.client.force_authenticate(self.abakus_user_4)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=self.abakus_user_4, reason="test", weight=3, source_event=self.event
         )
 
@@ -1742,7 +1742,7 @@ class StripePaymentTestCase(BaseAPITransactionTestCase):
         res = self.get_payment_intent()
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         res = self.get_payment_intent()

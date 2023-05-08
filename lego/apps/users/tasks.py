@@ -1,7 +1,8 @@
 from math import ceil
 
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Count, Q
+from django.db.models.functions import Length
 from django.utils import timezone
 
 from structlog import get_logger
@@ -82,5 +83,12 @@ def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def expire_penalties_if_six_events_has_passed(self, logger_context=None):
-    me = "happy"
     # go through all users with penalties and run the expire penalty function on them
+
+    self.setup_logger(logger_context)
+
+    users = User.objects.annotate(penalties_count=Count("penalty_groups")).filter(
+        penalties_count__gt=0
+    )
+    for user in users:
+        user.check_for_expirable_penalty()

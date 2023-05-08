@@ -9,7 +9,7 @@ from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
 from lego.apps.users.constants import AUTUMN, SOCIAL_MEDIA_DOMAIN, WEBSITE_DOMAIN
-from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
+from lego.apps.users.models import AbakusGroup, PenaltyGroup, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import BaseAPITestCase, fake_time
 
@@ -434,7 +434,7 @@ class RetrieveSelfTestCase(BaseAPITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            len(self.user.penalties.valid()), len(response.json()["penalties"])
+            len(self.user.penalty_groups.valid()), len(response.json()["penalties"])
         )
         data = response.json()
         self.assertEqual(self.user.id, data["id"])
@@ -453,27 +453,29 @@ class RetrieveSelfTestCase(BaseAPITestCase):
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 1))
     def test_own_penalties_serializer(self, mock_now):
         source = Event.objects.all().first()
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=10),
             user=self.user,
             reason="test",
             weight=1,
             source_event=source,
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             created_at=mock_now() - timedelta(days=9, hours=23, minutes=59),
             user=self.user,
             reason="test",
             weight=1,
             source_event=source,
         )
+
         self.client.force_authenticate(user=self.user)
+
         response = self.client.get(reverse("api:v1:user-me"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(self.user.penalties.valid()), len(response.json()["penalties"])
+            len(self.user.penalty_groups.valid()), len(response.json()["penalties"])
         )
         self.assertEqual(len(response.json()["penalties"]), 1)
 

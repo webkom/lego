@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from lego.apps.users.models import Penalty
+from lego.apps.users.models import PenaltyGroup
 
 
-class PenaltySerializer(serializers.ModelSerializer):
+class PenaltyGroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Penalty
+        model = PenaltyGroup
         fields = (
             "id",
             "created_at",
