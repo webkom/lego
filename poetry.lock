@@ -2906,19 +2906,19 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.21.1"
+version = "1.22.1"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.21.1.tar.gz", hash = "sha256:99c15556a23621be9f18c2955f7ce63321713bf1c0ad396b27b61399bac5f458"},
-    {file = "sentry_sdk-1.21.1-py2.py3-none-any.whl", hash = "sha256:092888f3abf7a2ea78f0bfcefc3e0465caee2b6f0efb26f538ccc60f95dca179"},
+    {file = "sentry-sdk-1.22.1.tar.gz", hash = "sha256:052dff5069c6f0d836ee014323576824a9b40836fc003fb12489a1f19c60a3c9"},
+    {file = "sentry_sdk-1.22.1-py2.py3-none-any.whl", hash = "sha256:c6c6946f8c927adb00af1c5ab6921df38775b2199b9003816d5935a1310352d5"},
 ]
 
 [package.dependencies]
 certifi = "*"
-urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
+urllib3 = {version = ">=1.26.11,<2.0.0", markers = "python_version >= \"3.6\""}
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.5)"]
@@ -3849,4 +3849,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2fd8aac6bc5d8122a38159b532a77445135e6d65ad42a749d4b8b7bfcde95bbe"
+content-hash = "0870c1449fcb71a42d18d4e496f8af38aacef47f1048bcda1ab4c1bd9f9adc21"
