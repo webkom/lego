@@ -40,6 +40,7 @@ from lego.utils.validators import ReservedNameValidator
 
 from .validators import (
     email_blacklist_validator,
+    github_username_validator,
     student_username_validator,
     username_validator,
 )
@@ -366,10 +367,8 @@ class User(
         max_length=39,
         unique=False,
         null=True,
-        required=False,
-        help_text="39 characters or fewer. May only contain alphanumeric characters or hyphens, no consecutive hyphens, and cannot start or end with a hyphen.",
-        validators=[student_username_validator, ReservedNameValidator()],
-        error_messages={"unique": "A user has already verified that student username."},
+        help_text="Enter a valid username.",
+        validators=[github_username_validator, ReservedNameValidator()],
     )
 
     objects = AbakusUserManager()  # type: ignore
