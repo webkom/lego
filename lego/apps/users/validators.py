@@ -17,6 +17,13 @@ student_username_validator = validators.RegexValidator(
     "invalid",
 )
 
+github_username_validator = validators.RegexValidator(
+    r"^[a-zA-Z0-9_\.]+$",
+    "Enter a valid username. This value may contain only alphanumeric characters or hyphens, no consecutive hyphens, and cannot start or end with a hyphen ."
+    "characters.",
+    "invalid",
+)
+
 
 @deconstructible
 class EmailValidatorWithBlacklist:

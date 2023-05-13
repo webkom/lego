@@ -362,6 +362,16 @@ class User(
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
 
+    github_username = models.CharField(
+        max_length=39,
+        unique=False,
+        null=True,
+        required=False,
+        help_text="39 characters or fewer. May only contain alphanumeric characters or hyphens, no consecutive hyphens, and cannot start or end with a hyphen.",
+        validators=[student_username_validator, ReservedNameValidator()],
+        error_messages={"unique": "A user has already verified that student username."},
+    )
+
     objects = AbakusUserManager()  # type: ignore
 
     USERNAME_FIELD = "username"
