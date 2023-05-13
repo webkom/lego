@@ -17,6 +17,13 @@ student_username_validator = validators.RegexValidator(
     "invalid",
 )
 
+github_username_validator = validators.RegexValidator(
+    r"^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$",
+    "Enter a valid username. ",
+    "characters.",
+    "invalid",
+)
+
 
 @deconstructible
 class EmailValidatorWithBlacklist:

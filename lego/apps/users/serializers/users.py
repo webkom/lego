@@ -51,6 +51,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             "abakus_groups",
             "past_memberships",
             "permissions_per_group",
+            "github_username",
         )
 
 
@@ -74,6 +75,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "profile_picture",
             "profile_picture_placeholder",
             "internal_email_address",
+            "github_username",
         )
         read_only_fields = ("username",)
 
@@ -282,6 +284,7 @@ class MeSerializer(serializers.ModelSerializer):
             "selected_theme",
             "permissions_per_group",
             "photo_consents",
+            "github_username",
         )
 
 

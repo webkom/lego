@@ -40,6 +40,7 @@ from lego.utils.validators import ReservedNameValidator
 
 from .validators import (
     email_blacklist_validator,
+    github_username_validator,
     student_username_validator,
     username_validator,
 )
@@ -361,6 +362,14 @@ class User(
     date_joined = models.DateTimeField("date joined", default=timezone.now)
 
     date_bumped = models.DateTimeField("date bumped", null=True, default=None)
+
+    github_username = models.CharField(
+        max_length=39,
+        unique=False,
+        null=True,
+        help_text="Enter a valid username.",
+        validators=[github_username_validator, ReservedNameValidator()],
+    )
 
     objects = AbakusUserManager()  # type: ignore
 
