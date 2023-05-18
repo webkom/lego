@@ -2319,7 +2319,7 @@ signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 name = "packaging"
 version = "23.1"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3256,18 +3256,20 @@ tests = ["coverage[toml]", "freezegun (>=0.2.8)", "pretend", "pytest (>=6.0)", "
 
 [[package]]
 name = "structlog-sentry"
-version = "1.4.0"
+version = "2.0.2"
 description = "Sentry integration for structlog"
 category = "main"
 optional = false
-python-versions = ">=3.6,<4.0"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "structlog-sentry-1.4.0.tar.gz", hash = "sha256:5fc6cfab71b858d71433e68cc5af79a396e72015003931507e340b3687ebb0a8"},
-    {file = "structlog_sentry-1.4.0-py3-none-any.whl", hash = "sha256:04627538e13bb0719a8806353279d40c1d1afb3eb2053817820754b9a08814a7"},
+    {file = "structlog_sentry-2.0.2-py3-none-any.whl", hash = "sha256:a56e8ea4cf193558ba8a600fe4d8932642c186193e4a20bf720b0ac8ebc8ad2b"},
+    {file = "structlog_sentry-2.0.2.tar.gz", hash = "sha256:9790227e2284586b1202c066cec962c4f42c46ee9a3e0159c8c459a30384494c"},
 ]
 
 [package.dependencies]
+packaging = "*"
 sentry-sdk = "*"
+structlog = "*"
 
 [[package]]
 name = "tblib"
@@ -3850,4 +3852,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "60581ec226cc218e1fb8aecda244fdeb9ef4e576e2e1a53b8d6fe1d5d1f8a338"
+content-hash = "24b7c191abcf3987688c138eb08fd854304b0eb7c3608ff786dec92778d6d341"
