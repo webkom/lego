@@ -69,7 +69,7 @@ Markdown = "3.4.3"
 coreapi = "2.3.3"
 
 [tool.poetry.group.dev.dependencies]
-django-debug-toolbar = "4.0.0"
+django-debug-toolbar = "4.1.0"
 tox = "4.5.1"
 tblib = "^1.7.0"
 

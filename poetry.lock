@@ -957,14 +957,14 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-debug-toolbar"
-version = "4.0.0"
+version = "4.1.0"
 description = "A configurable set of panels that display various debug information about the current request/response."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "django_debug_toolbar-4.0.0-py3-none-any.whl", hash = "sha256:bad339d68520652ddc1580c76f136fcbc3e020fd5ed96510a89a02ec81bb3fb1"},
-    {file = "django_debug_toolbar-4.0.0.tar.gz", hash = "sha256:89619f6e0ea1057dca47bfc429ed99b237ef70074dabc065a7faa5f00e1459cf"},
+    {file = "django_debug_toolbar-4.1.0-py3-none-any.whl", hash = "sha256:a0b532ef5d52544fd745d1dcfc0557fa75f6f0d1962a8298bd568427ef2fa436"},
+    {file = "django_debug_toolbar-4.1.0.tar.gz", hash = "sha256:f57882e335593cb8e74c2bda9f1116bbb9ca8fc0d81b50a75ace0f83de5173c7"},
 ]
 
 [package.dependencies]
@@ -3849,4 +3849,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2caf8caea8577510a0fa51a05aa6b4aeb34f94bd320d0a7e7cb6d893e6e8d17d"
+content-hash = "1fb35a1c049672bc3a0a3370b7cdd734eb168f19a2edf1f1803044cec89d85e3"
