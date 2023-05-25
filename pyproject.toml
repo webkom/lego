@@ -103,7 +103,7 @@ flake8-comprehensions = "3.10.1"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "6.2.1"
-sphinx_rtd_theme = "1.2.0"
+sphinx_rtd_theme = "1.2.1"
 
 [tool.poetry.group.prod]
 optional = true
