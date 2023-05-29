@@ -1703,14 +1703,14 @@ idna = ">=2.5"
 
 [[package]]
 name = "icalendar"
-version = "5.0.5"
+version = "5.0.6"
 description = "iCalendar parser/generator"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "icalendar-5.0.5-py3-none-any.whl", hash = "sha256:022c3fa7421fe274889007c12582510ab2e4ba0ac612b73dc35982c644356540"},
-    {file = "icalendar-5.0.5.tar.gz", hash = "sha256:ee76771d4eccebae3683beeb9c24c24feb2f8cceade72b92e4437f0144f81584"},
+    {file = "icalendar-5.0.6-py3-none-any.whl", hash = "sha256:c5b5350c762a6027c6b1efed853b21a0e35a13a015bd092daadd28dfad95f595"},
+    {file = "icalendar-5.0.6.tar.gz", hash = "sha256:418eaf128d6cac7e9a8455cda89c49d5c959df5d6337e987093a3ea8d0be058b"},
 ]
 
 [package.dependencies]
@@ -3850,4 +3850,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5a4f08a9a44100f855b14c073a975de00c6aaf63cae7230378c299aaa718454f"
+content-hash = "6f9597e277d60c85db3b0200f420030edc844932d16cf86bfe35b4ed82783442"
