@@ -1426,14 +1426,14 @@ flake8 = ">=3.0,<3.2.0 || >3.2.0"
 
 [[package]]
 name = "flatbuffers"
-version = "23.5.9"
+version = "23.5.26"
 description = "The FlatBuffers serialization format for Python"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "flatbuffers-23.5.9-py2.py3-none-any.whl", hash = "sha256:a02eb8c2d61cba153cd211937de8f8f7764b6a7510971b2c4684ed8b02e6e571"},
-    {file = "flatbuffers-23.5.9.tar.gz", hash = "sha256:93a506b6ab771c79ce816e7b35a93ed08ec5b4c9edb811101a22c44a4152f018"},
+    {file = "flatbuffers-23.5.26-py2.py3-none-any.whl", hash = "sha256:c0ff356da363087b915fde4b8b45bdda73432fc17cddb3c8157472eab1422ad1"},
+    {file = "flatbuffers-23.5.26.tar.gz", hash = "sha256:9ea1144cac05ce5d86e2859f431c6cd5e66cd9c78c558317c7955fb8d4c78d89"},
 ]
 
 [[package]]
@@ -3850,4 +3850,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1eed7439dcb4544a32157e4fdb0a66c3d6261cf8a6bb75896514b39b3431d26a"
+content-hash = "deb64099473ee187db85866396a3a5f1373ef396aa59e7a221c294243f5fdada"
