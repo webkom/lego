@@ -1205,37 +1205,37 @@ hiredis = ["redis[hiredis] (>=3,!=4.0.0,!=4.0.1)"]
 
 [[package]]
 name = "django-stubs"
-version = "4.2.0"
+version = "4.2.1"
 description = "Mypy stubs for Django"
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "django-stubs-4.2.0.tar.gz", hash = "sha256:93baff824f0a056e71036b423b942a74f07b909e45e3fa38185b910f597c5c08"},
-    {file = "django_stubs-4.2.0-py3-none-any.whl", hash = "sha256:d2c671989efb3f7b0fa91e461909ad5a5a52155fe7fe6d1f2058cb88e3afb123"},
+    {file = "django-stubs-4.2.1.tar.gz", hash = "sha256:8c15d5f7b05926805cfb25f2bfbf3509c37792fbd8aec5aedea358b85d8bccd5"},
+    {file = "django_stubs-4.2.1-py3-none-any.whl", hash = "sha256:66477bdba25407623f4079205e58f3c7265a4f0d8f7c9f540a6edc16f8883a5b"},
 ]
 
 [package.dependencies]
 django = "*"
-django-stubs-ext = ">=4.2.0"
-mypy = ">=0.980"
+django-stubs-ext = ">=4.2.1"
+mypy = ">=1.0.0"
 types-pytz = "*"
 types-PyYAML = "*"
 typing-extensions = "*"
 
 [package.extras]
-compatible-mypy = ["mypy (>=1.2.0,<1.3)"]
+compatible-mypy = ["mypy (>=1.3.0,<1.4)"]
 
 [[package]]
 name = "django-stubs-ext"
-version = "4.2.0"
+version = "4.2.1"
 description = "Monkey-patching and extensions for django-stubs"
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "django-stubs-ext-4.2.0.tar.gz", hash = "sha256:7789f0caeca7152fef07ad6b94dec7310a05d0b8dab77f7979e19db0037b5127"},
-    {file = "django_stubs_ext-4.2.0-py3-none-any.whl", hash = "sha256:55b2e3077f883e0131a7596f8ff8b19f8fc3ca325a3318ccacf5331acb2601e4"},
+    {file = "django-stubs-ext-4.2.1.tar.gz", hash = "sha256:2696d6f7d8538341b060cffa9565c72ea797e866687e040b86d29cad8799e5fe"},
+    {file = "django_stubs_ext-4.2.1-py3-none-any.whl", hash = "sha256:4b6b63e49f4ba30d93ec46f87507648c99c9de6911e651ad69db7084fd5b2f4e"},
 ]
 
 [package.dependencies]
@@ -3859,4 +3859,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d354b715644b1cb8228bcb7c22d47f64888ee1ed833f69c68b309e58462610d8"
+content-hash = "36f3d550d9718682d8c5a166037c8f92bcb553a9cb8d65ac9c077b69b5fbd35a"
