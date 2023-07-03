@@ -50,7 +50,7 @@ sentry-sdk = "1.25.0"
 analytics-python = "1.2.9"
 #
 # channels
-channels = {version = "4.0.0", extras = ["daphne"]}
+channels = { version = "4.0.0", extras = ["daphne"] }
 channels_redis = "4.1.0"
 # Implicit dependency
 flatbuffers = "23.5.26"
@@ -117,44 +117,6 @@ flower = "1.2.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-
-[tool.mypy]
-python_version = 3.11
-plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
-ignore_missing_imports = true
-allow_untyped_globals = true
-check_untyped_defs = true
-show_error_codes = true
-follow_imports = "silent"
-strict_equality = true
-no_implicit_optional = true
-warn_incomplete_stub = true
-warn_redundant_casts = true
-warn_unused_configs = true
-warn_unused_ignores = true
-warn_unreachable = true
-warn_return_any = true
-enable_error_code = "ignore-without-code"
-disable_error_code = "annotation-unchecked"
-strict_concatenate = false
-disallow_incomplete_defs = true
-disallow_subclassing_any = true
-disallow_untyped_calls = true
-disallow_untyped_decorators = true
-disallow_untyped_defs = true
-
-[tool."mypy-*.tests.*"]
-check_untyped_defs = false
-disallow_incomplete_defs = false
-disallow_subclassing_any = false
-disallow_untyped_calls = false
-disallow_untyped_decorators = false
-disallow_untyped_defs = false
-warn_return_any = false
-warn_unreachable = false
-
-[tool."mypy-*.migrations.*"]
-ignore_errors = true
 
 [tool.django-stubs]
 django_settings_module = "lego.settings"
