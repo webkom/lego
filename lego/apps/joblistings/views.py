@@ -24,13 +24,13 @@ class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         try:
             obj = queryset.get(id=pk)
-        except Joblisting.DoesNotExist:
+        except (Joblisting.DoesNotExist, ValueError):
             obj = get_object_or_404(queryset, slug=pk)
 
         try:
             self.check_object_permissions(self.request, obj)
         except PermissionError:
-            raise Http404
+            raise Http404 from None
         return obj
 
     def get_serializer_class(self):
