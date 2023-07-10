@@ -37,6 +37,7 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "cover",
             "cover_placeholder",
             "authors",
@@ -92,6 +93,7 @@ class PublicArticleSerializer(TagSerializerMixin, BasisModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "cover",
             "cover_placeholder",
             "authors",

@@ -1,4 +1,7 @@
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 
 from lego.apps.articles.filters import ArticleFilterSet
 from lego.apps.articles.models import Article
@@ -34,3 +37,18 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return DetailedArticleAdminSerializer
 
         return super().get_serializer_class()
+
+    def get_object(self) -> Article:
+        queryset = self.get_queryset()
+        pk = self.kwargs.get("pk")
+
+        try:
+            obj = queryset.get(id=pk)
+        except (TypeError, OverflowError, Article.DoesNotExist, ValueError):
+            get_object_or_404(queryset, slug=pk)
+
+        try:
+            self.check_object_permissions(self.request, obj)
+        except (NotAuthenticated, PermissionDenied) as e:
+            raise Http404 from e
+        return obj

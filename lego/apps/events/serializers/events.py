@@ -57,6 +57,7 @@ class EventPublicSerializer(BasisModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "description",
             "event_type",
             "event_status_type",
@@ -87,6 +88,7 @@ class EventReadSerializer(
         fields = (
             "id",
             "title",
+            "slug",
             "description",
             "cover",
             "cover_placeholder",
@@ -469,6 +471,7 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "description",
             "cover",
             "cover_placeholder",
