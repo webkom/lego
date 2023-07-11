@@ -45,7 +45,7 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         try:
             obj = queryset.get(id=pk)
         except (TypeError, OverflowError, Article.DoesNotExist, ValueError):
-            get_object_or_404(queryset, slug=pk)
+            obj = get_object_or_404(queryset, slug=pk)
 
         try:
             self.check_object_permissions(self.request, obj)
