@@ -1260,24 +1260,39 @@ lint = ["black", "flake8", "isort"]
 test = ["mock", "pytest (>=3.0)", "pytest-cov", "pytest-django", "pytest-runner", "six"]
 
 [[package]]
-name = "elasticsearch"
-version = "7.16.2"
-description = "Python client for Elasticsearch"
+name = "elastic-transport"
+version = "8.4.0"
+description = "Transport classes and utilities shared among Python Elastic client libraries"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
+python-versions = ">=3.6"
 files = [
-    {file = "elasticsearch-7.16.2-py2.py3-none-any.whl", hash = "sha256:c05aa792a52b1e6ad9d226340dc19165c4a491ac48fbd91af51ec839bf953210"},
-    {file = "elasticsearch-7.16.2.tar.gz", hash = "sha256:23ac0afb4398c48990e359ac73ab6963741bd05321345299c62d9d23e209eee2"},
+    {file = "elastic-transport-8.4.0.tar.gz", hash = "sha256:b9ad708ceb7fcdbc6b30a96f886609a109f042c0b9d9f2e44403b3133ba7ff10"},
+    {file = "elastic_transport-8.4.0-py3-none-any.whl", hash = "sha256:19db271ab79c9f70f8c43f8f5b5111408781a6176b54ab2e54d713b6d9ceb815"},
 ]
 
 [package.dependencies]
 certifi = "*"
-urllib3 = ">=1.21.1,<2"
+urllib3 = ">=1.26.2,<2"
+
+[package.extras]
+develop = ["aiohttp", "mock", "pytest", "pytest-asyncio", "pytest-cov", "pytest-httpserver", "pytest-mock", "requests", "trustme"]
+
+[[package]]
+name = "elasticsearch"
+version = "8.8.2"
+description = "Python client for Elasticsearch"
+optional = false
+python-versions = ">=3.6, <4"
+files = [
+    {file = "elasticsearch-8.8.2-py3-none-any.whl", hash = "sha256:bffd6ce4faaacf90e6f617241773b3da8fb94e2e83554f5508e2fab92ca79643"},
+    {file = "elasticsearch-8.8.2.tar.gz", hash = "sha256:bed8cf8fcc6c3be7c254b579de4c29afab021f373c832246f912d37aef3c6bd5"},
+]
+
+[package.dependencies]
+elastic-transport = ">=8,<9"
 
 [package.extras]
 async = ["aiohttp (>=3,<4)"]
-develop = ["black", "coverage", "jinja2", "mock", "pytest", "pytest-cov", "pyyaml", "requests (>=2.0.0,<3.0.0)", "sphinx (<1.7)", "sphinx-rtd-theme"]
-docs = ["sphinx (<1.7)", "sphinx-rtd-theme"]
 requests = ["requests (>=2.4.0,<3.0.0)"]
 
 [[package]]
@@ -3666,4 +3681,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "35abb738a23f7b92774ad502e207ce2eed23eed5cb3aeefd9dd752308159241a"
+content-hash = "c27beb05ef0cda38fa171fbd9e1f8405f382ce5c5e1340b9eaec023a28aa580c"
