@@ -442,8 +442,8 @@ class User(
         self.picture = value
 
     def verify_student(self, feide_groups) -> bool:
-        # if self.is_verified_student():
-        # return True
+        if self.is_verified_student():
+            return True
 
         if self.has_grade_group:
             self.student_verification_status = True
@@ -466,7 +466,6 @@ class User(
         return False
 
     def is_verified_student(self):
-        return False
         return self.student_verification_status
 
     def get_short_name(self):

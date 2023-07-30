@@ -200,27 +200,6 @@ class UserTestCase(BaseTestCase):
         token_email = Registrations.validate_registration_token(registration_token)
         self.assertNotEqual(token_email, "wrongtest1@user.com")
 
-    def test_validate_student_confirmation_token(self):
-        student_confirmation_token = Registrations.generate_student_confirmation_token(
-            "teststudentusername", constants.DATA, True, False
-        )
-        token = Registrations.validate_student_confirmation_token(
-            student_confirmation_token
-        )
-        self.assertEqual(token["student_username"], "teststudentusername")
-        self.assertEqual(token["course"], constants.DATA)
-        self.assertEqual(token["member"], True)
-
-        student_confirmation_token = Registrations.generate_student_confirmation_token(
-            "teststudentusername", constants.DATA, True, False
-        )
-        token = Registrations.validate_student_confirmation_token(
-            student_confirmation_token
-        )
-        self.assertNotEqual(token["student_username"], "wrongtestusername")
-        self.assertNotEqual(token["course"], constants.KOMTEK)
-        self.assertNotEqual(token["member"], False)
-
 
 class MembershipTestCase(BaseTestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]

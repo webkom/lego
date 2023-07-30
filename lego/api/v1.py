@@ -73,10 +73,6 @@ from lego.apps.users.views.password_reset import (
 )
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
-from lego.apps.users.views.student_confirmation import (
-    StudentConfirmationPerformViewSet,
-    StudentConfirmationRequestViewSet,
-)
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
@@ -202,16 +198,6 @@ router.register(
     r"users-registration-request",
     UserRegistrationRequestViewSet,
     basename="user-registration",
-)
-router.register(
-    r"users-student-confirmation-perform",
-    StudentConfirmationPerformViewSet,
-    basename="student-confirmation-perform",
-)
-router.register(
-    r"users-student-confirmation-request",
-    StudentConfirmationRequestViewSet,
-    basename="student-confirmation-request",
 )
 router.register(r"oidc", OIDCViewSet, basename="oidc")
 router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")
