@@ -12,11 +12,18 @@ from lego.utils.test_utils import BaseAPITestCase
 class MockFeideOAUTH:
     _auth_url = "https://auth.mock-feide.no/auth"
 
+    def __init__(self, token="valid_token"):
+        self.token = token
+
     def authorize_redirect(self, request, redirect_url):
         return HttpResponseRedirect(self._auth_url)
 
     def authorize_access_token(self, request):
-        return "valid_token"
+        return _token(self.token)
+
+    def userinfo(self, **kwargs):
+        uid = f"{kwargs.get('token')['access_token']}@ntnu.no"
+        return {"https://n.feide.no/claims/eduPersonPrincipalName": uid}
 
 
 mockFeide = MockFeideOAUTH()
@@ -205,10 +212,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    @mock.patch(
-        "lego.apps.users.views.oidc.oauth.feide.authorize_access_token",
-        return_value=_token(Token.DATA),
-    )
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_data_1st(self, *args):
         response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -220,10 +224,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
             self.user_without_student_confirmation.grade.id, self.grade_data_1.id
         )
 
-    @mock.patch(
-        "lego.apps.users.views.oidc.oauth.feide.authorize_access_token",
-        return_value=_token(Token.KOMTEK),
-    )
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK))
     def test_komtek_1st(self, *args):
         response = self.client.get(_get_validate_url())
 
@@ -235,10 +236,9 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         )
 
     @mock.patch(
-        "lego.apps.users.views.oidc.oauth.feide.authorize_access_token",
-        return_value=_token(Token.DATA_MASTER),
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA_MASTER)
     )
-    def test_data_4st(self, *args):
+    def test_data_4th(self, *args):
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -251,8 +251,22 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         )
 
     @mock.patch(
-        "lego.apps.users.views.oidc.oauth.feide.authorize_access_token",
-        return_value=_token(Token.MULTI_OTHER),
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK_MASTER)
+    )
+    def test_komtek_4th(self, *args):
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(
+            json.get("studyProgrammes")[0], komtek_master_resp[0]["displayName"]
+        )
+        self.assertEqual(
+            self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
+        )
+
+    @mock.patch(
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.MULTI_OTHER)
     )
     def test_with_other_study_informatics(self, *args):
         response = self.client.get(_get_validate_url())
@@ -265,10 +279,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(len(json.get("studyProgrammes")), len(multi_other_resp))
         self.assertIsNone(self.user_without_student_confirmation.grade)
 
-    @mock.patch(
-        "lego.apps.users.views.oidc.oauth.feide.authorize_access_token",
-        return_value=_token(Token.DATA),
-    )
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_valid_study_existing_grade(self, *args):
         """
         You should keep your grade when re-authenticating
@@ -286,10 +297,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
             self.user_with_student_confirmation.grade.id, self.grade_data_4.id
         )
 
-    @mock.patch(
-        "lego.apps.users.views.oidc.oauth.feide.authorize_access_token",
-        return_value=_token(Token.INDOK),
-    )
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.INDOK))
     def test_switch_to_indok(self, *args):
         """
         You should keep your validation status and grade when switching to indok
@@ -306,3 +314,28 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
             self.user_with_student_confirmation.grade.id, self.grade_data_4.id
         )
         self.assertTrue(self.user_with_student_confirmation.is_verified_student())
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_multiple_users_one_feide(self, *args):
+        """
+        It should only be allowed to auth a single user with a feide account
+        """
+        self.client.force_authenticate(self.user_with_student_confirmation)
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(
+            self.user_with_student_confirmation.student_username, f"{Token.DATA}"
+        )
+
+        self.client.force_authenticate(self.user_without_student_confirmation)
+        response = self.client.get(_get_validate_url())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        json = response.json()
+        self.assertEqual(json.get("status"), "error")
+        user_without_student_confirmation = User.objects.get(username="test2")
+        self.assertNotEqual(
+            self.user_with_student_confirmation.student_username,
+            user_without_student_confirmation.student_username,
+        )

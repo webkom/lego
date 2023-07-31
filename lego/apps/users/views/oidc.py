@@ -1,5 +1,8 @@
+import re
+
 from django.conf import settings
 from django.core.cache import caches
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -15,6 +18,7 @@ from structlog import get_logger
 
 from lego.apps.users.models import User
 from lego.apps.users.serializers.student_confirmation import FeideAuthorizeSerializer
+from lego.apps.users.validators import STUDENT_USERNAME_REGEX
 
 log = get_logger()
 
@@ -37,6 +41,16 @@ def get_feide_groups(bearer: str) -> Response:
     )
 
 
+def get_uid_from_principalName(principal_name: str) -> str | None:
+    regex = rf"(?P<uid>{STUDENT_USERNAME_REGEX})@ntnu.no"
+
+    match = re.match(regex, principal_name)
+    if match is not None:
+        return match.group("uid")
+
+    return None
+
+
 class OIDCViewSet(viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)
 
@@ -53,9 +67,36 @@ class OIDCViewSet(viewsets.GenericViewSet):
     def validate(self, request: Request) -> HttpResponse:
         programme_names = []
 
+        user: User = request.user  # type: ignore[assignment]
+
         try:
             token = oauth.feide.authorize_access_token(request)
-            validation_status = "success"
+            userinfo = oauth.feide.userinfo(token=token)
+            principal_name = userinfo[
+                "https://n.feide.no/claims/eduPersonPrincipalName"
+            ]
+            uid = get_uid_from_principalName(principal_name)
+            if uid is None:
+                sentry_sdk.capture_message(
+                    "Could not extract student username from principal_name",
+                    "fatal",
+                    principle_name=principal_name,
+                )
+                validation_status = "error"
+            else:
+                try:
+                    validation_status = "success"
+                    with transaction.atomic():
+                        user.student_username = uid
+                        user.save()
+                except IntegrityError:
+                    return JsonResponse(
+                        {
+                            "status": "error",
+                            "detail": f"The feide account {uid} is already linked to another user",
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
         except MismatchingStateError as e:
             sentry_sdk.capture_message("Failed while validating access token", "fatal")
             sentry_sdk.capture_exception(error=e)
@@ -63,10 +104,9 @@ class OIDCViewSet(viewsets.GenericViewSet):
                 {
                     "status": "error",
                     "detail": "Error when validating OAUTH acccess token",
-                }
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
-
-        user: User = request.user  # type: ignore[assignment]
 
         try:
             groups_res = get_feide_groups(token["access_token"])
