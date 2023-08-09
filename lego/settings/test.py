@@ -46,7 +46,12 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"redis://{CACHE}:6379/0",
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-    }
+    },
+    "oauth": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{CACHE}:6379/9",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+    },
 }
 
 ELASTICSEARCH = "localhost"

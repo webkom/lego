@@ -29,3 +29,7 @@ class StudentConfirmationSerializer(serializers.Serializer):
         if not verify_captcha(captcha_response):
             raise exceptions.ValidationError("invalid_captcha")
         return captcha_response
+
+
+class FeideAuthorizeSerializer(serializers.Serializer):
+    url = serializers.URLField()

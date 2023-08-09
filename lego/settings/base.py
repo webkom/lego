@@ -189,6 +189,14 @@ SMTP_SSL_ENABLE = os.environ.get("SMTP_SSL_ENABLE") or False
 SMTP_SSL_CERTIFICATE = os.environ.get("SMTP_SSL_CERTIFICATE")
 SMTP_SSL_KEY = os.environ.get("SMTP_SSL_KEY")
 
+FEIDE_OIDC_CLIENT_ID = os.environ.get("FEIDE_OIDC_CLIENT_ID")
+FEIDE_OIDC_CLIENT_SECRET = os.environ.get("FEIDE_OIDC_CLIENT_SECRET")
+FEIDE_OIDC_CONFIGURATION_ENDPOINT = os.environ.get(
+    "FEIDE_OIDC_CONFIGURATION_ENDPOINT",
+    "https://auth.dataporten.no/.well-known/openid-configuration",
+)
+FEIDE_GROUPS_ENDPOINT = "https://groups-api.dataporten.no/groups/me/groups"
+
 if os.environ.get("GSUITE_CREDENTIALS"):
     GSUITE_CREDENTIALS = json.loads(
         base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")), strict=False  # type: ignore

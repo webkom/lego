@@ -10,8 +10,10 @@ username_validator = validators.RegexValidator(
     "invalid",
 )
 
+STUDENT_USERNAME_REGEX = r"[a-zA-Z0-9_\.]+"
+
 student_username_validator = validators.RegexValidator(
-    r"^[a-zA-Z0-9_\.]+$",
+    rf"^{STUDENT_USERNAME_REGEX}$",
     "Enter a valid username. This value may contain only letters, numbers, _ and . "
     "characters.",
     "invalid",

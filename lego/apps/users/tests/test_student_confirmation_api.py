@@ -1,103 +1,183 @@
+from enum import Enum
 from unittest import mock
 
-from django.urls import reverse
+from django.http import HttpResponseRedirect
 from rest_framework import status
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.registrations import Registrations
 from lego.utils.test_utils import BaseAPITestCase
 
 
-def _get_list_request_url():
-    return reverse("api:v1:student-confirmation-request-list")
+class MockFeideOAUTH:
+    _auth_url = "https://auth.mock-feide.no/auth"
+
+    def __init__(self, token="valid_token"):
+        self.token = token
+
+    def authorize_redirect(self, request, redirect_url):
+        return HttpResponseRedirect(self._auth_url)
+
+    def authorize_access_token(self, request):
+        return _token(self.token)
+
+    def userinfo(self, **kwargs):
+        uid = f"{kwargs.get('token')['access_token']}@ntnu.no"
+        return {"https://n.feide.no/claims/eduPersonPrincipalName": uid}
 
 
-def _get_list_perform_url():
-    return reverse("api:v1:student-confirmation-perform-list")
+mockFeide = MockFeideOAUTH()
 
 
-def _get_student_confirmation_token_request_url(token):
-    return f"{_get_list_request_url()}?token={token}"
+class Token(Enum):
+    DATA = "data"
+    KOMTEK = "komtek"
+    DATA_MASTER = "data_midt"
+    KOMTEK_MASTER = "komtek_master"
+    MULTI_OTHER = "others"
+    INDOK = "indok"
 
 
-def _get_student_confirmation_token_perform_url(token):
-    return f"{_get_list_perform_url()}?token={token}"
+def _token(token):
+    return {"access_token": token}
 
 
-class RetrieveStudentConfirmationAPITestCase(BaseAPITestCase):
+data_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:MTDT",
+        "type": "fc:fs:prg",
+        "displayName": "Computer Science",
+        "membership": {
+            "basic": "member",
+            "active": True,
+            "displayName": "Student",
+            "fsroles": ["STUDENT"],
+        },
+        "parent": "fc:org:ntnu.no",
+        "url": "http://www.ntnu.no/studier/mtdt",
+    }
+]
+
+komtek_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:MTKOM",
+        "type": "fc:fs:prg",
+        "displayName": "Communication Technology",
+        "membership": {
+            "basic": "member",
+            "active": True,
+            "displayName": "Student",
+            "fsroles": ["STUDENT"],
+        },
+        "parent": "fc:org:ntnu.no",
+        "url": "http://www.ntnu.no/studier/mtkom",
+    }
+]
+
+data_master_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:MIDT",
+        "type": "fc:fs:prg",
+        "displayName": "Computer Science",
+    }
+]
+
+komtek_master_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:mstcnns",
+        "type": "fc:fs:prg",
+        "displayName": "Digital Infrastructure and Cyber Security",
+    }
+]
+
+multi_other_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:msit",
+        "type": "fc:fs:prg",
+        "displayName": "Informatikk",
+    },
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:bit",
+        "type": "fc:fs:prg",
+        "displayName": "Informatikk (Bachelor)",
+    },
+]
+
+indok_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:mtiot",
+        "type": "fc:fs:prg",
+        "displayName": "Industriell økonomi og teknologiledelse",
+    }
+]
+
+
+def mocked_feide_get(token):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+        def raise_for_status(self):
+            return None
+
+    if token == Token.DATA:
+        return MockResponse(data_resp, 200)
+    elif token == Token.KOMTEK:
+        return MockResponse(komtek_resp, 200)
+    elif token == Token.DATA_MASTER:
+        return MockResponse(data_master_resp, 200)
+    elif token == Token.KOMTEK_MASTER:
+        return MockResponse(komtek_master_resp, 200)
+    elif token == Token.MULTI_OTHER:
+        return MockResponse(multi_other_resp, 200)
+    elif token == Token.INDOK:
+        return MockResponse(indok_resp, 200)
+
+
+def _get_oidc_url():
+    return "/api/v1/oidc/"
+
+
+def _get_oidc_authorize_url():
+    return f"{_get_oidc_url()}authorize/"
+
+
+def _get_oidc_validate_url(code, state):
+    return f"{_get_oidc_url()}validate/?code={code}&state={state}"
+
+
+def _get_validate_url():
+    return _get_oidc_validate_url("code", "state")
+
+
+@mock.patch("lego.apps.users.views.oidc.oauth.feide", mockFeide)
+class AuthorizeOIDCAPITestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     def setUp(self):
         self.user_with_student_confirmation = User.objects.get(username="test1")
         self.user_without_student_confirmation = User.objects.get(username="test2")
 
-    def test_with_unauthenticated_user(self):
-        response = self.client.get(_get_list_request_url())
+    def test_with_unauthenticated_user(self, *args):
+        response = self.client.get(_get_oidc_authorize_url())
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_without_token(self):
+    def test_with_authenticated_user(self, *args):
         AbakusGroup.objects.get(name="Users").add_user(
             self.user_without_student_confirmation
         )
         self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.get(_get_list_request_url())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_with_empty_token(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.get(_get_student_confirmation_token_request_url(""))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_with_invalid_token(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.get(
-            _get_student_confirmation_token_request_url("InvalidToken")
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_with_valid_token(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.get(
-            _get_student_confirmation_token_request_url(
-                Registrations.generate_student_confirmation_token(
-                    "teststudentusername", constants.DATA, True, False
-                )
-            )
-        )
+        response = self.client.get(_get_oidc_authorize_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json().get("studentUsername"), "teststudentusername")
-        self.assertEqual(response.json().get("course"), constants.DATA)
-        self.assertEqual(response.json().get("member"), True)
-
-    def test_with_valid_token_and_capitalized_student_username(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.get(
-            _get_student_confirmation_token_request_url(
-                Registrations.generate_student_confirmation_token(
-                    "TestStudentUsername", constants.DATA, True, False
-                )
-            )
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json().get("studentUsername"), "teststudentusername")
-        self.assertEqual(response.json().get("course"), constants.DATA)
-        self.assertEqual(response.json().get("member"), True)
+        self.assertEqual(response.json().get("url"), mockFeide._auth_url)
 
 
-class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
+@mock.patch("lego.apps.users.views.oidc.get_feide_groups", side_effect=mocked_feide_get)
+class ValidateOIDCAPITestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
     _test_student_confirmation_data = {
@@ -108,359 +188,154 @@ class CreateStudentConfirmationAPITestCase(BaseAPITestCase):
     }
 
     def setUp(self):
-        grade = AbakusGroup.objects.create(
+        self.grade_data_1 = AbakusGroup.objects.create(
             name=constants.FIRST_GRADE_DATA, type=constants.GROUP_GRADE
         )
+        self.grade_data_4 = AbakusGroup.objects.create(
+            name=constants.FOURTH_GRADE_DATA, type=constants.GROUP_GRADE
+        )
+        self.grade_komtek_1 = AbakusGroup.objects.create(
+            name=constants.FIRST_GRADE_KOMTEK, type=constants.GROUP_GRADE
+        )
+        self.grade_komtek_4 = AbakusGroup.objects.create(
+            name=constants.FOURTH_GRADE_KOMTEK, type=constants.GROUP_GRADE
+        )
+
         self.user_with_student_confirmation = User.objects.get(username="test1")
-        grade.add_user(self.user_with_student_confirmation)
+        self.grade_data_4.add_user(self.user_with_student_confirmation)
         self.user_without_student_confirmation = User.objects.get(username="test2")
 
-    def test_with_unauthenticated_user(self):
-        response = self.client.post(_get_list_request_url())
+        self.client.force_authenticate(self.user_without_student_confirmation)
+
+    def test_with_unauthenticated_user(self, *args):
+        self.client.force_authenticate(None)
+        response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_without_data(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_data_1st(self, *args):
+        response = self.client.get(_get_validate_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(json.get("studyProgrammes")[0], data_resp[0]["displayName"])
+        self.assertEqual(
+            self.user_without_student_confirmation.grade.id, self.grade_data_1.id
         )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(_get_list_request_url())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK))
+    def test_komtek_1st(self, *args):
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(json.get("studyProgrammes")[0], komtek_resp[0]["displayName"])
+        self.assertEqual(
+            self.user_without_student_confirmation.grade.id, self.grade_komtek_1.id
+        )
 
     @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA_MASTER)
     )
-    def test_with_existing_data(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
+    def test_data_4th(self, *args):
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(
+            json.get("studyProgrammes")[0], data_master_resp[0]["displayName"]
         )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(
-            _get_list_request_url(),
-            {
-                "student_username": "test1student",
-                "course": constants.DATA,
-                "member": True,
-                "captcha_response": "testCaptcha",
-            },
+        self.assertEqual(
+            self.user_without_student_confirmation.grade.id, self.grade_data_4.id
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK_MASTER)
     )
-    def test_with_invalid_data_keys(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
+    def test_komtek_4th(self, *args):
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(
+            json.get("studyProgrammes")[0], komtek_master_resp[0]["displayName"]
         )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(
-            _get_list_request_url(),
-            {
-                "wrong_username": "newteststudentusername",
-                "wrong_course": constants.DATA,
-                "wrong_member": True,
-                "wrong_captcha_response": "testCaptcha",
-            },
+        self.assertEqual(
+            self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.MULTI_OTHER)
     )
-    def test_with_invalid_student_username(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        invalid_data = self._test_student_confirmation_data.copy()
-        invalid_data["student_username"] = "test_u$er@"
-        response = self.client.post(_get_list_request_url(), invalid_data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_with_other_study_informatics(self, *args):
+        response = self.client.get(_get_validate_url())
 
-    @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
-    )
-    def test_with_student_username_with_period(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
+        json = response.json()
+        self.assertEqual(json.get("status"), "unauthorized")
+        self.assertEqual(
+            json.get("studyProgrammes")[0], multi_other_resp[0]["displayName"]
         )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        data = self._test_student_confirmation_data.copy()
-        data["student_username"] = "test.user"
-        response = self.client.post(_get_list_request_url(), data)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(json.get("studyProgrammes")), len(multi_other_resp))
+        self.assertIsNone(self.user_without_student_confirmation.grade)
 
-    @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
-    )
-    def test_with_invalid_course(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        invalid_data = self._test_student_confirmation_data.copy()
-        invalid_data["course"] = "test"
-        response = self.client.post(_get_list_request_url(), invalid_data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
-    )
-    def test_with_invalid_member_boolean(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        invalid_data = self._test_student_confirmation_data.copy()
-        invalid_data["member"] = "test"
-        response = self.client.post(_get_list_request_url(), invalid_data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
-    )
-    def test_with_already_confirmed_student_username(self, mock_verify_captcha):
-        AbakusGroup.objects.get(name="Abakus").add_user(
-            self.user_with_student_confirmation
-        )
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_valid_study_existing_grade(self, *args):
+        """
+        You should keep your grade when re-authenticating
+        """
         self.client.force_authenticate(self.user_with_student_confirmation)
-        response = self.client.post(
-            _get_list_request_url(), self._test_student_confirmation_data
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.get(_get_validate_url())
 
-    @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=False,
-    )
-    def test_with_invalid_captcha(self, *args):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(
-            _get_list_request_url(), self._test_student_confirmation_data
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        json = response.json()
+        self.assertEqual(json.get("studyProgrammes")[0], data_resp[0]["displayName"])
 
-    @mock.patch(
-        "lego.apps.users.serializers.student_confirmation.verify_captcha",
-        return_value=True,
-    )
-    def test_with_valid_captcha(self, mock_verify_captcha):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
+        self.assertNotEqual(
+            self.user_with_student_confirmation.grade.id, self.grade_data_1.id
         )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(
-            _get_list_request_url(), self._test_student_confirmation_data
-        )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-
-class UpdateStudentConfirmationAPITestCase(BaseAPITestCase):
-    fixtures = ["initial_files.yaml", "initial_abakus_groups.yaml", "test_users.yaml"]
-
-    def setUp(self):
-        grade = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
-        self.user_with_student_confirmation = User.objects.get(username="test1")
-        grade.add_user(self.user_with_student_confirmation)
-        self.user_with_student_confirmation = User.objects.get(username="test1")
-        self.user_without_student_confirmation = User.objects.get(username="test2")
-        self.user_with_grade_group_but_no_student_confirmation = User.objects.get(
-            username="pleb"
+        self.assertEqual(
+            self.user_with_student_confirmation.grade.id, self.grade_data_4.id
         )
 
-    def create_token(
-        self,
-        student_username="newstudentusername",
-        course=constants.DATA,
-        member=True,
-        is_two_years=False,
-    ):
-        return Registrations.generate_student_confirmation_token(
-            student_username, course, member, is_two_years
-        )
-
-    def test_without_authenticated_user(self):
-        response = self.client.post(
-            _get_student_confirmation_token_request_url("randomToken")
-        )
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_without_token(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(_get_list_perform_url())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_with_empty_token(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(_get_list_perform_url())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_with_invalid_token(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        response = self.client.post(
-            _get_student_confirmation_token_perform_url("InvalidToken")
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_with_already_confirmed_student_username(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_with_student_confirmation
-        )
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.INDOK))
+    def test_switch_to_indok(self, *args):
+        """
+        You should keep your validation status and grade when switching to indok
+        """
         self.client.force_authenticate(self.user_with_student_confirmation)
-        token = self.create_token()
-        response = self.client.post(_get_student_confirmation_token_perform_url(token))
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("studyProgrammes")[0], indok_resp[0]["displayName"])
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(json.get("grade"), self.grade_data_4.name)
+
+        self.assertEqual(
+            self.user_with_student_confirmation.grade.id, self.grade_data_4.id
+        )
+        self.assertTrue(self.user_with_student_confirmation.is_verified_student())
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_multiple_users_one_feide(self, *args):
+        """
+        It should only be allowed to auth a single user with a feide account
+        """
+        self.client.force_authenticate(self.user_with_student_confirmation)
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(
+            self.user_with_student_confirmation.student_username, f"{Token.DATA}"
+        )
+
+        self.client.force_authenticate(self.user_without_student_confirmation)
+        response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_without_abakus_member_checked_and_komtek_course(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
+        json = response.json()
+        self.assertEqual(json.get("status"), "error")
+        user_without_student_confirmation = User.objects.get(username="test2")
+        self.assertNotEqual(
+            self.user_with_student_confirmation.student_username,
+            user_without_student_confirmation.student_username,
         )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token(course=constants.KOMTEK, member=False)
-        response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = self.user_without_student_confirmation
-        user_groups = user.all_groups
-        self.assertEqual(user.student_username, "newstudentusername")
-        self.assertEqual(user.is_staff, False)
-
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
-        self.assertEqual(course_group in user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
-        self.assertEqual(grade_group in user_groups, True)
-
-        # Test member group
-        self.assertEqual(user.is_abakus_member, False)
-        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-        self.assertEqual(member_group in user_groups, False)
-
-    def test_with_already_in_grade_group_but_not_abakus(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_with_grade_group_but_no_student_confirmation
-        )
-        AbakusGroup.objects.get(name="2. klasse Kommunikasjonsteknologi").add_user(
-            self.user_with_grade_group_but_no_student_confirmation
-        )
-        self.client.force_authenticate(
-            self.user_with_grade_group_but_no_student_confirmation
-        )
-        token = self.create_token(course=constants.KOMTEK, member=True)
-        response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = self.user_with_grade_group_but_no_student_confirmation
-        user_groups = user.all_groups
-        self.assertEqual(user.student_username, "newstudentusername")
-        self.assertEqual(user.is_staff, False)
-
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
-        self.assertEqual(course_group in user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_KOMTEK)
-        self.assertEqual(grade_group in user_groups, False)
-        grade_group = AbakusGroup.objects.get(name="2. klasse Kommunikasjonsteknologi")
-        self.assertEqual(grade_group in user_groups, True)
-
-        # Test member group
-        self.assertEqual(user.is_abakus_member, True)
-        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-        self.assertEqual(member_group in user_groups, True)
-
-    def test_with_two_year_masters_checked_komtek(self):
-        """Users should be able to check that they are starting on a two year masters programme and
-        be enrolled into fourth grade"""
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token(
-            course=constants.KOMTEK, member=False, is_two_years=True
-        )
-        response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = self.user_without_student_confirmation
-        user_groups = user.all_groups
-
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.KOMTEK_LONG)
-        self.assertEqual(course_group in user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FOURTH_GRADE_KOMTEK)
-        self.assertEqual(grade_group in user_groups, True)
-
-        # Test member group
-        self.assertEqual(user.is_abakus_member, False)
-        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-        self.assertEqual(member_group in user_groups, False)
-
-    def test_with_two_year_masters_checked_data(self):
-        """Users should be able to check that they are starting on a two year masters programme and
-        be enrolled into fourth grade"""
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token(
-            course=constants.DATA, member=False, is_two_years=True
-        )
-        response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = self.user_without_student_confirmation
-        user_groups = user.all_groups
-
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
-        self.assertEqual(course_group in user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FOURTH_GRADE_DATA)
-        self.assertEqual(grade_group in user_groups, True)
-
-    def test_with_abakus_member_checked(self):
-        AbakusGroup.objects.get(name="Users").add_user(
-            self.user_without_student_confirmation
-        )
-        self.client.force_authenticate(self.user_without_student_confirmation)
-        token = self.create_token()
-        response = self.client.post(_get_student_confirmation_token_perform_url(token))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        user = self.user_without_student_confirmation
-        user_groups = user.all_groups
-        self.assertEqual(user.is_staff, False)
-
-        # Test user data
-        self.assertEqual(user.student_username, "newstudentusername")
-        self.assertEqual(user.is_staff, False)
-
-        # Test course groups
-        course_group = AbakusGroup.objects.get(name=constants.DATA_LONG)
-        self.assertEqual(course_group in user_groups, True)
-        grade_group = AbakusGroup.objects.get(name=constants.FIRST_GRADE_DATA)
-        self.assertEqual(grade_group in user_groups, True)
-
-        # Test member group
-        self.assertEqual(user.is_abakus_member, True)
-        member_group = AbakusGroup.objects.get(name=constants.MEMBER_GROUP)
-        self.assertEqual(member_group in user_groups, True)
