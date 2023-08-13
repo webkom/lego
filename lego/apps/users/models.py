@@ -451,7 +451,7 @@ class User(
             return True
 
         for group in feide_groups:
-            if group["id"] in constants.FSGroup.values():
+            if group["id"].lower() in constants.FSGroup.values():
                 grade_group = AbakusGroup.objects.get(
                     name=constants.AbakusGradeFSMapping[constants.FSGroup(group["id"])]
                 )

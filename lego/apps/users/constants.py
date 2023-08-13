@@ -80,9 +80,9 @@ class FSGroup(Enum):
     def values(cls) -> list[str]:
         return [e.value for e in cls]
 
-    MTDT = "fc:fs:fs:prg:ntnu.no:MTDT"
-    MTKOM = "fc:fs:fs:prg:ntnu.no:MTKOM"
-    MIDT = "fc:fs:fs:prg:ntnu.no:MIDT"
+    MTDT = "fc:fs:fs:prg:ntnu.no:mtdt"
+    MTKOM = "fc:fs:fs:prg:ntnu.no:mtkom"
+    MIDT = "fc:fs:fs:prg:ntnu.no:midt"
     MSTCNNS = "fc:fs:fs:prg:ntnu.no:mstcnns"
 
 
