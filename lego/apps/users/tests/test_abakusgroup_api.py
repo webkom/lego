@@ -62,7 +62,7 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
 
     def test_without_auth(self):
         response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_with_auth(self):
         self.successful_list(self.user)
@@ -94,7 +94,7 @@ class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):
 
     def test_without_auth(self):
         response = self.client.get(_get_detail_url(1))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_with_permission(self):
         self.successful_retrieve(self.with_permission, self.test_group.pk)

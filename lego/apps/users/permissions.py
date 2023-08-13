@@ -36,6 +36,7 @@ class UserPermissionHandler(PermissionHandler):
 
 class AbakusGroupPermissionHandler(PermissionHandler):
     permission_map = {LIST: [], VIEW: []}  # type: ignore
+    authentication_map = {LIST: False, VIEW: False}
 
     force_object_permission_check = True
     default_keyword_permission = "/sudo/admin/groups/{perm}/"
@@ -51,6 +52,7 @@ class AbakusGroupPermissionHandler(PermissionHandler):
     ):
         if perm == "delete":
             return False
+
         has_perm = super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
