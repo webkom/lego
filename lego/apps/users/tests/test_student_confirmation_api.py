@@ -44,7 +44,7 @@ def _token(token):
 
 data_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:MTDT",
+        "id": "fc:fs:fs:prg:ntnu.no:mtdt",
         "type": "fc:fs:prg",
         "displayName": "Computer Science",
         "membership": {
@@ -60,7 +60,7 @@ data_resp = [
 
 komtek_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:MTKOM",
+        "id": "fc:fs:fs:prg:ntnu.no:mtkom",
         "type": "fc:fs:prg",
         "displayName": "Communication Technology",
         "membership": {
@@ -76,7 +76,7 @@ komtek_resp = [
 
 data_master_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:MIDT",
+        "id": "fc:fs:fs:prg:ntnu.no:midt",
         "type": "fc:fs:prg",
         "displayName": "Computer Science",
     }
