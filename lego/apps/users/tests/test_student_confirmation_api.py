@@ -44,7 +44,7 @@ def _token(token):
 
 data_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:mtdt",
+        "id": "fc:fs:fs:prg:ntnu.no:MTDT",
         "type": "fc:fs:prg",
         "displayName": "Computer Science",
         "membership": {
@@ -60,7 +60,7 @@ data_resp = [
 
 komtek_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:mtkom",
+        "id": "fc:fs:fs:prg:ntnu.no:MTKOM",
         "type": "fc:fs:prg",
         "displayName": "Communication Technology",
         "membership": {
@@ -76,7 +76,7 @@ komtek_resp = [
 
 data_master_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:midt",
+        "id": "fc:fs:fs:prg:ntnu.no:MIDT",
         "type": "fc:fs:prg",
         "displayName": "Computer Science",
     }
@@ -84,7 +84,7 @@ data_master_resp = [
 
 komtek_master_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:mstcnns",
+        "id": "fc:fs:fs:prg:ntnu.no:MSTCNNS",
         "type": "fc:fs:prg",
         "displayName": "Digital Infrastructure and Cyber Security",
     }
@@ -92,12 +92,12 @@ komtek_master_resp = [
 
 multi_other_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:msit",
+        "id": "fc:fs:fs:prg:ntnu.no:MSIT",
         "type": "fc:fs:prg",
         "displayName": "Informatikk",
     },
     {
-        "id": "fc:fs:fs:prg:ntnu.no:bit",
+        "id": "fc:fs:fs:prg:ntnu.no:BIT",
         "type": "fc:fs:prg",
         "displayName": "Informatikk (Bachelor)",
     },
@@ -105,7 +105,7 @@ multi_other_resp = [
 
 indok_resp = [
     {
-        "id": "fc:fs:fs:prg:ntnu.no:mtiot",
+        "id": "fc:fs:fs:prg:ntnu.no:MTIOT",
         "type": "fc:fs:prg",
         "displayName": "Industriell økonomi og teknologiledelse",
     }
