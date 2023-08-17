@@ -71,7 +71,7 @@ authlib = "^1.2.1"
 
 [tool.poetry.group.dev.dependencies]
 django-debug-toolbar = "4.1.0"
-tox = "4.5.2"
+tox = "4.9.0"
 tblib = "^1.7.0"
 
 [tool.poetry.group.coverage.dependencies]
