@@ -34,6 +34,7 @@ class Token(Enum):
     KOMTEK = "komtek"
     DATA_MASTER = "data_midt"
     KOMTEK_MASTER = "komtek_master"
+    SECCLO_MASTER = "secclo_master"
     MULTI_OTHER = "others"
     INDOK = "indok"
 
@@ -90,6 +91,14 @@ komtek_master_resp = [
     }
 ]
 
+secclo_master_resp = [
+    {
+        "id": "fc:fs:fs:prg:ntnu.no:MSSECCLO",
+        "type": "fc:fs:prg",
+        "displayName": "Security and Cloud Computing",
+    }
+]
+
 multi_other_resp = [
     {
         "id": "fc:fs:fs:prg:ntnu.no:MSIT",
@@ -132,6 +141,8 @@ def mocked_feide_get(token):
         return MockResponse(data_master_resp, 200)
     elif token == Token.KOMTEK_MASTER:
         return MockResponse(komtek_master_resp, 200)
+    elif token == Token.SECCLO_MASTER:
+        return MockResponse(secclo_master_resp, 200)
     elif token == Token.MULTI_OTHER:
         return MockResponse(multi_other_resp, 200)
     elif token == Token.INDOK:
@@ -260,6 +271,21 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(json.get("status"), "success")
         self.assertEqual(
             json.get("studyProgrammes")[0], komtek_master_resp[0]["displayName"]
+        )
+        self.assertEqual(
+            self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
+        )
+
+    @mock.patch(
+        "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.SECCLO_MASTER)
+    )
+    def test_secclo_master(self, *args):
+        response = self.client.get(_get_validate_url())
+
+        json = response.json()
+        self.assertEqual(json.get("status"), "success")
+        self.assertEqual(
+            json.get("studyProgrammes")[0], secclo_master_resp[0]["displayName"]
         )
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
