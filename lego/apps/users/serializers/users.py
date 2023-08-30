@@ -52,6 +52,7 @@ class DetailedUserSerializer(serializers.ModelSerializer):
             "past_memberships",
             "permissions_per_group",
             "github_username",
+            "linkedin_id",
         )
 
 
@@ -76,6 +77,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "profile_picture_placeholder",
             "internal_email_address",
             "github_username",
+            "linkedin_id",
         )
         read_only_fields = ("username",)
 
@@ -285,6 +287,7 @@ class MeSerializer(serializers.ModelSerializer):
             "permissions_per_group",
             "photo_consents",
             "github_username",
+            "linkedin_id",
         )
 
 
