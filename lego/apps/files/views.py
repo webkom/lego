@@ -6,12 +6,15 @@ from rest_framework import (
     status,
     viewsets,
 )
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
+from lego.apps.events.models import Event
 from lego.apps.files.exceptions import UnknownFileType
+from lego.apps.permissions.constants import EDIT
 
 from .models import File
-from .serializers import FileUploadSerializer
+from .serializers import FileSaveForUseSerializer, FileUploadSerializer
 from .utils import prepare_file_upload
 from .validators import KEY_REGEX_RAW
 
@@ -45,6 +48,22 @@ class FileViewSet(viewsets.GenericViewSet):
             {"url": url, "file_key": file_key, "file_token": token, "fields": fields},
             status=status.HTTP_201_CREATED,
         )
+
+    @decorators.action(
+        detail=True,
+        methods=["PATCH"],
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def imagegallery(self, request, *args, **kwargs):
+        if request.user.has_perm(EDIT, Event) is False:
+            raise PermissionDenied()
+        file = self.get_object()
+        serializer = FileSaveForUseSerializer(file, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @decorators.action(
         detail=True,

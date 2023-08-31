@@ -24,6 +24,7 @@ class File(TimeStampModel):
     state = models.CharField(max_length=24, choices=FILE_STATES, default=PENDING_UPLOAD)
     file_type = models.CharField(max_length=24, choices=FILE_TYPES)
     token = models.CharField(max_length=32)
+    save_for_use = models.BooleanField(default=False, null=False)
     user = models.ForeignKey(
         "users.User",
         related_name="uploaded_files",

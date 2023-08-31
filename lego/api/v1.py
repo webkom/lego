@@ -127,7 +127,7 @@ router.register(
 )
 router.register(r"feed-personal", PersonalFeedViewSet, basename="feed-personal")
 router.register(r"feed-user/(?P<user_pk>\d+)", UserFeedViewSet, basename="feed-user")
-router.register(r"files", FileViewSet)
+router.register(r"files", FileViewSet, basename="files")
 router.register(r"followers-company", FollowCompanyViewSet)
 router.register(r"followers-event", FollowEventViewSet)
 router.register(r"followers-user", FollowUserViewSet)

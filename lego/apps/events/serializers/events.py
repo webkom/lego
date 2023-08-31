@@ -31,7 +31,7 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
 )
-from lego.apps.files.fields import ImageField
+from lego.apps.files.fields import File, ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.fields import AbakusGroupField
@@ -194,6 +194,27 @@ class EventForSurveySerializer(EventReadSerializer):
 
     def get_attended_count(self, event):
         return event.registrations.filter(presence=PRESENCE_CHOICES.PRESENT).count()
+
+
+class ImageGallerySerializer(BasisModelSerializer):
+    cover = ImageField(source="key", required=True, options={"height": 500})
+    cover_placeholder = ImageField(
+        source="key", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
+
+    class Meta:
+        model = File
+        fields = (
+            "key",
+            "file_type",
+            "state",
+            "public",
+            "save_for_use",
+            "cover",
+            "token",
+            "cover_placeholder",
+        )
+        read_only = True
 
 
 class EventUserRegSerializer(EventReadSerializer):

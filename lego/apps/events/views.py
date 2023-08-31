@@ -43,6 +43,7 @@ from lego.apps.events.serializers.events import (
     EventReadSerializer,
     EventReadUserDetailedSerializer,
     EventUserRegSerializer,
+    ImageGallerySerializer,
     populate_event_registration_users_with_grade,
 )
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
@@ -66,6 +67,8 @@ from lego.apps.events.tasks import (
     save_and_notify_payment,
 )
 from lego.apps.events.websockets import notify_event_registration
+from lego.apps.files.constants import IMAGE
+from lego.apps.files.models import File
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT, VIEW
@@ -341,6 +344,21 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             registrations__status=constants.SUCCESS_REGISTER,
             registrations__user=request.user,
             start_time__gt=timezone.now(),
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @decorators.action(
+        detail=False,
+        serializer_class=ImageGallerySerializer,
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def cover_image_gallery(self, request):
+        if request.user.has_perm(EDIT, Event) is False:
+            raise PermissionDenied()
+        queryset = File.objects.filter(
+            file_type=IMAGE,
+            save_for_use=True,
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

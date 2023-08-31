@@ -6,6 +6,7 @@
     token: token
     user: 1
     public: true
+    save_for_use: false
 
 - pk: abakus1.png
   model: files.File
@@ -15,6 +16,7 @@
     token: token
     user: 1
     public: true
+    save_for_use: false
 
 - pk: abakus2.png
   model: files.File
@@ -24,15 +26,17 @@
     token: token
     user: 1
     public: true
+    save_for_use: false
 
 - pk: default_male_avatar.png
   model: files.File
   fields:
     state: ready
     file_type: image
-    token: token
+    token: token4
     user: 1
     public: true
+    save_for_use: false
 
 - pk: default_female_avatar.png
   model: files.File
@@ -42,3 +46,4 @@
     token: token
     user: 1
     public: true
+    save_for_use: false
