@@ -41,6 +41,7 @@ from lego.utils.validators import ReservedNameValidator
 from .validators import (
     email_blacklist_validator,
     github_username_validator,
+    linkedin_id_validator,
     student_username_validator,
     username_validator,
 )
@@ -369,6 +370,14 @@ class User(
         null=True,
         help_text="Enter a valid username.",
         validators=[github_username_validator, ReservedNameValidator()],
+    )
+
+    linkedin_id = models.CharField(
+        max_length=71,
+        unique=False,
+        null=True,
+        help_text="Enter a valid LinkedIn ID.",
+        validators=[linkedin_id_validator, ReservedNameValidator()],
     )
 
     objects = AbakusUserManager()  # type: ignore
