@@ -1,7 +1,6 @@
 from unittest import mock
 
 from rest_framework import status
-from rest_framework.reverse import reverse
 
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
@@ -48,7 +47,7 @@ class ListArticlesTestCase(BaseAPITestCase):
 
 
 def _get_detail_url(key):
-    return reverse("api:v1:files-imagegallery", kwargs={"key": key})
+    return f"/api/v1/files/{key}/imagegallery/"
 
 
 class SetSaveForUserTest(BaseAPITestCase):
