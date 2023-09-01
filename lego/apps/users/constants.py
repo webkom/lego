@@ -84,6 +84,7 @@ class FSGroup(Enum):
     MTKOM = "fc:fs:fs:prg:ntnu.no:MTKOM"
     MIDT = "fc:fs:fs:prg:ntnu.no:MIDT"
     MSTCNNS = "fc:fs:fs:prg:ntnu.no:MSTCNNS"
+    MSSECCLO = "fc:fs:fs:prg:ntnu.no:MSSECCLO"
 
 
 AbakusGradeFSMapping = {
@@ -91,6 +92,7 @@ AbakusGradeFSMapping = {
     FSGroup.MTKOM: FIRST_GRADE_KOMTEK,
     FSGroup.MIDT: FOURTH_GRADE_DATA,
     FSGroup.MSTCNNS: FOURTH_GRADE_KOMTEK,
+    FSGroup.MSSECCLO: FOURTH_GRADE_KOMTEK,
 }
 
 STUDENT_EMAIL_DOMAIN = "stud.ntnu.no"
