@@ -10,13 +10,12 @@ class MeetingModelIndex(SearchIndex):
     result_fields = (
         "title",
         "description",
-        "report",
         "start_time",
     )
     autocomplete_result_fields = ("title", "start_time")
 
     autocomplete_fields = ("title", "description")
-    search_fields = ("title", "description", "report")
+    search_fields = ("title", "description")
 
     def get_autocomplete(self, instance):
         return instance.title

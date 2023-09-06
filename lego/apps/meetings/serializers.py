@@ -124,7 +124,6 @@ class MeetingSearchSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
-            "report",
             "start_time",
         )
         read_only = True
