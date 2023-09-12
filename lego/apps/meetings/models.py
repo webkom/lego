@@ -42,7 +42,7 @@ class Meeting(BasisModel):
         through_fields=("meeting", "user"),
     )
 
-    def get_reactions_grouped(self, user):
+    def get_reactions_grouped(self, user: User):
         grouped = {}
         for reaction in self.reactions.all():
             if reaction.emoji.pk not in grouped:
@@ -52,6 +52,7 @@ class Meeting(BasisModel):
                     "count": 0,
                     "has_reacted": False,
                     "reaction_id": None,
+                    "user": user.full_name,
                 }
 
             grouped[reaction.emoji.pk]["count"] += 1
