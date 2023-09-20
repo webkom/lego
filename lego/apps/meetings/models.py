@@ -43,25 +43,18 @@ class Meeting(BasisModel):
     )
 
     def get_reactions_grouped(self, user: User):
-        grouped = {}
+        grouped = []
         for reaction in self.reactions.all():
-            if reaction.emoji.pk not in grouped:
-                grouped[reaction.emoji.pk] = {
+            grouped.append(
+                {
                     "emoji": reaction.emoji.pk,
                     "unicode_string": reaction.emoji.unicode_string,
-                    "count": 0,
-                    "has_reacted": False,
-                    "reaction_id": None,
-                    "user": user.full_name,
+                    "reaction_id": reaction.id,
+                    "user": reaction.created_by.username,
                 }
+            )
 
-            grouped[reaction.emoji.pk]["count"] += 1
-
-            if reaction.created_by == user:
-                grouped[reaction.emoji.pk]["has_reacted"] = True
-                grouped[reaction.emoji.pk]["reaction_id"] = reaction.id
-
-        return sorted(grouped.values(), key=lambda kv: kv["count"], reverse=True)
+        return grouped
 
     class Meta:
         permission_handler = MeetingPermissionHandler()
