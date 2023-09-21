@@ -110,7 +110,7 @@ sphinx_rtd_theme = "1.2.1"
 optional = true
 
 [tool.poetry.group.prod.dependencies]
-uwsgi = "2.0.21"
+uwsgi = "2.0.22"
 flower = "1.2.0"
 
 
