@@ -327,6 +327,9 @@ class EventAdministrateSerializer(EventReadSerializer):
     pools = PoolAdministrateSerializer(many=True)
     unregistered = RegistrationReadDetailedSerializer(many=True)
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
+    responsible_group = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), required=False, allow_null=True
+    )
 
     class Meta(EventReadSerializer.Meta):
         fields = EventReadSerializer.Meta.fields + (  # type: ignore
@@ -337,6 +340,7 @@ class EventAdministrateSerializer(EventReadSerializer):
             "use_contact_tracing",
             "created_by",
             "feedback_required",
+            "responsible_group",
         )
 
 
