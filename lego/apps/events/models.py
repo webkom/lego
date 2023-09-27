@@ -6,7 +6,7 @@ from typing import Any, Optional
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import CharField, Count, QuerySet, Sum
+from django.db.models import CharField, Count, QuerySet, Sum, ManyToManyField
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event
@@ -102,6 +102,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     use_contact_tracing = models.BooleanField(default=False)
     legacy_registration_count = models.PositiveIntegerField(default=0)
     mazemap_poi = models.PositiveIntegerField(null=True)
+    responsible_users = ManyToManyField(User)
 
     class Meta:
         permission_handler = EventPermissionHandler()
