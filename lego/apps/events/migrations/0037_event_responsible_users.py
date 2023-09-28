@@ -5,16 +5,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0036_alter_registration_presence'),
+        ("events", "0036_alter_registration_presence"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='responsible_users',
+            model_name="event",
+            name="responsible_users",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
     ]

@@ -6,7 +6,7 @@ from typing import Any, Optional
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import CharField, Count, QuerySet, Sum, ManyToManyField
+from django.db.models import CharField, Count, ManyToManyField, QuerySet, Sum
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event

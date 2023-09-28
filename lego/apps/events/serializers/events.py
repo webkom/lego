@@ -83,7 +83,10 @@ class EventReadSerializer(
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
     responsible_users = PublicUserField(
-        queryset=User.objects.all(), allow_null=False, required=True, many=True
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
     )
 
     class Meta:
@@ -133,7 +136,10 @@ class EventReadDetailedSerializer(
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
     responsible_users = PublicUserField(
-        queryset=User.objects.all(), allow_null=False, required=True, many=True
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
     )
 
     class Meta:
@@ -357,6 +363,13 @@ class EventCreateAndUpdateSerializer(
 
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        allow_empty=True,
+        required=False,
+        many=True,
+    )
 
     class Meta:
         model = Event
