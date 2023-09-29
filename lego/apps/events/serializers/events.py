@@ -34,8 +34,8 @@ from lego.apps.events.serializers.registrations import (
 from lego.apps.files.fields import File, ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.constants import GROUP_GRADE
-from lego.apps.users.fields import AbakusGroupField
-from lego.apps.users.models import AbakusGroup, PhotoConsent
+from lego.apps.users.fields import AbakusGroupField, PublicUserField
+from lego.apps.users.models import AbakusGroup, PhotoConsent, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -82,6 +82,12 @@ class EventReadSerializer(
     )
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta:
         model = Event
@@ -106,6 +112,7 @@ class EventReadSerializer(
             "is_admitted",
             "survey",
             "is_priced",
+            "responsible_users",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
         read_only = True
 
@@ -128,6 +135,12 @@ class EventReadDetailedSerializer(
 
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta:
         model = Event
@@ -176,6 +189,7 @@ class EventReadDetailedSerializer(
             "youtube_url",
             "use_contact_tracing",
             "mazemap_poi",
+            "responsible_users",
         )
         read_only = True
 
@@ -349,6 +363,13 @@ class EventCreateAndUpdateSerializer(
 
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        allow_empty=True,
+        required=False,
+        many=True,
+    )
 
     class Meta:
         model = Event
@@ -387,6 +408,7 @@ class EventCreateAndUpdateSerializer(
             "youtube_url",
             "use_contact_tracing",
             "mazemap_poi",
+            "responsible_users",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
 
     def validate(self, data):

@@ -45,6 +45,7 @@ _test_event_data = [
                 "permissionGroups": [1],
             }
         ],
+        "responsibleUsers": [1],
     },
     {
         "title": "Event2",
@@ -72,6 +73,7 @@ _test_event_data = [
                 "permissionGroups": [2],
             },
         ],
+        "responsibleUsers": [1],
     },
     {
         "title": "Event3",
@@ -93,6 +95,7 @@ _test_event_data = [
                 "permissionGroups": [2],
             }
         ],
+        "responsibleUsers": [1],
     },
     {
         "title": "Event4",
@@ -114,6 +117,7 @@ _test_event_data = [
                 "permissionGroups": [2],
             }
         ],
+        "responsibleUsers": [1],
     },
     {
         "title": "Event5",
@@ -135,6 +139,7 @@ _test_event_data = [
                 "permissionGroups": [2],
             }
         ],
+        "responsibleUsers": [1],
     },
     {
         "title": "Event6",
@@ -155,6 +160,7 @@ _test_event_data = [
                 "permissionGroups": [2],
             }
         ],
+        "responsibleUsers": [1],
     },
     {
         "title": "Event7",
@@ -166,6 +172,7 @@ _test_event_data = [
         "startTime": "2015-09-01T13:20:30Z",
         "endTime": "2015-09-01T13:20:30Z",
         "mergeTime": "2016-01-01T13:20:30Z",
+        "responsibleUsers": [1],
     },
     {
         "title": "Event8",
@@ -186,6 +193,7 @@ _test_event_data = [
                 "permissionGroups": [21, 25],
             }
         ],
+        "responsibleUsers": [1],
     },
 ]
 
