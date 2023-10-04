@@ -1,0 +1,14 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Det er en ny forespørsel om å låne {{ lendable_object }}!
+
+Bruker: {{ user }}!
+
+Fra: {{ start_date }}, Til: {{ end_date }}
+
+
+
+
+{% endblock %}
