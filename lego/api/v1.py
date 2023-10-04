@@ -71,7 +71,7 @@ from lego.apps.users.views.password_reset import (
     PasswordResetPerformViewSet,
     PasswordResetRequestViewSet,
 )
-from lego.apps.users.views.penalties import PenaltyViewSet
+from lego.apps.users.views.penalties import PenaltyGroupViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
@@ -176,7 +176,7 @@ router.register(
     PasswordResetRequestViewSet,
     basename="password-reset-request",
 )
-router.register(r"penalties", PenaltyViewSet)
+router.register(r"penalties", PenaltyGroupViewSet)
 router.register(r"podcasts", PodcastViewSet, basename="podcasts")
 router.register(r"polls", PollViewSet, basename="polls")
 router.register(r"quotes", QuoteViewSet)

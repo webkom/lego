@@ -32,7 +32,7 @@ from lego.apps.files.models import FileField
 from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.constants import AUTUMN, SPRING
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, PenaltyGroup, User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
 
@@ -233,13 +233,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         if len(pools) == 0:
             return None
         reg_time: date = min(pool.activation_date for pool in pools)
+
         if self.heed_penalties:
             if penalties is None:
                 penalties = user.number_of_penalties()
-            if penalties == 2:
-                return reg_time + timedelta(hours=12)
-            elif penalties == 1:
-                return reg_time + timedelta(hours=3)
+            return (
+                reg_time + timedelta(hours=settings.PENALTY_DELAY_DURATION)
+                if penalties >= 1
+                else reg_time
+            )
         return reg_time
 
     def get_possible_pools(
@@ -329,9 +331,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         # Make the user follow the event
         FollowEvent.objects.get_or_create(follower=user, target=self)
 
-        if penalties >= 3:
-            return registration.add_to_waiting_list()
-
         # If the event is merged or has only one pool we can skip a lot of logic
         if all_pools.count() == 1:
             return registration.add_to_pool(possible_pools[0])
@@ -391,8 +390,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 and self.heed_penalties
                 and self.passed_unregistration_deadline
             ):
-                if not registration.user.penalties.filter(source_event=self).exists():
-                    Penalty.objects.create(
+                if not registration.user.penalty_groups.filter(
+                    source_event=self
+                ).exists():
+                    PenaltyGroup.objects.create(
                         user=registration.user,
                         reason=f"Meldte seg av {self.title} for sent.",
                         weight=1,
@@ -470,8 +471,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         for reg in self.waiting_registrations:
             if opening_pool.is_full:
                 break
-            if self.heed_penalties and reg.user.number_of_penalties() >= 3:
-                continue
             if self.can_register(reg.user, opening_pool, future=True):
                 reg.pool = opening_pool
                 reg.save()
@@ -492,8 +491,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             for reg in self.waiting_registrations:
                 if self.is_full or pool.is_full:
                     break
-                if self.heed_penalties and reg.user.number_of_penalties() >= 3:
-                    continue
                 if self.can_register(reg.user, pool, future=True):
                     reg.pool = pool
                     reg.save()
@@ -577,28 +574,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         if to_pool:
             for registration in self.waiting_registrations:
-                if self.heed_penalties:
-                    penalties: int = registration.user.number_of_penalties()
-                    earliest_reg: Optional[date] = self.get_earliest_registration_time(
-                        registration.user, [to_pool], penalties
-                    )
-                    if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
-                        if self.can_register(registration.user, to_pool):
-                            return registration
-                elif self.can_register(registration.user, to_pool):
+                if self.can_register(registration.user, to_pool):
                     return registration
             return None
-
-        if self.heed_penalties:
-            for registration in self.waiting_registrations:
-                penalties = registration.user.number_of_penalties()
-                earliest_reg = self.get_earliest_registration_time(
-                    registration.user, None, penalties
-                )
-                if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
-                    return registration
-            return None
-
         return self.waiting_registrations.first()
 
     @staticmethod
@@ -935,16 +913,18 @@ class Registration(BasisModel):
             and presence == constants.PRESENCE_CHOICES.NOT_PRESENT
             and self.event.penalty_weight_on_not_present
         ):
-            if not self.user.penalties.filter(source_event=self.event).exists():
-                Penalty.objects.create(
+            if not self.user.penalty_groups.filter(source_event=self.event).exists():
+                PenaltyGroup.objects.create(
                     user=self.user,
                     reason=f"Møtte ikke opp på {self.event.title}.",
                     weight=self.event.penalty_weight_on_not_present,
                     source_event=self.event,
                 )
         else:
-            for penalty in self.user.penalties.filter(source_event=self.event):
-                penalty.delete()
+            for penalty_group in self.user.penalty_groups.filter(
+                source_event=self.event
+            ):
+                penalty_group.delete()
 
     def add_to_pool(self, pool: Pool) -> Registration:
         allowed: bool = False

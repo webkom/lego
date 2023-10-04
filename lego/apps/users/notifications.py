@@ -21,6 +21,7 @@ class PenaltyNotification(Notification):
                 "weight": penalty.weight,
                 "event": penalty.source_event.title,
                 "reason": penalty.reason,
+                "expiration_date": penalty.exact_expiration,
             },
             subject="Du har fått en ny prikk",
             plain_template="users/email/penalty.txt",
@@ -32,7 +33,11 @@ class PenaltyNotification(Notification):
 
         return self._delay_push(
             template="users/push/penalty.txt",
-            context={"weight": penalty.weight, "event": penalty.source_event.title},
+            context={
+                "weight": penalty.weight,
+                "event": penalty.source_event.title,
+                "expiration_date": penalty.exact_expiration,
+            },
             instance=penalty,
         )
 

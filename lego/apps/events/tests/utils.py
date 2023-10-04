@@ -4,7 +4,7 @@ from django.utils import timezone
 
 import stripe
 
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, PenaltyGroup, User
 
 
 def get_dummy_users(n):
@@ -33,6 +33,5 @@ def create_token(number, cvc, year=None):
     )
 
 
-def make_penalty_expire(penalty):
-    penalty.created_at = timezone.now() - timedelta(days=365)
-    penalty.save()
+def make_penalty_group_expire(penalty_group: PenaltyGroup) -> None:
+    penalty_group.delete()

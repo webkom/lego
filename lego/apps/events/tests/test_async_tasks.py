@@ -19,8 +19,8 @@ from lego.apps.events.tasks import (
     notify_user_when_payment_soon_overdue,
     set_all_events_ready_and_bump,
 )
-from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
-from lego.apps.users.models import AbakusGroup, Penalty
+from lego.apps.events.tests.utils import get_dummy_users, make_penalty_group_expire
+from lego.apps.users.models import AbakusGroup, PenaltyGroup
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
@@ -223,36 +223,6 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.pool_two.registrations.count(), 0)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
-    def test_isnt_bumped_with_penalties(self):
-        """Users should not be bumped if they have 3 penalties."""
-        self.event.start_time = timezone.now() + timedelta(days=1)
-        self.event.merge_time = timezone.now() + timedelta(hours=12)
-        self.event.save()
-
-        self.pool_one.activation_date = timezone.now() - timedelta(days=1)
-        self.pool_one.save()
-
-        self.pool_two.activation_date = timezone.now() + timedelta(minutes=30)
-        self.pool_two.save()
-
-        users = get_dummy_users(2)
-
-        Penalty.objects.create(
-            user=users[1], reason="test", weight=3, source_event=self.event
-        )
-
-        for user in users:
-            AbakusGroup.objects.get(name="Webkom").add_user(user)
-            registration = Registration.objects.get_or_create(
-                event=self.event, user=user
-            )[0]
-            self.event.register(registration)
-
-        bump_waiting_users_to_new_pool()
-
-        self.assertEqual(self.pool_two.registrations.count(), 0)
-        self.assertEqual(self.event.waiting_registrations.count(), 1)
-
     def test_isnt_bumped_if_activation_is_far_into_the_future(self):
         """Users should not be bumped if the pool is activated more than
         35 minutes in the future."""
@@ -380,7 +350,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        penalty_group = PenaltyGroup.objects.create(
             user=user, reason="test", weight=3, source_event=self.event
         )
 
@@ -389,7 +359,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         ]
         async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(penalty_group)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
@@ -401,10 +371,10 @@ class PenaltyExpiredTestCase(BaseTestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=user, reason="test", weight=2, source_event=self.event
         )
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="test2", weight=2, source_event=self.event
         )
 
@@ -413,35 +383,11 @@ class PenaltyExpiredTestCase(BaseTestCase):
         ]
         async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(id=registration.id).pool)
         self.assertEqual(self.event.number_of_registrations, 1)
-
-    def test_isnt_bumped_with_too_many_penalties(self):
-        """Tests that a user isn't bumped when going from 4 to 3 active penalties"""
-
-        user = get_dummy_users(1)[0]
-        AbakusGroup.objects.get(name="Abakus").add_user(user)
-
-        p1 = Penalty.objects.create(
-            user=user, reason="test", weight=1, source_event=self.event
-        )
-        Penalty.objects.create(
-            user=user, reason="test2", weight=3, source_event=self.event
-        )
-
-        registration = Registration.objects.get_or_create(event=self.event, user=user)[
-            0
-        ]
-        async_register(registration.id)
-
-        make_penalty_expire(p1)
-        check_events_for_registrations_with_expired_penalties.delay()
-
-        self.assertIsNone(Registration.objects.get(id=registration.id).pool)
-        self.assertEqual(self.event.number_of_registrations, 0)
 
     def test_isnt_bumped_when_full(self):
         """Tests that a user isnt bumped when the event is full when penalties expire."""
@@ -450,7 +396,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         for user in users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=users[1], reason="test", weight=3, source_event=self.event
         )
 
@@ -460,7 +406,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
             )[0]
             async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -476,7 +422,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         for user in users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        p1 = PenaltyGroup.objects.create(
             user=users[2], reason="test", weight=3, source_event=self.event
         )
 
@@ -486,7 +432,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
             )[0]
             async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(p1)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNone(Registration.objects.get(user=users[1]).pool)
@@ -502,7 +448,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         for user in users:
             AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        p1 = Penalty.objects.create(
+        penalty_group = PenaltyGroup.objects.create(
             user=users[1], reason="test", weight=3, source_event=self.event
         )
 
@@ -512,7 +458,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
             )[0]
             async_register(registration.id)
 
-        make_penalty_expire(p1)
+        make_penalty_group_expire(penalty_group)
         check_events_for_registrations_with_expired_penalties.delay()
 
         self.assertIsNotNone(Registration.objects.get(user=users[1]).pool)
@@ -580,7 +526,7 @@ class StripePaymentTestCase(BaseTestCase):
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
 
-        Penalty.objects.create(
+        PenaltyGroup.objects.create(
             user=user, reason="test", weight=3, source_event=self.event
         )
 

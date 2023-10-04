@@ -1,5 +1,7 @@
-# mypy: ignore-errors
+from __future__ import annotations
+
 import operator
+from typing import Tuple
 
 from django.conf import settings
 from django.contrib.auth.models import (
@@ -8,7 +10,7 @@ from django.contrib.auth.models import (
 )
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
-from django.db.models import Q
+from django.db.models import F, Q, QuerySet
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
 
@@ -27,6 +29,7 @@ from lego.apps.users.managers import (
     AbakusGroupManagerWithoutText,
     AbakusUserManager,
     MembershipManager,
+    UserPenaltyGroupManager,
     UserPenaltyManager,
 )
 from lego.apps.users.permissions import (
@@ -487,8 +490,10 @@ class User(
         # Returns the total penalty weight for this user
         count = (
             Penalty.objects.valid()
-            .filter(user=self)
-            .aggregate(models.Sum("weight"))["weight__sum"]
+            .filter(
+                penalty_group__user=self,
+            )
+            .count()
         )
         return count or 0
 
@@ -502,13 +507,13 @@ class User(
             is_consenting__isnull=True,
         ).exists()
 
-    def restricted_lookup(self):
+    def restricted_lookup(self) -> Tuple[list[User], list[None]]:
         """
         Restricted mail
         """
         return [self], []
 
-    def announcement_lookup(self):
+    def announcement_lookup(self) -> list[User]:
         return [self]
 
     def unanswered_surveys(self) -> list:
@@ -529,33 +534,131 @@ class User(
         )
         return list(unanswered_surveys.values_list("id", flat=True))
 
+    def check_for_expirable_penalty(self) -> None:
+        from django.db.models import Subquery
+
+        from lego.apps.events.models import Event, Pool
+
+        current_active_penalty = (
+            Penalty.objects.valid()
+            .filter(
+                penalty_group__user=self,
+                activation_time__lte=timezone.now(),
+                activation_time__gte=timezone.now()
+                - timedelta(days=settings.PENALTY_DURATION.days),
+            )
+            .first()
+        )
+        if current_active_penalty is None:
+            return
+
+        pools = Pool.objects.filter(permission_groups__in=self.all_groups).distinct()
+
+        # TODO: i believe wrong.
+        number_of_eligable_passed_events = Event.objects.filter(
+            heed_penalties=True,
+            start_time__range=(
+                current_active_penalty.activation_time
+                - timedelta(hours=1) * F("unregistration_deadline_hours"),
+                current_active_penalty.exact_expiration
+                - timedelta(hours=1) * F("unregistration_deadline_hours"),
+            ),
+            pools__in=Subquery(pools.values("pk")),
+        ).count()
+
+        if number_of_eligable_passed_events >= 6:
+            current_active_penalty.expire_and_adjust_future_activation_times()
+
+
+class PenaltyGroup(BasisModel):
+    user = models.ForeignKey(
+        User, related_name="penalty_groups", on_delete=models.CASCADE
+    )
+    reason = models.CharField(max_length=1000)
+    source_event = models.ForeignKey(
+        "events.Event", related_name="penalty_groups", on_delete=models.CASCADE
+    )
+    weight = models.IntegerField(default=1, null=False, blank=False)
+
+    objects = UserPenaltyGroupManager()  # type: ignore
+
+    @property
+    def exact_expiration(self) -> datetime:
+        last_active_penalty = self.penalties.order_by("-activation_time").first()
+
+        return last_active_penalty.exact_expiration
+
+    @property
+    def activation_time(self) -> datetime:
+        first_active_penalty = self.penalties.order_by("activation_time").first()
+
+        return first_active_penalty.activation_time
+
+    def delete(self, *args, **kwargs) -> None:
+        if (
+            timezone.now() > self.activation_time
+            and timezone.now() < self.exact_expiration
+        ):
+            new_activation_time = timezone.now()
+        else:
+            new_activation_time = self.activation_time
+
+        penalties_to_be_changed = Penalty.objects.filter(
+            penalty_group__user=self.user,
+            activation_time__gt=self.activation_time,
+        ).order_by("activation_time")
+
+        for penalty in penalties_to_be_changed:
+            penalty.activation_time = new_activation_time
+            penalty.save()
+            new_activation_time = penalty.exact_expiration
+
+        for penalty in self.penalties.all():
+            print("asdfasdølfkjasdf")
+            penalty.delete()
+
+        super().delete(*args, **kwargs)
+
 
 class Penalty(BasisModel):
-    user = models.ForeignKey(User, related_name="penalties", on_delete=models.CASCADE)
-    reason = models.CharField(max_length=1000)
-    weight = models.IntegerField(default=1)
-    source_event = models.ForeignKey(
-        "events.Event", related_name="penalties", on_delete=models.CASCADE
+    activation_time = models.DateTimeField(null=True, default=None)
+    penalty_group = models.ForeignKey(
+        PenaltyGroup, related_name="penalties", on_delete=models.CASCADE, default=None
     )
 
     objects = UserPenaltyManager()  # type: ignore
 
-    def expires(self):
-        dt = Penalty.penalty_offset(self.created_at) - (
-            timezone.now() - self.created_at
-        )
-        return dt.days
-
     @property
-    def exact_expiration(self):
+    def exact_expiration(self) -> datetime:
         """Returns the exact time of expiration"""
-        dt = Penalty.penalty_offset(self.created_at) - (
-            timezone.now() - self.created_at
-        )
-        return timezone.now() + dt
+        # Shouldn't happen, but if activation_time is none, expire immediately
+        if not self.activation_time:
+            return self.created_at
+        return Penalty.penalty_offset(self.activation_time) + self.activation_time
+
+    def expire_and_adjust_future_activation_times(self) -> None:
+        if (
+            timezone.now() > self.activation_time
+            and timezone.now() < self.exact_expiration
+        ):
+            new_activation_time = timezone.now()
+        else:
+            new_activation_time = self.activation_time
+
+        penalties_to_be_changed = Penalty.objects.filter(
+            penalty_group__user=self.penalty_group.user,
+            activation_time__gt=self.activation_time,
+        ).order_by("activation_time")
+
+        for penalty in penalties_to_be_changed:
+            penalty.activation_time = new_activation_time
+            penalty.save()
+            new_activation_time = penalty.exact_expiration
+
+        self.delete()
 
     @staticmethod
-    def penalty_offset(start_date, forwards=True):
+    def penalty_offset(start_date: datetime, forwards: bool = True) -> timedelta:
         remaining_days = settings.PENALTY_DURATION.days
         offset_days = 0
         multiplier = 1 if forwards else -1
@@ -574,7 +677,7 @@ class Penalty(BasisModel):
         return timedelta(days=offset_days)
 
     @staticmethod
-    def ignore_date(date):
+    def ignore_date(date: datetime) -> bool:
         summer_from, summer_to = settings.PENALTY_IGNORE_SUMMER
         winter_from, winter_to = settings.PENALTY_IGNORE_WINTER
         if summer_from <= (date.month, date.day) <= summer_to:
@@ -582,6 +685,11 @@ class Penalty(BasisModel):
         elif winter_to < (date.month, date.day) < winter_from:
             return False
         return True
+
+
+# Generated by Django 4.0.10 on 2023-05-01 16:33
+
+from django.db import models
 
 
 class PhotoConsent(BasisModel):
@@ -597,7 +705,9 @@ class PhotoConsent(BasisModel):
         unique_together = ("semester", "year", "domain", "user")
 
     @staticmethod
-    def get_consents(user, *, time=None):
+    def get_consents(
+        user: User, *, time: datetime | None = None
+    ) -> QuerySet[PhotoConsent]:
         now = timezone.now()
         consent_time = time if time is not None else now
         consent_semester = PhotoConsent.get_semester(consent_time)
@@ -625,5 +735,5 @@ class PhotoConsent(BasisModel):
         return PhotoConsent.objects.filter(user=user)
 
     @staticmethod
-    def get_semester(time: datetime):
+    def get_semester(time: datetime) -> str:
         return constants.AUTUMN if time.month > 7 else constants.SPRING

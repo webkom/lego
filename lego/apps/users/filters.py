@@ -2,7 +2,12 @@ from django.db.models import F, Value
 from django.db.models.functions import Concat
 from django_filters.rest_framework import CharFilter, FilterSet
 
-from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, Penalty
+from lego.apps.users.models import (
+    AbakusGroup,
+    Membership,
+    MembershipHistory,
+    PenaltyGroup,
+)
 
 
 class MembershipFilterSet(FilterSet):
@@ -43,7 +48,7 @@ class MembershipHistoryFilterSet(FilterSet):
         fields = ("user", "abakus_group", "role")
 
 
-class PenaltyFilterSet(FilterSet):
+class PenaltyGroupFilterSet(FilterSet):
     class Meta:
-        model = Penalty
+        model = PenaltyGroup
         fields = ("user", "source_event")
