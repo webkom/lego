@@ -322,6 +322,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
         request = self.context.get("request", None)
         return request.user.unanswered_surveys()
 
+
 class EventAdministrateSerializer(EventReadSerializer, EventReadDetailedSerializer):
     pools = PoolAdministrateSerializer(many=True)
     unregistered = RegistrationReadDetailedSerializer(many=True)
