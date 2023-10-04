@@ -188,4 +188,4 @@ services:
 
 ---
 kind: signature
-hmac: 0fd8d6e640a9ff231772b9c1e6237716cfb9198778fa3c7f8a69f2a99ef4ca5e
+hmac: 0fd8d6e640a9ff2
