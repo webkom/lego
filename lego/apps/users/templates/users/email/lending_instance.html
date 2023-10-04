@@ -1,0 +1,31 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-warning">
+            Det er en ny forespørsel om å låne {{ lendable_object }}!
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Bruker: {{ user }}!
+        </td>
+    </tr>
+
+
+
+    <tr>
+        <td class="content-block">
+            <i>Fra: {{ start_date }}, Til: {{ end_date }} </i>
+        </td>
+    </tr>
+
+
+
+{% endblock %}

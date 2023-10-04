@@ -75,6 +75,8 @@ from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
+from lego.apps.lending.views import LendableObjectViewSet, LendingInstanceViewSet
+
 from lego.utils.views import SiteMetaViewSet
 
 router = routers.DefaultRouter()
@@ -141,6 +143,9 @@ router.register(
     basename="abakusgroup-memberships",
 )
 router.register(r"joblistings", JoblistingViewSet, basename="joblisting")
+router.register(r"lendableobject", LendableObjectViewSet, basename="lendableobject")
+router.register(r"lendinginstance", LendingInstanceViewSet, basename="lendinginstance")
+
 router.register(
     r"meeting-token", MeetingInvitationTokenViewSet, basename="meeting-token"
 )

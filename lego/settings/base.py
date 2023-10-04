@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "lego.apps.tags",
     "lego.apps.users",
     "lego.apps.websockets",
+    "lego.apps.lending",
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
