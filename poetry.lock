@@ -3281,13 +3281,13 @@ twisted = ["twisted (>=20.3.0)", "zope.interface (>=5.2.0)"]
 
 [[package]]
 name = "types-bleach"
-version = "6.0.0.3"
+version = "6.0.0.5"
 description = "Typing stubs for bleach"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "types-bleach-6.0.0.3.tar.gz", hash = "sha256:8ce7896d4f658c562768674ffcf07492c7730e128018f03edd163ff912bfadee"},
-    {file = "types_bleach-6.0.0.3-py3-none-any.whl", hash = "sha256:d43eaf30a643ca824e16e2dcdb0c87ef9226237e2fa3ac4732a50cb3f32e145f"},
+    {file = "types-bleach-6.0.0.5.tar.gz", hash = "sha256:0bf3e58b2930a19a64ebac173f53d2fc897ce92b0f39048dc9fcb1eb847241b7"},
+    {file = "types_bleach-6.0.0.5-py3-none-any.whl", hash = "sha256:9254ac2e7f9282dba09929ae2d266f7fe98de3972ccbe8abcbc263741c8865a3"},
 ]
 
 [[package]]
@@ -3675,4 +3675,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "cede9432aede6718183cecb01d4a4652abe4620a706c20d5935a1c6a074b1f28"
+content-hash = "dee675648e1c0248b57c59ac0bca09e71c50b0cee766d43ea94c269d2d9a124f"
