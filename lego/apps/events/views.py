@@ -251,8 +251,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_id = self.kwargs.get("pk", None)
         serializer = EventAdministrateSerializer
         event = Event.objects.get(pk=event_id)
-
-        if request.user == event.created_by:
+        if event.user_should_see_allergies(request.user):
             serializer = EventAdministrateAllergiesSerializer
 
         event_data = serializer(event).data
