@@ -198,6 +198,7 @@
     end_time: "2012-09-01T15:20:30+03:00"
     created_by: 1
     require_auth: False
+    responsible_group: 25
   
 - model: events.Pool
   pk: 1
