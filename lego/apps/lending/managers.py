@@ -18,7 +18,7 @@ class LendingInstanceManager(PersistentModelManager):
             user = User.objects.get(pk=user_id)
             notification = LendingInstanceNotification(
                 lending_instance=lending_instance,
-                user_email=user,
+                user=user,
             )
             notification.notify()
 

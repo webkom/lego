@@ -18,8 +18,7 @@ class LendingInstanceSerializer(serializers.ModelSerializer):
     def validate(self, data):
         lendable_object_id = data["lendable_object"].id
         lendable_object = LendableObject.objects.get(id=lendable_object_id)
-        user = self.request.user
-
+        user = self.context['request'].user
         if not user.abakus_groups.filter(
             id__in=lendable_object.responsible_groups.all().values_list("id", flat=True)
         ).exists():
@@ -30,8 +29,5 @@ class LendingInstanceSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     "Lending period exceeds maximum allowed duration"
                 )
-
-            # Add additional validation logic as per your use case
-            # ...
 
         return data

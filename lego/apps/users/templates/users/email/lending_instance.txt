@@ -4,7 +4,7 @@
 
 Det er en ny forespørsel om å låne {{ lendable_object }}!
 
-Bruker: {{ user }}!
+Bruker: {{ lender }}!
 
 Fra: {{ start_date }}, Til: {{ end_date }}
 

@@ -6,10 +6,10 @@ from lego.apps.users.models import User
 class LendingInstanceNotification(Notification):
     def __init__(self, lending_instance: LendingInstance, user: User):
         self.lending_instance = lending_instance
-        self.user = user
+        self.lender = lending_instance.user
 
         # TODO: Might not work
-        super().__init__(user=lending_instance.user)
+        super().__init__(user=user)
 
     name = "lending_instance_creation"
 
@@ -17,7 +17,7 @@ class LendingInstanceNotification(Notification):
         return self._delay_mail(
             to_email=self.user.email_address,
             context={
-                "user": self.user.full_name,
+                "lender": self.lender,
                 "lendable_object": self.lending_instance.lendable_object.title,
                 "start_date": self.lending_instance.start_date,
                 "end_date": self.lending_instance.end_date,
@@ -31,7 +31,7 @@ class LendingInstanceNotification(Notification):
         return self._delay_push(
             template="users/push/lending_instance.txt",
             context={
-                "user": self.user.full_name,
+                "lender": self.lender,
                 "lendable_object": self.lending_instance.lendable_object.title,
                 "start_date": self.lending_instance.start_date,
                 "end_date": self.lending_instance.end_date,
