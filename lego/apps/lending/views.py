@@ -51,8 +51,7 @@ class LendingInstanceViewSet(
     ]
 
     def create(self, request):
-        serializer = LendingInstanceSerializer(request, data=request.data)
-
+        serializer = LendingInstanceSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)

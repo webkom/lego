@@ -21,6 +21,10 @@ class LendableObject(BasisModel):
     responsible_role = models.CharField(
         max_length=30, choices=constants.ROLES, default=constants.MEMBER
     )
+    # TODO: options should be changed
+    image = models.ImageField(
+        source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
+    )
     location = models.CharField(max_length=128, null=False, blank=True)
 
     @property
