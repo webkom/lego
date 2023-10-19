@@ -21,7 +21,7 @@ class LendableObject(BasisModel):
     responsible_role = models.CharField(
         max_length=30, choices=constants.ROLES, default=constants.MEMBER
     )
-    location = models.CharField(max_length=128, null=False, blank=False)
+    location = models.CharField(max_length=128, null=False, blank=True)
 
     @property
     def get_furthest_booking_date(self):
