@@ -46,6 +46,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event2",
@@ -74,6 +75,7 @@ _test_event_data = [
             },
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": False,
     },
     {
         "title": "Event3",
@@ -96,6 +98,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event4",
@@ -118,6 +121,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event5",
@@ -140,6 +144,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event6",
@@ -161,6 +166,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event7",
@@ -173,6 +179,7 @@ _test_event_data = [
         "endTime": "2015-09-01T13:20:30Z",
         "mergeTime": "2016-01-01T13:20:30Z",
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event8",
@@ -194,6 +201,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
 ]
 
