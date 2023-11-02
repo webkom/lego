@@ -103,6 +103,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     legacy_registration_count = models.PositiveIntegerField(default=0)
     mazemap_poi = models.PositiveIntegerField(null=True)
     responsible_users = ManyToManyField(User)
+    is_foreign_language = models.BooleanField(default=False, blank=False, null=False)
 
     class Meta:
         permission_handler = EventPermissionHandler()
