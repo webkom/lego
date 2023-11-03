@@ -1,11 +1,16 @@
 from django.db.models import F, Value
 from django.db.models.functions import Concat
-from django_filters.rest_framework import CharFilter, FilterSet
+from django_filters.rest_framework import BaseInFilter, CharFilter, FilterSet
 
 from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, Penalty
 
 
+class CharInFilter(BaseInFilter, CharFilter):
+    pass
+
+
 class MembershipFilterSet(FilterSet):
+    role = CharInFilter(field_name="role", lookup_expr="in")
     userUsername = CharFilter(field_name="user__username", lookup_expr="icontains")
     userFullname = CharFilter(field_name="userFullname", method="user__fullname")
     abakusGroupName = CharFilter(
