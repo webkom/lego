@@ -43,7 +43,7 @@ class ReactionsSerializer(serializers.ModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
     class Meta:
         model = Reaction
-        fields = ("emoji", "created_by", "created_at", "author")
+        fields = ("id", "emoji", "created_by", "created_at", "author")
         read_only = True
 
 
