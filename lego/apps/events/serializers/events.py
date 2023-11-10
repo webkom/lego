@@ -452,7 +452,6 @@ class EventCreateAndUpdateSerializer(
         validated_data["require_auth"] = require_auth
         if event_status_type == constants.TBA:
             pools = []
-            validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
         elif event_status_type == constants.INFINITE:
@@ -473,7 +472,6 @@ class EventCreateAndUpdateSerializer(
         )
         if event_status_type == constants.TBA:
             pools = []
-            validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
         elif event_status_type == constants.INFINITE:
