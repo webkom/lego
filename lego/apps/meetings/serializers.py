@@ -38,12 +38,10 @@ class MeetingInvitationUpdateSerializer(BasisModelSerializer):
 
 
 class ReactionsSerializer(serializers.ModelSerializer):
-
-
     author = PublicUserSerializer(read_only=True, source="created_by")
     class Meta:
         model = Reaction
-        fields = ("id", "emoji", "created_by", "created_at", "author")
+        fields = ("id", "emoji", "author")
         read_only = True
 
 
