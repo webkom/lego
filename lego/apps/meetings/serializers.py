@@ -1,4 +1,3 @@
-from lego.apps.reactions.models import Reaction
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
@@ -6,6 +5,7 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.apps.reactions.models import Reaction
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -39,6 +39,7 @@ class MeetingInvitationUpdateSerializer(BasisModelSerializer):
 
 class ReactionsSerializer(serializers.ModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
+
     class Meta:
         model = Reaction
         fields = ("id", "emoji", "author")
