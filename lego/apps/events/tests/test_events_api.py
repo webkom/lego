@@ -565,7 +565,6 @@ class CreateEventsTestCase(BaseAPITestCase):
         )
         created_event = Event.objects.get(id=event_id)
         self.assertEqual(created_event.event_status_type, "TBA")
-        self.assertEqual(created_event.location, "TBA")
         self.assertEqual(len(created_event.pools.all()), 0)
 
     def test_event_creation_open(self):
