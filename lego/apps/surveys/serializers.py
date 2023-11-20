@@ -6,7 +6,6 @@ from rest_framework import exceptions, serializers
 from lego.apps.events.serializers.events import EventForSurveySerializer
 from lego.apps.surveys.constants import DISPLAY_TYPES, QUESTION_TYPES
 from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
-from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -93,11 +92,14 @@ class SurveyReadSerializer(BasisModelSerializer):
 
 class SubmissionReadSerializer(BasisModelSerializer):
     answers = AnswerSerializer(many=True)
-    user = PublicUserSerializer()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Submission
-        fields = ("id", "user", "survey", "answers")
+        fields = ("id", "is_owner", "survey", "answers")
+
+    def get_is_owner(self, submission):
+        return submission.user == self.context["request"].user
 
 
 class SubmissionAdminReadSerializer(SubmissionReadSerializer):
