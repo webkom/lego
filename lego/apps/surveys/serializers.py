@@ -93,11 +93,10 @@ class SurveyReadSerializer(BasisModelSerializer):
 
 class SubmissionReadSerializer(BasisModelSerializer):
     answers = AnswerSerializer(many=True)
-    user = PublicUserSerializer()
 
     class Meta:
         model = Submission
-        fields = ("id", "user", "survey", "answers")
+        fields = ("id", "survey", "answers")
 
 
 class SubmissionAdminReadSerializer(SubmissionReadSerializer):
