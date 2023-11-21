@@ -31,6 +31,8 @@ class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             self.check_object_permissions(self.request, obj)
         except PermissionError:
             raise Http404 from None
+        if obj.visible_from > timezone.now() and self.request.user != obj.created_by:
+            raise Http404 from None
         return obj
 
     def get_serializer_class(self):
