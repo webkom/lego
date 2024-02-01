@@ -1,4 +1,5 @@
 from lego.apps.lending.models import LendingInstance
+from lego.apps.notifications.constants import LENDING_INSTANCE_CREATION
 from lego.apps.notifications.notification import Notification
 from lego.apps.users.models import User
 
@@ -11,7 +12,7 @@ class LendingInstanceNotification(Notification):
         # TODO: Might not work
         super().__init__(user=user)
 
-    name = "lending_instance_creation"
+    name = LENDING_INSTANCE_CREATION
 
     def generate_mail(self):
         return self._delay_mail(
