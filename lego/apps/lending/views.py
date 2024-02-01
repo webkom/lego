@@ -19,13 +19,7 @@ from lego.apps.lending.serializers import (
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
-class LendableObjectViewSet(
-    AllowedPermissionsMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = LendableObject.objects.all()
     serializer_class = LendableObjectSerializer
     filterset_class = LendableObjectFilterSet
@@ -35,13 +29,7 @@ class LendableObjectViewSet(
     ]
 
 
-class LendingInstanceViewSet(
-    AllowedPermissionsMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = LendingInstance.objects.all()
     serializer_class = LendingInstanceSerializer
     filterset_class = LendingInstanceFilterSet
@@ -51,7 +39,9 @@ class LendingInstanceViewSet(
     ]
 
     def create(self, request):
-        serializer = LendingInstanceSerializer(data=request.data, context={'request': request})
+        serializer = LendingInstanceSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
