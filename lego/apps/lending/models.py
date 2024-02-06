@@ -2,7 +2,8 @@ from datetime import datetime, timedelta, timezone, tzinfo
 
 from django.db import models
 from lego.apps.files.fields import ImageField
-
+from lego.apps.lending.validators import responsible_roles_validator
+from django.contrib.postgres.fields import ArrayField
 from lego.apps.users import constants
 from lego.apps.lending.managers import LendingInstanceManager
 from lego.apps.users.models import User
@@ -22,10 +23,14 @@ class LendableObject(BasisModel):
         null=True, blank=False, default=timedelta(days=7)
     )
     responsible_groups = models.ManyToManyField("users.AbakusGroup")
-    responsible_role = models.CharField(
-        max_length=30, choices=constants.ROLES, default=constants.MEMBER
-    )
-    # TODO: options should be changed
+    responsible_roles = ArrayField(
+        models.CharField(
+            max_length=30,
+            choices=constants.ROLES,
+        ),
+        default=list([constants.MEMBER]),
+        validators=[responsible_roles_validator],
+    )  
     image = ImageField(
         source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
     )
