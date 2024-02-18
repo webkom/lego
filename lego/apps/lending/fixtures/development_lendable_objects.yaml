@@ -1,0 +1,28 @@
+- fields:
+    title: "Grill"
+    description: "En grill til å grille"
+    location: "A3"
+    # image: "test_event_cover.png" Could not get this to work
+    has_contract: False
+    max_lending_period: "2 days"
+    responsible_groups: 
+      - - Webkom
+    responsible_roles: 
+      - member
+    created_by: 3
+  model: lending.LendableObject
+  pk: 1
+- fields: 
+    title: "Soundboks"
+    description: "En soundboks til å sondbokse"
+    location: "It lageret"
+    # image: "test_event_cover.png"
+  model: lending.LendableObject
+  pk: 2
+- fields: 
+    title: "Prinsessekjole"
+    description: ""
+    location: ""
+    # image: "test_event_covet.png"
+  model: lending.LendableObject
+  pk: 3
