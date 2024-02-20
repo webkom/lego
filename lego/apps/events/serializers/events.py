@@ -19,7 +19,6 @@ from lego.apps.events.fields import (
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
     PoolAdministrateAllergiesSerializer,
-    PoolAdministrateExportSerializer,
     PoolAdministrateSerializer,
     PoolCreateAndUpdateSerializer,
     PoolReadAuthSerializer,
@@ -27,7 +26,6 @@ from lego.apps.events.serializers.pools import (
 )
 from lego.apps.events.serializers.registrations import (
     RegistrationReadDetailedAllergiesSerializer,
-    RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
 )
@@ -188,7 +186,6 @@ class EventReadDetailedSerializer(
             "survey",
             "use_consent",
             "youtube_url",
-            "use_contact_tracing",
             "mazemap_poi",
             "responsible_users",
             "is_foreign_language",
@@ -339,17 +336,10 @@ class EventAdministrateSerializer(EventReadSerializer, EventReadDetailedSerializ
             "unregistered",
             "waiting_registrations",
             "use_consent",
-            "use_contact_tracing",
             "created_by",
             "feedback_required",
             "responsible_group",
         )
-
-
-class EventAdministrateExportSerializer(EventAdministrateSerializer):
-    pools = PoolAdministrateExportSerializer(many=True)
-    unregistered = RegistrationReadDetailedExportSerializer(many=True)
-    waiting_registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class EventAdministrateAllergiesSerializer(EventAdministrateSerializer):
@@ -412,7 +402,6 @@ class EventCreateAndUpdateSerializer(
             "registration_close_time",
             "unregistration_close_time",
             "youtube_url",
-            "use_contact_tracing",
             "mazemap_poi",
             "responsible_users",
             "is_foreign_language",
@@ -429,18 +418,6 @@ class EventCreateAndUpdateSerializer(
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
-        if (
-            self.instance is not None
-            and "use_contact_tracing" in data
-            and data["use_contact_tracing"] != self.instance.use_contact_tracing
-            and self.instance.registrations.exists()
-        ):
-            raise serializers.ValidationError(
-                {
-                    "use_contact_tracing": "Cannot change this field after registration has started"
-                }
-            )
-
         return data
 
     def create(self, validated_data):

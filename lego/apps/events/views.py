@@ -36,7 +36,6 @@ from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
     EventAdministrateAllergiesSerializer,
-    EventAdministrateExportSerializer,
     EventAdministrateSerializer,
     EventCreateAndUpdateSerializer,
     EventReadAuthUserDetailedSerializer,
@@ -236,12 +235,6 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             ),
         )
         event = queryset.first()
-        if (
-            event.use_contact_tracing
-            and request.user == event.created_by
-            and timezone.now() <= event.end_time + timezone.timedelta(days=14)
-        ):
-            serializer = EventAdministrateExportSerializer
         event_data = serializer(event).data
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
