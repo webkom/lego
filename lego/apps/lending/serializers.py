@@ -1,5 +1,6 @@
 from datetime import timedelta
 from rest_framework import serializers
+from lego.apps.files.fields import ImageField
 
 
 from lego.apps.lending.models import LendableObject, LendingInstance
@@ -7,6 +8,7 @@ from lego.apps.users.serializers.users import PublicUserSerializer
 
 
 class LendableObjectSerializer(serializers.ModelSerializer):
+    image = ImageField(required=False, options={"height": 500})
     class Meta:
         model = LendableObject
         fields = "__all__"

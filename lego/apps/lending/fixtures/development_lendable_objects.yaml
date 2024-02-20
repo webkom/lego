@@ -2,13 +2,13 @@
     title: "Grill"
     description: "En grill til å grille"
     location: "A3"
-    # image: "test_event_cover.png" Could not get this to work
+    image: test_event_cover.png
     has_contract: False
     max_lending_period: "2 days"
-    responsible_groups: 
-      - - Webkom
-    responsible_roles: 
-      - member
+    # responsible_groups: 
+    #   - - Webkom
+    # responsible_roles: 
+    #   - member
     created_by: 3
   model: lending.LendableObject
   pk: 1

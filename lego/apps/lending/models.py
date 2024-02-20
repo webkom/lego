@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone, tzinfo
 
 from django.db import models
 from lego.apps.files.fields import ImageField
+from lego.apps.files.models import FileField
 from lego.apps.lending.validators import responsible_roles_validator
 from django.contrib.postgres.fields import ArrayField
 from lego.apps.users import constants
@@ -31,9 +32,7 @@ class LendableObject(BasisModel):
         default=list([constants.MEMBER]),
         validators=[responsible_roles_validator],
     )  
-    image = ImageField(
-        source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
-    )
+    image = FileField(related_name="lendable_object_images")
     location = models.CharField(max_length=128, null=False, blank=True)
 
     @property
