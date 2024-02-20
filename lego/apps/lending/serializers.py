@@ -15,7 +15,7 @@ class LendableObjectSerializer(serializers.ModelSerializer):
 
 
 class LendingInstanceSerializer(serializers.ModelSerializer):
-    user = PublicUserSerializer(read_only=True)
+    user = PublicUserSerializer(read_only=True, source="created_by")
 
     class Meta:
         model = LendingInstance
