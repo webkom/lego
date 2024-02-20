@@ -9,11 +9,14 @@ class LendingInstanceManager(PersistentModelManager):
         lending_instance = super().create(*args, **kwargs)
         abakus_groups = lending_instance.lendable_object.responsible_groups.all()
         role = lending_instance.lendable_object.responsible_role
-
-        users_to_be_notified = Membership.objects.filter(
-            abakus_group__in=abakus_groups, role=role
-        ).values_list("user", flat=True)
-
+        if role:
+            users_to_be_notified = Membership.objects.filter(
+                abakus_group__in=abakus_groups, role=role
+            ).values_list("user", flat=True)
+        else:
+            users_to_be_notified = Membership.objects.filter(
+                abakus_group__in=abakus_groups
+            ).values_list("user", flat=True)
         for user_id in users_to_be_notified:
             user = User.objects.get(pk=user_id)
             notification = LendingInstanceNotification(
