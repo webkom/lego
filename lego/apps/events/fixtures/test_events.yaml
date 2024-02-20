@@ -151,7 +151,6 @@
     end_time: "2118-09-01T15:20:30+03:00"
     created_by: 1
     require_auth: False
-    use_contact_tracing: True
 
 - model: events.Event
   pk: 11

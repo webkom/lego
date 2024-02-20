@@ -1362,60 +1362,6 @@ class EventAdministrateTestCase(BaseAPITestCase):
         self.assertEqual(event_response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class ExportInfoTestCase(BaseAPITestCase):
-    fixtures = [
-        "test_abakus_groups.yaml",
-        "test_companies.yaml",
-        "test_users.yaml",
-        "test_events.yaml",
-    ]
-
-    def setUp(self):
-        self.abakus_user = User.objects.get(pk=1)
-        self.event = Event.objects.get(title="EXPORT_INFO_EVENT")
-        self.event.start_time = timezone.now() - timedelta(hours=7)
-        self.event.end_time = timezone.now() - timedelta(hours=3)
-        self.event.save()
-
-    def test_with_export_permission(self):
-        # Need to apply to the actual event (The one in the db)
-        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
-        self.client.force_authenticate(self.abakus_user)
-
-        event_response = self.client.get(
-            f"{_get_detail_url(self.event.id)}administrate/"
-        )
-
-        attendee_email = self.event.pools.first().registrations.first().user.email
-
-        self.assertEqual(self.event.use_contact_tracing, True)
-        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            event_response.json()
-            .get("pools")[0]
-            .get("registrations")[0]
-            .get("user")
-            .get("email"),
-            attendee_email,
-        )
-
-    def test_without_export_permission(self):
-        user = User.objects.get(pk=2)
-        AbakusGroup.objects.get(name="Webkom").add_user(user)
-        self.client.force_authenticate(user)
-        event_response = self.client.get(
-            f"{_get_detail_url(self.event.id)}administrate/"
-        )
-
-        self.assertIsNone(
-            event_response.json()
-            .get("pools")[0]
-            .get("registrations")[0]
-            .get("user")
-            .get("email")
-        )
-
-
 class AllergiesTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
