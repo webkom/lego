@@ -41,9 +41,6 @@ class LendableObject(BasisModel):
 
 
 class LendingInstance(BasisModel):
-    user = models.ForeignKey(
-        User, related_name="lendinginstances", on_delete=models.CASCADE
-    )
     lendable_object = models.ForeignKey(LendableObject, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
