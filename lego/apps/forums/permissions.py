@@ -41,7 +41,7 @@ class ForumPermissionHandler(PermissionHandler):
         return False
 
     def has_object_permissions(self, user, perm, obj):
-        return perm != DELETE and perm != EDIT
+        return not (perm == DELETE or perm == EDIT)
 
 
 class ThreadPermissionHandler(PermissionHandler):
@@ -85,8 +85,10 @@ class ThreadPermissionHandler(PermissionHandler):
         return False
 
     def has_object_permissions(self, user, perm, obj):
+        if perm == DELETE:
+            return False
         if perm == EDIT and obj.created_by == user:
             return True
         if perm == CREATE:
             return True
-        return perm != DELETE and perm != EDIT
+        return not (perm == DELETE or perm == EDIT)

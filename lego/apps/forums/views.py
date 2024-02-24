@@ -26,6 +26,7 @@ class ForumsViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return PublicForumSerializer
         if self.request and self.request.user.is_authenticated:
             return DetailedAdminForumSerializer
+        return super().get_serializer_class()
 
     def get_object(self) -> Forum:
         queryset = self.get_queryset()
