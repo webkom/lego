@@ -1,3 +1,4 @@
+from django.urls import include, path
 from rest_framework import routers
 
 from lego.apps.articles.views import ArticlesViewSet
@@ -33,6 +34,8 @@ from lego.apps.followers.views import (
     FollowEventViewSet,
     FollowUserViewSet,
 )
+from lego.apps.forums.urls import urlpatterns as forums_urls
+from lego.apps.forums.views import ForumsViewSet, ThreadViewSet
 from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
@@ -131,6 +134,7 @@ router.register(r"files", FileViewSet)
 router.register(r"followers-company", FollowCompanyViewSet)
 router.register(r"followers-event", FollowEventViewSet)
 router.register(r"followers-user", FollowUserViewSet)
+router.register(r"forums", ForumsViewSet)
 router.register(r"frontpage", FrontpageViewSet, basename="frontpage")
 router.register(r"galleries", GalleryViewSet)
 router.register(r"galleries/(?P<gallery_pk>\d+)/pictures", GalleryPictureViewSet)
@@ -192,6 +196,7 @@ router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, basename="submission"
 )
 router.register(r"tags", TagViewSet)
+router.register(r"threads", ThreadViewSet)
 router.register(r"user-delete", UserDeleteViewSet, basename="user-delete")
 router.register(r"users", UsersViewSet)
 router.register(
@@ -201,3 +206,8 @@ router.register(
 )
 router.register(r"oidc", OIDCViewSet, basename="oidc")
 router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")
+
+urlpatterns = [
+    path("", include(router.urls)),
+    path("forums/", include((forums_urls, "forums"))),
+]

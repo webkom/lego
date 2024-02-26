@@ -5,7 +5,7 @@ from django.urls import re_path, resolve
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 
-from .v1 import router as v1
+from .v1 import urlpatterns as v1_urlpatterns
 
 
 @csrf_exempt
@@ -22,7 +22,7 @@ def version_redirect(request, path):
 
 app_name = "api"
 urlpatterns = [
-    re_path(r"^v1/", include((v1.urls, "v1"), namespace="v1")),
+    re_path(r"^v1/", include((v1_urlpatterns, "v1"), namespace="v1")),
     re_path(
         r"^$", RedirectView.as_view(url=f"/api/{settings.API_VERSION}/"), name="default"
     ),

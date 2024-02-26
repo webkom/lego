@@ -17,11 +17,9 @@ class ReactionManager(BasisModelManager):
 
 class Reaction(BasisModel):
     emoji = models.ForeignKey(Emoji, on_delete=models.CASCADE)
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
-
     objects = ReactionManager()  # type: ignore
 
     class Meta:

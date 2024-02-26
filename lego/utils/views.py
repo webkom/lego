@@ -21,7 +21,13 @@ class SiteMetaViewSet(viewsets.ViewSet):
         site_meta = settings.SITE
 
         # Allow non-logged in users to see these as well:
-        allow_anonymous_entities = ["events", "articles", "joblistings", "galleries"]
+        allow_anonymous_entities = [
+            "events",
+            "articles",
+            "joblistings",
+            "galleries",
+            "forums",
+        ]
 
         # Whereas these require that a user has keyword permissions:
         permission_entities = {
