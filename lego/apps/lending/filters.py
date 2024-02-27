@@ -13,7 +13,6 @@ class LendingInstanceFilterSet(FilterSet):
     class Meta:
         model = LendingInstance
         fields = [
-            "user",
             "lendable_object",
             "start_date",
             "pending",
