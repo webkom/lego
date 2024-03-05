@@ -1,10 +1,10 @@
-from datetime import timedelta
 from rest_framework import serializers
 from lego.apps.files.fields import ImageField
 
 
 from lego.apps.lending.models import LendableObject, LendingInstance
 from lego.apps.users.serializers.users import PublicUserSerializer
+from lego.utils.serializers import BasisModelSerializer
 
 
 class LendableObjectSerializer(serializers.ModelSerializer):
@@ -14,7 +14,7 @@ class LendableObjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class LendingInstanceSerializer(serializers.ModelSerializer):
+class LendingInstanceSerializer(BasisModelSerializer):
     user = PublicUserSerializer(read_only=True, source="created_by")
 
     class Meta:
