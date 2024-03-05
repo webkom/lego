@@ -15,7 +15,7 @@ class LendableObjectSerializer(serializers.ModelSerializer):
 
 
 class LendingInstanceSerializer(BasisModelSerializer):
-    user = PublicUserSerializer(read_only=True, source="created_by")
+    author = PublicUserSerializer(read_only=True, source="created_by")
 
     class Meta:
         model = LendingInstance
@@ -24,8 +24,9 @@ class LendingInstanceSerializer(BasisModelSerializer):
             "lendable_object",
             "start_date",
             "end_date",
-            "user",
+            "author",
             "pending",
+            "comment",
             "created_at",
         )
 

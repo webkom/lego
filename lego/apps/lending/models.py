@@ -45,6 +45,7 @@ class LendingInstance(BasisModel):
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
     pending = models.BooleanField(default=True)
+    comment = models.TextField(null=False, blank=True)
 
     objects = LendingInstanceManager()  # type: ignore
 
