@@ -19,7 +19,15 @@ class LendingInstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LendingInstance
-        fields = "__all__"
+        fields = (
+            "id",
+            "lendable_object",
+            "start_date",
+            "end_date",
+            "user",
+            "pending",
+            "created_at",
+        )
 
     def validate(self, data):
         # Check if 'lendable_object', 'start_date', and 'end_date' are provided in the data.
@@ -36,7 +44,7 @@ class LendingInstanceSerializer(serializers.ModelSerializer):
             ).exists():
                 # Calculate the lending period and compare
                 lending_period = end_date - start_date
-                max_lending_period = timedelta(days=lendable_object.max_lending_period)
+                max_lending_period = lendable_object.max_lending_period
                 if lending_period > max_lending_period:
                     raise serializers.ValidationError(
                         "Lending period exceeds maximum allowed duration"
