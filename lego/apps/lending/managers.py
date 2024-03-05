@@ -1,7 +1,7 @@
-from lego.utils.managers import PersistentModelManager
+from lego.utils.managers import BasisModelManager
 
 
-class LendingInstanceManager(PersistentModelManager):
+class LendingInstanceManager(BasisModelManager):
     def create(self, *args, **kwargs):
         from lego.apps.users.models import Membership, User
         from lego.apps.lending.notifications import LendingInstanceNotification
