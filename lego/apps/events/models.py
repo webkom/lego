@@ -930,26 +930,46 @@ class Registration(BasisModel):
         """Wrap this method in a transaction"""
         if presence not in constants.PRESENCE_CHOICES:
             raise ValueError("Illegal presence choice")
+
         self.presence = presence
         self.handle_user_penalty(presence)
         self.save()
 
+    def delete_penalties_for_event(self) -> None:
+        for penalty in self.user.penalties.filter(source_event=self.event):
+            penalty.delete()
+
     def handle_user_penalty(self, presence: constants.PRESENCE_CHOICES) -> None:
+        """
+        Previous penalties related to the event are deleted since the
+        newest presence is the only one that matters
+        """
+
         if (
             self.event.heed_penalties
             and presence == constants.PRESENCE_CHOICES.NOT_PRESENT
             and self.event.penalty_weight_on_not_present
         ):
-            if not self.user.penalties.filter(source_event=self.event).exists():
-                Penalty.objects.create(
-                    user=self.user,
-                    reason=f"Møtte ikke opp på {self.event.title}.",
-                    weight=self.event.penalty_weight_on_not_present,
-                    source_event=self.event,
-                )
+            self.delete_penalties_for_event()
+            Penalty.objects.create(
+                user=self.user,
+                reason=f"Møtte ikke opp på {self.event.title}.",
+                weight=self.event.penalty_weight_on_not_present,
+                source_event=self.event,
+            )
+        elif (
+            self.event.heed_penalties
+            and presence == constants.PRESENCE_CHOICES.TOO_LATE
+        ):
+            self.delete_penalties_for_event()
+            Penalty.objects.create(
+                user=self.user,
+                reason=f"Møtte for sent opp på {self.event.title}.",
+                weight=1,
+                source_event=self.event,
+            )
         else:
-            for penalty in self.user.penalties.filter(source_event=self.event):
-                penalty.delete()
+            self.delete_penalties_for_event()
 
     def add_to_pool(self, pool: Pool) -> Registration:
         allowed: bool = False
