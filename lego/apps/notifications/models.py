@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event
+from lego.apps.meetings import constants
 from lego.utils.models import BasisModel
 
 from .constants import (
@@ -76,12 +77,16 @@ class Announcement(BasisModel):
     message = models.TextField()
     sent = models.DateTimeField(null=True, default=None)
 
-    MANY_TO_MANY_RELATIONS = ["users", "groups", "events", "meetings"]
+    MANY_TO_MANY_RELATIONS = ["users", "groups"]
 
     users = models.ManyToManyField("users.User", blank=True)
     groups = models.ManyToManyField("users.AbakusGroup", blank=True)
     events = models.ManyToManyField("events.Event", blank=True)
+    exclude_waiting_list = models.BooleanField(default=False)
     meetings = models.ManyToManyField("meetings.Meeting", blank=True)
+    meeting_invitation_status = models.CharField(
+        max_length=50, choices=constants.INVITATION_STATUS_TYPES, blank=True
+    )
     from_group = models.ForeignKey(
         "users.AbakusGroup",
         on_delete=models.PROTECT,
@@ -103,6 +108,12 @@ class Announcement(BasisModel):
                 if announcement_lookup:
                     users = announcement_lookup()
                     all_users += list(users)
+
+        for event in self.events.all():
+            all_users += event.announcement_lookup(self.exclude_waiting_list)
+
+        for meeting in self.meetings.all():
+            all_users += meeting.announcement_lookup(self.meeting_invitation_status)
 
         return list(set(all_users))
 
