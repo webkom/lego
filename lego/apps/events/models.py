@@ -776,10 +776,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
         return [registration.user for registration in registrations], []
 
-    def announcement_lookup(self) -> list[User]:
+    def announcement_lookup(self, exclude_waiting_list: bool) -> list[User]:
         registrations: QuerySet[Registration] = self.registrations.filter(
             status=constants.SUCCESS_REGISTER
         )
+
+        if exclude_waiting_list:
+            registrations = registrations.exclude(pool=None)
+
         return [registration.user for registration in registrations]
 
     def add_legacy_registration(self) -> None:

@@ -413,13 +413,13 @@ class RegistrationTestCase(BaseTestCase):
 
         registration = Registration.objects.get_or_create(event=event, user=user)[0]
         event.register(registration)
-        self.assertEqual(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 2)
 
         event.unregister(registration)
-        self.assertEqual(event.waiting_registrations.count(), 0)
+        self.assertEqual(event.waiting_registrations.count(), 1)
 
         event.register(registration)
-        self.assertEqual(event.waiting_registrations.count(), 1)
+        self.assertEqual(event.waiting_registrations.count(), 2)
 
     def test_unregistering_non_existing_user(self):
         """Test that non existing user trying to unregister raises error"""

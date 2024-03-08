@@ -2,7 +2,7 @@
   pk: 1
   fields:
     message: abakom
-    sent: '2019-02-10T14:38:49.164657Z'
+    sent: "2019-02-10T14:38:49.164657Z"
     groups: [3]
     created_by: 4
 
@@ -11,7 +11,7 @@
   fields:
     message: event_from_arrkom
     from_group: 4
-    sent: '2019-02-10T14:38:49.164657Z'
+    sent: "2019-02-10T14:38:49.164657Z"
     events: [1]
     created_by: 4
 
@@ -19,7 +19,7 @@
   pk: 3
   fields:
     message: event_abakom
-    sent: '2019-02-10T14:38:49.164657Z'
+    sent: "2019-02-10T14:38:49.164657Z"
     groups: [3]
     events: [1]
     created_by: 4
@@ -29,7 +29,7 @@
   fields:
     message: user_from_webkom
     from_group: 12
-    users: [1, 2,3]
+    users: [1, 2, 3]
     created_by: 4
 
 - model: notifications.Announcement
@@ -46,3 +46,34 @@
     message: test_from_user_webkom
     groups: [1]
     created_by: 3
+
+- model: notifications.Announcement
+  pk: 7
+  fields:
+    message: another_event_from_arrkom
+    events: [1]
+    exclude_waiting_list: false
+    created_by: 9
+
+- model: notifications.Announcement
+  pk: 8
+  fields:
+    message: yet_another_event_from_arrkom
+    events: [1]
+    exclude_waiting_list: true
+    created_by: 9
+
+- model: notifications.Announcement
+  pk: 9
+  fields:
+    message: meeting
+    meetings: [4]
+    created_by: 1
+
+- model: notifications.Announcement
+  pk: 10
+  fields:
+    message: meeting
+    meetings: [4]
+    meeting_invitation_status: "ATTENDING"
+    created_by: 1

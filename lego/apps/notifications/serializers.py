@@ -43,7 +43,9 @@ class AnnouncementListSerializer(BasisModelSerializer):
             "users",
             "groups",
             "events",
+            "exclude_waiting_list",
             "meetings",
+            "meeting_invitation_status",
         )
         read_only_fields = ("sent",)
 
@@ -59,6 +61,8 @@ class AnnouncementDetailSerializer(BasisModelSerializer):
             "users",
             "groups",
             "events",
+            "exclude_waiting_list",
             "meetings",
+            "meeting_invitation_status",
         )
         read_only_fields = ("sent",)
