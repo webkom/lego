@@ -4,7 +4,7 @@ from django.db.models import Q
 
 
 class LendableObjectPermissionHandler(PermissionHandler):
-    force_object_permission_check = True
+    force_object_permission_check = False
     authentication_map = {LIST: False, VIEW: False}
     default_require_auth = True
 
@@ -31,9 +31,6 @@ class LendableObjectPermissionHandler(PermissionHandler):
             if perm == EDIT and self.created_by(user, obj):
                 return True
 
-        if perm == CREATE:
-            return False
-
         has_perm = super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
@@ -50,13 +47,14 @@ class LendableObjectPermissionHandler(PermissionHandler):
             return True
         if perm == CREATE:
             return False
-        return not (perm == DELETE or perm == EDIT)
+        return True
 
 
 class LendingInstancePermissionHandler(PermissionHandler):
     force_object_permission_check = True
     authentication_map = {LIST: False, VIEW: False}
     default_require_auth = True
+    force_queryset_filtering = True
 
     def has_perm(
         self,
