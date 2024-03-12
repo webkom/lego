@@ -54,7 +54,7 @@ class LendingInstancePermissionHandler(PermissionHandler):
     def filter_queryset(self, user, queryset, **kwargs):
         if user.is_authenticated:
             return queryset.filter(
-                Q(created_by=user) |
-                Q(lendable_object__responsible_groups__in=user.abakus_groups)
+                Q(created_by=user)
+                | Q(lendable_object__responsible_groups__in=user.abakus_groups)
             ).distinct()
         return queryset.none()
