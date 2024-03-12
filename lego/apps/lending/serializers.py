@@ -36,7 +36,7 @@ class DetailedLendingInstanceSerializer(BasisModelSerializer):
             "end_date",
             "author",
             "pending",
-            "comment",
+            "message",
             "created_at",
         )
 

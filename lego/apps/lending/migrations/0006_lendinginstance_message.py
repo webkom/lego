@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='lendinginstance',
-            name='comment',
+            name='message',
             field=models.TextField(blank=True),
         ),
     ]
