@@ -38,7 +38,6 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 
 class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = LendingInstance.objects.all()
     serializer_class = DetailedLendingInstanceSerializer
     filterset_class = LendingInstanceFilterSet
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
@@ -49,11 +48,10 @@ class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request is None:
             return LendingInstance.objects.none()
-
         permission_handler = get_permission_handler(LendingInstance)
         return permission_handler.filter_queryset(
             self.request.user,
-            LendingInstance.objects.prefetch_related("lendable_object"),
+            LendingInstance.objects.all(),
         )
 
     def get_serializer_class(self):
