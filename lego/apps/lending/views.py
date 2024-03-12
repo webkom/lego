@@ -16,7 +16,7 @@ from lego.apps.lending.serializers import (
     DetailedLendableObjectSerializer,
     DetailedLendingInstanceSerializer,
     DetailedAdminLendableObjectSerializer,
-    DetailedAdminLendingInstanceSerializer
+    DetailedAdminLendingInstanceSerializer,
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.utils import get_permission_handler
@@ -45,7 +45,7 @@ class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    
+
     def get_queryset(self):
         if self.request is None:
             return LendingInstance.objects.none()
@@ -53,13 +53,13 @@ class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         permission_handler = get_permission_handler(LendingInstance)
         return permission_handler.filter_queryset(
             self.request.user,
+            LendingInstance.objects.prefetch_related("lendable_object"),
         )
 
     def get_serializer_class(self):
         if self.request and self.request.user.is_authenticated:
             return DetailedAdminLendingInstanceSerializer
         return super().get_serializer_class()
-
 
     def create(self, request):
         serializer = DetailedLendingInstanceSerializer(

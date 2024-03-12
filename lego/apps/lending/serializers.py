@@ -24,7 +24,6 @@ class DetailedLendableObjectSerializer(BasisModelSerializer):
             "responsible_roles",
             "image",
             "location",
-            "furthest_booking_date",
             "created_by",
             "updated_by",
         )
