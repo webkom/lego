@@ -31,6 +31,7 @@ class NotificationSetting(models.Model):
         models.CharField(max_length=64, choices=CHANNEL_CHOICES),
         default=_default_channels,
         null=True,
+        blank=True,
     )
 
     class Meta:
