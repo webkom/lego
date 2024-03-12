@@ -36,6 +36,26 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return DetailedAdminLendableObjectSerializer
         return super().get_serializer_class()
 
+    @decorators.action(
+        detail=True, methods=["get"], permission_classes=[permissions.IsAuthenticated]
+    )
+    def lendingInstance(self, request, pk=None):
+        try:
+            lendable_object = LendableObject.objects.get(pk=pk)
+        except LendableObject.DoesNotExist:
+            return Response(
+                {"error": "LendableObject not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        permission_handler = get_permission_handler(LendingInstance)
+        lending_instances = permission_handler.filter_queryset(
+            self.request.user,
+            LendingInstance.objects.filter(lendable_object=lendable_object),
+        )
+        serializer = DetailedLendingInstanceSerializer(
+            lending_instances, many=True, context={"request": request}
+        )
+        return Response(serializer.data)
+
 
 class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = DetailedLendingInstanceSerializer

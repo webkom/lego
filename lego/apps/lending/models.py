@@ -3,7 +3,10 @@ from datetime import datetime, timedelta, timezone, tzinfo
 from django.db import models
 from lego.apps.files.fields import ImageField
 from lego.apps.files.models import FileField
-from lego.apps.lending.permissions import LendingInstancePermissionHandler
+from lego.apps.lending.permissions import (
+    LendingInstancePermissionHandler,
+    LendableObjectPermissionHandler,
+)
 from lego.apps.lending.validators import responsible_roles_validator
 from django.contrib.postgres.fields import ArrayField
 from lego.apps.permissions.models import ObjectPermissionsModel
@@ -33,7 +36,7 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
         ),
         default=list([constants.MEMBER]),
         validators=[responsible_roles_validator],
-    )  
+    )
     image = FileField(related_name="lendable_object_images")
     location = models.CharField(max_length=128, null=False, blank=True)
 
@@ -43,6 +46,7 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
 
     class Meta:
         abstract = False
+        permission_handler = LendableObjectPermissionHandler()
 
 
 class LendingInstance(BasisModel, ObjectPermissionsModel):

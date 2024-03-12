@@ -42,6 +42,7 @@ class DetailedAdminLendableObjectSerializer(
 
 class DetailedLendingInstanceSerializer(BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
+    lendable_object = DetailedLendableObjectSerializer(read_only=True)
 
     class Meta:
         model = LendingInstance

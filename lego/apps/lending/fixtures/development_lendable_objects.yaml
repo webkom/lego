@@ -5,8 +5,8 @@
     image: test_event_cover.png
     has_contract: False
     max_lending_period: "2 days"
-    # responsible_groups: 
-    #   - - Webkom
+    responsible_groups: 
+       - - Webkom
     # responsible_roles: 
     #   - member
     created_by: 3
@@ -17,6 +17,7 @@
     description: "En soundboks til å sondbokse"
     location: "It lageret"
     # image: "test_event_cover.png"
+    created_by: 3
   model: lending.LendableObject
   pk: 2
 - fields: 
@@ -24,5 +25,6 @@
     description: ""
     location: ""
     # image: "test_event_covet.png"
+    created_by: 3
   model: lending.LendableObject
   pk: 3
