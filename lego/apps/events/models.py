@@ -16,7 +16,6 @@ from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     EventHasClosed,
     EventNotReady,
-    NoPhoneNumber,
     NoSuchPool,
     NoSuchRegistration,
     NotRegisteredPhotoConsents,
@@ -32,7 +31,7 @@ from lego.apps.files.models import FileField
 from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.constants import AUTUMN, SPRING
-from lego.apps.users.models import AbakusGroup, Penalty, User
+from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
 
@@ -99,10 +98,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     youtube_url = CharField(
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
-    use_contact_tracing = models.BooleanField(default=False)
     legacy_registration_count = models.PositiveIntegerField(default=0)
     mazemap_poi = models.PositiveIntegerField(null=True)
     responsible_users = ManyToManyField(User)
+    is_foreign_language = models.BooleanField(default=False, blank=False, null=False)
 
     class Meta:
         permission_handler = EventPermissionHandler()
@@ -133,6 +132,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             or user.is_abakom_member
             or (self.created_by is not None and self.created_by.id == user.id)
         )
+
+    def user_should_see_allergies(self, user: User) -> bool:
+        memberships = Membership.objects.filter(user=user)
+        in_responsible_group = self.responsible_group in [
+            mem.abakus_group for mem in memberships
+        ]
+        created_by_self = user == self.created_by
+
+        return created_by_self or in_responsible_group
 
     def admin_register(
         self,
@@ -301,9 +309,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         current_time = timezone.now()
         if self.registration_close_time < current_time:
             raise EventHasClosed()
-
-        if self.use_contact_tracing and user.phone_number is None:
-            raise NoPhoneNumber()
 
         current_semester = AUTUMN if self.start_time.month > 7 else SPRING
         if self.use_consent and not user.has_registered_photo_consents_for_semester(
@@ -771,10 +776,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
         return [registration.user for registration in registrations], []
 
-    def announcement_lookup(self) -> list[User]:
+    def announcement_lookup(self, exclude_waiting_list: bool) -> list[User]:
         registrations: QuerySet[Registration] = self.registrations.filter(
             status=constants.SUCCESS_REGISTER
         )
+
+        if exclude_waiting_list:
+            registrations = registrations.exclude(pool=None)
+
         return [registration.user for registration in registrations]
 
     def add_legacy_registration(self) -> None:

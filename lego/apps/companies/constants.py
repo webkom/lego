@@ -45,12 +45,14 @@ COLLABORATION = "collaboration"
 README = "readme"
 ITDAGENE = "itdagene"
 LABAMBA_SPONSOR = "labamba_sponsor"
+SOCIAL_MEDIA = "social_media"
 
 OTHER_OFFERS = (
     (COLLABORATION, COLLABORATION),
     (README, README),
     (ITDAGENE, ITDAGENE),
     (LABAMBA_SPONSOR, LABAMBA_SPONSOR),
+    (SOCIAL_MEDIA, SOCIAL_MEDIA),
 )
 
 TRANSLATED_OTHER_OFFERS = {
@@ -58,6 +60,7 @@ TRANSLATED_OTHER_OFFERS = {
     README: "Annonsering i readme",
     ITDAGENE: "Stand på itDAGENE",
     LABAMBA_SPONSOR: "Sponsing av LaBamba",
+    SOCIAL_MEDIA: "Profilering på sosiale medier",
 }
 
 COLLABORATION_ONLINE = "collaboration_online"

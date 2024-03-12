@@ -19,7 +19,6 @@ from lego.apps.events.fields import (
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
     PoolAdministrateAllergiesSerializer,
-    PoolAdministrateExportSerializer,
     PoolAdministrateSerializer,
     PoolCreateAndUpdateSerializer,
     PoolReadAuthSerializer,
@@ -27,7 +26,6 @@ from lego.apps.events.serializers.pools import (
 )
 from lego.apps.events.serializers.registrations import (
     RegistrationReadDetailedAllergiesSerializer,
-    RegistrationReadDetailedExportSerializer,
     RegistrationReadDetailedSerializer,
     RegistrationReadSerializer,
 )
@@ -113,6 +111,7 @@ class EventReadSerializer(
             "survey",
             "is_priced",
             "responsible_users",
+            "is_foreign_language",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
         read_only = True
 
@@ -187,9 +186,9 @@ class EventReadDetailedSerializer(
             "survey",
             "use_consent",
             "youtube_url",
-            "use_contact_tracing",
             "mazemap_poi",
             "responsible_users",
+            "is_foreign_language",
         )
         read_only = True
 
@@ -323,10 +322,13 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
         return request.user.unanswered_surveys()
 
 
-class EventAdministrateSerializer(EventReadSerializer):
+class EventAdministrateSerializer(EventReadSerializer, EventReadDetailedSerializer):
     pools = PoolAdministrateSerializer(many=True)
     unregistered = RegistrationReadDetailedSerializer(many=True)
     waiting_registrations = RegistrationReadDetailedSerializer(many=True)
+    responsible_group = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), required=False, allow_null=True
+    )
 
     class Meta(EventReadSerializer.Meta):
         fields = EventReadSerializer.Meta.fields + (  # type: ignore
@@ -334,16 +336,10 @@ class EventAdministrateSerializer(EventReadSerializer):
             "unregistered",
             "waiting_registrations",
             "use_consent",
-            "use_contact_tracing",
             "created_by",
             "feedback_required",
+            "responsible_group",
         )
-
-
-class EventAdministrateExportSerializer(EventAdministrateSerializer):
-    pools = PoolAdministrateExportSerializer(many=True)
-    unregistered = RegistrationReadDetailedExportSerializer(many=True)
-    waiting_registrations = RegistrationReadDetailedExportSerializer(many=True)
 
 
 class EventAdministrateAllergiesSerializer(EventAdministrateSerializer):
@@ -406,9 +402,9 @@ class EventCreateAndUpdateSerializer(
             "registration_close_time",
             "unregistration_close_time",
             "youtube_url",
-            "use_contact_tracing",
             "mazemap_poi",
             "responsible_users",
+            "is_foreign_language",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
 
     def validate(self, data):
@@ -422,18 +418,6 @@ class EventCreateAndUpdateSerializer(
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
-        if (
-            self.instance is not None
-            and "use_contact_tracing" in data
-            and data["use_contact_tracing"] != self.instance.use_contact_tracing
-            and self.instance.registrations.exists()
-        ):
-            raise serializers.ValidationError(
-                {
-                    "use_contact_tracing": "Cannot change this field after registration has started"
-                }
-            )
-
         return data
 
     def create(self, validated_data):
@@ -445,7 +429,6 @@ class EventCreateAndUpdateSerializer(
         validated_data["require_auth"] = require_auth
         if event_status_type == constants.TBA:
             pools = []
-            validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
         elif event_status_type == constants.INFINITE:
@@ -466,7 +449,6 @@ class EventCreateAndUpdateSerializer(
         )
         if event_status_type == constants.TBA:
             pools = []
-            validated_data["location"] = "TBA"
         elif event_status_type == constants.OPEN:
             pools = []
         elif event_status_type == constants.INFINITE:

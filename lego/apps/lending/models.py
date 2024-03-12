@@ -3,8 +3,10 @@ from datetime import datetime, timedelta, timezone, tzinfo
 from django.db import models
 from lego.apps.files.fields import ImageField
 from lego.apps.files.models import FileField
+from lego.apps.lending.permissions import LendingInstancePermissionHandler
 from lego.apps.lending.validators import responsible_roles_validator
 from django.contrib.postgres.fields import ArrayField
+from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users import constants
 from lego.apps.lending.managers import LendingInstanceManager
 from lego.apps.users.models import User
@@ -16,7 +18,7 @@ from lego.utils.models import BasisModel
 # Create your models here.
 
 
-class LendableObject(BasisModel):
+class LendableObject(BasisModel, ObjectPermissionsModel):
     title = models.CharField(max_length=128, null=False, blank=False)
     description = models.TextField(null=False, blank=True)
     has_contract = models.BooleanField(default=False, null=False, blank=False)
@@ -39,8 +41,11 @@ class LendableObject(BasisModel):
     def get_furthest_booking_date(self):
         return timezone.now() + timedelta(days=14)
 
+    class Meta:
+        abstract = False
 
-class LendingInstance(BasisModel):
+
+class LendingInstance(BasisModel, ObjectPermissionsModel):
     lendable_object = models.ForeignKey(LendableObject, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
@@ -52,3 +57,7 @@ class LendingInstance(BasisModel):
     @property
     def active(self):
         return timezone.now() < self.end_date and timezone.now() > self.start_date
+
+    class Meta:
+        abstract = False
+        permission_handler = LendingInstancePermissionHandler()

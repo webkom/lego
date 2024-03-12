@@ -4,17 +4,27 @@ from lego.apps.files.fields import ImageField
 
 from lego.apps.lending.models import LendableObject, LendingInstance
 from lego.apps.users.serializers.users import PublicUserSerializer
-from lego.utils.serializers import BasisModelSerializer
+from lego.utils.serializers import BasisModelSerializer, ObjectPermissionsSerializerMixin
 
 
-class LendableObjectSerializer(serializers.ModelSerializer):
+class DetailedLendableObjectSerializer(BasisModelSerializer):
     image = ImageField(required=False, options={"height": 500})
     class Meta:
         model = LendableObject
         fields = "__all__"
 
+class DetailedAdminLendableObjectSerializer(
+    ObjectPermissionsSerializerMixin, DetailedLendableObjectSerializer
+):
+    class Meta:
+        model = LendableObject
+        fields = (
+            DetailedLendableObjectSerializer.Meta.fields
+            + ObjectPermissionsSerializerMixin.Meta.fields
+        )
 
-class LendingInstanceSerializer(BasisModelSerializer):
+
+class DetailedLendingInstanceSerializer(BasisModelSerializer):
     author = PublicUserSerializer(read_only=True, source="created_by")
 
     class Meta:
@@ -52,3 +62,13 @@ class LendingInstanceSerializer(BasisModelSerializer):
                     )
 
         return data
+
+class DetailedAdminLendingInstanceSerializer(
+    ObjectPermissionsSerializerMixin, DetailedLendingInstanceSerializer
+):
+    class Meta:
+        model = LendingInstance
+        fields = (
+            DetailedLendingInstanceSerializer.Meta.fields
+            + ObjectPermissionsSerializerMixin.Meta.fields
+        )

@@ -5,6 +5,7 @@ from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.meetings import constants
 from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.apps.reactions.models import Reaction
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.users import PublicUserSerializer
@@ -36,6 +37,15 @@ class MeetingInvitationUpdateSerializer(BasisModelSerializer):
         fields = ("status",)
 
 
+class ReactionsSerializer(serializers.ModelSerializer):
+    author = PublicUserSerializer(read_only=True, source="created_by")
+
+    class Meta:
+        model = Reaction
+        fields = ("id", "emoji", "author")
+        read_only = True
+
+
 class MeetingGroupInvite(serializers.Serializer):
     group = PrimaryKeyRelatedFieldNoPKOpt(queryset=AbakusGroup.objects.all())
 
@@ -63,6 +73,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
     reactions_grouped = serializers.SerializerMethodField()
+    reactions = ReactionsSerializer(many=True, read_only=True)
 
     def get_reactions_grouped(self, obj):
         user = self.context["request"].user
@@ -85,6 +96,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
             "content_target",
             "mazemap_poi",
             "reactions_grouped",
+            "reactions",
         )
         read_only = True
 

@@ -51,6 +51,20 @@ _test_joblistings_data = [
         "application_url": "http://www.vg.no",
         "workplaces": [{"town": "Oslo"}, {"town": "Trondheim"}],
     },
+    {
+        "title": "Itera",
+        "company": 1,
+        "description": "En bedrift.",
+        "text": "Text3",
+        "deadline": "2025-11-03T02:00:00+00:00",
+        "visible_from": "2050-09-30T16:15:00+00:00",
+        "visible_to": "2055-09-30T16:15:00+00:00",
+        "job_type": "summer_job",
+        "from_year": 3,
+        "to_year": 5,
+        "application_url": "http://www.vg.no",
+        "workplaces": [{"town": "Oslo"}, {"town": "Trondheim"}],
+    },
 ]
 
 
@@ -100,6 +114,13 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         joblisting_response = self.client.get(_get_list_url())
         self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 3)
+
+    def test_before_visible(self):
+        joblisting = Joblisting.objects.all().first()
+        joblisting.visible_from = timezone.now() + timedelta(days=2)
+        joblisting.save()
+        joblisting_response = self.client.get(_get_detail_url(1))
+        self.assertEqual(joblisting_response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class RetrieveJoblistingsTestCase(BaseAPITestCase):

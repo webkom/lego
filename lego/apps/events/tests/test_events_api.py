@@ -46,6 +46,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event2",
@@ -74,6 +75,7 @@ _test_event_data = [
             },
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": False,
     },
     {
         "title": "Event3",
@@ -96,6 +98,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event4",
@@ -118,6 +121,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event5",
@@ -140,6 +144,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event6",
@@ -161,6 +166,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event7",
@@ -173,6 +179,7 @@ _test_event_data = [
         "endTime": "2015-09-01T13:20:30Z",
         "mergeTime": "2016-01-01T13:20:30Z",
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
     {
         "title": "Event8",
@@ -194,6 +201,7 @@ _test_event_data = [
             }
         ],
         "responsibleUsers": [1],
+        "isForeignLanguage": True,
     },
 ]
 
@@ -557,7 +565,6 @@ class CreateEventsTestCase(BaseAPITestCase):
         )
         created_event = Event.objects.get(id=event_id)
         self.assertEqual(created_event.event_status_type, "TBA")
-        self.assertEqual(created_event.location, "TBA")
         self.assertEqual(len(created_event.pools.all()), 0)
 
     def test_event_creation_open(self):
@@ -1355,60 +1362,6 @@ class EventAdministrateTestCase(BaseAPITestCase):
         self.assertEqual(event_response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class ExportInfoTestCase(BaseAPITestCase):
-    fixtures = [
-        "test_abakus_groups.yaml",
-        "test_companies.yaml",
-        "test_users.yaml",
-        "test_events.yaml",
-    ]
-
-    def setUp(self):
-        self.abakus_user = User.objects.get(pk=1)
-        self.event = Event.objects.get(title="EXPORT_INFO_EVENT")
-        self.event.start_time = timezone.now() - timedelta(hours=7)
-        self.event.end_time = timezone.now() - timedelta(hours=3)
-        self.event.save()
-
-    def test_with_export_permission(self):
-        # Need to apply to the actual event (The one in the db)
-        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
-        self.client.force_authenticate(self.abakus_user)
-
-        event_response = self.client.get(
-            f"{_get_detail_url(self.event.id)}administrate/"
-        )
-
-        attendee_email = self.event.pools.first().registrations.first().user.email
-
-        self.assertEqual(self.event.use_contact_tracing, True)
-        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            event_response.json()
-            .get("pools")[0]
-            .get("registrations")[0]
-            .get("user")
-            .get("email"),
-            attendee_email,
-        )
-
-    def test_without_export_permission(self):
-        user = User.objects.get(pk=2)
-        AbakusGroup.objects.get(name="Webkom").add_user(user)
-        self.client.force_authenticate(user)
-        event_response = self.client.get(
-            f"{_get_detail_url(self.event.id)}administrate/"
-        )
-
-        self.assertIsNone(
-            event_response.json()
-            .get("pools")[0]
-            .get("registrations")[0]
-            .get("user")
-            .get("email")
-        )
-
-
 class AllergiesTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
@@ -1425,13 +1378,32 @@ class AllergiesTestCase(BaseAPITestCase):
         self.event.end_time = timezone.now() - timedelta(hours=3)
         self.event.save()
 
-    def test_with_allergies_permission(self):
+    def test_with_allergies_permission_author(self):
         # Need to apply to the actual event (The one in the db)
         AbakusGroup.objects.get(name="Abakom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
 
         event_response = self.client.get(f"{_get_detail_url(self.event.id)}allergies/")
 
+        attendee_allergies = (
+            self.event.pools.first().registrations.first().user.allergies
+        )
+
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            event_response.json()
+            .get("pools")[0]
+            .get("registrations")[0]
+            .get("user")
+            .get("allergies"),
+            attendee_allergies,
+        )
+
+    def test_with_allergies_permission_responsible_group(self):
+        user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(pk=25).add_user(user)
+        self.client.force_authenticate(user)
+        event_response = self.client.get(f"{_get_detail_url(self.event.id)}allergies/")
         attendee_allergies = (
             self.event.pools.first().registrations.first().user.allergies
         )

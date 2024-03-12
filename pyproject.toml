@@ -75,18 +75,18 @@ tox = "4.11.3"
 tblib = "^1.7.0"
 
 [tool.poetry.group.coverage.dependencies]
-coverage = "7.2.7"
+coverage = "7.4.1"
 
 [tool.poetry.group.mypy.dependencies]
 mypy = "1.5.0"
 mypy-extensions = "1.0.0"
 django-stubs = "4.2.1"
 djangorestframework-stubs = "3.14.0"
-types-bleach = "6.0.0.3"
+types-bleach = "6.1.0.0"
 types-certifi = "2021.10.8.3"
 types-docutils = "0.20.0.1"
 types-Markdown = "3.4.2.9"
-types-python-slugify = "8.0.0.2"
+types-python-slugify = "8.0.0.3"
 types-PyYAML = "6.0.12.10"
 types-requests = "2.31.0.1"
 types-six = "1.16.21.8"

@@ -22,7 +22,9 @@ class RestrictedMailModelTestCase(BaseTestCase):
         restricted_mail = RestrictedMail.objects.get(id=1)
         recipients = restricted_mail.lookup_recipients()
 
-        self.assertCountEqual(recipients, ["test1@user.com", "test2@user.com"])
+        self.assertCountEqual(
+            recipients, ["test1@user.com", "test2@user.com", "pr@abakus.no"]
+        )
 
     def test_mark_used(self):
         """The used field is not None when the item is marked as used"""

@@ -105,8 +105,17 @@ class Meeting(BasisModel):
         """
         return self.invited_users, []
 
-    def announcement_lookup(self):
-        return self.invited_users
+    def announcement_lookup(self, meeting_invitation_status) -> list[User]:
+        meeting_invitations = self.invitations
+
+        if meeting_invitation_status:
+            meeting_invitations = meeting_invitations.filter(
+                status=meeting_invitation_status
+            )
+
+        return User.objects.filter(
+            id__in=meeting_invitations.values_list("user", flat=True)
+        )
 
     @property
     def content_target(self):

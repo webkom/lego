@@ -81,6 +81,7 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
         "test_events.yaml",
         "test_companies.yaml",
         "test_announcements.yaml",
+        "test_meetings.yaml",
     ]
 
     def setUp(self):
@@ -238,3 +239,59 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.unauthorized_user)
         response = self.client.post(f"{self.url}{self.unsent_announcement.id}/send/")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_send_announcement_twice(self):
+        """
+        An announcement can not be sent twice
+        """
+
+        self.client.force_authenticate(self.authorized_user)
+        response = self.client.post(f"{self.url}{self.unsent_announcement.id}/send/")
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        response = self.client.post(f"{self.url}{self.unsent_announcement.id}/send/")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_recipients_lookup_to_users(self):
+        """
+        An announcement should be sent to the specified users
+        """
+
+        announcement = Announcement.objects.get(pk=4)
+        recipients = announcement.lookup_recipients()
+        self.assertEqual(len(recipients), 3)
+
+    def test_recipients_lookup_for_event(self):
+        """
+        Everyone registered to an event should receive the announcement
+        """
+        announcement = Announcement.objects.get(pk=7)
+        recipients = announcement.lookup_recipients()
+        self.assertEqual(len(recipients), 3)
+
+    def test_recipients_lookup_for_event_exclude_waiting_list(self):
+        """
+        Everyone registered to an event, except those on waiting list,
+        should receive the announcement
+        """
+
+        announcement = Announcement.objects.get(pk=8)
+        recipients = announcement.lookup_recipients()
+        self.assertEqual(len(recipients), 2)
+
+    def test_recipients_lookup_for_meeting(self):
+        """
+        Everyone invited to a meeting should receive the announcement
+        """
+
+        announcement = Announcement.objects.get(pk=9)
+        recipients = announcement.lookup_recipients()
+        self.assertEqual(len(recipients), 2)
+
+    def test_recipients_lookup_for_only_meeting_attendees(self):
+        """
+        Only those invited to a meeting and accepted should receive the announcement
+        """
+
+        announcement = Announcement.objects.get(pk=10)
+        recipients = announcement.lookup_recipients()
+        self.assertEqual(len(recipients), 1)

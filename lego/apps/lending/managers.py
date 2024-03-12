@@ -27,6 +27,20 @@ class LendingInstanceManager(BasisModelManager):
 
         return lending_instance
 
+    #TODO: We probably need another template for accepting instances
+    def update(self, *args, **kwargs):
+        from lego.apps.lending.notifications import LendingInstanceNotification
+
+        lending_instance = super().update(*args, **kwargs)
+        notification = LendingInstanceNotification(
+            lending_instance=lending_instance,
+            user=lending_instance.created_by,
+        )
+        notification.notify()
+
+        return lending_instance
+
+
     def get_queryset(self):
         return super().get_queryset().select_related("created_by")
 
