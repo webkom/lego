@@ -29,6 +29,8 @@ class DetailedThreadSerializer(BasisModelSerializer):
             "forum",
             "created_by",
             "content_target",
+            "locked",
+            "sticky"
         )
 
 
@@ -49,8 +51,12 @@ class PublicThreadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Thread
-        fields = ("id", "title", "content", "created_at", "forum")
+        fields = ("id", "title", "content", "created_at", "forum", "sticky", "locked")
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response["attributes"] = sorted(response["sticky"])
+        return response
 
 class DetailedForumSerializer(BasisModelSerializer):
     threads = PublicThreadSerializer(many=True, read_only=True)
@@ -67,6 +73,7 @@ class DetailedForumSerializer(BasisModelSerializer):
             "threads",
             "created_by",
             "content_target",
+            "sticky"
         )
 
 
@@ -89,4 +96,5 @@ class PublicForumSerializer(BasisModelSerializer):
             "title",
             "description",
             "created_at",
+            "sticky",
         )

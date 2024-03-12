@@ -25,3 +25,23 @@ class CommentViewSet(
             return UpdateCommentSerializer
 
         return CommentSerializer
+
+    def perform_create(self, serializer):
+        self._check_content_object_lock(serializer)
+        super().perform_create(serializer)
+
+    def perform_update(self, serializer):
+        self._check_content_object_lock(serializer)
+        super().perform_update(serializer)
+
+    def _check_content_object_lock(self, serializer):
+        content_type_id = serializer.validated_data.get("content_type").id
+        object_id = serializer.validated_data.get("object_id")
+        content_type = ContentType.objects.get_for_id(content_type_id)
+
+        # Adapt this part to your model's specifics
+        if content_type.model == "thread" and content_type.app_label == "forums":
+            ThreadModel = content_type.model_class()
+            thread = ThreadModel.objects.get(id=object_id)
+            if thread.is_locked:  # Assume `is_locked` is a property/method to check lock status
+                raise PermissionDenied("This thread is locked.")

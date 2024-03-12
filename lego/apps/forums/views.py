@@ -18,7 +18,7 @@ from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
 
 class ForumsViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Forum.objects.all()
-    ordering = "-created_at"
+    ordering = ["-sticky", "-created_at"]
     serializer_class = DetailedForumSerializer
 
     def get_serializer_class(self):
@@ -48,7 +48,7 @@ class ForumsViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 class ThreadViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Thread.objects.all()
-    ordering = "-created_at"
+    ordering = ["-sticky", "-created_at"]
     serializer_class = DetailedThreadSerializer
 
     def get_queryset(self):
