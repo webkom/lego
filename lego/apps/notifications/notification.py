@@ -1,4 +1,5 @@
 from structlog import get_logger
+from lego.apps.users.models import User
 
 from lego.utils.content_types import instance_to_string
 from lego.utils.tasks import send_email, send_push
@@ -15,7 +16,7 @@ class Notification:
 
     name = None
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user: User, *args, **kwargs):
         self.user = user
         self.args = (args,)
         self.kwargs = kwargs
