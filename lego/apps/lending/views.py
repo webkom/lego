@@ -51,7 +51,7 @@ class LendingInstanceViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         permission_handler = get_permission_handler(LendingInstance)
         return permission_handler.filter_queryset(
             self.request.user,
-            LendingInstance.objects.all(),
+            LendingInstance.objects.prefetch_related("lendable_object"),
         )
 
     def get_serializer_class(self):
