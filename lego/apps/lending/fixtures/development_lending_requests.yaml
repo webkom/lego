@@ -3,8 +3,8 @@
     created_by: 3
     start_date: '2024-02-02T23:16:00+00:00'
     end_date: '2024-02-02T23:18:00+00:00'
-    comment: "Jeg vil låne grill :)"
-    pending: True # Should be a status field with multiple options
+    message: "Jeg vil låne grill :)"
+    status: "PENDING"
   model: lending.LendingInstance
   pk: 1
 - fields:
@@ -12,6 +12,6 @@
     created_by: 3
     start_date: '2024-02-02T23:16:00+00:00'
     end_date: '2024-02-02T23:18:00+00:00'
-    pending: True
+    status: "PENDING"
   model: lending.LendingInstance
   pk: 2

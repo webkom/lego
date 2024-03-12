@@ -6,10 +6,10 @@ import certifi
 from elasticsearch import Elasticsearch, NotFoundError
 from elasticsearch.helpers import bulk
 
-from lego.apps.search.backend import SearchBacked
+from lego.apps.search.backend import SearchBackend
 
 
-class ElasticsearchBackend(SearchBacked):
+class ElasticsearchBackend(SearchBackend):
     name = "elasticsearch"
 
     connection = None

@@ -1,7 +1,7 @@
 from . import registry
 
 
-class SearchBacked:
+class SearchBackend:
     """
     Base class for search backends. A backend needs to implement all methods on this class to work
     like it should.

@@ -1,6 +1,6 @@
 from structlog import get_logger
-from lego.apps.users.models import User
 
+from lego.apps.users.models import User
 from lego.utils.content_types import instance_to_string
 from lego.utils.tasks import send_email, send_push
 

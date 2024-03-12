@@ -4,12 +4,11 @@ from lego.apps.notifications.notification import Notification
 from lego.apps.users.models import User
 
 
-class LendingInstanceNotification(Notification):
+class LendingInstanceCreateNotification(Notification):
     def __init__(self, lending_instance: LendingInstance, user: User):
         self.lending_instance = lending_instance
         self.lender = lending_instance.user
 
-        # TODO: Might not work
         super().__init__(user=user)
 
     name = LENDING_INSTANCE_CREATION

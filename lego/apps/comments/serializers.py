@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import DateTimeField
+from rest_framework.fields import CharField, DateTimeField
 
 from lego.apps.comments.models import Comment
 from lego.apps.content.fields import ContentSerializerField
@@ -14,6 +15,8 @@ class CommentSerializer(BasisModelSerializer):
     updated_at = DateTimeField(read_only=True)
     content_target = GenericRelationField(source="content_object")
     text = ContentSerializerField()
+    reactions_grouped = serializers.SerializerMethodField()
+    content_target_self = CharField(read_only=True)
 
     class Meta:
         model = Comment
@@ -22,10 +25,16 @@ class CommentSerializer(BasisModelSerializer):
             "text",
             "author",
             "content_target",
+            "content_target_self",
             "created_at",
             "updated_at",
             "parent",
+            "reactions_grouped",
         )
+
+    def get_reactions_grouped(self, obj):
+        user = self.context["request"].user
+        return obj.get_reactions_grouped(user)
 
     def validate(self, attrs):
         content_target = attrs.get("content_object")

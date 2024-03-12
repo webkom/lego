@@ -1,19 +1,18 @@
-from datetime import datetime, timedelta, timezone, tzinfo
+from datetime import timedelta, timezone
 
-from django.db import models
-from lego.apps.files.fields import ImageField
-from lego.apps.files.models import FileField
-from lego.apps.lending.permissions import LendingInstancePermissionHandler
-from lego.apps.lending.validators import responsible_roles_validator
 from django.contrib.postgres.fields import ArrayField
+from django.db import models
+
+from lego.apps.files.models import FileField
+from lego.apps.lending.managers import LendingInstanceManager
+from lego.apps.lending.permissions import (
+    LendableObjectPermissionHandler,
+    LendingInstancePermissionHandler,
+)
+from lego.apps.lending.validators import responsible_roles_validator
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users import constants
-from lego.apps.lending.managers import LendingInstanceManager
-from lego.apps.users.models import User
-
-
 from lego.utils.models import BasisModel
-
 
 # Create your models here.
 
@@ -31,9 +30,9 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
             max_length=30,
             choices=constants.ROLES,
         ),
-        default=list([constants.MEMBER]),
+        default=[constants.MEMBER],
         validators=[responsible_roles_validator],
-    )  
+    )
     image = FileField(related_name="lendable_object_images")
     location = models.CharField(max_length=128, null=False, blank=True)
 
@@ -43,16 +42,30 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
 
     class Meta:
         abstract = False
+        permission_handler = LendableObjectPermissionHandler()
 
 
 class LendingInstance(BasisModel, ObjectPermissionsModel):
-    lendable_object = models.ForeignKey(LendableObject, on_delete=models.CASCADE)
+    lendable_object = models.ForeignKey(
+        LendableObject, on_delete=models.CASCADE, unique=False
+    )
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
-    pending = models.BooleanField(default=True)
-    comment = models.TextField(null=False, blank=True)
 
-    objects = LendingInstanceManager()  # type: ignore
+    class LendingInstanceStatus(models.TextChoices):
+        PENDING = "PENDING"
+        ACCEPTED = "ACCEPTED"
+        REJECTED = "REJECTED"
+
+    status = models.CharField(
+        max_length=8,
+        choices=LendingInstanceStatus.choices,
+        default=LendingInstanceStatus.PENDING,
+    )
+
+    message = models.TextField(null=False, blank=True)
+
+    objects = LendingInstanceManager()
 
     @property
     def active(self):

@@ -40,6 +40,8 @@ from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
+from lego.apps.lending.urls import urlpatterns as lending_urls
+from lego.apps.lending.views import LendableObjectViewSet, LendingInstanceViewSet
 from lego.apps.meetings.views import (
     MeetingInvitationTokenViewSet,
     MeetingInvitationViewSet,
@@ -78,8 +80,6 @@ from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
-from lego.apps.lending.views import LendableObjectViewSet, LendingInstanceViewSet
-
 from lego.utils.views import SiteMetaViewSet
 
 router = routers.DefaultRouter()
@@ -215,4 +215,5 @@ router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")
 urlpatterns = [
     path("", include(router.urls)),
     path("forums/", include((forums_urls, "forums"))),
+    path("", include((lending_urls, "lending"))),
 ]

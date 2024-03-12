@@ -1,7 +1,7 @@
 from rest_framework import status
 
-from lego.apps.email.models import EmailList
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.email.models import EmailAddress, EmailList
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.test_utils import BaseAPITestCase
 
 
@@ -116,6 +116,21 @@ class EmailListTestCase(BaseAPITestCase):
         )
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
+    def test_create_list_no_recipients(self):
+        """Bad request when user tries to create list with no recipients"""
+        response = self.client.post(
+            self.url,
+            {
+                "name": "Webkom",
+                "email": "webbers",
+                "users": [],
+                "groups": [self.admin_group.id],
+                "group_roles": ["recruiting"],
+                "additional_emails": [],
+            },
+        )
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
     def test_edit_additional_email(self):
         """Test ability to remove an additional email"""
         response = self.client.patch(
@@ -138,7 +153,9 @@ class EmailListTestCase(BaseAPITestCase):
     def test_delete_additional_email(self):
         """Test ability to set additional emails to an empty array"""
 
-        response = self.client.patch(f"{self.url}1/", {"additional_emails": []})
+        response = self.client.patch(
+            f"{self.url}1/", {"additional_emails": [], "users": [1]}
+        )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual([], EmailList.objects.get(id=1).additional_emails)
 
@@ -149,8 +166,31 @@ class EmailListTestCase(BaseAPITestCase):
 
         self.assertEqual("address", EmailList.objects.get(id=1).email_id)
 
+    def test_edit_list_no_recipients(self):
+        """Bad request when user tries to edit list with no recipients"""
+        response = self.client.patch(
+            f"{self.url}1/",
+            {
+                "users": [],
+                "groups": [self.admin_group.id],
+                "group_roles": ["recruiting"],
+                "additional_emails": [],
+            },
+        )
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+    def test_edit_list_no_recipients_partial(self):
+        """Bad request when user tries to edit list with no recipients"""
+        response = self.client.patch(
+            f"{self.url}1/",
+            {
+                "additional_emails": [],
+            },
+        )
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
     def test_delete_endpoint_not_available(self):
-        """The delete endpoint is'nt available."""
+        """The delete endpoint isn't available."""
         response = self.client.delete(f"{self.url}1/")
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
@@ -177,6 +217,36 @@ class UserEmailTestCase(BaseAPITestCase):
         """The list endpoint is available"""
         response = self.client.get(self.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_list_filter_groups(self):
+        """The list endpoint can be filtered by group memberships"""
+        webkom = AbakusGroup.objects.get(name="Webkom")
+        webber = User.objects.create(
+            username="Webber",
+            email="webber",
+            internal_email=EmailAddress.objects.create(email="webber"),
+        )
+        Membership.objects.create(abakus_group=webkom, user=webber)
+        User.objects.create(
+            username="Pleb",
+            email="pleb",
+            internal_email=EmailAddress.objects.create(email="pleb"),
+        )
+        response = self.client.get(self.url)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(3, len(response.json()["results"]))
+
+        response = self.client.get(f"{self.url}?userGroups=Webkom")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(response.json()["results"]))
+
+        response = self.client.get(f"{self.url}?userGroups=Webkom,EmailAdminTest")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(response.json()["results"]))
+
+        response = self.client.get(f"{self.url}?userGroups=-")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(2, len(response.json()["results"]))
 
     def test_retrieve(self):
         """It is possible to retrieve the user"""

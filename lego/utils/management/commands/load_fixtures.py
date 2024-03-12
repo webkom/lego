@@ -79,7 +79,7 @@ class Command(BaseCommand):
                     "surveys/fixtures/development_surveys.yaml",
                     "users/fixtures/development_photo_consents.yaml",
                     "lending/fixtures/development_lendable_objects.yaml",
-                    "lending/fixtures/development_lending_requests",
+                    "lending/fixtures/development_lending_requests.yaml",
                 ]
             )
 

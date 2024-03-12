@@ -15,5 +15,5 @@ class LendingInstanceFilterSet(FilterSet):
         fields = [
             "lendable_object",
             "start_date",
-            "pending",
+            "status",
         ]
