@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from lego.apps.events import constants
 from lego.apps.events.models import Event, Registration
+from lego.apps.users.constants import LATE_PRESENCE_PENALTY_WEIGHT
 from lego.apps.users.models import AbakusGroup, Penalty
 from lego.utils.test_utils import BaseTestCase
 
@@ -398,6 +399,19 @@ class PenaltyTestCase(BaseTestCase):
         self.assertEqual(penalties_before, 0)
         self.assertEqual(penalties_after, event.penalty_weight_on_not_present)
 
+    def test_penalties_created_when_late_present(self):
+        """Test that user gets penalties when late present"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+
+        registration = event.registrations.first()
+        penalties_before = registration.user.number_of_penalties()
+
+        registration.set_presence(constants.PRESENCE_CHOICES.LATE)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertEqual(penalties_before, 0)
+        self.assertEqual(penalties_after, LATE_PRESENCE_PENALTY_WEIGHT)
+
     def test_penalties_removed_when_not_present_changes(self):
         """Test that penalties for not_present gets removed when resetting presence"""
         event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
@@ -411,8 +425,23 @@ class PenaltyTestCase(BaseTestCase):
         self.assertEqual(penalties_before, event.penalty_weight_on_not_present)
         self.assertEqual(penalties_after, 0)
 
+    def test_penalties_removed_when_late_present_changes(self):
+        """Test that penalties for late presence gets removed when changing to present"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        registration = event.registrations.first()
+        registration.set_presence(constants.PRESENCE_CHOICES.LATE)
+
+        penalties_before = registration.user.number_of_penalties()
+        registration.set_presence(constants.PRESENCE_CHOICES.PRESENT)
+
+        penalties_after = registration.user.number_of_penalties()
+        self.assertEqual(penalties_before, LATE_PRESENCE_PENALTY_WEIGHT)
+        self.assertEqual(penalties_after, 0)
+
     def test_only_correct_penalties_are_removed_on_presence_change(self):
-        """Test that only penalties for given event are removed when changing presence"""
+        """
+        Test that only penalties of type presence for given event are removed when changing presence
+        """
         event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
         other_event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
         registration = event.registrations.first()
@@ -446,6 +475,41 @@ class PenaltyTestCase(BaseTestCase):
             + other_event.penalty_weight_on_not_present,
         )
         self.assertEqual(penalties_after, other_event.penalty_weight_on_not_present)
+
+    def test_only_correct_penalties_are_removed_on_presence_change_on_same_event(self):
+        """Test that only penalties of type presence are removed when changing presence"""
+        event = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        registration = event.registrations.first()
+
+        registration.set_presence(constants.PRESENCE_CHOICES.NOT_PRESENT)
+        penalties_before = registration.user.number_of_penalties()
+        penalties_object_before = list(registration.user.penalties.all())
+
+        # Default penalty type is other
+        Penalty.objects.create(
+            user=registration.user,
+            reason="SAME EVENT",
+            weight=2,
+            source_event=event,
+        )
+        penalties_during = registration.user.number_of_penalties()
+        penalties_objects_during = list(registration.user.penalties.all())
+
+        registration.set_presence(constants.PRESENCE_CHOICES.UNKNOWN)
+        penalties_after = registration.user.number_of_penalties()
+        penalties_object_after = list(registration.user.penalties.all())
+
+        self.assertEqual(penalties_object_before[0].source_event, event)
+        self.assertEqual(penalties_object_after[0].source_event, event)
+        self.assertEqual(len(penalties_object_before), 1)
+        self.assertEqual(len(penalties_objects_during), 2)
+        self.assertEqual(len(penalties_object_after), 1)
+        self.assertEqual(penalties_before, event.penalty_weight_on_not_present)
+        self.assertEqual(
+            penalties_during,
+            event.penalty_weight_on_not_present + event.penalty_weight_on_not_present,
+        )
+        self.assertEqual(penalties_after, event.penalty_weight_on_not_present)
 
     def test_able_to_register_when_not_heed_penalties_with_penalties(self):
         """Test that user is able to register when heed_penalties is false and user has penalties"""
