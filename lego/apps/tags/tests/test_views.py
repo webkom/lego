@@ -13,9 +13,7 @@ class TagViewsTestCase(APITestCase):
     def test_fetch_list(self):
         response = self.client.get("/api/v1/tags/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertDictEqual(
-            response.json()["results"][0], {"tag": "ababrygg", "usages": 0}
-        )
+        self.assertDictEqual(response.json()[0], {"tag": "ababrygg", "usages": 0})
 
     def test_fetch_detail(self):
         response = self.client.get("/api/v1/tags/ababrygg/")
