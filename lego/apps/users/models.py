@@ -537,6 +537,11 @@ class Penalty(BasisModel):
     source_event = models.ForeignKey(
         "events.Event", related_name="penalties", on_delete=models.CASCADE
     )
+    type = models.CharField(
+        max_length=50,
+        choices=constants.PENALTY_TYPES.choices,
+        default=constants.PENALTY_TYPES.OTHER,
+    )
 
     objects = UserPenaltyManager()  # type: ignore
 

@@ -1,5 +1,7 @@
 from enum import Enum
 
+from django.db import models
+
 MALE = "male"
 FEMALE = "female"
 OTHER = "other"
@@ -95,8 +97,6 @@ AbakusGradeFSMapping = {
     FSGroup.MSSECCLO: FOURTH_GRADE_KOMTEK,
 }
 
-STUDENT_EMAIL_DOMAIN = "stud.ntnu.no"
-
 GROUP_COMMITTEE = "komite"
 GROUP_INTEREST = "interesse"
 GROUP_BOARD = "styre"
@@ -142,3 +142,16 @@ THEMES = (
     (LIGHT_THEME, LIGHT_THEME),
     (DARK_THEME, DARK_THEME),
 )
+
+
+LATE_PRESENCE_PENALTY_WEIGHT = 1
+
+
+class PENALTY_WEIGHTS(models.TextChoices):
+    LATE_PRESENCE = 1
+
+
+class PENALTY_TYPES(models.TextChoices):
+    PRESENCE = "presence"
+    PAYMENT = "payment"
+    OTHER = "other"
