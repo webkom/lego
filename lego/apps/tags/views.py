@@ -12,10 +12,11 @@ class TagViewSet(
     RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.all().order_by("tag")
     ordering = "tag"
     serializer_class = TagListSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action != "list":
