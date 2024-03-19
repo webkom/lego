@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -98,18 +97,14 @@ class ThreadViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 @csrf_exempt
 def easter(request):
     if request.method == "DELETE":
-        today = datetime.now()
-        if today.month == 4 and today.day == 1:
-            image_path = os.path.join(
-                settings.BASE_DIR, "assets", "img", "c8a9356a064b183b.png"
-            )
-            try:
-                with open(image_path, "rb") as image:
-                    return HttpResponse(
-                        image.read(), content_type="image/jpeg", status=418
-                    )
-            except Exception:
-                return HttpResponse(status=420)
+        image_path = os.path.join(
+            settings.BASE_DIR, "assets", "img", "c8a9356a064b183b.png"
+        )
+        try:
+            with open(image_path, "rb") as image:
+                return HttpResponse(image.read(), content_type="image/jpeg", status=418)
+        except Exception:
+            return HttpResponse(status=420)
     return HttpResponse(
         "Easter dawn whispers renewal, where hidden eggs and hopes bloom anew.",
         status=425,
