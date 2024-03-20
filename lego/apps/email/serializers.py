@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.core.exceptions import ValidationError
 from rest_framework import exceptions, serializers
 
@@ -7,7 +9,7 @@ from lego.apps.users.fields import (
     PublicUserListField,
     PublicUserWithGroupsField,
 )
-from lego.apps.users.models import User
+from lego.apps.users.models import Membership, User
 
 from .fields import EmailAddressField
 
@@ -43,6 +45,33 @@ class EmailListSerializer(serializers.ModelSerializer):
             "require_internal_address",
             "additional_emails",
         )
+
+    def validate(self, attrs: Any) -> Any:
+        # Use existing values where missing to support patch requests
+        get = (
+            lambda index: attrs[index]
+            if index in attrs
+            else getattr(self.instance, index)
+        )
+        length = (
+            lambda value: len(value) if hasattr(value, "__len__") else value.count()
+        )
+        # Require at least one receiver of the email list
+        users_len, emails_len = length(get("users")), length(get("additional_emails"))
+        if users_len == 0 and emails_len == 0:
+            groups = (
+                attrs["groups"] if "groups" in attrs else self.instance.groups.all()
+            )
+            group_roles = get("group_roles")
+            memberships = Membership.objects.filter(abakus_group__in=groups)
+
+            if length(group_roles) > 0:
+                memberships = memberships.filter(role__in=group_roles)
+
+            if not memberships.exists():
+                raise ValidationError("Cannot create a mail list without receivers")
+
+        return super().validate(attrs)
 
 
 class EmailListDetailSerializer(EmailListSerializer):
