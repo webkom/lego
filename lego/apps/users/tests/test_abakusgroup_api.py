@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from lego.apps.users import constants
-from lego.apps.users.constants import LEADER
+from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST, LEADER
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.utils.test_utils import BaseAPITestCase
@@ -66,6 +66,15 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
 
     def test_with_auth(self):
         self.successful_list(self.user)
+
+    def test_with_filter_type(self):
+        """Groups can be filtered on multiple types"""
+        self.client.force_authenticate(self.user)
+        response = self.client.get(
+            f"{_get_list_url()}?type={GROUP_COMMITTEE},{GROUP_INTEREST}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(7, len(response.json()["results"]))
 
 
 class RetrieveAbakusGroupAPITestCase(BaseAPITestCase):

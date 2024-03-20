@@ -37,6 +37,8 @@ class MembershipFilterSet(FilterSet):
 
 
 class AbakusGroupFilterSet(FilterSet):
+    type = CharInFilter(field_name="type", lookup_expr="in")
+
     class Meta:
         model = AbakusGroup
         fields = ("type",)
