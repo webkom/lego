@@ -1,12 +1,8 @@
-import os
-
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 
-from lego import settings
 from lego.apps.forums.models import Forum, Thread
 from lego.apps.forums.serializers import (
     DetailedAdminForumSerializer,
@@ -92,20 +88,3 @@ class ThreadViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         except PermissionDenied as e:
             raise PermissionDenied from e
         return obj
-
-
-@csrf_exempt
-def easter(request):
-    if request.method == "DELETE":
-        image_path = os.path.join(
-            settings.BASE_DIR, "assets", "img", "c8a9356a064b183b.png"
-        )
-        try:
-            with open(image_path, "rb") as image:
-                return HttpResponse(image.read(), content_type="image/jpeg", status=418)
-        except Exception:
-            return HttpResponse(status=420)
-    return HttpResponse(
-        "Easter dawn whispers renewal, where hidden eggs and hopes bloom anew.",
-        status=425,
-    )
