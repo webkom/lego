@@ -35,7 +35,7 @@ from lego.apps.followers.views import (
     FollowUserViewSet,
 )
 from lego.apps.forums.urls import urlpatterns as forums_urls
-from lego.apps.forums.views import ForumsViewSet, ThreadViewSet, easter
+from lego.apps.forums.views import ForumsViewSet, ThreadViewSet
 from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
@@ -210,5 +210,4 @@ router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")
 urlpatterns = [
     path("", include(router.urls)),
     path("forums/", include((forums_urls, "forums"))),
-    path("easter/", easter, name="easter"),
 ]
