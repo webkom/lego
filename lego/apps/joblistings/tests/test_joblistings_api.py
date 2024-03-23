@@ -98,12 +98,12 @@ class ListJoblistingsTestCase(BaseAPITestCase):
     def test_with_abakus_user(self):
         AbakusGroup.objects.get(name="Abakus").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        joblisting_response = self.client.get(_get_list_url())
+        joblisting_response = self.client.get(_get_list_url(), {"timeFilter": True})
         self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 4)
 
     def test_without_user(self):
-        joblisting_response = self.client.get(_get_list_url())
+        joblisting_response = self.client.get(_get_list_url(), {"timeFilter": True})
         self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 4)
 
@@ -111,7 +111,7 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         joblisting = Joblisting.objects.all().first()
         joblisting.visible_to = timezone.now() - timedelta(days=2)
         joblisting.save()
-        joblisting_response = self.client.get(_get_list_url())
+        joblisting_response = self.client.get(_get_list_url(), {"timeFilter": True})
         self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(joblisting_response.json()["results"]), 3)
 
@@ -119,8 +119,22 @@ class ListJoblistingsTestCase(BaseAPITestCase):
         joblisting = Joblisting.objects.all().first()
         joblisting.visible_from = timezone.now() + timedelta(days=2)
         joblisting.save()
-        joblisting_response = self.client.get(_get_detail_url(1))
+        joblisting_response = self.client.get(_get_detail_url(1), {"timeFilter": True})
         self.assertEqual(joblisting_response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_with_company_query_param(self):
+        company_pk = 1
+        joblisting_response = self.client.get(_get_list_url(), {"company": company_pk})
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(joblisting_response.json()["results"]), 1)
+        self.assertEqual(
+            joblisting_response.json()["results"][0]["company"]["id"], company_pk
+        )
+
+    def test_without_time_filter(self):
+        joblisting_response = self.client.get(_get_list_url())
+        self.assertEqual(joblisting_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(joblisting_response.json()["results"]), 5)
 
 
 class RetrieveJoblistingsTestCase(BaseAPITestCase):
