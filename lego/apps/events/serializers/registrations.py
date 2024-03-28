@@ -1,4 +1,3 @@
-from django.db import transaction
 from rest_framework import serializers
 
 from rest_framework_jwt.serializers import ImpersonateAuthTokenSerializer
@@ -65,13 +64,12 @@ class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        with transaction.atomic():
-            presence = validated_data.pop("presence", None)
-            super().update(instance, validated_data)
-            if presence:
-                instance.set_presence(presence)
+        presence = validated_data.pop("presence", None)
+        super().update(instance, validated_data)
+        if presence:
+            instance.set_presence(presence)
 
-            return instance
+        return instance
 
 
 class RegistrationAnonymizedReadSerializer(BasisModelSerializer):

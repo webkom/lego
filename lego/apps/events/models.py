@@ -30,7 +30,7 @@ from lego.apps.events.permissions import (
 from lego.apps.files.models import FileField
 from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
-from lego.apps.users.constants import AUTUMN, SPRING
+from lego.apps.users.constants import AUTUMN, PENALTY_TYPES, PENALTY_WEIGHTS, SPRING
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
@@ -934,26 +934,47 @@ class Registration(BasisModel):
         """Wrap this method in a transaction"""
         if presence not in constants.PRESENCE_CHOICES:
             raise ValueError("Illegal presence choice")
+
         self.presence = presence
         self.handle_user_penalty(presence)
         self.save()
 
+    def delete_presence_penalties_for_event(self) -> None:
+        for penalty in self.user.penalties.filter(
+            source_event=self.event, type=PENALTY_TYPES.PRESENCE
+        ):
+            penalty.delete()
+
     def handle_user_penalty(self, presence: constants.PRESENCE_CHOICES) -> None:
+        """
+        Previous penalties related to the event are deleted since the
+        newest presence is the only one that matters
+        """
+
         if (
             self.event.heed_penalties
             and presence == constants.PRESENCE_CHOICES.NOT_PRESENT
             and self.event.penalty_weight_on_not_present
         ):
-            if not self.user.penalties.filter(source_event=self.event).exists():
-                Penalty.objects.create(
-                    user=self.user,
-                    reason=f"Møtte ikke opp på {self.event.title}.",
-                    weight=self.event.penalty_weight_on_not_present,
-                    source_event=self.event,
-                )
+            self.delete_presence_penalties_for_event()
+            Penalty.objects.create(
+                user=self.user,
+                reason=f"Møtte ikke opp på {self.event.title}.",
+                weight=self.event.penalty_weight_on_not_present,
+                source_event=self.event,
+                type=PENALTY_TYPES.PRESENCE,
+            )
+        elif self.event.heed_penalties and presence == constants.PRESENCE_CHOICES.LATE:
+            self.delete_presence_penalties_for_event()
+            Penalty.objects.create(
+                user=self.user,
+                reason=f"Møtte for sent opp på {self.event.title}.",
+                weight=PENALTY_WEIGHTS.LATE_PRESENCE,
+                source_event=self.event,
+                type=PENALTY_TYPES.PRESENCE,
+            )
         else:
-            for penalty in self.user.penalties.filter(source_event=self.event):
-                penalty.delete()
+            self.delete_presence_penalties_for_event()
 
     def add_to_pool(self, pool: Pool) -> Registration:
         allowed: bool = False
