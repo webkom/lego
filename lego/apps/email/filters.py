@@ -8,6 +8,7 @@ from lego.apps.users.constants import (
     GROUP_COMMITTEE,
     GROUP_GRADE,
     GROUP_ORDAINED,
+    GROUP_SUB,
 )
 from lego.apps.users.filters import CharInFilter
 from lego.apps.users.models import User
@@ -41,14 +42,14 @@ class EmailUserFilterSet(FilterSet):
         return queryset
 
     def groups(self, queryset, name, value):
+        relevant_types = [GROUP_COMMITTEE, GROUP_BOARD, GROUP_ORDAINED, GROUP_SUB]
+
         if value == ["-"]:
-            return queryset.exclude(
-                abakus_groups__type__in=[GROUP_COMMITTEE, GROUP_BOARD, GROUP_ORDAINED]
-            )
+            return queryset.exclude(abakus_groups__type__in=relevant_types)
         if value:
             return queryset.filter(
                 abakus_groups__name__in=value,
-                abakus_groups__type__in=[GROUP_COMMITTEE, GROUP_BOARD, GROUP_ORDAINED],
+                abakus_groups__type__in=relevant_types,
             )
         return queryset
 
