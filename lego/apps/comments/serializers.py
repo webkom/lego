@@ -16,7 +16,7 @@ class CommentSerializer(BasisModelSerializer):
     content_target = GenericRelationField(source="content_object")
     text = ContentSerializerField()
     reactions_grouped = serializers.SerializerMethodField()
-    content_self = CharField(read_only=True)
+    content_target_self = CharField(read_only=True)
 
     class Meta:
         model = Comment
@@ -25,7 +25,7 @@ class CommentSerializer(BasisModelSerializer):
             "text",
             "author",
             "content_target",
-            "content_self",
+            "content_target_self",
             "created_at",
             "updated_at",
             "parent",

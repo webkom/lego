@@ -60,5 +60,5 @@ class Comment(BasisModel):
         return self.text
 
     @property
-    def content_self(self):
+    def content_target_self(self):
         return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
