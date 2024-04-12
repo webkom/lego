@@ -232,6 +232,7 @@ class CreateUsersAPITestCase(BaseAPITestCase):
         self.assertEqual(new_user.is_superuser, False)
         self.assertEqual(new_user.is_abakus_member, False)
         self.assertEqual(new_user.is_abakom_member, False)
+        self.assertNotEqual(new_user.crypt_password_hash, "")
 
         # Test member groups
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
