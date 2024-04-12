@@ -116,6 +116,8 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         user = User.objects.create_user(email=token_email, **serializer.validated_data)
+        user.set_password(serializer.validated_data["password"])
+        user.save()
 
         user_group = AbakusGroup.objects.get(name=constants.USER_GROUP)
         user_group.add_user(user)

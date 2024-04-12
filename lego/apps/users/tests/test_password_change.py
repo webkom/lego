@@ -47,6 +47,7 @@ class TestPasswordChange(BaseAPITestCase):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
     def test_new_password_success(self):
+        old_password_hash = self.user.crypt_password_hash
         self.client.force_authenticate(self.user)
         response = self.client.post(
             self.url,
@@ -60,3 +61,4 @@ class TestPasswordChange(BaseAPITestCase):
         self.assertTrue(
             authenticate(username="test1", password="new_secret_password123")
         )
+        self.assertNotEqual(self.user.crypt_password_hash, old_password_hash)
