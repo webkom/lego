@@ -1,9 +1,9 @@
-from lego.apps.search.backend import SearchBacked
+from lego.apps.search.backend import SearchBackend
 
 from .. import registry
 
 
-class PostgresBackend(SearchBacked):
+class PostgresBackend(SearchBackend):
     name = "postgres"
 
     max_results = 10
