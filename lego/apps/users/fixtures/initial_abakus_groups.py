@@ -30,11 +30,12 @@ initial_tree = {
         {
             "description": "Medlemmer av Abakus",
             "permissions": [
-                "/sudo/admin/meetings/create",
-                "/sudo/admin/meetinginvitations/create",
+                "/sudo/admin/meetings/create/",
+                "/sudo/admin/meetinginvitations/create/",
                 "/sudo/admin/registrations/create/",
                 "/sudo/admin/events/payment/",
-                "/sudo/admin/comments/create",
+                "/sudo/admin/comments/create/",
+                "/sudo/admin/meetings/list/",
             ],
         },
         {
