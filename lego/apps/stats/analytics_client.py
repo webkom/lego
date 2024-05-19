@@ -20,6 +20,9 @@ def setup_analytics():
     write_key = getattr(settings, "ANALYTICS_WRITE_KEY", "")
     host = getattr(settings, "ANALYTICS_HOST", "https://api.segment.io")
 
+    if write_key == "":
+        return
+
     production = getattr(settings, "ENVIRONMENT_NAME", None) == "production"
     send = not (development or getattr(settings, "TESTING", False)) or production
 
@@ -35,6 +38,9 @@ def setup_analytics():
 
 def _proxy(method, user, *args, **kwargs):
     global default_client, development
+
+    if default_client is None:
+        return
 
     fn = getattr(default_client, method)
 
