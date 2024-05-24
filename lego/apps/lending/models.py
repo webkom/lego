@@ -4,7 +4,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from lego.apps.files.models import FileField
-from lego.apps.lending.managers import LendingInstanceManager
 from lego.apps.lending.permissions import (
     LendableObjectPermissionHandler,
     LendingInstancePermissionHandler,
@@ -64,8 +63,6 @@ class LendingInstance(BasisModel, ObjectPermissionsModel):
     )
 
     message = models.TextField(null=False, blank=True)
-
-    objects = LendingInstanceManager()
 
     @property
     def active(self):
