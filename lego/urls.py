@@ -6,13 +6,31 @@ from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 
 from rest_framework_jwt.views import (
-    obtain_jwt_token,
+    ObtainJSONWebTokenView,
     refresh_jwt_token,
     verify_jwt_token,
 )
 
 from lego.api.urls import urlpatterns as api
+from lego.apps.users.models import User
 from lego.utils.types import URLList
+
+
+# START
+# Temporary view to generate crypt_hashes for the users that do not have it
+class TokenAuthView(ObtainJSONWebTokenView):
+    def post(self, request, *args, **kwargs):
+        result = super().post(request, *args, **kwargs)
+        # If the login is invalid it would have raised an exception by this point
+        user = User.objects.get(username=request.data.get("username"))
+        if user.crypt_password_hash == "":
+            user.set_password(request.data.get("password"))
+            user.save()
+        return result
+
+
+obtain_jwt_token = TokenAuthView.as_view()
+# END
 
 jwt_urlpatterns: URLList = [
     re_path(r"^token-auth/$", obtain_jwt_token, name="obtain_jwt_token"),
