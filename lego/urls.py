@@ -22,7 +22,7 @@ class TokenAuthView(ObtainJSONWebTokenView):
     def post(self, request, *args, **kwargs):
         result = super().post(request, *args, **kwargs)
         # If the login is invalid it would have raised an exception by this point
-        user = User.objects.get(username=request.data.get("username"))
+        user = User._default_manager.get_by_natural_key(request.data.get("username"))
         if user.crypt_password_hash == "":
             user.set_password(request.data.get("password"))
             user.save()
