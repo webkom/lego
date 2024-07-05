@@ -40,6 +40,8 @@ from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
+from lego.apps.lending.urls import urlpatterns as lending_urls
+from lego.apps.lending.views import LendableObjectViewSet, LendingInstanceViewSet
 from lego.apps.meetings.views import (
     MeetingInvitationTokenViewSet,
     MeetingInvitationViewSet,
@@ -145,6 +147,9 @@ router.register(
     basename="abakusgroup-memberships",
 )
 router.register(r"joblistings", JoblistingViewSet, basename="joblisting")
+router.register(r"lendableobject", LendableObjectViewSet, basename="lendableobject")
+router.register(r"lendinginstance", LendingInstanceViewSet, basename="lendinginstance")
+
 router.register(
     r"meeting-token", MeetingInvitationTokenViewSet, basename="meeting-token"
 )
@@ -210,4 +215,5 @@ router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")
 urlpatterns = [
     path("", include(router.urls)),
     path("forums/", include((forums_urls, "forums"))),
+    path("", include((lending_urls, "lending"))),
 ]
