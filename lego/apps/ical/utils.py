@@ -45,9 +45,9 @@ def add_meeting_to_ical_feed(feed, meeting, user):
         "title": meeting.title,
         "report": meeting.report,
         "description": meeting.description,
-        "reportAuthor": meeting.report_author.full_name
-        if meeting.report_author
-        else "Ikke valgt",
+        "reportAuthor": (
+            meeting.report_author.full_name if meeting.report_author else "Ikke valgt"
+        ),
         "url": meeting.get_absolute_url(),
     }
     desc_template = loader.get_template("ical/meeting_description.txt")

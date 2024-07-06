@@ -101,9 +101,11 @@ def create_weekly_mail(user):
         {
             "week_number": week_number,
             "events": events,
-            "todays_weekly": ""
-            if todays_weekly is None
-            else add_source_to_url(todays_weekly.get_absolute_url()),
+            "todays_weekly": (
+                ""
+                if todays_weekly is None
+                else add_source_to_url(todays_weekly.get_absolute_url())
+            ),
             "joblistings": joblistings,
             "frontend_url": settings.FRONTEND_URL,
         },

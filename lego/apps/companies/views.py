@@ -164,9 +164,9 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         event_string = f"-{event}" if event else ""
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = f'attachment; filename="{f"Company-interests-{year}-{semester}{event_string}"}.csv"'
+        response["Content-Disposition"] = (
+            f'attachment; filename="{f"Company-interests-{year}-{semester}{event_string}"}.csv"'
+        )
 
         writer = csv.writer(response)
         writer.writerow(
@@ -205,9 +205,11 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             participant_range_end = companyInterest.participant_range_end
             semesters = ", ".join(
                 [
-                    f"Vår {semester.year}"
-                    if semester.semester == SPRING
-                    else f"Høst {semester.year}"
+                    (
+                        f"Vår {semester.year}"
+                        if semester.semester == SPRING
+                        else f"Høst {semester.year}"
+                    )
                     for semester in companyInterest.semesters.all()
                 ]
             )
