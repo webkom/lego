@@ -47,9 +47,11 @@ def _proxy(method, user, *args, **kwargs):
     kwargs["context"] = {
         "version": environ.get("RELEASE", "latest"),
         "system": "lego",
-        "environment": "development"
-        if development
-        else getattr(settings, "ENVIRONMENT_NAME", "unknown"),
+        "environment": (
+            "development"
+            if development
+            else getattr(settings, "ENVIRONMENT_NAME", "unknown")
+        ),
     }
 
     if user.is_authenticated:

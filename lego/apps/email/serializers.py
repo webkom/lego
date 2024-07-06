@@ -48,13 +48,11 @@ class EmailListSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs: Any) -> Any:
         # Use existing values where missing to support patch requests
-        get = (
-            lambda index: attrs[index]
-            if index in attrs
-            else getattr(self.instance, index)
+        get = lambda index: (
+            attrs[index] if index in attrs else getattr(self.instance, index)
         )
-        length = (
-            lambda value: len(value) if hasattr(value, "__len__") else value.count()
+        length = lambda value: (
+            len(value) if hasattr(value, "__len__") else value.count()
         )
         # Require at least one receiver of the email list
         users_len, emails_len = length(get("users")), length(get("additional_emails"))

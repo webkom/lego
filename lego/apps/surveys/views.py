@@ -112,9 +112,9 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         survey = Survey.objects.get(pk=kwargs["pk"])
 
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = f'attachment; filename="{survey.title.replace(" ", "_")}.csv"'
+        response["Content-Disposition"] = (
+            f'attachment; filename="{survey.title.replace(" ", "_")}.csv"'
+        )
 
         writer = csv.writer(response)
         for question in describe_results(survey):
