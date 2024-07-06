@@ -2,13 +2,13 @@
 
 [[package]]
 name = "aiosmtpd"
-version = "1.4.4.post2"
+version = "1.4.6"
 description = "aiosmtpd - asyncio based SMTP server"
 optional = false
-python-versions = "~=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "aiosmtpd-1.4.4.post2-py3-none-any.whl", hash = "sha256:f821fe424b703b2ea391dc2df11d89d2afd728af27393e13cf1a3530f19fdc5e"},
-    {file = "aiosmtpd-1.4.4.post2.tar.gz", hash = "sha256:f9243b7dfe00aaf567da8728d891752426b51392174a34d2cf5c18053b63dcbc"},
+    {file = "aiosmtpd-1.4.6-py3-none-any.whl", hash = "sha256:72c99179ba5aa9ae0abbda6994668239b64a5ce054471955fe75f581d2592475"},
+    {file = "aiosmtpd-1.4.6.tar.gz", hash = "sha256:5a811826e1a5a06c25ebc3e6c4a704613eb9a1bcf6b78428fbe865f4f6c9a4b8"},
 ]
 
 [package.dependencies]
@@ -3584,4 +3584,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "998fa5b7f0eddaee599dd74c8106a0c6dd40a90ebd537d10a89cabbd4472baec"
+content-hash = "5b3da8272d0ed4d080bc75b036faf25d834ed7fdd2cc9e12fdfa588b5fd24c89"
