@@ -60,7 +60,7 @@ django-ical = "1.9.1"
 icalendar = "5.0.7"
 #
 # Email
-aiosmtpd = "1.4.4.post2"
+aiosmtpd = "1.4.6"
 premailer = "3.10.0"
 #
 # Docs
