@@ -1057,19 +1057,20 @@ tests = ["coverage", "mock-django"]
 
 [[package]]
 name = "django-oauth-toolkit"
-version = "1.6.3"
+version = "2.4.0"
 description = "OAuth2 Provider for Django"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "django-oauth-toolkit-1.6.3.tar.gz", hash = "sha256:c3a0acd10a9c8442aedd298f8cb835d242c114ce0b8894c7e9290991bee667ca"},
-    {file = "django_oauth_toolkit-1.6.3-py3-none-any.whl", hash = "sha256:d9acbe8ef193bf31d192d90ea2e2df5e7be8adab391cec4acf55f0c048a35274"},
+    {file = "django_oauth_toolkit-2.4.0-py3-none-any.whl", hash = "sha256:4931d6bf64b6aee32a42f989f218769d1876f3daa53c6bf883d8ab793fb302ee"},
+    {file = "django_oauth_toolkit-2.4.0.tar.gz", hash = "sha256:8975eaf697413a8d54208ee068bc5ad6d1ed76f1df84e4882fbb25e7e6966e1b"},
 ]
 
 [package.dependencies]
-django = ">=2.2,<4.0.0 || >4.0.0"
+django = ">=3.2,<4.0.0 || >4.0.0"
 jwcrypto = ">=0.8.0"
 oauthlib = ">=3.1.0"
+pytz = ">=2024.1"
 requests = ">=2.13.0"
 
 [[package]]
@@ -2707,13 +2708,13 @@ six = ">=1.5"
 
 [[package]]
 name = "pytz"
-version = "2023.3"
+version = "2024.1"
 description = "World timezone definitions, modern and historical"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pytz-2023.3-py2.py3-none-any.whl", hash = "sha256:a151b3abb88eda1d4e34a9814df37de2a80e301e68ba0fd856fb9b46bfbbbffb"},
-    {file = "pytz-2023.3.tar.gz", hash = "sha256:1d8ce29db189191fb55338ee6d0387d82ab59f3d00eac103412d64e0ebd0c588"},
+    {file = "pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319"},
+    {file = "pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812"},
 ]
 
 [[package]]
@@ -3661,4 +3662,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c4e65d45ca27ead27d6024e001a8cf509a71b5d567923334672b7a0e7c6e3245"
+content-hash = "d7c09afd6d4516f6b6edcab11942d5d38e62221824ec20873e2a97ddc5116acf"
