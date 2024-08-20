@@ -16,7 +16,7 @@ from authlib.integrations.django_client import OAuth
 from requests import Response
 from structlog import get_logger
 
-from lego.apps.users.models import User
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.student_confirmation import FeideAuthorizeSerializer
 from lego.apps.users.validators import STUDENT_USERNAME_REGEX
 
@@ -86,9 +86,15 @@ class OIDCViewSet(viewsets.GenericViewSet):
             else:
                 try:
                     validation_status = "success"
+                    try:
+                        with transaction.atomic():
+                            AbakusGroup.objects.get(name="Abakus").add_user(user)
+                    except AbakusGroup.DoesNotExist:
+                        pass
                     with transaction.atomic():
                         user.student_username = uid
                         user.save()
+
                 except IntegrityError:
                     return JsonResponse(
                         {
