@@ -172,7 +172,7 @@ _test_event_data = [
         "title": "Event7",
         "description": "Ingress7",
         "text": "Ingress7",
-        "eventType": "kid_event",
+        "eventType": "nexus_event",
         "eventStatusType": "OPEN",
         "location": "F252",
         "startTime": "2015-09-01T13:20:30Z",

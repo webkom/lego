@@ -22,9 +22,9 @@
 - model: surveys.Survey
   pk: 4
   fields:
-    title: 'Template: kid_event'
+    title: 'Template: nexus_event'
     event: 4
-    template_type: 'kid_event'
+    template_type: 'nexus_event'
 
 - model: surveys.Survey
   pk: 5
@@ -130,7 +130,7 @@
     option_text: 'Nei'
     question: 3
 
-  # kid_event
+  # nexus_event
 
 - model: surveys.Question
   pk: 4
