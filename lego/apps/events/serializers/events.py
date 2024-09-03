@@ -544,15 +544,24 @@ def populate_event_registration_users_with_grade(event_dict):
     :param event_dict:
     :return:
     """
+
+    def get_grade(r):
+        user = r.get("user", {})
+        abakus_groups = user.get("abakus_groups", [])
+        user["grade"] = None
+        for id in abakus_groups:
+            grade = grade_dict.get(id, None)
+            if grade:
+                user["grade"] = grade
+
     grades = AbakusGroup.objects.filter(type=GROUP_GRADE).values("id", "name")
     grade_dict = {item["id"]: item for item in grades}
+
     for pool in event_dict.get("pools", []):
         for registration in pool.get("registrations", []):
-            user = registration.get("user", {})
-            abakus_groups = user.get("abakus_groups", [])
-            user["grade"] = None
-            for id in abakus_groups:
-                grade = grade_dict.get(id, None)
-                if grade:
-                    user["grade"] = grade
+            get_grade(registration)
+
+    for reg in event_dict.get("waiting_registrations", []):
+        get_grade(reg)
+
     return event_dict
