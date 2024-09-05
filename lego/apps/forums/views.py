@@ -53,7 +53,7 @@ class ThreadViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related("created_by")
-        forum_id = self.kwargs.get("forum_id", None)
+        forum_id = self.kwargs.get("forum_pk", None)
         if forum_id:
             queryset = queryset.filter(forum_id=forum_id)
 
