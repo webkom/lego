@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-def migrate_kid_to_nexus(apps, schema_editor):
+def migrate_kid_to_nexus(apps, _):
     event = apps.get_model('events', 'Event')
     event.objects.filter(event_type='kid_event').update(event_type='nexus_event')
 
