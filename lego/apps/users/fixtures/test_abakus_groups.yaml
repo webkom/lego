@@ -87,7 +87,7 @@
     logo: null
     type: annen
     text: ''
-    permissions: '["/sudo/admin/events/list/", "/sudo/admin/events/view/", "/sudo/admin/events/create/kid_event/"]'
+    permissions: '["/sudo/admin/events/list/", "/sudo/admin/events/view/", "/sudo/admin/events/create/nexus_event/"]'
     show_badge: true
     active: true
     lft: 1

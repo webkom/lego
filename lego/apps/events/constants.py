@@ -5,7 +5,7 @@ LUNCH_PRESENTATION = "lunch_presentation"
 ALTERNATIVE_PRESENTATION = "alternative_presentation"
 COURSE = "course"
 BREAKFAST_TALK = "breakfast_talk"
-KID_EVENT = "kid_event"
+NEXUS_EVENT = "nexus_event"
 PARTY = "party"
 SOCIAL = "social"
 OTHER = "other"
@@ -17,7 +17,7 @@ EVENT_TYPES = (
     (ALTERNATIVE_PRESENTATION, ALTERNATIVE_PRESENTATION),
     (COURSE, COURSE),
     (BREAKFAST_TALK, BREAKFAST_TALK),
-    (KID_EVENT, KID_EVENT),
+    (NEXUS_EVENT, NEXUS_EVENT),
     (PARTY, PARTY),
     (SOCIAL, SOCIAL),
     (OTHER, OTHER),
@@ -30,7 +30,7 @@ EVENT_TYPE_TRANSLATIONS = {
     ALTERNATIVE_PRESENTATION: "Alternativ presentasjon",
     COURSE: "Kurs",
     BREAKFAST_TALK: "Frokostforedrag",
-    KID_EVENT: "KID-arrangement",
+    NEXUS_EVENT: "NEXUS-arrangement",
     PARTY: "Fest",
     SOCIAL: "Sosialt",
     OTHER: "Annet",
