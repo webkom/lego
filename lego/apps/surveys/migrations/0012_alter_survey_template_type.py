@@ -2,21 +2,40 @@
 
 from django.db import migrations, models
 
+
 def migrate_kid_to_nexus(apps, _):
-    event = apps.get_model('surveys', 'Survey')
-    event.objects.filter(template_type='kid_event').update(template_type='nexus_event')
+    event = apps.get_model("surveys", "Survey")
+    event.objects.filter(template_type="kid_event").update(template_type="nexus_event")
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('surveys', '0011_alter_survey_template_type'),
+        ("surveys", "0011_alter_survey_template_type"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='survey',
-            name='template_type',
-            field=models.CharField(blank=True, choices=[('company_presentation', 'company_presentation'), ('lunch_presentation', 'lunch_presentation'), ('alternative_presentation', 'alternative_presentation'), ('course', 'course'), ('breakfast_talk', 'breakfast_talk'), ('nexus_event', 'nexus_event'), ('party', 'party'), ('social', 'social'), ('other', 'other'), ('event', 'event')], max_length=30, null=True, unique=True),
+            model_name="survey",
+            name="template_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("company_presentation", "company_presentation"),
+                    ("lunch_presentation", "lunch_presentation"),
+                    ("alternative_presentation", "alternative_presentation"),
+                    ("course", "course"),
+                    ("breakfast_talk", "breakfast_talk"),
+                    ("nexus_event", "nexus_event"),
+                    ("party", "party"),
+                    ("social", "social"),
+                    ("other", "other"),
+                    ("event", "event"),
+                ],
+                max_length=30,
+                null=True,
+                unique=True,
+            ),
         ),
         migrations.RunPython(migrate_kid_to_nexus),
     ]

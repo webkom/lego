@@ -2,21 +2,37 @@
 
 from django.db import migrations, models
 
+
 def migrate_kid_to_nexus(apps, _):
-    event = apps.get_model('events', 'Event')
-    event.objects.filter(event_type='kid_event').update(event_type='nexus_event')
+    event = apps.get_model("events", "Event")
+    event.objects.filter(event_type="kid_event").update(event_type="nexus_event")
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0040_alter_registration_presence'),
+        ("events", "0040_alter_registration_presence"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='event_type',
-            field=models.CharField(choices=[('company_presentation', 'company_presentation'), ('lunch_presentation', 'lunch_presentation'), ('alternative_presentation', 'alternative_presentation'), ('course', 'course'), ('breakfast_talk', 'breakfast_talk'), ('nexus_event', 'nexus_event'), ('party', 'party'), ('social', 'social'), ('other', 'other'), ('event', 'event')], max_length=50),
+            model_name="event",
+            name="event_type",
+            field=models.CharField(
+                choices=[
+                    ("company_presentation", "company_presentation"),
+                    ("lunch_presentation", "lunch_presentation"),
+                    ("alternative_presentation", "alternative_presentation"),
+                    ("course", "course"),
+                    ("breakfast_talk", "breakfast_talk"),
+                    ("nexus_event", "nexus_event"),
+                    ("party", "party"),
+                    ("social", "social"),
+                    ("other", "other"),
+                    ("event", "event"),
+                ],
+                max_length=50,
+            ),
         ),
         migrations.RunPython(migrate_kid_to_nexus),
     ]
