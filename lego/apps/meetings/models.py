@@ -26,7 +26,6 @@ class Meeting(BasisModel):
     comments = GenericRelation(Comment)
     mazemap_poi = models.PositiveIntegerField(null=True)
     reactions = GenericRelation(Reaction)
-
     report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(
         User,
@@ -41,6 +40,14 @@ class Meeting(BasisModel):
         related_name="meeting_invitation",
         through_fields=("meeting", "user"),
     )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.pk is not None:
+            ReportChangelog.objects.create(
+                meeting=self, report=self.report, current_user=self.updated_by
+            )
 
     def get_reactions_grouped(self, user):
         grouped = {}
@@ -179,3 +186,13 @@ class MeetingInvitation(BasisModel):
             "meeting.reject_invite",
             properties={"meeting_id": self.meeting_id, "invite_id: ": self.id},
         )
+
+
+class ReportChangelog(BasisModel):
+    meeting = models.ForeignKey(
+        Meeting, related_name="report_changelogs", on_delete=models.CASCADE
+    )
+    report = ContentField(blank=True, allow_images=True)
+
+    class Meta:
+        ordering = ["-created_at"]
