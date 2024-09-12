@@ -42,9 +42,15 @@ class Meeting(BasisModel):
     )
 
     def save(self, *args, **kwargs):
+        previous_report = None
+        if self.pk:
+            old_meeting = Meeting.objects.filter(pk=self.pk).only("report").first()
+            if old_meeting:
+                previous_report = old_meeting.report
+
         super().save(*args, **kwargs)
 
-        if self.pk is not None:
+        if previous_report != self.report:
             ReportChangelog.objects.create(
                 meeting=self, report=self.report, current_user=self.updated_by
             )
