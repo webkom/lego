@@ -25,6 +25,8 @@ SERVER_EMAIL = "Abakus <no-reply@abakus.no>"
 SECRET_KEY = "secret"
 stripe.api_key = os.environ.get("STRIPE_TEST_KEY")
 
+CAPTCHA_KEY = os.environ.get("CAPTCHA_KEY") or "1x0000000000000000000000000000000AA"
+
 # Work-around for a weird bug where the tests would crash with -v=3 (verbosity):
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
 
