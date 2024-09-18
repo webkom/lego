@@ -48,10 +48,14 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = (
         Company.objects.all()
         .prefetch_related("semester_statuses", "files")
-        .select_related("student_contact")
     )
     pagination_class = None
     permission_handler = CompanyAdminPermissionHandler()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"semester_id": self.request.query_params["semester_id"]})
+        return context
 
     def get_serializer_class(self):
         if self.action == "list":

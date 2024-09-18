@@ -128,19 +128,23 @@ class CompanyListSerializer(BasisModelSerializer):
 
 
 class CompanyAdminListSerializer(BasisModelSerializer):
-    semester_statuses = SemesterStatusSerializer(many=True, read_only=True)
-    student_contact = PublicUserField(required=False, queryset=User.objects.all())
+    semester_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
         fields = (
             "id",
             "name",
-            "semester_statuses",
-            "student_contact",
+            "semester_status",
             "admin_comment",
             "active",
         )
+
+    def get_semester_status(self, obj):
+        semester_id = self.context.get('semester_id')
+        semester_status = SemesterStatus.objects.filter(company=obj, semester_id=semester_id).first()
+        return SemesterStatusSerializer(semester_status).data if semester_status else None
+
 
 
 class CompanyDetailSerializer(BasisModelSerializer):
