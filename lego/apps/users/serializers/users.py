@@ -84,19 +84,24 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
-
-    class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)  # type: ignore
-
-
-class PublicUserWithGroupsSerializer(PublicUserSerializer):
-    abakus_groups = PublicAbakusGroupSerializer(many=True)
-    past_memberships = PastMembershipSerializer(many=True)
-    memberships = MembershipSerializer(many=True)
+    all_abakus_group_ids = serializers.SerializerMethodField()
 
     class Meta(PublicUserSerializer.Meta):
         fields = PublicUserSerializer.Meta.fields + (  # type: ignore
             "abakus_groups",
+            "all_abakus_group_ids",
+        )
+
+    def get_all_abakus_group_ids(self, user):
+        return [group.id for group in user.all_groups]
+
+
+class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
+    past_memberships = PastMembershipSerializer(many=True)
+    memberships = MembershipSerializer(many=True)
+
+    class Meta(PublicUserSerializer.Meta):
+        fields = PublicUserWithAbakusGroupsSerializer.Meta.fields + (  # type: ignore
             "past_memberships",
             "memberships",
         )
