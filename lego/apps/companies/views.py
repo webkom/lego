@@ -54,7 +54,7 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"semester_id": self.request.query_params["semester_id"]})
+        context.update({"semester_id": self.kwargs["semester_id"]})
         return context
 
     def get_serializer_class(self):

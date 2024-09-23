@@ -12,9 +12,11 @@ from lego.apps.companies.models import (
     CompanyInterest,
     Semester,
     SemesterStatus,
+    StudentCompanyContact
 )
 from lego.apps.files.fields import FileField, ImageField
 from lego.apps.users.fields import PublicUserField
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.apps.users.models import User
 from lego.utils.serializers import BasisModelSerializer
 
@@ -129,6 +131,7 @@ class CompanyListSerializer(BasisModelSerializer):
 
 class CompanyAdminListSerializer(BasisModelSerializer):
     semester_status = serializers.SerializerMethodField()
+    student_contact = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -136,9 +139,15 @@ class CompanyAdminListSerializer(BasisModelSerializer):
             "id",
             "name",
             "semester_status",
+            "student_contact",
             "admin_comment",
             "active",
         )
+
+    def get_student_contact(self, obj):
+        semester_id = self.context.get('semester_id')
+        student_contact = StudentCompanyContact.objects.filter(company=obj, semester_id=semester_id).first().student_contact
+        return PublicUserSerializer(student_contact).data if student_contact else None
 
     def get_semester_status(self, obj):
         semester_id = self.context.get('semester_id')
