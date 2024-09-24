@@ -171,7 +171,9 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(
-            SubmissionReadSerializer(serializer.instance).data,
+            SubmissionReadSerializer(
+                serializer.instance, context={"request": request}
+            ).data,
             status=status.HTTP_201_CREATED,
         )
 
@@ -198,7 +200,9 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         submission, answer = self.validate_answer(request, **kwargs)
         answer.hide()
         return Response(
-            data=SubmissionAdminReadSerializer(submission).data,
+            data=SubmissionAdminReadSerializer(
+                submission, context={"request": request}
+            ).data,
             status=status.HTTP_202_ACCEPTED,
         )
 
@@ -212,7 +216,9 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         submission, answer = self.validate_answer(request, **kwargs)
         answer.show()
         return Response(
-            data=SubmissionAdminReadSerializer(submission).data,
+            data=SubmissionAdminReadSerializer(
+                submission, context={"request": request}
+            ).data,
             status=status.HTTP_202_ACCEPTED,
         )
 
