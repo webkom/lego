@@ -38,6 +38,11 @@ class SemesterStatusSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class StudentCompanyContactSerializer(BasisModelSerializer):
+    class Meta:
+        model = StudentCompanyContact
+        fields = ("id", "company_id", "student_id", "semester_id")
+
 class SemesterStatusDetailSerializer(SemesterStatusSerializer):
     contract = FileField(required=False, allow_null=True)
     statistics = FileField(required=False, allow_null=True)
@@ -131,7 +136,7 @@ class CompanyListSerializer(BasisModelSerializer):
 
 class CompanyAdminListSerializer(BasisModelSerializer):
     semester_statuses = serializers.SerializerMethodField()
-    student_contact = serializers.SerializerMethodField()
+    student_contacts = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -139,15 +144,15 @@ class CompanyAdminListSerializer(BasisModelSerializer):
             "id",
             "name",
             "semester_statuses",
-            "student_contact",
+            "student_contacts",
             "admin_comment",
             "active",
         )
 
-    def get_student_contact(self, obj):
+    def get_student_contacts(self, obj):
         semester_id = self.context.get('semester_id')
-        student_company_contact = StudentCompanyContact.objects.filter(company=obj, semester_id=semester_id).first()
-        return PublicUserSerializer(student_company_contact.student_contact).data if student_company_contact else None
+        student_company_contact = StudentCompanyContact.objects.filter(company=obj, semester_id=semester_id)
+        return StudentCompanyContactSerializer(student_company_contact, many=True).data
 
     def get_semester_statuses(self, obj):
         semester_id = self.context.get('semester_id')
