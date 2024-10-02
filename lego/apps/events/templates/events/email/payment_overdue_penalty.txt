@@ -1,0 +1,13 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+
+Hei, {{ first_name }}!
+
+Du har ikke betalt for {{ event }} og fristen for betaling har gått ut. 
+
+Dermed har du blitt avregistrert fra arrangementet og mottatt en prikk med vekt {{ weight }}.
+
+Du kan se alle prikkene dine på {{ frontend_url }}/users/me/
+
+{% endblock %}

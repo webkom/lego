@@ -14,6 +14,7 @@ EVENT_ADMIN_REGISTRATION = "event_admin_registration"
 EVENT_ADMIN_UNREGISTRATION = "event_admin_unregistration"
 EVENT_PAYMENT_OVERDUE = "event_payment_overdue"
 EVENT_PAYMENT_OVERDUE_CREATOR = "event_payment_overdue_creator"
+EVENT_PAYMENT_OVERDUE_PENALTY = "event_payment_overdue_penalty"
 
 # Meeting
 MEETING_INVITE = "meeting_invite"

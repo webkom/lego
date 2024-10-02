@@ -18,7 +18,10 @@ from lego.apps.events.exceptions import (
     WebhookDidNotFindRegistration,
 )
 from lego.apps.events.models import Event, Registration
-from lego.apps.events.notifications import EventPaymentOverdueCreatorNotification
+from lego.apps.events.notifications import (
+    EventPaymentOverdueCreatorNotification,
+    EventPaymentOverduePenaltyNotification,
+)
 from lego.apps.events.serializers.registrations import (
     StripeChargeSerializer,
     StripePaymentIntentSerializer,
@@ -30,6 +33,8 @@ from lego.apps.events.websockets import (
     notify_user_payment_initiated,
     notify_user_registration,
 )
+from lego.apps.users.constants import PENALTY_TYPES, PENALTY_WEIGHTS
+from lego.apps.users.models import Penalty
 from lego.utils.tasks import AbakusTask
 
 log = get_logger()
@@ -569,6 +574,69 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
                 event_id=event.id,
                 creator=event.created_by,
             )
+
+
+@celery_app.task(serializer="json", bind=True, base=AbakusTask)
+def assign_penalties_and_unregister_when_payment_overdue(self, logger_context=None):
+    """
+    Task that automatically assigns prikk.
+    Gives penalty
+    Unregisters
+    Sends email
+    TODO:
+        Do not check now but payment deadline instead
+        Do not unregister if they have paid, even after deadline?
+    """
+
+    self.setup_logger(logger_context)
+
+    time = timezone.now()
+    events = (
+        Event.objects.filter(
+            payment_due_date__lte=time,
+            is_priced=True,
+            use_stripe=True,
+            end_time__gte=time,
+        )
+        .exclude(registrations=None)
+        .prefetch_related("registrations")
+    )
+    for event in events:
+        registrations_due = (
+            event.registrations.exclude(pool=None)
+            .exclude(
+                payment_status__in=[constants.PAYMENT_MANUAL, constants.PAYMENT_SUCCESS]
+            )
+            .prefetch_related("user")
+        )
+        if registrations_due:
+            for registration in registrations_due:
+                user = registration.user
+
+                if not user.penalties.filter(source_event=event).exists():
+                    Penalty.objects.create(
+                        user=user,
+                        reason=f"Betalte ikke for {event.title} i tide.",
+                        weight=PENALTY_WEIGHTS.PAYMENT_OVERDUE,
+                        source_event=event,
+                        type=PENALTY_TYPES.PAYMENT,
+                    )
+
+                event.unregister(
+                    registration,
+                    admin_unregistration_reason="Automated unregister",  # Needed to not give double penalties
+                )
+
+                notification = EventPaymentOverduePenaltyNotification(
+                    user=user,
+                    event=event,
+                )
+                notification.notify()
+                log.info(
+                    "user_is_given_penalty_is_unregistered_and_notified",
+                    event_id=event.id,
+                    registration=registration,
+                )
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
