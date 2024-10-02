@@ -787,7 +787,9 @@ class PaymentDueTestCase(BaseTestCase):
     def test_user_is_given_penalty_is_unregistered_and_notified(
         self, mock_notification
     ):
-        """Test that user is given a penalty, is unregistered and notified when payment is overdue"""
+        """
+        Test that user is given a penalty, is unregistered and notified when payment is overdue
+        """
 
         self.event.payment_due_date = timezone.now() - timedelta(days=2)
         self.event.save()
@@ -822,7 +824,9 @@ class PaymentDueTestCase(BaseTestCase):
     def test_user_is_not_given_penalty_is_not_unregistered_and_not_notified(
         self, mock_notification
     ):
-        """Test that user is NOT given a penalty, is unregistered and notified when payment is overdue"""
+        """
+        Test that user is NOT given a penalty, is unregistered and notified when payment is overdue
+        """
         self.event.payment_due_date = timezone.now() + timedelta(days=2)
         self.event.save()
 
