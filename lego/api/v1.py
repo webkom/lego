@@ -82,7 +82,7 @@ from lego.utils.views import SiteMetaViewSet
 router = routers.DefaultRouter()
 router.register(r"announcements", AnnouncementViewSet, basename="announcements")
 router.register(r"articles", ArticlesViewSet)
-router.register(r"bdb/(?P<semester_id>\d+)/companies", AdminCompanyViewSet, basename="bdb")
+router.register(r"bdb", AdminCompanyViewSet, basename="bdb")
 router.register(r"calendar-ical", ICalViewset, basename="calendar-ical")
 router.register(r"calendar-token", ICalTokenViewset, basename="calendar-token")
 router.register(r"comments", CommentViewSet)

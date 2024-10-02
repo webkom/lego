@@ -52,10 +52,12 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     pagination_class = None
     permission_handler = CompanyAdminPermissionHandler()
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({"semester_id": self.kwargs["semester_id"]})
-        return context
+    def _list(self, request, *args, **kwargs):
+        semester_id = request.query_params.get('semester_id', None)
+
+        serializer = self.get_serializer(self.queryset, many=True, context={'semester_id': semester_id})
+
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.action == "list":

@@ -151,13 +151,23 @@ class CompanyAdminListSerializer(BasisModelSerializer):
 
     def get_student_contacts(self, obj):
         semester_id = self.context.get('semester_id')
-        student_company_contact = StudentCompanyContact.objects.filter(company=obj, semester_id=semester_id)
-        return StudentCompanyContactSerializer(student_company_contact, many=True).data
+
+        if semester_id == None:
+            queryset = StudentCompanyContact.objects.filter(company=obj)
+        else:
+            queryset = StudentCompanyContact.objects.filter(company=obj, semester_id=semester_id)
+
+        return StudentCompanyContactSerializer(queryset, many=True).data
 
     def get_semester_statuses(self, obj):
         semester_id = self.context.get('semester_id')
-        semester_statuses = SemesterStatus.objects.filter(company=obj, semester_id=semester_id)
-        return SemesterStatusSerializer(semester_statuses, many=True).data
+
+        if semester_id == None:
+            queryset = SemesterStatus.objects.filter(company=obj)
+        else:
+            queryset = SemesterStatus.objects.filter(company=obj, semester_id=semester_id)
+
+        return SemesterStatusSerializer(queryset, many=True).data
 
 
 
