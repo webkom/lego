@@ -15,9 +15,6 @@ from lego.apps.companies.models import (
     StudentCompanyContact,
 )
 from lego.apps.files.fields import FileField, ImageField
-from lego.apps.users.fields import PublicUserField
-from lego.apps.users.models import User
-from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -153,7 +150,7 @@ class CompanyAdminListSerializer(BasisModelSerializer):
     def get_student_contacts(self, obj):
         semester_id = self.context.get("semester_id")
 
-        if semester_id == None:
+        if semester_id is None:
             queryset = StudentCompanyContact.objects.filter(company=obj)
         else:
             queryset = StudentCompanyContact.objects.filter(
@@ -165,7 +162,7 @@ class CompanyAdminListSerializer(BasisModelSerializer):
     def get_semester_statuses(self, obj):
         semester_id = self.context.get("semester_id")
 
-        if semester_id == None:
+        if semester_id is None:
             queryset = SemesterStatus.objects.filter(company=obj)
         else:
             queryset = SemesterStatus.objects.filter(
