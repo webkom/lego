@@ -577,15 +577,10 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def assign_penalties_and_unregister_when_payment_overdue(self, logger_context=None):
+def handle_overdue_payment(self, logger_context=None):
     """
-    Task that automatically assigns prikk.
-    Gives penalty
-    Unregisters
-    Sends email
-    TODO:
-        Do not check now but payment deadline instead
-        Do not unregister if they have paid, even after deadline?
+    Task that automatically assigns penalty, unregisters user from event 
+    and notifies them when payment is overdue.
     """
 
     self.setup_logger(logger_context)

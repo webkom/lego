@@ -10,7 +10,7 @@ from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
     AsyncRegister,
-    assign_penalties_and_unregister_when_payment_overdue,
+    handle_overdue_payment,
     async_register,
     async_retrieve_payment,
     bump_waiting_users_to_new_pool,
@@ -805,7 +805,7 @@ class PaymentDueTestCase(BaseTestCase):
         number_of_registrations_before = self.event.number_of_registrations
         number_of_penalties_before = registration_two.user.number_of_penalties()
 
-        assign_penalties_and_unregister_when_payment_overdue.delay()
+        handle_overdue_payment.delay()
         registration_two.refresh_from_db()
 
         self.assertLess(
@@ -841,7 +841,7 @@ class PaymentDueTestCase(BaseTestCase):
         number_of_registrations_before = self.event.number_of_registrations
         number_of_penalties_before = registration_two.user.number_of_penalties()
 
-        assign_penalties_and_unregister_when_payment_overdue.delay()
+        handle_overdue_payment.delay()
         registration_two.refresh_from_db()
 
         self.assertEqual(

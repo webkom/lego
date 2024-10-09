@@ -56,8 +56,8 @@ schedule = {
         "task": "lego.apps.events.tasks.notify_event_creator_when_payment_overdue",
         "schedule": crontab(hour=21, minute=0),
     },
-    "assign_penalties_and_unregister_when_payment_overdue": {
-        "task": "lego.apps.events.tasks.assign_penalties_and_unregister_when_payment_overdue",
+    "handle_overdue_payment": {
+        "task": "lego.apps.events.tasks.handle_overdue_payment",
         "schedule": crontab(hour=9, minute=0),
     },
     "sync-external-systems": {
