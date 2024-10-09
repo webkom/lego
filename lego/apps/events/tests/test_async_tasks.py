@@ -10,12 +10,12 @@ from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
     AsyncRegister,
-    handle_overdue_payment,
     async_register,
     async_retrieve_payment,
     bump_waiting_users_to_new_pool,
     check_events_for_registrations_with_expired_penalties,
     check_that_pool_counters_match_registration_number,
+    handle_overdue_payment,
     notify_event_creator_when_payment_overdue,
     notify_user_when_payment_soon_overdue,
     set_all_events_ready_and_bump,

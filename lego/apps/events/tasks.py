@@ -579,7 +579,7 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
 def handle_overdue_payment(self, logger_context=None):
     """
-    Task that automatically assigns penalty, unregisters user from event 
+    Task that automatically assigns penalty, unregisters user from event
     and notifies them when payment is overdue.
     """
 
@@ -597,15 +597,15 @@ def handle_overdue_payment(self, logger_context=None):
         .prefetch_related("registrations")
     )
     for event in events:
-        registrations_due = (
+        overdue_registrations = (
             event.registrations.exclude(pool=None)
             .exclude(
                 payment_status__in=[constants.PAYMENT_MANUAL, constants.PAYMENT_SUCCESS]
             )
             .prefetch_related("user")
         )
-        if registrations_due:
-            for registration in registrations_due:
+        if overdue_registrations:
+            for registration in overdue_registrations:
                 user = registration.user
 
                 if not user.penalties.filter(source_event=event).exists():
