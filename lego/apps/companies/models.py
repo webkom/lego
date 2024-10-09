@@ -39,6 +39,7 @@ class Semester(BasisModel):
         unique_together = ("year", "semester")
         permission_handler = SemesterPermissionHandler()
 
+
 class Company(BasisModel):
     name = models.CharField(max_length=100)
 
@@ -65,6 +66,7 @@ class Company(BasisModel):
 
     def __str__(self) -> str:
         return self.name
+
 
 class StudentCompanyContact(BasisModel):
     company = models.ForeignKey(

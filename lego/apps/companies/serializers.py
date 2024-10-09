@@ -12,12 +12,12 @@ from lego.apps.companies.models import (
     CompanyInterest,
     Semester,
     SemesterStatus,
-    StudentCompanyContact
+    StudentCompanyContact,
 )
 from lego.apps.files.fields import FileField, ImageField
 from lego.apps.users.fields import PublicUserField
-from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.apps.users.models import User
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -42,6 +42,7 @@ class StudentCompanyContactSerializer(BasisModelSerializer):
     class Meta:
         model = StudentCompanyContact
         fields = ("id", "company_id", "student_id", "semester_id")
+
 
 class SemesterStatusDetailSerializer(SemesterStatusSerializer):
     contract = FileField(required=False, allow_null=True)
@@ -150,25 +151,28 @@ class CompanyAdminListSerializer(BasisModelSerializer):
         )
 
     def get_student_contacts(self, obj):
-        semester_id = self.context.get('semester_id')
+        semester_id = self.context.get("semester_id")
 
         if semester_id == None:
             queryset = StudentCompanyContact.objects.filter(company=obj)
         else:
-            queryset = StudentCompanyContact.objects.filter(company=obj, semester_id=semester_id)
+            queryset = StudentCompanyContact.objects.filter(
+                company=obj, semester_id=semester_id
+            )
 
         return StudentCompanyContactSerializer(queryset, many=True).data
 
     def get_semester_statuses(self, obj):
-        semester_id = self.context.get('semester_id')
+        semester_id = self.context.get("semester_id")
 
         if semester_id == None:
             queryset = SemesterStatus.objects.filter(company=obj)
         else:
-            queryset = SemesterStatus.objects.filter(company=obj, semester_id=semester_id)
+            queryset = SemesterStatus.objects.filter(
+                company=obj, semester_id=semester_id
+            )
 
         return SemesterStatusSerializer(queryset, many=True).data
-
 
 
 class CompanyDetailSerializer(BasisModelSerializer):
