@@ -33,7 +33,9 @@ class CommentSerializer(BasisModelSerializer):
         )
 
     def get_reactions_grouped(self, obj):
-        user = self.context["request"].user
+        user = None
+        if "request" in self.context:
+            user = self.context["request"].user
         return obj.get_reactions_grouped(user)
 
     def validate(self, attrs):
