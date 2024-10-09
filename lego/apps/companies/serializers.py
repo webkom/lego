@@ -63,7 +63,7 @@ class SemesterStatusDetailSerializer(SemesterStatusSerializer):
 class CompanyContactSerializer(BasisModelSerializer):
     class Meta:
         model = CompanyContact
-        fields = ("id", "name", "role", "mail", "phone", "mobile")
+        fields = ("id", "name", "role", "mail", "phone", "mobile", "updated_at")
 
     def create(self, validated_data) -> any:
         company = Company.objects.get(pk=self.context["view"].kwargs["company_pk"])
