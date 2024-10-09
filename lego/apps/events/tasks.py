@@ -624,7 +624,7 @@ def assign_penalties_and_unregister_when_payment_overdue(self, logger_context=No
 
                 event.unregister(
                     registration,
-                    # Needed to not give double penalties
+                    # Needed to not give default penalty
                     admin_unregistration_reason="Automated unregister",
                 )
 
