@@ -31,7 +31,6 @@
   fields:
     name: 'BEKK'
     description: 'Bekk Consulting AS er et norsk konsulentselskap. Vi gjennomfører prosjekter for store private og offentlige virksomheter innen strategisk rådgivning, utvikling av IT-systemer og design av digitale tjenester. Vi er i dag over 370 fagpersoner.'
-    student_contact: 1
     phone: '+47 90909090'
     website: 'bekk.no'
     payment_mail: faktura@bekk.no
@@ -43,7 +42,6 @@
   pk: 2
   fields:
     name: 'Facebook'
-    student_contact: 2
     phone: '123 45 678'
 
 - model: companies.Company
@@ -51,7 +49,6 @@
   fields:
     name: 'Itera'
     description: 'Itera er et kommunikasjons- og teknologiselskap. Vi leverer tjenester innen rådgivning og strategi, design og utvikling, drift og forvaltning. Vi er engasjerte fagspesialister som jobber i tverrfaglige team fordi vi vet at vi med ulike faglige ståsteder avdekker helt nye muligheter og løsninger som gir verdi til kundene våre.'
-    student_contact: 3
     phone: ''
 
   # Company 1

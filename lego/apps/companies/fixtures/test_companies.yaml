@@ -14,7 +14,6 @@
   pk: 1
   fields:
     name: 'Facebook'
-    student_contact: 2
     phone: '123 45 678'
 
 - model: companies.Company
@@ -22,7 +21,6 @@
   fields:
     name: 'Itera'
     description: 'Itera er et kommunikasjons- og teknologiselskap. Vi leverer tjenester innen rådgivning og strategi, design og utvikling, drift og forvaltning. Vi er engasjerte fagspesialister som jobber i tverrfaglige team fordi vi vet at vi med ulike faglige ståsteder avdekker helt nye muligheter og løsninger som gir verdi til kundene våre.'
-    student_contact: 3
     phone: ''
 
 - model: companies.Company
@@ -30,7 +28,6 @@
   fields:
     name: 'Webkom'
     description: 'Webkom er webkom'
-    student_contact: 3
     phone: ''
 
 - model: companies.SemesterStatus

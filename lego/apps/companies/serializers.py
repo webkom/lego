@@ -207,7 +207,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
-    student_contacts = StudentCompanyContactSerializer(many=True)
+    student_contacts = StudentCompanyContactSerializer(many=True, read_only=True)
     semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
     company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
