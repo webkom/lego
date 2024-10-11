@@ -37,6 +37,21 @@
     company: 1
     contacted_status: ['interested']
 
+- model: companies.StudentCompanyContact
+  pk: 1
+  fields:
+    company: 1
+    student: 1
+    semester: 1
+
+- model: companies.StudentCompanyContact
+  pk: 2
+  fields:
+    company: 1
+    student: 2
+    semester: 2
+
+
 - model: companies.CompanyContact
   pk: 1
   fields:
