@@ -15,47 +15,6 @@ from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 
 
-class DetailedUserSerializer(serializers.ModelSerializer):
-    abakus_groups = PublicAbakusGroupSerializer(many=True)
-    past_memberships = PastMembershipSerializer(many=True)
-    penalties = serializers.SerializerMethodField("get_valid_penalties")
-    profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
-    profile_picture_placeholder = ImageField(
-        source="profile_picture",
-        required=False,
-        options={"height": 20, "width": 20, "filters": ["blur(20)"]},
-    )
-
-    def get_valid_penalties(self, user):
-        qs = Penalty.objects.valid().filter(user=user)
-        serializer = PenaltySerializer(instance=qs, many=True)
-        return serializer.data
-
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "full_name",
-            "gender",
-            "email",
-            "email_address",
-            "email_lists_enabled",
-            "profile_picture",
-            "profile_picture_placeholder",
-            "allergies",
-            "is_active",
-            "penalties",
-            "abakus_groups",
-            "past_memberships",
-            "permissions_per_group",
-            "github_username",
-            "linkedin_id",
-        )
-
-
 class PublicUserSerializer(serializers.ModelSerializer):
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
     profile_picture_placeholder = ImageField(
@@ -205,7 +164,7 @@ class Oauth2UserDataSerializer(serializers.ModelSerializer):
         return user.is_verified_student()
 
 
-class MeSerializer(serializers.ModelSerializer):
+class CurrentUserSerializer(serializers.ModelSerializer):
     """
     Serializer for the /me, retrieve and update endpoint with EDIT permissions.
     Also used by our JWT handler and returned to the user when a user obtains a JWT token.
