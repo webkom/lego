@@ -45,13 +45,18 @@ from .constants import (
 
 
 class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    queryset = (
-        Company.objects.all()
-        .prefetch_related("semester_statuses", "files")
-        .select_related("student_contact")
-    )
+    queryset = Company.objects.all().prefetch_related("semester_statuses", "files")
     pagination_class = None
     permission_handler = CompanyAdminPermissionHandler()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+
+        if self.action == "list":
+            semester_id = self.request.query_params.get("semester_id", None)
+            context.update({"semester_id": semester_id})
+
+        return context
 
     def get_serializer_class(self):
         if self.action == "list":
