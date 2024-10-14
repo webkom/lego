@@ -1,5 +1,6 @@
 from rest_framework import exceptions, serializers
 
+from lego.apps.achievements.serializers import AchievementSerializer
 from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
@@ -44,11 +45,13 @@ class PublicUserSerializer(serializers.ModelSerializer):
 class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
     all_abakus_group_ids = serializers.SerializerMethodField()
+    achievements = AchievementSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
         fields = PublicUserSerializer.Meta.fields + (  # type: ignore
             "abakus_groups",
             "all_abakus_group_ids",
+            "achievements",
         )
 
     def get_all_abakus_group_ids(self, user):
@@ -187,6 +190,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     past_memberships = PastMembershipSerializer(many=True)
     abakus_email_lists = PublicEmailListSerializer(many=True)
     photo_consents = serializers.SerializerMethodField()
+    achievements = AchievementSerializer(many=True)
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -252,6 +256,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "photo_consents",
             "github_username",
             "linkedin_id",
+            "achievements",
         )
 
 

@@ -2,6 +2,7 @@ from rest_framework import decorators, permissions, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from lego.apps.achievements.promotion import check_meeting_hidden
 from lego.apps.meetings.authentication import MeetingInvitationTokenAuthentication
 from lego.apps.meetings.filters import MeetingFilterSet
 from lego.apps.meetings.models import Meeting, MeetingInvitation
@@ -47,7 +48,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         detail=True, methods=["POST"], serializer_class=MeetingUserInvite
     )
     def invite_user(self, request, *args, **kwargs):
-        meeting = self.get_object()
+        meeting: Meeting = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
@@ -65,7 +66,10 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         groups = serializer.validated_data["groups"]
         if not len(users) and not len(groups):
             raise ValidationError({"error": "No users or groups given"})
-
+        if len(users) == 1:
+            check_meeting_hidden(
+                owner=meeting.created_by, user=users[0], meeting=meeting
+            )
         for user in users:
             meeting.invite_user(user, request.user)
         for group in groups:
