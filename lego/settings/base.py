@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "health_check",
     "phonenumber_field",
     "lego.utils",
+    "lego.apps.achievements",
     "lego.apps.action_handlers",
     "lego.apps.articles",
     "lego.apps.comments",

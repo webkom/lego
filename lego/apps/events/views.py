@@ -16,6 +16,7 @@ from rest_framework.serializers import BaseSerializer
 import requests
 from celery.canvas import chain
 
+from lego.apps.achievements.promotion import check_event_related_single_user
 from lego.apps.events import constants
 from lego.apps.events.exceptions import (
     APIEventNotFound,
@@ -436,6 +437,7 @@ class RegistrationViewSet(
             registration.feedback = feedback
             registration.save(current_user=current_user)
             transaction.on_commit(lambda: async_register.delay(registration.id))
+        check_event_related_single_user(current_user)
         registration.refresh_from_db()
         registration_serializer = RegistrationReadSerializer(
             registration, context={"user": registration.user}
