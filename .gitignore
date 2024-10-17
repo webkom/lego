@@ -69,6 +69,9 @@ google-credentials.json
 # Vim swap files
 *.swp
 
+# MacOS
+.DS_Store
+
 # iCloud
 *.icloud
 

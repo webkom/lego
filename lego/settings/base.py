@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "lego.apps.healthchecks",
     "lego.apps.ical",
     "lego.apps.joblistings",
+    "lego.apps.lending",
     "lego.apps.meetings",
     "lego.apps.notifications",
     "lego.apps.oauth",
