@@ -1,3 +1,7 @@
+from typing import Any, Callable, Dict, TypedDict
+
+from lego.apps.users.models import User
+
 from .verification import (
     check_event_generic,
     check_event_price_over,
@@ -6,6 +10,17 @@ from .verification import (
     check_verified_quote,
 )
 
+
+class Achievement(TypedDict):
+    identifier: str
+    requirement_function: Callable[[User, Any], bool]
+    hidden: bool
+    level: int
+
+
+AchievementCollection = Dict[str, Achievement]
+
+
 EVENT_IDENTIFIER = "event_count"
 EVENT_RANK_IDENTIFIER = "event_rank"
 EVENT_PRICE_IDENTIFIER = "event_price"
@@ -13,7 +28,7 @@ QUOTE_IDENTIFIER = "quote_count"
 MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
 
-EVENT_ACHIEVEMENTS = {
+EVENT_ACHIEVEMENTS: AchievementCollection = {
     "arrangement_10": {
         "identifier": EVENT_IDENTIFIER,
         "requirement_function": lambda user: check_event_generic(user=user, count=10),
@@ -44,11 +59,17 @@ EVENT_ACHIEVEMENTS = {
         "hidden": False,
         "level": 4,
     },
+    "arrangement_200": {
+        "identifier": EVENT_IDENTIFIER,
+        "requirement_function": lambda user: check_event_generic(user=user, count=200),
+        "hidden": False,
+        "level": 5,
+    },
 }
 
 # requirementFunction is not used for rank achievements.
 # Handled globally in promotion script
-EVENT_RANK_ACHIEVEMENTS = {
+EVENT_RANK_ACHIEVEMENTS: AchievementCollection = {
     "event_rank_3": {
         "identifier": EVENT_RANK_IDENTIFIER,
         "requirement_function": lambda user: check_event_rank(user=user, rank=3),
@@ -69,7 +90,7 @@ EVENT_RANK_ACHIEVEMENTS = {
     },
 }
 
-QUOTE_ACHIEVEMENTS = {
+QUOTE_ACHIEVEMENTS: AchievementCollection = {
     "quote_1": {
         "identifier": QUOTE_IDENTIFIER,
         "requirement_function": lambda user: check_verified_quote(user=user),
@@ -78,7 +99,7 @@ QUOTE_ACHIEVEMENTS = {
     },
 }
 
-EVENT_PRICE_ACHIEVEMENTS = {
+EVENT_PRICE_ACHIEVEMENTS: AchievementCollection = {
     "price_1": {
         "identifier": EVENT_PRICE_IDENTIFIER,
         "requirement_function": lambda user: check_event_price_over(
@@ -105,7 +126,7 @@ EVENT_PRICE_ACHIEVEMENTS = {
     },
 }
 
-MEETING_ACHIEVEMENTS = {
+MEETING_ACHIEVEMENTS: AchievementCollection = {
     "meeting_hidden": {
         "identifier": MEETING_IDENTIFIER,
         "requirement_function": lambda user: False,
@@ -114,7 +135,7 @@ MEETING_ACHIEVEMENTS = {
     },
 }
 
-POLL_ACHIEVEMENTS = {
+POLL_ACHIEVEMENTS: AchievementCollection = {
     "poll_5": {
         "identifier": POLL_IDENTIFIER,
         "requirement_function": lambda user: check_poll_responses(user=user, count=5),
@@ -147,7 +168,6 @@ ACHIEVEMENTS = {
     **HIDDEN_ACHIEVEMENTS,
 }
 
-
-ACHIEVEMENT_IDENTIFIERS = [
-    (value["identifier"], value["identifier"]) for value in ACHIEVEMENTS.values()
-]
+ACHIEVEMENT_IDENTIFIERS = sorted(
+    {(value["identifier"], value["identifier"]) for value in ACHIEVEMENTS.values()}
+)

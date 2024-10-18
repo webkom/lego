@@ -18,10 +18,13 @@ from .constants import (
     POLL_IDENTIFIER,
     QUOTE_ACHIEVEMENTS,
     QUOTE_IDENTIFIER,
+    AchievementCollection,
 )
 
 
-def check_leveled_promotions(user: User, identifier: str, input_achievements: dict):
+def check_leveled_promotions(
+    user: User, identifier: str, input_achievements: AchievementCollection
+):
     current_achievement = Achievement.objects.filter(
         user=user, identifier=identifier
     ).first()
