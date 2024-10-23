@@ -8,7 +8,6 @@ from .constants import ACHIEVEMENT_IDENTIFIERS
 
 class Achievement(BasisModel):
     identifier = models.CharField(choices=ACHIEVEMENT_IDENTIFIERS, max_length=128)
-    hidden = models.BooleanField(default=False, null=False, blank=False)
     user = models.ForeignKey(
         User, related_name="achievements", on_delete=models.CASCADE
     )
@@ -18,7 +17,9 @@ class Achievement(BasisModel):
     def percentage(self):
         total_users = User.objects.count() or 1
         achievement_users = (
-            Achievement.objects.filter(identifier=self.identifier, level=self.level)
+            Achievement.objects.filter(
+                identifier=self.identifier, level__gte=self.level
+            )
             .values("user")
             .distinct()
             .count()
