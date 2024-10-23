@@ -43,11 +43,9 @@ def check_leveled_promotions(
         if initial_achievement_key and input_achievements[initial_achievement_key][
             "requirement_function"
         ](user):
-            initial_data = input_achievements[initial_achievement_key]
             current_achievement = Achievement.objects.create(
                 user=user,
                 identifier=identifier,
-                hidden=initial_data["hidden"],
                 level=level,
             )
         else:
@@ -72,7 +70,6 @@ def check_leveled_promotions(
         next_achievement_data = input_achievements[next_achievement_key]
 
         if next_achievement_data["requirement_function"](user):
-            current_achievement.hidden = next_achievement_data["hidden"]
             current_achievement.level = next_level
             current_achievement.save()
             next_level += 1
@@ -104,7 +101,6 @@ def check_rank_promotions():
             if current_top_ranks.get(user.id) == rank:
                 if not achievement_exists:
                     Achievement.objects.create(
-                        hidden=rank_data["hidden"],
                         identifier=rank_data["identifier"],
                         level=rank_data["level"],
                         user=user,
@@ -126,7 +122,6 @@ def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
 
             Achievement.objects.create(
                 identifier=MEETING_ACHIEVEMENTS["meeting_hidden"]["identifier"],
-                hidden=MEETING_ACHIEVEMENTS["meeting_hidden"]["hidden"],
                 user=user,
                 level=MEETING_ACHIEVEMENTS["meeting_hidden"]["level"],
             )

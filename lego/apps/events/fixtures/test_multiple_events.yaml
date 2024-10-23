@@ -1,0 +1,749 @@
+- model: events.Event
+  pk: 1
+  fields:
+    title: POOLS_NO_REGISTRATIONS_1
+    description: TestIngress1
+    text: TestText1
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 1
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 1
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 2
+  fields:
+    title: POOLS_NO_REGISTRATIONS_2
+    description: TestIngress2
+    text: TestText2
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 2
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 2
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 3
+  fields:
+    title: POOLS_NO_REGISTRATIONS_3
+    description: TestIngress3
+    text: TestText3
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 3
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 3
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 4
+  fields:
+    title: POOLS_NO_REGISTRATIONS_4
+    description: TestIngress4
+    text: TestText4
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 4
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 4
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 5
+  fields:
+    title: POOLS_NO_REGISTRATIONS_5
+    description: TestIngress5
+    text: TestText5
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 5
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 5
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 6
+  fields:
+    title: POOLS_NO_REGISTRATIONS_6
+    description: TestIngress6
+    text: TestText6
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 6
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 6
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 7
+  fields:
+    title: POOLS_NO_REGISTRATIONS_7
+    description: TestIngress7
+    text: TestText7
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 7
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 7
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 8
+  fields:
+    title: POOLS_NO_REGISTRATIONS_8
+    description: TestIngress8
+    text: TestText8
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 8
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 8
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 9
+  fields:
+    title: POOLS_NO_REGISTRATIONS_9
+    description: TestIngress9
+    text: TestText9
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 9
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 9
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 10
+  fields:
+    title: POOLS_NO_REGISTRATIONS_10
+    description: TestIngress10
+    text: TestText10
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 10
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 10
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 11
+  fields:
+    title: POOLS_NO_REGISTRATIONS_1
+    description: TestIngress1
+    text: TestText1
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 11
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 11
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 12
+  fields:
+    title: POOLS_NO_REGISTRATIONS_2
+    description: TestIngress2
+    text: TestText2
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 12
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 12
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 13
+  fields:
+    title: POOLS_NO_REGISTRATIONS_3
+    description: TestIngress3
+    text: TestText3
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 13
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 13
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 14
+  fields:
+    title: POOLS_NO_REGISTRATIONS_4
+    description: TestIngress4
+    text: TestText4
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 14
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 14
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 15
+  fields:
+    title: POOLS_NO_REGISTRATIONS_5
+    description: TestIngress5
+    text: TestText5
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 15
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 15
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 16
+  fields:
+    title: POOLS_NO_REGISTRATIONS_6
+    description: TestIngress6
+    text: TestText6
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 16
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 16
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 17
+  fields:
+    title: POOLS_NO_REGISTRATIONS_7
+    description: TestIngress7
+    text: TestText7
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 17
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 17
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 18
+  fields:
+    title: POOLS_NO_REGISTRATIONS_8
+    description: TestIngress8
+    text: TestText8
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 18
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 18
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 19
+  fields:
+    title: POOLS_NO_REGISTRATIONS_9
+    description: TestIngress9
+    text: TestText9
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 19
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 19
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 20
+  fields:
+    title: POOLS_NO_REGISTRATIONS_10
+    description: TestIngress10
+    text: TestText10
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 20
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 20
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 21
+  fields:
+    title: POOLS_NO_REGISTRATIONS_1
+    description: TestIngress1
+    text: TestText1
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 21
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 21
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 22
+  fields:
+    title: POOLS_NO_REGISTRATIONS_2
+    description: TestIngress2
+    text: TestText2
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 22
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 22
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 23
+  fields:
+    title: POOLS_NO_REGISTRATIONS_3
+    description: TestIngress3
+    text: TestText3
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 23
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 23
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 24
+  fields:
+    title: POOLS_NO_REGISTRATIONS_4
+    description: TestIngress4
+    text: TestText4
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 24
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 24
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 25
+  fields:
+    title: POOLS_NO_REGISTRATIONS_5
+    description: TestIngress5
+    text: TestText5
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 25
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 25
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 26
+  fields:
+    title: POOLS_NO_REGISTRATIONS_6
+    description: TestIngress6
+    text: TestText6
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 26
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 26
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 27
+  fields:
+    title: POOLS_NO_REGISTRATIONS_7
+    description: TestIngress7
+    text: TestText7
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 27
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 27
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 28
+  fields:
+    title: POOLS_NO_REGISTRATIONS_8
+    description: TestIngress8
+    text: TestText8
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 28
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 28
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 29
+  fields:
+    title: POOLS_NO_REGISTRATIONS_9
+    description: TestIngress9
+    text: TestText9
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 29
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 29
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
+
+- model: events.Event
+  pk: 30
+  fields:
+    title: POOLS_NO_REGISTRATIONS_10
+    description: TestIngress10
+    text: TestText10
+    event_type: company_presentation
+    event_status_type: NORMAL
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    created_by: 1
+    require_auth: False
+    use_consent: true
+
+- model: events.Pool
+  pk: 30
+  fields:
+    name: Webkom
+    capacity: 2
+    event: 30
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Webkom
