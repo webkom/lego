@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "4.0.10"
+django = "4.2.16"
 ipython = "8.13.2"
 psycopg2-binary = "2.9.6"
 unicode-slugify = "0.1.5"
