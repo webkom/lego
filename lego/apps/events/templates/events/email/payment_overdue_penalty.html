@@ -1,0 +1,47 @@
+{% extends "email/base.html" %}
+
+{% block alert %}
+
+    <tr>
+        <td class="alert alert-bad">
+            Du har ikke betalt påmelding til et arrangement. Du har derfor mottatt en prikk og blitt avmeldt arrangementet.
+        </td>
+    </tr>
+
+{% endblock %}
+
+{% block content %}
+
+    <tr>
+        <td class="content-block">
+            Hei, {{ first_name }}!
+        </td>
+    </tr>
+
+    <tr>
+        <td class="content-block">
+            Du har ikke betalt for {{ event }} og fristen for betaling har gått ut. 
+            Dermed har du blitt avregistrert fra arrangementet og mottatt en prikk med vekt {{ weight }}.
+            Du har også blitt avregistrert fra arrangementet.
+        </td>
+    </tr>
+
+    <tr>
+        <td class="button">
+          <div>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ frontend_url }}/events/{{ id }}" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#c0392b">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Betal her</center>
+            </v:roundrect>
+            <![endif]-->
+            <a class="btn-primary" href="{{ frontend_url }}/events/{{ id }}"
+                style="background-color:#c0392b;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">
+                Betal her
+            </a>
+          </div>
+        </td>
+    </tr>
+
+
+{% endblock %}
