@@ -116,10 +116,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         when registering after merge_time for performance reasons
         """
         with transaction.atomic():
+            super().save(*args, **kwargs)
             for pool in self.pools.select_for_update().all():
                 pool.counter = pool.registrations.count()
                 pool.save(update_fields=["counter"])
-            super().save(*args, **kwargs)
 
         if self.pinned:
             for pinned_item in Event.objects.filter(pinned=True).exclude(pk=self.pk):
