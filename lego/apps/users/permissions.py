@@ -1,3 +1,4 @@
+from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.constants import CREATE, DELETE, EDIT, LIST, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 from lego.apps.users import constants
@@ -35,7 +36,7 @@ class UserPermissionHandler(PermissionHandler):
 
 
 class AbakusGroupPermissionHandler(PermissionHandler):
-    permission_map = {LIST: [], VIEW: []}  # type: ignore
+    permission_map = {LIST: [], VIEW: []}
     authentication_map = {LIST: False, VIEW: False}
 
     force_object_permission_check = True
@@ -50,7 +51,7 @@ class AbakusGroupPermissionHandler(PermissionHandler):
         check_keyword_permissions=True,
         **kwargs
     ):
-        if perm == "delete":
+        if perm == DELETE:
             return False
 
         has_perm = super().has_perm(
@@ -64,6 +65,18 @@ class AbakusGroupPermissionHandler(PermissionHandler):
             return obj.memberships.filter(user=user, role__in=EDIT_ROLES).exists()
 
         return False
+
+
+class PreventPermissionElevation(LegoPermissions):
+    def has_permission(self, request, view):
+        if request.method in ["CREATE", "PUT", "PATCH"]:
+            user = request.user
+            requested_permissions = request.data.get("permissions", [])
+
+            if not user.has_perms(requested_permissions):
+                return False
+
+        return super().has_permission(request, view)
 
 
 class MembershipPermissionHandler(PermissionHandler):

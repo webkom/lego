@@ -149,7 +149,7 @@ class TimelineStorage(models.Model):
         """
         for aggregated_id in aggregated_ids:
             try:
-                cls.objects.create(
+                cls.objects.update_or_create(
                     activity_id=str(activity_id),
                     feed=feed._meta.model_name,
                     aggregated_id=aggregated_id,

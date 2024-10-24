@@ -4,7 +4,7 @@ from rest_framework.fields import CharField
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.meetings import constants
-from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.apps.meetings.models import Meeting, MeetingInvitation, ReportChangelog
 from lego.apps.reactions.models import Reaction
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import AbakusGroup, User
@@ -63,9 +63,18 @@ class MeetingBulkInvite(serializers.Serializer):
     )
 
 
+class ReportChangelogSerializer(BasisModelSerializer):
+    created_by = PublicUserField(read_only=True)
+
+    class Meta:
+        model = ReportChangelog
+        fields = ["report", "created_at", "created_by"]
+
+
 class MeetingDetailSerializer(BasisModelSerializer):
     invitations = MeetingInvitationSerializer(many=True, read_only=True)
     report = ContentSerializerField()
+    report_changelogs = ReportChangelogSerializer(many=True, read_only=True)
     report_author = PublicUserField(
         queryset=User.objects.all(), allow_null=True, required=False
     )
@@ -90,6 +99,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
             "start_time",
             "end_time",
             "report",
+            "report_changelogs",
             "report_author",
             "invitations",
             "comments",

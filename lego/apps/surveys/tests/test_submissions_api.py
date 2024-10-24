@@ -198,7 +198,8 @@ class SubmissionViewSetTestCase(APITestCase):
 
         expected = submission_data(self.admin_user, 1)
         result = response.json()
-        self.assertEqual(expected["user"], result["user"].get("id", None))
+        self.assertEqual(expected["survey"], result["survey"])
+        self.assertTrue(result["isOwner"])
 
         self.assertEqual(len(result["answers"]), 3)
         for i, answer in enumerate(result["answers"]):

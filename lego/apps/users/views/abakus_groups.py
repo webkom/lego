@@ -5,6 +5,7 @@ from lego.apps.permissions.constants import EDIT
 from lego.apps.users import constants
 from lego.apps.users.filters import AbakusGroupFilterSet
 from lego.apps.users.models import AbakusGroup
+from lego.apps.users.permissions import PreventPermissionElevation
 from lego.apps.users.serializers.abakus_groups import (
     DetailedAbakusGroupSerializer,
     PublicAbakusGroupSerializer,
@@ -18,6 +19,7 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     ordering = "id"
     filterset_class = AbakusGroupFilterSet
     pagination_class = None
+    permission_classes = [PreventPermissionElevation]
 
     def get_serializer_class(self):
         if self.action == "list":

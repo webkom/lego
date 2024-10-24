@@ -45,7 +45,7 @@ test_tree = {
             "permissions": [
                 "/sudo/admin/events/list/",
                 "/sudo/admin/events/view/",
-                "/sudo/admin/events/create/kid_event/",
+                "/sudo/admin/events/create/nexus_event/",
             ]
         },
         {},

@@ -1,0 +1,24 @@
+- fields:
+    title: "Grill"
+    description: "<p>En grill til å grille</p>"
+    image: test_event_cover.png
+    location: "A3"
+    created_by: 3
+  model: lending.LendableObject
+  pk: 1
+- fields:
+    title: "Soundboks"
+    description: "<p>En soundboks til å sondbokse</p>"
+    image: test_event_cover.png
+    location: "IT-lageret"
+    created_by: 3
+  model: lending.LendableObject
+  pk: 2
+- fields:
+    title: "Prinsessekjole"
+    description: "<p>En prinsessekjole til å være prinsesse i (krone følger ikke med)</p>"
+    image: test_event_cover.png
+    location: "Hjemme hos Falk"
+    created_by: 3
+  model: lending.LendableObject
+  pk: 3

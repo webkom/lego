@@ -18,7 +18,7 @@ from lego.apps.users.serializers.users import (
     AdministrateUserAllergiesSerializer,
     AdministrateUserExportSerializer,
     AdministrateUserSerializer,
-    PublicUserSerializer,
+    PublicUserWithAbakusGroupsSerializer,
 )
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
@@ -80,7 +80,7 @@ class RegistrationAnonymizedReadSerializer(BasisModelSerializer):
 
 
 class RegistrationPublicReadSerializer(BasisModelSerializer):
-    user = PublicUserSerializer()
+    user = PublicUserWithAbakusGroupsSerializer()
 
     class Meta:
         model = Registration

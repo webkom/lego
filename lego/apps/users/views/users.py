@@ -17,7 +17,7 @@ from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
 from lego.apps.users.serializers.registration import RegistrationConfirmationSerializer
 from lego.apps.users.serializers.users import (
     ChangeGradeSerializer,
-    MeSerializer,
+    CurrentUserSerializer,
     Oauth2UserDataSerializer,
     PublicUserSerializer,
     PublicUserWithGroupsSerializer,
@@ -39,7 +39,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """
-        Users should receive the DetailedUserSerializer if they tries to get themselves or have the
+        Users should receive the CurrentUserSerializer if they try to get themselves or have the
         EDIT permission.
         """
         if self.action in ["retrieve", "update", "partial_update"]:
@@ -52,7 +52,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 self.request.user.has_perm(EDIT, instance)
                 or self.request.user == instance
             ):
-                return MeSerializer
+                return CurrentUserSerializer
 
             return PublicUserWithGroupsSerializer
 
@@ -89,7 +89,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         detail=False,
         methods=["GET"],
         permission_classes=[IsAuthenticated],
-        serializer_class=MeSerializer,
+        serializer_class=CurrentUserSerializer,
     )
     def me(self, request):
         """
@@ -173,7 +173,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             if newGrade is not None:
                 newGrade.add_user(user)
 
-        return Response(MeSerializer(user).data)
+        return Response(CurrentUserSerializer(user).data)
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -196,4 +196,4 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         serializer.save()
 
-        return Response(MeSerializer(user).data)
+        return Response(CurrentUserSerializer(user).data)

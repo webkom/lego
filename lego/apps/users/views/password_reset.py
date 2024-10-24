@@ -11,7 +11,7 @@ from lego.apps.users.serializers.password_reset import (
     PasswordResetPerformSerializer,
     PasswordResetRequestSerializer,
 )
-from lego.apps.users.serializers.users import DetailedUserSerializer
+from lego.apps.users.serializers.users import CurrentUserSerializer
 from lego.utils.tasks import send_email
 
 log = get_logger()
@@ -67,4 +67,4 @@ class PasswordResetPerformViewSet(viewsets.GenericViewSet):
 
         user.set_password(password)
         user.save()
-        return Response(DetailedUserSerializer(user).data, status=status.HTTP_200_OK)
+        return Response(CurrentUserSerializer(user).data, status=status.HTTP_200_OK)

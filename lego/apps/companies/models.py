@@ -42,10 +42,6 @@ class Semester(BasisModel):
 
 class Company(BasisModel):
     name = models.CharField(max_length=100)
-    student_contact = models.ForeignKey(
-        User, related_name="companies", null=True, on_delete=models.SET_NULL
-    )
-    previous_contacts = models.ManyToManyField(User)
 
     description = models.TextField(blank=True)
     phone = models.CharField(max_length=100, blank=True)
@@ -70,6 +66,18 @@ class Company(BasisModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+class StudentCompanyContact(BasisModel):
+    company = models.ForeignKey(
+        Company, related_name="student_contacts", on_delete=models.CASCADE
+    )
+    student = models.ForeignKey(
+        User, related_name="contact_for_companies", on_delete=models.CASCADE
+    )
+    semester = models.ForeignKey(
+        Semester, related_name="student_contacts", on_delete=models.CASCADE
+    )
 
 
 class CompanyFile(models.Model):

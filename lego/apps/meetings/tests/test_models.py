@@ -1,4 +1,4 @@
-from lego.apps.meetings.models import Meeting
+from lego.apps.meetings.models import Meeting, ReportChangelog
 from lego.apps.users.models import User
 from lego.utils.test_utils import BaseTestCase
 
@@ -9,6 +9,30 @@ class MeetingTestCase(BaseTestCase):
     def setUp(self):
         self.user = User.objects.get(id=1)
         self.meeting = Meeting.objects.get(id=3)
+
+    def test_report_changelog_creation_on_report_update(self):
+        # Create a changelog
+        self.assertEqual(self.meeting.report_changelogs.count(), 0)
+        new_report_content = "Et nytt og kulere referat!"
+        self.meeting.report = new_report_content
+        self.meeting.updated_by = self.user
+        self.meeting.save()
+        self.assertEqual(self.meeting.report_changelogs.count(), 1)
+
+        # Check changelog properties
+        changelog: ReportChangelog = self.meeting.report_changelogs.first()
+        self.assertIsNotNone(changelog)
+        self.assertEqual(changelog.report, new_report_content)
+        self.assertEqual(changelog.created_by, self.user)
+
+    def test_no_changelog_creation_on_same_report(self):
+        self.assertEqual(self.meeting.report_changelogs.count(), 0)
+        initial_report_content = "I dag skal vi diskutere om Webkom skal få bånd"
+        self.meeting.report = initial_report_content
+        self.meeting.save()
+        self.assertEqual(self.meeting.report_changelogs.count(), 1)
+        self.meeting.save()  # Save again
+        self.assertEqual(self.meeting.report_changelogs.count(), 1)
 
     def test_can_invite(self):
         invitation = self.meeting.invite_user(self.user)[0]

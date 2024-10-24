@@ -12,10 +12,9 @@ from lego.apps.companies.models import (
     CompanyInterest,
     Semester,
     SemesterStatus,
+    StudentCompanyContact,
 )
 from lego.apps.files.fields import FileField, ImageField
-from lego.apps.users.fields import PublicUserField
-from lego.apps.users.models import User
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -34,6 +33,12 @@ class SemesterStatusSerializer(serializers.ModelSerializer):
         company = Company.objects.get(pk=self.context["view"].kwargs["company_pk"])
         validated_data["company"] = company
         return super().create(validated_data)
+
+
+class StudentCompanyContactSerializer(BasisModelSerializer):
+    class Meta:
+        model = StudentCompanyContact
+        fields = ("id", "company_id", "student_id", "semester_id")
 
 
 class SemesterStatusDetailSerializer(SemesterStatusSerializer):
@@ -63,7 +68,7 @@ class SemesterStatusDetailSerializer(SemesterStatusSerializer):
 class CompanyContactSerializer(BasisModelSerializer):
     class Meta:
         model = CompanyContact
-        fields = ("id", "name", "role", "mail", "phone", "mobile")
+        fields = ("id", "name", "role", "mail", "phone", "mobile", "updated_at")
 
     def create(self, validated_data) -> any:
         company = Company.objects.get(pk=self.context["view"].kwargs["company_pk"])
@@ -128,8 +133,8 @@ class CompanyListSerializer(BasisModelSerializer):
 
 
 class CompanyAdminListSerializer(BasisModelSerializer):
-    semester_statuses = SemesterStatusSerializer(many=True, read_only=True)
-    student_contact = PublicUserField(required=False, queryset=User.objects.all())
+    semester_statuses = serializers.SerializerMethodField()
+    student_contacts = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -137,10 +142,34 @@ class CompanyAdminListSerializer(BasisModelSerializer):
             "id",
             "name",
             "semester_statuses",
-            "student_contact",
+            "student_contacts",
             "admin_comment",
             "active",
         )
+
+    def get_student_contacts(self, obj):
+        semester_id = self.context.get("semester_id")
+
+        if semester_id is None:
+            queryset = StudentCompanyContact.objects.filter(company=obj)
+        else:
+            queryset = StudentCompanyContact.objects.filter(
+                company=obj, semester_id=semester_id
+            )
+
+        return StudentCompanyContactSerializer(queryset, many=True).data
+
+    def get_semester_statuses(self, obj):
+        semester_id = self.context.get("semester_id")
+
+        if semester_id is None:
+            queryset = SemesterStatus.objects.filter(company=obj)
+        else:
+            queryset = SemesterStatus.objects.filter(
+                company=obj, semester_id=semester_id
+            )
+
+        return SemesterStatusSerializer(queryset, many=True).data
 
 
 class CompanyDetailSerializer(BasisModelSerializer):
@@ -178,9 +207,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
-    student_contact = PublicUserField(
-        required=False, allow_null=True, queryset=User.objects.all()
-    )
+    student_contacts = StudentCompanyContactSerializer(many=True, read_only=True)
     semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
     company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
@@ -192,7 +219,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
         fields = (
             "id",
             "name",
-            "student_contact",
+            "student_contacts",
             "description",
             "phone",
             "company_type",
