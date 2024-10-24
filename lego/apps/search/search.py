@@ -1,5 +1,3 @@
-from lego.apps.stats.utils import track
-
 from . import backend
 from .permissions import has_permission
 
@@ -16,12 +14,6 @@ def autocomplete(query, types, user):
 
     results = list(filter(permission_check, results))
 
-    track(
-        user,
-        "search.autocomplete",
-        properties={"query": query, "result_count": len(results)},
-    )
-
     return backend.current_backend.serialize(results)
 
 
@@ -36,9 +28,5 @@ def search(query, types, filters, user):
             return False
 
     results = list(filter(permission_check, results))
-
-    track(
-        user, "search.search", properties={"query": query, "result_count": len(results)}
-    )
 
     return backend.current_backend.serialize(results, search_type="search")

@@ -1,6 +1,5 @@
 from rest_framework_jwt.settings import api_settings
 
-from lego.apps.stats.utils import track
 from lego.apps.users.serializers.users import CurrentUserSerializer
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -12,7 +11,6 @@ def response_handler(token, user=None, request=None, issued_at=None):
     Return response data for both the login and the refresh views,
     which includes the serialized representation of the User.
     """
-    track(user, "authenticate")
     return {"token": token, "user": CurrentUserSerializer(user).data}
 
 

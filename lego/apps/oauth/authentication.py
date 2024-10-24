@@ -1,8 +1,6 @@
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from structlog import get_logger
 
-from lego.apps.stats.utils import track
-
 log = get_logger()
 
 
@@ -18,7 +16,6 @@ class Authentication(OAuth2Authentication):
             return None
         user, token = authentication
         log.bind(current_user=user.id)
-        track(user, "authenticate")
 
         if token.allow_scopes(["all"]):
             return authentication

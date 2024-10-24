@@ -4,37 +4,10 @@ import os
 
 from celery.app import Celery
 from celery.schedules import crontab
-from celery.signals import (
-    beat_init,
-    eventlet_pool_started,
-    setup_logging,
-    worker_process_init,
-)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lego.settings")
 
 app = Celery("lego")
-
-
-@eventlet_pool_started.connect()
-@worker_process_init.connect()
-@beat_init.connect()
-def celery_init(*args, **kwargs):
-    """
-    Initialize a clean threads
-    """
-    from lego.apps.stats import analytics_client
-
-    analytics_client.default_client = None
-    analytics_client.setup_analytics()
-
-
-@setup_logging.connect()
-def on_setup_logging(**kwargs):
-    """
-    This prevents celery from tampering with our logging config.
-    """
-    pass
 
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
