@@ -39,6 +39,7 @@ from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
 from lego.apps.joblistings.views import JoblistingViewSet
+from lego.apps.lending.views import LendableObjectViewSet
 from lego.apps.meetings.views import (
     MeetingInvitationTokenViewSet,
     MeetingInvitationViewSet,
@@ -145,6 +146,7 @@ router.register(
     basename="abakusgroup-memberships",
 )
 router.register(r"joblistings", JoblistingViewSet, basename="joblisting")
+router.register(r"lending/objects", LendableObjectViewSet, basename="lendable-object")
 router.register(
     r"meeting-token", MeetingInvitationTokenViewSet, basename="meeting-token"
 )
