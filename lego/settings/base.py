@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     "lego.apps.reactions",
     "lego.apps.restricted",
     "lego.apps.search",
-    "lego.apps.stats",
     "lego.apps.surveys",
     "lego.apps.tags",
     "lego.apps.users",

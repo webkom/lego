@@ -12,7 +12,6 @@ from lego.apps.meetings.permissions import (
     MeetingPermissionHandler,
 )
 from lego.apps.reactions.models import Reaction
-from lego.apps.stats.utils import track
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -100,7 +99,6 @@ class Meeting(BasisModel):
             user=user, meeting=self, defaults={"created_by": created_by}
         )
 
-        track(user, "meeting.invite", properties={"meeting_id": self.id})
         return invitation, created
 
     def invite_group(self, group, created_by=None):
@@ -110,7 +108,6 @@ class Meeting(BasisModel):
     def uninvite_user(self, user):
         invitation = self.invitations.get(user=user)
         invitation.delete(force=True)
-        track(user, "meeting.uninvite", properties={"meeting_id": self.id})
 
     def restricted_lookup(self):
         """
@@ -178,20 +175,10 @@ class MeetingInvitation(BasisModel):
     def accept(self):
         self.status = constants.ATTENDING
         self.save()
-        track(
-            self.user,
-            "meeting.accept_invite",
-            properties={"meeting_id": self.meeting_id, "invite_id: ": self.id},
-        )
 
     def reject(self):
         self.status = constants.NOT_ATTENDING
         self.save()
-        track(
-            self.user,
-            "meeting.reject_invite",
-            properties={"meeting_id": self.meeting_id, "invite_id: ": self.id},
-        )
 
 
 class ReportChangelog(BasisModel):
