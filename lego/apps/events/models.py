@@ -134,6 +134,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         )
 
     def user_should_see_allergies(self, user: User) -> bool:
+        if user.is_anonymous:
+            return False
         memberships = Membership.objects.filter(user=user)
         in_responsible_group = self.responsible_group in [
             mem.abakus_group for mem in memberships
