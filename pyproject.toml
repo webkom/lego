@@ -38,7 +38,7 @@ django-cors-headers = "4.5.0"
 django-mptt = "0.14.0"
 django-filter = "23.2"
 django-environ = "0.10.0"
-django-redis = "5.2.0"
+django-redis = "5.4.0"
 django-ipware = "5.0.0"
 django-phonenumber-field = { extras = ["phonenumberslite"], version = "7.1.0" }
 django-push-notifications = "3.0.0"
