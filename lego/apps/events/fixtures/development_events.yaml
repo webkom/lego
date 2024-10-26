@@ -375,6 +375,8 @@
     cover: test_event_cover.png
     created_by: 3
     require_auth: False
+    feedback_required: True
+    feedback_description: 'Skriv noe lættis'
   model: events.Event
   pk: 20
 - fields:
