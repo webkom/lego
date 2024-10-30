@@ -64,7 +64,7 @@ class AchievementTestCase(BaseTestCase):
             event.end_time = timezone.now() - timedelta(days=2)
             event.save()
 
-        check_event_related_single_user(user)
+        check_event_related_single_user(user.id)
         achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_IDENTIFIER, level=0
         )
@@ -88,7 +88,7 @@ class AchievementTestCase(BaseTestCase):
             event.end_time = timezone.now() - timedelta(days=2)
             event.save()
 
-        check_event_related_single_user(user)
+        check_event_related_single_user(user.id)
         achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_IDENTIFIER, level=1
         )
@@ -115,7 +115,7 @@ class AchievementTestCase(BaseTestCase):
                 event.register(registration)
                 event.end_time = timezone.now() - timedelta(days=2)
                 event.save()
-                check_event_related_single_user(user=user)
+                check_event_related_single_user(user.id)
 
         main_character = User.objects.first()
         AbakusGroup.objects.get(name="Abakus").add_user(main_character)
@@ -132,7 +132,7 @@ class AchievementTestCase(BaseTestCase):
             event.register(registration)
             event.end_time = timezone.now() - timedelta(days=2)
             event.save()
-            check_event_related_single_user(user=main_character)
+            check_event_related_single_user(main_character.id)
 
         # Ensure all promotions are processed before checking achievements
         transaction.on_commit(lambda: check_all_promotions())
@@ -168,7 +168,7 @@ class AchievementTestCase(BaseTestCase):
             event.is_priced = True
             event.save()
 
-        check_event_related_single_user(user)
+        check_event_related_single_user(user.id)
         achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_PRICE_IDENTIFIER, level=2
         )
@@ -216,7 +216,7 @@ class AchievementTestCase(BaseTestCase):
                 event.end_time = timezone.now() - timedelta(days=2)
                 event.save()
 
-            check_event_related_single_user(user)
+            check_event_related_single_user(user.id)
 
         # Check if all users have unlocked the achievement for 10 events (level 0)
         for user in users:

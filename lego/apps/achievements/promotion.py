@@ -23,8 +23,14 @@ from .constants import (
 
 
 def check_leveled_promotions(
-    user: User, identifier: str, input_achievements: AchievementCollection
+    user_id: int, identifier: str, input_achievements: AchievementCollection
 ):
+
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return
+
     current_achievement = Achievement.objects.filter(
         user=user, identifier=identifier
     ).first()
@@ -129,22 +135,22 @@ def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
     return False
 
 
-def check_event_related_single_user(user: User):
-    check_leveled_promotions(user, EVENT_IDENTIFIER, EVENT_ACHIEVEMENTS)
-    check_leveled_promotions(user, EVENT_PRICE_IDENTIFIER, EVENT_PRICE_ACHIEVEMENTS)
+def check_event_related_single_user(user_id: int):
+    check_leveled_promotions(user_id, EVENT_IDENTIFIER, EVENT_ACHIEVEMENTS)
+    check_leveled_promotions(user_id, EVENT_PRICE_IDENTIFIER, EVENT_PRICE_ACHIEVEMENTS)
 
 
 def check_poll_related_single_user(user: User):
-    check_leveled_promotions(user, POLL_IDENTIFIER, POLL_ACHIEVEMENTS)
+    check_leveled_promotions(user.id, POLL_IDENTIFIER, POLL_ACHIEVEMENTS)
 
 
 def check_quote_related_single_user(user: User):
-    check_leveled_promotions(user, QUOTE_IDENTIFIER, QUOTE_ACHIEVEMENTS)
+    check_leveled_promotions(user.id, QUOTE_IDENTIFIER, QUOTE_ACHIEVEMENTS)
 
 
 def check_all_promotions():
     for user in User.objects.all():
         check_quote_related_single_user(user)
-        check_event_related_single_user(user)
+        check_event_related_single_user(user.id)
         check_poll_related_single_user(user)
     check_rank_promotions()

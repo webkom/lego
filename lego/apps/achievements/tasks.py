@@ -15,8 +15,8 @@ def run_all_promotions(self, logger_context=None):
 @celery_app.task(base=AsyncRegister, bind=True)
 def async_check_event_achievements_single_user(
     self,
-    user,
+    user_id: int,
     logger_context=None,
 ):
     self.setup_logger(logger_context)
-    check_event_related_single_user(user)
+    check_event_related_single_user(user_id)
