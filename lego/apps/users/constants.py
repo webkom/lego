@@ -28,6 +28,12 @@ DUGNAD_ADMIN = "dugnad_admin"
 TRIP_ADMIN = "trip_admin"
 SPONSOR_ADMIN = "sponsor_admin"
 SOCIAL_ADMIN = "social_admin"
+MERCH_ADMIN = "merch_admin"
+HS_REPRESENTATIVE = "hs_representative"
+CUDDLING_MANAGER = "cuddling_manager"
+PHOTO_FILM_ADMIN = "photo_admin"
+GRAPHIC_ADMIN = "graphic_admin"
+SOCIAL_MEDIA_ADMIN = "social_media_admin"
 
 ROLES = (
     (MEMBER, MEMBER),
@@ -50,6 +56,12 @@ ROLES = (
     (TRIP_ADMIN, TRIP_ADMIN),
     (SPONSOR_ADMIN, SPONSOR_ADMIN),
     (SOCIAL_ADMIN, SOCIAL_ADMIN),
+    (MERCH_ADMIN, MERCH_ADMIN),
+    (HS_REPRESENTATIVE, HS_REPRESENTATIVE),
+    (CUDDLING_MANAGER, CUDDLING_MANAGER),
+    (PHOTO_FILM_ADMIN, PHOTO_FILM_ADMIN),
+    (GRAPHIC_ADMIN, GRAPHIC_ADMIN),
+    (SOCIAL_MEDIA_ADMIN, SOCIAL_MEDIA_ADMIN),
 )
 
 DATA = "data"
