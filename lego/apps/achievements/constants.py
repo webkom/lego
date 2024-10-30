@@ -4,8 +4,7 @@ from lego.apps.users.models import User
 
 from .verification import (
     check_event_generic,
-    check_event_price_over,
-    check_event_rank,
+    check_total_event_payment_over,
     check_poll_responses,
     check_verified_quote,
 )
@@ -60,22 +59,20 @@ EVENT_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
-# requirementFunction is not used for rank achievements.
-# Handled globally in promotion script
 EVENT_RANK_ACHIEVEMENTS: AchievementCollection = {
     "event_rank_3": {
         "identifier": EVENT_RANK_IDENTIFIER,
-        "requirement_function": lambda user: check_event_rank(user=user, rank=3),
+        "requirement_function": lambda user: False,
         "level": 0,
     },
     "event_rank_2": {
         "identifier": EVENT_RANK_IDENTIFIER,
-        "requirement_function": lambda user: check_event_rank(user=user, rank=2),
+        "requirement_function": lambda user: False,
         "level": 1,
     },
     "event_rank_1": {
         "identifier": EVENT_RANK_IDENTIFIER,
-        "requirement_function": lambda user: check_event_rank(user=user, rank=1),
+        "requirement_function": lambda user: False,
         "level": 2,
     },
 }
@@ -91,21 +88,21 @@ QUOTE_ACHIEVEMENTS: AchievementCollection = {
 EVENT_PRICE_ACHIEVEMENTS: AchievementCollection = {
     "price_1": {
         "identifier": EVENT_PRICE_IDENTIFIER,
-        "requirement_function": lambda user: check_event_price_over(
+        "requirement_function": lambda user: check_total_event_payment_over(
             user=user, price=250000
         ),
         "level": 0,
     },
     "price_2": {
         "identifier": EVENT_PRICE_IDENTIFIER,
-        "requirement_function": lambda user: check_event_price_over(
+        "requirement_function": lambda user: check_total_event_payment_over(
             user=user, price=500000
         ),
         "level": 1,
     },
     "price_3": {
         "identifier": EVENT_PRICE_IDENTIFIER,
-        "requirement_function": lambda user: check_event_price_over(
+        "requirement_function": lambda user: check_total_event_payment_over(
             user=user, price=1000000
         ),
         "level": 2,

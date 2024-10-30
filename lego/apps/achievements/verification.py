@@ -18,23 +18,6 @@ def check_event_generic(user: User, count: int):
         >= count
     )
 
-
-# This function should not be used
-# (ideally we let the cron job handle this with a different function)
-def check_event_rank(user: User, rank: int):
-    top_users = (
-        Registration.objects.filter(
-            status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
-        )
-        .values("user")
-        .annotate(event_count=Count("id"))
-        .order_by("-event_count")[:3]
-    )
-
-    rank_mapping = {entry["user"]: idx + 1 for idx, entry in enumerate(top_users)}
-    return rank_mapping.get(user.id) == rank
-
-
 def check_verified_quote(user: User):
     return Quote.objects.filter(approved=True, created_by=user).exists()
 
@@ -50,7 +33,7 @@ def check_poll_responses(user: User, count: int):
 
 # There is a case where manual payment does not update the payment amount.
 # I have not changed this code so only stripe payments will count.
-def check_event_price_over(user: User, price: int):
+def check_total_event_payment_over(user: User, price: int):
     total_paid = (
         Registration.objects.filter(
             user=user,
