@@ -1,4 +1,4 @@
-from django.db.models import Count, Sum
+from django.db.models import Sum
 from django.utils import timezone
 
 from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
@@ -17,6 +17,7 @@ def check_event_generic(user: User, count: int):
         )
         >= count
     )
+
 
 def check_verified_quote(user: User):
     return Quote.objects.filter(approved=True, created_by=user).exists()

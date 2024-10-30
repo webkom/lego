@@ -404,6 +404,7 @@ class SelfInviteTestCase(BaseAPITestCase):
             f"User {user.username} should not have unlocked achievement",
         )
 
+
 class RunAllPromotionsTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
@@ -435,7 +436,9 @@ class RunAllPromotionsTestCase(BaseTestCase):
             event.save()
 
     @patch("lego.apps.achievements.tasks.check_all_promotions")
-    def test_run_all_promotions_task_invokes_check_all_promotions(self, mock_check_all_promotions):
+    def test_run_all_promotions_task_invokes_check_all_promotions(
+        self, mock_check_all_promotions
+    ):
         """Test that the run_all_promotions task calls check_all_promotions"""
         run_all_promotions.apply()  # Trigger the task
 

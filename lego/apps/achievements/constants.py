@@ -4,8 +4,8 @@ from lego.apps.users.models import User
 
 from .verification import (
     check_event_generic,
-    check_total_event_payment_over,
     check_poll_responses,
+    check_total_event_payment_over,
     check_verified_quote,
 )
 
