@@ -315,8 +315,8 @@ class AchievementTestCase(BaseTestCase):
         event_price_achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_PRICE_IDENTIFIER, level=0
         )
-        self.assertTrue(
-            not event_price_achievement.exists(),
+        self.assertFalse(
+            event_price_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
