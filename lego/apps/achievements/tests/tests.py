@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.db import transaction
 from django.urls import reverse
@@ -20,6 +21,7 @@ from lego.apps.achievements.promotion import (
     check_poll_related_single_user,
     check_quote_related_single_user,
 )
+from lego.apps.achievements.tasks import run_all_promotions
 from lego.apps.events.constants import PAYMENT_SUCCESS
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tests.utils import get_dummy_users
@@ -400,4 +402,56 @@ class SelfInviteTestCase(BaseAPITestCase):
         self.assertTrue(
             not meeting_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
+        )
+
+class RunAllPromotionsTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_multiple_events.yaml",
+    ]
+
+    def setUp(self):
+        # Setup a user and register them to events to be eligible for an achievement
+        self.user = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
+        AbakusGroup.objects.get(name="Webkom").add_user(self.user)
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12),
+            heed_penalties=True,
+        )
+        # Register the user for 10 events to qualify for a level 0 achievement
+        for j in range(1, 11):
+            event = Event.objects.get(pk=j)
+            pool = event.pools.first()
+            pool.capacity = 55
+            pool.save()
+            registration = Registration.objects.get_or_create(
+                event=event, user=self.user
+            )[0]
+            event.register(registration)
+            event.end_time = timezone.now() - timedelta(days=2)
+            event.save()
+
+    @patch("lego.apps.achievements.tasks.check_all_promotions")
+    def test_run_all_promotions_task_invokes_check_all_promotions(self, mock_check_all_promotions):
+        """Test that the run_all_promotions task calls check_all_promotions"""
+        run_all_promotions.apply()  # Trigger the task
+
+        # Verify that check_all_promotions was called within the task
+        mock_check_all_promotions.assert_called_once()
+
+    def test_run_all_promotions_awards_achievement(self):
+        """Test that the task awards achievements to eligible users"""
+        # Run the task to check for achievements
+        run_all_promotions.apply()
+
+        # Verify the user received the level 0 event achievement
+        achievement = Achievement.objects.filter(
+            user=self.user, identifier=EVENT_IDENTIFIER, level=0
+        )
+        self.assertTrue(
+            achievement.exists(),
+            "User should have unlocked level 0 event achievement after task run.",
         )
