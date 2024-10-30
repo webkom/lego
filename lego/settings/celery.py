@@ -61,6 +61,10 @@ schedule = {
         "task": "lego.apps.email.tasks.send_weekly_email",
         "schedule": crontab(hour=19, minute=0, day_of_week=0),
     },
+    "run_check_all_promotions_weekly": {
+        "task": "lego.apps.achievements.tasks.run_all_promotions",
+        "schedule": crontab(hour=4, minute=0, day_of_week=0),
+    },
 }
 
 app.conf.update(

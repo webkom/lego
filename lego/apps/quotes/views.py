@@ -1,12 +1,14 @@
 import ast
 from random import choice
 
+from django.db import transaction
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from lego.apps.achievements.promotion import check_quote_related_single_user
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.quotes.filters import QuotesFilterSet
@@ -46,6 +48,9 @@ class QuoteViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if instance.created_by == self.request.user:
             return Response(status=status.HTTP_403_FORBIDDEN)
         instance.approve()
+        transaction.on_commit(
+            lambda: check_quote_related_single_user(instance.created_by)
+        )
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["PUT"])

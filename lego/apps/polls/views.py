@@ -2,6 +2,7 @@ from rest_framework import decorators, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from lego.apps.achievements.promotion import check_poll_related_single_user
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.polls.models import Poll
@@ -43,4 +44,5 @@ class PollViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         poll = self.get_object()
         poll.vote(request.user, request.data["option_id"])
         serializer = self.get_serializer_class()(poll, context={"request": request})
+        check_poll_related_single_user(request.user)
         return Response(serializer.data)
