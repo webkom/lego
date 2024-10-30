@@ -7,14 +7,16 @@ class EventsConfig(AppConfig):
     name = "lego.apps.events"
 
     def ready(self):
+        from lego.apps.events.models import Event, Registration
+        from lego.apps.events.signals import (
+            check_achievement_on_registration_callback,
+            event_save_callback,
+        )
+
         if not settings.TESTING:
-            from lego.apps.events.models import Event, Registration
-            from lego.apps.events.signals import (
-                check_achievement_on_registration_callback,
-                event_save_callback,
-            )
 
             post_save.connect(event_save_callback, sender=Event)
-            post_save.connect(
-                check_achievement_on_registration_callback, sender=Registration
-            )
+
+        post_save.connect(
+            check_achievement_on_registration_callback, sender=Registration
+        )

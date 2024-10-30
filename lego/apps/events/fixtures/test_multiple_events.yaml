@@ -747,3 +747,28 @@
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Webkom
+
+- model: events.Event
+  pk: 55
+  fields:
+    title: INFINITE_EVENT
+    description: TestIngress9
+    text: TestText9
+    event_type: party
+    event_status_type: "INFINITE"
+    location: R1
+    start_time: "2011-09-01T13:20:30+03:00"
+    end_time: "2012-09-01T13:20:30+03:00"
+    require_auth: False
+    created_by: 3
+
+- model: events.Pool
+  pk: 55
+  fields:
+    name: Abakusmember
+    capacity: 0
+    event: 55
+    counter: 0
+    activation_date: "2011-09-01T13:20:30+03:00"
+    permission_groups:
+      - - Abakus

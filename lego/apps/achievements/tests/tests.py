@@ -32,6 +32,75 @@ from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
+def _get_registrations_list_url(event_pk):
+    return reverse("api:v1:registrations-list", kwargs={"event_pk": event_pk})
+
+
+class EventAchievementAPITestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_multiple_events.yaml",
+    ]
+
+    def setUp(self):
+        # Get or create the user and add to necessary groups
+        self.user = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
+        AbakusGroup.objects.get(name="Webkom").add_user(self.user)
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12),
+            heed_penalties=True,
+        )
+        # Authenticate the user for API requests
+        self.client.force_authenticate(self.user)
+
+    def register_user_for_event(self, event):
+        """
+        Helper function to register the user for an event and finalize it.
+        """
+        pool = event.pools.first()
+        pool.capacity = 55  # Ensure capacity is sufficient
+        pool.save()
+        registration = Registration.objects.get_or_create(event=event, user=self.user)[
+            0
+        ]
+        event.register(registration)
+        event.end_time = timezone.now() - timedelta(days=2)  # Mark as completed
+        event.save()
+
+    def test_event_count_achievement_after_api_registration(self):
+        # Step 1: Register the user for 10 events using the internal helper function
+        for i in range(1, 11):
+            event = Event.objects.get(pk=i)
+            self.register_user_for_event(event)
+
+        # Step 2: Register the user for the 11th event using the API
+        event = Event.objects.get(title="INFINITE_EVENT")
+
+        # Perform the registration via API
+        registration_response = self.client.post(
+            _get_registrations_list_url(event.id),
+            {"captchaResponse": "XXXX.DUMMY.TOKEN.XXXX", "feedback": ""},
+        )
+
+        self.assertEqual(
+            registration_response.status_code,
+            status.HTTP_202_ACCEPTED,
+            "API registration should succeed for the 11th event",
+        )
+
+        # Step 3: Verify the achievement for attending 10 events is unlocked
+        achievement = Achievement.objects.filter(
+            user=self.user, identifier=EVENT_IDENTIFIER, level=0
+        )
+        self.assertTrue(
+            achievement.exists(),
+            "User should have unlocked the level 0 achievement for attending 10 events.",
+        )
+
+
 class AchievementTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
@@ -121,7 +190,7 @@ class AchievementTestCase(BaseTestCase):
         AbakusGroup.objects.get(name="Abakus").add_user(main_character)
         AbakusGroup.objects.get(name="Webkom").add_user(main_character)
 
-        for j in range(2, 30):
+        for j in range(2, 20):
             event = Event.objects.get(pk=j)
             pool = event.pools.first()
             pool.capacity = 55
@@ -144,6 +213,100 @@ class AchievementTestCase(BaseTestCase):
                     identifier=EVENT_RANK_IDENTIFIER, level=2, user=main_character
                 ).exists(),
                 "Achievement for rank 1 should be unlocked",
+            )
+        )
+
+    def test_lose_rank_event_achievement(self):
+        """Test achievement rank loss when another user overtakes."""
+        users = get_dummy_users(5)
+
+        # Register initial users to unlock the achievement
+        for _, user in enumerate(users):
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            AbakusGroup.objects.get(name="Webkom").add_user(user)
+            # Register each user for 1 event to unlock a base achievement
+            for j in range(1, 2):
+                event = Event.objects.get(pk=j)
+                pool = event.pools.first()
+                pool.capacity = 55
+                pool.save()
+                registration = Registration.objects.get_or_create(
+                    event=event, user=user
+                )[0]
+                event.register(registration)
+                event.end_time = timezone.now() - timedelta(days=2)
+                event.save()
+                check_event_related_single_user(user.id)
+
+        # Main character who initially earns the rank achievement
+        main_character = User.objects.first()
+        AbakusGroup.objects.get(name="Abakus").add_user(main_character)
+        AbakusGroup.objects.get(name="Webkom").add_user(main_character)
+
+        # Register main_character for multiple events to gain higher rank achievement
+        for j in range(2, 20):
+            event = Event.objects.get(pk=j)
+            pool = event.pools.first()
+            pool.capacity = 55
+            pool.save()
+            registration = Registration.objects.get_or_create(
+                event=event, user=main_character
+            )[0]
+            event.register(registration)
+            event.end_time = timezone.now() - timedelta(days=2)
+            event.save()
+            check_event_related_single_user(main_character.id)
+
+        # Commit transaction to apply rank achievement for main_character
+        transaction.on_commit(lambda: check_all_promotions())
+
+        # Verify main_character initially has rank achievement
+        transaction.on_commit(
+            lambda: self.assertTrue(
+                Achievement.objects.filter(
+                    identifier=EVENT_RANK_IDENTIFIER, level=2, user=main_character
+                ).exists(),
+                "Achievement for rank 1 should be unlocked for main_character",
+            )
+        )
+
+        # Second character who will overtake the main_character
+        second_character = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name="Abakus").add_user(second_character)
+        AbakusGroup.objects.get(name="Webkom").add_user(second_character)
+
+        # Register second_character for events to match or exceed main_character's rank
+        for j in range(2, 30):
+            event = Event.objects.get(pk=j)
+            pool = event.pools.first()
+            pool.capacity = 55
+            pool.save()
+            registration = Registration.objects.get_or_create(
+                event=event, user=second_character
+            )[0]
+            event.register(registration)
+            event.end_time = timezone.now() - timedelta(days=2)
+            event.save()
+            check_event_related_single_user(second_character.id)
+
+        # Commit transaction to apply rank achievement for second_character
+        transaction.on_commit(lambda: check_all_promotions())
+
+        # Verify second_character has achieved rank and main_character has lost it
+        transaction.on_commit(
+            lambda: (
+                self.assertTrue(
+                    Achievement.objects.filter(
+                        identifier=EVENT_RANK_IDENTIFIER, level=2, user=second_character
+                    ).exists(),
+                    "Achievement for rank 1 should be unlocked for second_character",
+                ),
+                self.assertFalse(
+                    Achievement.objects.filter(
+                        identifier=EVENT_RANK_IDENTIFIER, level=2, user=main_character
+                    ).exists(),
+                    "Achievement for rank 1 should be removed from main_character",
+                ),
             )
         )
 
@@ -269,48 +432,48 @@ class AchievementTestCase(BaseTestCase):
         quote_achievement = Achievement.objects.filter(
             user=user, identifier=QUOTE_IDENTIFIER, level=0
         )
-        self.assertTrue(
-            not quote_achievement.exists(),
+        self.assertFalse(
+            quote_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
         event_achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_IDENTIFIER, level=0
         )
-        self.assertTrue(
-            not event_achievement.exists(),
+        self.assertFalse(
+            event_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
         event_rank_0_achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_RANK_IDENTIFIER, level=0
         )
-        self.assertTrue(
-            not event_rank_0_achievement.exists(),
+        self.assertFalse(
+            event_rank_0_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
         event_rank_1_achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_RANK_IDENTIFIER, level=1
         )
-        self.assertTrue(
-            not event_rank_1_achievement.exists(),
+        self.assertFalse(
+            event_rank_1_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
         event_rank_2_achievement = Achievement.objects.filter(
             user=user, identifier=EVENT_RANK_IDENTIFIER, level=2
         )
-        self.assertTrue(
-            not event_rank_2_achievement.exists(),
+        self.assertFalse(
+            event_rank_2_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
         poll_achievement = Achievement.objects.filter(
             user=user, identifier=POLL_IDENTIFIER, level=0
         )
-        self.assertTrue(
-            not poll_achievement.exists(),
+        self.assertFalse(
+            poll_achievement.exists(),
             f"User {user.username} should not have unlocked achievement",
         )
 
