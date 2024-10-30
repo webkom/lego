@@ -1386,20 +1386,20 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0dev)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.96.0"
+version = "2.149.0"
 description = "Google API Client Library for Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "google-api-python-client-2.96.0.tar.gz", hash = "sha256:f712373d03d338af57b9f5fe98c91f4b5baaa8765469b015bc623c4681c5bd51"},
-    {file = "google_api_python_client-2.96.0-py2.py3-none-any.whl", hash = "sha256:38c2b61b10d15bb41ec8f89303e3837ec2d2c3e4e38de5800c05ee322492f937"},
+    {file = "google_api_python_client-2.149.0-py2.py3-none-any.whl", hash = "sha256:1a5232e9cfed8c201799d9327e4d44dc7ea7daa3c6e1627fca41aa201539c0da"},
+    {file = "google_api_python_client-2.149.0.tar.gz", hash = "sha256:b9d68c6b14ec72580d66001bd33c5816b78e2134b93ccc5cf8f624516b561750"},
 ]
 
 [package.dependencies]
 google-api-core = ">=1.31.5,<2.0.dev0 || >2.3.0,<3.0.0.dev0"
-google-auth = ">=1.19.0,<3.0.0.dev0"
-google-auth-httplib2 = ">=0.1.0"
-httplib2 = ">=0.15.0,<1.dev0"
+google-auth = ">=1.32.0,<2.24.0 || >2.24.0,<2.25.0 || >2.25.0,<3.0.0.dev0"
+google-auth-httplib2 = ">=0.2.0,<1.0.0"
+httplib2 = ">=0.19.0,<1.dev0"
 uritemplate = ">=3.0.1,<5"
 
 [[package]]
@@ -1428,19 +1428,18 @@ requests = ["requests (>=2.20.0,<3.0.0dev)"]
 
 [[package]]
 name = "google-auth-httplib2"
-version = "0.1.0"
+version = "0.2.0"
 description = "Google Authentication Library: httplib2 transport"
 optional = false
 python-versions = "*"
 files = [
-    {file = "google-auth-httplib2-0.1.0.tar.gz", hash = "sha256:a07c39fd632becacd3f07718dfd6021bf396978f03ad3ce4321d060015cc30ac"},
-    {file = "google_auth_httplib2-0.1.0-py2.py3-none-any.whl", hash = "sha256:31e49c36c6b5643b57e82617cb3e021e3e1d2df9da63af67252c02fa9c1f4a10"},
+    {file = "google-auth-httplib2-0.2.0.tar.gz", hash = "sha256:38aa7badf48f974f1eb9861794e9c0cb2a0511a4ec0679b1f886d108f5640e05"},
+    {file = "google_auth_httplib2-0.2.0-py2.py3-none-any.whl", hash = "sha256:b65a0a2123300dd71281a7bf6e64d65a0759287df52729bdd1ae2e47dc311a3d"},
 ]
 
 [package.dependencies]
 google-auth = "*"
-httplib2 = ">=0.15.0"
-six = "*"
+httplib2 = ">=0.19.0"
 
 [[package]]
 name = "googleapis-common-protos"
@@ -3597,4 +3596,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "4870ab7c2c7e42c4d35c2ce91148fb30d1777dcf36654f3c5db14e7c2811cff0"
+content-hash = "399b3beba1990dbd10c0839a7a935b98695fe66ab6ead4c4002b49fb503e8af0"
