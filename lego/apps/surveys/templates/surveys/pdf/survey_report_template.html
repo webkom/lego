@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      .question {
+        margin-bottom: 20px;
+        page-break-before: always;
+      }
+      /* Prevent page break before the first question */
+      .question:first-of-type {
+        page-break-before: auto;
+      }
+      .question h2 {
+        font-size: 1.2em;
+        color: #555;
+      }
+      .charts {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+      .chart img {
+        width: 300px;
+        height: auto;
+      }
+      .text-answers {
+        margin-top: 10px;
+        font-size: 1em;
+        color: #444;
+      }
+      .text-answers ul {
+        list-style-type: disc;
+        padding-left: 20px;
+      }
+      .stats-table {
+        width: 100%;
+        margin-top: 10px;
+        border-collapse: collapse;
+      }
+      .stats-table th,
+      .stats-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      .stats-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+      .average {
+        font-weight: bold;
+        color: #333;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ survey_title }}</h1>
+
+    {% for chart in charts_data %}
+    <div class="question">
+      <h2>{{ forloop.counter }}. {{ chart.question_text }}</h2>
+
+      {% if chart.pie_chart_base64 or chart.bar_chart_base64 %}
+      <div class="charts">
+        {% if chart.pie_chart_base64 %}
+        <div class="chart">
+          <h3>Sektordiagram</h3>
+          <img
+            src="data:image/png;base64,{{ chart.pie_chart_base64 }}"
+            alt="Pie Chart"
+          />
+        </div>
+        {% endif %} {% if chart.bar_chart_base64 %}
+        <div class="chart">
+          <h3>Stolpediagram</h3>
+          <img
+            src="data:image/png;base64,{{ chart.bar_chart_base64 }}"
+            alt="Bar Chart"
+          />
+        </div>
+        {% endif %}
+      </div>
+      {% endif %} {% if chart.statistics %}
+      <div class="statistics">
+        <h3>Tabell</h3>
+        <table class="stats-table">
+          <tr>
+            <th>Alternativ</th>
+            <th>Antall</th>
+          </tr>
+          {% for stat in chart.statistics %}
+          <tr>
+            <td>{{ stat.option }}</td>
+            <td>{{ stat.count }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %} {% if chart.average %}
+      <div class="average">
+        <p>Gjennomsnittlig verdi: {{ chart.average|floatformat:2 }}</p>
+      </div>
+      {% endif %} {% if chart.text_answers %}
+      <div class="text-answers">
+        <h3>Tekst svar:</h3>
+        <ul>
+          {% for answer in chart.text_answers %}
+          <li>{{ answer }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </body>
+</html>

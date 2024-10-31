@@ -1,10 +1,13 @@
 import csv
 
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from weasyprint import HTML
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
@@ -26,6 +29,10 @@ from lego.apps.surveys.serializers import (
     SurveyReadDetailedSerializer,
     SurveyReadSerializer,
     SurveyUpdateSerializer,
+)
+from lego.apps.surveys.utils.report_utils import (
+    describe_results_csv,
+    describe_results_with_charts,
 )
 
 
@@ -81,34 +88,6 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if not is_admin:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        def describe_results(survey):
-            choice_answers = []
-            text_answers = []
-            submissions = Submission.objects.filter(survey=survey)
-            for question in survey.questions.all():
-                if question.question_type != TEXT_FIELD:
-                    answers = []
-                    answers.append(["question", question.question_text])
-                    answers.append(["value:", "count:"])
-                    for option in question.options.all():
-                        number_of_selections = submissions.filter(
-                            answers__selected_options__in=[option.id]
-                        ).count()
-                        answers.append([option.option_text, number_of_selections])
-                    choice_answers.append(answers)
-                else:
-                    answers = []
-                    answers.append([question.question_text])
-                    answers.append(["answer:"])
-                    answers += [
-                        [answer.answer_text]
-                        for answer in Answer.objects.filter(question=question).exclude(
-                            hide_from_public=True
-                        )
-                    ]
-                    text_answers.append(answers)
-            return choice_answers + text_answers
-
         survey = Survey.objects.get(pk=kwargs["pk"])
 
         response = HttpResponse(content_type="text/csv")
@@ -117,11 +96,38 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
 
         writer = csv.writer(response)
-        for question in describe_results(survey):
+        for question in describe_results_csv(survey):
             for line in question:
                 writer.writerow(line)
             writer.writerow([])
 
+        return response
+
+    @action(detail=True, methods=["GET"])
+    def pdf(self, *args, **kwargs):
+        user = self.request.user
+        is_admin = user.has_perm(EDIT, obj=Survey)
+        if not is_admin:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        survey = Survey.objects.get(pk=kwargs["pk"])
+
+        charts_data = describe_results_with_charts(survey)
+        context = {
+            "survey_title": survey.title,
+            "charts_data": charts_data,
+        }
+
+        html_string = render_to_string(
+            "surveys/pdf/survey_report_template.html", context
+        )
+
+        pdf = HTML(string=html_string).write_pdf()
+
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = (
+            f'attachment; filename="{survey.title.replace(" ", "_")}.pdf"'
+        )
         return response
 
 
