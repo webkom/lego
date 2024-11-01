@@ -2,9 +2,10 @@ import base64
 import io
 
 import matplotlib
+import matplotlib.pyplot
 from matplotlib.ticker import MultipleLocator
 
-from lego.apps.surveys.constants import TEXT_FIELD
+from lego.apps.surveys.constants import TEXT_FIELD, PIE_CHART, BAR_CHART
 from lego.apps.surveys.models import Answer, Submission
 
 matplotlib.use("Agg")
@@ -44,42 +45,49 @@ def describe_results_with_charts(survey):
             except ValueError:
                 question_data["average"] = None
 
-            fig, ax = matplotlib.pyplot.subplots()
-            ax.pie(
-                counts,
-                labels=labels,
-                autopct="%1.1f%%",
-                startangle=90,
-                textprops={"fontsize": 16, "weight": "bold"},
-            )
-            ax.axis("equal")
-            buf = io.BytesIO()
-            matplotlib.pyplot.savefig(buf, format="PNG")
-            buf.seek(0)
-            question_data["pie_chart_base64"] = base64.b64encode(buf.read()).decode(
-                "utf-8"
-            )
-            buf.close()
-            matplotlib.pyplot.close(fig)
+            if question.display_type == PIE_CHART:
+                filtered_labels_counts = [(label, count) for label, count in zip(labels, counts) if count > 0]
+                
+                filtered_labels, filtered_counts = zip(*filtered_labels_counts) if filtered_labels_counts else ([], [])
 
-            fig, ax = matplotlib.pyplot.subplots()
-            ax.bar(labels, counts)
-            ax.tick_params(axis="x", labelsize=16)
-            ax.tick_params(axis="y", labelsize=16)
+                colors = ["#FF2400", "#3366FF"] * (len(filtered_counts) // 2 + 1)
 
-            ax.set_xticks(range(len(labels)))
-            ax.set_xticklabels(labels, fontweight="bold", fontsize=16)
+                fig, ax = matplotlib.pyplot.subplots()
+                ax.pie(
+                    filtered_counts,
+                    labels=filtered_labels,
+                    autopct="%1.1f%%",
+                    startangle=90,
+                    textprops={"fontsize": 16, "weight": "bold"},
+                    colors=colors[:len(filtered_counts)],
+                )
+                ax.axis("equal")
+                buf = io.BytesIO()
+                matplotlib.pyplot.savefig(buf, format="PNG")
+                buf.seek(0)
+                question_data["pie_chart_base64"] = base64.b64encode(buf.read()).decode("utf-8")
+                buf.close()
+                matplotlib.pyplot.close(fig)
 
-            ax.yaxis.set_major_locator(MultipleLocator(1))
+            elif question.display_type == BAR_CHART:
+                fig, ax = matplotlib.pyplot.subplots()
+                ax.bar(labels, counts, color="#FF2400")
+                ax.tick_params(axis="x", labelsize=16)
+                ax.tick_params(axis="y", labelsize=16)
 
-            buf = io.BytesIO()
-            matplotlib.pyplot.savefig(buf, format="PNG")
-            buf.seek(0)
-            question_data["bar_chart_base64"] = base64.b64encode(buf.read()).decode(
-                "utf-8"
-            )
-            buf.close()
-            matplotlib.pyplot.close(fig)
+                ax.set_xticks(range(len(labels)))
+                ax.set_xticklabels(labels, fontweight="bold", fontsize=16)
+
+                ax.yaxis.set_major_locator(MultipleLocator(1))
+
+                buf = io.BytesIO()
+                matplotlib.pyplot.savefig(buf, format="PNG")
+                buf.seek(0)
+                question_data["bar_chart_base64"] = base64.b64encode(buf.read()).decode(
+                    "utf-8"
+                )
+                buf.close()
+                matplotlib.pyplot.close(fig)
 
         else:
             question_data["text_answers"] = [

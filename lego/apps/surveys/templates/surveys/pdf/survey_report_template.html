@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,6 +64,7 @@
     </style>
   </head>
   <body>
+    <img src="{% static "assets/img/logo.png" %}">
     <h1>{{ survey_title }}</h1>
 
     {% for chart in charts_data %}
@@ -73,7 +75,6 @@
       <div class="charts">
         {% if chart.pie_chart_base64 %}
         <div class="chart">
-          <h3>Sektordiagram</h3>
           <img
             src="data:image/png;base64,{{ chart.pie_chart_base64 }}"
             alt="Pie Chart"
@@ -81,7 +82,6 @@
         </div>
         {% endif %} {% if chart.bar_chart_base64 %}
         <div class="chart">
-          <h3>Stolpediagram</h3>
           <img
             src="data:image/png;base64,{{ chart.bar_chart_base64 }}"
             alt="Bar Chart"
