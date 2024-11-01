@@ -32,6 +32,7 @@ from lego.apps.followers.models import FollowEvent
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.constants import AUTUMN, PENALTY_TYPES, PENALTY_WEIGHTS, SPRING
 from lego.apps.users.models import AbakusGroup, Membership, Penalty, User
+from lego.utils.decorators import abakus_cached_property
 from lego.utils.models import BasisModel
 from lego.utils.youtube_validator import youtube_validator
 
@@ -841,6 +842,14 @@ class Pool(BasisModel):
         self.counter -= 1
         self.save(update_fields=["counter"])
         return self
+
+    @abakus_cached_property
+    def all_permission_groups(self):
+        groups = self.permission_groups.all()
+        all_groups = set(groups)
+        for group in groups:
+            all_groups.update(group.get_descendants())
+        return list(all_groups)
 
     def __str__(self) -> str:
         return self.name

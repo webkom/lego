@@ -44,18 +44,13 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
-    all_abakus_group_ids = serializers.SerializerMethodField()
     achievements = AchievementSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
         fields = PublicUserSerializer.Meta.fields + (  # type: ignore
             "abakus_groups",
-            "all_abakus_group_ids",
             "achievements",
         )
-
-    def get_all_abakus_group_ids(self, user):
-        return [group.id for group in user.all_groups]
 
 
 class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
