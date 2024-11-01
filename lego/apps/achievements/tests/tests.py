@@ -621,3 +621,81 @@ class RunAllPromotionsTestCase(BaseTestCase):
             achievement.exists(),
             "User should have unlocked level 0 event achievement after task run.",
         )
+
+
+class SimultaneousEventRegistrationAPITestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_multiple_events.yaml",
+    ]
+
+    def setUp(self):
+        # Set up a test user and add them to the necessary groups
+        self.user = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
+        AbakusGroup.objects.get(name="Webkom").add_user(self.user)
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12),
+            heed_penalties=True,
+        )
+
+        # Authenticate the user for API requests
+        self.client.force_authenticate(self.user)
+
+        # Register the user for 10 events programmatically
+        for i in range(1, 11):
+            event = Event.objects.get(pk=i)
+            pool = event.pools.first()
+            pool.capacity = 55
+            pool.save()
+            registration = Registration.objects.get_or_create(
+                event=event, user=self.user
+            )[0]
+            event.register(registration)
+            event.end_time = timezone.now() - timedelta(days=2)
+            event.save()
+
+    def _get_registrations_list_url(self, event_pk):
+        return reverse("api:v1:registrations-list", kwargs={"event_pk": event_pk})
+
+    def test_simultaneous_event_registration_for_single_achievement(self):
+        """Test that simultaneous API registrations result in a single event achievement"""
+
+        # Prepare two events for simultaneous registration via API
+        event1 = Event.objects.get(pk=11)
+        event2 = Event.objects.get(pk=12)
+
+        def register_user_via_api(event):
+            response = self.client.post(
+                self._get_registrations_list_url(event.id),
+                {"captchaResponse": "XXXX.DUMMY.TOKEN.XXXX", "feedback": ""},
+            )
+            return response
+
+        # Register for two events simultaneously using API
+        res1 = register_user_via_api(event1)
+        res2 = register_user_via_api(event2)
+
+        # Check that both API responses are accepted
+        self.assertEqual(
+            res1.status_code,
+            status.HTTP_202_ACCEPTED,
+            "First API registration should succeed",
+        )
+        self.assertEqual(
+            res2.status_code,
+            status.HTTP_202_ACCEPTED,
+            "Second API registration should succeed",
+        )
+
+        # Verify only one event-count achievement is unlocked
+        achievements = Achievement.objects.filter(
+            user=self.user, identifier=EVENT_IDENTIFIER, level=0
+        )
+        self.assertEqual(
+            achievements.count(),
+            1,
+            "User should only have a single event-count achievement",
+        )
