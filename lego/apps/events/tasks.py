@@ -150,7 +150,7 @@ def async_unregister(self, registration_id, logger_context=None):
         notify_user_registration(
             constants.SOCKET_UNREGISTRATION_FAILURE,
             registration,
-            error_message="Avregistrering feilet",
+            error_message="Avregistrering er stengt",
         )
     except IntegrityError as e:
         log.error("unregistration_error", exception=e, registration_id=registration.id)
