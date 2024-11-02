@@ -220,3 +220,16 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             "bedex_comment": self.bedex_comment,
             "readme": readme,
         }
+    
+class CompanyInterestEvent(BasisModel):
+    company_interest = models.ForeignKey(CompanyInterest, on_delete=models.CASCADE,)
+    event = models.CharField(max_length=64, choices=COMPANY_EVENTS) 
+    priority = models.PositiveSmallIntegerField(default=0, blank=False, null=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['company_interest', 'event'],
+                name='unique_company_interest_event'
+            )
+        ]
