@@ -184,8 +184,9 @@ class CompanyInterest(PersistentModel, TimeStampModel):
                 semesters.append(f"Høst {semester.year}")
 
         events = []
-        for event in self.events:
-            events.append(TRANSLATED_EVENTS[event])
+        for event in self.interest_events.all():
+            event_name = TRANSLATED_EVENTS[event.name]
+            events.append(event_name)
 
         others = []
         for offer in self.other_offers:
@@ -221,15 +222,15 @@ class CompanyInterest(PersistentModel, TimeStampModel):
             "readme": readme,
         }
     
-class CompanyInterestEvent(BasisModel):
-    company_interest = models.ForeignKey(CompanyInterest, on_delete=models.CASCADE,)
-    event = models.CharField(max_length=64, choices=COMPANY_EVENTS) 
+class CompanyInterestEvent(models.Model):
+    company_interest = models.ForeignKey(CompanyInterest, on_delete=models.CASCADE,related_name="interest_events")
+    name = models.CharField(max_length=64, choices=COMPANY_EVENTS) 
     priority = models.PositiveSmallIntegerField(default=0, blank=False, null=False)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['company_interest', 'event'],
-                name='unique_company_interest_event'
+                fields=['company_interest', 'name'],
+                name='unique_company_interest_event_name'
             )
         ]

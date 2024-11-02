@@ -10,6 +10,7 @@ from lego.apps.companies.models import (
     CompanyContact,
     CompanyFile,
     CompanyInterest,
+    CompanyInterestEvent,
     Semester,
     SemesterStatus,
     StudentCompanyContact,
@@ -236,8 +237,28 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
             "company_contacts",
         )
 
+class CompanyInterestEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyInterestEvent
+        fields = (
+            "id",
+            "name",
+            "priority"
+        )
+
+    def create(self, validated_data):
+        company_interest = self.context.get('company_interest')
+        if not company_interest:
+            raise serializers.ValidationError("Company interest must be provided.")
+
+        return CompanyInterestEvent.objects.create(
+            company_interest=company_interest,
+            **validated_data
+        )
+
 
 class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
+    interest_events = CompanyInterestEventSerializer(many=True)
     class Meta:
         model = CompanyInterest
         fields = (
@@ -248,7 +269,6 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "mail",
             "phone",
             "semesters",
-            "events",
             "other_offers",
             "collaborations",
             "company_type",
@@ -266,6 +286,7 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "bedex_comment",
             "company_course_themes",
             "office_in_trondheim",
+            "interest_events"
         )
 
     def update_company_interest_bdb(self, company_interest):
@@ -286,18 +307,48 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             semesters = validated_data.pop("semesters")
+            interest_events_data = validated_data.pop("interest_events", [])
             company_interest = CompanyInterest.objects.create(**validated_data)
             company_interest.semesters.add(*semesters)
             company_interest.save()
+            for event_data in interest_events_data:
+                event_serializer = CompanyInterestEventSerializer(data=event_data, context={'company_interest': company_interest})
+                event_serializer.is_valid(raise_exception=True)
+                event_serializer.save()
             self.update_company_interest_bdb(company_interest)
             return company_interest
 
     def update(self, instance, validated_data):
         with transaction.atomic():
             semesters = validated_data.pop("semesters")
+            interest_events_data = validated_data.pop("interest_events", [])
             updated_instance = super().update(instance, validated_data)
             updated_instance.semesters.add(*semesters)
             updated_instance.save()
+            existing_events = {event.name: event for event in instance.interest_events.all()}
+            current_event_names = {event_data["name"] for event_data in interest_events_data}
+
+            for event_data in interest_events_data:
+                event_name = event_data["name"]
+                if event_name in existing_events:
+                    event_instance = existing_events[event_name]
+                    event_serializer = CompanyInterestEventSerializer(
+                        data=event_data, partial=True,
+                        context={'company_interest': updated_instance}
+                    )
+                    event_serializer.is_valid(raise_exception=True)
+                    event_serializer.save()
+                else:
+                    event_serializer = CompanyInterestEventSerializer(
+                        data=event_data,
+                        context={'company_interest': updated_instance}
+                    )
+                    event_serializer.is_valid(raise_exception=True)
+                    event_serializer.save()
+
+            for event_name, event_instance in existing_events.items():
+                if event_name not in current_event_names:
+                    event_instance.delete()
             self.update_company_interest_bdb(updated_instance)
             return updated_instance
 
@@ -308,6 +359,7 @@ class CompanyInterestSerializer(CompanyInterestCreateAndUpdateSerializer):
 
 class CompanyInterestListSerializer(serializers.ModelSerializer):
     company = CompanySearchSerializer(many=False)
+    interest_events = CompanyInterestEventSerializer(many=True, read_only=True)
 
     class Meta:
         model = CompanyInterest
@@ -319,6 +371,6 @@ class CompanyInterestListSerializer(serializers.ModelSerializer):
             "mail",
             "phone",
             "semesters",
-            "events",
+            "interest_events",
             "created_at",
         )
