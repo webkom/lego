@@ -1,5 +1,7 @@
 import csv
+import os
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
@@ -113,9 +115,18 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         survey = Survey.objects.get(pk=kwargs["pk"])
 
         charts_data = describe_results_with_charts(survey)
+
         context = {
             "survey_title": survey.title,
             "charts_data": charts_data,
+            "logo_image_path": os.path.join(
+                settings.STATIC_ROOT, "assets/img/abakus.png"
+            ),
+            "hsp_image_path": os.path.join(
+                settings.STATIC_ROOT, "assets/img/netcompany.svg"
+            ),
+            "company": survey.event.company.name if survey.event.company else "N/A",
+            "date": survey.event.start_time.strftime("%Y-%m-%d"),
         }
 
         html_string = render_to_string(

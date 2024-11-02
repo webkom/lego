@@ -36,6 +36,7 @@ _test_surveys = [
                 "mandatory": False,
                 "relativeIndex": 1,
                 "options": [],
+                "display_type": "pie_chart",
             },
             {
                 "id": 2,
@@ -52,6 +53,7 @@ _test_surveys = [
                 "mandatory": True,
                 "relativeIndex": 3,
                 "options": [],
+                "display_type": "bar_chart",
             },
         ]
     },
@@ -395,3 +397,15 @@ class SurveyViewSetTestCase(APITestCase):
         url = _get_detail_url(1) + "pdf/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_survey_export_admin_pdf_larger_survey(self):
+        """Test that admins can export a survey as pdf"""
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.post(
+            _get_list_url(),
+            {"title": "Survey", "event": 5, "questions": _test_surveys[1]["questions"]},
+        )
+
+        url = _get_detail_url(response.json()["id"]) + "pdf/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

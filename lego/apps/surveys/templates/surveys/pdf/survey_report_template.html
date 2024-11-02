@@ -3,31 +3,94 @@
 <html lang="en">
   <head>
     <style>
+      /* Page margin and layout */
+      @page {
+        margin: 35mm 20mm; /* Increased top margin for PDF layout */
+      }
       body {
         font-family: Arial, sans-serif;
         margin: 0;
-        padding: 0;
+        padding-top: 150px; /* Increased padding to avoid overlap with fixed header */
       }
       h1 {
         text-align: center;
         color: #333;
+        margin-top: 10px;
       }
+
+      /* Fixed Header */
+      .header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end; /* Align items at the start for multi-line support */
+        position: fixed;
+        top: 0;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+        background-color: white;
+        height: auto;
+      }
+      .header img {
+        max-width: 80px;
+        height: auto;
+        margin-bottom: 15px;
+      }
+      .header .contact-info {
+        font-size: 1.075em;
+        text-align: left;
+        margin: 0;
+        line-height: 1.2; /* Control line spacing for header text */
+      }
+      .header p {
+        margin: 0;
+      }
+
+      /* Date, Company, and Title Row */
+      .info-row {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1em;
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .info-row-item {
+        margin-left: 16px;
+      }
+
+      .info-header {
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      /* First Question Layout */
+      .first-question {
+        margin-top: 20px; /* Space between title and first question */
+      }
+
+      /* Container for Each Question with Extra Padding */
+      .question-container {
+        padding-top: 90px; /* Extra padding for each question page */
+      }
+
+      /* Subsequent Questions Layout */
       .question {
         margin-bottom: 20px;
-        page-break-before: always;
-      }
-      /* Prevent page break before the first question */
-      .question:first-of-type {
-        page-break-before: auto;
+        page-break-before: always; /* Each question starts on a new page */
       }
       .question h2 {
         font-size: 1.2em;
         color: #555;
+        margin-top: 30px; /* Margin to prevent clipping under the header */
       }
       .charts {
         display: flex;
         justify-content: center;
         gap: 20px;
+        margin-top: 25px;
       }
       .chart img {
         width: 300px;
@@ -61,35 +124,68 @@
         color: #333;
         margin-top: 10px;
       }
+
+      a {
+        color: rgb(45, 90, 158);
+      }
     </style>
   </head>
   <body>
-    <img src="{% static "assets/img/logo.png" %}">
+    <!-- Persistent header with only Abakus info -->
+    <div class="header">
+      <div class="contact-info">
+        <img
+          src="file://{{ logo_image_path }}"
+          style="max-width: 150px; height: auto"
+          alt="Abaku Logo"
+        />
+        <p>Sem Sælands Vei 7-9, Gløshaugen, 7491 Trondheim</p>
+        <p>
+          <a href="https://abakus.no">www.abakus.no</a>
+          | <a href="mailto:abakus@abakus.no">abakus@abakus.no</a>
+        </p>
+      </div>
+      <div class="partner-logo">
+        <p>Hovedsamarbeidspartner:</p>
+        <img
+          src="file://{{ hsp_image_path }}"
+          style="max-width: 120px; height: auto"
+          alt="Partner Logo"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Company, Date, and Title (only on first page) -->
     <h1>{{ survey_title }}</h1>
+    <div class="info-row">
+      <p><span class="info-header">Bedrift: </span>{{ company }}</p>
+      <p><span class="info-header">Dato: </span>{{ date }}</p>
+    </div>
 
-    {% for chart in charts_data %}
-    <div class="question">
-      <h2>{{ forloop.counter }}. {{ chart.question_text }}</h2>
+    <!-- First Survey Question on the First Page -->
+    {% if charts_data %}
+    <div class="first-question">
+      <h2>1. {{ charts_data.0.question_text }}</h2>
 
-      {% if chart.pie_chart_base64 or chart.bar_chart_base64 %}
+      {% if charts_data.0.pie_chart_base64 or charts_data.0.bar_chart_base64 %}
       <div class="charts">
-        {% if chart.pie_chart_base64 %}
+        {% if charts_data.0.pie_chart_base64 %}
         <div class="chart">
           <img
-            src="data:image/png;base64,{{ chart.pie_chart_base64 }}"
+            src="data:image/png;base64,{{ charts_data.0.pie_chart_base64 }}"
             alt="Pie Chart"
           />
         </div>
-        {% endif %} {% if chart.bar_chart_base64 %}
+        {% endif %} {% if charts_data.0.bar_chart_base64 %}
         <div class="chart">
           <img
-            src="data:image/png;base64,{{ chart.bar_chart_base64 }}"
+            src="data:image/png;base64,{{ charts_data.0.bar_chart_base64 }}"
             alt="Bar Chart"
           />
         </div>
         {% endif %}
       </div>
-      {% endif %} {% if chart.statistics %}
+      {% endif %} {% if charts_data.0.statistics %}
       <div class="statistics">
         <h3>Tabell</h3>
         <table class="stats-table">
@@ -97,7 +193,7 @@
             <th>Alternativ</th>
             <th>Antall</th>
           </tr>
-          {% for stat in chart.statistics %}
+          {% for stat in charts_data.0.statistics %}
           <tr>
             <td>{{ stat.option }}</td>
             <td>{{ stat.count }}</td>
@@ -105,11 +201,11 @@
           {% endfor %}
         </table>
       </div>
-      {% endif %} {% if chart.average %}
+      {% endif %} {% if charts_data.0.average %}
       <div class="average">
         <p>Gjennomsnittlig verdi: {{ chart.average|floatformat:2 }}</p>
       </div>
-      {% endif %} {% if chart.text_answers %}
+      {% endif %} {% if charts_data.0.text_answers %}
       <div class="text-answers">
         <h3>Tekst svar:</h3>
         <ul>
@@ -119,6 +215,64 @@
         </ul>
       </div>
       {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Remaining Questions Each on a New Page -->
+    {% for chart in charts_data|slice:"1:" %}
+    <div class="question-container">
+      <div class="question">
+        <h2>{{ forloop.counter|add:1 }}. {{ chart.question_text }}</h2>
+
+        {% if chart.pie_chart_base64 or chart.bar_chart_base64 %}
+        <div class="charts">
+          {% if chart.pie_chart_base64 %}
+          <div class="chart">
+            <img
+              src="data:image/png;base64,{{ chart.pie_chart_base64 }}"
+              alt="Pie Chart"
+            />
+          </div>
+          {% endif %} {% if chart.bar_chart_base64 %}
+          <div class="chart">
+            <img
+              src="data:image/png;base64,{{ chart.bar_chart_base64 }}"
+              alt="Bar Chart"
+            />
+          </div>
+          {% endif %}
+        </div>
+        {% endif %} {% if chart.statistics %}
+        <div class="statistics">
+          <h3>Tabell</h3>
+          <table class="stats-table">
+            <tr>
+              <th>Alternativ</th>
+              <th>Antall</th>
+            </tr>
+            {% for stat in chart.statistics %}
+            <tr>
+              <td>{{ stat.option }}</td>
+              <td>{{ stat.count }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        {% endif %} {% if chart.average %}
+        <div class="average">
+          <p>Gjennomsnittlig verdi: {{ chart.average|floatformat:2 }}</p>
+        </div>
+        {% endif %} {% if chart.text_answers %}
+        <div class="text-answers">
+          <h3>Tekst svar:</h3>
+          <ul>
+            {% for answer in chart.text_answers %}
+            <li>{{ answer }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
     </div>
     {% endfor %}
   </body>

@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot
 from matplotlib.ticker import MultipleLocator
 
-from lego.apps.surveys.constants import TEXT_FIELD, PIE_CHART, BAR_CHART
+from lego.apps.surveys.constants import BAR_CHART, PIE_CHART, TEXT_FIELD
 from lego.apps.surveys.models import Answer, Submission
 
 matplotlib.use("Agg")
@@ -46,11 +46,19 @@ def describe_results_with_charts(survey):
                 question_data["average"] = None
 
             if question.display_type == PIE_CHART:
-                filtered_labels_counts = [(label, count) for label, count in zip(labels, counts) if count > 0]
-                
-                filtered_labels, filtered_counts = zip(*filtered_labels_counts) if filtered_labels_counts else ([], [])
+                filtered_labels_counts = [
+                    (label, count)
+                    for label, count in zip(labels, counts, strict=True)
+                    if count > 0
+                ]
 
-                colors = ["#FF2400", "#3366FF"] * (len(filtered_counts) // 2 + 1)
+                filtered_labels, filtered_counts = (
+                    zip(*filtered_labels_counts, strict=True)
+                    if filtered_labels_counts
+                    else ([], [])
+                )
+
+                colors = ["#E21617", "#3366FF"] * (len(filtered_counts) // 2 + 1)
 
                 fig, ax = matplotlib.pyplot.subplots()
                 ax.pie(
@@ -59,19 +67,21 @@ def describe_results_with_charts(survey):
                     autopct="%1.1f%%",
                     startangle=90,
                     textprops={"fontsize": 16, "weight": "bold"},
-                    colors=colors[:len(filtered_counts)],
+                    colors=colors[: len(filtered_counts)],
                 )
                 ax.axis("equal")
                 buf = io.BytesIO()
                 matplotlib.pyplot.savefig(buf, format="PNG")
                 buf.seek(0)
-                question_data["pie_chart_base64"] = base64.b64encode(buf.read()).decode("utf-8")
+                question_data["pie_chart_base64"] = base64.b64encode(buf.read()).decode(
+                    "utf-8"
+                )
                 buf.close()
                 matplotlib.pyplot.close(fig)
 
             elif question.display_type == BAR_CHART:
                 fig, ax = matplotlib.pyplot.subplots()
-                ax.bar(labels, counts, color="#FF2400")
+                ax.bar(labels, counts, color="#E21617")
                 ax.tick_params(axis="x", labelsize=16)
                 ax.tick_params(axis="y", labelsize=16)
 
