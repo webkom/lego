@@ -58,7 +58,9 @@ def describe_results_with_charts(survey):
                     else ([], [])
                 )
 
-                colors = ["#E21617", "#3366FF"] * (len(filtered_counts) // 2 + 1)
+                colors = ["#E21617", "#3366FF", "#41ec8b", "#f5a524", "#b94cfb"] * (
+                    len(filtered_counts) // 2 + 1
+                )
 
                 fig, ax = matplotlib.pyplot.subplots()
                 ax.pie(
@@ -80,13 +82,16 @@ def describe_results_with_charts(survey):
                 matplotlib.pyplot.close(fig)
 
             elif question.display_type == BAR_CHART:
+                colors = ["#E21617", "#3366FF", "#41ec8b", "#f5a524", "#b94cfb"] * (
+                    len(labels) // 2 + 1
+                )
                 fig, ax = matplotlib.pyplot.subplots()
-                ax.bar(labels, counts, color="#E21617")
-                ax.tick_params(axis="x", labelsize=16)
+                ax.bar(labels, counts, color=colors)
+                ax.tick_params(axis="x", labelsize=12)
                 ax.tick_params(axis="y", labelsize=16)
 
                 ax.set_xticks(range(len(labels)))
-                ax.set_xticklabels(labels, fontweight="bold", fontsize=16)
+                ax.set_xticklabels(labels, fontweight="bold", fontsize=12)
 
                 ax.yaxis.set_major_locator(MultipleLocator(1))
 
