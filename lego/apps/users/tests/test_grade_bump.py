@@ -3,7 +3,8 @@ from datetime import timedelta
 from django.core.management import call_command
 from django.utils import timezone
 
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.constants import GROUP_INTEREST
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.test_utils import BaseTestCase
 
 
@@ -105,6 +106,22 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         bump_users()
         reset_user_bump_date(user)
         self.assertEqual(get_groups(user), [])
+
+    def test_bump_komtek_interest_remove(self):
+        """5th grade interestgroup should not be member afterwards"""
+        user = self.user
+        self.komtek_5.add_user(user)
+        self.assertEqual(get_groups(user), [self.komtek_5])
+        abacraft = AbakusGroup.objects.create(name="AbaCraft", type=GROUP_INTEREST)
+        abacraft.add_user(user)
+        bump_users()
+        reset_user_bump_date(user)
+        self.assertEqual(get_groups(user), [])
+        self.assertFalse(
+            Membership.objects.filter(
+                user=user, abakus_group__type=GROUP_INTEREST
+            ).exists()
+        )
 
     def test_multibump_should_not_bump(self):
         """Bumping multiple times should not bump the same user more than once"""
