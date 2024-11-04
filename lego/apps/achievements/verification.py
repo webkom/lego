@@ -5,7 +5,7 @@ from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
-from lego.apps.users.models import User
+from lego.apps.users.models import Penalty, User
 
 
 def check_event_generic(user: User, count: int):
@@ -30,6 +30,10 @@ def check_poll_responses(user: User, count: int):
         ).count()
         >= count
     )
+
+
+def check_total_penalties(user: User, count: int) -> bool:
+    return Penalty.objects.filter(user=user).count() >= count
 
 
 # There is a case where manual payment does not update the payment amount.
