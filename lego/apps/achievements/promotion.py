@@ -53,7 +53,7 @@ def check_leveled_promotions(
             if initial_achievement_key and input_achievements[initial_achievement_key][
                 "requirement_function"
             ](user):
-                current_achievement = Achievement.objects.create(
+                current_achievement, _ = Achievement.objects.get_or_create(
                     user=user,
                     identifier=identifier,
                     level=level,
@@ -119,7 +119,7 @@ def check_rank_promotions():
 
             # Grant the achievement if the user does not have it
             if not achievement_exists:
-                Achievement.objects.create(
+                Achievement.objects.get_or_create(
                     identifier=rank_data["identifier"],
                     level=rank_data["level"],
                     user=user,
