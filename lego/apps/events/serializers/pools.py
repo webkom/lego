@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from lego.apps.events.fields import RegistrationCountField
 from lego.apps.events.models import Event, Pool
 from lego.apps.events.serializers.registrations import (
     RegistrationPaymentReadSerializer,
@@ -14,6 +15,7 @@ from lego.utils.serializers import BasisModelSerializer
 
 class PoolReadSerializer(BasisModelSerializer):
     permission_groups = PublicAbakusGroupSerializer(many=True)
+    registration_count = RegistrationCountField()
 
     class Meta:
         model = Pool
