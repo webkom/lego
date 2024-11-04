@@ -44,23 +44,21 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
-    achievements = AchievementSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + (  # type: ignore
-            "abakus_groups",
-            "achievements",
-        )
+        fields = PublicUserSerializer.Meta.fields + ("abakus_groups",)  # type: ignore
 
 
 class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     past_memberships = PastMembershipSerializer(many=True)
     memberships = MembershipSerializer(many=True)
+    achievements = AchievementSerializer(many=True)
 
     class Meta(PublicUserSerializer.Meta):
         fields = PublicUserWithAbakusGroupsSerializer.Meta.fields + (  # type: ignore
             "past_memberships",
             "memberships",
+            "achievements",
         )
 
 

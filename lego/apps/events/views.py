@@ -145,7 +145,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     "can_edit_groups",
                     Prefetch("pools__registrations", queryset=reg_queryset),
                     Prefetch(
-                        "registrations", queryset=Registration.objects.filter(pool=None)
+                        "registrations",
+                        queryset=Registration.objects.filter(pool=None)
+                        .select_related("user")
+                        .prefetch_related("user__abakus_groups"),
                     ),
                 )
         else:
@@ -157,8 +160,10 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         query = Q()
         for group in current_user_groups:
             query |= Q(user__abakus_groups=group)
-        registrations = Registration.objects.select_related("user").annotate(
-            shared_memberships=Count("user__abakus_groups", filter=query)
+        registrations = (
+            Registration.objects.select_related("user")
+            .prefetch_related("user__abakus_groups")
+            .annotate(shared_memberships=Count("user__abakus_groups", filter=query))
         )
         return registrations
 
