@@ -25,3 +25,13 @@ class Achievement(BasisModel):
             .count()
         )
         return (achievement_users / total_users) * 100
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "identifier"], name="unique_user_identifier"
+            )
+        ]
+        indexes = [
+            models.Index(fields=["user", "identifier", "level"]),
+        ]
