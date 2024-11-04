@@ -44,6 +44,9 @@ COMMENT_REPLY = "comment_reply"
 # Notifications
 ANNOUNCEMENT = "announcement"
 
+# Achievement
+ACHIEVEMENT_EARNED = "achievement_earned"
+
 # Followers
 REGISTRATION_REMINDER = "registration_reminder"
 
@@ -66,6 +69,7 @@ NOTIFICATION_TYPES = [
     COMPANY_INTEREST_CREATED,
     INACTIVE_WARNING,
     DELETED_WARNING,
+    ACHIEVEMENT_EARNED
 ]
 
 NOTIFICATION_CHOICES = [

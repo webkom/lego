@@ -11,4 +11,4 @@ def check_achievement_on_registration_callback(sender, instance, created, **kwar
     """
     Signal handler to check event-related achievements when a new registration is created.
     """
-    async_check_event_achievements_single_user.delay(instance.user.id)
+    async_check_event_achievements_single_user.delay(user_id=instance.user.id)

@@ -1,0 +1,1 @@
+Du har oppnådd trofeet {{ achievement_name }} i nivå {{ achievement_level }}!

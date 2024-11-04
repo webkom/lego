@@ -15,8 +15,9 @@ class Notification:
 
     name = None
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user, channels=("email", "push"), *args, **kwargs):
         self.user = user
+        self.channels = channels
         self.args = (args,)
         self.kwargs = kwargs
 
@@ -30,10 +31,12 @@ class Notification:
         generators = {"email": self.generate_mail, "push": self.generate_push}
 
         channels = NotificationSetting.active_channels(self.user, self.name)
+        selected_channels = [channel for channel in channels if channel in self.channels]
 
-        for channel in channels:
+        for channel in selected_channels:
             generator = generators.get(channel)
-            generator()
+            if generator:
+                generator()
 
     def _delay_mail(self, *args, **kwargs):
         """

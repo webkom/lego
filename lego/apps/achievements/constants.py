@@ -150,3 +150,20 @@ ACHIEVEMENTS = {
 ACHIEVEMENT_IDENTIFIERS = sorted(
     {(value["identifier"], value["identifier"]) for value in ACHIEVEMENTS.values()}
 )
+
+# This is just for notifications. Ideally it should not be here.
+ACHIEVEMENT_FULLNAME_LOOKUP = {
+    "event_count": [
+        "Arrangement: Bronse",
+        "Arrangement: Sølv",
+        "Arrangement: Gull",
+        "Arrangement: Platinum",
+        "Arrangement: Diamant",
+        "Arrangement: Legende",
+    ],
+    "event_rank": ["Arrangement: Mester", "Arrangement: Ikon", "Arrangement: Fyrtårn"],
+    "quote_count": ["Psssst"],
+    "event_price": ["Fæffæ betaler", "Arvingen", "Bærumsbaron"],
+    "meeting_hidden": ["Er det noen her?"],
+    "poll_count": ["Aktiv Deltaker", "Meningsbærer", "Talsperson"],
+}
