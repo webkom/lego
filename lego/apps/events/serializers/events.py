@@ -14,7 +14,9 @@ from lego.apps.events.fields import (
     ActivationTimeField,
     FollowingField,
     IsAdmittedField,
+    RegistrationCountField,
     SpotsLeftField,
+    TotalCapacityField,
 )
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
@@ -80,6 +82,8 @@ class EventReadSerializer(
     )
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    registration_count = RegistrationCountField()
+    total_capacity = TotalCapacityField()
     responsible_users = PublicUserField(
         queryset=User.objects.all(),
         allow_null=False,
@@ -131,7 +135,6 @@ class EventReadDetailedSerializer(
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
     created_by = PublicUserSerializer()
-
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
     responsible_users = PublicUserField(
@@ -176,13 +179,10 @@ class EventReadDetailedSerializer(
             "use_stripe",
             "payment_due_date",
             "use_captcha",
-            "waiting_registration_count",
             "tags",
             "is_merged",
             "heed_penalties",
             "created_by",
-            "registration_count",
-            "legacy_registration_count",
             "survey",
             "use_consent",
             "youtube_url",
@@ -198,15 +198,14 @@ class EventForSurveySerializer(EventReadSerializer):
 
     class Meta:
         model = Event
-        fields = EventReadSerializer.Meta.fields + (
-            "registration_count",
-            "waiting_registration_count",
-            "attended_count",
-        )
+        fields = EventReadSerializer.Meta.fields + ("attended_count",)
         read_only = True
 
     def get_attended_count(self, event):
-        return event.registrations.filter(presence=PRESENCE_CHOICES.PRESENT).count()
+        request = self.context.get("request", None)
+        if request and request.user.is_authenticated:
+            return event.registrations.filter(presence=PRESENCE_CHOICES.PRESENT).count()
+        return None
 
 
 class ImageGallerySerializer(BasisModelSerializer):
@@ -490,6 +489,8 @@ class FrontpageEventSerializer(serializers.ModelSerializer):
     text = ContentSerializerField()
     activation_time = ActivationTimeField()
     is_admitted = IsAdmittedField()
+    registration_count = RegistrationCountField()
+    total_capacity = TotalCapacityField()
 
     class Meta:
         model = Event

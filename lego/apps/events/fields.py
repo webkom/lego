@@ -217,3 +217,28 @@ class PublicEventListField(serializers.ManyRelatedField):
 
         kwargs["child_relation"] = PublicEventField(**field_kwargs)
         super().__init__(**kwargs)
+
+
+# Unauthenticated users shouldn't be able to see registration count or total capacity
+
+
+class RegistrationCountField(serializers.Field):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get("request", None)
+        if request and request.user.is_authenticated:
+            return value.registration_count
+        return None
+
+
+class TotalCapacityField(serializers.Field):
+    def get_attribute(self, instance):
+        return instance
+
+    def to_representation(self, value):
+        request = self.context.get("request", None)
+        if request and request.user.is_authenticated:
+            return value.total_capacity
+        return None
