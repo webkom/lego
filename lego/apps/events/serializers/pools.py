@@ -38,9 +38,13 @@ class PoolReadSerializer(BasisModelSerializer):
 
 class PoolReadAuthSerializer(PoolReadSerializer):
     registrations = serializers.SerializerMethodField()
+    all_permission_group_ids = serializers.SerializerMethodField()
 
     class Meta(PoolReadSerializer.Meta):
-        fields = PoolReadSerializer.Meta.fields + ("registrations",)  # type: ignore
+        fields = PoolReadSerializer.Meta.fields + (  # type: ignore
+            "registrations",
+            "all_permission_group_ids",
+        )
 
     def get_registrations(self, obj: Pool):
         queryset = obj.registrations.all()
@@ -51,6 +55,9 @@ class PoolReadAuthSerializer(PoolReadSerializer):
         return RegistrationReadSerializer(
             queryset, context=self.context, many=True
         ).data
+
+    def get_all_permission_group_ids(self, obj: Pool):
+        return [group.id for group in obj.all_permission_groups]
 
 
 class PoolAdministrateSerializer(PoolReadAuthSerializer):

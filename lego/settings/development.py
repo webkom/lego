@@ -50,6 +50,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 INSTALLED_APPS += ["coverage", "debug_toolbar"]
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 DEBUG_TOOLBAR_PANELS = [
+    "debug_toolbar.panels.history.HistoryPanel",
     "debug_toolbar.panels.versions.VersionsPanel",
     "debug_toolbar.panels.timer.TimerPanel",
     "debug_toolbar.panels.settings.SettingsPanel",
