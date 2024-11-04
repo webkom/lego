@@ -5,8 +5,8 @@ from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
 
-from lego.apps.users.constants import DATA_LONG, KOMTEK_LONG
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.constants import DATA_LONG, GROUP_INTEREST, KOMTEK_LONG
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.management_command import BaseCommand
 
 log = logging.getLogger(__name__)
@@ -91,6 +91,11 @@ class Command(BaseCommand):
             from_grade.remove_user(user)
             if to_grade:
                 to_grade.add_user(user)
+            else:
+                for membership in Membership.objects.filter(
+                    user=user, abakus_group__type=GROUP_INTEREST
+                ):
+                    membership.delete()
             User.objects.filter(pk=user.pk).update(date_bumped=timezone.now())
 
     def run(self, *args, **options):
