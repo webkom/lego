@@ -6,6 +6,8 @@ exclude =
     migrations,
     wsgi.py,
     docs/*
+per-file-ignores =
+    lego/utils/management/commands/benchmark_registration.py: T20
 extend-ignore =
     # W503: Line break before binary operator
     W503,
@@ -15,6 +17,6 @@ extend-ignore =
     C901,
     # B907: Implicit string concatenation found in a list
     B907
-select = B,C,E,F,W,T4,B9
+select = B,C,E,F,W,T2,T4,B9
 max-line-length = 100
 max-complexity = 18
