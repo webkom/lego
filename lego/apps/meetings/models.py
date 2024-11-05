@@ -12,7 +12,7 @@ from lego.apps.meetings.permissions import (
     MeetingPermissionHandler,
 )
 from lego.apps.reactions.models import Reaction
-from lego.apps.users.models import User
+from lego.apps.users.models import AbakusGroup, User
 from lego.utils.models import BasisModel
 
 
@@ -194,6 +194,20 @@ class ReportChangelog(BasisModel):
 class MeetingTemplate(BasisModel):
     name = models.CharField(max_length=255, blank=False, null=False)
     report = ContentField(blank=True, allow_images=True)
+    location = models.CharField(max_length=255, blank=True)
+    start_time = models.DateTimeField(blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    description = models.TextField(blank=True, default="")
+    mazemap_poi = models.PositiveIntegerField(null=True)
+    report_author = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        related_name="meetingstemplates_reports",
+        on_delete=models.SET_NULL,
+    )
+    invited_users = models.ManyToManyField(User)
+    invited_groups = models.ManyToManyField(AbakusGroup)
 
     class Meta:
         constraints = [

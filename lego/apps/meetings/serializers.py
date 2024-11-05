@@ -11,7 +11,7 @@ from lego.apps.meetings.models import (
     ReportChangelog,
 )
 from lego.apps.reactions.models import Reaction
-from lego.apps.users.fields import PublicUserField
+from lego.apps.users.fields import AbakusGroupField, PublicUserField
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
@@ -158,6 +158,31 @@ class MeetingSearchSerializer(serializers.ModelSerializer):
 
 
 class MeetingTemplateSerializer(BasisModelSerializer):
+    report = ContentSerializerField()
+    report_author = PublicUserField(
+        queryset=User.objects.all(), allow_null=True, required=False
+    )
+    invited_users = PublicUserField(
+        queryset=User.objects.all(), allow_null=True, required=False, many=True
+    )
+    invited_groups = AbakusGroupField(
+        queryset=AbakusGroup.objects.all(), allow_null=True, required=False, many=True
+    )
+    location = serializers.CharField(required=False, allow_null=True)
+
     class Meta:
         model = MeetingTemplate
-        fields = ("id", "name", "report", "created_by")
+        fields = (
+            "id",
+            "name",
+            "report",
+            "location",
+            "start_time",
+            "end_time",
+            "description",
+            "mazemap_poi",
+            "report_author",
+            "invited_users",
+            "invited_groups",
+            "created_by",
+        )
