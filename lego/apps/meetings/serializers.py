@@ -4,7 +4,12 @@ from rest_framework.fields import CharField
 from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.meetings import constants
-from lego.apps.meetings.models import Meeting, MeetingInvitation, ReportChangelog
+from lego.apps.meetings.models import (
+    Meeting,
+    MeetingInvitation,
+    MeetingTemplate,
+    ReportChangelog,
+)
 from lego.apps.reactions.models import Reaction
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import AbakusGroup, User
@@ -150,3 +155,9 @@ class MeetingSearchSerializer(serializers.ModelSerializer):
             "start_time",
         )
         read_only = True
+
+
+class MeetingTemplateSerializer(BasisModelSerializer):
+    class Meta:
+        model = MeetingTemplate
+        fields = ("id", "name", "report", "created_by")

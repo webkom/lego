@@ -43,6 +43,7 @@ from lego.apps.lending.views import LendableObjectViewSet
 from lego.apps.meetings.views import (
     MeetingInvitationTokenViewSet,
     MeetingInvitationViewSet,
+    MeetingTemplateViewSet,
     MeetingViewSet,
 )
 from lego.apps.notifications.views import (
@@ -151,6 +152,8 @@ router.register(
     r"meeting-token", MeetingInvitationTokenViewSet, basename="meeting-token"
 )
 router.register(r"meetings", MeetingViewSet, basename="meeting")
+router.register(r"meetingtemplates", MeetingTemplateViewSet, basename="meetingtemplate")
+
 router.register(
     r"meetings/(?P<meeting_pk>\d+)/invitations",
     MeetingInvitationViewSet,

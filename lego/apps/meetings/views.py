@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from lego.apps.achievements.promotion import check_meeting_hidden
 from lego.apps.meetings.authentication import MeetingInvitationTokenAuthentication
 from lego.apps.meetings.filters import MeetingFilterSet
-from lego.apps.meetings.models import Meeting, MeetingInvitation
+from lego.apps.meetings.models import Meeting, MeetingInvitation, MeetingTemplate
 from lego.apps.meetings.serializers import (
     MeetingBulkInvite,
     MeetingDetailSerializer,
@@ -13,6 +13,7 @@ from lego.apps.meetings.serializers import (
     MeetingInvitationSerializer,
     MeetingInvitationUpdateSerializer,
     MeetingListSerializer,
+    MeetingTemplateSerializer,
     MeetingUserInvite,
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -134,3 +135,15 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
         invitation = request.token_invitation
         invitation.reject()
         return Response(data=MeetingInvitationSerializer(invitation).data)
+
+
+class MeetingTemplateViewSet(viewsets.ModelViewSet):
+    serializer_class = MeetingTemplateSerializer
+
+    def get_queryset(self):
+        if self.request is None:
+            return MeetingTemplate.objects.none()
+        if not self.request.user.is_authenticated:
+            return MeetingTemplate.objects.none()
+
+        return MeetingTemplate.objects.filter(created_by=self.request.user)

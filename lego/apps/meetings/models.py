@@ -189,3 +189,15 @@ class ReportChangelog(BasisModel):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class MeetingTemplate(BasisModel):
+    name = models.CharField(max_length=255, blank=False, null=False)
+    report = ContentField(blank=True, allow_images=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "created_by"], name="unique_user_name"
+            )
+        ]
