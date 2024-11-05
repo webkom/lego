@@ -467,6 +467,10 @@ class User(
                 grade_group.add_user(self)
                 self.student_verification_status = True
                 self.save()
+                try:
+                    AbakusGroup.objects.get(name="Abakus").add_user(self)
+                except AbakusGroup.DoesNotExist:
+                    pass
                 return True
 
         # Student has no allowed groups
