@@ -199,6 +199,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
     }
 
     def setUp(self):
+        self.abakus_group = AbakusGroup.objects.get(name="Abakus")
         self.grade_data_1 = AbakusGroup.objects.create(
             name=constants.FIRST_GRADE_DATA, type=constants.GROUP_GRADE
         )
@@ -214,6 +215,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
 
         self.user_with_student_confirmation = User.objects.get(username="test1")
         self.grade_data_4.add_user(self.user_with_student_confirmation)
+        self.abakus_group.add_user(self.user_with_student_confirmation)
         self.user_without_student_confirmation = User.objects.get(username="test2")
 
         self.client.force_authenticate(self.user_without_student_confirmation)
@@ -234,6 +236,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_data_1.id
         )
+        self.assertTrue(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
+        )
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK))
     def test_komtek_1st(self, *args):
@@ -244,6 +251,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(json.get("studyProgrammes")[0], komtek_resp[0]["displayName"])
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_komtek_1.id
+        )
+        self.assertTrue(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
         )
 
     @mock.patch(
@@ -260,6 +272,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_data_4.id
         )
+        self.assertTrue(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
+        )
 
     @mock.patch(
         "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK_MASTER)
@@ -274,6 +291,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         )
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
+        )
+        self.assertTrue(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
         )
 
     @mock.patch(
@@ -290,6 +312,12 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
         )
+        print(self.user_without_student_confirmation.abakus_groups.all())
+        self.assertTrue(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
+        )
 
     @mock.patch(
         "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.MULTI_OTHER)
@@ -304,6 +332,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         )
         self.assertEqual(len(json.get("studyProgrammes")), len(multi_other_resp))
         self.assertIsNone(self.user_without_student_confirmation.grade)
+        self.assertFalse(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
+        )
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_valid_study_existing_grade(self, *args):
@@ -321,6 +354,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         )
         self.assertEqual(
             self.user_with_student_confirmation.grade.id, self.grade_data_4.id
+        )
+        self.assertTrue(
+            self.user_with_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
         )
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.INDOK))
@@ -340,6 +378,11 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
             self.user_with_student_confirmation.grade.id, self.grade_data_4.id
         )
         self.assertTrue(self.user_with_student_confirmation.is_verified_student())
+        self.assertTrue(
+            self.user_with_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
+        )
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_multiple_users_one_feide(self, *args):
@@ -364,4 +407,9 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertNotEqual(
             self.user_with_student_confirmation.student_username,
             user_without_student_confirmation.student_username,
+        )
+        self.assertFalse(
+            self.user_without_student_confirmation.abakus_groups.filter(
+                pk=self.abakus_group.pk
+            ).exists()
         )
