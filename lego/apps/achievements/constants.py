@@ -3,7 +3,7 @@ from typing import Any, TypedDict
 
 from lego.apps.users.models import User
 
-from .verification import (
+from lego.apps.achievements.verification import (
     check_event_generic,
     check_poll_responses,
     check_total_event_payment_over,

@@ -1,3 +1,5 @@
+import itertools
+
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -34,6 +36,23 @@ def check_poll_responses(user: User, count: int):
 
 def check_total_penalties(user: User, count: int) -> bool:
     return Penalty.objects.filter(user=user).count() >= count
+
+
+def check_longest_period_without_penalties(user: User, days: int) -> bool:
+    penalties = sorted(Penalty.objects.filter(user=user), key=lambda x: x.created_at)
+
+    if not penalties:
+        period = timezone.now() - user.date_joined
+        return period.days >= days
+
+    start_period = penalties[0].created_at - user.date_joined
+    end_period = timezone.now() - penalties[-1].created_at
+    intervals = (
+        second.created_at - first.created_at
+        for first, second in itertools.pairwise(penalties)
+    )
+    max_period = max(start_period, end_period, *intervals)
+    return max_period.days >= days
 
 
 # There is a case where manual payment does not update the payment amount.
