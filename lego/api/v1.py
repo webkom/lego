@@ -151,8 +151,10 @@ router.register(r"lending/objects", LendableObjectViewSet, basename="lendable-ob
 router.register(
     r"meeting-token", MeetingInvitationTokenViewSet, basename="meeting-token"
 )
+router.register(
+    r"meetings/templates", MeetingTemplateViewSet, basename="meetingtemplate"
+)
 router.register(r"meetings", MeetingViewSet, basename="meeting")
-router.register(r"meetingtemplates", MeetingTemplateViewSet, basename="meetingtemplate")
 
 router.register(
     r"meetings/(?P<meeting_pk>\d+)/invitations",

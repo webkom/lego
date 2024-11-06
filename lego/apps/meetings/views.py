@@ -139,6 +139,7 @@ class MeetingInvitationTokenViewSet(viewsets.ViewSet):
 
 class MeetingTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = MeetingTemplateSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         if self.request is None:
