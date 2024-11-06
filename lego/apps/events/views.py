@@ -240,7 +240,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             ),
         )
         event = queryset.first()
-        event_data = serializer(event).data
+        event_data = serializer(event, context={"request": request}).data
         event_data = populate_event_registration_users_with_grade(event_data)
         return Response(event_data)
 
