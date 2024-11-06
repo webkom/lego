@@ -18,6 +18,23 @@ from lego.utils.fields import PrimaryKeyRelatedFieldNoPKOpt
 from lego.utils.serializers import BasisModelSerializer
 
 
+class BasicMeetingSerializer(BasisModelSerializer):
+
+    class Meta:
+        fields = (
+            "id",
+            "title",
+            "report",
+            "location",
+            "start_time",
+            "end_time",
+            "description",
+            "mazemap_poi",
+            "report_author",
+            "created_by",
+        )
+
+
 class MeetingInvitationSerializer(BasisModelSerializer):
     user = PublicUserSerializer()
     status = serializers.ChoiceField(
@@ -95,21 +112,11 @@ class MeetingDetailSerializer(BasisModelSerializer):
 
     class Meta:
         model = Meeting
-        fields = (
-            "id",
-            "created_by",
-            "description",
-            "title",
-            "location",
-            "start_time",
-            "end_time",
-            "report",
+        fields = BasicMeetingSerializer.Meta.fields + (
             "report_changelogs",
-            "report_author",
             "invitations",
             "comments",
             "content_target",
-            "mazemap_poi",
             "reactions_grouped",
             "reactions",
         )
@@ -172,17 +179,7 @@ class MeetingTemplateSerializer(BasisModelSerializer):
 
     class Meta:
         model = MeetingTemplate
-        fields = (
-            "id",
-            "name",
-            "report",
-            "location",
-            "start_time",
-            "end_time",
-            "description",
-            "mazemap_poi",
-            "report_author",
+        fields = BasicMeetingSerializer.Meta.fields + (
             "invited_users",
             "invited_groups",
-            "created_by",
         )

@@ -16,16 +16,22 @@ from lego.apps.users.models import AbakusGroup, User
 from lego.utils.models import BasisModel
 
 
-class Meeting(BasisModel):
+class BasicMeeting(BasisModel):
     title = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
     description = models.TextField(blank=True, default="")
+    report = ContentField(blank=True, allow_images=True)
+
+    class Meta:
+        abstract = True
+
+
+class Meeting(BasicMeeting):
     comments = GenericRelation(Comment)
     mazemap_poi = models.PositiveIntegerField(null=True)
     reactions = GenericRelation(Reaction)
-    report = ContentField(blank=True, allow_images=True)
     report_author = models.ForeignKey(
         User,
         blank=True,
@@ -191,13 +197,7 @@ class ReportChangelog(BasisModel):
         ordering = ["-created_at"]
 
 
-class MeetingTemplate(BasisModel):
-    name = models.CharField(max_length=255, blank=False, null=False)
-    report = ContentField(blank=True, allow_images=True)
-    location = models.CharField(max_length=255, blank=True)
-    start_time = models.DateTimeField(blank=True, null=True)
-    end_time = models.DateTimeField(blank=True, null=True)
-    description = models.TextField(blank=True, default="")
+class MeetingTemplate(BasicMeeting):
     mazemap_poi = models.PositiveIntegerField(null=True)
     report_author = models.ForeignKey(
         User,
@@ -212,6 +212,6 @@ class MeetingTemplate(BasisModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "created_by"], name="unique_user_name"
+                fields=["title", "created_by"], name="unique_user_title"
             )
         ]
