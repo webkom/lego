@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                             ("meeting_hidden", "meeting_hidden"),
                             ("poll_count", "poll_count"),
                             ("quote_count", "quote_count"),
-                            ("penalty_count", "penalty_count"),
+                            ("penalty_period", "penalty_period"),
                         ],
                         max_length=128,
                     ),
