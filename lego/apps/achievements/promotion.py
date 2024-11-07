@@ -158,9 +158,9 @@ def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
     return False
 
 
-def check_event_related_single_user(user: User) -> None:
-    check_leveled_promotions(user.id, EVENT_IDENTIFIER, EVENT_ACHIEVEMENTS)
-    check_leveled_promotions(user.id, EVENT_PRICE_IDENTIFIER, EVENT_PRICE_ACHIEVEMENTS)
+def check_event_related_single_user(user_id: int) -> None:
+    check_leveled_promotions(user_id, EVENT_IDENTIFIER, EVENT_ACHIEVEMENTS)
+    check_leveled_promotions(user_id, EVENT_PRICE_IDENTIFIER, EVENT_PRICE_ACHIEVEMENTS)
 
 
 def check_poll_related_single_user(user: User) -> None:
@@ -178,7 +178,7 @@ def check_penalty_related_single_user(user: User) -> None:
 def check_all_promotions():
     for user in User.objects.all():
         check_quote_related_single_user(user)
-        check_event_related_single_user(user)
+        check_event_related_single_user(user.id)
         check_poll_related_single_user(user)
         check_penalty_related_single_user(user)
 

@@ -35,13 +35,22 @@ def check_poll_responses(user: User, count: int):
 
 
 def check_longest_period_without_penalties(user: User, years: int) -> bool:
-    days = years * 365
-
-    if not (events := Registration.objects.filter(user=user).order_by("event__end_time")):
+    if not user.has_grade_group:
+        return False
+    if not (
+        events := Registration.objects.filter(
+            user=user, status=SUCCESS_REGISTER
+        ).order_by("event__end_time")
+    ):
         return False
 
+    days = years * 365
     start_time = events.first().event.end_time
     end_time = events.last().event.end_time
+
+    for year in range(start_time.year, end_time.year + 1):
+        if not any(event.event.end_time.year == year for event in events):
+            return False
 
     if not (penalties := Penalty.objects.filter(user=user).order_by("created_at")):
         max_period = end_time - start_time
