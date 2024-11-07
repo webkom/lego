@@ -3,11 +3,7 @@ import itertools
 from django.db.models import Sum
 from django.utils import timezone
 
-from lego.apps.events.constants import (
-    PAYMENT_MANUAL,
-    PAYMENT_SUCCESS,
-    SUCCESS_REGISTER,
-)
+from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
@@ -38,15 +34,13 @@ def check_poll_responses(user: User, count: int):
     )
 
 
-def check_total_penalties(user: User, count: int) -> bool:
-    return Penalty.objects.filter(user=user).count() >= count
+def check_longest_period_without_penalties(user: User, years: int) -> bool:
+    days = years * 365
 
-
-def check_longest_period_without_penalties(user: User, days: int) -> bool:
     if not (events := Registration.objects.filter(user=user).order_by("end_time")):
         return False
 
-    start_time = events.first().event.start_time
+    start_time = events.first().event.end_time
     end_time = events.last().event.end_time
 
     if not (penalties := Penalty.objects.filter(user=user).order_by("created_at")):

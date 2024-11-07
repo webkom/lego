@@ -5,9 +5,9 @@ from lego.apps.users.models import User
 
 from lego.apps.achievements.verification import (
     check_event_generic,
+    check_longest_period_without_penalties,
     check_poll_responses,
     check_total_event_payment_over,
-    check_total_penalties,
     check_verified_quote,
 )
 
@@ -27,7 +27,7 @@ EVENT_PRICE_IDENTIFIER = "event_price"
 QUOTE_IDENTIFIER = "quote_count"
 MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
-PENALTY_IDENTIFIER = "penalty_count"
+PENALTY_IDENTIFIER = "penalty_period"
 
 
 EVENT_ACHIEVEMENTS: AchievementCollection = {
@@ -142,18 +142,31 @@ POLL_ACHIEVEMENTS: AchievementCollection = {
 PENALTY_ACHIEVEMENTS: AchievementCollection = {
     "penalty_1": {
         "identifier": PENALTY_IDENTIFIER,
-        "requirement_function": lambda user: check_total_penalties(user=user, count=1),
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=1
+        ),
         "level": 0,
     },
-    "penalty_5": {
+    "penalty_2": {
         "identifier": PENALTY_IDENTIFIER,
-        "requirement_function": lambda user: check_total_penalties(user=user, count=5),
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=2
+        ),
         "level": 1,
     },
-    "penalty_10": {
+    "penalty_3": {
         "identifier": PENALTY_IDENTIFIER,
-        "requirement_function": lambda user: check_total_penalties(user=user, count=10),
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=3
+        ),
         "level": 2,
+    },
+    "penalty_4": {
+        "identifier": PENALTY_IDENTIFIER,
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=4
+        ),
+        "level": 3,
     },
 }
 
