@@ -8,13 +8,15 @@ from lego.apps.events.models import Registration
 from lego.apps.meetings.models import Meeting
 from lego.apps.users.models import User
 
-from .constants import (
+from lego.apps.achievements.constants import (
     EVENT_ACHIEVEMENTS,
     EVENT_IDENTIFIER,
     EVENT_PRICE_ACHIEVEMENTS,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_ACHIEVEMENTS,
     MEETING_ACHIEVEMENTS,
+    PENALTY_ACHIEVEMENTS,
+    PENALTY_IDENTIFIER,
     POLL_ACHIEVEMENTS,
     POLL_IDENTIFIER,
     QUOTE_ACHIEVEMENTS,
@@ -25,7 +27,7 @@ from .constants import (
 
 def check_leveled_promotions(
     user_id: int, identifier: str, input_achievements: AchievementCollection
-):
+) -> None:
     try:
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
@@ -156,22 +158,28 @@ def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
     return False
 
 
-def check_event_related_single_user(user_id: int):
-    check_leveled_promotions(user_id, EVENT_IDENTIFIER, EVENT_ACHIEVEMENTS)
-    check_leveled_promotions(user_id, EVENT_PRICE_IDENTIFIER, EVENT_PRICE_ACHIEVEMENTS)
+def check_event_related_single_user(user: User) -> None:
+    check_leveled_promotions(user.id, EVENT_IDENTIFIER, EVENT_ACHIEVEMENTS)
+    check_leveled_promotions(user.id, EVENT_PRICE_IDENTIFIER, EVENT_PRICE_ACHIEVEMENTS)
 
 
-def check_poll_related_single_user(user: User):
+def check_poll_related_single_user(user: User) -> None:
     check_leveled_promotions(user.id, POLL_IDENTIFIER, POLL_ACHIEVEMENTS)
 
 
-def check_quote_related_single_user(user: User):
+def check_quote_related_single_user(user: User) -> None:
     check_leveled_promotions(user.id, QUOTE_IDENTIFIER, QUOTE_ACHIEVEMENTS)
+
+
+def check_penalty_related_single_user(user: User) -> None:
+    check_leveled_promotions(user.id, PENALTY_IDENTIFIER, PENALTY_ACHIEVEMENTS)
 
 
 def check_all_promotions():
     for user in User.objects.all():
         check_quote_related_single_user(user)
-        check_event_related_single_user(user.id)
+        check_event_related_single_user(user)
         check_poll_related_single_user(user)
+        check_penalty_related_single_user(user)
+
     check_rank_promotions()
