@@ -39,7 +39,7 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
         return False
     if not (
         events := Registration.objects.filter(
-            user=user, status=SUCCESS_REGISTER
+            user=user, status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
         ).order_by("event__end_time")
     ):
         return False
