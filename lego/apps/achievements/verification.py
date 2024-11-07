@@ -3,7 +3,11 @@ import itertools
 from django.db.models import Sum
 from django.utils import timezone
 
-from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
+from lego.apps.events.constants import (
+    PAYMENT_MANUAL,
+    PAYMENT_SUCCESS,
+    SUCCESS_REGISTER,
+)
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
@@ -39,14 +43,18 @@ def check_total_penalties(user: User, count: int) -> bool:
 
 
 def check_longest_period_without_penalties(user: User, days: int) -> bool:
-    penalties = sorted(Penalty.objects.filter(user=user), key=lambda x: x.created_at)
+    if not (events := Registration.objects.filter(user=user).order_by("end_time")):
+        return False
 
-    if not penalties:
-        period = timezone.now() - user.date_joined
-        return period.days >= days
+    start_time = events.first().event.start_time
+    end_time = events.last().event.end_time
 
-    start_period = penalties[0].created_at - user.date_joined
-    end_period = timezone.now() - penalties[-1].created_at
+    if not (penalties := Penalty.objects.filter(user=user).order_by("created_at")):
+        max_period = end_time - start_time
+        return max_period.days >= days
+
+    start_period = penalties.first().created_at - start_time
+    end_period = end_time - penalties.last().created_at
     intervals = (
         second.created_at - first.created_at
         for first, second in itertools.pairwise(penalties)
