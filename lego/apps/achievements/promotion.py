@@ -2,12 +2,6 @@ from django.db import transaction
 from django.db.models import Count
 from django.utils import timezone
 
-from lego.apps.achievements.models import Achievement
-from lego.apps.events.constants import SUCCESS_REGISTER
-from lego.apps.events.models import Registration
-from lego.apps.meetings.models import Meeting
-from lego.apps.users.models import User
-
 from lego.apps.achievements.constants import (
     EVENT_ACHIEVEMENTS,
     EVENT_IDENTIFIER,
@@ -23,6 +17,11 @@ from lego.apps.achievements.constants import (
     QUOTE_IDENTIFIER,
     AchievementCollection,
 )
+from lego.apps.achievements.models import Achievement
+from lego.apps.events.constants import SUCCESS_REGISTER
+from lego.apps.events.models import Registration
+from lego.apps.meetings.models import Meeting
+from lego.apps.users.models import User
 
 
 def check_leveled_promotions(

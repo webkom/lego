@@ -1,8 +1,6 @@
 from collections.abc import Callable
 from typing import Any, TypedDict
 
-from lego.apps.users.models import User
-
 from lego.apps.achievements.verification import (
     check_event_generic,
     check_longest_period_without_penalties,
@@ -10,6 +8,7 @@ from lego.apps.achievements.verification import (
     check_total_event_payment_over,
     check_verified_quote,
 )
+from lego.apps.users.models import User
 
 
 class Achievement(TypedDict):

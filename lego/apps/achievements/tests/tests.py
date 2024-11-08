@@ -25,7 +25,7 @@ from lego.apps.achievements.promotion import (
 )
 from lego.apps.achievements.tasks import run_all_promotions
 from lego.apps.events.constants import PAYMENT_SUCCESS
-from lego.apps.events.models import Event, Registration
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.meetings.models import Meeting
 from lego.apps.polls.models import Option, Poll
@@ -362,74 +362,112 @@ class AchievementTestCase(BaseTestCase):
         )
 
     def test_penalty_achievement(self) -> None:
-        """Test get penalty achievement."""
+        """Test penalty achievement based on event attendance and penalty history."""
         now = timezone.now()
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
         AbakusGroup.objects.get(name="Webkom").add_user(user)
+        grade1 = AbakusGroup.objects.create(
+            name="1. klasse Datateknologi", type="klasse"
+        )
+        grade1.add_user(user)
 
+        # Initial check: No achievements should be awarded, as the user attended no events
         check_penalty_related_single_user(user)
         self.assertFalse(
             Achievement.objects.filter(
                 user=user, identifier=PENALTY_IDENTIFIER, level=0
             ).exists(),
-            "User should not have unlocked achievement, since it has not "
-            "attended any events.",
+            "User should not have unlocked the achievement as they have not attended any events.",
         )
 
-        events: list[Event] = []
-
-        for i, days in enumerate((1, 185, 370), 1):
-            event = Event.objects.get(pk=i)
-            events.append(event)
-            event.end_time = now - timedelta(days=days)
-            pool = event.pools.first()
-            pool.capacity = 69
+        # Create events in the future and attach an open pool for registration
+        events = []
+        for _, __ in enumerate((1, 185, 450), 1):
+            # Initially set event times in the future
+            event = Event.objects.create(
+                start_time=now + timedelta(days=30), end_time=now + timedelta(days=31)
+            )
+            # Attach a pool that allows registration
+            pool = Pool.objects.create(
+                capacity=69, activation_date=now - timedelta(days=1), event=event
+            )
+            pool.permission_groups.add(grade1)
             pool.save()
+            events.append(event)
 
+        # Register user for the first and third events while they are in the future
         for idx in (0, 2):
             event = events[idx]
-            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            registration, _ = Registration.objects.get_or_create(event=event, user=user)
             event.register(registration)
             event.save()
 
-        check_penalty_related_single_user(user)
-        self.assertFalse(
-            Achievement.objects.filter(
-                user=user, identifier=PENALTY_IDENTIFIER, level=0
-            ).exists(),
-            "User should not have unlocked achievement, since there is more "
-            "than a year between its events.",
-        )
+        # Move the first and third events to the past to simulate that they already took place
+        for i, days in zip((0, 2), (1, 450), strict=True):
+            event = events[i]
+            event.start_time = now - timedelta(days=days + 1)
+            event.end_time = now - timedelta(days=days)
+            event.save()
 
+        # Move the second event to the future for registration, then move it to the past
         event = events[1]
-        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.start_time = now + timedelta(days=30)
+        event.end_time = now + timedelta(days=31)
+        event.save()
+
+        # Register user for the second event while it is in the future
+        registration, _ = Registration.objects.get_or_create(event=event, user=user)
         event.register(registration)
         event.save()
 
+        # Now move the second event back to simulate it took place 185 days ago
+        event.start_time = now - timedelta(days=185 + 1)
+        event.end_time = now - timedelta(days=185)
+        event.save()
+
+        # Check that the achievement is now awarded for going a year without penalties
         check_penalty_related_single_user(user)
         self.assertTrue(
             Achievement.objects.filter(
                 user=user, identifier=PENALTY_IDENTIFIER, level=0
             ).exists(),
-            "User should have unlocked achievement for going 1 year without "
-            "receiving a penalty, since there is less than a year between the "
-            "events and it has not received any penalties.",
+            """User should have unlocked the achievement
+            as events are within a year and no penalties exist.""",
         )
 
+        # Add a penalty within the last year, which should revoke the achievement
         penalty = Penalty.objects.create(
-            user=user, reason="Ran beside the olympic swimming pool holding scissors."
+            user=user,
+            reason="Ran beside the Olympic swimming pool holding scissors.",
+            source_event=events[1],
         )
         penalty.created_at = now - timedelta(days=100)
         penalty.save()
 
+        achievement = Achievement.objects.get(
+            user=user, identifier=PENALTY_IDENTIFIER, level=0
+        )
+        achievement.delete(force=True)
         check_penalty_related_single_user(user)
         self.assertFalse(
             Achievement.objects.filter(
                 user=user, identifier=PENALTY_IDENTIFIER, level=0
             ).exists(),
-            "User should not have unlocked achievement, since it has received "
-            "a penalty in the year that it has attended events.",
+            "User should not have the achievement due to receiving a penalty within the last year.",
+        )
+
+        penalty.created_at = now - timedelta(days=400)
+        penalty.save()
+
+        # Recheck achievement status after updating the penalty date
+        check_penalty_related_single_user(user)
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=user, identifier=PENALTY_IDENTIFIER, level=0
+            ).exists(),
+            """User should have unlocked the achievement
+            for going a year without receiving a penalty.""",
         )
 
     def test_achievement_percentage(self):
