@@ -62,7 +62,7 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
         return False
 
     days = 365 * years
-    max_registration_interval = timedelta(days=183)  # Once per semester
+    max_registration_interval = timedelta(days=365)  # Once a year
     start_time = registrations.first().event.end_time
     end_time = registrations.last().event.end_time
     intervals = _generate_penalty_intervals(user, start_time, end_time)
