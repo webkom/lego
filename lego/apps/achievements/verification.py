@@ -1,6 +1,8 @@
 import itertools
+from datetime import datetime, timedelta
 
 from django.db.models import Sum
+from django.db.models.manager import BaseManager
 from django.utils import timezone
 
 from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
@@ -10,15 +12,14 @@ from lego.apps.quotes.models import Quote
 from lego.apps.users.models import Penalty, User
 
 
-def check_event_generic(user: User, count: int):
-    return (
-        len(
-            Registration.objects.filter(
-                user=user, status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
-            )
-        )
-        >= count
+def _passed_user_registrations(user: User) -> BaseManager[Registration]:
+    return Registration.objects.filter(
+        user=user, status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
     )
+
+
+def check_event_generic(user: User, count: int) -> bool:
+    return _passed_user_registrations(user).count() >= count
 
 
 def check_verified_quote(user: User):
@@ -34,36 +35,71 @@ def check_poll_responses(user: User, count: int):
     )
 
 
+def _generate_penalty_intervals(
+    user: User, start_time: datetime, end_time: datetime
+) -> list[tuple[datetime, datetime]]:
+    intervals: list[tuple[datetime, datetime]] = []
+
+    if penalties := Penalty.objects.filter(user=user).order_by("created_at"):
+        intervals.append((start_time, penalties.first().created_at))
+        intervals.extend(
+            [
+                (first.created_at, second.created_at)
+                for first, second in itertools.pairwise(penalties)
+            ]
+        )
+        intervals.append((penalties.last().created_at, end_time))
+    else:
+        intervals.append((start_time, end_time))
+
+    return intervals
+
+
 def check_longest_period_without_penalties(user: User, years: int) -> bool:
     if not user.has_grade_group:
         return False
-    if not (
-        events := Registration.objects.filter(
-            user=user, status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
-        ).order_by("event__end_time")
-    ):
+    if not (registrations := _passed_user_registrations(user).order_by("event__end_time")).exists():
         return False
 
-    days = years * 365
-    start_time = events.first().event.end_time
-    end_time = events.last().event.end_time
+    days = 365 * years
+    max_registration_interval = timedelta(days=183)  # Once per semester
+    start_time = registrations.first().event.end_time
+    end_time = registrations.last().event.end_time
+    intervals = _generate_penalty_intervals(user, start_time, end_time)
 
-    for year in range(start_time.year, end_time.year + 1):
-        if not any(event.event.end_time.year == year for event in events):
-            return False
+    for start_time, end_time in intervals:
+        if (end_time - start_time).days < days:
+            continue
 
-    if not (penalties := Penalty.objects.filter(user=user).order_by("created_at")):
-        max_period = end_time - start_time
-        return max_period.days >= days
+        current_start = current_end = start_time
 
-    start_period = penalties.first().created_at - start_time
-    end_period = end_time - penalties.last().created_at
-    intervals = (
-        second.created_at - first.created_at
-        for first, second in itertools.pairwise(penalties)
-    )
-    max_period = max(start_period, end_period, *intervals)
-    return max_period.days >= days
+        while (cutoff_time := current_end + max_registration_interval) < end_time:
+            if (cutoff_time - current_start).days >= days:
+                return True
+
+            last_registration_in_interval = (
+                _passed_user_registrations(user)
+                .filter(event__end_time__gt=current_end, event__end_time__lte=cutoff_time)
+                .last()
+            )
+
+            if last_registration_in_interval is not None:
+                current_end = last_registration_in_interval.event.end_time
+                continue
+
+            next_event = (
+                _passed_user_registrations(user).filter(event__end_time__gt=cutoff_time).first()
+            )
+
+            if next_event is None:
+                break
+
+            current_start = current_end = next_event.event.end_time
+
+        if (end_time - current_start).days >= days:
+            return True
+
+    return False
 
 
 # There is a case where manual payment does not update the payment amount.
