@@ -7,7 +7,7 @@ class AchievementSerializer(BasisModelSerializer):
         model = Achievement
         fields = (
             "id",
-            "created_at",
+            "updated_at",
             "percentage",
             "identifier",
             "level",
