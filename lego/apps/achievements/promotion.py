@@ -148,7 +148,6 @@ def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
         if not Achievement.objects.filter(
             user=user, identifier=MEETING_ACHIEVEMENTS["meeting_hidden"]["identifier"]
         ).exists():
-
             Achievement.objects.create(
                 identifier=MEETING_ACHIEVEMENTS["meeting_hidden"]["identifier"],
                 user=user,

@@ -58,7 +58,9 @@ def _generate_penalty_intervals(
 def check_longest_period_without_penalties(user: User, years: int) -> bool:
     if not user.has_grade_group:
         return False
-    if not (registrations := _passed_user_registrations(user).order_by("event__end_time")).exists():
+    if not (
+        registrations := _passed_user_registrations(user).order_by("event__end_time")
+    ).exists():
         return False
 
     days = 365 * years
@@ -79,7 +81,9 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
 
             last_registration_in_interval = (
                 _passed_user_registrations(user)
-                .filter(event__end_time__gt=current_end, event__end_time__lte=cutoff_time)
+                .filter(
+                    event__end_time__gt=current_end, event__end_time__lte=cutoff_time
+                )
                 .last()
             )
 
@@ -88,7 +92,9 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
                 continue
 
             next_event = (
-                _passed_user_registrations(user).filter(event__end_time__gt=cutoff_time).first()
+                _passed_user_registrations(user)
+                .filter(event__end_time__gt=cutoff_time)
+                .first()
             )
 
             if next_event is None:
