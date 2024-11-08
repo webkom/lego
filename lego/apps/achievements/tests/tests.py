@@ -11,6 +11,7 @@ from lego.apps.achievements.constants import (
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_IDENTIFIER,
     MEETING_IDENTIFIER,
+    PENALTY_IDENTIFIER,
     POLL_IDENTIFIER,
     QUOTE_IDENTIFIER,
 )
@@ -18,6 +19,7 @@ from lego.apps.achievements.models import Achievement
 from lego.apps.achievements.promotion import (
     check_all_promotions,
     check_event_related_single_user,
+    check_penalty_related_single_user,
     check_poll_related_single_user,
     check_quote_related_single_user,
 )
@@ -28,7 +30,7 @@ from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.meetings.models import Meeting
 from lego.apps.polls.models import Option, Poll
 from lego.apps.quotes.models import Quote
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
@@ -357,6 +359,77 @@ class AchievementTestCase(BaseTestCase):
         )
         self.assertTrue(
             achievement.exists(), "Achievement for 25 answered polls should be unlocked"
+        )
+
+    def test_penalty_achievement(self) -> None:
+        """Test get penalty achievement."""
+        now = timezone.now()
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+        AbakusGroup.objects.get(name="Webkom").add_user(user)
+
+        check_penalty_related_single_user(user)
+        self.assertFalse(
+            Achievement.objects.filter(
+                user=user, identifier=PENALTY_IDENTIFIER, level=0
+            ).exists(),
+            "User should not have unlocked achievement, since it has not "
+            "attended any events.",
+        )
+
+        events: list[Event] = []
+
+        for i, days in enumerate((1, 185, 370), 1):
+            event = Event.objects.get(pk=i)
+            events.append(event)
+            event.end_time = now - timedelta(days=days)
+            pool = event.pools.first()
+            pool.capacity = 69
+            pool.save()
+
+        for idx in (0, 2):
+            event = events[idx]
+            registration = Registration.objects.get_or_create(event=event, user=user)[0]
+            event.register(registration)
+            event.save()
+
+        check_penalty_related_single_user(user)
+        self.assertFalse(
+            Achievement.objects.filter(
+                user=user, identifier=PENALTY_IDENTIFIER, level=0
+            ).exists(),
+            "User should not have unlocked achievement, since there is more "
+            "than a year between its events.",
+        )
+
+        event = events[1]
+        registration = Registration.objects.get_or_create(event=event, user=user)[0]
+        event.register(registration)
+        event.save()
+
+        check_penalty_related_single_user(user)
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=user, identifier=PENALTY_IDENTIFIER, level=0
+            ).exists(),
+            "User should have unlocked achievement for going 1 year without "
+            "receiving a penalty, since there is less than a year between the "
+            "events and it has not received any penalties.",
+        )
+
+        penalty = Penalty.objects.create(
+            user=user, reason="Ran beside the olympic swimming pool holding scissors."
+        )
+        penalty.created_at = now - timedelta(days=100)
+        penalty.save()
+
+        check_penalty_related_single_user(user)
+        self.assertFalse(
+            Achievement.objects.filter(
+                user=user, identifier=PENALTY_IDENTIFIER, level=0
+            ).exists(),
+            "User should not have unlocked achievement, since it has received "
+            "a penalty in the year that it has attended events.",
         )
 
     def test_achievement_percentage(self):
