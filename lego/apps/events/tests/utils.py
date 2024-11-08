@@ -7,7 +7,7 @@ import stripe
 from lego.apps.users.models import AbakusGroup, User
 
 
-def get_dummy_users(n):
+def get_dummy_users(n: int) -> list[User]:
     users = []
 
     for i in range(n):

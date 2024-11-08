@@ -1,9 +1,11 @@
-from typing import Any, Callable, Dict, TypedDict
+from collections.abc import Callable
+from typing import Any, TypedDict
 
 from lego.apps.users.models import User
 
-from .verification import (
+from lego.apps.achievements.verification import (
     check_event_generic,
+    check_longest_period_without_penalties,
     check_poll_responses,
     check_total_event_payment_over,
     check_verified_quote,
@@ -16,7 +18,7 @@ class Achievement(TypedDict):
     level: int
 
 
-AchievementCollection = Dict[str, Achievement]
+AchievementCollection = dict[str, Achievement]
 
 
 EVENT_IDENTIFIER = "event_count"
@@ -25,6 +27,8 @@ EVENT_PRICE_IDENTIFIER = "event_price"
 QUOTE_IDENTIFIER = "quote_count"
 MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
+PENALTY_IDENTIFIER = "penalty_period"
+
 
 EVENT_ACHIEVEMENTS: AchievementCollection = {
     "arrangement_10": {
@@ -135,6 +139,37 @@ POLL_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+PENALTY_ACHIEVEMENTS: AchievementCollection = {
+    "penalty_1": {
+        "identifier": PENALTY_IDENTIFIER,
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=1
+        ),
+        "level": 0,
+    },
+    "penalty_2": {
+        "identifier": PENALTY_IDENTIFIER,
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=2
+        ),
+        "level": 1,
+    },
+    "penalty_3": {
+        "identifier": PENALTY_IDENTIFIER,
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=3
+        ),
+        "level": 2,
+    },
+    "penalty_4": {
+        "identifier": PENALTY_IDENTIFIER,
+        "requirement_function": lambda user: check_longest_period_without_penalties(
+            user=user, years=4
+        ),
+        "level": 3,
+    },
+}
+
 
 HIDDEN_ACHIEVEMENTS = {**QUOTE_ACHIEVEMENTS, **MEETING_ACHIEVEMENTS}
 
@@ -145,6 +180,7 @@ ACHIEVEMENTS = {
     **EVENT_PRICE_ACHIEVEMENTS,
     **POLL_ACHIEVEMENTS,
     **HIDDEN_ACHIEVEMENTS,
+    **PENALTY_ACHIEVEMENTS,
 }
 
 ACHIEVEMENT_IDENTIFIERS = sorted(

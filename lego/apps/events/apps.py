@@ -14,7 +14,6 @@ class EventsConfig(AppConfig):
         )
 
         if not settings.TESTING:
-
             post_save.connect(event_save_callback, sender=Event)
 
         post_save.connect(
