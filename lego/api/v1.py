@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
+from lego.apps.achievements.views import LeaderBoardViewSet
 from lego.apps.articles.views import ArticlesViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import (
@@ -81,6 +82,7 @@ from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
 
 router = routers.DefaultRouter()
+router.register(r"achievements/leaderboard", LeaderBoardViewSet, basename="achievements")
 router.register(r"announcements", AnnouncementViewSet, basename="announcements")
 router.register(r"articles", ArticlesViewSet)
 router.register(r"bdb", AdminCompanyViewSet, basename="bdb")
