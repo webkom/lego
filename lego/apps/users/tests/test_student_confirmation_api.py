@@ -312,7 +312,6 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.assertEqual(
             self.user_without_student_confirmation.grade.id, self.grade_komtek_4.id
         )
-        print(self.user_without_student_confirmation.abakus_groups.all())
         self.assertTrue(
             self.user_without_student_confirmation.abakus_groups.filter(
                 pk=self.abakus_group.pk
