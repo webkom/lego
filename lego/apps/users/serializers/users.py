@@ -1,7 +1,6 @@
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
-from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
 from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
@@ -60,6 +59,7 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
             "past_memberships",
             "memberships",
             "achievements",
+            "achievement_score"
         )
 
 
@@ -251,6 +251,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "github_username",
             "linkedin_id",
             "achievements",
+            "achievement_score"
         )
 
 
@@ -259,12 +260,3 @@ class ChangeGradeSerializer(serializers.Serializer):
         allow_null=True,
         queryset=AbakusGroup.objects.all().filter(type=constants.GROUP_GRADE),
     )
-
-class PublicUserWithAchievementScoreSerializer(PublicUserSerializer):
-    achievement_score = serializers.SerializerMethodField()
-
-    class Meta(PublicUserSerializer.Meta):
-        fields = PublicUserSerializer.Meta.fields + ("achievement_score",)
-
-    def get_achievement_score(self, obj):
-        return calculate_user_rank(obj)

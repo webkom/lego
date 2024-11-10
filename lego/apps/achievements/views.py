@@ -1,12 +1,12 @@
 from rest_framework import permissions, mixins, viewsets
 from rest_framework.response import Response
 
-from lego.apps.users.serializers.users import PublicUserWithAchievementScoreSerializer
+from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 from lego.apps.users.models import User
 
 
 class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = PublicUserWithAchievementScoreSerializer
+    serializer_class = PublicUserWithGroupsSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
