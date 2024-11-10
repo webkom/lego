@@ -11,6 +11,7 @@ from django.db import models, transaction
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
+from django.utils.functional import cached_property
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -445,6 +446,11 @@ class User(
             # Return the internal address if all requirements for a GSuite account are met.
             return internal_address
         return self.email
+    
+    @cached_property
+    def achievement_score(self):
+        from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
+        return calculate_user_rank(self)
 
     @profile_picture.setter  # type: ignore
     def profile_picture(self, value):
