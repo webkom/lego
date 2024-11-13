@@ -90,7 +90,6 @@ def describe_results_with_charts(survey):
                 ax.tick_params(axis="x", labelsize=12)
                 ax.tick_params(axis="y", labelsize=16)
 
-                ax.set_xticks(range(len(labels)))
                 ax.set_xticklabels(labels, fontweight="bold", fontsize=12)
 
                 ax.yaxis.set_major_locator(MultipleLocator(1))
