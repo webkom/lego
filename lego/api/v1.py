@@ -82,7 +82,9 @@ from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
 
 router = routers.DefaultRouter()
-router.register(r"achievements/leaderboard", LeaderBoardViewSet, basename="achievements")
+router.register(
+    r"achievements/leaderboard", LeaderBoardViewSet, basename="achievements"
+)
 router.register(r"announcements", AnnouncementViewSet, basename="announcements")
 router.register(r"articles", ArticlesViewSet)
 router.register(r"bdb", AdminCompanyViewSet, basename="bdb")
