@@ -73,7 +73,7 @@ class StudentCompanyContact(BasisModel):
     company = models.ForeignKey(
         Company, related_name="student_contacts", on_delete=models.CASCADE
     )
-    student = models.ForeignKey(
+    user = models.ForeignKey(
         User, related_name="contact_for_companies", on_delete=models.CASCADE
     )
     semester = models.ForeignKey(
