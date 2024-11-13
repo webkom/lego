@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.apps.companies.constants import INTERESTED, NOT_CONTACTED
 from lego.apps.companies.models import (
     Company,
@@ -16,7 +17,9 @@ from lego.apps.companies.models import (
 )
 from lego.apps.files.fields import FileField, ImageField
 from lego.utils.serializers import BasisModelSerializer
-
+from lego.apps.users.fields import PublicUserField
+from lego.apps.companies.fields import SemesterField
+from lego.apps.users.models import User
 
 class SemesterSerializer(BasisModelSerializer):
     class Meta:
@@ -36,9 +39,12 @@ class SemesterStatusSerializer(serializers.ModelSerializer):
 
 
 class StudentCompanyContactSerializer(BasisModelSerializer):
+    user = PublicUserField(queryset=User.objects.all())
+    semester = SemesterField(queryset=Semester.objects.all())
+
     class Meta:
         model = StudentCompanyContact
-        fields = ("id", "company_id", "student_id", "semester_id")
+        fields = ("id", "company", "user", "semester")
 
 
 class SemesterStatusDetailSerializer(SemesterStatusSerializer):
@@ -207,7 +213,7 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
 
-    student_contacts = StudentCompanyContactSerializer(many=True, read_only=True)
+    student_contacts = StudentCompanyContactSerializer(many=True)
     semester_statuses = SemesterStatusDetailSerializer(many=True, read_only=True)
     company_contacts = CompanyContactSerializer(many=True, read_only=True)
 
@@ -236,6 +242,28 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
             "company_contacts",
         )
 
+    def update(self, instance, validated_data):
+        updated_student_contacts = validated_data.pop('student_contacts', [])
+
+        print(updated_student_contacts)
+        previous_student_contacts = list(instance.student_contacts.all())
+        previous_ids = {contact.id for contact in previous_student_contacts}
+
+        existing_contacts_ids = set()
+        new_companies = []
+
+        for student_contact in updated_student_contacts:
+            try:
+                existing_contact = StudentCompanyContact.objects.get(company=student_contact.get("company"), semester=student_contact.get("semester"), user=student_contact.get("user"))
+                existing_contacts_ids.add(existing_contact.id)
+            except StudentCompanyContact.DoesNotExist:
+                StudentCompanyContact(company=student_contact.get("company"), semester=student_contact.get("semester"), user=student_contact.get("user")).save()
+
+        delete_contacts_ids = previous_ids.difference(existing_contacts_ids)
+        for contact_id in delete_contacts_ids:
+            StudentCompanyContact.objects.get(id=contact_id).delete()
+
+        return super().update(instance, validated_data)
 
 class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
     class Meta:
