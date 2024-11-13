@@ -11,7 +11,6 @@ from django.db import models, transaction
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
-from django.utils.functional import cached_property
 
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -380,6 +379,7 @@ class User(
         help_text="Enter a valid LinkedIn ID.",
         validators=[linkedin_id_validator, ReservedNameValidator()],
     )
+    achievements_score = models.FloatField(default=0, null=False, blank=False)
 
     objects = AbakusUserManager()  # type: ignore
 
@@ -422,6 +422,12 @@ class User(
                     event.unregister(event.registrations.get(user=self))
         super(User, self).delete(using=using, force=force)
 
+    def save(self, *args, **kwargs):
+        from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
+
+        self.achievements_score = calculate_user_rank(self)
+        super().save(*args, **kwargs)
+
     @property
     def full_name(self):
         return self.get_full_name()
@@ -446,11 +452,6 @@ class User(
             # Return the internal address if all requirements for a GSuite account are met.
             return internal_address
         return self.email
-    
-    @cached_property
-    def achievement_score(self):
-        from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
-        return calculate_user_rank(self)
 
     @profile_picture.setter  # type: ignore
     def profile_picture(self, value):

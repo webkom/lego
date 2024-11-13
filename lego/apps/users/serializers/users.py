@@ -1,6 +1,7 @@
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
+from lego.apps.achievements.utils.calculation_utils import MAX_POSSIBLE_SCORE
 from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
@@ -53,13 +54,18 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     past_memberships = PastMembershipSerializer(many=True)
     memberships = MembershipSerializer(many=True)
     achievements = AchievementSerializer(many=True)
+    achievements_score = serializers.SerializerMethodField()
+
+    def get_achievements_score(self, obj):
+
+        return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
 
     class Meta(PublicUserSerializer.Meta):
         fields = PublicUserWithAbakusGroupsSerializer.Meta.fields + (  # type: ignore
             "past_memberships",
             "memberships",
             "achievements",
-            "achievement_score"
+            "achievements_score",
         )
 
 
@@ -185,6 +191,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     abakus_email_lists = PublicEmailListSerializer(many=True)
     photo_consents = serializers.SerializerMethodField()
     achievements = AchievementSerializer(many=True)
+    achievements_score = serializers.SerializerMethodField()
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -217,6 +224,10 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError("Username exists")
 
         return username
+
+    def get_achievements_score(self, obj):
+
+        return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
 
     class Meta:
         model = User
@@ -251,7 +262,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "github_username",
             "linkedin_id",
             "achievements",
-            "achievement_score"
+            "achievements_score",
         )
 
 
