@@ -84,6 +84,7 @@ class EventReadSerializer(
     is_admitted = IsAdmittedField()
     registration_count = RegistrationCountField()
     total_capacity = TotalCapacityField()
+    user_reg = serializers.SerializerMethodField()
     responsible_users = PublicUserField(
         queryset=User.objects.all(),
         allow_null=False,
@@ -116,8 +117,14 @@ class EventReadSerializer(
             "is_priced",
             "responsible_users",
             "is_foreign_language",
+            "user_reg",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
         read_only = True
+
+    def get_user_reg(self, event):
+        if hasattr(event, "user_reg") and event.user_reg:
+            return RegistrationReadSerializer(event.user_reg[0]).data
+        return None
 
 
 class EventReadDetailedSerializer(
