@@ -1322,19 +1322,19 @@ tests = ["coverage", "mock-django"]
 
 [[package]]
 name = "django-oauth-toolkit"
-version = "1.6.3"
+version = "3.0.1"
 description = "OAuth2 Provider for Django"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "django-oauth-toolkit-1.6.3.tar.gz", hash = "sha256:c3a0acd10a9c8442aedd298f8cb835d242c114ce0b8894c7e9290991bee667ca"},
-    {file = "django_oauth_toolkit-1.6.3-py3-none-any.whl", hash = "sha256:d9acbe8ef193bf31d192d90ea2e2df5e7be8adab391cec4acf55f0c048a35274"},
+    {file = "django_oauth_toolkit-3.0.1-py3-none-any.whl", hash = "sha256:3ef00b062a284f2031b0732b32dc899e3bbf0eac221bbb1cffcb50b8932e55ed"},
+    {file = "django_oauth_toolkit-3.0.1.tar.gz", hash = "sha256:7200e4a9fb229b145a6d808cbf0423b6d69a87f68557437733eec3c0cf71db02"},
 ]
 
 [package.dependencies]
-django = ">=2.2,<4.0.0 || >4.0.0"
-jwcrypto = ">=0.8.0"
-oauthlib = ">=3.1.0"
+django = ">=4.2"
+jwcrypto = ">=1.5.0"
+oauthlib = ">=3.2.2"
 requests = ">=2.13.0"
 
 [[package]]
@@ -4498,4 +4498,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e8cb76e041ea2fe656f2d3ad07b46fa75fcba8b06572d175d976bd701f78e273"
+content-hash = "3358bfc350140b490b0f8745dadb7990486516d4c9c0e45da1aa114b8a1d9fea"
