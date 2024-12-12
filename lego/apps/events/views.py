@@ -41,7 +41,6 @@ from lego.apps.events.serializers.events import (
     EventReadAuthUserDetailedSerializer,
     EventReadSerializer,
     EventReadUserDetailedSerializer,
-    EventUserRegSerializer,
     ImageGallerySerializer,
     populate_event_registration_users_with_grade,
 )
@@ -319,7 +318,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @decorators.action(
         detail=False,
-        serializer_class=EventUserRegSerializer,
+        serializer_class=EventReadSerializer,
         permission_classes=[permissions.IsAuthenticated],
     )
     def previous(self, request):
@@ -333,7 +332,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @decorators.action(
         detail=False,
-        serializer_class=EventUserRegSerializer,
+        serializer_class=EventReadSerializer,
         permission_classes=[permissions.IsAuthenticated],
     )
     def upcoming(self, request):
