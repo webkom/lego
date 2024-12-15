@@ -28,6 +28,7 @@ ENV RELEASE ${RELEASE}
 
 RUN mkdir /app
 COPY pyproject.toml /app/pyproject.toml
+COPY poetry.lock /app/poetry.lock
 WORKDIR /app
 
 RUN pip install poetry
