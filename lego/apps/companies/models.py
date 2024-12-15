@@ -45,7 +45,9 @@ class Company(BasisModel):
 
     description = models.TextField(blank=True)
     phone = models.CharField(max_length=100, blank=True)
-    company_type = models.CharField(max_length=200, blank=True)
+    company_type = models.CharField(
+        max_length=64, choices=COMPANY_TYPES.choices, blank=True, null=True
+    )
     website = models.URLField(blank=True)
     address = models.CharField(max_length=200, blank=True)
     admin_comment = models.CharField(max_length=100, blank=True)

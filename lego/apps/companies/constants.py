@@ -93,17 +93,17 @@ class COMPANY_TYPES(models.TextChoices):
     SMALL_CONSULTANT = "company_types_small_consultant"
     MEDIUM_CONSULTANT = "company_types_medium_consultant"
     LARGE_CONSULTANT = "company_types_large_consultant"
-    INHOUSE = "company_types_inhouse"
+    IN_HOUSE = "company_types_inhouse"
     TYPES_OTHERS = "company_types_others"
     START_UP = "company_types_start_up"
     GOVERNMENTAL = "company_types_governmental"
 
 
 TRANSLATED_COMPANY_TYPES = {
-    COMPANY_TYPES.SMALL_CONSULTANT: "Liten Konsulentbedrift",
+    COMPANY_TYPES.SMALL_CONSULTANT: "Liten konsulentbedrift",
     COMPANY_TYPES.MEDIUM_CONSULTANT: "Medium konsulentbedrift",
     COMPANY_TYPES.LARGE_CONSULTANT: "Stor konsulentbedrift",
-    COMPANY_TYPES.INHOUSE: "Inhouse",
+    COMPANY_TYPES.IN_HOUSE: "In-house",
     COMPANY_TYPES.TYPES_OTHERS: "Annet",
     COMPANY_TYPES.START_UP: "Start-up",
     COMPANY_TYPES.GOVERNMENTAL: "Statlig",
