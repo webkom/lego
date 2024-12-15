@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from httplib2 import Http
-from oauth2client.service_account import ServiceAccountCredentials
 
 scopes = [
     "https://www.googleapis.com/auth/admin.directory.user",
@@ -24,7 +23,7 @@ class GSuiteLib:
         self.client = build(
             "admin",
             "directory_v1",
-            http=credentials.authorize(Http()),
+            credentials=credentials,
             cache_discovery=False,
         )
 
@@ -35,10 +34,11 @@ class GSuiteLib:
         if settings.GSUITE_CREDENTIALS is None:
             raise ImproperlyConfigured("Missing GSuite credentials")
 
-        credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-            settings.GSUITE_CREDENTIALS, scopes
+        return service_account.Credentials.from_service_account_info(
+            settings.GSUITE_CREDENTIALS,
+            scopes=scopes,
+            subject=settings.GSUITE_DELEGATED_ACCOUNT,
         )
-        return credentials.create_delegated(settings.GSUITE_DELEGATED_ACCOUNT)
 
     def get_user(self, user_key):
         return self.client.users().get(userKey=user_key).execute()
