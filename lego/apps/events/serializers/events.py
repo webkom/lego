@@ -190,6 +190,7 @@ class EventReadDetailedSerializer(
             "is_merged",
             "heed_penalties",
             "created_by",
+            "legacy_registration_count",
             "survey",
             "use_consent",
             "youtube_url",
