@@ -1,6 +1,28 @@
+from django.db.models import Q
 from django_filters import BooleanFilter, CharFilter, FilterSet
 
-from lego.apps.companies.models import CompanyInterest, Semester
+from lego.apps.companies.models import Company, CompanyInterest, Semester
+
+
+class CompanyFilterSet(FilterSet):
+    search = CharFilter(method="filter_search")
+    show_inactive = BooleanFilter(method="filter_inactive")
+
+    def filter_search(self, queryset, name, value):
+        if not value:
+            return queryset
+        return queryset.filter(
+            Q(name__icontains=value) | Q(description__icontains=value)
+        )
+
+    def filter_inactive(self, queryset, name, value):
+        if not value:
+            return queryset.filter(active=True)
+        return queryset
+
+    class Meta:
+        model = Company
+        fields = ["search", "show_inactive"]
 
 
 class SemesterFilterSet(FilterSet):

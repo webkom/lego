@@ -7,7 +7,11 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 
-from lego.apps.companies.filters import CompanyInterestFilterSet, SemesterFilterSet
+from lego.apps.companies.filters import (
+    CompanyFilterSet,
+    CompanyInterestFilterSet,
+    SemesterFilterSet,
+)
 from lego.apps.companies.models import (
     Company,
     CompanyContact,
@@ -72,6 +76,7 @@ class CompanyViewSet(
     viewsets.GenericViewSet,
 ):
     queryset = Company.objects.all().filter(active=True)
+    filterset_class = CompanyFilterSet
     ordering = "name"
 
     def get_serializer_class(self):
