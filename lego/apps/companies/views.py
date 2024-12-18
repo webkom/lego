@@ -97,7 +97,6 @@ class CompanyFilesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         company_id = self.kwargs["company_pk"]
         return CompanyFile.objects.filter(company=company_id)
 
-
 class SemesterStatusViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = SemesterStatus.objects.all()
     serializer_class = SemesterStatusDetailSerializer
@@ -126,7 +125,6 @@ class CompanyContactViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         company_id = self.kwargs["company_pk"]
         return CompanyContact.objects.filter(company=company_id)
-
 
 class SemesterViewSet(viewsets.ModelViewSet):
     filterset_class = SemesterFilterSet
