@@ -2,7 +2,7 @@ import csv
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from rest_framework import status, viewsets
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
@@ -46,8 +46,10 @@ from .constants import (
 
 class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related("semester_statuses", "files")
-    pagination_class = None
     permission_handler = CompanyAdminPermissionHandler()
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ["name", "created_at"]
+    ordering = "name"
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
