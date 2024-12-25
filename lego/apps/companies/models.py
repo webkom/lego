@@ -57,7 +57,7 @@ class Company(BasisModel):
 
     class Meta:
         permission_handler = CompanyPermissionHandler()
-        ordering = ['name']
+        ordering = ["name"]
 
     @property
     def content_target(self) -> str:
