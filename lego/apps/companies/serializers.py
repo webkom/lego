@@ -18,7 +18,6 @@ from lego.apps.companies.models import (
 from lego.apps.files.fields import FileField, ImageField
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import User
-from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import BasisModelSerializer
 
 
@@ -250,7 +249,6 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
         previous_ids = {contact.id for contact in previous_student_contacts}
 
         existing_contacts_ids = set()
-        new_companies = []
 
         for student_contact in updated_student_contacts:
             try:
