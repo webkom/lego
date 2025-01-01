@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 
+from lego.apps.companies.models import StudentCompanyContact
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -19,6 +20,35 @@ _test_company_contact_data = [
         "company": 1,
     }
 ]
+
+
+def _get_test_student_contacts_data(pk):
+    return [
+        {"studentContacts": []},
+        {
+            "studentContacts": [
+                {
+                    "company": pk,
+                    "user": 1,
+                    "semester": 1,
+                }
+            ]
+        },
+        {
+            "studentContacts": [
+                {
+                    "company": pk,
+                    "user": 1,
+                    "semester": 1,
+                },
+                {
+                    "company": pk,
+                    "user": 2,
+                    "semester": 1,
+                },
+            ]
+        },
+    ]
 
 
 def _get_bdb_list_url():
@@ -157,6 +187,49 @@ class DeleteCompaniesTestCase(BaseAPITestCase):
 
         company_response = self.client.get(_get_bdb_detail_url(1))
         self.assertEqual(company_response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class UpdateStudentCompanyContactTestCase(BaseAPITestCase):
+    fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
+
+    def getStudentCompanyContactCount(self, pk):
+        return StudentCompanyContact.objects.filter(company=2).count()
+
+    def updateCompany(self, pk, body):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_response = self.client.patch(_get_bdb_detail_url(pk), body)
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_add_student_company_contact(self):
+        self.assertEqual(self.getStudentCompanyContactCount(2), 0)
+
+        self.updateCompany(2, _get_test_student_contacts_data(2)[1])
+        self.assertEqual(self.getStudentCompanyContactCount(2), 1)
+
+    def test_add_multiple_student_company_contacts(self):
+        self.assertEqual(self.getStudentCompanyContactCount(2), 0)
+
+        self.updateCompany(2, _get_test_student_contacts_data(2)[1])
+        self.assertEqual(self.getStudentCompanyContactCount(2), 1)
+
+        self.updateCompany(2, _get_test_student_contacts_data(2)[2])
+        self.assertEqual(self.getStudentCompanyContactCount(2), 2)
+
+    def test_delete_student_company_contacts(self):
+        self.assertEqual(self.getStudentCompanyContactCount(2), 0)
+
+        self.updateCompany(2, _get_test_student_contacts_data(2)[2])
+        self.assertEqual(self.getStudentCompanyContactCount(2), 2)
+
+        self.updateCompany(2, _get_test_student_contacts_data(2)[1])
+        self.assertEqual(self.getStudentCompanyContactCount(2), 1)
+
+        self.updateCompany(2, _get_test_student_contacts_data(2)[0])
+        self.assertEqual(self.getStudentCompanyContactCount(2), 0)
 
 
 class CreateSemesterStatusTestCase(BaseAPITestCase):

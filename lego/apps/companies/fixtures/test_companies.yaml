@@ -41,14 +41,14 @@
   pk: 1
   fields:
     company: 1
-    student: 1
+    user: 1
     semester: 1
 
 - model: companies.StudentCompanyContact
   pk: 2
   fields:
     company: 1
-    student: 2
+    user: 2
     semester: 2
 
 
