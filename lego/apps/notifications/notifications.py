@@ -27,7 +27,7 @@ class AnnouncementNotification(Notification):
                 "sender": sender,
                 "message": announcement.message,
             },
-            subject=f"Viktig melding fra {sender}",
+            subject=f"Kunngjøring fra {sender}",
             plain_template="notifications/email/announcement.txt",
             html_template="notifications/email/announcement.html",
         )
