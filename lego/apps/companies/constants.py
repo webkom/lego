@@ -13,7 +13,7 @@ BEDEX = "bedex"
 DIGITAL_PRESENTATION = "digital_presentation"
 OTHER = "other"
 SPONSOR = "sponsor"
-START_UP = "start_up"
+# START_UP = "start_up"
 COMPANY_TO_COMPANY = "company_to_company"
 
 COMPANY_EVENTS = (
@@ -25,7 +25,7 @@ COMPANY_EVENTS = (
     (BEDEX, BEDEX),
     (OTHER, OTHER),
     (SPONSOR, SPONSOR),
-    (START_UP, START_UP),
+    # (START_UP, START_UP),
     (COMPANY_TO_COMPANY, COMPANY_TO_COMPANY),
 )
 
@@ -37,7 +37,7 @@ TRANSLATED_EVENTS = {
     DIGITAL_PRESENTATION: "Digital presentasjon",
     BEDEX: "BedEx (vinter 2021)",
     OTHER: "Alternativt arrangement",
-    START_UP: "Start-up kveld",
+    # START_UP: "Start-up kveld",
     COMPANY_TO_COMPANY: "Bedrift-til-bedrift",
 }
 
@@ -66,7 +66,7 @@ TRANSLATED_OTHER_OFFERS = {
 COLLABORATION_ONLINE = "collaboration_online"
 COLLABORATION_OMEGA = "collaboration_omega"
 COLLABORATION_TIHLDE = "collaboration_tihlde"
-COLLABORATION_REVUE = "collaboration_revue"
+# COLLABORATION_REVUE = "collaboration_revue"
 COLLABORATION_ANNIVERSARY = "collaboration_anniversary"
 COLLABORATION_REVUE_ANNIVERSARY = "collaboration_revue_anniversary"
 
@@ -74,7 +74,7 @@ COLLABORATIONS = (
     (COLLABORATION_ONLINE, COLLABORATION_ONLINE),
     (COLLABORATION_OMEGA, COLLABORATION_OMEGA),
     (COLLABORATION_TIHLDE, COLLABORATION_TIHLDE),
-    (COLLABORATION_REVUE, COLLABORATION_REVUE),
+    # (COLLABORATION_REVUE, COLLABORATION_REVUE),
     (COLLABORATION_ANNIVERSARY, COLLABORATION_ANNIVERSARY),
     (COLLABORATION_REVUE_ANNIVERSARY, COLLABORATION_REVUE_ANNIVERSARY),
 )
@@ -83,7 +83,7 @@ TRANSLATED_COLLABORATIONS = {
     COLLABORATION_ONLINE: "Online linjeforening",
     COLLABORATION_OMEGA: "Omega linjeforening",
     COLLABORATION_TIHLDE: "TIHLDE linjeforening",
-    COLLABORATION_REVUE: "Abakusrevyen",
+    # COLLABORATION_REVUE: "Abakusrevyen",
     COLLABORATION_ANNIVERSARY: "Abakus jubileum",
     COLLABORATION_REVUE_ANNIVERSARY: "Abakusrevy jubileum",
 }
