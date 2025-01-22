@@ -8,6 +8,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 
 from lego.apps.companies.filters import (
+    AdminCompanyFilterSet,
     CompanyFilterSet,
     CompanyInterestFilterSet,
     SemesterFilterSet,
@@ -50,6 +51,7 @@ from .constants import (
 
 class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related("semester_statuses", "files")
+    filterset_class = AdminCompanyFilterSet
     permission_handler = CompanyAdminPermissionHandler()
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["name", "created_at"]
