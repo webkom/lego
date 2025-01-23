@@ -1,1 +1,1 @@
-Du har mottatt en viktig melding fra {{ sender }}.
+Du har mottatt en kunngjøring fra {{ sender }}.
