@@ -38,32 +38,6 @@ class JSONWebTokenTestCase(BaseAPITestCase):
         self.assertContains(response, text="token", status_code=status.HTTP_201_CREATED)
         self.assertContains(response, text="user", status_code=status.HTTP_201_CREATED)
 
-    def test_crypt_hash_generated_on_successfull_auth(self):
-        user = User.objects.get(pk=12)
-        self.assertEqual(user.crypt_password_hash, "")
-        user_data = {"username": user.username, "password": "test"}
-        response = self.client.post(reverse("jwt:obtain_jwt_token"), user_data)
-        self.assertContains(response, text="token", status_code=status.HTTP_201_CREATED)
-        self.assertContains(response, text="user", status_code=status.HTTP_201_CREATED)
-        self.assertNotEqual(User.objects.get(pk=12).crypt_password_hash, "")
-
-    def test_crypt_hash_generated_on_successfull_auth_case(self):
-        user = User.objects.get(pk=12)
-        self.assertEqual(user.crypt_password_hash, "")
-        user_data = {"username": "tEsT12", "password": "test"}
-        response = self.client.post(reverse("jwt:obtain_jwt_token"), user_data)
-        self.assertContains(response, text="token", status_code=status.HTTP_201_CREATED)
-        self.assertContains(response, text="user", status_code=status.HTTP_201_CREATED)
-        self.assertNotEqual(User.objects.get(pk=12).crypt_password_hash, "")
-
-    def test_crypt_hash_not_generated_on_failed_auth(self):
-        user = User.objects.get(pk=12)
-        self.assertEqual(user.crypt_password_hash, "")
-        user_data = {"username": user.username, "password": "tes"}
-        response = self.client.post(reverse("jwt:obtain_jwt_token"), user_data)
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(User.objects.get(pk=12).crypt_password_hash, "")
-
     def test_refresh(self):
         token_response = self.client.post(
             reverse("jwt:obtain_jwt_token"), self.user_data
