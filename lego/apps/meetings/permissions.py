@@ -28,8 +28,15 @@ class MeetingPermissionHandler(PermissionHandler):
         if not user.is_authenticated:
             return False
 
-        # Check object permissions before keywork perms
+        # Check object permissions before keyword perms
         if obj is not None:
+            # Disable permission checking if the user is not a creator or invited to the meeting
+            # Supplying self.filter_queryset() functionality for individual objects as well
+            if not (
+                obj.created_by == user or obj.invited_users.filter(id=user.id).exists()
+            ):
+                return False
+
             if self.has_object_permissions(user, perm, obj):
                 return True
 
