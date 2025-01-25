@@ -101,16 +101,3 @@
     last_name: medlem
     email: allergies@abakus.no
     allergies: "Vegetar"
-
-- model: users.User
-  pk: 12
-  fields:
-    username: test12
-    student_username: test12student
-    student_verification_status: true
-    password: pbkdf2_sha256$24000$zowF0cRkFimt$qzeoY9hZ0X3zDhlG0FP8imaGto8S2N6ed1AMp83xcn4= # test
-    gender: female
-    first_name: test
-    last_name: user12
-    email: test12@user.com
-    crypt_password_hash: ''
