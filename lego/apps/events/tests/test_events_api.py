@@ -2018,12 +2018,13 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertNotEqual(res.json().get("user", None), None)
 
-    def test_asd_user(self):
+    def test_nonexistent_user(self):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
             {"username": "asd007 xXx james bond"},
         )
+        self.assertEqual(res.json()["errorCode"], "no_user")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_no_username(self):
@@ -2037,6 +2038,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.webkom_user.username},
         )
+        self.assertEqual(res.json()["errorCode"], "not_registered")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_auth(self):
@@ -2053,10 +2055,66 @@ class RegistrationSearchTestCase(BaseAPITestCase):
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
+        self.assertEqual(res.json()["errorCode"], "already_present")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unregistered(self):
+        reg = Registration.objects.get(user=self.users[0], event=self.event)
+        self.event.unregister(reg)
+        self.assertEqual(reg.status, constants.SUCCESS_UNREGISTER)
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"username": self.users[0].username},
+        )
+        self.assertEqual(res.json()["errorCode"], "unregistered")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_not_properly_registered(self):
+        reg = Registration.objects.get(user=self.users[0], event=self.event)
+        reg.status = constants.FAILURE_REGISTER
+        reg.save()
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"username": self.users[0].username},
+        )
+        self.assertEqual(res.json()["errorCode"], "not_properly_registered")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_waitlisted(self):
+        reg = Registration.objects.get(user=self.users[0], event=self.event)
+        reg.pool = None
+        reg.save()
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"username": self.users[0].username},
+        )
+        self.assertEqual(res.json()["errorCode"], "waitlisted")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_late_or_absent(self):
+        reg = Registration.objects.get(user=self.users[0], event=self.event)
+        reg.presence = constants.PRESENCE_CHOICES.NOT_PRESENT
+        reg.save()
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"username": self.users[0].username},
+        )
+        self.assertEqual(res.json()["errorCode"], "late_or_absent")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_missing_payment(self):
+        self.event.is_priced = True
+        self.event.save()
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"username": self.users[0].username},
+        )
+        self.assertEqual(res.json()["errorCode"], "missing_payment")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 

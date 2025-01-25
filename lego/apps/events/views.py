@@ -542,6 +542,7 @@ class RegistrationSearchViewSet(
         return Registration.objects.filter(event=event_id).prefetch_related("user")
 
     def create(self, request, *args, **kwargs):
+        event_id = self.kwargs.get("event_pk", None)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.data["username"]
@@ -571,12 +572,21 @@ class RegistrationSearchViewSet(
         ):
             raise PermissionDenied()
 
+        # Registration statuses
+        if reg.status == constants.SUCCESS_UNREGISTER:
+            raise ValidationError(
+                {
+                    "error": f"User {reg.user.username} is unregistered.",
+                    "error_code": "unregistered",
+                }
+            )
+
         if reg.status != constants.SUCCESS_REGISTER:
             raise ValidationError(
                 {
                     "error": f"User {reg.user.username} is _not_ properly registerd. "
                     f"The registration status for the user is: {reg.status}",
-                    "error_code": "already_present",
+                    "error_code": "not_properly_registered",
                 }
             )
 
@@ -585,6 +595,15 @@ class RegistrationSearchViewSet(
                 {
                     "error": f"User {reg.user.username} is on the waiting list... "
                     "You can set the presence manualy on the 'Påmeldinger' tab",
+                    "error_code": "waitlisted",
+                }
+            )
+
+        # Registration presences
+        if reg.presence == constants.PRESENCE_CHOICES.PRESENT:
+            raise ValidationError(
+                {
+                    "error": f"User {reg.user.username} is already present.",
                     "error_code": "already_present",
                 }
             )
@@ -592,8 +611,22 @@ class RegistrationSearchViewSet(
         if reg.presence != constants.PRESENCE_CHOICES.UNKNOWN:
             raise ValidationError(
                 {
-                    "error": f"User {reg.user.username} is already present.",
-                    "error_code": "already_present",
+                    "error": f"User {reg.user.username} is late or absent.",
+                    "error_code": "late_or_absent",
+                }
+            )
+
+        # Payment status
+        event = Event.objects.get(pk=event_id)
+        if (
+            event.is_priced
+            and reg.payment_status != constants.PAYMENT_SUCCESS
+            and reg.payment_status != constants.PAYMENT_MANUAL
+        ):
+            raise ValidationError(
+                {
+                    "error": f"User {reg.user.username} has not paid.",
+                    "error_code": "missing_payment",
                 }
             )
 
