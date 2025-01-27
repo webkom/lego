@@ -19,6 +19,7 @@ class Achievement(TypedDict):
 
 AchievementCollection = dict[str, Achievement]
 
+# Remember to update rarity list in /utils/calculation_utils.py when adding new achievement
 
 EVENT_IDENTIFIER = "event_count"
 EVENT_RANK_IDENTIFIER = "event_rank"

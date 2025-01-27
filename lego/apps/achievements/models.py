@@ -1,5 +1,6 @@
 from django.db import models
 
+from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -25,6 +26,13 @@ class Achievement(BasisModel):
             .count()
         )
         return (achievement_users / total_users) * 100
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # Recalculate and update the user's achievement score
+        self.user.achievements_score = calculate_user_rank(self.user)
+        self.user.save(update_fields=["achievements_score"])
 
     class Meta:
         constraints = [
