@@ -29,7 +29,8 @@ MAX_POSSIBLE_SCORE = sum(
 
 def calculate_user_rank(user):
     score = 0.0
-
+    if not user.achievements.exists():
+        return 0
     user_achievements = user.achievements.all()
     for achievement in user_achievements:
         rarity_list = ACHIEVEMENT_RARITIES.get(achievement.identifier, [])

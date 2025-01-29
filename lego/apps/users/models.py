@@ -423,9 +423,12 @@ class User(
         super(User, self).delete(using=using, force=force)
 
     def save(self, *args, **kwargs):
-        from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
+        if self.pk:
+            from lego.apps.achievements.utils.calculation_utils import (
+                calculate_user_rank,
+            )
 
-        self.achievements_score = calculate_user_rank(self)
+            self.achievements_score = calculate_user_rank(self)
         super().save(*args, **kwargs)
 
     @property
