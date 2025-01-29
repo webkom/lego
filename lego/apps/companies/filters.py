@@ -3,14 +3,23 @@ from django_filters import BooleanFilter, CharFilter, FilterSet
 
 from lego.apps.companies.models import Company, CompanyInterest, Semester
 
+
 class AdminCompanyFilterSet(FilterSet):
 
     search = CharFilter(method="filter_search")
-    show_inactive = BooleanFilter(method="filter_inactive")
+    status = CharFilter(method="filter_semester_status")
 
-    def filter_inactive(self, queryset, name, value):
+    def filter_semester_status(self, queryset, name, value):
         if not value:
-            return queryset.filter(active=True)
+            return queryset
+        statuses = self.request.query_params.getlist("status")
+        semester_id = self.request.query_params.get("semester_id")
+
+        if statuses:
+            return queryset.filter(
+                semester_statuses__contacted_status__overlap=statuses,
+                semester_statuses__semester_id=semester_id,
+            )
         return queryset
 
     def filter_search(self, queryset, name, value):
@@ -22,7 +31,8 @@ class AdminCompanyFilterSet(FilterSet):
 
     class Meta:
         model = Company
-        fields = ["search", "show_inactive"]
+        fields = ["search", "status"]
+
 
 class AdminCompanyFilterSet(FilterSet):
 
