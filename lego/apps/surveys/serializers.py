@@ -87,7 +87,7 @@ class SurveyReadSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ("id", "title", "active_from", "event", "template_type")
+        fields = ("id", "title", "active_from", "event", "template_type", "is_template")
 
 
 class SubmissionReadSerializer(BasisModelSerializer):
@@ -144,7 +144,7 @@ class SurveyReadDetailedSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ("id", "title", "active_from", "questions", "event", "template_type")
+        fields = ("id", "title", "active_from", "questions", "event", "template_type","is_template")
 
 
 class SurveyReadDetailedAdminSerializer(SurveyReadDetailedSerializer):
@@ -160,7 +160,7 @@ class SurveyCreateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ("id", "title", "active_from", "template_type", "event", "questions")
+        fields = ("id", "title", "active_from", "template_type","is_template", "event", "questions")
 
     @atomic
     def create(self, validated_data):
@@ -183,7 +183,7 @@ class SurveyUpdateSerializer(BasisModelSerializer):
 
     class Meta:
         model = Survey
-        fields = ("id", "title", "active_from", "template_type", "event", "questions")
+        fields = ("id", "title", "active_from", "template_type","is_template", "event", "questions")
 
     @atomic
     def update(self, instance, validated_data):
