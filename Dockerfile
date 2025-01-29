@@ -29,11 +29,9 @@ ENV RELEASE ${RELEASE}
 RUN mkdir /app
 COPY pyproject.toml /app/pyproject.toml
 COPY poetry.lock /app/poetry.lock
-# Required by poetry >= 2.0.0 to install the project
-COPY README.md /app/README.md
 WORKDIR /app
 
-RUN pip install poetry
+RUN pip install poetry==1.8.5
 
 RUN set -e \
     && poetry config virtualenvs.create false \
