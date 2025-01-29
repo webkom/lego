@@ -379,6 +379,7 @@ class User(
         help_text="Enter a valid LinkedIn ID.",
         validators=[linkedin_id_validator, ReservedNameValidator()],
     )
+    achievements_score = models.FloatField(default=0, null=False, blank=False)
 
     objects = AbakusUserManager()  # type: ignore
 
@@ -420,6 +421,15 @@ class User(
                 else:
                     event.unregister(event.registrations.get(user=self))
         super(User, self).delete(using=using, force=force)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            from lego.apps.achievements.utils.calculation_utils import (
+                calculate_user_rank,
+            )
+
+            self.achievements_score = calculate_user_rank(self)
+        super().save(*args, **kwargs)
 
     @property
     def full_name(self):
