@@ -53,7 +53,6 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related("semester_statuses", "files")
     filterset_class = AdminCompanyFilterSet
     permission_handler = CompanyAdminPermissionHandler()
-    filter_backends = [filters.OrderingFilter]
     ordering_fields = ["name", "created_at"]
     ordering = "name"
 
