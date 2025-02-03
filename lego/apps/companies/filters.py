@@ -12,14 +12,25 @@ class AdminCompanyFilterSet(FilterSet):
     def filter_semester_status(self, queryset, name, value):
         if not value:
             return queryset
-        statuses = self.request.query_params.getlist("status")
+
+        statuses = [
+            status.strip()
+            for status in self.request.query_params.get("status", "").split(",")
+        ]
         semester_id = self.request.query_params.get("semester_id")
 
-        if statuses:
-            return queryset.filter(
-                semester_statuses__contacted_status__overlap=statuses,
-                semester_statuses__semester_id=semester_id,
-            )
+        if statuses and all(statuses):
+            status_q = Q()
+            for status in statuses:
+                status_q |= Q(
+                    semester_statuses__semester_id=semester_id,
+                    semester_statuses__contacted_status__contains=[status],
+                )
+
+            filtered_queryset = queryset.filter(status_q)
+
+            return filtered_queryset
+
         return queryset
 
     def filter_search(self, queryset, name, value):
