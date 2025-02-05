@@ -2,6 +2,20 @@
 
 from django.db import migrations
 
+def create_comment_with_old_admin_comment(apps, schema_editor):
+    Company = apps.get_model("companies", "Company")
+    Comment = apps.get_model("comments", "Comment")
+    CompanyContentType = apps.get_model("contenttypes", "ContentType").objects.get(
+        model="company"
+    )
+
+    for c in Company.objects.all():
+        if c.admin_comment != None:
+            Comment.objects.create(
+                text="Autogenerert kommentar fra gammelt notat: \n" + c.admin_comment,
+                content_type=CompanyContentType,
+                object_id=c.id,
+            )
 
 class Migration(migrations.Migration):
 
@@ -10,6 +24,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(create_comment_with_old_admin_comment),
         migrations.RemoveField(
             model_name="company",
             name="admin_comment",
