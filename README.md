@@ -18,9 +18,9 @@ LEGO requires `python3.11`, `python3.11-venv`, `docker` and `poetry`. Services l
 
 ```bash
 $ git clone git@github.com:webkom/lego.git && cd lego/
-$ python3.11 -m venv venv
+$ python3.11 -m venv .venv
 $ echo "from .development import *" > lego/settings/local.py
-$ source venv/bin/activate
+$ source .venv/bin/activate
 $ poetry install
 $ docker compose up -d
 $ python manage.py initialize_development
@@ -29,7 +29,7 @@ $ python manage.py initialize_development
 ### Activate and run (every time)
 
 ```bash
-$ source venv/bin/activate
+$ source .venv/bin/activate
 $ docker compose up -d
 $ python manage.py runserver
 ```
@@ -65,7 +65,7 @@ $ poetry lock --no-update
 # The conflicts should be resolved
 ```
 
-> If you get problems it can be a solution to delete the `venv`, and do a fresh setup
+> If you get problems it can be a solution to delete the `.venv`, and do a fresh setup
 
 ## Code Style
 
