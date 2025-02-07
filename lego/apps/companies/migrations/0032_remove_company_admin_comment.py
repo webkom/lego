@@ -2,12 +2,13 @@
 
 from django.db import migrations
 
+
 def create_comment_with_old_admin_comment(apps, schema_editor):
     Company = apps.get_model("companies", "Company")
     Comment = apps.get_model("comments", "Comment")
-    CompanyContentType = apps.get_model("contenttypes", "ContentType").objects.get(
-        model="company"
-    )
+    ContentType = apps.get_model("contenttypes", "ContentType")
+
+    CompanyContentType = ContentType.objects.get(model="company")
 
     for c in Company.objects.all():
         if c.admin_comment != None:
@@ -16,6 +17,7 @@ def create_comment_with_old_admin_comment(apps, schema_editor):
                 content_type=CompanyContentType,
                 object_id=c.id,
             )
+
 
 class Migration(migrations.Migration):
 
