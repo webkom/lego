@@ -8,7 +8,10 @@ def create_comment_with_old_admin_comment(apps, schema_editor):
     Comment = apps.get_model("comments", "Comment")
     ContentType = apps.get_model("contenttypes", "ContentType")
 
-    CompanyContentType = ContentType.objects.get(model="company")
+    try:
+        CompanyContentType = ContentType.objects.get(model="company")
+    except ContentType.DoesNotExist:
+        return
 
     for c in Company.objects.all():
         if c.admin_comment != None:
