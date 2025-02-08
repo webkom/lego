@@ -355,3 +355,35 @@ class DeleteCompanyContacsTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         get_response = self.client.get(_get_company_contacts_detail_url(1, 1))
         self.assertEqual(get_response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class FilterCompaniesTestCase(BaseAPITestCase):
+    fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
+
+    def setUp(self):
+        self.abakus_user = User.objects.all().first()
+
+    def test_filter_by_search(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_response = self.client.get(_get_bdb_list_url(), {"search": "Face"})
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 1)
+
+    def test_filter_by_status_interested(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"status": "interested", "semester_id": 1}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 1)
+
+    def test_filter_by_status_not_interested(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"status": "not_interested", "semester_id": 1}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 0)

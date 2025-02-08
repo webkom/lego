@@ -156,3 +156,523 @@
     semester: 4
     contacted_status: ['company_presentation']
     company: 3
+
+- model: companies.Semester
+  pk: 5
+  fields:
+    semester: 'spring'
+    year: 2019
+    active_interest_form: True
+
+- model: companies.Semester
+  pk: 6
+  fields:
+    semester: 'autumn'
+    year: 2019
+    active_interest_form: False
+
+- model: companies.Semester
+  pk: 7
+  fields:
+    semester: 'spring'
+    year: 2020
+    active_interest_form: True
+
+- model: companies.Semester
+  pk: 8
+  fields:
+    semester: 'autumn'
+    year: 2020
+    active_interest_form: False
+
+- model: companies.Company
+  pk: 4
+  fields:
+    name: 'TechCorp'
+    description: 'TechCorp is a leading technology solutions provider.'
+    phone: '+47 12345678'
+    website: 'techcorp.com'
+    payment_mail: billing@techcorp.com
+    address: '123 Tech Street, 5678 Tech City'
+    company_type: 'Technology'
+    admin_comment: 'Ensure all contracts are signed.'
+
+- model: companies.Company
+  pk: 5
+  fields:
+    name: 'InnovateX'
+    description: 'InnovateX specializes in innovative solutions for modern problems.'
+    phone: '+47 87654321'
+    website: 'innovatex.com'
+    payment_mail: payments@innovatex.com
+    address: '456 Innovation Road, 1234 Innovate City'
+    company_type: 'Innovation'
+    admin_comment: 'Follow up on project milestones.'
+
+- model: companies.Company
+  pk: 6
+  fields:
+    name: 'GreenEnergy'
+    description: 'GreenEnergy provides sustainable energy solutions.'
+    phone: '+47 11223344'
+    website: 'greenenergy.com'
+    payment_mail: invoices@greenenergy.com
+    address: '789 Green Lane, 4321 Eco City'
+    company_type: 'Energy'
+    admin_comment: 'Check environmental compliance.'
+
+- model: companies.Company
+  pk: 7
+  fields:
+    name: 'HealthPlus'
+    description: 'HealthPlus offers advanced healthcare services.'
+    phone: '+47 55667788'
+    website: 'healthplus.com'
+    payment_mail: finance@healthplus.com
+    address: '101 Health Avenue, 8765 Health City'
+    company_type: 'Healthcare'
+    admin_comment: 'Verify insurance details.'
+
+- model: companies.Company
+  pk: 8
+  fields:
+    name: 'EduWorld'
+    description: 'EduWorld provides educational resources and services.'
+    phone: '+47 99887766'
+    website: 'eduworld.com'
+    payment_mail: accounts@eduworld.com
+    address: '202 Education Street, 6543 Edu City'
+    company_type: 'Education'
+    admin_comment: 'Update course materials regularly.'
+
+- model: companies.Company
+  pk: 9
+  fields:
+    name: 'Foodies'
+    description: 'Foodies delivers gourmet food experiences.'
+    phone: '+47 33445566'
+    website: 'foodies.com'
+    payment_mail: billing@foodies.com
+    address: '303 Culinary Road, 3210 Food City'
+    company_type: 'Food & Beverage'
+    admin_comment: 'Ensure quality control.'
+
+- model: companies.Company
+  pk: 10
+  fields:
+    name: 'TravelNow'
+    description: 'TravelNow offers comprehensive travel services.'
+    phone: '+47 22334455'
+    website: 'travelnow.com'
+    payment_mail: payments@travelnow.com
+    address: '404 Travel Lane, 2109 Travel City'
+    company_type: 'Travel'
+    admin_comment: 'Confirm booking details.'
+
+- model: companies.Company
+  pk: 11
+  fields:
+    name: 'BuildIt'
+    description: 'BuildIt specializes in construction and infrastructure projects.'
+    phone: '+47 66778899'
+    website: 'buildit.com'
+    payment_mail: finance@buildit.com
+    address: '505 Construction Blvd, 1098 Build City'
+    company_type: 'Construction'
+    admin_comment: 'Review project timelines.'
+
+- model: companies.Company
+  pk: 12
+  fields:
+    name: 'MediaWorks'
+    description: 'MediaWorks is a leading media and entertainment company.'
+    phone: '+47 77889900'
+    website: 'mediaworks.com'
+    payment_mail: accounts@mediaworks.com
+    address: '606 Media Street, 9876 Media City'
+    company_type: 'Media'
+    admin_comment: 'Check content licensing.'
+
+- model: companies.Company
+  pk: 13
+  fields:
+    name: 'FinServe'
+    description: 'FinServe provides financial services and consulting.'
+    phone: '+47 88990011'
+    website: 'finserve.com'
+    payment_mail: billing@finserve.com
+    address: '707 Finance Avenue, 8765 Finance City'
+    company_type: 'Finance'
+    admin_comment: 'Verify financial statements.'
+
+- model: companies.Company
+  pk: 14
+  fields:
+    name: 'AutoTech'
+    description: 'AutoTech develops advanced automotive technologies.'
+    phone: '+47 99001122'
+    website: 'autotech.com'
+    payment_mail: payments@autotech.com
+    address: '808 Auto Road, 7654 Auto City'
+    company_type: 'Automotive'
+    admin_comment: 'Check compliance with safety standards.'
+
+- model: companies.Company
+  pk: 15
+  fields:
+    name: 'BioLife'
+    description: 'BioLife is a biotechnology company focused on healthcare solutions.'
+    phone: '+47 10111213'
+    website: 'biolife.com'
+    payment_mail: finance@biolife.com
+    address: '909 Bio Lane, 6543 Bio City'
+    company_type: 'Biotechnology'
+    admin_comment: 'Ensure regulatory compliance.'
+
+- model: companies.Company
+  pk: 16
+  fields:
+    name: 'RetailHub'
+    description: 'RetailHub offers retail management solutions.'
+    phone: '+47 12131415'
+    website: 'retailhub.com'
+    payment_mail: accounts@retailhub.com
+    address: '1010 Retail Street, 5432 Retail City'
+    company_type: 'Retail'
+    admin_comment: 'Update inventory records.'
+
+- model: companies.Company
+  pk: 17
+  fields:
+    name: 'LogiTech'
+    description: 'LogiTech provides logistics and supply chain solutions.'
+    phone: '+47 13141516'
+    website: 'logitech.com'
+    payment_mail: billing@logitech.com
+    address: '1111 Logistics Road, 4321 Logi City'
+    company_type: 'Logistics'
+    admin_comment: 'Verify delivery schedules.'
+
+- model: companies.Company
+  pk: 18
+  fields:
+    name: 'AgriCo'
+    description: 'AgriCo specializes in agricultural technologies and services.'
+    phone: '+47 14151617'
+    website: 'agrico.com'
+    payment_mail: payments@agrico.com
+    address: '1212 Agri Lane, 3210 Agri City'
+    company_type: 'Agriculture'
+    admin_comment: 'Check crop yield reports.'
+
+- model: companies.Company
+  pk: 19
+  fields:
+    name: 'CleanTech'
+    description: 'CleanTech develops clean energy technologies.'
+    phone: '+47 15161718'
+    website: 'cleantech.com'
+    payment_mail: finance@cleantech.com
+    address: '1313 Clean Street, 2109 Clean City'
+    company_type: 'Clean Energy'
+    admin_comment: 'Ensure environmental compliance.'
+
+- model: companies.Company
+  pk: 20
+  fields:
+    name: 'SmartHome'
+    description: 'SmartHome offers smart home automation solutions.'
+    phone: '+47 16171819'
+    website: 'smarthome.com'
+    payment_mail: accounts@smarthome.com
+    address: '1414 Smart Lane, 1098 Smart City'
+    company_type: 'Home Automation'
+    admin_comment: 'Verify device compatibility.'
+
+- model: companies.Company
+  pk: 21
+  fields:
+    name: 'CyberSecure'
+    description: 'CyberSecure provides cybersecurity solutions.'
+    phone: '+47 17181920'
+    website: 'cybersecure.com'
+    payment_mail: billing@cybersecure.com
+    address: '1515 Cyber Road, 9876 Cyber City'
+    company_type: 'Cybersecurity'
+    admin_comment: 'Check security protocols.'
+
+- model: companies.Company
+  pk: 22
+  fields:
+    name: 'EcoSolutions'
+    description: 'EcoSolutions offers environmental consulting services.'
+    phone: '+47 18192021'
+    website: 'ecosolutions.com'
+    payment_mail: payments@ecosolutions.com
+    address: '1616 Eco Street, 8765 Eco City'
+    company_type: 'Environmental'
+    admin_comment: 'Review sustainability reports.'
+
+- model: companies.Company
+  pk: 23
+  fields:
+    name: 'DataStream'
+    description: 'DataStream provides data analytics and consulting services.'
+    phone: '+47 19202122'
+    website: 'datastream.com'
+    payment_mail: finance@datastream.com
+    address: '1717 Data Lane, 7654 Data City'
+    company_type: 'Data Analytics'
+    admin_comment: 'Verify data accuracy.'
+
+- model: companies.Company
+  pk: 24
+  fields:
+    name: 'CloudNet'
+    description: 'CloudNet offers cloud computing solutions.'
+    phone: '+47 20212223'
+    website: 'cloudnet.com'
+    payment_mail: accounts@cloudnet.com
+    address: '1818 Cloud Road, 6543 Cloud City'
+    company_type: 'Cloud Computing'
+    admin_comment: 'Check server uptime.'
+
+- model: companies.Company
+  pk: 25
+  fields:
+    name: 'AI Innovations'
+    description: 'AI Innovations develops artificial intelligence solutions.'
+    phone: '+47 21222324'
+    website: 'aiinnovations.com'
+    payment_mail: billing@aiinnovations.com
+    address: '1919 AI Street, 5432 AI City'
+    company_type: 'Artificial Intelligence'
+    admin_comment: 'Ensure algorithm accuracy.'
+
+- model: companies.Company
+  pk: 26
+  fields:
+    name: 'FinTech Solutions'
+    description: 'FinTech Solutions offers financial technology services.'
+    phone: '+47 22232425'
+    website: 'fintechsolutions.com'
+    payment_mail: payments@fintechsolutions.com
+    address: '2020 FinTech Lane, 4321 FinTech City'
+    company_type: 'Financial Technology'
+    admin_comment: 'Verify transaction security.'
+
+- model: companies.Company
+  pk: 27
+  fields:
+    name: 'HealthTech'
+    description: 'HealthTech develops healthcare technology solutions.'
+    phone: '+47 23242526'
+    website: 'healthtech.com'
+    payment_mail: finance@healthtech.com
+    address: '2121 Health Road, 3210 Health City'
+    company_type: 'Healthcare Technology'
+    admin_comment: 'Check device compliance.'
+
+- model: companies.Company
+  pk: 28
+  fields:
+    name: 'EduTech'
+    description: 'EduTech offers educational technology solutions.'
+    phone: '+47 24252627'
+    website: 'edutech.com'
+    payment_mail: accounts@edutech.com
+    address: '2222 Edu Lane, 2109 Edu City'
+    company_type: 'Educational Technology'
+    admin_comment: 'Update software regularly.'
+
+- model: companies.Company
+  pk: 29
+  fields:
+    name: 'FoodTech'
+    description: 'FoodTech develops food technology solutions.'
+    phone: '+47 25262728'
+    website: 'foodtech.com'
+    payment_mail: billing@foodtech.com
+    address: '2323 Food Road, 1098 Food City'
+    company_type: 'Food Technology'
+    admin_comment: 'Ensure food safety compliance.'
+
+- model: companies.Company
+  pk: 30
+  fields:
+    name: 'TravelTech'
+    description: 'TravelTech offers travel technology solutions.'
+    phone: '+47 26272829'
+    website: 'traveltech.com'
+    payment_mail: payments@traveltech.com
+    address: '2424 Travel Lane, 9876 Travel City'
+    company_type: 'Travel Technology'
+    admin_comment: 'Verify booking system.'
+
+- model: companies.Company
+  pk: 31
+  fields:
+    name: 'BuildTech'
+    description: 'BuildTech specializes in construction technology solutions.'
+    phone: '+47 27282930'
+    website: 'buildtech.com'
+    payment_mail: finance@buildtech.com
+    address: '2525 Build Street, 8765 Build City'
+    company_type: 'Construction Technology'
+    admin_comment: 'Check project management tools.'
+
+- model: companies.Company
+  pk: 32
+  fields:
+    name: 'MediaTech'
+    description: 'MediaTech offers media technology solutions.'
+    phone: '+47 28293031'
+    website: 'mediatech.com'
+    payment_mail: accounts@mediatech.com
+    address: '2626 Media Road, 7654 Media City'
+    company_type: 'Media Technology'
+    admin_comment: 'Verify content delivery network.'
+
+- model: companies.Company
+  pk: 33
+  fields:
+    name: 'FinServeTech'
+    description: 'FinServeTech provides financial services technology solutions.'
+    phone: '+47 29303132'
+    website: 'finservetech.com'
+    payment_mail: billing@finservetech.com
+    address: '2727 Finance Lane, 6543 Finance City'
+    company_type: 'Financial Services Technology'
+    admin_comment: 'Ensure compliance with financial regulations.'
+
+- model: companies.Company
+  pk: 34
+  fields:
+    name: 'AutoTech Solutions'
+    description: 'AutoTech Solutions develops automotive technology solutions.'
+    phone: '+47 30313233'
+    website: 'autotechsolutions.com'
+    payment_mail: payments@autotechsolutions.com
+    address: '2828 Auto Road, 5432 Auto City'
+    company_type: 'Automotive Technology'
+    admin_comment: 'Check vehicle safety standards.'
+
+- model: companies.Company
+  pk: 35
+  fields:
+    name: 'BioTech Innovations'
+    description: 'BioTech Innovations focuses on biotechnology solutions.'
+    phone: '+47 31323334'
+    website: 'biotechinnovations.com'
+    payment_mail: finance@biotechinnovations.com
+    address: '2929 Bio Lane, 4321 Bio City'
+    company_type: 'Biotechnology'
+    admin_comment: 'Ensure compliance with biotech regulations.'
+
+- model: companies.Company
+  pk: 36
+  fields:
+    name: 'RetailTech'
+    description: 'RetailTech offers retail technology solutions.'
+    phone: '+47 32333435'
+    website: 'retailtech.com'
+    payment_mail: accounts@retailtech.com
+    address: '3030 Retail Street, 3210 Retail City'
+    company_type: 'Retail Technology'
+    admin_comment: 'Update point of sale systems.'
+
+- model: companies.Company
+  pk: 37
+  fields:
+    name: 'LogiTech Solutions'
+    description: 'LogiTech Solutions provides logistics technology solutions.'
+    phone: '+47 33343536'
+    website: 'logitechsolutions.com'
+    payment_mail: billing@logitechsolutions.com
+    address: '3131 Logistics Road, 2109 Logi City'
+    company_type: 'Logistics Technology'
+    admin_comment: 'Verify supply chain management tools.'
+
+- model: companies.Company
+  pk: 38
+  fields:
+    name: 'AgriTech'
+    description: 'AgriTech specializes in agricultural technology solutions.'
+    phone: '+47 34353637'
+    website: 'agritech.com'
+    payment_mail: payments@agritech.com
+    address: '3232 Agri Lane, 1098 Agri City'
+    company_type: 'Agricultural Technology'
+    admin_comment: 'Check crop monitoring systems.'
+
+- model: companies.Company
+  pk: 39
+  fields:
+    name: 'CleanTech Solutions'
+    description: 'CleanTech Solutions develops clean energy technology solutions.'
+    phone: '+47 35363738'
+    website: 'cleantechsolutions.com'
+    payment_mail: finance@cleantechsolutions.com
+    address: '3333 Clean Street, 9876 Clean City'
+    company_type: 'Clean Energy Technology'
+    admin_comment: 'Ensure compliance with environmental standards.'
+
+- model: companies.Company
+  pk: 40
+  fields:
+    name: 'SmartHome Solutions'
+    description: 'SmartHome Solutions offers smart home technology solutions.'
+    phone: '+47 36373839'
+    website: 'smarthomesolutions.com'
+    payment_mail: accounts@smarthomesolutions.com
+    address: '3434 Smart Lane, 8765 Smart City'
+    company_type: 'Home Automation Technology'
+    admin_comment: 'Verify device integration.'
+
+- model: companies.Company
+  pk: 41
+  fields:
+    name: 'CyberSecure Solutions'
+    description: 'CyberSecure Solutions provides cybersecurity technology solutions.'
+    phone: '+47 37383940'
+    website: 'cybersecuresolutions.com'
+    payment_mail: billing@cybersecuresolutions.com
+    address: '3535 Cyber Road, 7654 Cyber City'
+    company_type: 'Cybersecurity Technology'
+    admin_comment: 'Check security protocols.'
+
+- model: companies.Company
+  pk: 42
+  fields:
+    name: 'EcoTech'
+    description: 'EcoTech offers environmental technology solutions.'
+    phone: '+47 38394041'
+    website: 'ecotech.com'
+    payment_mail: payments@ecotech.com
+    address: '3636 Eco Street, 6543 Eco City'
+    company_type: 'Environmental Technology'
+    admin_comment: 'Review sustainability reports.'
+
+- model: companies.Company
+  pk: 43
+  fields:
+    name: 'DataTech'
+    description: 'DataTech provides data technology solutions.'
+    phone: '+47 39404142'
+    website: 'datatech.com'
+    payment_mail: finance@datatech.com
+    address: '3737 Data Lane, 5432 Data City'
+    company_type: 'Data Technology'
+    admin_comment: 'Verify data accuracy.'
+
+- model: companies.Company
+  pk: 44
+  fields:
+    name: 'CloudTech'
+    description: 'CloudTech offers cloud technology solutions.'
+    phone: '+47 40414243'
+    website: 'cloudtech.com'
+    payment_mail: accounts@cloudtech.com
+    address: '3838 Cloud Road, 4321 Cloud City'
+    company_type: 'Cloud Technology'
+    admin_comment: 'Check server uptime.'
