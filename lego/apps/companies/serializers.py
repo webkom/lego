@@ -149,7 +149,6 @@ class CompanyAdminListSerializer(BasisModelSerializer):
             "name",
             "semester_statuses",
             "student_contacts",
-            "admin_comment",
             "active",
         )
 
@@ -236,7 +235,6 @@ class CompanyAdminDetailSerializer(BasisModelSerializer):
             "content_target",
             "semester_statuses",
             "active",
-            "admin_comment",
             "logo",
             "files",
             "company_contacts",
