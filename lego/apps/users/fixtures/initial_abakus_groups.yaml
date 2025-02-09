@@ -31,11 +31,12 @@
     type: annen
     text: ''
     permissions: '["/sudo/admin/meetings/create/", "/sudo/admin/meetinginvitations/create/",
-      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/", "/sudo/admin/comments/create/", "/sudo/admin/meetings/list/"]'
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/", "/sudo/admin/comments/create/",
+      "/sudo/admin/meetings/list/"]'
     show_badge: true
     active: true
     lft: 1
-    rght: 28
+    rght: 90
     tree_id: 2
     level: 0
 - model: users.abakusgroup
@@ -54,7 +55,7 @@
     show_badge: true
     active: true
     lft: 2
-    rght: 25
+    rght: 31
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -151,6 +152,78 @@
   pk: 9
   fields:
     deleted: false
+    name: Hovedstyret
+    description: ''
+    contact_email: hs@abakus.no
+    parent: 3
+    logo: abakus_hs.png
+    type: styre
+    text: ''
+    permissions: '["/sudo/admin/"]'
+    show_badge: true
+    active: true
+    lft: 13
+    rght: 18
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 10
+  fields:
+    deleted: false
+    name: Abakus-leder
+    description: ''
+    contact_email: ''
+    parent: 9
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 14
+    rght: 15
+    tree_id: 2
+    level: 3
+- model: users.abakusgroup
+  pk: 11
+  fields:
+    deleted: false
+    name: Abakus-nestleder
+    description: ''
+    contact_email: ''
+    parent: 9
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 16
+    rght: 17
+    tree_id: 2
+    level: 3
+- model: users.abakusgroup
+  pk: 12
+  fields:
+    deleted: false
+    name: Komiteledere
+    description: ''
+    contact_email: ''
+    parent: 3
+    logo: null
+    type: annen
+    text: ''
+    permissions: '["/sudo/admin/"]'
+    show_badge: true
+    active: true
+    lft: 19
+    rght: 20
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 13
+  fields:
+    deleted: false
     name: Koskom
     description: ''
     contact_email: ''
@@ -161,12 +234,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 13
-    rght: 14
+    lft: 21
+    rght: 22
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 10
+  pk: 14
   fields:
     deleted: false
     name: LaBamba
@@ -179,12 +252,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 15
-    rght: 16
+    lft: 23
+    rght: 24
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 11
+  pk: 15
   fields:
     deleted: false
     name: PR
@@ -197,12 +270,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 17
-    rght: 18
+    lft: 25
+    rght: 26
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 12
+  pk: 16
   fields:
     deleted: false
     name: readme
@@ -215,12 +288,12 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 19
-    rght: 20
+    lft: 27
+    rght: 28
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 13
+  pk: 17
   fields:
     deleted: false
     name: Webkom
@@ -230,33 +303,87 @@
     logo: abakus_webkom.png
     type: komite
     text: hei
-    permissions: '["/sudo/"]'
-    show_badge: true
-    active: true
-    lft: 21
-    rght: 22
-    tree_id: 2
-    level: 2
-- model: users.abakusgroup
-  pk: 14
-  fields:
-    deleted: false
-    name: Hovedstyret
-    description: ''
-    contact_email: hs@abakus.no
-    parent: 3
-    logo: abakus_hs.png
-    type: annen
-    text: ''
     permissions: '["/sudo/admin/"]'
     show_badge: true
     active: true
-    lft: 23
-    rght: 24
+    lft: 29
+    rght: 30
     tree_id: 2
     level: 2
 - model: users.abakusgroup
-  pk: 15
+  pk: 18
+  fields:
+    deleted: false
+    name: Baksida
+    description: ''
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 32
+    rght: 37
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 19
+  fields:
+    deleted: false
+    name: Baksida-Komite
+    description: ''
+    contact_email: ''
+    parent: 18
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 33
+    rght: 34
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 20
+  fields:
+    deleted: false
+    name: Baksida-Revy
+    description: ''
+    contact_email: ''
+    parent: 18
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 35
+    rght: 36
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 21
+  fields:
+    deleted: false
+    name: Formaterte
+    description: ''
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 38
+    rght: 39
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 22
   fields:
     deleted: false
     name: Interessegrupper
@@ -269,12 +396,552 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 26
-    rght: 27
+    lft: 40
+    rght: 41
     tree_id: 2
     level: 1
 - model: users.abakusgroup
-  pk: 16
+  pk: 23
+  fields:
+    deleted: false
+    name: Kasserere
+    description: Gruppe for alle økonomiansvarlige i Abakus
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 42
+    rght: 43
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 24
+  fields:
+    deleted: false
+    name: Klassetillitsvalgt
+    description: Gruppe for alle klassetillitsvalgte i Abakus
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 44
+    rght: 45
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 25
+  fields:
+    deleted: false
+    name: Nestledere
+    description: Gruppe for alle nestledere i komiteer og revy
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 46
+    rght: 47
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 26
+  fields:
+    deleted: false
+    name: Revy
+    description: ''
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 48
+    rght: 71
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 27
+  fields:
+    deleted: false
+    name: Band
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 49
+    rght: 50
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 28
+  fields:
+    deleted: false
+    name: Dans
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 51
+    rght: 52
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 29
+  fields:
+    deleted: false
+    name: Kor
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 53
+    rght: 54
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 30
+  fields:
+    deleted: false
+    name: Kostyme
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 55
+    rght: 56
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 31
+  fields:
+    deleted: false
+    name: PR-revy
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 57
+    rght: 58
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 32
+  fields:
+    deleted: false
+    name: Regi
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 59
+    rght: 60
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 33
+  fields:
+    deleted: false
+    name: RevyStyret
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: styre
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 61
+    rght: 62
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 34
+  fields:
+    deleted: false
+    name: Scene
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 63
+    rght: 64
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 35
+  fields:
+    deleted: false
+    name: Skuespill
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 65
+    rght: 66
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 36
+  fields:
+    deleted: false
+    name: Sosial
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 67
+    rght: 68
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 37
+  fields:
+    deleted: false
+    name: Teknikk
+    description: ''
+    contact_email: ''
+    parent: 26
+    logo: null
+    type: revy
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 69
+    rght: 70
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 38
+  fields:
+    deleted: false
+    name: Undergrupper
+    description: ''
+    contact_email: ''
+    parent: 2
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 72
+    rght: 89
+    tree_id: 2
+    level: 1
+- model: users.abakusgroup
+  pk: 39
+  fields:
+    deleted: false
+    name: 1. Klasse Taskforce
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 73
+    rght: 74
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 40
+  fields:
+    deleted: false
+    name: Ababand
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 75
+    rght: 76
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 41
+  fields:
+    deleted: false
+    name: Abax
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 77
+    rght: 78
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 42
+  fields:
+    deleted: false
+    name: AbelLAN
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 79
+    rght: 80
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 43
+  fields:
+    deleted: false
+    name: AVF
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 81
+    rght: 82
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 44
+  fields:
+    deleted: false
+    name: DatakamerateneFKG
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 83
+    rght: 84
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 45
+  fields:
+    deleted: false
+    name: DatakamerateneFKJ
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 85
+    rght: 86
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 46
+  fields:
+    deleted: false
+    name: Koseprogg
+    description: ''
+    contact_email: ''
+    parent: 38
+    logo: null
+    type: under
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 87
+    rght: 88
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 47
+  fields:
+    deleted: false
+    name: Fondsstyret
+    description: ''
+    contact_email: ''
+    parent: null
+    logo: null
+    type: styre
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 1
+    rght: 2
+    tree_id: 3
+    level: 0
+- model: users.abakusgroup
+  pk: 48
+  fields:
+    deleted: false
+    name: Ordenen
+    description: ''
+    contact_email: ''
+    parent: null
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 1
+    rght: 10
+    tree_id: 4
+    level: 0
+- model: users.abakusgroup
+  pk: 49
+  fields:
+    deleted: false
+    name: Abakusorden
+    description: ''
+    contact_email: ''
+    parent: 48
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 2
+    rght: 3
+    tree_id: 4
+    level: 1
+- model: users.abakusgroup
+  pk: 50
+  fields:
+    deleted: false
+    name: Kantzelliet
+    description: ''
+    contact_email: ''
+    parent: 48
+    logo: null
+    type: ordenen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 4
+    rght: 5
+    tree_id: 4
+    level: 1
+- model: users.abakusgroup
+  pk: 51
+  fields:
+    deleted: false
+    name: Ordensmedlemmer
+    description: ''
+    contact_email: ''
+    parent: 48
+    logo: null
+    type: ordenen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 6
+    rght: 7
+    tree_id: 4
+    level: 1
+- model: users.abakusgroup
+  pk: 52
+  fields:
+    deleted: false
+    name: Ordenspromosjon
+    description: ''
+    contact_email: ''
+    parent: 48
+    logo: null
+    type: annen
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 8
+    rght: 9
+    tree_id: 4
+    level: 1
+- model: users.abakusgroup
+  pk: 53
   fields:
     deleted: false
     name: Students
@@ -289,16 +956,16 @@
     active: true
     lft: 1
     rght: 26
-    tree_id: 3
+    tree_id: 5
     level: 0
 - model: users.abakusgroup
-  pk: 17
+  pk: 54
   fields:
     deleted: false
     name: Datateknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 53
     logo: null
     type: annen
     text: ''
@@ -307,16 +974,16 @@
     active: true
     lft: 2
     rght: 13
-    tree_id: 3
+    tree_id: 5
     level: 1
 - model: users.abakusgroup
-  pk: 18
+  pk: 55
   fields:
     deleted: false
     name: 1. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 17
+    parent: 54
     logo: null
     type: klasse
     text: ''
@@ -325,16 +992,16 @@
     active: true
     lft: 3
     rght: 4
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 19
+  pk: 56
   fields:
     deleted: false
     name: 2. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 17
+    parent: 54
     logo: null
     type: klasse
     text: ''
@@ -343,16 +1010,16 @@
     active: true
     lft: 5
     rght: 6
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 20
+  pk: 57
   fields:
     deleted: false
     name: 3. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 17
+    parent: 54
     logo: null
     type: klasse
     text: ''
@@ -361,16 +1028,16 @@
     active: true
     lft: 7
     rght: 8
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 21
+  pk: 58
   fields:
     deleted: false
     name: 4. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 17
+    parent: 54
     logo: null
     type: klasse
     text: ''
@@ -379,16 +1046,16 @@
     active: true
     lft: 9
     rght: 10
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 22
+  pk: 59
   fields:
     deleted: false
     name: 5. klasse Datateknologi
     description: ''
     contact_email: ''
-    parent: 17
+    parent: 54
     logo: null
     type: klasse
     text: ''
@@ -397,16 +1064,16 @@
     active: true
     lft: 11
     rght: 12
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 23
+  pk: 60
   fields:
     deleted: false
     name: Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 16
+    parent: 53
     logo: null
     type: annen
     text: ''
@@ -415,16 +1082,16 @@
     active: true
     lft: 14
     rght: 25
-    tree_id: 3
+    tree_id: 5
     level: 1
 - model: users.abakusgroup
-  pk: 24
+  pk: 61
   fields:
     deleted: false
     name: 1. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 23
+    parent: 60
     logo: null
     type: klasse
     text: ''
@@ -433,16 +1100,16 @@
     active: true
     lft: 15
     rght: 16
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 25
+  pk: 62
   fields:
     deleted: false
     name: 2. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 23
+    parent: 60
     logo: null
     type: klasse
     text: ''
@@ -451,16 +1118,16 @@
     active: true
     lft: 17
     rght: 18
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 26
+  pk: 63
   fields:
     deleted: false
     name: 3. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 23
+    parent: 60
     logo: null
     type: klasse
     text: ''
@@ -469,16 +1136,16 @@
     active: true
     lft: 19
     rght: 20
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 27
+  pk: 64
   fields:
     deleted: false
     name: 4. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 23
+    parent: 60
     logo: null
     type: klasse
     text: ''
@@ -487,16 +1154,16 @@
     active: true
     lft: 21
     rght: 22
-    tree_id: 3
+    tree_id: 5
     level: 2
 - model: users.abakusgroup
-  pk: 28
+  pk: 65
   fields:
     deleted: false
     name: 5. klasse Kommunikasjonsteknologi
     description: ''
     contact_email: ''
-    parent: 23
+    parent: 60
     logo: null
     type: klasse
     text: ''
@@ -505,5 +1172,5 @@
     active: true
     lft: 23
     rght: 24
-    tree_id: 3
+    tree_id: 5
     level: 2

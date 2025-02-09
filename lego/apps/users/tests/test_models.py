@@ -79,10 +79,14 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         abakus = AbakusGroup.objects.get(name="Abakus")
         users = AbakusGroup.objects.get(name="Users")
         students = AbakusGroup.objects.get(name="Students")
+        ordained = AbakusGroup.objects.get(name="Ordenen")
+        fund = AbakusGroup.objects.get(name="Fondsstyret")
         union = set(
             list(abakus.get_descendants(include_self=True))
             + list(users.get_descendants(include_self=True))
             + list(students.get_descendants(include_self=True))
+            + list(ordained.get_descendants(include_self=True))
+            + list(fund.get_descendants(include_self=True))
         )
         self.assertEqual(set(AbakusGroup.objects.all()), union)
 

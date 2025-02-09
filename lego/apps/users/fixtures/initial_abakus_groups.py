@@ -1,4 +1,12 @@
-from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_GRADE
+from lego.apps.users.constants import (
+    GROUP_BOARD,
+    GROUP_COMMITTEE,
+    GROUP_GRADE,
+    GROUP_ORDAINED,
+    GROUP_OTHER,
+    GROUP_REVUE,
+    GROUP_SUB,
+)
 from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 
@@ -87,6 +95,25 @@ initial_tree = {
                         },
                         {},
                     ],
+                    "Hovedstyret": [
+                        {
+                            "type": GROUP_BOARD,
+                            "logo_id": "abakus_hs.png",
+                            "permissions": ["/sudo/admin/"],
+                            "contact_email": "hs@abakus.no",
+                        },
+                        {
+                            "Abakus-leder": [{}, {}],
+                            "Abakus-nestleder": [{}, {}],
+                        },
+                    ],
+                    "Komiteledere": [
+                        {
+                            "type": GROUP_OTHER,
+                            "permissions": ["/sudo/admin/"],
+                        },
+                        {},
+                    ],
                     "Koskom": [
                         {"type": GROUP_COMMITTEE, "logo_id": "abakus_koskom.png"},
                         {},
@@ -104,25 +131,139 @@ initial_tree = {
                         {
                             "type": GROUP_COMMITTEE,
                             "logo_id": "abakus_webkom.png",
-                            "permissions": ["/sudo/"],
-                            "text": "hei",
-                        },
-                        {},
-                    ],
-                    "Hovedstyret": [
-                        {
-                            "logo_id": "abakus_hs.png",
                             "permissions": ["/sudo/admin/"],
-                            "contact_email": "hs@abakus.no",
+                            "text": "hei",
                         },
                         {},
                     ],
                 },
             ],
+            "Baksida": [
+                {},
+                {
+                    "Baksida-Komite": [{}, {}],
+                    "Baksida-Revy": [{}, {}],
+                },
+            ],
+            "Formaterte": [
+                {},
+                {},
+            ],
             "Interessegrupper": [
                 {"description": "Super-gruppe for alle interessegrupper i Abakus"},
                 {},
             ],
+            "Kasserere": [
+                {"description": "Gruppe for alle økonomiansvarlige i Abakus"},
+                {},
+            ],
+            "Klassetillitsvalgt": [
+                {"description": "Gruppe for alle klassetillitsvalgte i Abakus"},
+                {},
+            ],
+            "Nestledere": [
+                {"description": "Gruppe for alle nestledere i komiteer og revy"},
+                {},
+            ],
+            "Revy": [
+                {},
+                {
+                    "Band": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Dans": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Kor": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Kostyme": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "PR-revy": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Regi": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "RevyStyret": [
+                        {"type": GROUP_BOARD},
+                        {},
+                    ],
+                    "Scene": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Skuespill": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Sosial": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                    "Teknikk": [
+                        {"type": GROUP_REVUE},
+                        {},
+                    ],
+                },
+            ],
+            "Undergrupper": [
+                {},
+                {
+                    "1. Klasse Taskforce": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "Ababand": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "Abax": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "AbelLAN": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "AVF": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "DatakamerateneFKG": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "DatakamerateneFKJ": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                    "Koseprogg": [
+                        {"type": GROUP_SUB},
+                        {},
+                    ],
+                },
+            ],
+        },
+    ],
+    "Fondsstyret": [
+        {"type": GROUP_BOARD},
+        {},
+    ],
+    "Ordenen": [
+        {},
+        {
+            "Abakusorden": [{}, {}],
+            "Kantzelliet": [{"type": GROUP_ORDAINED}, {}],
+            "Ordensmedlemmer": [{"type": GROUP_ORDAINED}, {}],
+            "Ordenspromosjon": [{}, {}],
         },
     ],
     "Students": [
