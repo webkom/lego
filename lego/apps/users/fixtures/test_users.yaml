@@ -114,3 +114,12 @@
     last_name: user12
     email: test12@user.com
     crypt_password_hash: ''
+
+- model: users.User
+  pk: 13 
+  fields:
+    username: abakulingutenklasse
+    gender: male
+    first_name: abakuling 
+    last_name: utenklasse
+    email: abakulingutenklasse@abakus.no

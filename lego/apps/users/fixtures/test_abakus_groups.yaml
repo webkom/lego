@@ -24,6 +24,25 @@
   pk: 2
   fields:
     deleted: false
+    name: SchoolGradeTest
+    description: ''
+    contact_email: ''
+    parent: null
+    logo: null
+    type: klasse
+    text: ''
+    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]'
+    show_badge: true
+    active: true
+    lft: 1
+    rght: 2
+    tree_id: 2
+    level: 0
+- model: users.abakusgroup
+  pk: 3
+  fields:
+    deleted: false
     name: AbakusGroupAdminTest
     description: ''
     contact_email: ''
@@ -37,10 +56,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 2
+    tree_id: 3
     level: 0
 - model: users.abakusgroup
-  pk: 3
+  pk: 4
   fields:
     deleted: false
     name: TestGroup
@@ -55,10 +74,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 3
+    tree_id: 4
     level: 0
 - model: users.abakusgroup
-  pk: 4
+  pk: 5
   fields:
     deleted: false
     name: EventAdminTest
@@ -74,10 +93,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 4
+    tree_id: 5
     level: 0
 - model: users.abakusgroup
-  pk: 5
+  pk: 6
   fields:
     deleted: false
     name: EventTypeLimitTest
@@ -92,10 +111,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 5
+    tree_id: 6
     level: 0
 - model: users.abakusgroup
-  pk: 6
+  pk: 7
   fields:
     deleted: false
     name: CommentTest
@@ -111,10 +130,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 6
+    tree_id: 7
     level: 0
 - model: users.abakusgroup
-  pk: 7
+  pk: 8
   fields:
     deleted: false
     name: APIApplicationTest
@@ -129,10 +148,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 7
+    tree_id: 8
     level: 0
 - model: users.abakusgroup
-  pk: 8
+  pk: 9
   fields:
     deleted: false
     name: QuoteAdminTest
@@ -149,10 +168,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 8
+    tree_id: 9
     level: 0
 - model: users.abakusgroup
-  pk: 9
+  pk: 10
   fields:
     deleted: false
     name: PodcastAdminTest
@@ -167,10 +186,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 9
+    tree_id: 10
     level: 0
 - model: users.abakusgroup
-  pk: 10
+  pk: 11
   fields:
     deleted: false
     name: PollAdminTest
@@ -185,10 +204,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 10
+    tree_id: 11
     level: 0
 - model: users.abakusgroup
-  pk: 11
+  pk: 12
   fields:
     deleted: false
     name: ReactionTest
@@ -203,10 +222,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 11
+    tree_id: 12
     level: 0
 - model: users.abakusgroup
-  pk: 12
+  pk: 13
   fields:
     deleted: false
     name: ReactionAdminTest
@@ -221,10 +240,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 12
+    tree_id: 13
     level: 0
 - model: users.abakusgroup
-  pk: 13
+  pk: 14
   fields:
     deleted: false
     name: InterestGroupAdminTest
@@ -240,10 +259,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 13
+    tree_id: 14
     level: 0
 - model: users.abakusgroup
-  pk: 16
+  pk: 17
   fields:
     deleted: false
     name: GalleryAdminTest
@@ -258,10 +277,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 14
+    tree_id: 15
     level: 0
 - model: users.abakusgroup
-  pk: 17
+  pk: 18
   fields:
     deleted: false
     name: GalleryTest
@@ -276,10 +295,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 15
+    tree_id: 16
     level: 0
 - model: users.abakusgroup
-  pk: 18
+  pk: 19
   fields:
     deleted: false
     name: EmailAdminTest
@@ -294,10 +313,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 16
+    tree_id: 17
     level: 0
 - model: users.abakusgroup
-  pk: 19
+  pk: 20
   fields:
     deleted: false
     name: Users
@@ -312,10 +331,10 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 17
+    tree_id: 18
     level: 0
 - model: users.abakusgroup
-  pk: 20
+  pk: 21
   fields:
     deleted: false
     name: Abakus
@@ -325,22 +344,22 @@
     logo: null
     type: annen
     text: ''
-    permissions: '["/sudo/admin/meetings/create/", "/sudo/admin/meetinginvitations/create/",
+    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
       "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]'
     show_badge: true
     active: true
     lft: 1
     rght: 22
-    tree_id: 18
+    tree_id: 19
     level: 0
 - model: users.abakusgroup
-  pk: 21
+  pk: 22
   fields:
     deleted: false
     name: Abakom
     description: Medlemmer av Abakom
     contact_email: ''
-    parent: 20
+    parent: 21
     logo: null
     type: annen
     text: ''
@@ -350,16 +369,16 @@
     active: true
     lft: 2
     rght: 11
-    tree_id: 18
+    tree_id: 19
     level: 1
 - model: users.abakusgroup
-  pk: 22
+  pk: 23
   fields:
     deleted: false
     name: Bedkom
     description: ''
     contact_email: ''
-    parent: 21
+    parent: 22
     logo: null
     type: komite
     text: ''
@@ -369,16 +388,16 @@
     active: true
     lft: 3
     rght: 4
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 23
+  pk: 24
   fields:
     deleted: false
     name: Fagkom
     description: ''
     contact_email: ''
-    parent: 21
+    parent: 22
     logo: null
     type: komite
     text: ''
@@ -387,16 +406,16 @@
     active: true
     lft: 5
     rght: 6
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 24
+  pk: 25
   fields:
     deleted: false
     name: PR
     description: ''
     contact_email: ''
-    parent: 21
+    parent: 22
     logo: null
     type: komite
     text: ''
@@ -405,16 +424,16 @@
     active: true
     lft: 7
     rght: 8
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 25
+  pk: 26
   fields:
     deleted: false
     name: Webkom
     description: ''
     contact_email: ''
-    parent: 21
+    parent: 22
     logo: null
     type: komite
     text: ''
@@ -423,16 +442,16 @@
     active: true
     lft: 9
     rght: 10
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 14
+  pk: 15
   fields:
     deleted: false
     name: Interessegrupper
     description: ''
     contact_email: ''
-    parent: 20
+    parent: 21
     logo: null
     type: annen
     text: ''
@@ -441,16 +460,16 @@
     active: true
     lft: 12
     rght: 21
-    tree_id: 18
+    tree_id: 19
     level: 1
 - model: users.abakusgroup
-  pk: 15
+  pk: 16
   fields:
     deleted: false
     name: TestInterestGroup
     description: ''
     contact_email: ''
-    parent: 14
+    parent: 15
     logo: null
     type: annen
     text: ''
@@ -459,16 +478,16 @@
     active: true
     lft: 13
     rght: 14
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 26
+  pk: 27
   fields:
     deleted: false
     name: AbaBrygg
     description: Interessegruppe for AbaBrygg
     contact_email: ''
-    parent: 14
+    parent: 15
     logo: null
     type: interesse
     text: 'Hender det seg at du tar en pils? Er lommeboken ofte tom, kanskje på grunn
@@ -491,16 +510,16 @@
     active: true
     lft: 15
     rght: 16
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 27
+  pk: 28
   fields:
     deleted: false
     name: abaGolf
     description: Interessegruppe for abaGolf
     contact_email: ''
-    parent: 14
+    parent: 15
     logo: null
     type: interesse
     text: 'Hei, er du en person som liker å klaske baller på grønne baner? Da er Abakus
@@ -520,16 +539,16 @@
     active: true
     lft: 17
     rght: 18
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 28
+  pk: 29
   fields:
     deleted: false
     name: Turgruppa
     description: Interessegruppe for Turgruppa
     contact_email: ''
-    parent: 14
+    parent: 15
     logo: null
     type: interesse
     text: "Abakus sin turgruppe er for alle som elsker, liker eller har sett norsk
@@ -543,10 +562,10 @@
     active: true
     lft: 19
     rght: 20
-    tree_id: 18
+    tree_id: 19
     level: 2
 - model: users.abakusgroup
-  pk: 29
+  pk: 30
   fields:
     deleted: false
     name: Students
@@ -561,5 +580,5 @@
     active: true
     lft: 1
     rght: 2
-    tree_id: 19
+    tree_id: 20
     level: 0

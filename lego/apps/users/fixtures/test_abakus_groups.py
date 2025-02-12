@@ -1,4 +1,4 @@
-from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST
+from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST, GROUP_GRADE
 from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 
@@ -12,6 +12,18 @@ test_tree = {
                 "/sudo/admin/users/edit/",
                 "/sudo/admin/users/delete/",
             ]
+        },
+        {},
+    ],
+    "SchoolGradeTest": [
+        {
+            "type": GROUP_GRADE,
+            "permissions": [
+                "/sudo/admin/meetings/create",
+                "/sudo/admin/meetinginvitations/create",
+                "/sudo/admin/registrations/create/",
+                "/sudo/admin/events/payment/",
+            ],
         },
         {},
     ],

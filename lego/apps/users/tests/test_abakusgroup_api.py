@@ -255,13 +255,18 @@ class InterestGroupAPITestCase(BaseAPITestCase):
     def setUp(self):
         self.abakus = AbakusGroup.objects.get(name="Abakus")
         self.interest_group = AbakusGroup.objects.get(name="AbaBrygg")
+        self.grade_group = AbakusGroup.objects.get(name="SchoolGradeTest")
 
         self.leader = User.objects.get(username="test2")
         self.abakule = User.objects.get(username="abakule")
         self.abakommer = User.objects.get(username="abakommer")
+        self.abakulingutenklasse = User.objects.get(username="abakulingutenklasse")
 
         self.abakus.add_user(self.abakule)
         self.abakus.add_user(self.leader)
+        self.grade_group.add_user(self.abakule)
+        self.grade_group.add_user(self.leader)
+        self.grade_group.add_user(self.abakommer)
 
         self.interest_group.add_user(self.leader, role="leader")
 
@@ -315,8 +320,17 @@ class InterestGroupAPITestCase(BaseAPITestCase):
 
     def test_leader_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.leader)
+        print(_get_membership_url(self.interest_group.pk))
         response = self.client.post(
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakommer.pk, "role": "member"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_prevent_users_without_grade_cannot_join_interestgroup(self):
+        self.client.force_authenticate(user=self.abakulingutenklasse)
+        response = self.client.post(
+            _get_membership_url(self.interest_group.pk),
+            {"user": self.abakulingutenklasse.pk, "role": "member"},
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
