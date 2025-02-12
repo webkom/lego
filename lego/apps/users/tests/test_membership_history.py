@@ -1,7 +1,10 @@
+from datetime import timedelta
+
+from django.utils import timezone
 from rest_framework import status
 
 from lego.apps.users.constants import GROUP_OTHER
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, MembershipHistory, User
 from lego.utils.test_utils import BaseAPITestCase
 
 
@@ -42,3 +45,55 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         response = self.client.get(self.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(0, len(response.json()["results"]))
+
+    def test_delete_history(self):
+        user = User.objects.get(username="test1")
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+
+        MembershipHistory.objects.create(
+            user=user,
+            abakus_group=group,
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(days=2),
+        )
+        MembershipHistory.objects.create(
+            user=user,
+            abakus_group=group,
+            start_date=timezone.now() + timedelta(days=4),
+            end_date=timezone.now() + timedelta(days=6),
+        )
+
+        self.client.force_authenticate(user)
+        request_body = {"group_name": "AbaBrygg"}
+        response = self.client.delete(self.url, request_body)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("AbaBrygg got deleted", response.json()["result"])
+        self.assertFalse(
+            MembershipHistory.objects.filter(user=user, abakus_group=group).exists()
+        )
+
+    def test_delete_history_empty_query(self):
+        user = User.objects.get(username="test1")
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+
+        MembershipHistory.objects.create(
+            user=user,
+            abakus_group=group,
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(days=2),
+        )
+        MembershipHistory.objects.create(
+            user=user,
+            abakus_group=group,
+            start_date=timezone.now() + timedelta(days=4),
+            end_date=timezone.now() + timedelta(days=6),
+        )
+
+        self.client.force_authenticate(user)
+        request_body = {"group_name": ""}
+        response = self.client.delete(self.url, request_body)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("Bad Request", response.json()["result"])
+        self.assertTrue(
+            MembershipHistory.objects.filter(user=user, abakus_group=group).exists()
+        )

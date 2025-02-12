@@ -1,9 +1,10 @@
-from rest_framework import mixins, permissions, viewsets
+from django.http import HttpResponse, JsonResponse
+from rest_framework import mixins, permissions, status, viewsets
 
 from lego.apps.permissions.constants import EDIT
-from lego.apps.users.constants import PUBLIC_GROUPS
+from lego.apps.users.constants import GROUP_INTEREST, PUBLIC_GROUPS
 from lego.apps.users.filters import MembershipHistoryFilterSet
-from lego.apps.users.models import Membership, MembershipHistory
+from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory
 from lego.apps.users.serializers.membership_history import MembershipHistorySerializer
 
 
@@ -27,3 +28,24 @@ class MembershipHistoryViewSet(
             return queryset.filter(abakus_group__type__in=PUBLIC_GROUPS)
 
         return queryset
+
+    def delete(self, request):
+        try:
+            group = AbakusGroup.objects.get(name=request.data["group_name"])
+            user_membership_history = MembershipHistory.objects.filter(
+                user__id=request.user.id, abakus_group__id=group.id
+            )
+
+            if group.type == GROUP_INTEREST and len(user_membership_history) != 0:
+                name = user_membership_history[0].abakus_group.name
+                user_membership_history.delete()
+                return JsonResponse(
+                    {"result": f"{name} got deleted"}, status=status.HTTP_200_OK
+                )
+            return JsonResponse(
+                {"result": "Nothing to delete"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except:
+            return JsonResponse(
+                {"result": "Bad Request"}, status=status.HTTP_400_BAD_REQUEST
+            )
