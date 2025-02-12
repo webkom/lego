@@ -24,6 +24,8 @@ AchievementCollection = dict[str, Achievement]
 EVENT_IDENTIFIER = "event_count"
 EVENT_RANK_IDENTIFIER = "event_rank"
 EVENT_PRICE_IDENTIFIER = "event_price"
+EVENT_RULES_IDENTIFIER = "event_rules"
+KEYPRESS_ORDER_IDENTIFIER = "keypress_order"
 QUOTE_IDENTIFIER = "quote_count"
 MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
@@ -121,6 +123,14 @@ MEETING_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+EVENT_RULES: AchievementCollection = {
+    "event_rules": {
+        "identifier": EVENT_RULES_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+}
+
 POLL_ACHIEVEMENTS: AchievementCollection = {
     "poll_5": {
         "identifier": POLL_IDENTIFIER,
@@ -170,14 +180,23 @@ PENALTY_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+KEYPRESS_ORDER: AchievementCollection = {
+    "keypress_order": {
+        "identifier": KEYPRESS_ORDER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+}
 
-HIDDEN_ACHIEVEMENTS = {**QUOTE_ACHIEVEMENTS, **MEETING_ACHIEVEMENTS}
+
+HIDDEN_ACHIEVEMENTS = {**QUOTE_ACHIEVEMENTS, **MEETING_ACHIEVEMENTS, **KEYPRESS_ORDER}
 
 
 ACHIEVEMENTS = {
     **EVENT_ACHIEVEMENTS,
     **EVENT_RANK_ACHIEVEMENTS,
     **EVENT_PRICE_ACHIEVEMENTS,
+    **EVENT_RULES,
     **POLL_ACHIEVEMENTS,
     **HIDDEN_ACHIEVEMENTS,
     **PENALTY_ACHIEVEMENTS,
