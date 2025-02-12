@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                         ("itdagene", "itdagene"),
                         ("labamba_sponsor", "labamba_sponsor"),
                         ("social_media", "social_media"),
+                        ("thursday_event", "thursday_event"),
                     ],
                     max_length=64,
                 ),
