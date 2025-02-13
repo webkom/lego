@@ -48,7 +48,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
 
     def test_delete_history(self):
         user = User.objects.get(username="test1")
-        group = AbakusGroup.objects.get(name="AbaBrygg")
+        group = AbakusGroup.objects.get(id=26)
 
         MembershipHistory.objects.create(
             user=user,
@@ -64,7 +64,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         )
 
         self.client.force_authenticate(user)
-        request_body = {"group_name": "AbaBrygg"}
+        request_body = {"group_id": 26}
         response = self.client.delete(self.url, request_body)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("AbaBrygg got deleted", response.json()["result"])
@@ -74,7 +74,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
 
     def test_delete_history_empty_query(self):
         user = User.objects.get(username="test1")
-        group = AbakusGroup.objects.get(name="AbaBrygg")
+        group = AbakusGroup.objects.get(id=26)
 
         MembershipHistory.objects.create(
             user=user,
@@ -90,7 +90,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         )
 
         self.client.force_authenticate(user)
-        request_body = {"group_name": ""}
+        request_body = {"group_id": 0}
         response = self.client.delete(self.url, request_body)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual("Bad Request", response.json()["result"])

@@ -6,6 +6,7 @@ from lego.apps.users.constants import (
     GROUP_OTHER,
     GROUP_REVUE,
     GROUP_SUB,
+    GROUP_INTEREST,
 )
 from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
@@ -151,7 +152,26 @@ initial_tree = {
             ],
             "Interessegrupper": [
                 {"description": "Super-gruppe for alle interessegrupper i Abakus"},
-                {},
+                {
+                    "AbaKatter": [
+                        {
+                            "type": GROUP_INTEREST, "logo_id": "abakus_koskom.png"
+                        },
+                        {},
+                    ],
+                    "AbaCava": [
+                        {
+                            "type": GROUP_INTEREST, "logo_id": "abakus_koskom.png"
+                        },
+                        {},
+                    ],
+                    "FormelAba": [
+                        {
+                            "type": GROUP_INTEREST, "logo_id": "abakus_koskom.png"
+                        },
+                        {},
+                    ],
+                },
             ],
             "Kasserere": [
                 {"description": "Gruppe for alle økonomiansvarlige i Abakus"},

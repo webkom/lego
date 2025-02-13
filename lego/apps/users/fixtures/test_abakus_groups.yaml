@@ -325,7 +325,7 @@
     logo: null
     type: annen
     text: ''
-    permissions: '["/sudo/admin/meetings/create/", "/sudo/admin/meetinginvitations/create/",
+    permissions: '["/sudo/admin/meetings/create", "/sudo/admin/meetinginvitations/create",
       "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]'
     show_badge: true
     active: true
