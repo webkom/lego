@@ -1,5 +1,5 @@
-from django.http import HttpResponse, JsonResponse
 from rest_framework import mixins, permissions, status, viewsets
+from rest_framework.response import Response
 
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users.constants import GROUP_INTEREST, PUBLIC_GROUPS
@@ -39,13 +39,13 @@ class MembershipHistoryViewSet(
             if group.type == GROUP_INTEREST and len(user_membership_history) != 0:
                 name = user_membership_history[0].abakus_group.name
                 user_membership_history.delete()
-                return JsonResponse(
+                return Response(
                     {"result": f"{name} got deleted"}, status=status.HTTP_200_OK
                 )
-            return JsonResponse(
+            return Response(
                 {"result": "Nothing to delete"}, status=status.HTTP_400_BAD_REQUEST
             )
         except:
-            return JsonResponse(
+            return Response(
                 {"result": "Bad Request"}, status=status.HTTP_400_BAD_REQUEST
             )
