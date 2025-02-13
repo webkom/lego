@@ -139,7 +139,7 @@ def check_rank_promotions():
                         identifier=rank_data["identifier"],
                         level=rank_data["level"],
                         user=user,
-                    ).delete()
+                    ).delete(force=True)
 
 
 def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
