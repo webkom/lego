@@ -123,7 +123,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 settings.STATIC_ROOT, "assets/img/abakus.png"
             ),
             "hsp_image_path": os.path.join(
-                settings.STATIC_ROOT, "assets/img/netcompany.svg"
+                settings.STATIC_ROOT, "assets/img/bekk_short_black.svg"
             ),
             "company": survey.event.company.name if survey.event.company else "N/A",
             "date": survey.event.start_time.strftime("%Y-%m-%d"),
