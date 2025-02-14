@@ -14,7 +14,10 @@ from lego.apps.users.models import Penalty, User
 
 def _passed_user_registrations(user: User) -> BaseManager[Registration]:
     return Registration.objects.filter(
-        user=user, status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
+        user=user,
+        status=SUCCESS_REGISTER,
+        event__end_time__lte=timezone.now(),
+        pool__isnull=False,
     )
 
 
