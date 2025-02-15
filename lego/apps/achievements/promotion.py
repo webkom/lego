@@ -94,7 +94,9 @@ def check_rank_promotions():
     def get_top_rank_users() -> dict:
         top_users = list(
             Registration.objects.filter(
-                status=SUCCESS_REGISTER, event__end_time__lte=timezone.now()
+                status=SUCCESS_REGISTER,
+                event__end_time__lte=timezone.now(),
+                pool__isnull=False,
             )
             .values("user")
             .annotate(event_count=Count("id"))
@@ -117,7 +119,7 @@ def check_rank_promotions():
             rank_key = rank_to_key[user_rank]  # Get the corresponding achievement key
             rank_data = EVENT_RANK_ACHIEVEMENTS[rank_key]
             achievement_exists = Achievement.objects.filter(
-                identifier=rank_data["identifier"], level=rank_data["level"], user=user
+                identifier=rank_data["identifier"], user=user
             ).exists()
 
             # Grant the achievement if the user does not have it
@@ -127,6 +129,11 @@ def check_rank_promotions():
                     level=rank_data["level"],
                     user=user,
                 )
+            # The achiv exists so we update instead
+            else:
+                Achievement.objects.filter(
+                    identifier=rank_data["identifier"], user=user
+                ).update(level=rank_data["level"])
         else:
             # If the user is not in top 3, remove their rank achievements if they have any
             for _, rank_data in EVENT_RANK_ACHIEVEMENTS.items():
