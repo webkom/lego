@@ -139,3 +139,28 @@ class QuoteViewSetTestCase(BaseAPITestCase):
         response = self.client.get(_get_list_unapproved_url())
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(len(response.json()["results"]), 0)
+
+
+def test_detail_authenticated_with_created_by(self):
+    """Users with permissions should be able to see detailed quotes
+    and verify created_by field behavior"""
+    self.client.force_authenticate(self.authenticated_user)
+
+    # Check quote created by self has created by
+    response_4 = self.client.get(_get_detail_url(4))
+    self.assertEqual(response_4.status_code, status.HTTP_200_OK)
+    response_data_4 = response_4.json()
+
+    self.assertIn("created_by", response_data_4)
+    self.assertIsInstance(response_data_4["created_by"], dict)
+    self.assertEqual(
+        response_data_4["created_by"].get("id"), self.authenticated_user.id
+    )
+
+    # Quote created by other does not
+    response_5 = self.client.get(_get_detail_url(5))
+    self.assertEqual(response_5.status_code, status.HTTP_200_OK)
+    response_data_5 = response_5.json()
+
+    self.assertIn("created_by", response_data_5)
+    self.assertIsNone(response_data_5["created_by"])

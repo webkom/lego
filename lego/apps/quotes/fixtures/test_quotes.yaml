@@ -18,3 +18,19 @@
     text: I like the big dick from the man
     source: Webkommedlem
     approved: False
+
+- model: quotes.Quote
+  pk: 4
+  fields:
+    text: 夏がこないままの街を今
+    source: a
+    approved: False
+    created_by: 1
+
+- model: quotes.Quote
+  pk: 5
+  fields:
+    text: take me to the beach
+    source: its me
+    approved: False
+    created_by: 2
