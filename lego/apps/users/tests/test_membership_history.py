@@ -105,4 +105,6 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         request_body = {"group_id": 26}
         response = self.client.delete(self.url, request_body)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertFalse(MembershipHistory.objects.filter(user=user, abakus_group=group).exists())
+        self.assertFalse(
+            MembershipHistory.objects.filter(user=user, abakus_group=group).exists()
+        )
