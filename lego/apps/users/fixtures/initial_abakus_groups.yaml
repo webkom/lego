@@ -944,60 +944,6 @@
   pk: 53
   fields:
     deleted: false
-    name: AbaKatter
-    description: ''
-    contact_email: ''
-    parent: 15
-    logo: abakus_koskom.png
-    type: interesse
-    text: ''
-    permissions: '[]'
-    show_badge: true
-    active: true
-    lft: 27
-    rght: 28
-    tree_id: 2
-    level: 2
-- model: users.abakusgroup
-  pk: 17
-  fields:
-    deleted: false
-    name: AbaCava
-    description: ''
-    contact_email: ''
-    parent: 15
-    logo: abakus_koskom.png
-    type: interesse
-    text: ''
-    permissions: '[]'
-    show_badge: true
-    active: true
-    lft: 29
-    rght: 30
-    tree_id: 2
-    level: 2
-- model: users.abakusgroup
-  pk: 18
-  fields:
-    deleted: false
-    name: FormelAba
-    description: ''
-    contact_email: ''
-    parent: 15
-    logo: abakus_koskom.png
-    type: interesse
-    text: ''
-    permissions: '[]'
-    show_badge: true
-    active: true
-    lft: 31
-    rght: 32
-    tree_id: 2
-    level: 2
-- model: users.abakusgroup
-  pk: 53
-  fields:
-    deleted: false
     name: Students
     description: ''
     contact_email: ''

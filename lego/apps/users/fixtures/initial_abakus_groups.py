@@ -152,20 +152,7 @@ initial_tree = {
             ],
             "Interessegrupper": [
                 {"description": "Super-gruppe for alle interessegrupper i Abakus"},
-                {
-                    "AbaKatter": [
-                        {"type": GROUP_INTEREST, "logo_id": "abakus_koskom.png"},
-                        {},
-                    ],
-                    "AbaCava": [
-                        {"type": GROUP_INTEREST, "logo_id": "abakus_koskom.png"},
-                        {},
-                    ],
-                    "FormelAba": [
-                        {"type": GROUP_INTEREST, "logo_id": "abakus_koskom.png"},
-                        {},
-                    ],
-                },
+                {},
             ],
             "Kasserere": [
                 {"description": "Gruppe for alle økonomiansvarlige i Abakus"},
