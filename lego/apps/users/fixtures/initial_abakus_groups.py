@@ -2,7 +2,6 @@ from lego.apps.users.constants import (
     GROUP_BOARD,
     GROUP_COMMITTEE,
     GROUP_GRADE,
-    GROUP_INTEREST,
     GROUP_ORDAINED,
     GROUP_OTHER,
     GROUP_REVUE,

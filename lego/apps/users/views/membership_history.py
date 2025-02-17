@@ -45,7 +45,7 @@ class MembershipHistoryViewSet(
             return Response(
                 {"result": "Nothing to delete"}, status=status.HTTP_400_BAD_REQUEST
             )
-        except:
+        except Exception as e:
             return Response(
-                {"result": "Bad Request"}, status=status.HTTP_400_BAD_REQUEST
+                {"result": f"Unexpected error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
             )
