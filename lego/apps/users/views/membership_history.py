@@ -47,5 +47,6 @@ class MembershipHistoryViewSet(
             )
         except Exception as e:
             return Response(
-                {"result": f"Unexpected error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+                {"result": f"Unexpected error: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
