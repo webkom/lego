@@ -1,8 +1,10 @@
 from django.db import migrations, models
 
+
 def set_is_template(apps, schema_editor):
     Survey = apps.get_model("surveys", "Survey")
     Survey.objects.filter(template_type__isnull=False).update(is_template=True)
+
 
 class Migration(migrations.Migration):
 

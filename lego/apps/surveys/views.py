@@ -153,7 +153,7 @@ class SurveyTemplateViewSet(
         .prefetch_related("questions")
         .filter(is_template__isnull=False)
     )
-    lookup_field = "title"
+    lookup_field = "id"
     filter_backends = (DjangoFilterBackend,)
 
     def get_serializer_class(self):
