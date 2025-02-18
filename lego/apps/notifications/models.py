@@ -75,6 +75,7 @@ class Announcement(BasisModel):
     The lookup functions on the relations is called announcement_lookup.
     """
 
+    title = models.CharField(max_length=128, null=True, blank=False)
     message = models.TextField()
     sent = models.DateTimeField(null=True, default=None)
 

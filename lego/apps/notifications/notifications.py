@@ -20,14 +20,21 @@ class AnnouncementNotification(Notification):
         if announcement.from_group:
             sender = announcement.from_group.name
 
+        title = announcement.title
+        subject = announcement.title
+        if title is None:
+            title = "Kunngjøring!"
+            subject = f"Kunngjøring fra {sender}"
+
         return self._delay_mail(
             to_email=self.user.email_address,
             context={
                 "first_name": self.user.first_name,
                 "sender": sender,
                 "message": announcement.message,
+                "title": title
             },
-            subject=f"Kunngjøring fra {sender}",
+            subject=subject,
             plain_template="notifications/email/announcement.txt",
             html_template="notifications/email/announcement.html",
         )
@@ -42,8 +49,12 @@ class AnnouncementNotification(Notification):
         if announcement.from_group:
             sender = announcement.from_group.name
 
+        title = announcement.title
+        if title is None:
+            title = "Kunngjøring!"
+
         return self._delay_push(
             template="notifications/push/announcement.txt",
-            context={"sender": sender},
+            context={"sender": sender, "title": title},
             instance=announcement,
         )

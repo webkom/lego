@@ -1,39 +1,29 @@
-{% extends "email/base.html" %}
+{% extends "email/base.html" %} {% block alert %}
 
-{% block alert %}
+<tr>
+  <td class="alert alert-info">{{ title }}</td>
+</tr>
 
-    <tr>
-        <td class="alert alert-info">
-            Kunngjøring!
-        </td>
-    </tr>
+{% endblock %} {% block content %}
 
-{% endblock %}
+<tr>
+  <td class="content-block">Hei, {{ first_name }}!</td>
+</tr>
 
-{% block content %}
+<tr>
+  <td class="content-block">{{ sender }} sendte deg en kunngjøring.</td>
+</tr>
 
-    <tr>
-        <td class="content-block">
-            Hei, {{ first_name }}!
-        </td>
-    </tr>
+<tr>
+  <td class="content-block">
+    <b>{{ message }}</b>
+  </td>
+</tr>
 
-    <tr>
-        <td class="content-block">
-          {{ sender }} sendte deg en kunngjøring.
-        </td>
-    </tr>
-
-    <tr>
-        <td class="content-block">
-            <b>{{ message }}</b>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="content-block">
-            Les mer på <a href="{{ frontend_url }}/">{{ frontend_url }}</a>.
-        </td>
-    </tr>
+<tr>
+  <td class="content-block">
+    Les mer på <a href="{{ frontend_url }}/">{{ frontend_url }}</a>.
+  </td>
+</tr>
 
 {% endblock %}

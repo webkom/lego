@@ -37,6 +37,7 @@ class AnnouncementListSerializer(BasisModelSerializer):
         model = Announcement
         fields = (
             "id",
+            "title",
             "message",
             "from_group",
             "sent",
@@ -55,6 +56,7 @@ class AnnouncementDetailSerializer(BasisModelSerializer):
         model = Announcement
         fields = (
             "id",
+            "title",
             "message",
             "from_group",
             "sent",
