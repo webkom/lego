@@ -1,13 +1,46 @@
-from django.db.models import Q
-from django_filters import BooleanFilter, CharFilter, FilterSet
+from django.db.models import Q, Func, IntegerField, Subquery, OuterRef, Value
+from django.db.models.functions import Coalesce
+from django_filters import BooleanFilter, CharFilter, FilterSet, OrderingFilter
 
-from lego.apps.companies.models import Company, CompanyInterest, Semester
+from lego.apps.companies.models import Company, CompanyInterest, Semester, SemesterStatus
 
+class StatusOrderingFilter(OrderingFilter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.extra['choices'] += [
+            ('status', 'Status'),
+            ('-status', 'Status (descending)')
+        ]
+
+    def filter(self, queryset, value):
+        if not value:
+            return queryset
+
+        semester_id = self.parent.request.query_params.get("semester_id")
+
+        class ArrayLength(Func):
+            function = 'CARDINALITY'
+            output_field = IntegerField()
+
+        return queryset.annotate(
+            status=Coalesce(
+                Subquery(
+                    SemesterStatus.objects.filter(
+                        company=OuterRef('pk'),
+                        semester_id=semester_id
+                    ).annotate(
+                        contact_count=ArrayLength('contacted_status')
+                    ).values('contact_count')[:1]
+                ),
+                Value(0, output_field=IntegerField())
+            )
+        ).order_by('-status')
 
 class AdminCompanyFilterSet(FilterSet):
 
     search = CharFilter(method="filter_search")
     status = CharFilter(method="filter_semester_status")
+    ordering = StatusOrderingFilter()
 
     def filter_semester_status(self, queryset, name, value):
         if not value:
@@ -42,8 +75,7 @@ class AdminCompanyFilterSet(FilterSet):
 
     class Meta:
         model = Company
-        fields = ["search", "status"]
-
+        fields = ["search", "status", "ordering"]
 
 class AdminCompanyFilterSet(FilterSet):
 
