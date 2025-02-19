@@ -29,9 +29,9 @@ class MembershipHistoryViewSet(
 
         return queryset
 
-    def delete(self, request):
+    def delete(self, request, **kwargs):
         try:
-            group = AbakusGroup.objects.get(id=request.data["group_id"])
+            group = AbakusGroup.objects.get(id=kwargs["pk"])
             user_membership_history = MembershipHistory.objects.filter(
                 user__id=request.user.id, abakus_group__id=group.id
             )
