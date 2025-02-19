@@ -320,7 +320,6 @@ class InterestGroupAPITestCase(BaseAPITestCase):
 
     def test_leader_cannot_join_for_another(self):
         self.client.force_authenticate(user=self.leader)
-        print(_get_membership_url(self.interest_group.pk))
         response = self.client.post(
             _get_membership_url(self.interest_group.pk),
             {"user": self.abakommer.pk, "role": "member"},

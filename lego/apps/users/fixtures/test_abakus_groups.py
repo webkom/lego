@@ -1,4 +1,4 @@
-from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST, GROUP_GRADE
+from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_GRADE, GROUP_INTEREST
 from lego.apps.users.models import AbakusGroup
 from lego.utils.functions import insert_abakus_groups
 
