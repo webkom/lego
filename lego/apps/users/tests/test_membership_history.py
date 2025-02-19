@@ -64,10 +64,11 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         )
 
         self.client.force_authenticate(user)
-        request_body = {"group_id": 26}
-        response = self.client.delete(self.url, request_body)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("AbaBrygg got deleted", response.json()["result"])
+        url = f"/api/v1/membership-history/{group.id}/"
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["result"], "AbaBrygg got deleted")
         self.assertFalse(
             MembershipHistory.objects.filter(user=user, abakus_group=group).exists()
         )
