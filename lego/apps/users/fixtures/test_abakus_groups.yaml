@@ -563,3 +563,22 @@
     rght: 2
     tree_id: 19
     level: 0
+- model: users.abakusgroup
+  pk: 30
+  fields:
+    deleted: false
+    name: SchoolGradeTest
+    description: ''
+    contact_email: ''
+    parent: null
+    logo: null
+    type: klasse
+    text: ''
+    permissions: '["/sudo/admin/meetings/create/", "/sudo/admin/meetinginvitations/create/",
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/"]'
+    show_badge: true
+    active: true
+    lft: 1
+    rght: 2
+    tree_id: 20
+    level: 0
