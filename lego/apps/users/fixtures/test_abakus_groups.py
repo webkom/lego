@@ -15,18 +15,6 @@ test_tree = {
         },
         {},
     ],
-    "SchoolGradeTest": [
-        {
-            "type": GROUP_GRADE,
-            "permissions": [
-                "/sudo/admin/meetings/create",
-                "/sudo/admin/meetinginvitations/create",
-                "/sudo/admin/registrations/create/",
-                "/sudo/admin/events/payment/",
-            ],
-        },
-        {},
-    ],
     "AbakusGroupAdminTest": [
         {
             "permissions": [
@@ -250,6 +238,18 @@ test_tree = {
         },
     ],
     "Students": [{}, {}],
+    "SchoolGradeTest": [
+        {
+            "type": GROUP_GRADE,
+            "permissions": [
+                "/sudo/admin/meetings/create",
+                "/sudo/admin/meetinginvitations/create",
+                "/sudo/admin/registrations/create/",
+                "/sudo/admin/events/payment/",
+            ],
+        },
+        {},
+    ],
 }
 
 
