@@ -123,8 +123,8 @@ test_tree = {
         {
             "description": "Medlemmer av Abakus",
             "permissions": [
-                "/sudo/admin/meetings/create",
-                "/sudo/admin/meetinginvitations/create",
+                "/sudo/admin/meetings/create/",
+                "/sudo/admin/meetinginvitations/create/",
                 "/sudo/admin/registrations/create/",
                 "/sudo/admin/events/payment/",
             ],
@@ -242,8 +242,8 @@ test_tree = {
         {
             "type": GROUP_GRADE,
             "permissions": [
-                "/sudo/admin/meetings/create",
-                "/sudo/admin/meetinginvitations/create",
+                "/sudo/admin/meetings/create/",
+                "/sudo/admin/meetinginvitations/create/",
                 "/sudo/admin/registrations/create/",
                 "/sudo/admin/events/payment/",
             ],
