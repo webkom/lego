@@ -49,7 +49,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
     def test_delete_history(self):
         user = User.objects.get(username="test1")
         group = AbakusGroup.objects.get(id=26)
-        
+
         MembershipHistory.objects.create(
             user=user,
             abakus_group=group,
@@ -66,7 +66,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(user)
         url = f"/api/v1/membership-history/{group.id}/"
         response = self.client.delete(url)
-        
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["result"], "AbaBrygg got deleted")
         self.assertFalse(
