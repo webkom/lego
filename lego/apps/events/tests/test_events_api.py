@@ -1418,6 +1418,26 @@ class AllergiesTestCase(BaseAPITestCase):
             attendee_allergies,
         )
 
+    def test_with_allergies_permission_responsible_users(self):
+        user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name="Abakom").add_user(user)
+        self.event.responsible_users.add(user)
+        self.client.force_authenticate(user)
+        event_response = self.client.get(f"{_get_detail_url(self.event.id)}allergies/")
+        attendee_allergies = (
+            self.event.pools.first().registrations.first().user.allergies
+        )
+
+        self.assertEqual(event_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            event_response.json()
+            .get("pools")[0]
+            .get("registrations")[0]
+            .get("user")
+            .get("allergies"),
+            attendee_allergies,
+        )
+
     def test_without_allergies_permission(self):
         user = User.objects.get(pk=2)
         AbakusGroup.objects.get(name="Abakom").add_user(user)

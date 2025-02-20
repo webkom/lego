@@ -142,8 +142,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             mem.abakus_group for mem in memberships
         ]
         created_by_self = user == self.created_by
-
-        return created_by_self or in_responsible_group
+        in_responsible_users = self.responsible_users.filter(id=user.id).exists()
+        return created_by_self or in_responsible_group or in_responsible_users
 
     def admin_register(
         self,
