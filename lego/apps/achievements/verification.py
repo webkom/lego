@@ -111,6 +111,12 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
     return False
 
 
+def check_total_genfors_events(user: User, count: int):
+    return count <= len(
+        Registration.objects.filter(user=user, event__title__icontains="generalfor")
+    )
+
+
 # There is a case where manual payment does not update the payment amount.
 # I have not changed this code so only stripe payments will count.
 def check_total_event_payment_over(user: User, price: int):
