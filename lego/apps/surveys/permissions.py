@@ -32,6 +32,8 @@ class SubmissionPermissions(permissions.BasePermission):
         survey = Survey.objects.get(id=view.kwargs["survey_pk"])
         event = survey.event
         user = request.user
+        if survey.is_template:
+            return user.has_perm(EDIT, obj=Survey)
         user_attended_event = Registration.objects.filter(
             event=event.id, user=user.id, presence=PRESENCE_CHOICES.PRESENT
         ).exists()

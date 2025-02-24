@@ -25,7 +25,8 @@ class Survey(BasisModel):
     template_type = models.CharField(
         max_length=30, choices=EVENT_TYPES, null=True, blank=True, unique=True
     )
-    event = models.OneToOneField("events.Event", on_delete=models.CASCADE)
+    is_template = models.BooleanField(default=False, null=False)
+    event = models.OneToOneField("events.Event", on_delete=models.CASCADE, null=True)
     sent = models.BooleanField(default=False)
     token = models.CharField(
         max_length=64, default=None, unique=True, null=True, blank=True
