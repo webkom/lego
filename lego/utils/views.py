@@ -36,11 +36,11 @@ class SiteMetaViewSet(viewsets.ViewSet):
             "polls": (Poll, LIST),
             "quotes": (Quote, LIST),
             "interest_groups": (AbakusGroup, LIST),
+            "surveys": (Survey, LIST),
             # Admin:
             "bdb": (Company, CREATE),
             "announcements": (Announcement, CREATE),
             "penalties": (Penalty, CREATE),
-            "surveys": (Survey, CREATE),
             "groups": (AbakusGroup, CREATE),
             "email": (EmailList, CREATE),
             "users": (User, CREATE),

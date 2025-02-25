@@ -1,64 +1,151 @@
-from rest_framework import permissions
+from django.db.models import Q
 
 from lego.apps.events.constants import PRESENCE_CHOICES
-from lego.apps.events.models import Registration
-from lego.apps.permissions.constants import EDIT
-from lego.apps.surveys.models import Survey
+from lego.apps.permissions.constants import CREATE, EDIT, LIST, VIEW
+from lego.apps.permissions.permissions import PermissionHandler
 
 
-class SurveyPermissions(permissions.BasePermission):
-    def has_permission(self, request, view):
+class SurveyPermissionHandler(PermissionHandler):
+    default_require_auth = True
+
+    def filter_queryset(self, user, queryset, **kwargs):
+        if user and user.is_authenticated:
+            super_filter = super().filter_queryset(user, queryset, **kwargs)
+            qs = queryset.filter(
+                Q(pk__in=super_filter)
+                | (
+                    Q(event__registrations__user=user)
+                    & Q(event__registrations__presence=PRESENCE_CHOICES.PRESENT)
+                )
+            ).distinct()
+            if qs:
+                return qs
+
+        return queryset.none()
+
+    def has_perm(
+        self,
+        user,
+        perm,
+        request=None,
+        view=None,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs,
+    ):
+        if obj is None and queryset is None:
+            return False
+
+        user_attended_event = False
+        survey_pk = None
+        survey = None
+        is_survey_admin = super().has_perm(
+            user,
+            EDIT,
+            obj=obj,
+            queryset=queryset,
+            check_keyword_permissions=True,
+        )
+
+        if view is not None:
+            if view.action in ["share", "hide", "csv", "pdf"]:
+                return is_survey_admin
+
+            survey_pk = view.kwargs.get("pk", None)
+            if survey_pk:
+                try:
+                    survey = queryset.get(id=survey_pk)
+                except queryset.model.DoesNotExist:
+                    survey = None
+            if survey and user:
+                user_attended_event = survey.event.registrations.filter(
+                    user=user.id, presence=PRESENCE_CHOICES.PRESENT
+                ).exists()
+
+        if perm is CREATE:
+            return is_survey_admin
+
+        if perm is VIEW:
+            if request and request.auth and isinstance(request.auth, survey.__class__):
+                """
+                Allow permission when token matches survey
+                """
+                return int(request.auth.id) == int(survey_pk)
+
+            return user_attended_event or is_survey_admin
+
+        return super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
+
+
+class SubmissionPermissionHandler(PermissionHandler):
+    default_require_auth = True
+
+    def filter_queryset(self, user, queryset, **kwargs):
+        if not user.is_authenticated:
+            return queryset.none()
+
+        if self.has_perm(user, EDIT, queryset=queryset):
+            return queryset
+
+        return queryset.filter(user=user)
+
+    def has_perm(
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        view=None,
+        request=None,
+        check_keyword_permissions=True,
+        **kwargs,
+    ):
+        if not user or not user.is_authenticated:
+            return False
+
         from lego.apps.surveys.models import Survey
 
-        user = request.user
+        user_attended_event = False
+        is_survey_admin = user.has_perm(EDIT, obj=Survey)
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
 
-        if user.has_perm(EDIT, obj=Survey):
-            return True
-        elif view.action in ["retrieve"]:
-            survey = Survey.objects.get(id=view.kwargs["pk"])
-            event = survey.event
-            user_attended_event = Registration.objects.filter(
-                event=event.id, user=user.id, presence=PRESENCE_CHOICES.PRESENT
+        if view is not None:
+            if view.action in ["update", "partial_update"]:
+                return False
+
+            if view.action in ["hide", "show"]:
+                return is_survey_admin
+
+            survey_pk = view.kwargs["survey_pk"]
+            survey = Survey.objects.get(id=survey_pk)
+            user_attended_event = survey.event.registrations.filter(
+                user=user.id, presence=PRESENCE_CHOICES.PRESENT
             ).exists()
 
-            return user_attended_event
-        return False
-
-
-class SubmissionPermissions(permissions.BasePermission):
-    def has_permission(self, request, view):
-        from lego.apps.surveys.models import Survey
-
-        survey = Survey.objects.get(id=view.kwargs["survey_pk"])
-        event = survey.event
-        user = request.user
         if survey.is_template:
-            return user.has_perm(EDIT, obj=Survey)
-        user_attended_event = Registration.objects.filter(
-            event=event.id, user=user.id, presence=PRESENCE_CHOICES.PRESENT
-        ).exists()
+            return is_survey_admin
+        
+        if is_survey_admin:
+            return True 
 
-        if view.action in ["update", "partial_update"]:
-            return False
-        if user.has_perm(EDIT, obj=Survey):
-            return True
-        if view.action in ["create"]:
-            return user_attended_event
-        if view.action in ["retrieve"]:
-            return (
-                user_attended_event
-                and survey.submissions.get(id=view.kwargs["pk"]).user_id is user.id
-            )
-        if request.query_params.get("user", False):
-            return user_attended_event and int(
-                request.query_params.get("user", False)
-            ) is int(user.id)
-        return False
+        if perm is VIEW:
+            if obj:
+                return user_attended_event and obj.user == user
+            if queryset:
+                return all(submission.user == user for submission in queryset)
+        
+        if request is not None:
+            query_user = request.query_params.get("user", False)
+            if query_user:
+                return user_attended_event and int(query_user) is int(user.id)
+
+        if perm is CREATE:
+            return has_perm and user_attended_event
 
 
-class SurveyTokenPermissions(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if view.action not in ["retrieve"]:
-            return False
-        survey = Survey.objects.get(id=view.kwargs["pk"])
-        return request.auth and survey.id == request.auth.id
+        return has_perm

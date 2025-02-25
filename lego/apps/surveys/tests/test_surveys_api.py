@@ -129,7 +129,6 @@ class SurveyViewSetTestCase(APITestCase):
         self.attended_user = User.objects.get(username="test1")
         self.attending_group = AbakusGroup.objects.get(name="Abakus")
         self.attending_group.add_user(self.attended_user)
-
         self.survey_data = {"title": "Survey", "event": 5, "questions": []}
 
     # Create
@@ -184,6 +183,12 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_detail_url(1))
         self.assertFalse("token" in response.json())
+    
+    def test_detail_regular_data(self):
+        """Regular users should not get tokens when fetching detail"""
+        self.client.force_authenticate(user=self.regular_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertFalse("token" in response.json())
 
     # Fetch list
     def test_list_admin(self):
@@ -196,17 +201,17 @@ class SurveyViewSetTestCase(APITestCase):
         """Regular users should not be able to see surveys list view"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url())
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_attended(self):
         """Users who attended an event should not be able to see surveys list view"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_list_url())
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # Edit permissions
     def test_edit_admin(self):
-        """Admin users should  be able to edit surveys"""
+        """Admin users should be able to edit surveys"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.patch(_get_detail_url(1), self.survey_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
