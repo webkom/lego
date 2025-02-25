@@ -8,6 +8,8 @@ from lego.apps.achievements.constants import (
     EVENT_PRICE_ACHIEVEMENTS,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_ACHIEVEMENTS,
+    GENFORS_ACHIEVEMENTS,
+    GENFORS_IDENTIFIER,
     MEETING_ACHIEVEMENTS,
     PENALTY_ACHIEVEMENTS,
     PENALTY_IDENTIFIER,
@@ -173,11 +175,16 @@ def check_penalty_related_single_user(user: User) -> None:
     check_leveled_promotions(user.id, PENALTY_IDENTIFIER, PENALTY_ACHIEVEMENTS)
 
 
+def check_genfors_related_single_user(user: User) -> None:
+    check_leveled_promotions(user.id, GENFORS_IDENTIFIER, GENFORS_ACHIEVEMENTS)
+
+
 def check_all_promotions():
     for user in User.objects.all():
         check_quote_related_single_user(user)
         check_event_related_single_user(user.id)
         check_poll_related_single_user(user)
         check_penalty_related_single_user(user)
+        check_genfors_related_single_user(user)
 
     check_rank_promotions()

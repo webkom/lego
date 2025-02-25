@@ -6,6 +6,7 @@ from lego.apps.achievements.verification import (
     check_longest_period_without_penalties,
     check_poll_responses,
     check_total_event_payment_over,
+    check_total_genfors_events,
     check_verified_quote,
 )
 from lego.apps.users.models import User
@@ -30,6 +31,7 @@ QUOTE_IDENTIFIER = "quote_count"
 MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
 PENALTY_IDENTIFIER = "penalty_period"
+GENFORS_IDENTIFIER = "genfors_count"
 
 
 EVENT_ACHIEVEMENTS: AchievementCollection = {
@@ -180,6 +182,44 @@ PENALTY_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+GENFORS_ACHIEVEMENTS: AchievementCollection = {
+    "genfors_1": {
+        "identifier": GENFORS_IDENTIFIER,
+        "requirement_function": lambda user: check_total_genfors_events(
+            user=user, count=1
+        ),
+        "level": 0,
+    },
+    "genfors_2": {
+        "identifier": GENFORS_IDENTIFIER,
+        "requirement_function": lambda user: check_total_genfors_events(
+            user=user, count=3
+        ),
+        "level": 1,
+    },
+    "genfors_3": {
+        "identifier": GENFORS_IDENTIFIER,
+        "requirement_function": lambda user: check_total_genfors_events(
+            user=user, count=6
+        ),
+        "level": 2,
+    },
+    "genfors_4": {
+        "identifier": GENFORS_IDENTIFIER,
+        "requirement_function": lambda user: check_total_genfors_events(
+            user=user, count=8
+        ),
+        "level": 3,
+    },
+    "genfors_5": {
+        "identifier": GENFORS_IDENTIFIER,
+        "requirement_function": lambda user: check_total_genfors_events(
+            user=user, count=10
+        ),
+        "level": 4,
+    },
+}
+
 KEYPRESS_ORDER: AchievementCollection = {
     "keypress_order": {
         "identifier": KEYPRESS_ORDER_IDENTIFIER,
@@ -200,6 +240,7 @@ ACHIEVEMENTS = {
     **POLL_ACHIEVEMENTS,
     **HIDDEN_ACHIEVEMENTS,
     **PENALTY_ACHIEVEMENTS,
+    **GENFORS_ACHIEVEMENTS,
 }
 
 ACHIEVEMENT_IDENTIFIERS = sorted(
