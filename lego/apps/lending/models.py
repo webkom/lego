@@ -10,6 +10,7 @@ from lego.utils.models import BasisModel
 
 class LendableObject(BasisModel, ObjectPermissionsModel):
     title = models.CharField(max_length=128, null=False, blank=False)
+    contact_email = models.EmailField()
     description = models.TextField(null=False, blank=True)
     image = FileField(related_name="lendable_object_image")
     location = models.CharField(max_length=128, null=False, blank=True)

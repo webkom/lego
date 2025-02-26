@@ -14,7 +14,15 @@ class LendableObjectSerializer(BasisModelSerializer):
 
     class Meta:
         model = LendableObject
-        fields = ("id", "title", "description", "image", "location", "can_lend")
+        fields = (
+            "id",
+            "title",
+            "contact_email",
+            "description",
+            "image",
+            "location",
+            "can_lend",
+        )
 
     def get_can_lend(self, obj):
         return obj.can_lend(self.context["request"].user)
