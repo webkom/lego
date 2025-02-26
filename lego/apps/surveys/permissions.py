@@ -129,16 +129,16 @@ class SubmissionPermissionHandler(PermissionHandler):
 
         if survey.is_template:
             return is_survey_admin
-        
+
         if is_survey_admin:
-            return True 
+            return True
 
         if perm is VIEW:
             if obj:
                 return user_attended_event and obj.user == user
             if queryset:
                 return all(submission.user == user for submission in queryset)
-        
+
         if request is not None:
             query_user = request.query_params.get("user", False)
             if query_user:
@@ -146,6 +146,5 @@ class SubmissionPermissionHandler(PermissionHandler):
 
         if perm is CREATE:
             return has_perm and user_attended_event
-
 
         return has_perm

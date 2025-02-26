@@ -20,7 +20,6 @@ from lego.apps.surveys.authentication import SurveyTokenAuthentication
 from lego.apps.surveys.constants import TEXT_FIELD
 from lego.apps.surveys.filters import SubmissionFilterSet, SurveyFilterSet
 from lego.apps.surveys.models import Answer, Submission, Survey
-
 from lego.apps.surveys.serializers import (
     SubmissionAdminReadSerializer,
     SubmissionCreateAndUpdateSerializer,

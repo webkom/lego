@@ -78,7 +78,7 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_list_url(1), submission_data(self.regular_user)
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
     def test_create_anoymous(self):
         """Anonymous users should not be able to create submissions"""
         response = self.client.post(
@@ -116,7 +116,7 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_detail_url(1, 1))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
     def test_detail_anonymous(self):
         """Anonymous users should not be able see detailed submissions"""
         response = self.client.get(_get_detail_url(1, 1))
@@ -156,7 +156,7 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_list_url(1) + "?user=" + str(self.regular_user.id)
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
     def test_answered_anonymous(self):
         """Anonymous users should not be able to check if they have answered a survey"""
         response = self.client.get(
@@ -182,7 +182,7 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url(1))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-    
+
     def test_list_anonymous(self):
         """Anonymous users should not be able to see submissions list view"""
         response = self.client.get(_get_list_url(1))
@@ -212,7 +212,7 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_detail_url(1, 1), submission_data(self.attended_user)
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
     def test_edit_anonymous(self):
         """Anonymous users should not be able to edit submissions"""
         response = self.client.patch(
@@ -326,4 +326,3 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_detail_url(1, 1) + "hide/?answer=123")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
