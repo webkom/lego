@@ -5,6 +5,8 @@ from django.db.models import Sum
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
+import requests
+
 from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
@@ -27,6 +29,13 @@ def check_event_generic(user: User, count: int) -> bool:
 
 def check_verified_quote(user: User):
     return Quote.objects.filter(approved=True, created_by=user).exists()
+
+
+def check_complete_profile(user: User):
+    has_valid_github = requests.get(
+        f"https://api.github.com/users/{user.github_username}"
+    )
+    return has_valid_github.ok and user.linkedin_id and bool(user.picture)
 
 
 def check_poll_responses(user: User, count: int):
@@ -113,7 +122,11 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
 
 def check_total_genfors_events(user: User, count: int):
     return count <= len(
-        Registration.objects.filter(user=user, event__title__icontains="generalfor")
+        Registration.objects.filter(
+            user=user,
+            event__title__icontains="generalfor",
+            event__end_time__lt=timezone.now(),
+        )
     )
 
 
