@@ -127,6 +127,7 @@ test_tree = {
                 "/sudo/admin/meetinginvitations/create/",
                 "/sudo/admin/registrations/create/",
                 "/sudo/admin/events/payment/",
+                "/sudo/admin/submissions/create/"
             ],
         },
         {

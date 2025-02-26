@@ -3,7 +3,6 @@ import os
 
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, mixins, status, viewsets
@@ -15,18 +14,13 @@ from weasyprint import HTML
 
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
-from lego.apps.permissions.constants import CREATE, DELETE, EDIT, LIST, VIEW
+from lego.apps.permissions.constants import EDIT
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.surveys.authentication import SurveyTokenAuthentication
 from lego.apps.surveys.constants import TEXT_FIELD
 from lego.apps.surveys.filters import SubmissionFilterSet, SurveyFilterSet
 from lego.apps.surveys.models import Answer, Submission, Survey
 
-# from lego.apps.surveys.permissions import (
-#     SubmissionPermissions,
-#     SurveyPermissions,
-#     SurveyTokenPermissions,
-# )
 from lego.apps.surveys.serializers import (
     SubmissionAdminReadSerializer,
     SubmissionCreateAndUpdateSerializer,
