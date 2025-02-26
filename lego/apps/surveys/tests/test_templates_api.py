@@ -67,10 +67,10 @@ class SurveyTemplateViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_taken_admin(self):
-        """It should not be able to create templates whose template_type already has a template"""
+        """It should be able to create templates whose template_type already has a template"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post(_get_create_url(), self.taken_template_data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     # Fetch detail
     def test_detail_admin(self):
