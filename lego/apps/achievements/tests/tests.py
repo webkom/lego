@@ -10,6 +10,7 @@ from lego.apps.achievements.constants import (
     EVENT_IDENTIFIER,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_IDENTIFIER,
+    GENFORS_IDENTIFIER,
     MEETING_IDENTIFIER,
     PENALTY_IDENTIFIER,
     POLL_IDENTIFIER,
@@ -22,6 +23,7 @@ from lego.apps.achievements.promotion import (
     check_penalty_related_single_user,
     check_poll_related_single_user,
     check_quote_related_single_user,
+    check_rank_promotions,
 )
 from lego.apps.achievements.tasks import run_all_promotions
 from lego.apps.events.constants import PAYMENT_SUCCESS
@@ -100,6 +102,138 @@ class EventAchievementAPITestCase(BaseAPITestCase):
         self.assertTrue(
             achievement.exists(),
             "User should have unlocked the level 0 achievement for attending 10 events.",
+        )
+
+
+class RankPromotionTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_multiple_events.yaml",
+    ]
+
+    def setUp(self):
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12),
+            heed_penalties=True,
+        )
+        for i in range(1, 20):
+            event = Event.objects.get(pk=i)
+            pool = event.pools.first()
+            pool.capacity = 55
+            pool.save()
+
+        # Get two users and assign initial rankings
+        self.user1 = User.objects.get(username="test1")  # Initially rank 1
+        self.user2 = User.objects.get(username="test2")  # Initially rank 2
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user1)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user2)
+
+        # Register user1 for more events than user2
+        for i in range(1, 15):
+            event = Event.objects.get(pk=i)
+            registration = Registration.objects.create(event=event, user=self.user1)
+            event.register(registration)
+            event.end_time = timezone.now() - timezone.timedelta(days=2)
+            event.save()
+
+        for i in range(1, 10):
+            event = Event.objects.get(pk=i)
+            registration = Registration.objects.create(event=event, user=self.user2)
+            event.register(registration)
+            event.end_time = timezone.now() - timezone.timedelta(days=2)
+            event.save()
+
+        check_rank_promotions()
+
+    def test_rank_promotion_after_more_event_registrations(self):
+        """Test that a user who surpasses another in event count is promoted in rank."""
+        # Ensure user1 initially holds rank 1
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=self.user1, identifier="event_rank", level=2
+            ).exists(),
+            "User1 should initially have rank 1 achievement",
+        )
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=self.user2, identifier="event_rank", level=1
+            ).exists(),
+            "User2 should initially have rank 2 achievement",
+        )
+
+        # Register user2 for more events to surpass user1
+        for i in range(15, 20):
+            event = Event.objects.get(pk=i)
+            registration = Registration.objects.create(event=event, user=self.user2)
+            event.register(registration)
+            event.end_time = timezone.now() - timezone.timedelta(days=2)
+            event.save()
+
+        transaction.on_commit(lambda: check_all_promotions())
+        # Ensure rankings are updated
+        transaction.on_commit(
+            lambda: self.assertTrue(
+                Achievement.objects.filter(
+                    user=self.user2, identifier="event_rank", level=2
+                ).exists(),
+                "User2 should now have rank 1 achievement",
+            )
+        )
+
+        transaction.on_commit(
+            lambda: self.assertTrue(
+                Achievement.objects.filter(
+                    user=self.user1, identifier="event_rank_2", level=1
+                ).exists(),
+                "User1 should now have rank 2 achievement",
+            )
+        )
+
+
+class GenforsAchievementTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_multiple_events.yaml",
+    ]
+
+    def setUp(self):
+        self.user = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
+
+    def test_genfors_achievement_levels(self):
+        """Test that users unlock achievements for attending Genfors events."""
+        abakus_group = AbakusGroup.objects.get(name="Abakus")
+        for i in range(55, 70):
+            event = Event.objects.create(
+                title=f"generalforsamling 202{i}",
+                end_time=timezone.now() + timezone.timedelta(days=2),
+                start_time=timezone.now() + timezone.timedelta(days=1),
+            )
+            pool = Pool.objects.create(
+                name="Abakus",
+                capacity=55,
+                event=event,
+                activation_date=(timezone.now() - timedelta(hours=5)),
+            )
+            pool.permission_groups.add(abakus_group)
+            pool.save()
+            registration = Registration.objects.create(event=event, user=self.user)
+            event.register(registration)
+            event.save()
+            event.end_time = timezone.now() - timezone.timedelta(days=2)
+            event.save()
+
+        transaction.on_commit(lambda: check_all_promotions())
+        transaction.on_commit(
+            lambda: self.assertTrue(
+                Achievement.objects.filter(
+                    identifier=GENFORS_IDENTIFIER, level=4, user=self.user
+                ).exists(),
+                "Achievement for genfors should be unlocked",
+            )
         )
 
 

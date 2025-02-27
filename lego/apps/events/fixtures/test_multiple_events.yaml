@@ -21,7 +21,7 @@
     event: 1
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 2
@@ -46,7 +46,7 @@
     event: 2
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 3
@@ -71,7 +71,7 @@
     event: 3
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 4
@@ -96,7 +96,7 @@
     event: 4
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 5
@@ -121,7 +121,7 @@
     event: 5
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 6
@@ -146,7 +146,7 @@
     event: 6
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 7
@@ -171,7 +171,7 @@
     event: 7
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 8
@@ -196,7 +196,7 @@
     event: 8
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 9
@@ -221,7 +221,7 @@
     event: 9
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 10
@@ -246,7 +246,7 @@
     event: 10
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 11
@@ -271,7 +271,7 @@
     event: 11
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 12
@@ -296,7 +296,7 @@
     event: 12
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 13
@@ -321,7 +321,7 @@
     event: 13
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 14
@@ -346,7 +346,7 @@
     event: 14
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 15
@@ -371,7 +371,7 @@
     event: 15
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 16
@@ -396,7 +396,7 @@
     event: 16
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 17
@@ -421,7 +421,7 @@
     event: 17
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 18
@@ -446,7 +446,7 @@
     event: 18
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 19
@@ -471,7 +471,7 @@
     event: 19
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 20
@@ -496,7 +496,7 @@
     event: 20
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 21
@@ -521,7 +521,7 @@
     event: 21
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 22
@@ -546,7 +546,7 @@
     event: 22
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 23
@@ -571,7 +571,7 @@
     event: 23
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 24
@@ -596,7 +596,7 @@
     event: 24
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 25
@@ -621,7 +621,7 @@
     event: 25
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 26
@@ -646,7 +646,7 @@
     event: 26
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 27
@@ -671,7 +671,7 @@
     event: 27
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 28
@@ -696,7 +696,7 @@
     event: 28
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 29
@@ -721,7 +721,7 @@
     event: 29
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 30
@@ -746,7 +746,7 @@
     event: 30
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
-      - - Webkom
+      - - Abakus
 
 - model: events.Event
   pk: 55

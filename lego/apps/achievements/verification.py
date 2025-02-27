@@ -113,7 +113,11 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
 
 def check_total_genfors_events(user: User, count: int):
     return count <= len(
-        Registration.objects.filter(user=user, event__title__icontains="generalfor")
+        Registration.objects.filter(
+            user=user,
+            event__title__icontains="generalfor",
+            event__end_time__lte=timezone.now(),
+        )
     )
 
 
