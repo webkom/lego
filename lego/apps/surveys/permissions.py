@@ -131,7 +131,6 @@ class SubmissionPermissionHandler(PermissionHandler):
                 user=user.id, presence=PRESENCE_CHOICES.PRESENT
             ).exists()
 
-
         if is_survey_admin:
             return True
 
