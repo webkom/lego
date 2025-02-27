@@ -23,7 +23,7 @@ class Survey(BasisModel):
     title = models.CharField(max_length=100)
     active_from = models.DateTimeField(default=timezone.now)
     template_type = models.CharField(
-        max_length=30, choices=EVENT_TYPES, null=True, blank=True, unique=True
+        max_length=30, choices=EVENT_TYPES, null=True, blank=True, unique=False
     )
     is_template = models.BooleanField(default=False, null=False)
     event = models.OneToOneField("events.Event", on_delete=models.CASCADE, null=True)
