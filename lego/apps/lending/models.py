@@ -1,7 +1,13 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericRelation
 
+from lego.apps.comments.models import Comment
 from lego.apps.files.models import FileField
-from lego.apps.lending.permissions import LendableObjectPermissionHandler
+from lego.apps.lending.constants import LENDING_CHOICE_STATUSES, LENDING_REQUEST_DEFAULT
+from lego.apps.lending.permissions import (
+    LendableObjectPermissionHandler,
+    LendingRequestPermissionHandler,
+)
 from lego.apps.permissions.constants import VIEW
 from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.users.models import User
@@ -25,3 +31,27 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
         unless given explicit permission.
         """
         return self._meta.permission_handler.has_object_permissions(user, VIEW, self)
+
+
+class LendingRequest(BasisModel, ObjectPermissionsModel):
+    lendable_object = models.ForeignKey(LendableObject, on_delete=models.CASCADE)
+    status = models.CharField(
+        choices=LENDING_CHOICE_STATUSES,
+        null=False,
+        blank=False,
+        default=LENDING_REQUEST_DEFAULT,
+    )
+    comments = GenericRelation(Comment)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    class Meta:
+        permission_handler = LendingRequestPermissionHandler()
+        indexes = [
+            models.Index(fields=["created_by"]),
+            models.Index(fields=["lendable_object"]),
+        ]
+
+    @property
+    def content_target(self):
+        return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
