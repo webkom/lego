@@ -3,6 +3,8 @@ from django.db.models import Count
 from django.utils import timezone
 
 from lego.apps.achievements.constants import (
+    COMPLETE_ACHIEVEMENT,
+    COMPLETE_IDENTIFIER,
     EVENT_ACHIEVEMENTS,
     EVENT_IDENTIFIER,
     EVENT_PRICE_ACHIEVEMENTS,
@@ -186,6 +188,10 @@ def check_genfors_related_single_user(user: User) -> None:
     check_leveled_promotions(user.id, GENFORS_IDENTIFIER, GENFORS_ACHIEVEMENTS)
 
 
+def check_comeplete_user_profile(user: User) -> None:
+    check_leveled_promotions(user.id, COMPLETE_IDENTIFIER, COMPLETE_ACHIEVEMENT)
+
+
 def check_all_promotions():
     for user in User.objects.all():
         check_quote_related_single_user(user)
@@ -193,5 +199,6 @@ def check_all_promotions():
         check_poll_related_single_user(user)
         check_penalty_related_single_user(user)
         check_genfors_related_single_user(user)
+        check_comeplete_user_profile(user)
 
     check_rank_promotions()

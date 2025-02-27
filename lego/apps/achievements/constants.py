@@ -2,6 +2,7 @@ from collections.abc import Callable
 from typing import Any, TypedDict
 
 from lego.apps.achievements.verification import (
+    check_complete_profile,
     check_event_generic,
     check_longest_period_without_penalties,
     check_poll_responses,
@@ -32,6 +33,7 @@ MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
 PENALTY_IDENTIFIER = "penalty_period"
 GENFORS_IDENTIFIER = "genfors_count"
+COMPLETE_IDENTIFIER = "complete_profile"
 
 
 EVENT_ACHIEVEMENTS: AchievementCollection = {
@@ -89,6 +91,14 @@ QUOTE_ACHIEVEMENTS: AchievementCollection = {
     "quote_1": {
         "identifier": QUOTE_IDENTIFIER,
         "requirement_function": lambda user: check_verified_quote(user=user),
+        "level": 0,
+    },
+}
+
+COMPLETE_ACHIEVEMENT: AchievementCollection = {
+    "complete_1": {
+        "identifier": COMPLETE_IDENTIFIER,
+        "requirement_function": lambda user: check_complete_profile(user=user),
         "level": 0,
     },
 }
@@ -229,7 +239,12 @@ KEYPRESS_ORDER: AchievementCollection = {
 }
 
 
-HIDDEN_ACHIEVEMENTS = {**QUOTE_ACHIEVEMENTS, **MEETING_ACHIEVEMENTS, **KEYPRESS_ORDER}
+HIDDEN_ACHIEVEMENTS = {
+    **QUOTE_ACHIEVEMENTS,
+    **MEETING_ACHIEVEMENTS,
+    **KEYPRESS_ORDER,
+    **COMPLETE_ACHIEVEMENT,
+}
 
 
 ACHIEVEMENTS = {
