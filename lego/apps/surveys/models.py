@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from lego.apps.events.constants import EVENT_TYPES
-from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.surveys.constants import (
     DISPLAY_TYPES,
     PIE_CHART,

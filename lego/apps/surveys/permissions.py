@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from lego.apps.events.constants import PRESENCE_CHOICES
-from lego.apps.permissions.constants import CREATE, EDIT, LIST, VIEW
+from lego.apps.permissions.constants import CREATE, EDIT, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
 
 
