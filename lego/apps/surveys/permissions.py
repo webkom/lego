@@ -123,12 +123,14 @@ class SubmissionPermissionHandler(PermissionHandler):
 
             survey_pk = view.kwargs["survey_pk"]
             survey = Survey.objects.get(id=survey_pk)
+
+            if survey.is_template:
+                return is_survey_admin
+
             user_attended_event = survey.event.registrations.filter(
                 user=user.id, presence=PRESENCE_CHOICES.PRESENT
             ).exists()
 
-        if survey.is_template:
-            return is_survey_admin
 
         if is_survey_admin:
             return True
