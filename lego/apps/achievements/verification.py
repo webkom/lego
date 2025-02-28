@@ -32,10 +32,7 @@ def check_verified_quote(user: User):
 
 
 def check_complete_profile(user: User):
-    has_valid_github = requests.get(
-        f"https://api.github.com/users/{user.github_username}"
-    )
-    return has_valid_github.ok and user.linkedin_id and bool(user.picture)
+    return user.github_username and user.linkedin_id and bool(user.picture)
 
 
 def check_poll_responses(user: User, count: int):
