@@ -162,3 +162,10 @@
       - leader
     abakus_group:
       - 5. klasse Datateknologi
+- model: users.Membership
+  pk: 21
+  fields:
+    user:
+      - boblee
+    abakus_group:
+      - Abakus

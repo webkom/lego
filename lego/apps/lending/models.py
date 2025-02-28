@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 from lego.apps.comments.models import Comment
 from lego.apps.files.models import FileField
-from lego.apps.lending.constants import LENDING_CHOICE_STATUSES, LENDING_REQUEST_DEFAULT
+from lego.apps.lending.constants import LENDING_CHOICE_STATUSES, LENDING_REQUEST_DEFAULT, LENDING_REQUEST_STATUSES
 from lego.apps.lending.permissions import (
     LendableObjectPermissionHandler,
     LendingRequestPermissionHandler,
@@ -39,7 +39,7 @@ class LendingRequest(BasisModel, ObjectPermissionsModel):
         choices=LENDING_CHOICE_STATUSES,
         null=False,
         blank=False,
-        default=LENDING_REQUEST_DEFAULT,
+        default=LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
     )
     comments = GenericRelation(Comment)
     start_date = models.DateTimeField()

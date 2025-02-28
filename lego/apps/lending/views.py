@@ -31,6 +31,8 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return LendableObjectSerializer
 
 class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+    permission_classes = [LegoPermissions, IsAuthenticated]
+    
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
@@ -55,4 +57,3 @@ class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 LendingRequestAdminSerializer if is_admin else LendingRequestSerializer
             )
         return LendingRequestSerializer
-    permission_classes = [LegoPermissions, IsAuthenticated]

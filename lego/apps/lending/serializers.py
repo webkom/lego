@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.files.fields import ImageField
+from lego.apps.lending.constants import LENDING_CHOICE_STATUSES
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.utils.serializers import (
     BasisModelSerializer,
@@ -31,6 +32,9 @@ class LendableObjectAdminSerializer(
 
 
 class LendingRequestSerializer(BasisModelSerializer):
+    status = serializers.ChoiceField(
+        choices=LENDING_CHOICE_STATUSES, required=False
+    )
 
     class Meta:
         model = LendingRequest
