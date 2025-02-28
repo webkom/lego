@@ -30,6 +30,7 @@ class Joblisting(Content, BasisModel):
     to_year = models.PositiveIntegerField(choices=YEAR_CHOICES, default="5")
     application_url = models.URLField(null=True, blank=True)
     youtube_url = URLField(default="", validators=[youtube_validator], blank=True)
+    rolling_recruitment = models.BooleanField(default=False, null=False, blank=False)
 
     class Meta:
         permission_handler = JoblistingPermissionHandler()
