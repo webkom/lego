@@ -1,8 +1,5 @@
-from lego.apps.permissions.constants import CREATE, EDIT, LIST, VIEW
-from lego.apps.permissions.models import ObjectPermissionsModel
+from lego.apps.permissions.constants import CREATE, LIST, VIEW
 from lego.apps.permissions.permissions import PermissionHandler
-from django.apps import apps
-from django.db.models import Q
 
 
 class LendableObjectPermissionHandler(PermissionHandler):
@@ -27,7 +24,7 @@ class LendingRequestPermissionHandler(PermissionHandler):
             return False
 
         if obj is not None:
-            if self.has_object_permissions(user,perm,obj):
+            if self.has_object_permissions(user, perm, obj):
                 return True
         if perm is LIST or perm is VIEW or perm is CREATE:
             return True
@@ -35,11 +32,12 @@ class LendingRequestPermissionHandler(PermissionHandler):
         return super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
-    
+
     def has_object_permissions(self, user, perm, obj):
-        print(obj, flush=True)
         if obj.created_by == user:
             return True
-        if obj.lendable_object._meta.permission_handler.has_object_permissions(user,perm,obj.lendable_object):
+        if obj.lendable_object._meta.permission_handler.has_object_permissions(
+            user, perm, obj.lendable_object
+        ):
             return True
         return super().has_object_permissions(user, perm, obj)
