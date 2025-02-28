@@ -5,8 +5,6 @@ from django.db.models import Sum
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
-import requests
-
 from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
