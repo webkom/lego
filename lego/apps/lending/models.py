@@ -33,7 +33,7 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
         return self._meta.permission_handler.has_object_permissions(user, VIEW, self)
 
 
-class LendingRequest(BasisModel, ObjectPermissionsModel):
+class LendingRequest(BasisModel):
     lendable_object = models.ForeignKey(LendableObject, on_delete=models.CASCADE)
     status = models.CharField(
         choices=LENDING_CHOICE_STATUSES,

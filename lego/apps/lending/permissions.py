@@ -1,6 +1,8 @@
 from lego.apps.permissions.constants import CREATE, EDIT, LIST, VIEW
+from lego.apps.permissions.models import ObjectPermissionsModel
 from lego.apps.permissions.permissions import PermissionHandler
 from django.apps import apps
+from django.db.models import Q
 
 
 class LendableObjectPermissionHandler(PermissionHandler):
@@ -9,6 +11,8 @@ class LendableObjectPermissionHandler(PermissionHandler):
 
 class LendingRequestPermissionHandler(PermissionHandler):
     default_keyword_permission = "/sudo/admin/lendingrequests/{perm}/"
+    force_object_permission_check = True
+    default_require_auth = True
 
     def has_perm(
         self,
@@ -19,10 +23,23 @@ class LendingRequestPermissionHandler(PermissionHandler):
         check_keyword_permissions=True,
         **kwargs
     ):
-        
+        if not user.is_authenticated:
+            return False
+
+        if obj is not None:
+            if self.has_object_permissions(user,perm,obj):
+                return True
         if perm is LIST or perm is VIEW or perm is CREATE:
             return True
-        
+
         return super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
+    
+    def has_object_permissions(self, user, perm, obj):
+        print(obj, flush=True)
+        if obj.created_by == user:
+            return True
+        if obj.lendable_object._meta.permission_handler.has_object_permissions(user,perm,obj.lendable_object):
+            return True
+        return super().has_object_permissions(user, perm, obj)

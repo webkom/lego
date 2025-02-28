@@ -30,7 +30,7 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         return LendableObjectSerializer
 
-class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+class LendingRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [LegoPermissions, IsAuthenticated]
     
     def get_queryset(self):

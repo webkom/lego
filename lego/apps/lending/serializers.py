@@ -39,6 +39,7 @@ class LendingRequestSerializer(BasisModelSerializer):
     class Meta:
         model = LendingRequest
         fields = (
+            "id",
             "created_by",
             "updated_by",
             "lendable_object",
@@ -72,7 +73,7 @@ class LendingRequestSerializer(BasisModelSerializer):
         return super().validate(attrs)
     
 class LendingRequestAdminSerializer(
-    ObjectPermissionsSerializerMixin, LendingRequestSerializer
+ LendingRequestSerializer
 ):
     class Meta(LendingRequestSerializer.Meta):
         fields = (
