@@ -47,7 +47,30 @@ class LendingRequestSerializer(BasisModelSerializer):
             "end_date",
         )
 
+    def validate(self, attrs):
+        """
+        Custom validation for lending requests:
+        - Ensures start_date is before end_date.
+        - Ensures the lending object is available for lending.
+        - Ensures the user has permission to create the request.
+        """
+        start_date = attrs.get("start_date")
+        end_date = attrs.get("end_date")
+        lendable_object = attrs.get("lendable_object")
+        user = self.context["request"].user
 
+        if start_date and end_date and start_date >= end_date:
+            raise serializers.ValidationError(
+                {"end_date": "End date must be after start date."}
+            )
+
+        if lendable_object and not lendable_object.can_lend(user):
+            raise serializers.ValidationError(
+                {"lendable_object": "You do not have permission to lend this object."}
+            )
+
+        return super().validate(attrs)
+    
 class LendingRequestAdminSerializer(
     ObjectPermissionsSerializerMixin, LendingRequestSerializer
 ):
