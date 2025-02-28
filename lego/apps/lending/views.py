@@ -1,6 +1,6 @@
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Q
 
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.lending.serializers import (
@@ -30,23 +30,22 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         return LendableObjectSerializer
 
+
 class LendingRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [LegoPermissions, IsAuthenticated]
-    
+
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
             return LendingRequest.objects.none()
         editable_objects = LendableObject.objects.filter(
-            Q(can_edit_users=user) |
-            Q(can_edit_groups__in=user.abakus_groups.all())
+            Q(can_edit_users=user) | Q(can_edit_groups__in=user.abakus_groups.all())
         ).distinct()
-        
+
         return LendingRequest.objects.filter(
-            Q(created_by=user) |
-            Q(lendable_object__in=editable_objects)
+            Q(created_by=user) | Q(lendable_object__in=editable_objects)
         ).distinct()
-    
+
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
             return LendingRequestSerializer

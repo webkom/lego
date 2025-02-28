@@ -1,9 +1,12 @@
-from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
+from django.db import models
 
 from lego.apps.comments.models import Comment
 from lego.apps.files.models import FileField
-from lego.apps.lending.constants import LENDING_CHOICE_STATUSES, LENDING_REQUEST_DEFAULT, LENDING_REQUEST_STATUSES
+from lego.apps.lending.constants import (
+    LENDING_CHOICE_STATUSES,
+    LENDING_REQUEST_STATUSES,
+)
 from lego.apps.lending.permissions import (
     LendableObjectPermissionHandler,
     LendingRequestPermissionHandler,
