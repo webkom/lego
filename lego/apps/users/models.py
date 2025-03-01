@@ -536,7 +536,7 @@ class User(
             Survey.objects.filter(
                 event__registrations__in=registrations,
                 active_from__lte=timezone.now(),
-                template_type__isnull=True,
+                is_template=False,
             )
             .exclude(submissions__user__in=[self])
             .prefetch_related("event__registrations", "submissions__user")
