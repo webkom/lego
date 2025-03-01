@@ -149,9 +149,7 @@ class SurveyTemplateViewSet(
     mixins.RetrieveModelMixin,
 ):
     queryset = (
-        Survey.objects.all()
-        .prefetch_related("questions")
-        .filter(is_template__isnull=False)
+        Survey.objects.all().prefetch_related("questions").filter(is_template=True)
     )
     lookup_field = "id"
     filter_backends = (DjangoFilterBackend,)
