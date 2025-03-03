@@ -1,11 +1,17 @@
 import itertools
 from datetime import datetime, timedelta
 
-from django.db.models import Sum
+from django.db.models import Q, Sum
+from django.db.models.functions import ExtractYear
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
-from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
+from lego.apps.events.constants import (
+    PAYMENT_MANUAL,
+    PAYMENT_SUCCESS,
+    PRESENCE_CHOICES,
+    SUCCESS_REGISTER,
+)
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
@@ -115,14 +121,20 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
     return False
 
 
-def check_total_genfors_events(user: User, count: int):
-    return count <= len(
+def check_total_genfors_events(user: User, count: int) -> bool:
+    queryset = (
         Registration.objects.filter(
             user=user,
             event__title__icontains="generalfor",
             event__end_time__lt=timezone.now(),
         )
+        .annotate(year=ExtractYear("event__end_time"))
+        .filter(
+            Q(year__lt=2025)
+            | Q(presence__in=[PRESENCE_CHOICES.PRESENT, PRESENCE_CHOICES.LATE])
+        )
     )
+    return count <= queryset.count()
 
 
 # There is a case where manual payment does not update the payment amount.
