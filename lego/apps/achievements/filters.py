@@ -6,12 +6,12 @@ from lego.apps.users.models import User
 
 
 class AchievementFilterSet(FilterSet):
-    userFullname = CharFilter(method="filter_user_fullname")
-    abakusGroupName = CharFilter(method="filter_abakus_group_name")
+    userFullName = CharFilter(method="filter_user_fullname")
+    abakusGroupIds = CharFilter(method="filter_abakus_group_ids")
 
     class Meta:
         model = User
-        fields = ("userFullname", "abakusGroupName")
+        fields = ("userFullName", "abakusGroupIds")
 
     def filter_user_fullname(self, queryset, name, value):
         if value:
@@ -23,16 +23,24 @@ class AchievementFilterSet(FilterSet):
                 .distinct()
             )
         return queryset
-
-    def filter_abakus_group_name(self, queryset, name, value):
+   
+    def filter_abakus_group_ids(self, queryset, name, value):
         """
-        Returns only Users who have an active, non-deleted Membership
-        to an AbakusGroup whose name matches `value`.
+        returns only users who have an active, non-deleted membership
+        in *any* of the abakusgroup ids listed in the comma-separated
+        query param, e.g. ?abakusgroupids=1,2,3
         """
         if not value:
             return queryset
 
-        return queryset.filter(
-            memberships__is_active=True,
-            memberships__abakus_group__name__icontains=value,
-        ).distinct()
+        group_ids = [part.strip() for part in value.split(",")]
+        group_ids = [int(x) for x in group_ids if x.isdigit()]
+
+        return (
+            queryset.filter(
+                memberships__is_active=true,
+                memberships__abakus_group__id__in=group_ids
+            )
+            .distinct()
+        )
+
