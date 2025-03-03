@@ -8,6 +8,7 @@ from lego.apps.achievements.constants import (
     KEYPRESS_ORDER,
     KEYPRESS_ORDER_IDENTIFIER,
 )
+from lego.apps.achievements.filters import AchievementFilterSet
 from lego.apps.achievements.models import Achievement
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.serializers import KeypressOrderSerializer
@@ -19,6 +20,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PublicUserWithGroupsSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = AchievementLeaderboardPagination
+    filterset_class = AchievementFilterSet
 
     def get_queryset(self):
         return (
