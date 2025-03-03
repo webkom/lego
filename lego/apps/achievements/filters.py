@@ -26,9 +26,9 @@ class AchievementFilterSet(FilterSet):
    
     def filter_abakus_group_ids(self, queryset, name, value):
         """
-        returns only users who have an active, non-deleted membership
-        in *any* of the abakusgroup ids listed in the comma-separated
-        query param, e.g. ?abakusgroupids=1,2,3
+        Returns only users who have an active, non-deleted membership
+        in *any* of the AbakusGroup IDs listed in the comma-separated
+        query param, e.g. ?abakusGroupIds=1,2,3
         """
         if not value:
             return queryset
@@ -38,9 +38,8 @@ class AchievementFilterSet(FilterSet):
 
         return (
             queryset.filter(
-                memberships__is_active=true,
-                memberships__abakus_group__id__in=group_ids
+                membership__is_active=True,
+                membership__abakus_group__id__in=group_ids
             )
             .distinct()
         )
-
