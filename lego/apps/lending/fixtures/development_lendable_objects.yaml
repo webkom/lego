@@ -22,3 +22,15 @@
     created_by: 3
   model: lending.LendableObject
   pk: 3
+- fields:
+    title: "Et telt"
+    description: "<p>Det er et lite telt.</p>"
+    image: test_event_cover.png
+    location: "webkom kontoret"
+    created_by: 3
+    can_view_groups:
+      - 2
+    can_edit_groups:
+      - 17
+  model: lending.LendableObject
+  pk: 4
