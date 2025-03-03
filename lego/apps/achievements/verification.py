@@ -1,7 +1,8 @@
 import itertools
 from datetime import datetime, timedelta
 
-from django.db.models import Sum
+from django.db.models import Q, Sum
+from django.db.models.functions import ExtractYear
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
@@ -120,15 +121,20 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
     return False
 
 
-def check_total_genfors_events(user: User, count: int):
-    return count <= len(
+def check_total_genfors_events(user: User, count: int) -> bool:
+    queryset = (
         Registration.objects.filter(
             user=user,
             event__title__icontains="generalfor",
             event__end_time__lt=timezone.now(),
-            presence__in=[PRESENCE_CHOICES.PRESENT, PRESENCE_CHOICES.LATE],
+        )
+        .annotate(year=ExtractYear("event__end_time"))
+        .filter(
+            Q(year__lt=2025)
+            | Q(presence__in=[PRESENCE_CHOICES.PRESENT, PRESENCE_CHOICES.LATE])
         )
     )
+    return count <= queryset.count()
 
 
 # There is a case where manual payment does not update the payment amount.
