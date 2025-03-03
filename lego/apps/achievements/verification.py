@@ -5,7 +5,12 @@ from django.db.models import Sum
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
-from lego.apps.events.constants import PAYMENT_MANUAL, PAYMENT_SUCCESS, SUCCESS_REGISTER
+from lego.apps.events.constants import (
+    PAYMENT_MANUAL,
+    PAYMENT_SUCCESS,
+    PRESENCE_CHOICES,
+    SUCCESS_REGISTER,
+)
 from lego.apps.events.models import Registration
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
@@ -121,6 +126,7 @@ def check_total_genfors_events(user: User, count: int):
             user=user,
             event__title__icontains="generalfor",
             event__end_time__lt=timezone.now(),
+            presence__in=[PRESENCE_CHOICES.PRESENT, PRESENCE_CHOICES.LATE],
         )
     )
 
