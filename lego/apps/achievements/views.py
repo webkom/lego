@@ -1,11 +1,10 @@
-from django.db.models import F, Window
+from django.db.models import Case, F, IntegerField, Q, Value, When
+from django.db.models.expressions import Window
 from django.db.models.functions import Rank
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Window, F, Q
-from django.db.models.functions import Rank
-from django.db.models import F
+
 from lego.apps.achievements.constants import (
     EVENT_RULES,
     EVENT_RULES_IDENTIFIER,
@@ -18,49 +17,55 @@ from lego.apps.achievements.serializers import KeypressOrderSerializer
 from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 
+
 class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PublicUserWithGroupsSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = AchievementLeaderboardPagination
 
+    # The reason for not using a django filter is due to how django compiles SQL
+    # making it impossible to compute global rank
     def get_queryset(self):
-        # Get distinct user IDs that have at least one achievement.
         distinct_user_ids = (
-            User.objects
-            .filter(achievements__isnull=False)
-            .values_list('id', flat=True)
+            User.objects.filter(achievements__isnull=False)
+            .values_list("id", flat=True)
             .distinct()
         )
 
-        # Build the queryset based on those distinct user IDs and annotate with Rank().
         qs = User.objects.filter(id__in=distinct_user_ids).annotate(
             achievement_rank=Window(
-                expression=Rank(),
-                order_by=F('achievements_score').desc()
+                expression=Rank(), order_by=F("achievements_score").desc()
             )
         )
 
-        # Optionally filter by user full name.
+        global_rank_mapping = {user.id: user.achievement_rank for user in qs}
+
+        qs_filter = User.objects.filter(id__in=distinct_user_ids)
+
         user_full_name = self.request.query_params.get("userFullName")
         if user_full_name:
-            qs = qs.filter(
-                Q(first_name__icontains=user_full_name) |
-                Q(last_name__icontains=user_full_name)
+            qs_filter = qs_filter.filter(
+                Q(first_name__icontains=user_full_name)
+                | Q(last_name__icontains=user_full_name)
             )
 
-        # Optionally filter by group IDs.
         group_ids_str = self.request.query_params.get("abakusGroupIds")
         if group_ids_str:
-            group_ids = [int(p.strip()) for p in group_ids_str.split(",") if p.strip().isdigit()]
-            qs = qs.filter(
-                membership__is_active=True,
-                membership__abakus_group__in=group_ids
+            group_ids = [
+                int(p.strip()) for p in group_ids_str.split(",") if p.strip().isdigit()
+            ]
+            qs_filter = qs_filter.filter(
+                membership__is_active=True, membership__abakus_group__in=group_ids
             )
 
-        return qs.order_by('achievement_rank')
+        cases = [
+            When(pk=pk, then=Value(rank)) for pk, rank in global_rank_mapping.items()
+        ]
+        annotated_qs = qs_filter.annotate(
+            achievement_rank=Case(*cases, default=Value(0), output_field=IntegerField())
+        )
 
-
-
+        return annotated_qs.order_by("achievement_rank")
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -91,7 +96,7 @@ class AchievementViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=["POST"])
     def keypress_order(self, request, *args, **kwargs):
-        code = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]
+        code = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]
         if request.data.get("code", []) == code:
             achievement, created = Achievement.objects.get_or_create(
                 identifier=KEYPRESS_ORDER[KEYPRESS_ORDER_IDENTIFIER]["identifier"],
