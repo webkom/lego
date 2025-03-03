@@ -49,10 +49,12 @@ class SubmissionViewSetTestCase(APITestCase):
         self.admin_user = User.objects.get(username="useradmin_test")
         self.admin_group = AbakusGroup.objects.get(name="Bedkom")
         self.admin_group.add_user(self.admin_user)
-        self.attended_user = User.objects.get(username="test1")
-        self.attending_group = AbakusGroup.objects.get(name="Abakus")
-        self.attending_group.add_user(self.attended_user)
         self.regular_user = User.objects.get(username="abakule")
+        self.regular_group = AbakusGroup.objects.get(name="Abakus")
+        self.regular_group.add_user(self.regular_user)
+        self.attended_user = User.objects.get(username="test1")
+        self.attending_group = AbakusGroup.objects.get(name="Abakom")
+        self.attending_group.add_user(self.attended_user)
 
     # Create
     def test_create_admin(self):
@@ -76,6 +78,13 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_list_url(1), submission_data(self.regular_user)
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_anoymous(self):
+        """Anonymous users should not be able to create submissions"""
+        response = self.client.post(
+            _get_list_url(1), submission_data(self.regular_user)
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Detail
     def test_detail_admin(self):
@@ -107,6 +116,11 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_detail_url(1, 1))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_detail_anonymous(self):
+        """Anonymous users should not be able see detailed submissions"""
+        response = self.client.get(_get_detail_url(1, 1))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Check if user has answered survey
     def test_answered_admin(self):
@@ -143,6 +157,13 @@ class SubmissionViewSetTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_answered_anonymous(self):
+        """Anonymous users should not be able to check if they have answered a survey"""
+        response = self.client.get(
+            _get_list_url(1) + "?user=" + str(self.regular_user.id)
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     # List
     def test_list_admin(self):
         """Users with permissions should be able to see submissions list view"""
@@ -161,6 +182,11 @@ class SubmissionViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url(1))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+    def test_list_anonymous(self):
+        """Anonymous users should not be able to see submissions list view"""
+        response = self.client.get(_get_list_url(1))
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     # Edit
     def test_edit_admin(self):
@@ -186,6 +212,13 @@ class SubmissionViewSetTestCase(APITestCase):
             _get_detail_url(1, 1), submission_data(self.attended_user)
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_edit_anonymous(self):
+        """Anonymous users should not be able to edit submissions"""
+        response = self.client.patch(
+            _get_detail_url(1, 1), submission_data(self.regular_user)
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Create
     def test_create_answer(self):
@@ -264,6 +297,13 @@ class SubmissionViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         response = self.client.post(_get_detail_url(1, 1) + "show/?answer=3")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_hide_anonymous(self):
+        """Anonymous users should not be able to hide or show answers"""
+        response = self.client.post(_get_detail_url(1, 1) + "hide/?answer=3")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        response = self.client.post(_get_detail_url(1, 1) + "show/?answer=3")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_hide_own(self):
         """Even whoever made the answer should not be able to hide or show answers"""

@@ -11,6 +11,10 @@ from lego.apps.surveys.constants import (
     QUESTION_TYPES,
     TEXT_FIELD,
 )
+from lego.apps.surveys.permissions import (
+    SubmissionPermissionHandler,
+    SurveyPermissionHandler,
+)
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
 
@@ -31,6 +35,9 @@ class Survey(BasisModel):
     token = models.CharField(
         max_length=64, default=None, unique=True, null=True, blank=True
     )
+
+    class Meta:
+        permission_handler = SurveyPermissionHandler()
 
     def aggregate_submissions(self):
         result = {}
@@ -99,6 +106,7 @@ class Submission(BasisModel):
 
     class Meta:
         unique_together = ("survey", "user")
+        permission_handler = SubmissionPermissionHandler()
 
 
 class Answer(BasisModel):
