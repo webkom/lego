@@ -1,3 +1,6 @@
+from django.db.models import F, Window
+from django.db.models.functions import Rank
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,6 +11,7 @@ from lego.apps.achievements.constants import (
     KEYPRESS_ORDER,
     KEYPRESS_ORDER_IDENTIFIER,
 )
+from lego.apps.achievements.filters import AchievementFilterSet
 from lego.apps.achievements.models import Achievement
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.serializers import KeypressOrderSerializer
@@ -19,16 +23,22 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PublicUserWithGroupsSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = AchievementLeaderboardPagination
+    filterset_class = AchievementFilterSet
+    filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
         return (
             User.objects.filter(achievements__isnull=False)
+            .annotate(
+                achievement_rank=Window(
+                    expression=Rank(), order_by=[F("achievements_score").desc()]
+                )
+            )
             .order_by("-achievements_score")
-            .distinct()
         )
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
