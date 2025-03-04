@@ -523,3 +523,13 @@
     last_name: bedkomrec
     email: bedkomrec@bedkomrec.com
     password: "pbkdf2_sha256$120000$rhBO1zmtTZsr$smSDnW2pSOl7kac1ErGVJnRvB5fapOFBQnKqBKr/Q8g=" # Bedkom123
+- model: users.User
+  pk: 58
+  fields:
+    username: boblee
+    student_username: boblee
+    gender: male
+    first_name: bob
+    last_name: lee swagger
+    email: boblee@swagger.com
+    password: "pbkdf2_sha256$120000$rhBO1zmtTZsr$smSDnW2pSOl7kac1ErGVJnRvB5fapOFBQnKqBKr/Q8g=" # Bedkom123
