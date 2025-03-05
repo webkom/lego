@@ -1,6 +1,8 @@
 from django.db.models import Q
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.lending.serializers import (
@@ -39,13 +41,25 @@ class LendingRequestViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if not user.is_authenticated:
             return LendingRequest.objects.none()
-        editable_objects = LendableObject.objects.filter(
-            Q(can_edit_users=user) | Q(can_edit_groups__in=user.abakus_groups.all())
-        ).distinct()
 
-        return LendingRequest.objects.filter(
-            Q(created_by=user) | Q(lendable_object__in=editable_objects)
-        ).distinct()
+        if self.action == "admin":
+            editable_objects = LendableObject.objects.filter(
+                Q(can_edit_users=user) | Q(can_edit_groups__in=user.abakus_groups.all())
+            ).distinct()
+            return LendingRequest.objects.filter(
+                lendable_object__in=editable_objects
+            ).distinct()
+
+        elif self.action == "list":
+            return LendingRequest.objects.filter(created_by=user)
+
+        else:
+            editable_objects = LendableObject.objects.filter(
+                Q(can_edit_users=user) | Q(can_edit_groups__in=user.abakus_groups.all())
+            ).distinct()
+            return LendingRequest.objects.filter(
+                Q(created_by=user) | Q(lendable_object__in=editable_objects)
+            ).distinct()
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
@@ -57,3 +71,9 @@ class LendingRequestViewSet(viewsets.ModelViewSet):
                 LendingRequestAdminSerializer if is_admin else LendingRequestSerializer
             )
         return LendingRequestSerializer
+
+    @action(detail=False, methods=["get"], url_path="admin")
+    def admin(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
