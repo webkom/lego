@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from lego.apps.achievements.views import AchievementViewSet, LeaderBoardViewSet
 from lego.apps.articles.views import ArticlesViewSet
+from lego.apps.banners.views import BannersViewSet
 from lego.apps.comments.views import CommentViewSet
 from lego.apps.companies.views import (
     AdminCompanyViewSet,
@@ -89,6 +90,7 @@ router.register(
 router.register(r"announcements", AnnouncementViewSet, basename="announcements")
 router.register(r"articles", ArticlesViewSet)
 router.register(r"bdb", AdminCompanyViewSet, basename="bdb")
+router.register(r"banners", BannersViewSet, basename="banner")
 router.register(r"calendar-ical", ICalViewset, basename="calendar-ical")
 router.register(r"calendar-token", ICalTokenViewset, basename="calendar-token")
 router.register(r"comments", CommentViewSet)
