@@ -209,9 +209,8 @@ class LendingRequestTestCase(BaseAPITestCase):
         response = self.client.get(reverse("api:v1:lending-request-admin"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
-
+        returned_ids = [req["id"] for req in data["results"]]
         # Check that only the request associated with the object they can edit appears.
-        returned_ids = [req["id"] for req in data]
         self.assertIn(request_editable.id, returned_ids)
         self.assertNotIn(request_non_editable.id, returned_ids)
 
