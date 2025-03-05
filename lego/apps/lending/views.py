@@ -8,7 +8,6 @@ from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
     LendableObjectSerializer,
-    LendingRequestAdminSerializer,
     LendingRequestCreateAndUpdateSerializer,
     LendingRequestSerializer,
 )
@@ -64,12 +63,6 @@ class LendingRequestViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
             return LendingRequestCreateAndUpdateSerializer
-        if self.action == "retrieve":
-            user = self.request.user
-            is_admin = user.has_perm(EDIT, obj=self.get_object().lendable_object)
-            return (
-                LendingRequestAdminSerializer if is_admin else LendingRequestSerializer
-            )
         return LendingRequestSerializer
 
     @action(detail=False, methods=["get"], url_path="admin")

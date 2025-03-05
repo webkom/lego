@@ -139,11 +139,3 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                     )
 
         return attrs
-
-
-class LendingRequestAdminSerializer(LendingRequestSerializer):
-    class Meta(LendingRequestSerializer.Meta):
-        fields = (
-            LendingRequestSerializer.Meta.fields
-            + ObjectPermissionsSerializerMixin.Meta.fields
-        )
