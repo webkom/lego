@@ -3,6 +3,7 @@ from rest_framework import serializers
 from lego.apps.files.fields import ImageField
 from lego.apps.lending.constants import LENDING_CHOICE_STATUSES
 from lego.apps.lending.models import LendableObject, LendingRequest
+from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
     BasisModelSerializer,
     ObjectPermissionsSerializerMixin,
@@ -31,8 +32,39 @@ class LendableObjectAdminSerializer(
         )
 
 
+class LendableObjectField(serializers.PrimaryKeyRelatedField):
+    def use_pk_only_optimization(self):
+        return False
+
+    def to_representation(self, value):
+        serializer = LendableObjectSerializer(instance=value, context=self.context)
+        return serializer.data
+
+
 class LendingRequestSerializer(BasisModelSerializer):
     status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
+    created_by = PublicUserSerializer(read_only=True)
+    updated_by = PublicUserSerializer(read_only=True)
+    lendable_object = LendableObjectSerializer(read_only=True)
+
+    class Meta:
+        model = LendingRequest
+        fields = (
+            "id",
+            "created_by",
+            "updated_by",
+            "lendable_object",
+            "status",
+            "start_date",
+            "end_date",
+        )
+
+
+class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
+    status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
+    created_by = PublicUserSerializer(read_only=True)
+    updated_by = PublicUserSerializer(read_only=True)
+    lendable_object = LendableObjectField(queryset=LendableObject.objects.all())
 
     class Meta:
         model = LendingRequest

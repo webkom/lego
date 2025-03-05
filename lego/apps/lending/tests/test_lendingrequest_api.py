@@ -181,6 +181,40 @@ class LendingRequestTestCase(BaseAPITestCase):
         lending_request.refresh_from_db()
         self.assertEqual(lending_request.status, "unapproved")
 
+    def test_admin_endpoint_returns_only_requests_for_editable_objects(self):
+        """
+        The /admin endpoint should return only lending requests where the requesting user has
+        edit permission on the associated lendable object.
+        """
+        # Create another lendable object without granting edit permissions to self.editor_user.
+        other_object = LendableObject.objects.create(
+            title="Other object",
+            description="Other object",
+        )
+        # For other_object, only add view permissions.
+        other_object.can_view_groups.add(self.view_group)
+        # Note: self.lendable_object already grants edit access to
+        # self.editor_user via self.edit_group.
+
+        # Create two lending requests by self.editor_user:
+        # 1. For the object where the user has edit permission.
+        request_editable = create_lending_request(
+            self.editor_user, self.lendable_object
+        )
+        # 2. For the object where the user does NOT have edit permission.
+        request_non_editable = create_lending_request(self.editor_user, other_object)
+
+        # Authenticate as the editor user and access the /admin endpoint.
+        self.client.force_authenticate(user=self.editor_user)
+        response = self.client.get(reverse("api:v1:lending-request-admin"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+
+        # Check that only the request associated with the object they can edit appears.
+        returned_ids = [req["id"] for req in data]
+        self.assertIn(request_editable.id, returned_ids)
+        self.assertNotIn(request_non_editable.id, returned_ids)
+
 
 class LendingRequestStatusTestCase(BaseAPITestCase):
     def setUp(self):
