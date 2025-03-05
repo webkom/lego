@@ -31,11 +31,22 @@ class LendableObjectAdminSerializer(
             + ObjectPermissionsSerializerMixin.Meta.fields
         )
 
+
+class LendableObjectField(serializers.PrimaryKeyRelatedField):
+    def use_pk_only_optimization(self):
+        return False
+
+    def to_representation(self, value):
+        serializer = LendableObjectSerializer(instance=value, context=self.context)
+        return serializer.data
+
+
 class LendingRequestSerializer(BasisModelSerializer):
     status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
     created_by = PublicUserSerializer(read_only=True)
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectSerializer(read_only=True)
+
     class Meta:
         model = LendingRequest
         fields = (
@@ -48,8 +59,12 @@ class LendingRequestSerializer(BasisModelSerializer):
             "end_date",
         )
 
+
 class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
     status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
+    created_by = PublicUserSerializer(read_only=True)
+    updated_by = PublicUserSerializer(read_only=True)
+    lendable_object = LendableObjectField(queryset=LendableObject.objects.all())
 
     class Meta:
         model = LendingRequest
