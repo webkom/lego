@@ -7,6 +7,7 @@ from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
     LendableObjectSerializer,
     LendingRequestAdminSerializer,
+    LendingRequestCreateAndUpdateSerializer,
     LendingRequestSerializer,
 )
 from lego.apps.permissions.api.permissions import LegoPermissions
@@ -48,7 +49,7 @@ class LendingRequestViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
-            return LendingRequestSerializer
+            return LendingRequestCreateAndUpdateSerializer
         if self.action == "retrieve":
             user = self.request.user
             is_admin = user.has_perm(EDIT, obj=self.get_object().lendable_object)
