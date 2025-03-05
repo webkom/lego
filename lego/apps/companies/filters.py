@@ -8,7 +8,6 @@ from lego.apps.companies.models import (
     Semester,
     StudentCompanyContact,
 )
-from lego.apps.users.models import User
 
 
 class AdminCompanyFilterSet(FilterSet):
