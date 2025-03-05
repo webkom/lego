@@ -363,10 +363,19 @@ class FilterCompaniesTestCase(BaseAPITestCase):
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-    def test_filter_by_search(self):
+    def test_filter_by_name(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        company_response = self.client.get(_get_bdb_list_url(), {"search": "Face"})
+        company_response = self.client.get(_get_bdb_list_url(), {"name": "Face"})
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 1)
+
+    def test_filter_by_student_contacts(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"semester_id": 1, "student_contacts": "te"}
+        )
         self.assertEqual(company_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(company_response.json()["results"]), 1)
 
