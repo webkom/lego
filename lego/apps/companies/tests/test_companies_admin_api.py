@@ -373,11 +373,27 @@ class FilterCompaniesTestCase(BaseAPITestCase):
     def test_filter_by_student_contacts(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
+
+        # test empty query params
+        self.assertEqual(len(company_response.json()["results"]), 1)
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"semester_id": 1, "student_contacts": ""}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+
+        # test for single semester_id
         company_response = self.client.get(
             _get_bdb_list_url(), {"semester_id": 1, "student_contacts": "te"}
         )
         self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+
+        # test without semester_id query param
         self.assertEqual(len(company_response.json()["results"]), 1)
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"student_contacts": "te"}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 2)
 
     def test_filter_by_status_interested(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
