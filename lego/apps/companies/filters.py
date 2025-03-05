@@ -52,18 +52,18 @@ class AdminCompanyFilterSet(FilterSet):
             return queryset
 
         semester_id = self.request.query_params.get("semester_id")
-        if semester_id is None:
-            return queryset
 
-        filtered_student_company_contacts = (
-            StudentCompanyContact.objects.filter(semester_id=semester_id)
-            .annotate(
-                user__fullname=Concat(
-                    F("user__first_name"), Value(" "), F("user__last_name")
-                )
+        filtered_student_company_contacts = StudentCompanyContact.objects.all()
+        if semester_id is not None:
+            filtered_student_company_contacts = StudentCompanyContact.objects.filter(
+                semester_id=semester_id
             )
-            .filter(user__fullname__icontains=value)
-        )
+
+        filtered_student_company_contacts = filtered_student_company_contacts.annotate(
+            user__fullname=Concat(
+                F("user__first_name"), Value(" "), F("user__last_name")
+            )
+        ).filter(user__fullname__icontains=value)
 
         filtered_company_ids = filtered_student_company_contacts.values_list(
             "company", flat=True
