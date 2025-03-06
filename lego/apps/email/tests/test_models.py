@@ -61,9 +61,9 @@ class EmailListTestCase(BaseTestCase):
 
     def test_only_internal_allowed(self):
         """The members() func should only return the values matching the settings"""
-        list = EmailList.objects.get(id=1)
-        list.require_internal_address = True
-        list.save()
+        lists = EmailList.objects.get(id=1)
+        lists.require_internal_address = True
+        lists.save()
 
         group = AbakusGroup.objects.get(name="Students")
         group.email_lists_enabled = True
@@ -77,8 +77,8 @@ class EmailListTestCase(BaseTestCase):
 
         [group.add_user(user) for user in [test1, test2]]
 
-        list = EmailList.objects.get(id=1)
-        list.groups.add(group)
-        list.users.add(test1)
+        lists = EmailList.objects.get(id=1)
+        lists.groups.add(group)
+        lists.users.add(test1)
 
         self.assertSequenceEqual({"testbruker1@abakus.no"}, set(list.members()))
