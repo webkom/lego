@@ -7,6 +7,7 @@ from lego.apps.email.models import EmailList
 from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST
+from lego.apps.permissions.keyword import KeywordPermissions
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
 from lego.apps.surveys.models import Survey
@@ -49,5 +50,8 @@ class SiteMetaViewSet(viewsets.ViewSet):
         is_allowed = {entity: True for entity in allow_anonymous_entities}
         for entity, (model, permission) in permission_entities.items():
             is_allowed[entity] = user.has_perm(permission, model)
-
+        if user.is_authenticated and user.memberships:
+            is_allowed["sudo"] = user.memberships.filter(
+                abakus_group__name="Webkom"
+            ).exists()
         return Response({"site": site_meta, "is_allowed": is_allowed})

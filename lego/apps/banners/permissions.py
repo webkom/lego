@@ -4,6 +4,7 @@ from lego.apps.permissions.permissions import PermissionHandler
 
 class BannersPermissionHandler(PermissionHandler):
     default_keyword_permission = "/sudo/admin/banners/{perm}/"
+    safe_methods = []
 
     def has_perm(
         self,

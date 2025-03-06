@@ -12,16 +12,17 @@ class BannersViewSet(viewsets.ModelViewSet):
     lookup_value_regex = r"\d+"
     serializer_class = BannersSerializer
     queryset = Banners.objects.all()
-    permission_classes = [LegoPermissions, AllowAny]
+    permission_classes = [LegoPermissions, IsAuthenticated]
 
     @action(
         detail=False,
         methods=["get"],
-        url_path="current_private",
+        url_path="current-private",
+        url_name="current-private",
         permission_classes=[IsAuthenticated],
     )
     def current_private(self, request, *args, **kwargs):
-        banner = self().get_queryset().filter(current_private=True).first()
+        banner = self.get_queryset().filter(current_private=True).first()
         if banner is None:
             return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = self.get_serializer(banner)
@@ -30,11 +31,12 @@ class BannersViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=["get"],
-        url_path="current_public",
+        url_path="current-public",
+        url_name="current-public",
         permission_classes=[AllowAny],
     )
     def current_public(self, request, *args, **kwargs):
-        banner = self().get_queryset().filter(current_public=True).first()
+        banner = self.get_queryset().filter(current_public=True).first()
         if banner is None:
             return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = self.get_serializer(banner)
