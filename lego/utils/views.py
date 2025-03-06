@@ -7,7 +7,6 @@ from lego.apps.email.models import EmailList
 from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST
-from lego.apps.permissions.keyword import KeywordPermissions
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
 from lego.apps.surveys.models import Survey

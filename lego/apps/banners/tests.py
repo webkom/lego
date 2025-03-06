@@ -44,6 +44,15 @@ class BannersPermissionTestCase(APITestCase):
             "current_private": False,
         }
 
+        self.alternative_data = {
+            "header": "Test Banner 2",
+            "subheader": "Test Subheader 2",
+            "link": "http://example.com2",
+            "color": "red",  # assuming "red" is a valid option
+            "current_public": False,
+            "current_private": False,
+        }
+
     def test_banner_create_without_permission(self):
         """
         Users not in the admin group should not be able to create a banner.
@@ -129,5 +138,86 @@ class BannersPermissionTestCase(APITestCase):
         self.assertEqual(
             response.status_code,
             status.HTTP_204_NO_CONTENT,
-            msg="The current_public endpoint should return 204 if no banner is marked as current_public.",
+            msg="The current_public endpoint should return 204 if no current public.",
+        )
+
+    def test_list_returns_401_if_not_authed(self):
+        """
+        When no auth 401.
+        """
+        # Ensure 403.
+        Banners.objects.all().update(current_public=False)
+        self.client.force_authenticate(user=None)
+        response = self.client.get(get_banner_list_url())
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
+            msg="The endpoint return 403.",
+        )
+
+    def test_detail_returns_401_if_not_authed(self):
+        """
+        When no auth 401.
+        """
+        # Ensure 403.
+        Banners.objects.all().update(current_public=False)
+        self.client.force_authenticate(user=None)
+        response = self.client.get(get_banner_detail_url(pk=1))
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
+            msg="The endpoint return 401.",
+        )
+
+    def test_banner_patch(self):
+        """
+        Users not in the admin group should not be able to update a banner.
+        """
+        Banners.objects.create(header="header", subheader="asd", link="url")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(
+            get_banner_detail_url(1), self.default_data, format="json"
+        )
+        # Expect forbidden if the user lacks proper permission.
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN,
+            msg="A user without admin group membership should be forbidden from updating a banner.",
+        )
+
+    def test_banner_patch_work(self):
+        """
+        Users  in the admin group should  be able to update a banner.
+        """
+        Banners.objects.create(header="header", subheader="asd", link="url")
+        self.admin_group.add_user(self.user)
+        self.client.force_authenticate(user=self.user)
+        post_res = self.client.post(
+            get_banner_list_url(), self.alternative_data, format="json"
+        )
+        self.assertEqual(
+            post_res.status_code,
+            status.HTTP_201_CREATED,
+            msg="OK.",
+        )
+        post_json = post_res.json()
+        self.assertEqual(
+            post_json["header"],
+            self.alternative_data["header"],
+            msg="same.",
+        )
+        response = self.client.patch(
+            get_banner_detail_url(post_json["id"]), self.default_data, format="json"
+        )
+        # Expect forbidden if the user lacks proper permission.
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+            msg="OK.",
+        )
+        data = response.json()
+        self.assertEqual(
+            data["header"],
+            self.default_data["header"],
+            msg="same.",
         )
