@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "lego.apps.achievements",
     "lego.apps.action_handlers",
     "lego.apps.articles",
+    "lego.apps.banners",
     "lego.apps.comments",
     "lego.apps.companies",
     "lego.apps.contact",

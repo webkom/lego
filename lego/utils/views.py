@@ -49,5 +49,8 @@ class SiteMetaViewSet(viewsets.ViewSet):
         is_allowed = {entity: True for entity in allow_anonymous_entities}
         for entity, (model, permission) in permission_entities.items():
             is_allowed[entity] = user.has_perm(permission, model)
-
+        if user.is_authenticated and user.memberships:
+            is_allowed["sudo"] = user.memberships.filter(
+                abakus_group__name="Webkom"
+            ).exists()
         return Response({"site": site_meta, "is_allowed": is_allowed})
