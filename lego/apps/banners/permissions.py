@@ -14,10 +14,6 @@ class BannersPermissionHandler(PermissionHandler):
         check_keyword_permissions=True,
         **kwargs
     ):
-        if perm == LIST:
-            return True
-        if perm == VIEW:
-            return True
 
         return super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs

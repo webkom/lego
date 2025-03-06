@@ -25,5 +25,5 @@ class BannersSerializer(BasisModelSerializer):
         if validated_data.get("current_private", False):
             Banners.objects.all().update(current_private=False)
         if validated_data.get("current_public", False):
-            Banners.objects.all().update(current_private=False)
+            Banners.objects.all().update(current_public=False)
         return super().create(validated_data)

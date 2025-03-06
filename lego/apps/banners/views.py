@@ -1,6 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from lego.apps.banners.models import Banners
@@ -14,24 +14,16 @@ class BannersViewSet(viewsets.ModelViewSet):
     queryset = Banners.objects.all()
     permission_classes = [LegoPermissions, AllowAny]
 
-    def get_queryset(self):
-        if self.action == "current_private":
-            return Banners.objects.filter(current_private=True)
-        if self.action == "current_public":
-            return Banners.objects.filter(current_public=True)
-        return super().get_queryset()
-
     @action(
         detail=False,
         methods=["get"],
         url_path="current_private",
-        permission_classes=[AllowAny],
+        permission_classes=[IsAuthenticated],
     )
     def current_private(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        banner = queryset.first()
+        banner = self().get_queryset().filter(current_private=True).first()
         if banner is None:
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = self.get_serializer(banner)
         return Response(serializer.data)
 
@@ -42,9 +34,8 @@ class BannersViewSet(viewsets.ModelViewSet):
         permission_classes=[AllowAny],
     )
     def current_public(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        banner = queryset.first()
+        banner = self().get_queryset().filter(current_public=True).first()
         if banner is None:
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = self.get_serializer(banner)
         return Response(serializer.data)
