@@ -143,6 +143,7 @@ class SurveyTemplateViewSet(
         .filter(is_template__isnull=False)
     )
     lookup_field = "id"
+    permission_classes = [LegoPermissions, IsAuthenticated]
     filter_backends = (DjangoFilterBackend,)
 
     def get_serializer_class(self):
