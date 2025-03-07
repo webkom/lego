@@ -186,10 +186,11 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         old_status = instance.status
         new_status = validated_data.get("status", old_status)
         instance = super().update(instance, validated_data)
-
+        old_status_string = LENDING_REQUEST_TRANSLATION_MAP[old_status]
+        new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
         if new_status != old_status:
             Comment.objects.create(
-                text=f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP[old_status]} til {LENDING_REQUEST_TRANSLATION_MAP[new_status]}.",
+                text=f"Status endret fra {old_status_string} til {new_status_string}.",
                 content_object=instance,
                 current_user=self.context.get(
                     "request"

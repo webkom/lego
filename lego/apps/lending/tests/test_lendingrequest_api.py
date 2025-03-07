@@ -374,14 +374,6 @@ class LendingRequestStatusTestCase(BaseAPITestCase):
         self.assertEqual(lending_request.status, "approved")
 
 
-def get_lending_request_list_url():
-    return reverse("api:v1:lending-request-list")
-
-
-def get_lending_request_detail_url(pk):
-    return reverse("api:v1:lending-request-detail", kwargs={"pk": pk})
-
-
 class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
     def setUp(self):
         # Create two users:
@@ -485,3 +477,68 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
         )
         system_comment = updated_request.comments.order_by("created_at").first()
         self.assertEqual(system_comment.text, expected_text)
+
+
+class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
+    def setUp(self):
+        # Create a creator user and an approver user.
+        self.creator_user = User.objects.create(
+            username="creator", email="creator@example.com"
+        )
+        self.approver_user = User.objects.create(
+            username="approver", email="approver@example.com"
+        )
+
+        # Create permission groups.
+        self.view_group = AbakusGroup.objects.create(name="view_group")
+        self.edit_group = AbakusGroup.objects.create(name="edit_group")
+
+        # Assign permissions:
+        #   - The creator is only in the view group.
+        #   - The approver is in both view and edit groups.
+        self.view_group.add_user(self.creator_user)
+        self.view_group.add_user(self.approver_user)
+        self.edit_group.add_user(self.approver_user)
+
+        # Create a lendable object and assign the groups.
+        self.lendable_object = LendableObject.objects.create(
+            title="Test Object", description="Testing object"
+        )
+        self.lendable_object.can_view_groups.add(self.view_group)
+        self.lendable_object.can_edit_groups.add(self.edit_group)
+
+    def test_different_user_approves_request_creates_system_comment(self):
+        # Step 1: Creator creates the
+        # lending request (status defaults to "unapproved").
+        self.client.force_authenticate(user=self.creator_user)
+        create_data = {
+            "lendable_object": self.lendable_object.pk,
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+        }
+        create_response = self.client.post(get_lending_request_list_url(), create_data)
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+        request_id = create_response.data["id"]
+
+        # Step 2: Approver (a different user)
+        #  updates the request's status to "approved".
+        self.client.force_authenticate(user=self.approver_user)
+        patch_data = {"status": "approved"}
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(request_id), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
+
+        # Step 3: Verify that the lending request now has
+        # a system comment reflecting the status change.
+        updated_request = LendingRequest.objects.get(pk=request_id)
+        self.assertTrue(updated_request.comments.exists(), "Expected comment.")
+
+        expected_text = (
+            f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP['unapproved']} "
+            f"til {LENDING_REQUEST_TRANSLATION_MAP['approved']}."
+        )
+        system_comment = updated_request.comments.order_by("created_at").first()
+        self.assertEqual(system_comment.text, expected_text)
+        # Optionally check that the comment was created by the approver.
+        self.assertEqual(system_comment.created_by, self.approver_user)
