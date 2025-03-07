@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.lending.constants import LENDING_CHOICE_STATUSES
 from lego.apps.lending.models import LendableObject, LendingRequest
@@ -46,6 +47,7 @@ class LendingRequestSerializer(BasisModelSerializer):
     created_by = PublicUserSerializer(read_only=True)
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectSerializer(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = LendingRequest
@@ -57,6 +59,7 @@ class LendingRequestSerializer(BasisModelSerializer):
             "status",
             "start_date",
             "end_date",
+            "comments",
         )
 
 

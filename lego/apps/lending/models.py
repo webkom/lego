@@ -57,4 +57,6 @@ class LendingRequest(BasisModel):
 
     @property
     def content_target(self):
-        return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
+        return "{0}.{1}-{2}".format(
+            self._meta.app_label, self._meta.model_name, self.pk
+        )
