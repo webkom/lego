@@ -47,6 +47,7 @@ class LendingRequest(BasisModel):
     comments = GenericRelation(Comment)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    text = models.TextField(blank=False, null=True)
 
     class Meta:
         permission_handler = LendingRequestPermissionHandler()

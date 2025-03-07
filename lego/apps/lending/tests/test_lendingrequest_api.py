@@ -2,6 +2,10 @@ from django.urls import reverse
 from django.utils.timezone import now, timedelta
 from rest_framework import status
 
+from lego.apps.lending.constants import (
+    LENDING_REQUEST_STATUSES,
+    LENDING_REQUEST_TRANSLATION_MAP,
+)
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
@@ -368,3 +372,116 @@ class LendingRequestStatusTestCase(BaseAPITestCase):
         # Confirm it's updated
         lending_request = LendingRequest.objects.get(id=request_id)
         self.assertEqual(lending_request.status, "approved")
+
+
+def get_lending_request_list_url():
+    return reverse("api:v1:lending-request-list")
+
+
+def get_lending_request_detail_url(pk):
+    return reverse("api:v1:lending-request-detail", kwargs={"pk": pk})
+
+
+class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
+    def setUp(self):
+        # Create two users:
+        # creator_user will create the request
+        # other_user will attempt to update someone else's request.
+        self.creator_user = User.objects.create(
+            username="creator_user", email="creator@abakus.no"
+        )
+        self.other_user = User.objects.create(
+            username="other_user", email="other@abakus.no"
+        )
+
+        # Create groups for permissions (if needed)
+        self.view_group = AbakusGroup.objects.create(name="view_group")
+        self.edit_group = AbakusGroup.objects.create(name="edit_group")
+        self.view_group.add_user(self.creator_user)
+        self.view_group.add_user(self.other_user)
+        # Let’s assume edit permission is granted only to creator_user for this test.
+        self.edit_group.add_user(self.creator_user)
+
+        # Create a lendable object and assign permissions.
+        from lego.apps.lending.models import LendableObject
+
+        self.lendable_object = LendableObject.objects.create(
+            title="Test Object", description="Testing object"
+        )
+        self.lendable_object.can_view_groups.add(self.view_group)
+        self.lendable_object.can_edit_groups.add(self.edit_group)
+
+        # Create a lending request as the creator.
+        self.client.force_authenticate(user=self.creator_user)
+        create_data = {
+            "lendable_object": self.lendable_object.pk,
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+            # Optionally add a text field here.
+        }
+        response = self.client.post(get_lending_request_list_url(), create_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.request_id = response.data["id"]
+
+    def test_non_creator_cannot_cancel_request(self):
+        """
+        Verify that a user who did not create the lending request
+        cannot update its status to 'cancelled'.
+        """
+        # Attempt to cancel the lending request as other_user.
+        self.client.force_authenticate(user=self.other_user)
+        self.edit_group.add_user(self.other_user)
+        patch_data = {"status": LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"]}
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.request_id), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("status", patch_response.data)
+        self.assertIn(
+            "You cannot cancel someone else's request", patch_response.data["status"][0]
+        )
+
+    def test_non_creator_cannot_update_text(self):
+        """
+        Verify that a user who did not create the lending request
+        cannot update its text field.
+        """
+        # Attempt to update the text as other_user.
+        self.edit_group.add_user(self.other_user)
+        self.client.force_authenticate(user=self.other_user)
+        patch_data = {"text": "Attempted update by non-creator."}
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.request_id), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("text", patch_response.data)
+        self.assertIn(
+            "You cannot edit someone else's request", patch_response.data["text"][0]
+        )
+
+    def test_creator_update_status_creates_system_comment(self):
+        """
+        Verify that when the creator updates the status of their own request,
+        a system message comment is created reflecting the status change.
+        """
+        # Update the status as the creator.
+        self.client.force_authenticate(user=self.creator_user)
+        patch_data = {"status": "approved"}
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.request_id), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
+
+        # Reload the request from the database.
+        updated_request = LendingRequest.objects.get(pk=self.request_id)
+        # Check that a comment was created for the status update.
+        self.assertTrue(updated_request.comments.exists())
+
+        # Verify the comment text matches the expected system message.
+        # Expected text: "Status endret fra {translated old status} til {translated new status}."
+        expected_text = (
+            f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP['unapproved']} "
+            f"til {LENDING_REQUEST_TRANSLATION_MAP['approved']}."
+        )
+        system_comment = updated_request.comments.order_by("created_at").first()
+        self.assertEqual(system_comment.text, expected_text)
