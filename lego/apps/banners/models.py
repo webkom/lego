@@ -8,7 +8,7 @@ from lego.utils.models import BasisModel
 
 class Banners(BasisModel):
     header = models.CharField(max_length=256)
-    subheader = models.CharField(max_length=256)
+    subheader = models.CharField(max_length=256, null=True)
     link = models.CharField(max_length=512)
     current_public = models.BooleanField(default=False, null=False, blank=False)
     current_private = models.BooleanField(default=False, null=False, blank=False)
