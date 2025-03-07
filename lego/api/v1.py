@@ -142,7 +142,7 @@ router.register(r"followers-company", FollowCompanyViewSet)
 router.register(r"followers-event", FollowEventViewSet)
 router.register(r"followers-user", FollowUserViewSet)
 router.register(r"forums", ForumsViewSet)
-router.register(r"forums/(?P<forum_pk>\d+)/threads", ThreadViewSet)
+router.register(r"forums/(?P<forum_pk>\d+)/threads", ThreadViewSet, basename="forum-thread")
 router.register(r"frontpage", FrontpageViewSet, basename="frontpage")
 router.register(r"galleries", GalleryViewSet)
 router.register(r"galleries/(?P<gallery_pk>\d+)/pictures", GalleryPictureViewSet)
@@ -206,7 +206,7 @@ router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, basename="submission"
 )
 router.register(r"tags", TagViewSet)
-router.register(r"threads", ThreadViewSet)
+router.register(r"threads", ThreadViewSet, basename="thread")
 router.register(r"user-delete", UserDeleteViewSet, basename="user-delete")
 router.register(r"users", UsersViewSet)
 router.register(

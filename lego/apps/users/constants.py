@@ -162,7 +162,7 @@ LATE_PRESENCE_PENALTY_WEIGHT = 1
 
 
 class PENALTY_WEIGHTS(models.TextChoices):
-    LATE_PRESENCE = 1
+    LATE_PRESENCE = "1"
 
 
 class PENALTY_TYPES(models.TextChoices):
