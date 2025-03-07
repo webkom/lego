@@ -47,6 +47,7 @@ class LendingRequest(BasisModel):
     comments = GenericRelation(Comment)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    text = models.TextField(blank=False, null=True)
 
     class Meta:
         permission_handler = LendingRequestPermissionHandler()
@@ -57,4 +58,6 @@ class LendingRequest(BasisModel):
 
     @property
     def content_target(self):
-        return f"{self._meta.app_label}.{self._meta.model_name}-{self.pk}"
+        return "{0}.{1}-{2}".format(
+            self._meta.app_label, self._meta.model_name, self.pk
+        )

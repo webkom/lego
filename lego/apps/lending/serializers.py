@@ -1,7 +1,13 @@
 from rest_framework import serializers
 
+from lego.apps.comments.models import Comment
+from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.files.fields import ImageField
-from lego.apps.lending.constants import LENDING_CHOICE_STATUSES
+from lego.apps.lending.constants import (
+    LENDING_CHOICE_STATUSES,
+    LENDING_REQUEST_STATUSES,
+    LENDING_REQUEST_TRANSLATION_MAP,
+)
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
@@ -41,11 +47,27 @@ class LendableObjectField(serializers.PrimaryKeyRelatedField):
         return serializer.data
 
 
-class LendingRequestSerializer(BasisModelSerializer):
+class LendingRequestListSerializer(BasisModelSerializer):
+    status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
+    lendable_object = LendableObjectSerializer(read_only=True)
+
+    class Meta:
+        model = LendingRequest
+        fields = (
+            "id",
+            "lendable_object",
+            "status",
+            "start_date",
+            "end_date",
+        )
+
+
+class LendingRequestDetailSerializer(BasisModelSerializer):
     status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
     created_by = PublicUserSerializer(read_only=True)
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectSerializer(read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = LendingRequest
@@ -55,8 +77,10 @@ class LendingRequestSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
+            "text",
             "start_date",
             "end_date",
+            "comments",
         )
 
 
@@ -65,6 +89,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
     created_by = PublicUserSerializer(read_only=True)
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectField(queryset=LendableObject.objects.all())
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = LendingRequest
@@ -74,8 +99,10 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
+            "text",
             "start_date",
             "end_date",
+            "comments",
         )
 
     def validate(self, attrs):
@@ -108,11 +135,14 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             )
 
         if self.instance is None:
-            if "status" in attrs and attrs["status"] not in ("unapproved", None):
+            if "status" in attrs and attrs["status"] not in (
+                LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
+                None,
+            ):
                 raise serializers.ValidationError(
                     {"status": "On create, status must be 'unapproved'."}
                 )
-            attrs["status"] = "unapproved"
+            attrs["status"] = LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"]
 
         else:
             if "status" in attrs:
@@ -126,8 +156,8 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                     ).exists()
 
                 if not user_in_edit_group and new_status not in (
-                    "cancelled",
-                    "unapproved",
+                    LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
+                    LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
                 ):
                     raise serializers.ValidationError(
                         {
@@ -137,5 +167,34 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                             )
                         }
                     )
+                if (
+                    self.instance.created_by != user
+                    and new_status
+                    == LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"]
+                ):
+                    raise serializers.ValidationError(
+                        {"status": ("You cannot cancel someone else's request.. ")}
+                    )
+            if self.instance.created_by != user and attrs.get("text"):
+                raise serializers.ValidationError(
+                    {"text": ("You cannot edit someone else's request.. ")}
+                )
 
         return attrs
+
+    def update(self, instance, validated_data):
+        old_status = instance.status
+        new_status = validated_data.get("status", old_status)
+        instance = super().update(instance, validated_data)
+        old_status_string = LENDING_REQUEST_TRANSLATION_MAP[old_status]
+        new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
+        if new_status != old_status:
+            Comment.objects.create(
+                text=f"Status endret fra {old_status_string} til {new_status_string}.",
+                content_object=instance,
+                current_user=self.context.get(
+                    "request"
+                ).user,  # This is a bit hacky but has to be done
+            )
+
+        return instance

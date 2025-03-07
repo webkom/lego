@@ -9,7 +9,8 @@ from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
     LendableObjectSerializer,
     LendingRequestCreateAndUpdateSerializer,
-    LendingRequestSerializer,
+    LendingRequestDetailSerializer,
+    LendingRequestListSerializer,
 )
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -63,7 +64,9 @@ class LendingRequestViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
             return LendingRequestCreateAndUpdateSerializer
-        return LendingRequestSerializer
+        if self.action == "list":
+            return LendingRequestListSerializer
+        return LendingRequestDetailSerializer
 
     @action(detail=False, methods=["get"], url_path="admin")
     def admin(self, request, *args, **kwargs):
