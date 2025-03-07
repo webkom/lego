@@ -7,21 +7,19 @@ from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from weasyprint import HTML
 
+from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
+from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.surveys.authentication import SurveyTokenAuthentication
 from lego.apps.surveys.constants import TEXT_FIELD
 from lego.apps.surveys.filters import SubmissionFilterSet, SurveyFilterSet
 from lego.apps.surveys.models import Answer, Submission, Survey
-from lego.apps.surveys.permissions import (
-    SubmissionPermissions,
-    SurveyPermissions,
-    SurveyTokenPermissions,
-)
 from lego.apps.surveys.serializers import (
     SubmissionAdminReadSerializer,
     SubmissionCreateAndUpdateSerializer,
@@ -40,11 +38,22 @@ from lego.apps.surveys.utils.report_utils import (
 
 class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Survey.objects.all().prefetch_related("questions", "submissions")
-    permission_classes = [SurveyPermissions]
+    permission_classes = [LegoPermissions, IsAuthenticated]
     filterset_class = SurveyFilterSet
     filter_backends = (DjangoFilterBackend,)
 
     ordering = ("-active_from", "title")
+
+    def get_queryset(self):
+        if self.request is None:
+            return Survey.objects.none()
+
+        user = self.request.user
+        permission_handler = get_permission_handler(Survey)
+        return permission_handler.filter_queryset(
+            user,
+            Survey.objects.prefetch_related("questions", "submissions"),
+        )
 
     def get_serializer_class(self):
         if self.action in ["create"]:
@@ -63,10 +72,6 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def share(self, *args, **kwargs):
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, obj=Survey)
-        if not is_admin:
-            return Response(status=status.HTTP_403_FORBIDDEN)
         survey = Survey.objects.get(pk=kwargs["pk"])
         survey.generate_token()
         serializer = SurveyReadDetailedAdminSerializer(survey)
@@ -74,10 +79,6 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def hide(self, *args, **kwargs):
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, obj=Survey)
-        if not is_admin:
-            return Response(status=status.HTTP_403_FORBIDDEN)
         survey = Survey.objects.get(pk=kwargs["pk"])
         survey.delete_token()
         serializer = SurveyReadDetailedAdminSerializer(survey)
@@ -85,13 +86,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def csv(self, *args, **kwargs):
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, obj=Survey)
-        if not is_admin:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         survey = Survey.objects.get(pk=kwargs["pk"])
-
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = (
             f'attachment; filename="{survey.title.replace(" ", "_")}.csv"'
@@ -107,13 +102,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def pdf(self, *args, **kwargs):
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, obj=Survey)
-        if not is_admin:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         survey = Survey.objects.get(pk=kwargs["pk"])
-
         charts_data = describe_results_with_charts(survey)
 
         context = {
@@ -152,6 +141,7 @@ class SurveyTemplateViewSet(
         Survey.objects.all().prefetch_related("questions").filter(is_template=True)
     )
     lookup_field = "id"
+    permission_classes = [LegoPermissions, IsAuthenticated]
     filter_backends = (DjangoFilterBackend,)
 
     def get_serializer_class(self):
@@ -162,7 +152,7 @@ class SurveyTemplateViewSet(
 
 class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Submission.objects.all()
-    permission_classes = [SubmissionPermissions]
+    permission_classes = [LegoPermissions, IsAuthenticated]
     filterset_class = SubmissionFilterSet
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
@@ -172,7 +162,10 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return Submission.objects.none()
 
         survey_id = self.kwargs["survey_pk"]
-        return Submission.objects.filter(survey=survey_id)
+        permission_handler = get_permission_handler(Submission)
+        return permission_handler.filter_queryset(
+            self.request.user, Submission.objects.filter(survey_id=survey_id)
+        )
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
@@ -207,11 +200,6 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def hide(self, request, **kwargs):
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, obj=Survey)
-        if not is_admin:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         submission, answer = self.validate_answer(request, **kwargs)
         answer.hide()
         return Response(
@@ -223,11 +211,6 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def show(self, request, **kwargs):
-        user = self.request.user
-        is_admin = user.has_perm(EDIT, obj=Survey)
-        if not is_admin:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         submission, answer = self.validate_answer(request, **kwargs)
         answer.show()
         return Response(
@@ -240,7 +223,7 @@ class SubmissionViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 class SurveyTokenViewset(viewsets.GenericViewSet):
     authentication_classes = [SurveyTokenAuthentication]
-    permission_classes = [SurveyTokenPermissions]
+    permission_classes = [LegoPermissions]
     queryset = Survey.objects.all()
 
     def retrieve(self, request, pk):

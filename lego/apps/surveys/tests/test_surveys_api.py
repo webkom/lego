@@ -126,10 +126,11 @@ class SurveyViewSetTestCase(APITestCase):
         self.admin_group = AbakusGroup.objects.get(name="Bedkom")
         self.admin_group.add_user(self.admin_user)
         self.regular_user = User.objects.get(username="abakule")
+        self.regular_group = AbakusGroup.objects.get(name="Abakus")
+        self.regular_group.add_user(self.regular_user)
         self.attended_user = User.objects.get(username="test1")
-        self.attending_group = AbakusGroup.objects.get(name="Abakus")
+        self.attending_group = AbakusGroup.objects.get(name="Abakom")
         self.attending_group.add_user(self.attended_user)
-
         self.survey_data = {"title": "Survey", "event": 5, "questions": []}
 
     # Create
@@ -150,6 +151,12 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.post(_get_list_url(), self.survey_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_anonymous(self):
+        """Anonymous users should not be able to create surveys"""
+        self.client.force_authenticate(user=None)
+        response = self.client.post(_get_list_url(), self.survey_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Fetch detail
     def test_detail_admin(self):
@@ -172,6 +179,12 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.json())
 
+    def test_detail_anonymous(self):
+        """Anonymous users should not be able to see the survey"""
+        self.client.force_authenticate(user=None)
+        response = self.client.get(_get_detail_url(1))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     # Detail data
     def test_detail_admin_data(self):
         """Admin users should should get tokens when fetching detail"""
@@ -182,6 +195,18 @@ class SurveyViewSetTestCase(APITestCase):
     def test_detail_attended_data(self):
         """Users who attended the event should not get tokens when fetching detail"""
         self.client.force_authenticate(user=self.attended_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertFalse("token" in response.json())
+
+    def test_detail_regular_data(self):
+        """Regular users should not get tokens when fetching detail"""
+        self.client.force_authenticate(user=self.regular_user)
+        response = self.client.get(_get_detail_url(1))
+        self.assertFalse("token" in response.json())
+
+    def test_detail_anonymous_data(self):
+        """Anonymous users should not get tokens when fetching detail"""
+        self.client.force_authenticate(user=None)
         response = self.client.get(_get_detail_url(1))
         self.assertFalse("token" in response.json())
 
@@ -196,17 +221,23 @@ class SurveyViewSetTestCase(APITestCase):
         """Regular users should not be able to see surveys list view"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url())
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_attended(self):
         """Users who attended an event should not be able to see surveys list view"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_list_url())
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_anonymous(self):
+        """Anonymous users should not be able to see surveys list view"""
+        self.client.force_authenticate(user=None)
+        response = self.client.get(_get_list_url())
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Edit permissions
     def test_edit_admin(self):
-        """Admin users should  be able to edit surveys"""
+        """Admin users should be able to edit surveys"""
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.patch(_get_detail_url(1), self.survey_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -222,6 +253,12 @@ class SurveyViewSetTestCase(APITestCase):
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.patch(_get_detail_url(1), self.survey_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_edit_anonymous(self):
+        """Anonymous users should not be able to edit surveys"""
+        self.client.force_authenticate(user=None)
+        response = self.client.patch(_get_detail_url(1), self.survey_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Edit cases
     def test_edit_survey_fields(self):
