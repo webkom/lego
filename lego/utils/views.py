@@ -54,4 +54,6 @@ class SiteMetaViewSet(viewsets.ViewSet):
                 abakus_group__name="Webkom",
                 is_active=True,
             ).exists()
+        else:
+            is_allowed["sudo"] = False
         return Response({"site": site_meta, "is_allowed": is_allowed})
