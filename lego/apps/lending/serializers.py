@@ -81,6 +81,7 @@ class LendingRequestDetailSerializer(BasisModelSerializer):
             "start_date",
             "end_date",
             "comments",
+            "content_target",
         )
 
 
