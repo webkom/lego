@@ -9,9 +9,7 @@ from lego.apps.featureflags.serializers import (
 from lego.apps.permissions.api.permissions import LegoPermissions
 
 
-class FeatureFlagsPublicViewSet(
-    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
-):
+class FeatureFlagsPublicViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = FeatureFlag.objects.all()
     lookup_field = "identifier"
     permission_classes = [AllowAny]

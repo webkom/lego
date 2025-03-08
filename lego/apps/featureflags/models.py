@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from lego.apps.featureflags.permissions import FeatureFlagsPermissionHandler
 from lego.utils.models import BasisModel
 
 
@@ -20,6 +21,9 @@ class FeatureFlag(BasisModel):
     allowed_identifier = models.CharField(
         max_length=64, unique=True, null=True, blank=True, default=None
     )
+
+    class Meta:
+        permission_handler = FeatureFlagsPermissionHandler()
 
     def can_see_flag(self, user=None):
         """

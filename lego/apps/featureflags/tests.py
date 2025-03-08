@@ -69,15 +69,6 @@ class FeatureFlagAPITestCase(APITestCase):
         data = response.json()
         self.assertEqual(data["identifier"], "test-feature")
 
-    def test_list_public_feature_flags(self):
-        """
-        Ensure public users can list feature flags.
-        """
-        FeatureFlag.objects.create(identifier="test-feature", is_active=True)
-        response = self.client.get(get_public_featureflag_list_url())
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreater(len(response.json()), 0, "Feature flag should be listed.")
-
     def test_retrieve_public_feature_flag(self):
         """
         Ensure public users can retrieve a feature flag.
