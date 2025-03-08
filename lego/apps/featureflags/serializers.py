@@ -23,6 +23,7 @@ class FeatureFlagAdminSerializer(BasisModelSerializer):
             "display_groups",
             "is_active",
             "percentage",
+            "allowed_identifier",
             "can_see_flag",
         )
 

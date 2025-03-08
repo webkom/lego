@@ -17,6 +17,9 @@ class FeatureFlag(BasisModel):
         "users.AbakusGroup",
         blank=True,
     )
+    allowed_identifier = models.CharField(
+        max_length=64, unique=True, null=True, blank=False, default=None
+    )
 
     def can_see_flag(self, user=None):
         """
