@@ -31,7 +31,9 @@ class FeatureFlagAPITestCase(APITestCase):
     fixtures = ["test_abakus_groups.yaml"]
 
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="pass")
+        self.user = User.objects.create(
+            username="testuser", password="pass", email="someemail@mail.net"
+        )
         self.admin_group = AbakusGroup.objects.get(name="Webkom")
         self.feature_flag_data = {
             "identifier": "test-feature",

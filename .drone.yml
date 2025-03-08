@@ -41,6 +41,7 @@ steps:
       CACHE: cache
     depends_on:
       - setup
+      - missing-migrations
     commands:
       - tox -e tests -- --parallel
 
