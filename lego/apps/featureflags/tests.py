@@ -163,8 +163,11 @@ class FeatureFlagAPITestCase(APITestCase):
         """
         Ensure percentage validator works correctly.
         """
-        feature_flag = FeatureFlag(
-            identifier="test-feature", is_active=True, percentage=101
+        feature_flag = FeatureFlag.objects.create(
+            identifier="test-feature",
+            is_active=True,
+            percentage=101,
+            allowed_identifier=None,
         )
         with self.assertRaises(ValidationError):
             feature_flag.full_clean()
@@ -206,5 +209,5 @@ class FeatureFlagAlgorithmTestCase(TestCase):
                 self.assertEqual(
                     result,
                     expected,
-                    f"Failed",
+                    "Failed",
                 )
