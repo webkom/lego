@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from lego.apps.companies.models import Company
 from lego.apps.email.models import EmailList
+from lego.apps.featureflags.models import FeatureFlag
 from lego.apps.meetings.models import Meeting
 from lego.apps.notifications.models import Announcement
 from lego.apps.permissions.constants import CREATE, LIST
@@ -56,4 +57,9 @@ class SiteMetaViewSet(viewsets.ViewSet):
             ).exists()
         else:
             is_allowed["sudo"] = False
+        for flag in FeatureFlag.objects.filter(allowed_identifier__isnull=False):
+            if user.is_authenticated and flag.can_see_flag(user):
+                is_allowed[flag.allowed_identifier] = True
+            else:
+                is_allowed[flag.allowed_identifier] = False
         return Response({"site": site_meta, "is_allowed": is_allowed})

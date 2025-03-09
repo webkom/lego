@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "lego.apps.emojis",
     "lego.apps.events",
     "lego.apps.external_sync",
+    "lego.apps.featureflags",
     "lego.apps.feeds",
     "lego.apps.files",
     "lego.apps.flatpages",

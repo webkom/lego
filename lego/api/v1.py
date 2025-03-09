@@ -24,6 +24,10 @@ from lego.apps.events.views import (
     RegistrationViewSet,
 )
 from lego.apps.events.webhooks import StripeWebhook
+from lego.apps.featureflags.views import (
+    FeatureFlagsAdminViewSet,
+    FeatureFlagsPublicViewSet,
+)
 from lego.apps.feeds.views import (
     NotificationsViewSet,
     PersonalFeedViewSet,
@@ -132,6 +136,10 @@ router.register(
     RegistrationViewSet,
     basename="registrations",
 )
+router.register(
+    r"featureflags-admin", FeatureFlagsAdminViewSet, basename="featureflagadmin"
+)
+router.register(r"featureflags", FeatureFlagsPublicViewSet, basename="featureflag")
 router.register(
     r"feed-notifications", NotificationsViewSet, basename="feed-notifications"
 )

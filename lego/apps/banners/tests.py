@@ -30,7 +30,9 @@ class BannersPermissionTestCase(APITestCase):
 
     def setUp(self):
         # Create a test user.
-        self.user = User.objects.create_user(username="testuser", password="pass")
+        self.user = User.objects.create_user(
+            username="testuser", password="pass", email="myemail@mymail.com"
+        )
         # Get the admin group from the fixture (adjust the group name if needed).
         from lego.apps.users.models import AbakusGroup
 
