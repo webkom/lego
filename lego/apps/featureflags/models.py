@@ -8,11 +8,11 @@ from lego.utils.models import BasisModel
 class FeatureFlag(BasisModel):
     identifier = models.CharField(max_length=255, unique=True, null=False, blank=False)
     is_active = models.BooleanField(default=False, null=False)
-    percentage = models.PositiveIntegerField(
+    percentage = models.IntegerField(
         default=None,
         null=True,
         blank=True,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        validators=[MinValueValidator(-100), MaxValueValidator(100)],
     )
     display_groups = models.ManyToManyField(
         "users.AbakusGroup",
@@ -58,9 +58,18 @@ class FeatureFlag(BasisModel):
         """
         Determines if a user ID should be selected based on a given percentage.
         Uses a lightweight hash-like function for even distribution.
+        Handles negative percentages by flipping the selected group.
         """
+        if percentage == 0:
+            return False
+
         hash_value = (user_id * 2654435761) & 0xFFFFFFFF
-        return (hash_value % 100) < percentage
+        selection_value = hash_value % 100
+
+        if percentage > 0:
+            return selection_value < percentage
+        else:
+            return selection_value >= (100 + percentage)
 
     def delete(self, using=None, force=True):
         return super().delete(using, force)
