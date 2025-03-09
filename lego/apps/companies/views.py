@@ -53,8 +53,6 @@ class AdminCompanyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Company.objects.all().prefetch_related("semester_statuses", "files")
     filterset_class = AdminCompanyFilterSet
     permission_handler = CompanyAdminPermissionHandler()
-    ordering_fields = ["name", "created_at"]
-    ordering = "name"
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
