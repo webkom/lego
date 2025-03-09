@@ -44,14 +44,14 @@ class FeatureFlag(BasisModel):
 
         # Check if user is within the percentage threshold
         if self.percentage is not None:
-            if user is None:
+            if user is None or not user.is_authenticated:
                 return False
             if not self._deterministic_selection(user.id, self.percentage):
                 return False
 
         # If display_groups is set, ensure the user belongs to at least one of them
         if self.display_groups.exists():
-            if user is None:
+            if user is None or not user.is_authenticated:
                 return False
             if not user.memberships.filter(
                 abakus_group__in=self.display_groups.all(), is_active=True
