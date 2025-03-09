@@ -141,12 +141,10 @@ class Oauth2UserDataSerializer(serializers.ModelSerializer):
     profile_picture = ImageField(required=False, options={"height": 200, "width": 200})
     is_student = serializers.SerializerMethodField()
     is_abakus_member = serializers.BooleanField()
+    sub = serializers.SerializerMethodField()
 
-    def get_sub(self):
-        return str(self.instance.id)
-
-    def get_email(self):
-        return self.instance.email_address
+    def get_sub(self, user):
+        return str(user.id)
 
     class Meta:
         model = User
