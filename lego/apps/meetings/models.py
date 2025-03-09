@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
+from django.utils.timezone import now, timedelta
 
 from lego.apps.comments.models import Comment
 from lego.apps.content.fields import ContentField
@@ -39,6 +40,18 @@ class Meeting(BasisModel):
         related_name="meeting_invitation",
         through_fields=("meeting", "user"),
     )
+    is_recurring = models.BooleanField(default=False, null=False, blank=False)
+
+    def get_next_occurrence(self):
+        if not self.is_recurring:
+            return None
+
+        next_occurrence = self.start_time + timedelta(days=7)
+
+        while next_occurrence < now():
+            next_occurrence += timedelta(days=7)
+
+        return next_occurrence
 
     def save(self, *args, **kwargs):
         previous_report = None
@@ -76,6 +89,9 @@ class Meeting(BasisModel):
 
     class Meta:
         permission_handler = MeetingPermissionHandler()
+        indexes = [
+            models.Index(fields=["is_recurring"]),
+        ]
 
     @property
     def invited_users(self):
