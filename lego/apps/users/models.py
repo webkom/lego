@@ -392,6 +392,7 @@ class User(
         permission_handler = UserPermissionHandler()
 
     def clean(self):
+        self.email = self.email.lower()
         self.student_username = self.student_username.lower()
         super(User, self).clean()
 
@@ -423,6 +424,7 @@ class User(
         super(User, self).delete(using=using, force=force)
 
     def save(self, *args, **kwargs):
+        self.email = self.email.lower()
         if self.pk:
             from lego.apps.achievements.utils.calculation_utils import (
                 calculate_user_rank,
