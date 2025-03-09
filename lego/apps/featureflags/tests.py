@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -152,25 +151,74 @@ class FeatureFlagAPITestCase(APITestCase):
         response = self.client.delete(get_admin_featureflag_detail_url(feature_flag.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_percentage_validator(self):
+    def test_percentage_validator_api(self):
         """
-        Ensure percentage validator works correctly.
+        Ensure percentage validator works correctly via the API.
         """
-        feature_flag = FeatureFlag.objects.create(
-            identifier="test-feature",
-            is_active=True,
-            percentage=101,
-            allowed_identifier=None,
+        self.admin_group.add_user(self.user)
+        self.client.force_authenticate(user=self.user)
+
+        # Attempt to create a feature flag with invalid percentage (above 100)
+        response = self.client.post(
+            get_admin_featureflag_list_url(),
+            {
+                "identifier": "test-feature",
+                "is_active": True,
+                "percentage": 105,
+                "allowed_identifier": None,
+            },
+            format="json",
         )
-        with self.assertRaises(ValidationError):
-            feature_flag.full_clean()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("percentage", response.json())
 
-        feature_flag.percentage = -1
-        with self.assertRaises(ValidationError):
-            feature_flag.full_clean()
+        # Attempt to create a feature flag with invalid percentage (below -100)
+        response = self.client.post(
+            get_admin_featureflag_list_url(),
+            {
+                "identifier": "test-feature-2",
+                "is_active": True,
+                "percentage": -101,
+                "allowed_identifier": None,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("percentage", response.json())
 
-        feature_flag.percentage = 50
-        feature_flag.full_clean()  # Should pass validation
+        # Create a feature flag with a valid percentage
+        response = self.client.post(
+            get_admin_featureflag_list_url(),
+            {
+                "identifier": "test-feature-valid",
+                "is_active": True,
+                "percentage": 50,
+                "allowed_identifier": None,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_webkom_user_cannot_access_inactive_feature_flag(self):
+        """
+        Ensure that even an admin user in Webkom cannot access.
+        """
+        FeatureFlag.objects.create(
+            identifier="inactive-feature",
+            is_active=False,
+        )
+
+        # Add user to Webkom admin group
+        self.admin_group.add_user(self.user)
+        self.client.force_authenticate(user=self.user)
+
+        # Attempt to retrieve the feature flag
+        response = self.client.get(
+            get_public_featureflag_detail_url("inactive-feature")
+        )
+
+        # Ensure the feature flag is not accessible
+        self.assertEqual(response.json()["canSeeFlag"], False)
 
 
 class FeatureFlagAlgorithmTestCase(TestCase):

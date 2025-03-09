@@ -24,6 +24,13 @@ class FeatureFlag(BasisModel):
 
     class Meta:
         permission_handler = FeatureFlagsPermissionHandler()
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(percentage__isnull=True)
+                | (models.Q(percentage__gte=-100) & models.Q(percentage__lte=100)),
+                name="percentage_range_constraint",
+            )
+        ]
 
     def can_see_flag(self, user=None):
         """
