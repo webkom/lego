@@ -1,9 +1,11 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
-from django.utils.timezone import now, timedelta
+from django.utils import timezone
 
 from lego.apps.comments.models import Comment
 from lego.apps.content.fields import ContentField
@@ -49,7 +51,7 @@ class Meeting(BasisModel):
 
         next_occurrence = self.start_time + timedelta(days=7)
 
-        while next_occurrence < now():
+        while next_occurrence < timezone.now():
             next_occurrence += timedelta(days=7)
 
         return next_occurrence

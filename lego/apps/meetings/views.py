@@ -94,7 +94,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         url_name="recurring",
     )
     def recurring(self, request, *args, **kwargs):
-        meetings = self.get_queryset().filter(recurring=0)
+        meetings = self.get_queryset().filter(recurring=0, created_by=request.user)
         serializer = self.get_serializer(meetings, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 

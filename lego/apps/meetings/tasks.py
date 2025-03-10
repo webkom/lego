@@ -1,7 +1,6 @@
 from datetime import datetime, time, timedelta
 
 from django.utils import timezone
-from django.utils.timezone import make_aware
 
 from structlog import get_logger
 
@@ -90,7 +89,7 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
         meeting_duration = (
             (meeting.end_time - meeting.start_time)
             if meeting.end_time
-            else timezone.timedelta(hours=1)
+            else timedelta(hours=1)
         )
         next_end_time = next_start_time + meeting_duration
 
