@@ -91,15 +91,9 @@ class Meeting(BasisModel):
     class Meta:
         permission_handler = MeetingPermissionHandler()
         indexes = [
-            models.Index(
-                fields=["recurring"]
-            ), 
-            models.Index(
-                fields=["report", "recurring"]
-            ),
-            models.Index(
-                fields=["report", "recurring", "start_time"]
-            ),
+            models.Index(fields=["recurring"]),
+            models.Index(fields=["report", "created_by", "recurring"]),
+            models.Index(fields=["report", "created_by", "recurring", "start_time"]),
         ]
 
     @property

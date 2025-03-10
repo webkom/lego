@@ -67,8 +67,7 @@ schedule = {
     },
     "generate_weekly_recurring_meetings": {
         "task": "lego.apps.meetings.tasks.generate_weekly_recurring_meetings",
-        # "schedule": crontab(hour=0, minute=0),
-        "schedule": crontab(minute="*"),  # For testing ONLY!!!!
+        "schedule": crontab(hour=0, minute=0),
     },
 }
 
