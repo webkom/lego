@@ -53,27 +53,43 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
     self.setup_logger(logger_context)
     today = timezone.now().date()
 
-    recurring_meetings = Meeting.objects.filter(is_recurring=True)
+    recurring_meetings = Meeting.objects.filter(recurring=0)
 
     for meeting in recurring_meetings:
         next_start_time = meeting.get_next_occurrence()
 
-        if next_start_time and next_start_time.date() >= today:
-            first_report_entry = meeting.report_changelogs.order_by("created_at").first()
-            report_content = first_report_entry.report if first_report_entry else ""
+        if not next_start_time or next_start_time.date() < today:
+            continue
 
-            meeting_duration = (meeting.end_time - meeting.start_time) if meeting.end_time else timezone.timedelta(hours=1)
-            next_end_time = next_start_time + meeting_duration
+        first_report_entry = meeting.report_changelogs.order_by("created_at").first()
+        original_report = first_report_entry.report if first_report_entry else ""
 
-            new_meeting = Meeting.objects.create(
-                title=meeting.title,
-                location=meeting.location,
-                start_time=next_start_time,
-                end_time=next_end_time,
-                description=meeting.description,
-                is_recurring=False,
-                report=report_content,
-            )
+        future_meetings = Meeting.objects.filter(
+            start_time__gte=today, report=original_report, recurring__gt=0
+        )
 
-            for user in meeting.invited_users.all():
-                new_meeting.invite_user(user)
+        if future_meetings.exists():
+            continue
+
+        latest_recurring_meeting = (
+            Meeting.objects.filter(report=original_report, recurring__gt=0)
+            .order_by("-recurring")
+            .first()
+        )
+        new_recurring_value = (latest_recurring_meeting.recurring + 1) if latest_recurring_meeting else 1
+
+        meeting_duration = (meeting.end_time - meeting.start_time) if meeting.end_time else timezone.timedelta(hours=1)
+        next_end_time = next_start_time + meeting_duration
+
+        new_meeting = Meeting.objects.create(
+            title=meeting.title,
+            location=meeting.location,
+            start_time=next_start_time,
+            end_time=next_end_time,
+            description=meeting.description,
+            recurring=new_recurring_value,
+            report=original_report,
+        )
+
+        for user in meeting.invited_users.all():
+            new_meeting.invite_user(user)
