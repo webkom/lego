@@ -107,6 +107,7 @@ class MeetingDetailSerializer(BasisModelSerializer):
             "mazemap_poi",
             "reactions_grouped",
             "reactions",
+            "recurring",
         )
         read_only = True
 
@@ -134,6 +135,7 @@ class MeetingListSerializer(BasisModelSerializer):
             "end_time",
             "report_author",
             "mazemap_poi",
+            "recurring",
         )
 
 
