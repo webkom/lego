@@ -40,7 +40,7 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         return "start_time"
 
     def get_serializer_class(self):
-        if self.action == "list":
+        if self.action in ["list", "recurring"]:
             return MeetingListSerializer
         return super().get_serializer_class()
 
@@ -85,6 +85,17 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         group = serializer.validated_data["group"]
         meeting.invite_group(group, request.user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    @decorators.action(
+        detail=False,
+        methods=["GET"],
+        url_path="recurring",
+        url_name="recurring",
+    )
+    def recurring(self, request, *args, **kwargs):
+        meetings = self.get_queryset().filter(recurring=0)
+        serializer = self.get_serializer(meetings, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
