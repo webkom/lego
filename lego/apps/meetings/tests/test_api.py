@@ -50,6 +50,26 @@ class CreateMeetingTestCase(BaseAPITestCase):
         res = self.client.post(_get_list_url(), test_meeting_data[0])
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_invalid_recurring_value(self):
+        """
+        Ensure a meeting cannot be created with an invalid 'recurring' value.
+        """
+        self.client.force_authenticate(user=self.abakommer)
+
+        invalid_data = {
+            "title": "Invalid Recurring Meeting",
+            "location": "Plebkom",
+            "report": "<p>report</p>",
+            "start_time": "2016-10-01T13:20:30Z",
+            "end_time": "2016-10-01T14:00:30Z",
+            "recurring": 5,
+        }
+
+        res = self.client.post(_get_list_url(), invalid_data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("recurring", res.data)
+        self.assertEqual(res.data["recurring"][0], "Recurring must be either -1 or 0.")
+
 
 class RetrieveMeetingTestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_meetings.yaml", "test_users.yaml"]

@@ -52,14 +52,14 @@ def notify_user_of_unanswered_meeting_invitation(self, logger_context=None):
 def generate_weekly_recurring_meetings(self, logger_context=None):
     """Creates new weekly meetings"""
     self.setup_logger(logger_context)
-    today = timezone.now().date()
+    today = timezone.now()
 
     recurring_meetings = Meeting.objects.filter(recurring=0)
 
     for meeting in recurring_meetings:
         next_start_time = meeting.get_next_occurrence()
 
-        if not next_start_time or next_start_time.date() < today:
+        if not next_start_time or next_start_time < today:
             continue
 
         first_report_entry = meeting.report_changelogs.order_by("created_at").first()

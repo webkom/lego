@@ -88,6 +88,11 @@ class MeetingDetailSerializer(BasisModelSerializer):
         user = self.context["request"].user
         return obj.get_reactions_grouped(user)
 
+    def validate_recurring(self, value):
+        if value not in [-1, 0]:
+            raise serializers.ValidationError("Recurring must be either -1 or 0.")
+        return value
+
     class Meta:
         model = Meeting
         fields = (
