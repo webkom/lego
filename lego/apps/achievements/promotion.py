@@ -188,7 +188,7 @@ def check_genfors_related_single_user(user: User) -> None:
     check_leveled_promotions(user.id, GENFORS_IDENTIFIER, GENFORS_ACHIEVEMENTS)
 
 
-def check_comeplete_user_profile(user: User) -> None:
+def check_complete_user_profile(user: User) -> None:
     check_leveled_promotions(user.id, COMPLETE_IDENTIFIER, COMPLETE_ACHIEVEMENT)
 
 
@@ -199,6 +199,6 @@ def check_all_promotions():
         check_poll_related_single_user(user)
         check_penalty_related_single_user(user)
         check_genfors_related_single_user(user)
-        check_comeplete_user_profile(user)
+        check_complete_user_profile(user)
 
     check_rank_promotions()
