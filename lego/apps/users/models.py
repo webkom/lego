@@ -391,10 +391,6 @@ class User(
     class Meta:
         permission_handler = UserPermissionHandler()
 
-    def clean(self):
-        self.student_username = self.student_username.lower()
-        super(User, self).clean()
-
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
 
@@ -423,6 +419,10 @@ class User(
         super(User, self).delete(using=using, force=force)
 
     def save(self, *args, **kwargs):
+        self.email = self.email.lower()
+        self.student_username = (
+            self.student_username.lower() if self.student_username else None
+        )
         if self.pk:
             from lego.apps.achievements.utils.calculation_utils import (
                 calculate_user_rank,
