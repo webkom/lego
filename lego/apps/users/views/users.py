@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from structlog import get_logger
 
+from lego.apps.achievements.promotion import check_complete_user_profile
 from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
@@ -146,6 +147,7 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 abakus_group.remove_user(user)
         payload = serializer.data
         payload["is_abakus_member"] = is_abakus_member
+        check_complete_user_profile(request.user)
         return Response(data=payload, status=status.HTTP_200_OK)
 
     @action(
