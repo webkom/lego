@@ -30,14 +30,15 @@ class GenerateRecurringMeetingsTestCase(BaseTestCase):
         description = "Recurring team standup"
         report = "Meeting report notes"
 
-        # Create an initial recurring meeting
+        # Create an initial recurring meeting template
         self.meeting = Meeting.objects.create(
             title=title,
             location=location,
             start_time=timezone.now() - timedelta(days=7),
             end_time=timezone.now() - timedelta(days=6, hours=23),
             description=description,
-            recurring=0,  # Original recurring meeting
+            is_recurring=True,  # Mark this as a recurring template
+            is_template=True,  # This is a template meeting
             report=report,
             current_user=self.user1,
         )
@@ -50,18 +51,17 @@ class GenerateRecurringMeetingsTestCase(BaseTestCase):
         """Test that a new recurring meeting is created correctly."""
         generate_weekly_recurring_meetings()
 
-        new_meeting = Meeting.objects.filter(recurring__gt=0).first()
+        new_meeting = Meeting.objects.filter(parent=self.meeting).first()
         self.assertIsNotNone(new_meeting, "No recurring meeting was created")
-        self.assertEqual(
-            new_meeting.report, self.meeting.report, "Report should be inherited"
-        )
         self.assertEqual(
             new_meeting.title, self.meeting.title, "Title should be the same"
         )
         self.assertEqual(
             new_meeting.location, self.meeting.location, "Location should be the same"
         )
-        self.assertEqual(new_meeting.recurring, 1, "Recurring index should start at 1")
+        self.assertFalse(
+            new_meeting.is_template, "New meetings should not be templates"
+        )
         self.assertEqual(
             new_meeting.invited_users.count(), 2, "Invited users should be copied over"
         )
@@ -71,49 +71,14 @@ class GenerateRecurringMeetingsTestCase(BaseTestCase):
         generate_weekly_recurring_meetings()
         generate_weekly_recurring_meetings()  # Run again immediately
 
-        new_meetings = Meeting.objects.filter(recurring__gt=0)
+        new_meetings = Meeting.objects.filter(parent=self.meeting)
         self.assertEqual(new_meetings.count(), 1, "Duplicate meetings were created")
-
-    def test_increments_recurring_index_correctly(self):
-        """Ensure recurring meetings get the correct incremental index."""
-        generate_weekly_recurring_meetings()
-
-        # Get the first recurring meeting
-        first_recurring_meeting = Meeting.objects.filter(recurring__gt=0).first()
-        self.assertIsNotNone(
-            first_recurring_meeting, "First recurring meeting should exist"
-        )
-
-        # Simulate advancing the first recurring meeting by one week
-        first_recurring_meeting.start_time += timedelta(days=7)
-        first_recurring_meeting.end_time += timedelta(days=7)
-        first_recurring_meeting.save()
-
-        generate_weekly_recurring_meetings()  # Run again after a week
-
-        transaction.on_commit(
-            lambda: self.assertEqual(
-                Meeting.objects.filter(recurring__gt=0).order_by("recurring").count(),
-                2,
-                "Only two meetings should exist",
-            )
-        )
-        transaction.on_commit(
-            lambda: self.assertEqual(
-                Meeting.objects.filter(recurring__gt=0)
-                .order_by("recurring")
-                .last()
-                .recurring,
-                2,
-                "Recurring index should increment correctly",
-            )
-        )
 
     def test_invited_users_are_copied_to_new_meeting(self):
         """Ensure invited users are copied correctly to new meetings."""
         generate_weekly_recurring_meetings()
 
-        new_meeting = Meeting.objects.filter(recurring__gt=0).first()
+        new_meeting = Meeting.objects.filter(parent=self.meeting).first()
         invited_users = new_meeting.invited_users.all()
 
         self.assertIn(self.user1, invited_users, "User1 should be invited")
@@ -131,8 +96,8 @@ class GenerateRecurringMeetingsTestCase(BaseTestCase):
             start_time=(timezone.now() + timedelta(days=7)),
             end_time=(timezone.now() + timedelta(days=7, hours=1)),
             description=self.meeting.description,
-            recurring=1,
-            report=self.meeting.report,
+            is_recurring=False,
+            parent=self.meeting,
             current_user=self.meeting.created_by,
         )
 
@@ -140,7 +105,7 @@ class GenerateRecurringMeetingsTestCase(BaseTestCase):
 
         transaction.on_commit(
             lambda: self.assertEqual(
-                Meeting.objects.filter(recurring__gt=0).count(),
+                Meeting.objects.filter(parent=self.meeting).count(),
                 1,
                 "A duplicate meeting was created even though one exists",
             )

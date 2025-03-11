@@ -42,11 +42,18 @@ class Meeting(BasisModel):
         related_name="meeting_invitation",
         through_fields=("meeting", "user"),
     )
-    recurring = models.IntegerField(default=-1, null=False, blank=True)
-    # This is -1 for non recurring, 0 for recurring, and n for children
+    is_recurring = models.BooleanField(default=False, null=False, blank=True)
+    parent = models.ForeignKey(
+        "self",
+        blank=True,
+        null=True,
+        related_name="children",
+        on_delete=models.SET_NULL,
+    )
+    is_template = models.BooleanField(default=False, null=False, blank=False)
 
     def get_next_occurrence(self):
-        if self.recurring != 0:
+        if not self.is_recurring:
             return None
 
         next_occurrence = self.start_time + timedelta(days=7)
@@ -93,15 +100,22 @@ class Meeting(BasisModel):
     class Meta:
         permission_handler = MeetingPermissionHandler()
         indexes = [
-            models.Index(fields=["recurring"]),
+            models.Index(fields=["is_recurring", "is_template", "parent"]),
             models.Index(
                 fields=[
                     "created_by",
-                    "recurring",
-                    "report",
+                    "is_recurring",
+                    "is_template",
+                    "parent",
+                    "start_time",
                 ]
             ),
-            models.Index(fields=["created_by", "recurring", "report", "start_time"]),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=~models.Q(parent__isnull=False, is_template=True),
+                name="prevent_template_with_parent",
+            )
         ]
 
     @property

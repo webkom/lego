@@ -54,7 +54,9 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
     self.setup_logger(logger_context)
     today = timezone.now()
 
-    recurring_meetings = Meeting.objects.filter(recurring=0)
+    recurring_meetings = Meeting.objects.filter(
+        is_recurring=True, parent__isnull=True, is_template=True
+    )
 
     for meeting in recurring_meetings:
         next_start_time = meeting.get_next_occurrence()
@@ -62,29 +64,19 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
         if not next_start_time or next_start_time < today:
             continue
 
-        first_report_entry = meeting.report_changelogs.order_by("created_at").first()
-        original_report = first_report_entry.report if first_report_entry else ""
+        latest_report_entry = meeting.report_changelogs.order_by("-created_at").first()
+        latest_report = latest_report_entry.report if latest_report_entry else ""
 
         future_meetings = Meeting.objects.filter(
             start_time__gte=today,
-            report=original_report,
-            recurring__gt=0,
+            parent=meeting,
             created_by=meeting.created_by,
+            is_recurring=False,
+            is_template=False,
         )
 
         if future_meetings.exists():
             continue
-
-        latest_recurring_meeting = (
-            Meeting.objects.filter(
-                report=original_report, recurring__gt=0, created_by=meeting.created_by
-            )
-            .order_by("-recurring")
-            .first()
-        )
-        new_recurring_value = (
-            (latest_recurring_meeting.recurring + 1) if latest_recurring_meeting else 1
-        )
 
         meeting_duration = (
             (meeting.end_time - meeting.start_time)
@@ -99,8 +91,10 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
             start_time=next_start_time,
             end_time=next_end_time,
             description=meeting.description,
-            recurring=new_recurring_value,
-            report=original_report,
+            is_recurring=False,
+            is_template=False,
+            parent=meeting,
+            report=latest_report,
             current_user=meeting.created_by,
         )
 
