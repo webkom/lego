@@ -50,12 +50,13 @@ class GenerateRecurringMeetingsTestCase(BaseTestCase):
     def test_creates_new_recurring_meeting(self):
         """Test that a new recurring meeting is created correctly."""
         generate_weekly_recurring_meetings()
-
         new_meeting = Meeting.objects.filter(parent=self.meeting).first()
+        expected_week_number = timezone.localtime(new_meeting.start_time).isocalendar()[
+            1
+        ]
+        expected_title = f"{self.meeting.title} [Uke {expected_week_number}]"
         self.assertIsNotNone(new_meeting, "No recurring meeting was created")
-        self.assertEqual(
-            new_meeting.title, self.meeting.title, "Title should be the same"
-        )
+        self.assertEqual(new_meeting.title, expected_title, "Title should be the same")
         self.assertEqual(
             new_meeting.location, self.meeting.location, "Location should be the same"
         )

@@ -22,6 +22,8 @@ class MeetingInvitationHandler(Handler):
         )
 
     def handle_create(self, instance, **kwargs):
+        if instance.meeting.is_template:
+            return
         activity = self.get_activity(instance)
         self.manager.add_activity(activity, [instance.user.pk], [NotificationFeed])
 

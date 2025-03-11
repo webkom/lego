@@ -90,8 +90,8 @@ class MeetingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @decorators.action(
         detail=False,
         methods=["GET"],
-        url_path="recurring",
-        url_name="recurring",
+        url_path="templates",
+        url_name="templates",
     )
     def templates(self, request, *args, **kwargs):
         meetings = self.get_queryset().filter(is_template=True, created_by=request.user)
