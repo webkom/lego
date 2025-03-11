@@ -84,9 +84,11 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
             else timedelta(hours=1)
         )
         next_end_time = next_start_time + meeting_duration
+        week_number = timezone.localtime(next_start_time).isocalendar()[1]
+        new_title = f"{meeting.title} [Uke {week_number}]"
 
         new_meeting = Meeting.objects.create(
-            title=meeting.title,
+            title=new_title,
             location=meeting.location,
             start_time=next_start_time,
             end_time=next_end_time,
