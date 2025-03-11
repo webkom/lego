@@ -115,7 +115,11 @@ class Meeting(BasisModel):
             models.CheckConstraint(
                 check=~models.Q(parent__isnull=False, is_template=True),
                 name="prevent_template_with_parent",
-            )
+            ),
+            models.CheckConstraint(
+                check=models.Q(is_recurring=False) | models.Q(is_template=True),
+                name="recurring_meetings_must_be_templates",
+            ),
         ]
 
     @property
