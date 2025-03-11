@@ -420,7 +420,9 @@ class User(
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
-        self.student_username = self.student_username.lower() if self.student_username else None
+        self.student_username = (
+            self.student_username.lower() if self.student_username else None
+        )
         if self.pk:
             from lego.apps.achievements.utils.calculation_utils import (
                 calculate_user_rank,

@@ -394,7 +394,8 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         json = response.json()
         self.assertEqual(json.get("status"), "success")
         self.assertEqual(
-            self.user_with_student_confirmation.student_username, f"{Token.DATA}"
+            self.user_with_student_confirmation.student_username,
+            f"{str(Token.DATA).lower()}",
         )
 
         self.client.force_authenticate(self.user_without_student_confirmation)
