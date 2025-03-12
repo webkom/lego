@@ -193,7 +193,7 @@ class UpdateStudentCompanyContactTestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
 
     def getStudentCompanyContactCount(self, pk):
-        return StudentCompanyContact.objects.filter(company=2).count()
+        return StudentCompanyContact.objects.filter(company=pk).count()
 
     def updateCompany(self, pk, body):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
@@ -363,12 +363,56 @@ class FilterCompaniesTestCase(BaseAPITestCase):
     def setUp(self):
         self.abakus_user = User.objects.all().first()
 
-    def test_filter_by_search(self):
+    def test_filter_by_name(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
         self.client.force_authenticate(self.abakus_user)
-        company_response = self.client.get(_get_bdb_list_url(), {"search": "Face"})
+
+        company_response = self.client.get(_get_bdb_list_url(), {"name": ""})
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 3)
+
+        company_response = self.client.get(_get_bdb_list_url(), {"name": "Face"})
         self.assertEqual(company_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(company_response.json()["results"]), 1)
+
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"name": "Bedrift som ikke finnes"}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 0)
+
+    def test_filter_by_student_contacts(self):
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+
+        # test empty query params
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"semester_id": 1, "student_contacts": ""}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 3)
+
+        # test for single semester_id
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"semester_id": 1, "student_contacts": "te"}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 1)
+
+        # test for non-existing user
+        company_response = self.client.get(
+            _get_bdb_list_url(),
+            {"semester_id": 1, "student_contacts": "Bruker som ikke finnes"},
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 0)
+
+        # test without semester_id query param
+        company_response = self.client.get(
+            _get_bdb_list_url(), {"student_contacts": "te"}
+        )
+        self.assertEqual(company_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(company_response.json()["results"]), 2)
 
     def test_filter_by_status_interested(self):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
