@@ -1,8 +1,11 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core import signing
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from django.db import models
+from django.utils import timezone
 
 from lego.apps.comments.models import Comment
 from lego.apps.content.fields import ContentField
@@ -39,6 +42,26 @@ class Meeting(BasisModel):
         related_name="meeting_invitation",
         through_fields=("meeting", "user"),
     )
+    is_recurring = models.BooleanField(default=False, null=False, blank=True)
+    parent = models.ForeignKey(
+        "self",
+        blank=True,
+        null=True,
+        related_name="children",
+        on_delete=models.SET_NULL,
+    )
+    is_template = models.BooleanField(default=False, null=False, blank=False)
+
+    def get_next_occurrence(self):
+        if not self.is_recurring:
+            return None
+
+        next_occurrence = self.start_time + timedelta(days=7)
+
+        while next_occurrence < timezone.now():
+            next_occurrence += timedelta(days=7)
+
+        return next_occurrence
 
     def save(self, *args, **kwargs):
         previous_report = None
@@ -76,6 +99,28 @@ class Meeting(BasisModel):
 
     class Meta:
         permission_handler = MeetingPermissionHandler()
+        indexes = [
+            models.Index(fields=["is_recurring", "is_template", "parent"]),
+            models.Index(
+                fields=[
+                    "created_by",
+                    "is_recurring",
+                    "is_template",
+                    "parent",
+                    "start_time",
+                ]
+            ),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=~models.Q(parent__isnull=False, is_template=True),
+                name="prevent_template_with_parent",
+            ),
+            models.CheckConstraint(
+                check=models.Q(is_recurring=False) | models.Q(is_template=True),
+                name="recurring_meetings_must_be_templates",
+            ),
+        ]
 
     @property
     def invited_users(self):

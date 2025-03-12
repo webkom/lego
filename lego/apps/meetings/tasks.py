@@ -46,3 +46,59 @@ def notify_user_of_unanswered_meeting_invitation(self, logger_context=None):
                 meeting_invitation.user, meeting_invitation=meeting_invitation
             )
             notification.notify()
+
+
+@celery_app.task(base=AbakusTask, bind=True)
+def generate_weekly_recurring_meetings(self, logger_context=None):
+    """Creates new weekly meetings"""
+    self.setup_logger(logger_context)
+    today = timezone.now()
+
+    recurring_meetings = Meeting.objects.filter(
+        is_recurring=True, parent__isnull=True, is_template=True
+    )
+
+    for meeting in recurring_meetings:
+        next_start_time = meeting.get_next_occurrence()
+
+        if not next_start_time or next_start_time < today:
+            continue
+
+        latest_report_entry = meeting.report_changelogs.order_by("-created_at").first()
+        latest_report = latest_report_entry.report if latest_report_entry else ""
+
+        future_meetings = Meeting.objects.filter(
+            start_time__gte=today,
+            parent=meeting,
+            created_by=meeting.created_by,
+            is_recurring=False,
+            is_template=False,
+        )
+
+        if future_meetings.exists():
+            continue
+
+        meeting_duration = (
+            (meeting.end_time - meeting.start_time)
+            if meeting.end_time
+            else timedelta(hours=1)
+        )
+        next_end_time = next_start_time + meeting_duration
+        week_number = timezone.localtime(next_start_time).isocalendar()[1]
+        new_title = f"{meeting.title} [Uke {week_number}]"
+
+        new_meeting = Meeting.objects.create(
+            title=new_title,
+            location=meeting.location,
+            start_time=next_start_time,
+            end_time=next_end_time,
+            description=meeting.description,
+            is_recurring=False,
+            is_template=False,
+            parent=meeting,
+            report=latest_report,
+            current_user=meeting.created_by,
+        )
+
+        for user in meeting.invited_users.all():
+            new_meeting.invite_user(user, created_by=meeting.created_by)
