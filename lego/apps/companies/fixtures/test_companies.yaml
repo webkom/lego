@@ -51,6 +51,13 @@
     user: 2
     semester: 2
 
+- model: companies.StudentCompanyContact
+  pk: 2
+  fields:
+    company: 2
+    user: 1
+    semester: 2
+
 
 - model: companies.CompanyContact
   pk: 1
