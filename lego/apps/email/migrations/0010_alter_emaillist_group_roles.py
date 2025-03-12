@@ -43,6 +43,7 @@ class Migration(migrations.Migration):
                         ("photo_admin", "photo_admin"),
                         ("graphic_admin", "graphic_admin"),
                         ("social_media_admin", "social_media_admin"),
+                        ("booking_admin", "booking_admin"),
                     ],
                     max_length=64,
                 ),
