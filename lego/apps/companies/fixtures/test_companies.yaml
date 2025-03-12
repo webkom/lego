@@ -52,9 +52,9 @@
     semester: 2
 
 - model: companies.StudentCompanyContact
-  pk: 2
+  pk: 3
   fields:
-    company: 2
+    company: 3
     user: 1
     semester: 2
 

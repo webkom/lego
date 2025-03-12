@@ -193,7 +193,7 @@ class UpdateStudentCompanyContactTestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_companies.yaml", "test_users.yaml"]
 
     def getStudentCompanyContactCount(self, pk):
-        return StudentCompanyContact.objects.filter(company=2).count()
+        return StudentCompanyContact.objects.filter(company=pk).count()
 
     def updateCompany(self, pk, body):
         AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
