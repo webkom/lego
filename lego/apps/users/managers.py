@@ -38,14 +38,6 @@ class AbakusUserManager(UserManager, PersistentModelManager):
         )
 
 
-class MembershipManager(PersistentModelManager):
-    def get_by_natural_key(self, username, abakus_group_name):
-        return self.get(
-            user__username__iexact=username.lower(),
-            abakus_group__name__iexact=abakus_group_name.lower(),
-        )
-
-
 class UserPenaltyManager(PersistentModelManager):
     def valid(self):
         from lego.apps.users.models import Penalty

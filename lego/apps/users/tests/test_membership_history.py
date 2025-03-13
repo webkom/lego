@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.db import transaction
 from django.utils import timezone
 from rest_framework import status
 
@@ -31,7 +32,9 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         self.client.force_authenticate(user)
         response = self.client.get(self.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.json()["results"]))
+        transaction.on_commit(
+            lambda: self.assertEqual(1, len(response.json()["results"]))
+        )
 
     def test_list_history_as_authenticated(self):
         user = User.objects.get(username="test1")
