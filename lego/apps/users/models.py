@@ -26,7 +26,6 @@ from lego.apps.users.managers import (
     AbakusGroupManager,
     AbakusGroupManagerWithoutText,
     AbakusUserManager,
-    MembershipManager,
     UserPenaltyManager,
 )
 from lego.apps.users.permissions import (
@@ -37,6 +36,7 @@ from lego.apps.users.permissions import (
 from lego.utils.decorators import abakus_cached_property
 from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
+from lego.utils.managers import BasisModelManager
 
 from .validators import (
     email_blacklist_validator,
@@ -58,19 +58,27 @@ class MembershipHistory(models.Model):
 
 
 class Membership(BasisModel):
-    objects = MembershipManager()  # type: ignore
+    objects = BasisModelManager()  # type: ignore
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
 
     role = models.CharField(
-        max_length=30, choices=constants.ROLES, default=constants.MEMBER
+        max_length=30,
+        choices=constants.ROLES,
+        default=constants.MEMBER,
+        null=False,
+        blank=True,
     )
     is_active = models.BooleanField(default=True, db_index=True)
     email_lists_enabled = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("user", "abakus_group")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "abakus_group", "role"], name="unique_user_group_role"
+            )
+        ]
         permission_handler = MembershipPermissionHandler()
 
     def delete(self, using=None, force=False):
@@ -173,8 +181,8 @@ class AbakusGroup(MPTTModel, PersistentModel):
         )
         return membership
 
-    def remove_user(self, user):
-        membership = Membership.objects.get(user=user, abakus_group=self)
+    def remove_user(self, user, role=constants.MEMBER):
+        membership = Membership.objects.filter(user=user, abakus_group=self, role=role)
         membership.delete()
 
     def natural_key(self):

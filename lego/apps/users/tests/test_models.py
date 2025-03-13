@@ -228,12 +228,6 @@ class MembershipTestCase(BaseTestCase):
             ),
         )
 
-    def test_natural_key(self):
-        found_membership = Membership.objects.get_by_natural_key(
-            self.test_user.username, self.test_committee.name
-        )
-        self.assertEqual(self.test_membership, found_membership)
-
 
 class PenaltyTestCase(BaseTestCase):
     fixtures = [
