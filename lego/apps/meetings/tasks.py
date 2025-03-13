@@ -90,6 +90,7 @@ def generate_weekly_recurring_meetings(self, logger_context=None):
         new_meeting = Meeting.objects.create(
             title=new_title,
             location=meeting.location,
+            mazemap_poi=meeting.mazemap_poi,
             start_time=next_start_time,
             end_time=next_end_time,
             description=meeting.description,

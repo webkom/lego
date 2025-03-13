@@ -56,10 +56,11 @@ class Meeting(BasisModel):
         if not self.is_recurring:
             return None
 
-        next_occurrence = self.start_time + timedelta(days=7)
+        now = timezone.now()
+        days_since_start = (now - self.start_time).days
+        weeks_since_start = days_since_start // 7
 
-        while next_occurrence < timezone.now():
-            next_occurrence += timedelta(days=7)
+        next_occurrence = self.start_time + timedelta(weeks=weeks_since_start + 1)
 
         return next_occurrence
 
