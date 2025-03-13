@@ -34,9 +34,9 @@ from lego.apps.users.permissions import (
     UserPermissionHandler,
 )
 from lego.utils.decorators import abakus_cached_property
+from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
-from lego.utils.managers import BasisModelManager
 
 from .validators import (
     email_blacklist_validator,
@@ -80,6 +80,21 @@ class Membership(BasisModel):
             )
         ]
         permission_handler = MembershipPermissionHandler()
+
+    def save(self, *args, **kwargs):
+
+        if self.pk:
+            with transaction.atomic():
+                existing = Membership.objects.get(pk=self.pk)
+                MembershipHistory.objects.create(
+                    user=existing.user,
+                    abakus_group=existing.abakus_group,
+                    role=existing.role,
+                    start_date=existing.created_at,
+                    end_date=timezone.now(),
+                )
+
+        super().save(*args, **kwargs)
 
     def delete(self, using=None, force=False):
         with transaction.atomic():
@@ -181,8 +196,8 @@ class AbakusGroup(MPTTModel, PersistentModel):
         )
         return membership
 
-    def remove_user(self, user, role=constants.MEMBER):
-        membership = Membership.objects.filter(user=user, abakus_group=self, role=role)
+    def remove_user(self, user):
+        membership = Membership.objects.filter(user=user, abakus_group=self).first()
         membership.delete()
 
     def natural_key(self):
