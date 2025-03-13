@@ -1,5 +1,6 @@
 from unittest import mock
 
+from django.db import transaction
 from django.test import override_settings
 from django.utils import timezone
 from django.utils.timezone import timedelta
@@ -158,7 +159,9 @@ class UserTestCase(BaseTestCase):
         abakus.remove_user(self.user)
         self.assertEqual(abakus.number_of_users, 0)
         self.assertEqual(self.user.memberships.count(), 0)
-        self.assertEqual(self.user.past_memberships.count(), 1)
+        transaction.on_commit(
+            lambda: self.assertEqual(self.user.past_memberships.count(), 1)
+        )
 
     def test_add_user_delete_group(self):
         abakus = AbakusGroup.objects.get(name="Abakus")
@@ -172,7 +175,9 @@ class UserTestCase(BaseTestCase):
         abakus = AbakusGroup.objects.get(name="Abakus")
         abakus.remove_user(self.user)
         self.assertEqual(self.user.memberships.count(), 0)
-        self.assertEqual(self.user.past_memberships.count(), 1)
+        transaction.on_commit(
+            lambda: self.assertEqual(self.user.past_memberships.count(), 1)
+        )
 
         abakus.add_user(self.user)
         self.assertEqual(self.user.memberships.count(), 1)

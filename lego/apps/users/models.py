@@ -82,7 +82,6 @@ class Membership(BasisModel):
         permission_handler = MembershipPermissionHandler()
 
     def save(self, *args, **kwargs):
-
         if self.pk:
             with transaction.atomic():
                 existing = Membership.objects.get(pk=self.pk)
@@ -96,16 +95,15 @@ class Membership(BasisModel):
 
         super().save(*args, **kwargs)
 
-    def delete(self, using=None, force=False):
-        with transaction.atomic():
-            MembershipHistory.objects.create(
-                user=self.user,
-                abakus_group=self.abakus_group,
-                role=self.role,
-                start_date=self.created_at,
-                end_date=timezone.now(),
-            )
-            super(Membership, self).delete(using=using, force=True)
+    def delete(self, *args, **kwargs):
+        MembershipHistory.objects.create(
+            user=self.user,
+            abakus_group=self.abakus_group,
+            role=self.role,
+            start_date=self.created_at,
+            end_date=timezone.now(),
+        )
+        super().delete(force=True)
 
     def __str__(self):
         return f"{self.user} is {self.get_role_display()} in {self.abakus_group}"
@@ -197,8 +195,9 @@ class AbakusGroup(MPTTModel, PersistentModel):
         return membership
 
     def remove_user(self, user):
-        membership = Membership.objects.filter(user=user, abakus_group=self).first()
-        membership.delete()
+        memberships = Membership.objects.filter(user=user, abakus_group=self)
+        for membership in memberships:
+            membership.delete()
 
     def natural_key(self):
         return (self.name,)
