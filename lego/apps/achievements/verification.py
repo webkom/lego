@@ -137,6 +137,29 @@ def check_total_genfors_events(user: User, count: int) -> bool:
     return count <= queryset.count()
 
 
+def check_total_galas(user: User, count: int) -> bool:
+    # Will need to be updated if there are more gala-like events
+    gala_substrings = (
+        "bankett",  # Max 3 (itDAGENE)
+        "halvingfest",  # Max 1
+        "immatrikuleringsball",  # Max 5
+        "jubileum",  # Max 4 (Abakus, Abakusrevyen, LaBamba, readme)
+        "julebord",  # Max 5
+        "utmatrikuleringsfest",  # Max 1
+        "vaargalla",  # Max 5
+    )
+
+    query = Q()
+    for substring in gala_substrings:
+        query |= Q(event__title__icontains=substring)
+
+    queryset = _passed_user_registrations(user).filter(query)
+
+    if count == 1:
+        return queryset.exists()
+    return queryset.count() >= count
+
+
 # There is a case where manual payment does not update the payment amount.
 # I have not changed this code so only stripe payments will count.
 def check_total_event_payment_over(user: User, price: int):

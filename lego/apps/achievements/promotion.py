@@ -10,6 +10,8 @@ from lego.apps.achievements.constants import (
     EVENT_PRICE_ACHIEVEMENTS,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_ACHIEVEMENTS,
+    GALA_ACHIEVEMENTS,
+    GALA_IDENTIFIER,
     GENFORS_ACHIEVEMENTS,
     GENFORS_IDENTIFIER,
     MEETING_ACHIEVEMENTS,
@@ -188,17 +190,22 @@ def check_genfors_related_single_user(user: User) -> None:
     check_leveled_promotions(user.id, GENFORS_IDENTIFIER, GENFORS_ACHIEVEMENTS)
 
 
+def check_gala_related_single_user(user: User) -> None:
+    check_leveled_promotions(user.id, GALA_IDENTIFIER, GALA_ACHIEVEMENTS)
+
+
 def check_complete_user_profile(user: User) -> None:
     check_leveled_promotions(user.id, COMPLETE_IDENTIFIER, COMPLETE_ACHIEVEMENT)
 
 
-def check_all_promotions():
+def check_all_promotions() -> None:
     for user in User.objects.all():
         check_quote_related_single_user(user)
         check_event_related_single_user(user.id)
         check_poll_related_single_user(user)
         check_penalty_related_single_user(user)
         check_genfors_related_single_user(user)
+        check_gala_related_single_user(user)
         check_complete_user_profile(user)
 
     check_rank_promotions()
