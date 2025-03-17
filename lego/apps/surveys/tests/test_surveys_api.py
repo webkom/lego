@@ -218,21 +218,72 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_regular(self):
-        """Regular users should not be able to see surveys list view"""
+        """Regular users should have permission to see surveys list view"""
         self.client.force_authenticate(user=self.regular_user)
         response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Should not have any surveys and so should not be able to see any
+        results = response.json()["results"]
+        self.assertEqual(len(results), 0)
 
     def test_list_attended(self):
-        """Users who attended an event should not be able to see surveys list view"""
+        """Users who attended an event should be able to see surveys list view"""
         self.client.force_authenticate(user=self.attended_user)
         response = self.client.get(_get_list_url())
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_anonymous(self):
         """Anonymous users should not be able to see surveys list view"""
         self.client.force_authenticate(user=None)
         response = self.client.get(_get_list_url())
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # Fetch filtered list
+    def test_filter_list_admin(self):
+        """Admin users should be able to see all surveys"""
+        self.client.force_authenticate(user=self.admin_user)
+
+        # Admin user has no surveys
+        response = self.client.get(_get_list_url(), {"user": self.admin_user.id})
+        results = response.json()["results"]
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 0)
+
+        # Attended user has one survey and admin should be able to see it
+        response = self.client.get(_get_list_url(), {"user": self.attended_user.id})
+        results = response.json()["results"]
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 1)
+
+    def test_filter_list_regular(self):
+        """Regular users should be able to check if they have surveys"""
+        self.client.force_authenticate(user=self.regular_user)
+
+        # Regular user has no surveys
+        response = self.client.get(_get_list_url(), {"user": self.regular_user.id})
+        results = response.json()["results"]
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 0)
+
+        # Regular user should not be able to see other users surveys
+        response = self.client.get(_get_list_url(), {"user": self.attended_user.id})
+        results = response.json()["results"]
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 0)
+
+    def test_filter_list_attended(self):
+        """Attended users should be able to see their own surveys"""
+        self.client.force_authenticate(user=self.attended_user)
+        response = self.client.get(_get_list_url(), {"user": self.attended_user.id})
+        results = response.json()["results"]
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(results), 1)
+
+    def test_filter_list_anonymous(self):
+        """Anonymous users should not be able to see surveys list view"""
+        self.client.force_authenticate(user=None)
+        response = self.client.get(_get_list_url(), {"user": self.admin_user.id})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Edit permissions

@@ -9,19 +9,22 @@ class SurveyPermissionHandler(PermissionHandler):
     default_require_auth = True
 
     def filter_queryset(self, user, queryset, **kwargs):
-        if user and user.is_authenticated:
-            super_filter = super().filter_queryset(user, queryset, **kwargs)
-            qs = queryset.filter(
-                Q(pk__in=super_filter)
-                | (
-                    Q(event__registrations__user=user)
-                    & Q(event__registrations__presence=PRESENCE_CHOICES.PRESENT)
-                )
-            ).distinct()
-            if qs:
-                return qs
+        if not user or not user.is_authenticated:
+            return queryset.none()
 
-        return queryset.none()
+        is_survey_admin = super().has_perm(
+            user,
+            EDIT,
+            queryset=queryset,
+            check_keyword_permissions=True,
+        )
+        if is_survey_admin:
+            return queryset.all()
+
+        return queryset.filter(
+            Q(event__registrations__user=user)
+            & Q(event__registrations__presence=PRESENCE_CHOICES.PRESENT)
+        ).distinct()
 
     def has_perm(
         self,
