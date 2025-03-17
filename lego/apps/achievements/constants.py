@@ -7,6 +7,7 @@ from lego.apps.achievements.verification import (
     check_longest_period_without_penalties,
     check_poll_responses,
     check_total_event_payment_over,
+    check_total_galas,
     check_total_genfors_events,
     check_verified_quote,
 )
@@ -33,6 +34,7 @@ MEETING_IDENTIFIER = "meeting_hidden"
 POLL_IDENTIFIER = "poll_count"
 PENALTY_IDENTIFIER = "penalty_period"
 GENFORS_IDENTIFIER = "genfors_count"
+GALA_IDENTIFIER = "gala_count"
 COMPLETE_IDENTIFIER = "complete_profile"
 
 
@@ -230,6 +232,29 @@ GENFORS_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+GALA_ACHIEVEMENTS: AchievementCollection = {
+    "gala_1": {
+        "identifier": GALA_IDENTIFIER,
+        "requirement_function": lambda user: check_total_galas(user=user, count=1),
+        "level": 0,
+    },
+    "gala_5": {
+        "identifier": GALA_IDENTIFIER,
+        "requirement_function": lambda user: check_total_galas(user=user, count=5),
+        "level": 1,
+    },
+    "gala_10": {
+        "identifier": GALA_IDENTIFIER,
+        "requirement_function": lambda user: check_total_galas(user=user, count=10),
+        "level": 2,
+    },
+    "gala_15": {
+        "identifier": GALA_IDENTIFIER,
+        "requirement_function": lambda user: check_total_galas(user=user, count=15),
+        "level": 3,
+    },
+}
+
 KEYPRESS_ORDER: AchievementCollection = {
     "keypress_order": {
         "identifier": KEYPRESS_ORDER_IDENTIFIER,
@@ -246,7 +271,6 @@ HIDDEN_ACHIEVEMENTS = {
     **COMPLETE_ACHIEVEMENT,
 }
 
-
 ACHIEVEMENTS = {
     **EVENT_ACHIEVEMENTS,
     **EVENT_RANK_ACHIEVEMENTS,
@@ -256,6 +280,7 @@ ACHIEVEMENTS = {
     **HIDDEN_ACHIEVEMENTS,
     **PENALTY_ACHIEVEMENTS,
     **GENFORS_ACHIEVEMENTS,
+    **GALA_ACHIEVEMENTS,
 }
 
 ACHIEVEMENT_IDENTIFIERS = sorted(

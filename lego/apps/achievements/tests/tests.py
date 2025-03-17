@@ -10,6 +10,7 @@ from lego.apps.achievements.constants import (
     EVENT_IDENTIFIER,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_IDENTIFIER,
+    GALA_IDENTIFIER,
     GENFORS_IDENTIFIER,
     MEETING_IDENTIFIER,
     PENALTY_IDENTIFIER,
@@ -32,6 +33,7 @@ from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.meetings.models import Meeting
 from lego.apps.polls.models import Option, Poll
 from lego.apps.quotes.models import Quote
+from lego.apps.users.constants import MEMBER_GROUP
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
@@ -233,6 +235,59 @@ class GenforsAchievementTestCase(BaseTestCase):
                     identifier=GENFORS_IDENTIFIER, level=4, user=self.user
                 ).exists(),
                 "Achievement for genfors should be unlocked",
+            )
+        )
+
+
+class GalaAchievementTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_multiple_events.yaml",
+    ]
+
+    def setUp(self) -> None:
+        self.user = User.objects.get(username="test1")
+        AbakusGroup.objects.get(name=MEMBER_GROUP).add_user(self.user)
+
+    def test_gala_achievement_levels(self) -> None:
+        abakus_group = AbakusGroup.objects.get(name=MEMBER_GROUP)
+        event_names = (
+            "Halvingfest Komtek",
+            "Immatrikuleringsball",
+            "itDAGENE-bankett",
+            "Julebord",
+            "Ukom-jubileum",
+        )
+
+        for event_name in event_names:
+            for i in range(69, 72):
+                event = Event.objects.create(
+                    title=f"{event_name} 20{i}",
+                    start_time=timezone.now() + timedelta(days=1),
+                    end_time=timezone.now() + timedelta(days=2),
+                )
+                pool = Pool.objects.create(
+                    name=MEMBER_GROUP,
+                    capacity=55,
+                    event=event,
+                    activation_date=timezone.now() - timedelta(hours=5),
+                )
+                pool.permission_groups.add(abakus_group)
+                pool.save()
+                registration = Registration.objects.create(event=event, user=self.user)
+                event.register(registration)
+                event.save()
+                event.end_time = timezone.now() - timedelta(days=2)
+                event.save()
+
+        transaction.on_commit(check_all_promotions)
+        transaction.on_commit(
+            lambda: self.assertTrue(
+                Achievement.objects.filter(
+                    identifier=GALA_IDENTIFIER, level=3, user=self.user
+                ).exists(),
+                "Achievement for gala should be unlocked",
             )
         )
 
