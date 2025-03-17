@@ -6,6 +6,7 @@ from django.db.models.functions import ExtractYear
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
+from lego.apps.achievements.constants import GALA_SUBSTRINGS
 from lego.apps.events.constants import (
     PAYMENT_MANUAL,
     PAYMENT_SUCCESS,
@@ -138,25 +139,12 @@ def check_total_genfors_events(user: User, count: int) -> bool:
 
 
 def check_total_galas(user: User, count: int) -> bool:
-    # Will need to be updated if there are more gala-like events
-    gala_substrings = (
-        "bankett",  # Max 3 (itDAGENE)
-        "halvingfest",  # Max 1
-        "immatrikuleringsball",  # Max 5
-        "jubileum",  # Max 4 (Abakus, Abakusrevyen, LaBamba, readme)
-        "julebord",  # Max 5
-        "utmatrikuleringsfest",  # Max 1
-        "vaargalla",  # Max 5
-    )
-
     query = Q()
-    for substring in gala_substrings:
+
+    for substring in GALA_SUBSTRINGS:
         query |= Q(event__title__icontains=substring)
 
     queryset = _passed_user_registrations(user).filter(query)
-
-    if count == 1:
-        return queryset.exists()
     return queryset.count() >= count
 
 

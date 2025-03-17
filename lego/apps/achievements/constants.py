@@ -37,6 +37,15 @@ GENFORS_IDENTIFIER = "genfors_count"
 GALA_IDENTIFIER = "gala_count"
 COMPLETE_IDENTIFIER = "complete_profile"
 
+GALA_SUBSTRINGS = (
+    "bankett",  # Max 3 (itDAGENE)
+    "halvingfest",  # Max 1
+    "immatrikuleringsball",  # Max 5
+    "jubileum",  # Max 4 (Abakus, Abakusrevyen, LaBamba, readme)
+    "julebord",  # Max 5
+    "utmatrikuleringsfest",  # Max 1
+    "vaargalla",  # Max 5
+)
 
 EVENT_ACHIEVEMENTS: AchievementCollection = {
     "arrangement_10": {
