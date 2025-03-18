@@ -23,9 +23,7 @@ class MembershipSerializer(serializers.ModelSerializer):
             .order_by("created_at")
             .first()
         )
-        membership_date = (
-            membership_date.date() if membership_date else None
-        )
+        membership_date = membership_date.date() if membership_date else None
 
         history_date = (
             MembershipHistory.objects.filter(user=user, abakus_group=group)
@@ -34,11 +32,8 @@ class MembershipSerializer(serializers.ModelSerializer):
             .first()
         )
 
-        return (
-            min(filter(None, [membership_date, history_date]))
-            if membership_date or history_date
-            else None
-        )
+        dates = list(filter(None, [membership_date, history_date]))
+        return min(dates) if dates else None
 
     class Meta:
         model = Membership
