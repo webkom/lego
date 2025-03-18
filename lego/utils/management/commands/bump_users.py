@@ -95,7 +95,7 @@ class Command(BaseCommand):
                 for membership in Membership.objects.filter(
                     user=user, abakus_group__type=GROUP_INTEREST
                 ):
-                    membership.delete()
+                    membership.delete(force=True)
             User.objects.filter(pk=user.pk).update(date_bumped=timezone.now())
 
     def run(self, *args, **options):

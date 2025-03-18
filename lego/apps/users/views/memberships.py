@@ -28,9 +28,9 @@ class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         group = self.kwargs["group_pk"]
         descendants = self.request.query_params.get("descendants", None)
         if descendants == "true":
-            return AbakusGroup.objects.get(pk=group).memberships
+            return AbakusGroup.objects.get(pk=group).memberships.distinct()
 
-        return Membership.objects.filter(abakus_group_id=group)
+        return Membership.objects.filter(abakus_group_id=group).distinct()
 
     def create(self, request, *args, **kwargs):
         request.data["abakus_group"] = kwargs["group_pk"]

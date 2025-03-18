@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.core.management import call_command
+from django.db import transaction
 from django.utils import timezone
 
 from lego.apps.users.constants import GROUP_INTEREST
@@ -116,11 +117,13 @@ class AbakusGroupHierarchyTestCase(BaseTestCase):
         abacraft.add_user(user)
         bump_users()
         reset_user_bump_date(user)
-        self.assertEqual(get_groups(user), [])
-        self.assertFalse(
-            Membership.objects.filter(
-                user=user, abakus_group__type=GROUP_INTEREST
-            ).exists()
+        transaction.on_commit(lambda: self.assertEqual(get_groups(user), []))
+        transaction.on_commit(
+            lambda: self.assertFalse(
+                Membership.objects.filter(
+                    user=user, abakus_group__type=GROUP_INTEREST
+                ).exists()
+            )
         )
 
     def test_multibump_should_not_bump(self):

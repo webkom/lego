@@ -26,7 +26,6 @@ from lego.apps.users.managers import (
     AbakusGroupManager,
     AbakusGroupManagerWithoutText,
     AbakusUserManager,
-    MembershipManager,
     UserPenaltyManager,
 )
 from lego.apps.users.permissions import (
@@ -35,6 +34,7 @@ from lego.apps.users.permissions import (
     UserPermissionHandler,
 )
 from lego.utils.decorators import abakus_cached_property
+from lego.utils.managers import BasisModelManager
 from lego.utils.models import BasisModel, CachedModel, PersistentModel
 from lego.utils.validators import ReservedNameValidator
 
@@ -56,33 +56,59 @@ class MembershipHistory(models.Model):
     start_date = models.DateField(null=True)
     end_date = models.DateField()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "abakus_group"]),
+        ]
+
 
 class Membership(BasisModel):
-    objects = MembershipManager()  # type: ignore
+    objects = BasisModelManager()  # type: ignore
 
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     abakus_group = models.ForeignKey("users.AbakusGroup", on_delete=models.CASCADE)
 
     role = models.CharField(
-        max_length=30, choices=constants.ROLES, default=constants.MEMBER
+        max_length=30,
+        choices=constants.ROLES,
+        default=constants.MEMBER,
+        null=False,
+        blank=True,
     )
     is_active = models.BooleanField(default=True, db_index=True)
     email_lists_enabled = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("user", "abakus_group")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "abakus_group", "role"], name="unique_user_group_role"
+            )
+        ]
         permission_handler = MembershipPermissionHandler()
 
-    def delete(self, using=None, force=False):
-        with transaction.atomic():
-            MembershipHistory.objects.create(
-                user=self.user,
-                abakus_group=self.abakus_group,
-                role=self.role,
-                start_date=self.created_at,
-                end_date=timezone.now(),
-            )
-            super(Membership, self).delete(using=using, force=True)
+    def save(self, *args, **kwargs):
+        if self.pk:
+            with transaction.atomic():
+                existing = Membership.objects.get(pk=self.pk)
+                MembershipHistory.objects.create(
+                    user=existing.user,
+                    abakus_group=existing.abakus_group,
+                    role=existing.role,
+                    start_date=existing.created_at,
+                    end_date=timezone.now(),
+                )
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        MembershipHistory.objects.create(
+            user=self.user,
+            abakus_group=self.abakus_group,
+            role=self.role,
+            start_date=self.created_at,
+            end_date=timezone.now(),
+        )
+        super().delete(force=True)
 
     def __str__(self):
         return f"{self.user} is {self.get_role_display()} in {self.abakus_group}"
@@ -174,8 +200,9 @@ class AbakusGroup(MPTTModel, PersistentModel):
         return membership
 
     def remove_user(self, user):
-        membership = Membership.objects.get(user=user, abakus_group=self)
-        membership.delete()
+        memberships = Membership.objects.filter(user=user, abakus_group=self)
+        for membership in memberships:
+            membership.delete()
 
     def natural_key(self):
         return (self.name,)
