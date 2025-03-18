@@ -218,7 +218,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         results = response.json()["results"]
-        self.assertEqual(len(results), 2) # All test surveys
+        self.assertEqual(len(results), 2)  # All test surveys
 
     def test_list_regular(self):
         """Regular users should have permission to see surveys list view"""
@@ -227,7 +227,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         results = response.json()["results"]
-        self.assertEqual(len(results), 0) # Has no surveys
+        self.assertEqual(len(results), 0)  # Has no surveys
 
     def test_list_attended(self):
         """Users who attended an event should be able to see surveys list view"""
@@ -236,7 +236,7 @@ class SurveyViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         results = response.json()["results"]
-        self.assertEqual(len(results), 1) # Only one survey
+        self.assertEqual(len(results), 1)  # Only one survey
 
     def test_list_anonymous(self):
         """Anonymous users should not be able to see surveys list view"""
@@ -252,12 +252,12 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(_get_list_url(), {"user": self.admin_user.id})
         results = response.json()["results"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(results), 0) # Has no surveys
+        self.assertEqual(len(results), 0)  # Has no surveys
 
         response = self.client.get(_get_list_url(), {"user": self.attended_user.id})
         results = response.json()["results"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(results), 1) # Can view other users surveys
+        self.assertEqual(len(results), 1)  # Can view other users surveys
 
     def test_filter_list_regular(self):
         """Regular users should be able to check if they have surveys"""
@@ -266,12 +266,12 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(_get_list_url(), {"user": self.regular_user.id})
         results = response.json()["results"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(results), 0) # Has no surveys
+        self.assertEqual(len(results), 0)  # Has no surveys
 
         response = self.client.get(_get_list_url(), {"user": self.attended_user.id})
         results = response.json()["results"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(results), 0) # Can not view other users surveys
+        self.assertEqual(len(results), 0)  # Can not view other users surveys
 
     def test_filter_list_attended(self):
         """Attended users should be able to see their own surveys"""
@@ -279,7 +279,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(_get_list_url(), {"user": self.attended_user.id})
         results = response.json()["results"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(results), 1) # Has one survey
+        self.assertEqual(len(results), 1)  # Has one survey
 
     def test_filter_list_anonymous(self):
         """Anonymous users should not be able to see surveys list view"""
