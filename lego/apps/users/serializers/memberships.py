@@ -7,6 +7,38 @@ from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerialize
 
 class MembershipSerializer(serializers.ModelSerializer):
     user = PublicUserField(queryset=User.objects.all())
+    first_join_date = serializers.SerializerMethodField()
+
+    def get_first_join_date(self, obj):
+        """
+        Retrieve the earliest date the user joined the given abakus_group
+        from either Membership or MembershipHistory.
+        """
+        user = obj.user
+        group = obj.abakus_group
+
+        membership_date = (
+            Membership.objects.filter(user=user, abakus_group=group)
+            .values_list("created_at", flat=True)
+            .order_by("created_at")
+            .first()
+        )
+        membership_date = (
+            membership_date.date() if membership_date else None
+        )
+
+        history_date = (
+            MembershipHistory.objects.filter(user=user, abakus_group=group)
+            .values_list("start_date", flat=True)
+            .order_by("start_date")
+            .first()
+        )
+
+        return (
+            min(filter(None, [membership_date, history_date]))
+            if membership_date or history_date
+            else None
+        )
 
     class Meta:
         model = Membership
@@ -18,6 +50,7 @@ class MembershipSerializer(serializers.ModelSerializer):
             "is_active",
             "email_lists_enabled",
             "created_at",
+            "first_join_date",
         )
         read_only_fields = ("created_at", "abakus_group")
 

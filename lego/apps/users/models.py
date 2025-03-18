@@ -56,6 +56,11 @@ class MembershipHistory(models.Model):
     start_date = models.DateField(null=True)
     end_date = models.DateField()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "abakus_group"]),
+        ]
+
 
 class Membership(BasisModel):
     objects = BasisModelManager()  # type: ignore
