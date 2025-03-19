@@ -326,7 +326,8 @@
     type: annen
     text: ''
     permissions: '["/sudo/admin/meetings/create/", "/sudo/admin/meetinginvitations/create/",
-      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/", "/sudo/admin/submissions/create/"]'
+      "/sudo/admin/registrations/create/", "/sudo/admin/events/payment/", "/sudo/admin/submissions/create/",
+      "/sudo/admin/surveys/list/"]'
     show_badge: true
     active: true
     lft: 1

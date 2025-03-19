@@ -52,7 +52,7 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         permission_handler = get_permission_handler(Survey)
         return permission_handler.filter_queryset(
             user,
-            Survey.objects.prefetch_related("questions", "submissions"),
+            queryset=Survey.objects.prefetch_related("questions", "submissions"),
         )
 
     def get_serializer_class(self):
