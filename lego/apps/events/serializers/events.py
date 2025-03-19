@@ -118,6 +118,7 @@ class EventReadSerializer(
             "responsible_users",
             "is_foreign_language",
             "user_reg",
+            "show_company_description",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
         read_only = True
 
@@ -197,6 +198,7 @@ class EventReadDetailedSerializer(
             "mazemap_poi",
             "responsible_users",
             "is_foreign_language",
+            "show_company_description",
         )
         read_only = True
 
@@ -400,6 +402,7 @@ class EventCreateAndUpdateSerializer(
             "mazemap_poi",
             "responsible_users",
             "is_foreign_language",
+            "show_company_description",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
 
     def validate(self, data):
