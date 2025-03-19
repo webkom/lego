@@ -103,6 +103,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     mazemap_poi = models.PositiveIntegerField(null=True)
     responsible_users = ManyToManyField(User)
     is_foreign_language = models.BooleanField(default=False, blank=False, null=False)
+    show_company_description = models.BooleanField(
+        default=False, blank=True, null=False
+    )
 
     class Meta:
         permission_handler = EventPermissionHandler()
