@@ -104,6 +104,28 @@ class MembershipPermissionHandler(PermissionHandler):
             return False
 
         if obj is not None:
+            if perm == EDIT and obj.abakus_group.type in constants.OPEN_GROUPS:
+                # Retrieve parent group
+                view = kwargs.get("view", None)
+                if view is None:
+                    return False
+                abakus_group_pk = view.kwargs["group_pk"]
+                from lego.apps.users.models import AbakusGroup
+
+                abakus_group = AbakusGroup.objects.get(id=abakus_group_pk)
+
+                request = kwargs.get("request", None)
+                if not request:
+                    return False
+                data = request.data
+                role = data.get("role")
+                if (
+                    role != constants.MEMBER
+                    and not abakus_group.memberships.filter(
+                        user=user, role__in=EDIT_ROLES
+                    ).exists()
+                ):
+                    return False
             return obj.abakus_group.type in constants.OPEN_GROUPS and obj.user == user
 
         # Retrieve parent group
@@ -133,6 +155,14 @@ class MembershipPermissionHandler(PermissionHandler):
                 if not request:
                     return False
                 data = request.data
+                role = data.get("role")
+                if (
+                    role != constants.MEMBER
+                    and not abakus_group.memberships.filter(
+                        user=user, role__in=EDIT_ROLES
+                    ).exists()
+                ):
+                    return False
                 return data.get("user") == user.id
 
         return False
