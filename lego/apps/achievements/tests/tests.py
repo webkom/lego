@@ -253,11 +253,11 @@ class GalaAchievementTestCase(BaseTestCase):
     def test_gala_achievement_levels(self) -> None:
         abakus_group = AbakusGroup.objects.get(name=MEMBER_GROUP)
         event_names = (
-            "Halvingfest Komtek",
             "Immatrikuleringsball",
             "itDAGENE-bankett",
             "Julebord",
             "Ukom-jubileum",
+            "Vaargalla",
         )
 
         for event_name in event_names:
