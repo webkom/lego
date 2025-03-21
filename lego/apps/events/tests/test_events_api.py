@@ -1,3 +1,4 @@
+import typing
 from copy import deepcopy
 from datetime import timedelta
 from unittest import mock, skipIf
@@ -517,7 +518,7 @@ class CreateEventsTestCase(BaseAPITestCase):
         "test_users.yaml",
         "test_events.yaml",
     ]
-    PAYLOAD_FIELDS = [
+    PAYLOAD_FIELDS: typing.ClassVar[list[str]] = [
         "title",
         "description",
         "text",
