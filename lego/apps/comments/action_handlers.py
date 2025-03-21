@@ -27,12 +27,6 @@ class CommentHandler(Handler):
         )
 
     def handle_create(self, instance, **kwargs):
-        if not (
-            isinstance(instance.parent, ObjectPermissionsModel)
-            and not instance.parent.require_auth
-        ):
-            return
-
         activity = self.get_activity(instance)
         author = instance.created_by
         for feeds, recipients in self.get_feeds_and_recipients(instance):

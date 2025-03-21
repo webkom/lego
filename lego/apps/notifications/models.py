@@ -9,6 +9,8 @@ from lego.utils.models import BasisModel
 from .constants import (
     CHANNEL_CHOICES,
     CHANNELS,
+    COMMENT_DEFAULT_CHANNELS,
+    COMMENT_NOTIFICATION_TYPES,
     NOTIFICATION_CHOICES,
     NOTIFICATION_TYPES,
 )
@@ -20,7 +22,7 @@ def _default_channels():
 
 class NotificationSetting(models.Model):
     """
-    All notifications is enabled by default. We need to create an instance of this model
+    All notifications are enabled by default. We need to create an instance of this model
     to adjust this.
     """
 
@@ -63,7 +65,14 @@ class NotificationSetting(models.Model):
         return cls.objects.get_or_create(
             user=user,
             notification_type=notification_type,
-            defaults={"enabled": True, "channels": CHANNELS},
+            defaults={
+                "enabled": True,
+                "channels": (
+                    COMMENT_DEFAULT_CHANNELS
+                    if notification_type in COMMENT_NOTIFICATION_TYPES
+                    else CHANNELS
+                ),
+            },
         )
 
 
