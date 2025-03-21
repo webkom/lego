@@ -395,6 +395,7 @@ class User(
         max_length=39,
         unique=False,
         null=True,
+        blank=True,
         help_text="Enter a valid username.",
         validators=[github_username_validator, ReservedNameValidator()],
     )
@@ -403,6 +404,7 @@ class User(
         max_length=71,
         unique=False,
         null=True,
+        blank=True,
         help_text="Enter a valid LinkedIn ID.",
         validators=[linkedin_id_validator, ReservedNameValidator()],
     )
