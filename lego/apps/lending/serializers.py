@@ -21,13 +21,19 @@ from lego.utils.serializers import (
 class LendableObjectSerializer(BasisModelSerializer):
     image = ImageField(required=False, options={"height": 500})
     can_lend = serializers.SerializerMethodField()
-    can_edit_groups = AbakusGroupField(
-        read_only=True, many=True
-    )
+    can_edit_groups = AbakusGroupField(read_only=True, many=True)
 
     class Meta:
         model = LendableObject
-        fields = ("id", "title", "description", "image", "can_edit_groups", "location", "can_lend")
+        fields = (
+            "id",
+            "title",
+            "description",
+            "image",
+            "can_edit_groups",
+            "location",
+            "can_lend",
+        )
 
     def get_can_lend(self, obj):
         return obj.can_lend(self.context["request"].user)
