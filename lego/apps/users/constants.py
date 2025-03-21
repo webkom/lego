@@ -165,6 +165,7 @@ LATE_PRESENCE_PENALTY_WEIGHT = 1
 
 class PENALTY_WEIGHTS(models.TextChoices):
     LATE_PRESENCE = 1
+    PAYMENT_OVERDUE = 2
 
 
 class PENALTY_TYPES(models.TextChoices):

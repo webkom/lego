@@ -8,8 +8,10 @@ from lego.apps.notifications.constants import (
     EVENT_BUMP,
     EVENT_PAYMENT_OVERDUE,
     EVENT_PAYMENT_OVERDUE_CREATOR,
+    EVENT_PAYMENT_OVERDUE_PENALTY,
 )
 from lego.apps.notifications.notification import Notification
+from lego.apps.users.constants import PENALTY_WEIGHTS
 
 
 class EventBumpNotification(Notification):
@@ -75,6 +77,28 @@ class EventPaymentOverdueNotification(Notification):
         )
 
 
+class EventPaymentOverduePenaltyNotification(Notification):
+    name = EVENT_PAYMENT_OVERDUE_PENALTY
+
+    def generate_mail(self):
+        event = self.kwargs["event"]
+
+        return self._delay_mail(
+            to_email=self.user.email,
+            context={
+                "event": event.title,
+                "first_name": self.user.first_name,
+                "id": event.id,
+            },
+            subject=f"Du har ikke betalt påmeldingen på arrangementet {event.title}",
+            plain_template="events/email/payment_overdue_penalty.txt",
+            html_template="events/email/payment_overdue_penalty.html",
+        )
+
+    def generate_push(self):
+        return super().generate_push()
+
+
 class EventPaymentOverdueCreatorNotification(Notification):
     name = EVENT_PAYMENT_OVERDUE_CREATOR
 
@@ -89,6 +113,7 @@ class EventPaymentOverdueCreatorNotification(Notification):
                 "users": users,
                 "first_name": self.user.first_name,
                 "id": event.id,
+                "weight": PENALTY_WEIGHTS.PAYMENT_OVERDUE,
             },
             subject=f"Følgende registrerte har ikke betalt påmeldingen til arrangementet"
             f" {event.title}",
