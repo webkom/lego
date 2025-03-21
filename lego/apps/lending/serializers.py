@@ -10,7 +10,6 @@ from lego.apps.lending.constants import (
 )
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.users.fields import AbakusGroupField
-from lego.apps.users.models import AbakusGroup
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
     BasisModelSerializer,
