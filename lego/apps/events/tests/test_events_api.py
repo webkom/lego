@@ -539,28 +539,34 @@ class CreateEventsTestCase(BaseAPITestCase):
         response = self.client.post(_get_list_url(), {})
         for field in self.PAYLOAD_FIELDS:
             self.assertEqual(
-                response.data.get(field)[0], _test_payload_error_messages["required_field"]
+                response.data.get(field)[0],
+                _test_payload_error_messages["required_field"],
             )
+
     def test_fields_required_on_update(self) -> None:
         response = self.client.put(_get_detail_url(self.event_id), {})
         for field in self.PAYLOAD_FIELDS:
             self.assertEqual(
-                response.data.get(field)[0], _test_payload_error_messages["required_field"]
+                response.data.get(field)[0],
+                _test_payload_error_messages["required_field"],
             )
 
-    def test_empty_fields_in_payload(
-        self, test_data = [
+    def test_empty_fields_in_payload(self) -> None:
+        test_data = [
             {"method": "post", "is_detail": False},
             {"method": "put", "is_detail": True},
-
         ]
-    ) -> None:
-        _nul_fields = [ "title", "text" , "location"]
+
+        _nul_fields = ["title", "text", "location"]
         _date_fields = ["start_time", "end_time"]
 
         for data in test_data:
             with self.subTest():
-                url = _get_detail_url(self.event_id) if data["is_detail"] else _get_list_url()
+                url = (
+                    _get_detail_url(self.event_id)
+                    if data["is_detail"]
+                    else _get_list_url()
+                )
                 response = getattr(self.client, data["method"])(
                     url,
                     {
@@ -571,12 +577,12 @@ class CreateEventsTestCase(BaseAPITestCase):
                         "location": "",
                         "start_time": "",
                         "end_time": "",
-                    }
+                    },
                 )
                 for field in _nul_fields:
                     self.assertEqual(
                         response.data.get(field)[0],
-                        _test_payload_error_messages["not_blank_field"]
+                        _test_payload_error_messages["not_blank_field"],
                     )
                 for field in _date_fields:
                     self.assertIn(
@@ -585,7 +591,7 @@ class CreateEventsTestCase(BaseAPITestCase):
                     )
                 self.assertEqual(
                     response.data.get("description")[0],
-                    _test_payload_error_messages["required_field"]
+                    _test_payload_error_messages["required_field"],
                 )
 
     def test_event_creation(self):
