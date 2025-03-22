@@ -14,7 +14,6 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
 class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
-    pagination_class = None
     filterset_class = JoblistingFilterSet
     ordering = "-created_at"
 
@@ -49,10 +48,12 @@ class JoblistingViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Joblisting.objects.all()
 
-        time_filter = self.request.query_params.get("timeFilter", False)
-        if time_filter:
-            queryset = queryset.filter(
-                visible_from__lte=timezone.now(), visible_to__gte=timezone.now()
-            )
+        params = self.request.query_params
+
+        # Disable pagination if filters are applied
+        if params and any(
+            params.get(key) for key in self.filterset_class.get_filters()
+        ):
+            self.pagination_class = None
 
         return queryset
