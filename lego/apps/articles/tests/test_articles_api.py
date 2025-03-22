@@ -1,5 +1,9 @@
+from datetime import datetime, timedelta
+from unittest import mock
+
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.response import Response
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
@@ -15,8 +19,16 @@ def get_detail_url(pk):
     return reverse("api:v1:article-detail", kwargs={"pk": pk})
 
 
+def get_statistics_url(pk):
+    return reverse("api:v1:article-statistics", kwargs={"pk": pk})
+
+
 def create_user():
     return User.objects.create(username="testuser")
+
+
+def create_other_user():
+    return User.objects.create(username="othertestuser", email="otheremail")
 
 
 def get_data_with_author(author_pk):
@@ -305,3 +317,65 @@ class PinnedArticleTestCase(BaseAPITestCase):
         self.assertTrue(self.article.pinned)
         self.assertFalse(pinned.pinned)
         self.assertEqual(Article.objects.filter(pinned=True).count(), 1)
+
+
+def generate_plausible_item(i):
+    return {
+        "bounce_rate": str(30),
+        "date": (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d"),
+        "pageviews": str(i * 2),
+        "visit_duration": str(i * 10),
+        "visitors": str(i),
+    }
+
+
+number_of_plausible_items = 3
+
+
+def mocked_plausible_request(*args, **kwargs):
+    class MockPlausibleResponse:
+        def __init__(self, *args, **kwargs):
+            self.status_code = status.HTTP_200_OK
+            self.json_data = [
+                generate_plausible_item(i) for i in range(number_of_plausible_items)
+            ]
+
+        def json(self):
+            return self.json_data
+
+    return MockPlausibleResponse()
+
+
+@mock.patch(
+    "lego.apps.articles.views.request_plausible_statistics",
+    return_value=mocked_plausible_request(),
+)
+class ArticleStatisticsCase(BaseAPITestCase):
+    def setUp(self):
+        self.view_user = create_user()
+        self.view_group = create_group()
+        self.view_group.add_user(self.view_user)
+
+        self.edit_user = create_other_user()
+        self.edit_group = create_group()
+        self.edit_group.add_user(self.edit_user)
+
+        self.auth_article = create_article(require_auth=True)
+        self.auth_article.can_view_groups.add(self.view_group)
+        self.auth_article.can_edit_groups.add(self.edit_group)
+
+    def test_unauthenticated(self, *args):
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_authenticated_view(self, *args):
+        self.client.force_authenticate(user=self.view_user)
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_authenticated_edit(self, *args):
+        self.client.force_authenticate(user=self.edit_user)
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.json())
+        self.assertEqual(len(response.json()), number_of_plausible_items)

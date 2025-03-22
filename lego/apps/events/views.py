@@ -72,7 +72,7 @@ from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT, VIEW
 from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.users.models import PhotoConsent, User
-from lego.utils.functions import verify_captcha
+from lego.utils.functions import request_plausible_statistics, verify_captcha
 
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -262,29 +262,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         event_id = self.kwargs.get("pk", None)
         event = Event.objects.get(pk=event_id)
 
-        headers = {
-            "Authorization": f"Bearer {settings.PLAUSIBLE_KEY}",
-            "Content-Type": "application/json",
-        }
-
-        created_at = event.created_at.strftime("%Y-%m-%d")
-        now = datetime.now().strftime("%Y-%m-%d")
-        # Plausible wants the date on this schema: YYYY-MM-DD,YYYY-MM-DD
-        date = f"{created_at},{now}"
-
-        url_path = f"/events/{event.id}"
-
-        filters = f"event:page=={quote(url_path)}"
-        api_url = (
-            "https://ls.webkom.dev/api/v1/stats/timeseries"
-            "?site_id=abakus.no"
-            "&metrics=visitors,pageviews,bounce_rate,visit_duration"
-            "&period=custom&date={date}"
-            "&filters={filters}"
-        ).format(date=date, filters=filters)
-
-        response = requests.get(api_url, headers=headers)
-
+        response = request_plausible_statistics(event)
         return Response(response.json())
 
     @decorators.action(detail=True, methods=["POST"], serializer_class=BaseSerializer)

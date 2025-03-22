@@ -1,7 +1,10 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from lego.apps.articles.filters import ArticleFilterSet
 from lego.apps.articles.models import Article
@@ -12,9 +15,11 @@ from lego.apps.articles.serializers import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
+from lego.apps.permissions.utils import get_permission_handler
+from lego.utils.functions import request_plausible_statistics
 
 
-class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
+class ArticlesViewSet(AllowedPermissionsMixin, ModelViewSet):
     queryset = Article.objects.all()
     ordering = "-created_at"
     serializer_class = DetailedArticleSerializer
@@ -52,3 +57,21 @@ class ArticlesViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         except (NotAuthenticated, PermissionDenied) as e:
             raise Http404 from e
         return obj
+
+    @action(detail=True, methods=["GET"])
+    def statistics(self, request, pk=None, *args, **kwargs):
+        article = Article.objects.get(id=pk)
+        user = request.user
+
+        if not user or not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        permission_handler = get_permission_handler(Article)
+        user_has_edit_perm = permission_handler.has_object_permissions(
+            user, "statistics", article
+        )
+        if not user_has_edit_perm:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        response = request_plausible_statistics(article)
+        return Response(response.json())
