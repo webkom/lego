@@ -137,6 +137,19 @@ def check_total_genfors_events(user: User, count: int) -> bool:
     return count <= queryset.count()
 
 
+def check_total_galas(user: User, count: int) -> bool:
+    from lego.apps.achievements.constants import GALA_SUBSTRINGS
+
+    # Avoid circular import
+    query = Q()
+
+    for substring in GALA_SUBSTRINGS:
+        query |= Q(event__title__icontains=substring)
+
+    queryset = _passed_user_registrations(user).filter(query)
+    return queryset.count() >= count
+
+
 # There is a case where manual payment does not update the payment amount.
 # I have not changed this code so only stripe payments will count.
 def check_total_event_payment_over(user: User, price: int):
