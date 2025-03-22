@@ -6,7 +6,6 @@ from django.db.models.functions import ExtractYear
 from django.db.models.manager import BaseManager
 from django.utils import timezone
 
-from lego.apps.achievements.constants import GALA_SUBSTRINGS
 from lego.apps.events.constants import (
     PAYMENT_MANUAL,
     PAYMENT_SUCCESS,
@@ -139,6 +138,9 @@ def check_total_genfors_events(user: User, count: int) -> bool:
 
 
 def check_total_galas(user: User, count: int) -> bool:
+    from lego.apps.achievements.constants import GALA_SUBSTRINGS
+
+    # Avoid circular import
     query = Q()
 
     for substring in GALA_SUBSTRINGS:
