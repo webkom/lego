@@ -53,16 +53,26 @@ def request_plausible_statistics(obj: BasisModel, url_root: Optional[str]) -> Re
     filters = f"event:page=={quote(url_path)}"
 
     api_url = (
-        "https://ls.webkom.dev/api/v1/stats/timeseries"
-        "?site_id=abakus.no"
-        "&metrics=visitors,pageviews,bounce_rate,visit_duration"
-        "&period=custom&date={date}"
-        "&filters={filters}"
-    ).format(date=date, filters=filters)
+        f"https://ls.webkom.dev/api/v1/stats/timeseries"
+        f"?site_id=abakus.no"
+        f"&metrics=visitors,pageviews,bounce_rate,visit_duration"
+        f"&period=custom&date={date}"
+        f"&filters={filters}"
+    )
 
     headers = {
         "Authorization": f"Bearer {settings.PLAUSIBLE_KEY}",
         "Content-Type": "application/json",
     }
 
-    return requests.get(api_url, headers=headers)
+    try:
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        return response
+    except requests.exceptions.RequestException as e:
+        log.error(
+            "plausible_statistics_error",
+            exception=e,
+            api_url=api_url,
+            headers=headers,
+        )

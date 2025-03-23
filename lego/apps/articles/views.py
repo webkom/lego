@@ -59,7 +59,7 @@ class ArticlesViewSet(AllowedPermissionsMixin, ModelViewSet):
         return obj
 
     @action(detail=True, methods=["GET"])
-    def statistics(self, request, pk=None, *args, **kwargs):
+    def statistics(self, request, pk=None, *args, **kwargs) -> Response:
         article = Article.objects.get(id=pk)
         user = request.user
 
@@ -68,7 +68,9 @@ class ArticlesViewSet(AllowedPermissionsMixin, ModelViewSet):
 
         permission_handler = get_permission_handler(Article)
         user_has_edit_perm = permission_handler.has_object_permissions(
-            user, "statistics", article
+            user,
+            perm="statistics",
+            obj=article,
         )
         if not user_has_edit_perm:
             return Response(status=status.HTTP_403_FORBIDDEN)
