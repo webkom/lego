@@ -1,7 +1,3 @@
-from datetime import datetime
-from urllib.parse import quote
-
-from django.conf import settings
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.http import Http404
@@ -13,7 +9,6 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 
-import requests
 from celery.canvas import chain
 
 from lego.apps.events import constants
