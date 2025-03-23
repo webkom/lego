@@ -66,13 +66,10 @@ class ArticlesViewSet(AllowedPermissionsMixin, ModelViewSet):
         if not user or not user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        permission_handler = get_permission_handler(Article)
-        user_has_edit_perm = permission_handler.has_object_permissions(
-            user,
-            perm="statistics",
-            obj=article,
+        has_perm = user.has_perm("statistics", article) or user.has_perm(
+            "edit", article
         )
-        if not user_has_edit_perm:
+        if not has_perm:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         response = request_plausible_statistics(article)
