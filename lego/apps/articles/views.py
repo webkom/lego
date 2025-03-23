@@ -15,7 +15,6 @@ from lego.apps.articles.serializers import (
 )
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
-from lego.apps.permissions.utils import get_permission_handler
 from lego.utils.functions import request_plausible_statistics
 
 

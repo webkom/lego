@@ -3,7 +3,6 @@ from unittest import mock
 
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.response import Response
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
