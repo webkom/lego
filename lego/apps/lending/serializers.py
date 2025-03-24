@@ -20,7 +20,7 @@ from lego.utils.serializers import (
 class LendableObjectSerializer(BasisModelSerializer):
     image = ImageField(required=False, options={"height": 500})
     can_lend = serializers.SerializerMethodField()
-    can_edit_groups = AbakusGroupField(read_only=True, many=True)
+    responsible_groups = AbakusGroupField(source="can_edit_groups", read_only=True, many=True)
 
     class Meta:
         model = LendableObject
@@ -29,7 +29,7 @@ class LendableObjectSerializer(BasisModelSerializer):
             "title",
             "description",
             "image",
-            "can_edit_groups",
+            "responsible_groups",
             "location",
             "can_lend",
         )
