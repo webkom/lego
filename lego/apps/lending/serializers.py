@@ -9,6 +9,7 @@ from lego.apps.lending.constants import (
     LENDING_REQUEST_TRANSLATION_MAP,
 )
 from lego.apps.lending.models import LendableObject, LendingRequest
+from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
     BasisModelSerializer,
@@ -19,10 +20,21 @@ from lego.utils.serializers import (
 class LendableObjectSerializer(BasisModelSerializer):
     image = ImageField(required=False, options={"height": 500})
     can_lend = serializers.SerializerMethodField()
+    responsible_groups = AbakusGroupField(
+        source="can_edit_groups", read_only=True, many=True
+    )
 
     class Meta:
         model = LendableObject
-        fields = ("id", "title", "description", "image", "location", "can_lend")
+        fields = (
+            "id",
+            "title",
+            "description",
+            "image",
+            "responsible_groups",
+            "location",
+            "can_lend",
+        )
 
     def get_can_lend(self, obj):
         return obj.can_lend(self.context["request"].user)
