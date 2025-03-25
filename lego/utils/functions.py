@@ -43,9 +43,11 @@ def insert_abakus_groups(tree, parent=None):
             )[0]
         insert_abakus_groups(value[1], node)
 
+
 # Seperate external API call to mock only this function in tests
 def _request_plausible(url: str, headers: dict) -> Response:
     return requests.get(url, headers=headers)
+
 
 def request_plausible_statistics(obj: BasisModel, **kwargs) -> Response:
     created_at = obj.created_at.strftime("%Y-%m-%d")
