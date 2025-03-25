@@ -37,6 +37,8 @@ GENFORS_IDENTIFIER = "genfors_count"
 GALA_IDENTIFIER = "gala_count"
 COMPLETE_IDENTIFIER = "complete_profile"
 
+# These are used for information about what counts as gala
+
 GALA_SUBSTRINGS = (
     "bankett",  # Max 3 (itDAGENE)
     "immatrikuleringsball",  # Max 5
@@ -44,6 +46,10 @@ GALA_SUBSTRINGS = (
     "julebord",  # Max 5
     "vaargalla",  # Max 5
 )
+
+# Set these manually in sudo panel or shell
+GALA_TAG = "trophy:gala"
+GENFORS_TAG = "trophy:genfors"
 
 EVENT_ACHIEVEMENTS: AchievementCollection = {
     "arrangement_10": {

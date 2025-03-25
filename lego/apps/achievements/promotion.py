@@ -206,5 +206,6 @@ def check_all_promotions() -> None:
         check_penalty_related_single_user(user)
         check_genfors_related_single_user(user)
         check_complete_user_profile(user)
+        check_gala_related_single_user(user)
 
     check_rank_promotions()
