@@ -1,6 +1,7 @@
-from django.db.models import Case, F, IntegerField, Q, Value, When
+from django.db.models import Case, Count, F, IntegerField, Q, Value, When
 from django.db.models.expressions import Window
 from django.db.models.functions import Rank
+from django.utils import timezone
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from lego.apps.achievements.constants import (
 from lego.apps.achievements.models import Achievement
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.serializers import KeypressOrderSerializer
+from lego.apps.events.constants import SUCCESS_REGISTER
 from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 
@@ -62,7 +64,18 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             When(pk=pk, then=Value(rank)) for pk, rank in global_rank_mapping.items()
         ]
         annotated_qs = qs_filter.annotate(
-            achievement_rank=Case(*cases, default=Value(0), output_field=IntegerField())
+            achievement_rank=Case(
+                *cases, default=Value(0), output_field=IntegerField()
+            ),
+            event_count=Count(
+                "registrations",
+                filter=Q(
+                    registrations__status=SUCCESS_REGISTER,
+                    registrations__event__end_time__lte=timezone.now(),
+                    registrations__pool__isnull=False,
+                ),
+                distinct=True,
+            ),
         )
 
         return annotated_qs.order_by("achievement_rank")

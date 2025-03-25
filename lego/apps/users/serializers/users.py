@@ -56,6 +56,7 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
     achievement_rank = serializers.IntegerField(read_only=True)
+    event_count = serializers.IntegerField(read_only=True)
 
     def get_achievements_score(self, obj):
 
@@ -68,6 +69,7 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
             "achievements",
             "achievements_score",
             "achievement_rank",
+            "event_count",
         )
 
 
