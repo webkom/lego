@@ -342,7 +342,7 @@ def mock_plausible_response(*args, **kwargs):
 
 
 @mock.patch(
-    "lego.apps.articles.views.request_plausible_statistics",
+    "lego.utils.functions._request_plausible",
     return_value=mock_plausible_response(),
 )
 class ArticleStatisticsCase(BaseAPITestCase):

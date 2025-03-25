@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 from urllib.parse import quote
 
 from django.conf import settings
@@ -44,12 +43,22 @@ def insert_abakus_groups(tree, parent=None):
             )[0]
         insert_abakus_groups(value[1], node)
 
+# Seperate external API call to mock only this function in tests
+def _request_plausible(url: str, headers: dict) -> Response:
+    return requests.get(url, headers=headers)
 
-def request_plausible_statistics(obj: BasisModel, url_root: Optional[str]) -> Response:
+def request_plausible_statistics(obj: BasisModel, **kwargs) -> Response:
     created_at = obj.created_at.strftime("%Y-%m-%d")
     now = datetime.now().strftime("%Y-%m-%d")
     date = f"{created_at},{now}"  # Plausible wants the date on this schema: YYYY-MM-DD,YYYY-MM-DD
-    url_path = f"/{url_root or (obj._meta.model_name + 's')}/{obj.id}"
+
+    model_name = obj._meta.model_name
+    url_root = kwargs.get("url_root", None)
+
+    if not (model_name or url_root):
+        raise ValueError("Valid obj or url_root must be provided")
+
+    url_path = f"/{url_root or model_name + 's'}/{obj.id}"
     filters = f"event:page=={quote(url_path)}"
 
     api_url = (
@@ -60,15 +69,17 @@ def request_plausible_statistics(obj: BasisModel, url_root: Optional[str]) -> Re
         f"&filters={filters}"
     )
 
+    key = None
+    if hasattr(settings, "PLAUSIBLE_KEY"):
+        key = settings.PLAUSIBLE_KEY
+
     headers = {
-        "Authorization": f"Bearer {settings.PLAUSIBLE_KEY}",
+        "Authorization": f"Bearer {key or ''}",
         "Content-Type": "application/json",
     }
 
     try:
-        response = requests.get(api_url, headers=headers)
-        response.raise_for_status()
-        return response
+        return _request_plausible(api_url, headers)
     except requests.exceptions.RequestException as e:
         log.error(
             "plausible_statistics_error",
