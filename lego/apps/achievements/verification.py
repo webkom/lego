@@ -122,10 +122,12 @@ def check_longest_period_without_penalties(user: User, years: int) -> bool:
 
 
 def check_total_genfors_events(user: User, count: int) -> bool:
+    from lego.apps.achievements.constants import GENFORS_TAG
+
     queryset = (
         Registration.objects.filter(
             user=user,
-            event__title__icontains="generalfor",
+            event__tags__tag=GENFORS_TAG,
             event__end_time__lt=timezone.now(),
         )
         .annotate(year=ExtractYear("event__end_time"))
@@ -138,15 +140,12 @@ def check_total_genfors_events(user: User, count: int) -> bool:
 
 
 def check_total_galas(user: User, count: int) -> bool:
-    from lego.apps.achievements.constants import GALA_SUBSTRINGS
+    from lego.apps.achievements.constants import GALA_TAG
 
-    # Avoid circular import
-    query = Q()
-
-    for substring in GALA_SUBSTRINGS:
-        query |= Q(event__title__icontains=substring)
-
-    queryset = _passed_user_registrations(user).filter(query)
+    queryset = _passed_user_registrations(user).filter(
+        event__tags__tag=GALA_TAG,
+        presence__in=[PRESENCE_CHOICES.PRESENT, PRESENCE_CHOICES.LATE],
+    )
     return queryset.count() >= count
 
 

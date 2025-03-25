@@ -33,6 +33,7 @@ from lego.apps.events.tests.utils import get_dummy_users
 from lego.apps.meetings.models import Meeting
 from lego.apps.polls.models import Option, Poll
 from lego.apps.quotes.models import Quote
+from lego.apps.tags.models import Tag
 from lego.apps.users.constants import MEMBER_GROUP
 from lego.apps.users.models import AbakusGroup, Penalty, User
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
@@ -208,6 +209,7 @@ class GenforsAchievementTestCase(BaseTestCase):
     def test_genfors_achievement_levels(self):
         """Test that users unlock achievements for attending Genfors events."""
         abakus_group = AbakusGroup.objects.get(name="Abakus")
+        tag = Tag.objects.create(tag="trophy:genfors")
         for i in range(55, 70):
             event = Event.objects.create(
                 title=f"generalforsamling 202{i}",
@@ -227,6 +229,7 @@ class GenforsAchievementTestCase(BaseTestCase):
             event.save()
             event.end_time = timezone.now() - timezone.timedelta(days=2)
             event.save()
+            event.tags.add(tag)
 
         transaction.on_commit(lambda: check_all_promotions())
         transaction.on_commit(
@@ -259,7 +262,7 @@ class GalaAchievementTestCase(BaseTestCase):
             "Ukom-jubileum",
             "Vaargalla",
         )
-
+        tag = Tag.objects.create(tag="trophy:gala")
         for event_name in event_names:
             for i in range(69, 72):
                 event = Event.objects.create(
@@ -280,6 +283,7 @@ class GalaAchievementTestCase(BaseTestCase):
                 event.save()
                 event.end_time = timezone.now() - timedelta(days=2)
                 event.save()
+                event.tags.add(tag)
 
         transaction.on_commit(check_all_promotions)
         transaction.on_commit(
