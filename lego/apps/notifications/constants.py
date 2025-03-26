@@ -38,7 +38,6 @@ COMPANY_INTEREST_CREATED = "company_interest_created"
 SURVEY_CREATED = "survey_created"
 
 # Comment
-COMMENT = "comment"
 COMMENT_REPLY = "comment_reply"
 
 # Notifications
@@ -58,7 +57,6 @@ NOTIFICATION_TYPES = [
     MEETING_INVITE,
     MEETING_INVITATION_REMINDER,
     PENALTY_CREATION,
-    COMMENT,
     COMMENT_REPLY,
     REGISTRATION_REMINDER,
     SURVEY_CREATED,
