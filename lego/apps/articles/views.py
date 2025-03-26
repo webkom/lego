@@ -58,8 +58,9 @@ class ArticlesViewSet(AllowedPermissionsMixin, ModelViewSet):
         return obj
 
     @action(detail=True, methods=["GET"])
-    def statistics(self, request, pk=None, *args, **kwargs) -> Response:
-        article = Article.objects.get(id=pk)
+    def statistics(self, request, *args, **kwargs) -> Response:
+        article_id = self.kwargs.get("pk", None)
+        article = Article.objects.get(id=article_id)
         user = request.user
 
         if not user or not user.is_authenticated:
