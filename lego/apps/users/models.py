@@ -419,6 +419,9 @@ class User(
 
     class Meta:
         permission_handler = UserPermissionHandler()
+        indexes = [
+            models.Index(fields=["achievements_score"]),
+        ]
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}".strip()

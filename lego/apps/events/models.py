@@ -109,6 +109,9 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     class Meta:
         permission_handler = EventPermissionHandler()
+        indexes = [
+            models.Index(fields=["end_time"]),
+        ]
 
     def __str__(self) -> str:
         return self.title
@@ -884,6 +887,7 @@ class Registration(BasisModel):
         max_length=20,
         default=constants.PRESENCE_CHOICES.UNKNOWN,
         choices=constants.PRESENCE_CHOICES.choices,
+        db_index=True,
     )
     LEGACY_photo_consent = models.CharField(
         max_length=20,
@@ -902,6 +906,9 @@ class Registration(BasisModel):
         unique_together = ("user", "event")
         ordering = ["registration_date"]
         permission_handler = RegistrationPermissionHandler()
+        indexes = [
+            models.Index(fields=["status", "pool"]),
+        ]
 
     def __str__(self) -> str:
         return str({"user": self.user, "pool": self.pool})
