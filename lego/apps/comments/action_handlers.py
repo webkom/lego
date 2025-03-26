@@ -38,7 +38,10 @@ class CommentHandler(Handler):
                 reply_activity, [parent_author.pk], [NotificationFeed]
             )
             reply_notification = CommentReplyNotification(
-                user=parent_author, target=instance.content_object, author=author
+                user=parent_author,
+                text=instance.text,
+                target=instance.content_object,
+                author=author,
             )
             reply_notification.notify()
 
