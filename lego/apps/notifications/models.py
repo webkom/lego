@@ -20,7 +20,7 @@ def _default_channels():
 
 class NotificationSetting(models.Model):
     """
-    All notifications is enabled by default. We need to create an instance of this model
+    All notifications are enabled by default. We need to create an instance of this model
     to adjust this.
     """
 
