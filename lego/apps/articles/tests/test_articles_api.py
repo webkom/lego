@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from unittest import mock
+
 from django.urls import reverse
 from rest_framework import status
 
@@ -13,6 +16,10 @@ def get_list_url():
 
 def get_detail_url(pk):
     return reverse("api:v1:article-detail", kwargs={"pk": pk})
+
+
+def get_statistics_url(pk):
+    return reverse("api:v1:article-statistics", kwargs={"pk": pk})
 
 
 def create_user():
@@ -305,3 +312,96 @@ class PinnedArticleTestCase(BaseAPITestCase):
         self.assertTrue(self.article.pinned)
         self.assertFalse(pinned.pinned)
         self.assertEqual(Article.objects.filter(pinned=True).count(), 1)
+
+
+number_of_plausible_items = 3
+
+
+def mock_plausible_response(*args, **kwargs):
+    class MockPlausibleResponse:
+        def __init__(self, *args, **kwargs):
+            self.status_code = status.HTTP_200_OK
+            self.data = [
+                self.generate_plausible_item(i)
+                for i in range(number_of_plausible_items)
+            ]
+
+        def generate_plausible_item(self, i):
+            return {
+                "bounce_rate": str(30),
+                "date": (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d"),
+                "pageviews": str(i * 2),
+                "visit_duration": str(i * 10),
+                "visitors": str(i),
+            }
+
+        def json(self):
+            return self.data
+
+    return MockPlausibleResponse()
+
+
+@mock.patch(
+    "lego.utils.functions._request_plausible",
+    return_value=mock_plausible_response(),
+)
+class ArticleStatisticsCase(BaseAPITestCase):
+    def setUp(self):
+        self.user = create_user()
+        self.edit_group = create_group()
+        self.view_group = create_group()
+
+        self.auth_article = create_article(require_auth=True)
+        self.auth_article.can_view_groups.add(self.view_group)
+        self.auth_article.can_edit_groups.add(self.edit_group)
+
+    def test_unauthenticated(self, *args):
+        """Unauthenticated users should not be able to view statistics"""
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_view_group(self, *args):
+        """Users who can view the article should be able to view statistics"""
+        self.view_group.add_user(self.user)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_edit_group(self, *args):
+        """Users in can_edit_groups for an article should be able to view statistics"""
+        self.edit_group.add_user(self.user)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.json())
+        self.assertEqual(len(response.json()), number_of_plausible_items)
+
+    def test_keyword_permission(self, *args):
+        """Users with keyword permission should be able to view statistics"""
+        self.view_group.permissions = ["/sudo/admin/articles/edit/"]
+        self.view_group.save()
+        self.client.force_authenticate(user=self.user)
+
+        # Since Article is an ObjectPermissionModel, we need to add the
+        # user to the view_group to be able to call a GET endpoint
+        self.view_group.add_user(self.user)
+
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.json())
+        self.assertEqual(len(response.json()), number_of_plausible_items)
+
+    def test_own_article(self, *args):
+        """Users who created the article should be able to view statistics"""
+        self.auth_article.created_by = self.user
+        self.auth_article.save()
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(get_statistics_url(self.auth_article.pk))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.json())
+        self.assertEqual(len(response.json()), number_of_plausible_items)
