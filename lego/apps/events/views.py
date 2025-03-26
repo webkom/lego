@@ -1,6 +1,8 @@
+import csv
+
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -204,6 +206,30 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer.save(is_ready=False)
 
     @decorators.action(detail=True, methods=["GET"])
+    def csv(self, *args, **kwargs):
+        event = Event.objects.get(pk=kwargs["pk"])
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = (
+            f'attachment; filename="{event.title.replace(" ", "_") + "_attendees"}.csv"'
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(["full_name", "username", "email", "phone", "grade"])
+        for pool in event.pools.all():
+            for participant in pool.registrations.all():
+                writer.writerow(
+                    [
+                        participant.user.get_full_name(),
+                        participant.user.username,
+                        participant.user.email,
+                        participant.user.phone_number,
+                        participant.user.grade,
+                    ]
+                )
+
+        return response
+
+    @decorators.action(detail=True, methods=["GET"])
     def administrate(self, request, *args, **kwargs):
         event_id = self.kwargs.get("pk", None)
         serializer = EventAdministrateSerializer
@@ -334,8 +360,8 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
-
+    
+    
 class PoolViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
