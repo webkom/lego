@@ -15,11 +15,13 @@ from lego.apps.events.tasks import (
     bump_waiting_users_to_new_pool,
     check_events_for_registrations_with_expired_penalties,
     check_that_pool_counters_match_registration_number,
+    handle_overdue_payment,
     notify_event_creator_when_payment_overdue,
     notify_user_when_payment_soon_overdue,
     set_all_events_ready_and_bump,
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
+from lego.apps.users.constants import PENALTY_WEIGHTS
 from lego.apps.users.models import AbakusGroup, Penalty
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
@@ -779,4 +781,74 @@ class PaymentDueTestCase(BaseTestCase):
         self.event.save()
 
         notify_event_creator_when_payment_overdue.delay()
+        mock_notification.assert_not_called()
+
+    @mock.patch("lego.apps.events.tasks.EventPaymentOverduePenaltyNotification")
+    def test_user_is_given_penalty_is_unregistered_and_notified(
+        self, mock_notification
+    ):
+        """
+        Test that user is given a penalty, is unregistered and notified when payment is overdue
+        """
+
+        self.event.payment_due_date = timezone.now() - timedelta(days=2)
+        self.event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+        registration_two = Registration.objects.get_or_create(
+            event=self.event, user=user
+        )[0]
+        registration_two.payment_status = constants.PAYMENT_PENDING
+        self.event.register(registration_two)
+
+        number_of_registrations_before = self.event.number_of_registrations
+        number_of_penalties_before = registration_two.user.number_of_penalties()
+
+        handle_overdue_payment.delay()
+        registration_two.refresh_from_db()
+
+        self.assertLess(
+            self.event.number_of_registrations, number_of_registrations_before
+        )
+        self.assertEqual(registration_two.status, constants.SUCCESS_UNREGISTER)
+        self.assertEqual(
+            registration_two.user.number_of_penalties(),
+            number_of_penalties_before + int(PENALTY_WEIGHTS.PAYMENT_OVERDUE),
+        )
+        mock_notification.assert_called()
+        call = mock_notification.mock_calls[2]
+        self.assertEqual(call[2]["user"], user)
+
+    @mock.patch("lego.apps.events.tasks.EventPaymentOverduePenaltyNotification")
+    def test_user_is_not_given_penalty_is_not_unregistered_and_not_notified(
+        self, mock_notification
+    ):
+        """
+        Test that user is NOT given a penalty, is unregistered and notified when payment is overdue
+        """
+        self.event.payment_due_date = timezone.now() + timedelta(days=2)
+        self.event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+        registration_two = Registration.objects.get_or_create(
+            event=self.event, user=user
+        )[0]
+        registration_two.payment_status = constants.PAYMENT_PENDING
+        self.event.register(registration_two)
+
+        number_of_registrations_before = self.event.number_of_registrations
+        number_of_penalties_before = registration_two.user.number_of_penalties()
+
+        handle_overdue_payment.delay()
+        registration_two.refresh_from_db()
+
+        self.assertEqual(
+            self.event.number_of_registrations, number_of_registrations_before
+        )
+        self.assertEqual(registration_two.status, constants.SUCCESS_REGISTER)
+        self.assertEqual(
+            registration_two.user.number_of_penalties(), number_of_penalties_before
+        )
         mock_notification.assert_not_called()
