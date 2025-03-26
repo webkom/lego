@@ -14,6 +14,9 @@ from lego.apps.achievements.constants import (
 from lego.apps.achievements.models import Achievement
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.serializers import KeypressOrderSerializer
+from lego.apps.achievements.tasks import run_all_promotions
+from lego.apps.permissions.api.permissions import LegoPermissions
+from lego.apps.permissions.constants import CREATE
 from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 
@@ -78,13 +81,15 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class AchievementViewSet(viewsets.GenericViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [LegoPermissions, permissions.IsAuthenticated]
+    queryset = Achievement.objects.none()
     serializer_class = KeypressOrderSerializer
 
-    @action(detail=False, methods=["POST"])
+    @action(
+        detail=False, methods=["POST"], permission_classes=[permissions.IsAuthenticated]
+    )
     def getting_wood(self, request, *args, **kwargs):
-        achievement, created = Achievement.objects.get_or_create(
+        _, created = Achievement.objects.get_or_create(
             identifier=EVENT_RULES[EVENT_RULES_IDENTIFIER]["identifier"],
             user=request.user,
             level=0,
@@ -92,13 +97,15 @@ class AchievementViewSet(viewsets.GenericViewSet):
         if created:
             return Response(status=status.HTTP_201_CREATED)
         else:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
 
-    @action(detail=False, methods=["POST"])
+    @action(
+        detail=False, methods=["POST"], permission_classes=[permissions.IsAuthenticated]
+    )
     def keypress_order(self, request, *args, **kwargs):
         code = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]
         if request.data.get("code", []) == code:
-            achievement, created = Achievement.objects.get_or_create(
+            _, created = Achievement.objects.get_or_create(
                 identifier=KEYPRESS_ORDER[KEYPRESS_ORDER_IDENTIFIER]["identifier"],
                 user=request.user,
                 level=0,
@@ -106,5 +113,20 @@ class AchievementViewSet(viewsets.GenericViewSet):
             if created:
                 return Response(status=status.HTTP_201_CREATED)
             else:
-                return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+                return Response(status=status.HTTP_304_NOT_MODIFIED)
+        return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        permission_classes=[LegoPermissions, permissions.IsAuthenticated],
+    )
+    def recheck_all(self, request, *args, **kwargs):
+        user = request.user
+        if not user.has_perm(CREATE, Achievement):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        run_all_promotions.delay()
+        return Response(
+            {"detail": "Recheck task has been triggered."},
+            status=status.HTTP_202_ACCEPTED,
+        )
