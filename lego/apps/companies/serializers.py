@@ -299,6 +299,7 @@ class CompanyInterestCreateAndUpdateSerializer(serializers.ModelSerializer):
             "bedex_comment",
             "company_course_themes",
             "office_in_trondheim",
+            "wants_thursday_event",
         )
 
     def update_company_interest_bdb(self, company_interest):
