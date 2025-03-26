@@ -19,6 +19,9 @@ EVENT_PAYMENT_OVERDUE_CREATOR = "event_payment_overdue_creator"
 MEETING_INVITE = "meeting_invite"
 MEETING_INVITATION_REMINDER = "meeting_invitation_reminder"
 
+# Lending
+LENDING_REQUEST = "lending_request"
+
 # Penalty
 PENALTY_CREATION = "penalty_creation"
 
@@ -47,6 +50,7 @@ ANNOUNCEMENT = "announcement"
 REGISTRATION_REMINDER = "registration_reminder"
 
 NOTIFICATION_TYPES = [
+    LENDING_REQUEST,
     ANNOUNCEMENT,
     RESTRICTED_MAIL_SENT,
     WEEKLY_MAIL,

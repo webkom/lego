@@ -1,3 +1,6 @@
+from datetime import date
+from typing import Optional, TypedDict
+
 LENDING_REQUEST_STATUSES = {
     "LENDING_UNAPPROVED": {"value": "unapproved"},
     "LENDING_APPROVED": {"value": "approved"},
@@ -19,3 +22,15 @@ LENDING_REQUEST_TRANSLATION_MAP = {
     "cancelled": "Avbrutt av bruker",
     "changes_requested": "Endringer forespurt",
 }
+
+
+class CreateLendingRequestType(TypedDict):
+    id: int
+    created_by: Optional[int]  # Assuming user IDs are integers
+    updated_by: Optional[int]
+    lendable_object: int  # Assuming this is a foreign key ID
+    status: str
+    text: str
+    start_date: date
+    end_date: date
+    comments: list
