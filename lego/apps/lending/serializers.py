@@ -1,20 +1,27 @@
+from typing import Optional, TypedDict
+
 from rest_framework import serializers
 
-from lego.apps.comments.models import Comment
-from lego.apps.comments.serializers import CommentSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.lending.constants import (
     LENDING_CHOICE_STATUSES,
     LENDING_REQUEST_STATUSES,
     LENDING_REQUEST_TRANSLATION_MAP,
 )
-from lego.apps.lending.models import LendableObject, LendingRequest
+from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
+from lego.apps.permissions.constants import VIEW
 from lego.apps.users.fields import AbakusGroupField
+from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserSerializer
 from lego.utils.serializers import (
     BasisModelSerializer,
     ObjectPermissionsSerializerMixin,
 )
+
+
+class TimelineEntryAttrs(TypedDict, total=False):
+    lending_request: LendingRequest
+    message: Optional[str]
 
 
 class LendableObjectSerializer(BasisModelSerializer):
@@ -59,6 +66,45 @@ class LendableObjectField(serializers.PrimaryKeyRelatedField):
         return serializer.data
 
 
+class TimelineEntrySerializer(BasisModelSerializer):
+    created_by = PublicUserSerializer()
+
+    class Meta:
+        model = TimelineEntry
+        fields = (
+            "id",
+            "created_by",
+            "created_at",
+            "lending_request",
+            "message",
+            "status",
+            "is_system",
+        )
+
+
+class TimelineEntryCreateAndUpdateSerializer(BasisModelSerializer):
+
+    class Meta:
+        model = TimelineEntry
+        fields = (
+            "id",
+            "lending_request",
+            "message",
+        )
+
+    def validate(self, attrs: TimelineEntryAttrs):
+        attrs = super().validate(attrs)
+        lending_request: LendingRequest = attrs.get("lending_request")
+        user: User = self.context["request"].user
+        if not lending_request._meta.permission_handler.has_object_permissions(
+            user, VIEW, lending_request
+        ):
+            raise serializers.ValidationError(
+                {"status": "You are not permitted to update this request."}
+            )
+        return attrs
+
+
 class LendingRequestListSerializer(BasisModelSerializer):
     status = serializers.ChoiceField(choices=LENDING_CHOICE_STATUSES, required=False)
     lendable_object = LendableObjectSerializer(read_only=True)
@@ -79,7 +125,7 @@ class LendingRequestDetailSerializer(BasisModelSerializer):
     created_by = PublicUserSerializer(read_only=True)
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectSerializer(read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
+    timeline_entries = TimelineEntrySerializer(many=True, read_only=True)
 
     class Meta:
         model = LendingRequest
@@ -92,8 +138,7 @@ class LendingRequestDetailSerializer(BasisModelSerializer):
             "text",
             "start_date",
             "end_date",
-            "comments",
-            "content_target",
+            "timeline_entries",
         )
 
 
@@ -102,7 +147,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
     created_by = PublicUserSerializer(read_only=True)
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectField(queryset=LendableObject.objects.all())
-    comments = CommentSerializer(many=True, read_only=True)
+    timeline_entries = TimelineEntrySerializer(many=True, read_only=True)
 
     class Meta:
         model = LendingRequest
@@ -115,7 +160,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             "text",
             "start_date",
             "end_date",
-            "comments",
+            "timeline_entries",
         )
 
     def validate(self, attrs):
@@ -202,12 +247,12 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         old_status_string = LENDING_REQUEST_TRANSLATION_MAP[old_status]
         new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
         if new_status != old_status:
-            Comment.objects.create(
-                text=f"Status endret fra {old_status_string} til {new_status_string}.",
-                content_object=instance,
-                current_user=self.context.get(
-                    "request"
-                ).user,  # This is a bit hacky but has to be done
+            TimelineEntry.objects.create(
+                message=f"Status endret fra {old_status_string} til {new_status_string}.",
+                lending_request=instance,
+                current_user=self.context.get("request").user,
+                is_system=True,
+                status=new_status_string,
             )
 
         return instance
