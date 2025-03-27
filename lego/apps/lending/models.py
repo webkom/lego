@@ -1,7 +1,5 @@
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
-from lego.apps.comments.models import Comment
 from lego.apps.files.models import FileField
 from lego.apps.lending.constants import (
     LENDING_CHOICE_STATUSES,
@@ -41,10 +39,9 @@ class LendingRequest(BasisModel):
     status = models.CharField(
         choices=LENDING_CHOICE_STATUSES,
         null=False,
-        blank=False,
+        blank=True,
         default=LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
     )
-    comments = GenericRelation(Comment)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     text = models.TextField(blank=False, null=True)
@@ -56,8 +53,15 @@ class LendingRequest(BasisModel):
             models.Index(fields=["lendable_object"]),
         ]
 
-    @property
-    def content_target(self):
-        return "{0}.{1}-{2}".format(
-            self._meta.app_label, self._meta.model_name, self.pk
-        )
+
+class TimelineEntry(BasisModel):
+    lending_request = models.ForeignKey(
+        LendingRequest, on_delete=models.CASCADE, related_name="timeline_entries"
+    )
+    message = models.TextField(blank=False, null=False)
+    is_system = models.BooleanField(default=False, blank=True, null=False)
+    status = models.CharField(
+        choices=LENDING_CHOICE_STATUSES,
+        null=True,
+        blank=True,
+    )

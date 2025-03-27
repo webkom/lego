@@ -40,4 +40,4 @@ class LendingRequestPermissionHandler(PermissionHandler):
             user, perm, obj.lendable_object
         ):
             return True
-        return super().has_object_permissions(user, perm, obj)
+        return False

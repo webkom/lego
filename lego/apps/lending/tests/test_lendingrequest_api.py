@@ -15,6 +15,10 @@ def get_lending_request_list_url():
     return reverse("api:v1:lending-request-list")
 
 
+def get_lending_request_timelineentry_url():
+    return reverse("api:v1:lending-timelineentry-list")
+
+
 def get_lending_request_detail_url(pk):
     return reverse("api:v1:lending-request-detail", kwargs={"pk": pk})
 
@@ -103,7 +107,7 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("endDate", response.json())
 
-    def test_user_edit_own_request(self):
+    def test_user_edit_own_request_and_comment(self):
         """Users should be able to edit their own requests by first creating it via the API."""
         # 1) Authenticate as self.user
         self.client.force_authenticate(user=self.user)
@@ -135,7 +139,13 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(lending_request.end_date.isoformat(), patch_data["end_date"])
         self.assertEqual(lending_request.created_by, self.user)
 
-    def test_user_with_edit_permission_can_approve_request(self):
+        timeline_data = {"lending_request": created_request_id, "message": "Hei"}
+        response2 = self.client.post(
+            get_lending_request_timelineentry_url(), timeline_data
+        )
+        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
+
+    def test_user_with_edit_permission_can_approve_request_and_comment(self):
         """Users in can_edit_groups should be able to approve lending requests."""
         lending_request = create_lending_request(self.user, self.lendable_object)
 
@@ -150,7 +160,13 @@ class LendingRequestTestCase(BaseAPITestCase):
         lending_request.refresh_from_db()
         self.assertEqual(lending_request.status, "approved")
 
-    def test_user_without_edit_permission_cannot_approve_request(self):
+        timeline_data = {"lending_request": lending_request.id, "message": "Hei"}
+        response2 = self.client.post(
+            get_lending_request_timelineentry_url(), timeline_data
+        )
+        self.assertEqual(response2.status_code, status.HTTP_201_CREATED)
+
+    def test_user_without_edit_permission_cannot_approve_request_or_comment(self):
         """Users not in can_edit_groups should not be able to approve lending requests."""
         lending_request = create_lending_request(self.user, self.lendable_object)
 
@@ -165,6 +181,11 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         lending_request.refresh_from_db()
         self.assertEqual(lending_request.status, "unapproved")
+        timeline_data = {"lending_request": lending_request.id, "message": "Hei"}
+        response2 = self.client.post(
+            get_lending_request_timelineentry_url(), timeline_data
+        )
+        self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_without_edit_permission_but_view_permission_cannot_approve_request(
         self,
@@ -451,10 +472,10 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
             "You cannot edit someone else's request", patch_response.data["text"][0]
         )
 
-    def test_creator_update_status_creates_system_comment(self):
+    def test_creator_update_status_creates_system_timelineentry(self):
         """
         Verify that when the creator updates the status of their own request,
-        a system message comment is created reflecting the status change.
+        a system message timelineentry is created reflecting the status change.
         """
         # Update the status as the creator.
         self.client.force_authenticate(user=self.creator_user)
@@ -466,17 +487,19 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
 
         # Reload the request from the database.
         updated_request = LendingRequest.objects.get(pk=self.request_id)
-        # Check that a comment was created for the status update.
-        self.assertTrue(updated_request.comments.exists())
+        # Check that a timelineentry was created for the status update.
+        self.assertTrue(updated_request.timeline_entries.exists())
 
-        # Verify the comment text matches the expected system message.
+        # Verify the timelineentry text matches the expected system message.
         # Expected text: "Status endret fra {translated old status} til {translated new status}."
         expected_text = (
             f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP['unapproved']} "
             f"til {LENDING_REQUEST_TRANSLATION_MAP['approved']}."
         )
-        system_comment = updated_request.comments.order_by("created_at").first()
-        self.assertEqual(system_comment.text, expected_text)
+        system_timelineentry = updated_request.timeline_entries.order_by(
+            "created_at"
+        ).first()
+        self.assertEqual(system_timelineentry.message, expected_text)
 
 
 class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
@@ -507,7 +530,7 @@ class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
         self.lendable_object.can_view_groups.add(self.view_group)
         self.lendable_object.can_edit_groups.add(self.edit_group)
 
-    def test_different_user_approves_request_creates_system_comment(self):
+    def test_different_user_approves_request_creates_system_timelineentry(self):
         # Step 1: Creator creates the
         # lending request (status defaults to "unapproved").
         self.client.force_authenticate(user=self.creator_user)
@@ -530,15 +553,20 @@ class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
         self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
 
         # Step 3: Verify that the lending request now has
-        # a system comment reflecting the status change.
+        # a system timelineentry reflecting the status change.
         updated_request = LendingRequest.objects.get(pk=request_id)
-        self.assertTrue(updated_request.comments.exists(), "Expected comment.")
+        self.assertTrue(
+            updated_request.timeline_entries.exists(), "Expected timelineentry."
+        )
 
         expected_text = (
             f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP['unapproved']} "
             f"til {LENDING_REQUEST_TRANSLATION_MAP['approved']}."
         )
-        system_comment = updated_request.comments.order_by("created_at").first()
-        self.assertEqual(system_comment.text, expected_text)
-        # Optionally check that the comment was created by the approver.
-        self.assertEqual(system_comment.created_by, self.approver_user)
+        system_timelineentry = updated_request.timeline_entries.order_by(
+            "created_at"
+        ).first()
+        self.assertEqual(system_timelineentry.message, expected_text)
+        self.assertEqual(system_timelineentry.is_system, True)
+        # Optionally check that the entry was created by the approver.
+        self.assertEqual(system_timelineentry.created_by, self.approver_user)
