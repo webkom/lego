@@ -252,7 +252,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                 lending_request=instance,
                 current_user=self.context.get("request").user,
                 is_system=True,
-                status=new_status_string,
+                status=new_status,
             )
 
         return instance
