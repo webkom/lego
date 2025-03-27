@@ -60,7 +60,7 @@ def request_plausible_statistics(obj: BasisModel, **kwargs) -> Response:
     if not (model_name or url_root):
         raise ValueError("Valid obj or url_root must be provided")
 
-    url_path = f"/{url_root or model_name + 's'}/{obj.id}"
+    url_path = f"/{url_root or model_name + 's'}/{obj.id}*"
     filters = f"event:page=={quote(url_path)}"
 
     api_url = (
