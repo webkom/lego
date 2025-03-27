@@ -10,9 +10,8 @@ from lego.apps.lending.constants import (
     CreateLendingRequestType,
 )
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
-from lego.apps.permissions.constants import VIEW
 from lego.apps.lending.notifications import LendingRequestNotification
->>>>>>> 8c21dc7b (Implement email generation for lendingRequest objects)
+from lego.apps.permissions.constants import VIEW
 from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserSerializer

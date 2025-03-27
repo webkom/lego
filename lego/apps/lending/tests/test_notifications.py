@@ -3,7 +3,6 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.utils.timezone import now, timedelta
 
-from lego.apps.comments.models import Comment
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.lending.notifications import LendingRequestNotification
 from lego.apps.users.models import AbakusGroup, User
