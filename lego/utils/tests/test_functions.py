@@ -46,7 +46,9 @@ class RequestPlausibleStatisticsTest(BaseTestCase):
     def test_slug(self, *args):
         self.instance.slug = "1-test-slug"
         response = request_plausible_statistics(self.instance)
-        self.validate_response(response, page_url=model_name, obj_url=self.instance.slug)
+        self.validate_response(
+            response, page_url=model_name, obj_url=self.instance.slug
+        )
 
     def test_url_root(self, *args):
         self.instance.id = 1
