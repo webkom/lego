@@ -30,7 +30,7 @@ def notify_user_of_unanswered_meeting_invitation(self, logger_context=None):
         if (
             datetime.combine(meeting.start_time, time(0))
             - datetime.combine(timezone.now(), time(0))
-        ).days not in [7, 5, 3, 1]:
+        ).days not in [7, 5, 3, 1] or meeting.is_template:
             continue
 
         meeting_invitations: list[MeetingInvitation] = meeting.invitations.filter(
