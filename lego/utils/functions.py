@@ -7,7 +7,6 @@ from rest_framework.response import Response
 import requests
 from structlog import get_logger
 
-from lego.apps.content.models import SlugModel
 from lego.apps.users.models import AbakusGroup
 from lego.utils.models import BasisModel
 
