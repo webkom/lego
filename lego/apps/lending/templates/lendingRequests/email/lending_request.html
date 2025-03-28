@@ -1,0 +1,89 @@
+{% extends "email/base.html" %} {% block alert %}
+
+<tr>
+  <td class="alert alert-info">Ny forespørsel om utlån av {{ object }}</td>
+</tr>
+
+{% endblock %} {% block content %}
+
+<tr>
+  <td class="content-block">Hei, {{ lender }}!</td>
+</tr>
+
+<tr>
+  <td class="content-block">
+    {{lendee}} vil låne {{ object }} fra {{ start_date }} til {{ end_date }}.
+  </td>
+</tr>
+
+<tr>
+  <td class="content-block">
+    <b>Periode:</b> {{ start_date }} - {{ end_date }}.
+  </td>
+</tr>
+
+<tr>
+  <td align="center">
+    <table
+      width="300px"
+      style="margin: 0 auto"
+      border="0"
+      cellspacing="0"
+      cellpadding="0"
+    >
+      <tr>
+        <td class="button">
+          <div>
+            <!--[if mso]>
+              <v:roundrect
+                xmlns:v="urn:schemas-microsoft-com:vml"
+                xmlns:w="urn:schemas-microsoft-com:office:word"
+                href="http://"
+                style="height: 45px; v-text-anchor: middle; width: 155px"
+                arcsize="15%"
+                strokecolor="#ffffff"
+                fillcolor="#2da44e"
+              >
+                <w:anchorlock />
+                <center
+                  style="
+                    color: #ffffff;
+                    font-family: Helvetica, Arial, sans-serif;
+                    font-size: 14px;
+                    font-weight: regular;
+                  "
+                >
+                  Aksepter invitasjon
+                </center>
+              </v:roundrect>
+            <![endif]-->
+            <a
+              class="btn-primary"
+              href="{{frontend_url}}/lending/{{object_id}}/request/{{request_id}}"
+              style="
+                background-color: #2da44e;
+                border-radius: 5px;
+                color: #ffffff;
+                display: inline-block;
+                font-family: 'Cabin', Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                font-weight: regular;
+                line-height: 45px;
+                text-align: center;
+                text-decoration: none;
+                width: 155px;
+                -webkit-text-size-adjust: none;
+                mso-hide: all;
+                margin-right: 10px;
+              "
+            >
+              gå til forespørsel
+            </a>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+{% endblock %}

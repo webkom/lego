@@ -7,8 +7,10 @@ from lego.apps.lending.constants import (
     LENDING_CHOICE_STATUSES,
     LENDING_REQUEST_STATUSES,
     LENDING_REQUEST_TRANSLATION_MAP,
+    CreateLendingRequestType,
 )
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
+from lego.apps.lending.notifications import LendingRequestNotification
 from lego.apps.permissions.constants import VIEW
 from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import User
@@ -255,4 +257,14 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                 status=new_status,
             )
 
+        return instance
+
+    def create(self, validated_data: CreateLendingRequestType) -> LendingRequest:
+        instance: LendingRequest = super().create(validated_data)
+
+        for lender in instance.lendable_object.can_edit_users.all():
+            notification = LendingRequestNotification(
+                instance.created_by, lending_requst=instance, lender=lender
+            )
+            notification.notify()
         return instance
