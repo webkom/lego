@@ -55,12 +55,16 @@ def request_plausible_statistics(obj: BasisModel, **kwargs) -> Response:
     date = f"{created_at},{now}"  # Plausible wants the date on this schema: YYYY-MM-DD,YYYY-MM-DD
 
     model_name = obj._meta.model_name
+    slug = getattr(obj, "slug", None)
     url_root = kwargs.get("url_root", None)
 
     if not (model_name or url_root):
         raise ValueError("Valid obj or url_root must be provided")
 
-    url_path = f"/{url_root or model_name + 's'}/{obj.id}*"
+    page_url = url_root or model_name + "s"
+    obj_url = slug or obj.id
+
+    url_path = f"/{page_url}/{obj_url}"
     filters = f"event:page=={quote(url_path)}"
 
     api_url = (
