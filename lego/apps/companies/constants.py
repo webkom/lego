@@ -63,7 +63,6 @@ TRANSLATED_OTHER_OFFERS = {
     ITDAGENE: "Stand på itDAGENE",
     LABAMBA_SPONSOR: "Sponsing av LaBamba",
     SOCIAL_MEDIA: "Profilering på sosiale medier",
-    THURSDAY_EVENT: "Ønsker arrangement torsdag",
 }
 
 COLLABORATION_ONLINE = "collaboration_online"

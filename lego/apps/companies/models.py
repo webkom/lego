@@ -158,6 +158,7 @@ class CompanyInterest(PersistentModel, TimeStampModel):
         blank=True,
     )
     office_in_trondheim = models.BooleanField(default=False, blank=True)
+    wants_thursday_event = models.BooleanField(default=False, blank=True)
 
     target_grades = ArrayField(models.PositiveIntegerField(), null=True, blank=True)
     participant_range_start = models.IntegerField(null=True, blank=True)

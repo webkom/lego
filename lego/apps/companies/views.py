@@ -196,6 +196,7 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 "Bedriftstype",
                 "Relevante temaer",
                 "Kontorer i Trondheim for besøk",
+                "Ønsker torsdagsarrangement",
                 "Klassetrinn",
                 "Antall deltagere",
                 "Faglig arrangement kommentar",
@@ -278,6 +279,11 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 if companyInterest.office_in_trondheim
                 else ""
             )
+            wants_thursday_event = (
+                companyInterest.wants_thursday_event
+                if companyInterest.wants_thursday_event
+                else ""
+            )
             writer.writerow(
                 [
                     company_name,
@@ -292,6 +298,7 @@ class CompanyInterestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     company_type,
                     company_course_themes,
                     office_in_trondheim,
+                    wants_thursday_event,
                     target_grades,
                     f"{participant_range_start} - {participant_range_end}",
                     companyInterest.course_comment,
