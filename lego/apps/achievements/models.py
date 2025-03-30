@@ -37,9 +37,6 @@ class Achievement(BasisModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "identifier"], name="unique_user_identifier"
+                fields=["user", "identifier", "level"], name="unique_user_identifier"
             )
-        ]
-        indexes = [
-            models.Index(fields=["user", "identifier", "level"]),
         ]
