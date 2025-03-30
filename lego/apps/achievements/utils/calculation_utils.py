@@ -1,5 +1,6 @@
 from lego.apps.achievements.constants import (
     COMPLETE_IDENTIFIER,
+    EASTER_IDENTIFIER,
     EVENT_IDENTIFIER,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_IDENTIFIER,
@@ -26,6 +27,7 @@ ACHIEVEMENT_RARITIES = {
     GENFORS_IDENTIFIER: [0, 2, 3, 4, 5],
     GALA_IDENTIFIER: [0, 2, 4, 5],
     COMPLETE_IDENTIFIER: [0],
+    EASTER_IDENTIFIER: [2],
 }
 
 ACHIEVEMENT_WEIGHTS = {
@@ -41,9 +43,10 @@ ACHIEVEMENT_WEIGHTS = {
     GENFORS_IDENTIFIER: 0.75,  # These are partially accounted for already in the event_count
     GALA_IDENTIFIER: 0.75,
     COMPLETE_IDENTIFIER: 0.25,
+    EASTER_IDENTIFIER: 0.35,
 }
 
-EXCLUDED_ITEMS = [EVENT_RANK_IDENTIFIER]
+EXCLUDED_ITEMS = [EVENT_RANK_IDENTIFIER, EASTER_IDENTIFIER]
 
 delta = 0.1
 # Remember to update this rarity list when adding new achievement

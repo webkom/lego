@@ -36,6 +36,7 @@ PENALTY_IDENTIFIER = "penalty_period"
 GENFORS_IDENTIFIER = "genfors_count"
 GALA_IDENTIFIER = "gala_count"
 COMPLETE_IDENTIFIER = "complete_profile"
+EASTER_IDENTIFIER = "easter_winner"
 
 # These are used for information about what counts as gala
 
@@ -276,6 +277,14 @@ KEYPRESS_ORDER: AchievementCollection = {
     },
 }
 
+EASTER_WINNER_ACHIEVEMENTS: AchievementCollection = {
+    "easter_2025": {
+        "identifier": EASTER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+}
+
 
 HIDDEN_ACHIEVEMENTS = {
     **QUOTE_ACHIEVEMENTS,
@@ -284,6 +293,8 @@ HIDDEN_ACHIEVEMENTS = {
     **COMPLETE_ACHIEVEMENT,
 }
 
+MANUAL_ACHIEVEMENTS = {**EASTER_WINNER_ACHIEVEMENTS}
+
 ACHIEVEMENTS = {
     **EVENT_ACHIEVEMENTS,
     **EVENT_RANK_ACHIEVEMENTS,
@@ -291,10 +302,12 @@ ACHIEVEMENTS = {
     **EVENT_RULES,
     **POLL_ACHIEVEMENTS,
     **HIDDEN_ACHIEVEMENTS,
+    **MANUAL_ACHIEVEMENTS,
     **PENALTY_ACHIEVEMENTS,
     **GENFORS_ACHIEVEMENTS,
     **GALA_ACHIEVEMENTS,
 }
+
 
 ACHIEVEMENT_IDENTIFIERS = sorted(
     {(value["identifier"], value["identifier"]) for value in ACHIEVEMENTS.values()}
