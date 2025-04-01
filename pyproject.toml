@@ -46,7 +46,7 @@ django-push-notifications = "3.0.0"
 # Logging/errors
 structlog = "21.5.0"
 structlog-sentry = "1.4.0"
-sentry-sdk = "1.25.0"
+sentry-sdk = "2.25.0"
 analytics-python = "1.2.9"
 #
 # channels
