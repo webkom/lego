@@ -51,6 +51,19 @@ def add_meeting_to_ical_feed(feed, meeting, user):
         "url": meeting.get_absolute_url(),
     }
     desc_template = loader.get_template("ical/meeting_description.txt")
+
+    is_participating = True
+    if hasattr(meeting, "user_participating"):
+        is_participating = meeting.user_participating
+    else:
+        from lego.apps.meetings import constants as meeting_constants
+
+        not_participating = meeting.invitations.filter(
+            user=user,
+            status__in=[meeting_constants.NOT_ATTENDING, meeting_constants.NO_ANSWER],
+        ).exists()
+        is_participating = not not_participating
+
     feed.add_item(
         title=meeting.title,
         unique_id=f"meeting-{meeting.id}@abakus.no",
@@ -59,8 +72,7 @@ def add_meeting_to_ical_feed(feed, meeting, user):
         start_datetime=meeting.start_time,
         end_datetime=meeting.end_time,
         location=meeting.location,
-        # This uses an annotation on the queryset for performance reasons
-        transparency="OPAQUE" if meeting.user_participating else "TRANSPARENT",
+        transparency="OPAQUE" if is_participating else "TRANSPARENT",
     )
 
 
