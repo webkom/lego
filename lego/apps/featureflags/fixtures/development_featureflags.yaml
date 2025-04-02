@@ -1,0 +1,17 @@
+- model: featureflags.featureflag
+  pk: 1
+  fields:
+    identifier: 'lending'
+    display_groups: []
+    is_active: true
+    percentage: null
+    allowed_identifier: null
+
+- model: featureflags.featureflag
+  pk: 2
+  fields:
+    identifier: 'lending-request'
+    display_groups: []
+    is_active: true
+    percentage: null
+    allowed_identifier: null

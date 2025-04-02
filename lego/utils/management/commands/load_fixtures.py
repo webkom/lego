@@ -79,6 +79,7 @@ class Command(BaseCommand):
                     "lending/fixtures/development_lendable_objects.yaml",
                     "surveys/fixtures/development_surveys.yaml",
                     "users/fixtures/development_photo_consents.yaml",
+                    "featureflags/fixtures/development_featureflags.yaml",
                 ]
             )
 
