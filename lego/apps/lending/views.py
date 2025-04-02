@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from lego.apps.lending.filters import LendingRequestFilterSet
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
@@ -37,6 +38,7 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
 class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = [LegoPermissions, IsAuthenticated]
+    filterset_class = LendingRequestFilterSet
 
     def get_queryset(self):
         user = self.request.user
@@ -72,6 +74,7 @@ class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @action(detail=False, methods=["get"], url_path="admin")
     def admin(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        queryset = self.filter_queryset(queryset)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
