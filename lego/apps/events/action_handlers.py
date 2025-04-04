@@ -50,7 +50,8 @@ class EventHandler(Handler):
             )
         return result
 
-    def get_activity(self, event):
+    @staticmethod
+    def get_activity(event):
         return Activity(
             actor=event.company,
             verb=EventCreateVerb,
@@ -89,7 +90,8 @@ class RegistrationHandler(Handler):
         for feeds, recipients in self.get_feeds_and_recipients(instance):
             self.manager.remove_activity(activity, recipients, feeds)
 
-    def get_activity(self, registration):
+    @staticmethod
+    def get_activity(registration):
         return Activity(
             verb=EventRegisterVerb,
             actor=registration.user,

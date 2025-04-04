@@ -46,7 +46,8 @@ class PenaltyHandler(Handler):
     model = Penalty
     manager = feed_manager
 
-    def get_activity(self, penalty):
+    @staticmethod
+    def get_activity(penalty):
         return Activity(
             actor=penalty.source_event,
             verb=PenaltyVerb,
