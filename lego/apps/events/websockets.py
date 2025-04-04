@@ -1,8 +1,8 @@
+from __future__ import annotations
+
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
 
-from django.db.models.query import QuerySet
-
-from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (
     EventReadDetailedSocketSerializer,
     RegistrationPaymentInitiateSocketSerializer,
@@ -13,9 +13,14 @@ from lego.apps.events.serializers.sockets import (
 )
 from lego.apps.permissions.constants import LIST
 from lego.apps.permissions.utils import get_permission_handler
-from lego.apps.users.models import User
 from lego.apps.websockets.groups import group_for_event, group_for_user
 from lego.apps.websockets.notifiers import notify_group
+
+if TYPE_CHECKING:
+    from django.db.models.query import QuerySet
+
+    from lego.apps.events.models import Event, Registration
+    from lego.apps.users.models import User
 
 
 def find_event_groups(user: User) -> list[str]:
@@ -40,7 +45,7 @@ def find_event_groups(user: User) -> list[str]:
     return groups
 
 
-def notify_event_registration(action_type, registration, **kwargs):
+def notify_event_registration(action_type: str, registration: Registration, **kwargs):
     full_access_group = group_for_event(registration.event, True)
     partial_access_group = group_for_event(registration.event, False)
 
@@ -56,8 +61,10 @@ def notify_event_registration(action_type, registration, **kwargs):
     notify_group(partial_access_group, partial_serializer.data)
 
 
-def notify_user_payment_initiated(action_type, registration, **kwargs):
-    group = group_for_user(registration.user)
+def notify_user_payment_initiated(
+    action_type: str, registration: Registration, **kwargs
+):
+    group = group_for_user(registration.user.pk)
     kwargs["event_id"] = registration.event.id
     serializer = RegistrationPaymentInitiateSocketSerializer(
         {"type": action_type, "payload": registration, "meta": kwargs},
@@ -66,8 +73,8 @@ def notify_user_payment_initiated(action_type, registration, **kwargs):
     notify_group(group, serializer.data)
 
 
-def notify_user_payment(action_type, registration, **kwargs):
-    group = group_for_user(registration.user)
+def notify_user_payment(action_type: str, registration: Registration, **kwargs):
+    group = group_for_user(registration.user.pk)
     kwargs["event_id"] = registration.event.id
     serializer = RegistrationPaymentReadSocketSerializer(
         {"type": action_type, "payload": registration, "meta": kwargs},
@@ -76,8 +83,8 @@ def notify_user_payment(action_type, registration, **kwargs):
     notify_group(group, serializer.data)
 
 
-def notify_user_payment_error(action_type, registration, **kwargs):
-    group = group_for_user(registration.user)
+def notify_user_payment_error(action_type: str, registration: Registration, **kwargs):
+    group = group_for_user(registration.user.pk)
     kwargs["event_id"] = registration.event.id
     serializer = RegistrationPaymentReadErrorSerializer(
         {"type": action_type, "payload": registration, "meta": kwargs},
@@ -86,8 +93,8 @@ def notify_user_payment_error(action_type, registration, **kwargs):
     notify_group(group, serializer.data)
 
 
-def notify_user_registration(action_type, registration, **kwargs):
-    group = group_for_user(registration.user)
+def notify_user_registration(action_type: str, registration: Registration, **kwargs):
+    group = group_for_user(registration.user.pk)
     kwargs["event_id"] = registration.event.id
     serializer = RegistrationReadSocketSerializer(
         {"type": action_type, "payload": registration, "meta": kwargs},
@@ -97,7 +104,7 @@ def notify_user_registration(action_type, registration, **kwargs):
     notify_group(group, serializer.data)
 
 
-def notify_event_updated(event, **kwargs):
+def notify_event_updated(event: Event, **kwargs):
     full_access_group = group_for_event(event, True)
     limited_access_group = group_for_event(event, False)
     serializer = EventReadDetailedSocketSerializer(

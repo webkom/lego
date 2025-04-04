@@ -13,7 +13,7 @@ def notify_group(group, message):
     :param message: dict
     """
     channel_layer = get_channel_layer()
-    payload = json.dumps(camelize(message))
+    payload = json.dumps(camelize(message), default=str)
     return AsyncToSync(channel_layer.group_send)(
         group, {"type": "notification.message", "text": payload}
     )

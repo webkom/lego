@@ -13,7 +13,8 @@ class CommentHandler(Handler):
     model = Comment
     manager = feed_manager
 
-    def get_activity(self, comment, reply=False):
+    @staticmethod
+    def get_activity(comment, reply=False):
         return Activity(
             actor=comment.created_by,
             verb=CommentReplyVerb if reply else CommentVerb,

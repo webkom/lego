@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from lego.apps.feeds.serializers import FeedActivitySerializer
+from lego.apps.feeds.serializers.feeds import FeedActivitySerializer
 
 from . import verbs
 
