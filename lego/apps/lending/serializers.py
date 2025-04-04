@@ -262,7 +262,9 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         instance: LendingRequest = super().create(validated_data)
 
         TimelineEntry.objects.create(
-            message=LENDING_REQUEST_TRANSLATION_MAP[LENDING_REQUEST_STATUSES["LENDING_CREATED"]["value"]],
+            message=LENDING_REQUEST_TRANSLATION_MAP[
+                LENDING_REQUEST_STATUSES["LENDING_CREATED"]["value"]
+            ],
             lending_request=instance,
             current_user=self.context.get("request").user,
             is_system=True,

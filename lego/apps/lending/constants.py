@@ -25,6 +25,7 @@ LENDING_REQUEST_TRANSLATION_MAP = {
     "changes_requested": "forespurte endringer",
 }
 
+
 class CreateLendingRequestType(TypedDict):
     id: int
     created_by: Optional[int]  # Assuming user IDs are integers

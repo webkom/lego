@@ -484,7 +484,7 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
 
         # Verify the timelineentry text matches the expected system message.
         # Expected text: "opprettet forespørsel"
-        expected_text = LENDING_REQUEST_TRANSLATION_MAP['created']
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["created"]
         system_timelineentry = updated_request.timeline_entries.order_by(
             "created_at"
         ).first()
@@ -510,7 +510,7 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
 
         # Verify the timelineentry text matches the expected system message.
         # Expected text: "Status endret fra {translated old status} til {translated new status}."
-        expected_text = LENDING_REQUEST_TRANSLATION_MAP['approved']
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["approved"]
         system_timelineentry = updated_request.timeline_entries.order_by(
             "created_at"
         ).last()
@@ -574,7 +574,7 @@ class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
             updated_request.timeline_entries.exists(), "Expected timelineentry."
         )
 
-        expected_text = LENDING_REQUEST_TRANSLATION_MAP['approved']
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["approved"]
         system_timelineentry = updated_request.timeline_entries.order_by(
             "created_at"
         ).last()
