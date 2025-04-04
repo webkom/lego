@@ -18,7 +18,7 @@ LENDING_CHOICE_STATUSES = sorted(
 
 LENDING_REQUEST_TRANSLATION_MAP = {
     "created": "opprettet forespørsel",
-    "unapproved": "fjenet godkjenning",
+    "unapproved": "fjernet godkjenning",
     "approved": "godkjente forespørsel",
     "denied": "avslo forespørsel",
     "cancelled": "avbrøt forespørsel",
