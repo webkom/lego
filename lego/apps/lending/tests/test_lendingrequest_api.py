@@ -239,6 +239,50 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertIn(request_editable.id, returned_ids)
         self.assertNotIn(request_non_editable.id, returned_ids)
 
+    def test_filter_by_status(self):
+        """Test filtering lending requests by status - both single and multiple status filters."""
+        # Create multiple lending requests with different statuses
+        # All created by self.user to ensure they appear in the list endpoint
+        request1 = create_lending_request(
+            user=self.user, lendable_object=self.lendable_object, status="unapproved"
+        )
+        request2 = create_lending_request(
+            user=self.user, lendable_object=self.lendable_object, status="approved"
+        )
+        request3 = create_lending_request(
+            user=self.user, lendable_object=self.lendable_object, status="cancelled"
+        )
+
+        self.client.force_authenticate(user=self.editor_user)
+
+        # Test no filter
+        response = self.client.get(reverse("api:v1:lending-request-admin"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 3)
+        self.assertEqual(results[0]["id"], request1.id)
+        self.assertEqual(results[1]["id"], request2.id)
+        self.assertEqual(results[2]["id"], request3.id)
+
+        # Test single status filter
+        response = self.client.get(
+            f"{reverse('api:v1:lending-request-admin')}?status=approved"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], request2.id)
+
+        # Test multiple status filter
+        response = self.client.get(
+            f"{reverse('api:v1:lending-request-admin')}?status=approved,cancelled"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0]["id"], request2.id)
+        self.assertEqual(results[1]["id"], request3.id)
+
 
 class LendingRequestStatusTestCase(BaseAPITestCase):
     def setUp(self):
