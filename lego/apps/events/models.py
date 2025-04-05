@@ -136,7 +136,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def user_should_see_regs(self, user: User) -> bool:
         return (
             self.get_possible_pools(user, future=True, is_admitted=False).exists()
-            or user.is_abakom_member
+            or user.is_abakus_member
             or (self.created_by is not None and self.created_by.id == user.id)
         )
 
