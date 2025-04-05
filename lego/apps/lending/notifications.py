@@ -1,5 +1,8 @@
+from lego.apps.lending.constants import LENDING_REQUEST_TRANSLATION_MAP
+from lego.apps.lending.models import LendingRequest, TimelineEntry
 from lego.apps.notifications.constants import LENDING_REQUEST, LENDING_REQUEST_STATUS_UPDATE
 from lego.apps.notifications.notification import Notification
+from lego.apps.users.models import User
 
 
 # Lender = person responsible for the object
@@ -32,9 +35,9 @@ class LendingRequestStatusUpdateNotification(Notification):
     name = LENDING_REQUEST_STATUS_UPDATE
 
     def generate_mail(self):
-        lending_request = self.kwargs["lending_request"]
-        timelineentry = self.kwargs["timelineentry"]
-        recipient = self.kwargs["recipient"]
+        lending_request: LendingRequest = self.kwargs["lending_request"]
+        timelineentry: TimelineEntry = self.kwargs["timelineentry"]
+        recipient: User = self.kwargs["recipient"]
         return self._delay_mail(
             to_email=recipient.email,
             context={
@@ -42,8 +45,9 @@ class LendingRequestStatusUpdateNotification(Notification):
                 "object_id": lending_request.lendable_object.id,
                 "request_id": lending_request.id,
                 "new_status": timelineentry.status,
+                "recipient": recipient.full_name
             },
-            subject=f"Status endret på utlånsforespørsel om {lending_request.lendable_object.title}",
+            subject=f"Status endret på utlånsforespørsel om {lending_request.lendable_object.title} til {LENDING_REQUEST_TRANSLATION_MAP[timelineentry.status]}",
             plain_template="lendingRequests/email/lending_request.txt",
             html_template="lendingRequests/email/lending_request_status_update.html",
         )

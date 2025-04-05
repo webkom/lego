@@ -2,25 +2,20 @@
 
 <tr>
   <td class="alert alert-info">
-    Endring i utlånsforespørsel ang. {{ object }}
+    Endring i utlånsforespørsel ang. {{ object_name }}
   </td>
 </tr>
 
 {% endblock %} {% block content %}
 
 <tr>
-  <td class="content-block">Hei, {{ lender }}!</td>
+  <td class="content-block">Hei, {{ recipient }}!</td>
 </tr>
 
 <tr>
   <td class="content-block">
-    {{lendee}} vil låne {{ object }} fra {{ start_date }} til {{ end_date }}.
-  </td>
-</tr>
-
-<tr>
-  <td class="content-block">
-    <b>Periode:</b> {{ start_date }} - {{ end_date }}.
+    Status er endret til {{ status }} i forespørselen om utlån av {{ object_name
+    }}
   </td>
 </tr>
 
@@ -79,7 +74,7 @@
                 margin-right: 10px;
               "
             >
-              gå til forespørsel
+              Gå til forespørsel
             </a>
           </div>
         </td>
