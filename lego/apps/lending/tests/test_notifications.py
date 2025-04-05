@@ -3,8 +3,12 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.utils.timezone import now, timedelta
 
-from lego.apps.lending.models import LendableObject, LendingRequest
-from lego.apps.lending.notifications import LendingRequestNotification
+from lego.apps.lending.constants import LENDING_REQUEST_STATUSES
+from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
+from lego.apps.lending.notifications import (
+    LendingRequestNotification,
+    LendingRequestStatusUpdateNotification,
+)
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -50,7 +54,7 @@ class LendingRequestNotificationTestCase(BaseAPITestCase):
         # Create LendingRequest instance
         self.client.force_authenticate(user=self.lendee)
         data = {
-            "" "lendable_object": self.lendable_object.pk,
+            "lendable_object": self.lendable_object.pk,
             "status": "unapproved",
             "start_date": (now() + timedelta(days=1)).isoformat(),
             "end_date": (now() + timedelta(days=2)).isoformat(),
@@ -67,6 +71,25 @@ class LendingRequestNotificationTestCase(BaseAPITestCase):
             lender=self.lender,
         )
 
+        timelineentry = TimelineEntry.objects.create(
+            message=f"Status endret fra...",
+            lending_request=LendingRequest.objects.get(
+                lendable_object__title="Test Object"
+            ),
+            current_user=self.context.get("request").user,
+            is_system=True,
+            status=LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
+        )
+
+        self.notifier2 = LendingRequestStatusUpdateNotification(
+            self.lendee,
+            lending_request=LendingRequest.objects.get(
+                lendable_object__title="Test Object"
+            ),
+            timelineentry=timelineentry,
+            recipient=self.lender,
+        )
+
     def assertEmailContains(self, send_mail_mock, content):
         self.notifier.generate_mail()
         email_args = send_mail_mock.call_args[1]
@@ -74,3 +97,11 @@ class LendingRequestNotificationTestCase(BaseAPITestCase):
 
     def test_generate_email_comment(self, send_mail_mock):
         self.assertEmailContains(send_mail_mock, "Ny forespørsel om utlån")
+
+    def assertEmailContains2(self, send_mail_mock, content):
+        self.notifier2.generate_mail()
+        email_args = send_mail_mock.call_args[1]
+        self.assertIn(content, email_args["html_message"])
+
+    def test_generate_email_comment2(self, send_mail_mock):
+        self.assertEmailContains(send_mail_mock, "Status er endret")

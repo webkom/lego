@@ -1,7 +1,7 @@
 {% extends "email/base.html" %} {% block alert %}
 
 <tr>
-  <td class="alert alert-info">Ny forespørsel om utlån av {{ object }}</td>
+  <td class="alert alert-info">Ny forespørsel om utlån av {{ object_name }}</td>
 </tr>
 
 {% endblock %} {% block content %}
@@ -12,7 +12,7 @@
 
 <tr>
   <td class="content-block">
-    {{lendee}} vil låne {{ object }} fra {{ start_date }} til {{ end_date }}.
+    {{lendee}} vil låne {{ object_name }} fra {{ start_date }} til {{ end_date }}.
   </td>
 </tr>
 
