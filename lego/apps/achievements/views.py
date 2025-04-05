@@ -130,3 +130,14 @@ class AchievementViewSet(viewsets.GenericViewSet):
             {"detail": "Recheck task has been triggered."},
             status=status.HTTP_202_ACCEPTED,
         )
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        permission_classes=[permissions.AllowAny],
+    )
+    def easter_egg(self, request, *args, **kwargs):
+        return Response(
+            {"detail": "Se egg 22. Hint: 476e251cc54b60534f68d0f614fcc67950151353"},
+            status=status.HTTP_301_MOVED_PERMANENTLY,
+        )
