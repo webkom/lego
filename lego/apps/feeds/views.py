@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework import decorators, permissions, status, viewsets
 from rest_framework.response import Response
 
@@ -5,7 +7,7 @@ from lego.apps.feeds.attr_cache import AttrCache
 
 from .feed_manager import feed_manager
 from .models import NotificationFeed, PersonalFeed, UserFeed
-from .serializers import (
+from .serializers.feeds import (
     AggregatedFeedSerializer,
     AggregatedMarkedFeedSerializer,
     MarkSerializer,
@@ -20,7 +22,8 @@ class FeedViewSet(viewsets.GenericViewSet):
     ordering = "-updated_at"
     serializer_class = AggregatedFeedSerializer
 
-    def attach_metadata(self, data):
+    @staticmethod
+    def attach_metadata(data: List[dict]) -> List[dict]:
         """
         Map over the feed here to attach more information to each element.
         """

@@ -2,11 +2,12 @@ from asgiref.sync import AsyncToSync
 from channels.generic.websocket import WebsocketConsumer
 
 from lego.apps.events.websockets import find_event_groups
+from lego.apps.users.models import User
 from lego.apps.websockets.groups import group_for_user
 
 
-def find_groups(user):
-    return ["global", group_for_user(user)] + find_event_groups(user)
+def find_groups(user: User):
+    return ["global", group_for_user(user.pk)] + find_event_groups(user)
 
 
 class GroupConsumer(WebsocketConsumer):

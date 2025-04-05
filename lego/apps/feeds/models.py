@@ -1,4 +1,9 @@
+from __future__ import annotations
+
+from typing import List, Union
+
 from django.db import IntegrityError, models
+from django.db.models.query import QuerySet
 
 from lego.apps.feeds.activity import Activity
 from lego.apps.feeds.marker import MarkerModelMixin
@@ -90,7 +95,9 @@ class FeedBase(models.Model):
 
 
 class AggregatedFeedManager(models.Manager):
-    def find_matching_groups(self, group, offset, feed_ids):
+    def find_matching_groups(
+        self, group, offset, feed_ids
+    ) -> Union[QuerySet, List[AggregatedFeedBase]]:
         """
         TODO: Implement offset filtering?
         """
