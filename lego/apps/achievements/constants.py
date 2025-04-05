@@ -278,10 +278,15 @@ KEYPRESS_ORDER: AchievementCollection = {
 }
 
 EASTER_WINNER_ACHIEVEMENTS: AchievementCollection = {
-    "easter_2025": {
+    "easter_2024": {
         "identifier": EASTER_IDENTIFIER,
         "requirement_function": lambda user: False,
         "level": 0,
+    },
+    "easter_2025": {
+        "identifier": EASTER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 1,
     },
 }
 
