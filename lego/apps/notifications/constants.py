@@ -21,6 +21,7 @@ MEETING_INVITATION_REMINDER = "meeting_invitation_reminder"
 
 # Lending
 LENDING_REQUEST = "lending_request"
+LENDING_REQUEST_STATUS_UPDATE = "lending_request_status_update"
 
 # Penalty
 PENALTY_CREATION = "penalty_creation"

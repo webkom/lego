@@ -61,7 +61,7 @@ class LendingRequestNotificationTestCase(BaseAPITestCase):
         # Create notifier
         self.notifier = LendingRequestNotification(
             self.lendee,
-            lending_requst=LendingRequest.objects.get(
+            lending_request=LendingRequest.objects.get(
                 lendable_object__title="Test Object"
             ),
             lender=self.lender,
