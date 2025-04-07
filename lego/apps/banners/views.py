@@ -4,13 +4,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from lego.apps.banners.models import Banners
-from lego.apps.banners.serializers import BannersSerializer
+from lego.apps.banners.serializers import BannerSerializer
 from lego.apps.permissions.api.permissions import LegoPermissions
 
 
 class BannersViewSet(viewsets.ModelViewSet):
     lookup_value_regex = r"\d+"
-    serializer_class = BannersSerializer
+    serializer_class = BannerSerializer
     queryset = Banners.objects.all()
     permission_classes = [LegoPermissions, IsAuthenticated]
 
@@ -41,3 +41,8 @@ class BannersViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = self.get_serializer(banner)
         return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        partial = request.query_params.get("partial", "false").lower() == "true"
+        kwargs["partial"] = partial
+        return super().update(request, *args, **kwargs)
