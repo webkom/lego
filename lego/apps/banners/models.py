@@ -10,8 +10,10 @@ class Banners(BasisModel):
     header = models.CharField(max_length=256)
     subheader = models.CharField(max_length=256, null=True)
     link = models.CharField(max_length=512)
-    current_public = models.BooleanField(default=False, null=False, blank=False)
-    current_private = models.BooleanField(default=False, null=False, blank=False)
+    current_public = models.BooleanField(default=False)
+    current_private = models.BooleanField(default=False)
+    countdown_end_date = models.DateTimeField(null=True, blank=True)
+    countdown_end_message = models.CharField(max_length=256, null=True, blank=True)
     color = models.CharField(
         choices=BANNER_COLORS_CHOICES, default=BANNER_COLORS_DEFAULT
     )
@@ -34,3 +36,12 @@ class Banners(BasisModel):
                 name="unique_current_private",
             ),
         ]
+
+    def __str__(self):
+        status = []
+        if self.current_public:
+            status.append("public")
+        if self.current_private:
+            status.append("private")
+        status_str = f" [{', '.join(status)}]" if status else ""
+        return f"{self.header}{status_str}"

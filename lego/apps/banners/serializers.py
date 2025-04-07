@@ -2,7 +2,7 @@ from lego.apps.banners.models import Banners
 from lego.utils.serializers import BasisModelSerializer
 
 
-class BannersSerializer(BasisModelSerializer):
+class BannerSerializer(BasisModelSerializer):
     class Meta:
         model = Banners
         fields = (
@@ -13,6 +13,8 @@ class BannersSerializer(BasisModelSerializer):
             "link",
             "current_private",
             "current_public",
+            "countdown_end_date",
+            "countdown_end_message",
         )
 
     def update(self, instance, validated_data):
