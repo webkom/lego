@@ -2,6 +2,7 @@ from datetime import date
 from typing import Optional, TypedDict
 
 LENDING_REQUEST_STATUSES = {
+    "LENDING_CREATED": {"value": "created"},
     "LENDING_UNAPPROVED": {"value": "unapproved"},
     "LENDING_APPROVED": {"value": "approved"},
     "LENDING_DENIED": {"value": "denied"},
@@ -16,11 +17,12 @@ LENDING_CHOICE_STATUSES = sorted(
 )
 
 LENDING_REQUEST_TRANSLATION_MAP = {
-    "unapproved": "Ikke godkjent",
-    "approved": "Godkjent",
-    "denied": "Avslått",
-    "cancelled": "Avbrutt av bruker",
-    "changes_requested": "Endringer forespurt",
+    "created": "opprettet forespørsel",
+    "unapproved": "fjernet godkjenning",
+    "approved": "godkjente forespørsel",
+    "denied": "avslo forespørsel",
+    "cancelled": "avbrøt forespørsel",
+    "changes_requested": "forespurte endringer",
 }
 
 
