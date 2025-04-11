@@ -9,6 +9,7 @@ LENDING_REQUEST_STATUSES = {
     "LENDING_CHANGES_REQUESTED": {"value": "changes_requested"},
 }
 
+
 LENDING_REQUEST_DEFAULT = LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"]
 
 LENDING_CHOICE_STATUSES = sorted(
@@ -22,6 +23,17 @@ LENDING_REQUEST_TRANSLATION_MAP = {
     "cancelled": "Avbrutt av bruker",
     "changes_requested": "Endringer forespurt",
 }
+
+
+LENDING_REQUEST_USER_ACTIONS = [
+    LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
+]
+
+LENDING_REQUEST_ADMIN_ACTIONS = [
+    LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"],
+    LENDING_REQUEST_STATUSES["LENDING_DENIED"]["value"],
+    LENDING_REQUEST_STATUSES["LENDING_CHANGES_REQUESTED"]["value"],
+]
 
 
 class CreateLendingRequestType(TypedDict):
