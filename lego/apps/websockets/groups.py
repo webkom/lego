@@ -1,9 +1,13 @@
-from lego.apps.events.models import Event
-from lego.apps.users.models import User
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from lego.apps.events.models import Event
 
 
-def group_for_user(user: User) -> str:
-    return f"user-{user.pk}"
+def group_for_user(user_id: str) -> str:
+    return f"user-{user_id}"
 
 
 def group_for_event(event: Event, has_registrations_access: bool) -> str:

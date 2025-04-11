@@ -12,7 +12,8 @@ class MeetingInvitationHandler(Handler):
     model = MeetingInvitation
     manager = feed_manager
 
-    def get_activity(self, meeting_invitation):
+    @staticmethod
+    def get_activity(meeting_invitation):
         return Activity(
             actor=meeting_invitation.created_by,
             verb=MeetingInvitationVerb,
