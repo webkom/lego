@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
+from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (
     EventReadDetailedSocketSerializer,
     RegistrationPaymentInitiateSocketSerializer,
@@ -19,7 +20,7 @@ from lego.apps.websockets.notifiers import notify_group
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet
 
-    from lego.apps.events.models import Event, Registration
+    from lego.apps.events.models import Registration
     from lego.apps.users.models import User
 
 
