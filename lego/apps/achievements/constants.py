@@ -283,10 +283,15 @@ EASTER_WINNER_ACHIEVEMENTS: AchievementCollection = {
         "requirement_function": lambda user: False,
         "level": 0,
     },
-    "easter_2025": {
+    "easter_2025_contender": {
         "identifier": EASTER_IDENTIFIER,
         "requirement_function": lambda user: False,
         "level": 1,
+    },
+    "easter_2025": {
+        "identifier": EASTER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 2,
     },
 }
 
