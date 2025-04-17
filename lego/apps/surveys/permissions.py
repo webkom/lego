@@ -128,8 +128,8 @@ class SubmissionPermissionHandler(PermissionHandler):
             survey = Survey.objects.get(id=survey_pk)
             if survey.event:
                 user_attended_event = survey.event.registrations.filter(
-                user=user.id, presence=PRESENCE_CHOICES.PRESENT
-            ).exists()
+                    user=user.id, presence=PRESENCE_CHOICES.PRESENT
+                ).exists()
 
         if is_survey_admin:
             return True
