@@ -516,6 +516,24 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
             "You cannot edit someone else's request", patch_response.data["text"][0]
         )
 
+    def test_creation_creates_system_linelineentry(self):
+        """
+        Verify that when a lending request is created, a system message
+        timelineentry is created reflecting the creation.
+        """
+        # Reload the request from the database.
+        updated_request = LendingRequest.objects.get(pk=self.request_id)
+        # Check that a timelineentry was created for the creation.
+        self.assertTrue(updated_request.timeline_entries.exists())
+
+        # Verify the timelineentry text matches the expected system message.
+        # Expected text: "opprettet forespørsel"
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["created"]
+        system_timelineentry = updated_request.timeline_entries.order_by(
+            "created_at"
+        ).first()
+        self.assertEqual(system_timelineentry.message, expected_text)
+
     def test_creator_update_status_creates_system_timelineentry(self):
         """
         Verify that when the creator updates the status of their own request,
@@ -536,13 +554,10 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
 
         # Verify the timelineentry text matches the expected system message.
         # Expected text: "Status endret fra {translated old status} til {translated new status}."
-        expected_text = (
-            f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP['unapproved']} "
-            f"til {LENDING_REQUEST_TRANSLATION_MAP['approved']}."
-        )
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["approved"]
         system_timelineentry = updated_request.timeline_entries.order_by(
             "created_at"
-        ).first()
+        ).last()
         self.assertEqual(system_timelineentry.message, expected_text)
 
 
@@ -603,13 +618,10 @@ class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
             updated_request.timeline_entries.exists(), "Expected timelineentry."
         )
 
-        expected_text = (
-            f"Status endret fra {LENDING_REQUEST_TRANSLATION_MAP['unapproved']} "
-            f"til {LENDING_REQUEST_TRANSLATION_MAP['approved']}."
-        )
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["approved"]
         system_timelineentry = updated_request.timeline_entries.order_by(
             "created_at"
-        ).first()
+        ).last()
         self.assertEqual(system_timelineentry.message, expected_text)
         self.assertEqual(system_timelineentry.is_system, True)
         # Optionally check that the entry was created by the approver.
