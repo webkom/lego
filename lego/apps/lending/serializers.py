@@ -251,12 +251,10 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         old_status = instance.status
         new_status = validated_data.get("status", old_status)
         instance = super().update(instance, validated_data)
-        old_status_string = LENDING_REQUEST_TRANSLATION_MAP[old_status]
-        new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
-
         if new_status != old_status:
-            timelineentry = TimelineEntry.objects.create(
-                message=f"Status endret fra {old_status_string} til {new_status_string}.",
+            new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
+            TimelineEntry.objects.create(
+                message=new_status_string,
                 lending_request=instance,
                 current_user=self.context.get("request").user,
                 is_system=True,
@@ -284,6 +282,16 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
 
     def create(self, validated_data: CreateLendingRequestType) -> LendingRequest:
         instance: LendingRequest = super().create(validated_data)
+
+        TimelineEntry.objects.create(
+            message=LENDING_REQUEST_TRANSLATION_MAP[
+                LENDING_REQUEST_STATUSES["LENDING_CREATED"]["value"]
+            ],
+            lending_request=instance,
+            current_user=self.context.get("request").user,
+            is_system=True,
+            status=LENDING_REQUEST_STATUSES["LENDING_CREATED"]["value"],
+        )
 
         for lender in instance.lendable_object.can_edit_users.all():
             notification = LendingRequestNotification(

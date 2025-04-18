@@ -1,9 +1,12 @@
+from typing import List, Type, cast
+
 from django.apps import apps
 
 from lego.apps.feeds.activity import Activity
 from lego.apps.feeds.aggregator import FeedAggregator
 from lego.apps.feeds.constants import ADD, REMOVE
-from lego.apps.feeds.models import TimelineStorage
+from lego.apps.feeds.models import FeedBase, NotificationFeed, TimelineStorage
+from lego.apps.feeds.websockets import notify_new_notification
 
 aggregator = FeedAggregator()
 
@@ -14,7 +17,7 @@ def fanout(operation, activity, recipients, feed):
     destination feeds.
     """
     activity = Activity.deserialize(activity)
-    feed = apps.get_model("feeds", feed)
+    feed = cast(Type[FeedBase], apps.get_model("feeds", feed))
 
     if operation == ADD:
         return add_to_feed(activity, feed, recipients)
@@ -25,7 +28,7 @@ def fanout(operation, activity, recipients, feed):
     raise ValueError("Invalid feed operation")
 
 
-def add_to_feed(activity, feed, recipients):
+def add_to_feed(activity: Activity, feed: Type[FeedBase], recipients: List[str]):
     """
     Lookup groupings and add the activity to the feed.
     """
@@ -34,6 +37,7 @@ def add_to_feed(activity, feed, recipients):
     timeline_ids = set()
     group_search_offset = 20
     group = aggregator.get_group(activity)
+    is_notification = feed == NotificationFeed
 
     existing_aggregated_activities = feed.objects.find_matching_groups(
         group, group_search_offset, recipients
@@ -43,6 +47,8 @@ def add_to_feed(activity, feed, recipients):
     for aggregated_activity in existing_aggregated_activities:
         aggregated_activity.add_activity(activity)
         aggregated_activity.save()
+        if is_notification:
+            notify_new_notification(aggregated_activity)
         recipients.remove(aggregated_activity.feed_id)
         timeline_ids.add(aggregated_activity.id)
 
@@ -51,6 +57,13 @@ def add_to_feed(activity, feed, recipients):
     timeline_ids |= set(activity_ids)
 
     TimelineStorage.add_ids(activity.activity_id, timeline_ids, feed)
+
+    if is_notification:
+        new_aggregated_activities = feed.objects.find_matching_groups(
+            group, group_search_offset, recipients
+        )
+        for aggregated_activity in new_aggregated_activities:
+            notify_new_notification(aggregated_activity)
 
 
 def remove_from_feed(activity, feed, recipients):
