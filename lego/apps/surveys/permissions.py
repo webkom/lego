@@ -61,7 +61,7 @@ class SurveyPermissionHandler(PermissionHandler):
                     survey = queryset.get(id=survey_pk)
                 except queryset.model.DoesNotExist:
                     survey = None
-            if survey and user:
+            if survey and user and survey.event:
                 user_attended_event = survey.event.registrations.filter(
                     user=user.id, presence=PRESENCE_CHOICES.PRESENT
                 ).exists()
@@ -126,9 +126,10 @@ class SubmissionPermissionHandler(PermissionHandler):
 
             survey_pk = view.kwargs["survey_pk"]
             survey = Survey.objects.get(id=survey_pk)
-            user_attended_event = survey.event.registrations.filter(
-                user=user.id, presence=PRESENCE_CHOICES.PRESENT
-            ).exists()
+            if survey.event:
+                user_attended_event = survey.event.registrations.filter(
+                    user=user.id, presence=PRESENCE_CHOICES.PRESENT
+                ).exists()
 
         if is_survey_admin:
             return True
