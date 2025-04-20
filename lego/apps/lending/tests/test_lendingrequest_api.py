@@ -147,8 +147,17 @@ class LendingRequestTestCase(BaseAPITestCase):
 
     def test_user_with_edit_permission_can_approve_request_and_comment(self):
         """Users in can_edit_groups should be able to approve lending requests."""
-        lending_request = create_lending_request(self.user, self.lendable_object)
+        self.client.force_authenticate(user=self.user)
 
+        data = {
+            "lendable_object": self.lendable_object.pk,
+            "status": "unapproved",
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+        }
+
+        response1 = self.client.post(get_lending_request_list_url(), data)
+        lending_request = LendingRequest.objects.get(pk=response1.data["id"])
         self.client.force_authenticate(user=self.editor_user)
 
         data = {"status": "approved"}

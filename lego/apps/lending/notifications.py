@@ -51,7 +51,7 @@ class LendingRequestStatusUpdateNotification(Notification):
                 "new_status": LENDING_REQUEST_TRANSLATION_MAP[timelineentry.status],
                 "recipient": recipient.full_name,
             },
-            subject=f"Status endret på utlånsforespørsel {lending_request.lendable_object.title} til {LENDING_REQUEST_TRANSLATION_MAP[timelineentry.status]}",
+            subject="Status endret på utlånsforespørsel",
             plain_template="lendingRequests/email/lending_request.txt",
             html_template="lendingRequests/email/lending_request_status_update.html",
         )
