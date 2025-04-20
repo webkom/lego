@@ -253,7 +253,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         instance = super().update(instance, validated_data)
         if new_status != old_status:
             new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
-            TimelineEntry.objects.create(
+            timelineentry = TimelineEntry.objects.create(
                 message=new_status_string,
                 lending_request=instance,
                 current_user=self.context.get("request").user,
