@@ -50,7 +50,7 @@ class LendingRequestNotificationTestCase(BaseAPITestCase):
         # Create LendingRequest instance
         self.client.force_authenticate(user=self.lendee)
         data = {
-            "" "lendable_object": self.lendable_object.pk,
+            "lendable_object": self.lendable_object.pk,
             "status": "unapproved",
             "start_date": (now() + timedelta(days=1)).isoformat(),
             "end_date": (now() + timedelta(days=2)).isoformat(),
@@ -61,7 +61,7 @@ class LendingRequestNotificationTestCase(BaseAPITestCase):
         # Create notifier
         self.notifier = LendingRequestNotification(
             self.lendee,
-            lending_requst=LendingRequest.objects.get(
+            lending_request=LendingRequest.objects.get(
                 lendable_object__title="Test Object"
             ),
             lender=self.lender,

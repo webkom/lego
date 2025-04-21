@@ -5,12 +5,17 @@ from rest_framework import serializers
 from lego.apps.files.fields import ImageField
 from lego.apps.lending.constants import (
     LENDING_CHOICE_STATUSES,
+    LENDING_REQUEST_ADMIN_ACTIONS,
     LENDING_REQUEST_STATUSES,
     LENDING_REQUEST_TRANSLATION_MAP,
+    LENDING_REQUEST_USER_ACTIONS,
     CreateLendingRequestType,
 )
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
-from lego.apps.lending.notifications import LendingRequestNotification
+from lego.apps.lending.notifications import (
+    LendingRequestNotification,
+    LendingRequestStatusUpdateNotification,
+)
 from lego.apps.permissions.constants import VIEW
 from lego.apps.users.fields import AbakusGroupField
 from lego.apps.users.models import User
@@ -248,13 +253,30 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         instance = super().update(instance, validated_data)
         if new_status != old_status:
             new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
-            TimelineEntry.objects.create(
+            timelineentry = TimelineEntry.objects.create(
                 message=new_status_string,
                 lending_request=instance,
                 current_user=self.context.get("request").user,
                 is_system=True,
                 status=new_status,
             )
+            if new_status in LENDING_REQUEST_ADMIN_ACTIONS:
+                notification = LendingRequestStatusUpdateNotification(
+                    instance.created_by,
+                    lending_request=instance,
+                    timelineentry=timelineentry,
+                    recipient=instance.created_by,
+                )
+                notification.notify()
+            elif new_status in LENDING_REQUEST_USER_ACTIONS:
+                for lender in instance.lendable_object.can_edit_users.all():
+                    notification = LendingRequestStatusUpdateNotification(
+                        lender,
+                        lending_request=instance,
+                        timelineentry=timelineentry,
+                        recipient=lender,
+                    )
+                    notification.notify()
 
         return instance
 
@@ -273,7 +295,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
 
         for lender in instance.lendable_object.can_edit_users.all():
             notification = LendingRequestNotification(
-                instance.created_by, lending_requst=instance, lender=lender
+                instance.created_by, lending_request=instance, lender=lender
             )
             notification.notify()
         return instance
