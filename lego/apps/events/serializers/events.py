@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.companies.fields import CompanyField
 from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField

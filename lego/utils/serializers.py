@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from lego.apps.users.fields import AbakusGroupField, PublicUserField
 from lego.apps.users.models import AbakusGroup, User
-from lego.utils.content_types import string_to_instance
+from lego.utils.content_types import instance_to_string, string_to_instance
 
 
 class GenericRelationField(serializers.CharField):
@@ -14,11 +14,13 @@ class GenericRelationField(serializers.CharField):
     }
 
     def __init__(self, *args, **kwargs):
-        kwargs["write_only"] = True
         super().__init__(*args, **kwargs)
 
     def to_representation(self, value):
-        return None
+        try:
+            return instance_to_string(value)
+        except Exception:
+            pass
 
     def to_internal_value(self, data):
         try:

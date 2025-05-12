@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.forums.models import Forum, Thread
 from lego.apps.users.serializers.users import PublicUserSerializer

@@ -3,7 +3,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.companies.constants import INTERESTED, NOT_CONTACTED
 from lego.apps.companies.fields import SemesterField
 from lego.apps.companies.models import (

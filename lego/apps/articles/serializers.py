@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import CharField
 
 from lego.apps.articles.models import Article
-from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.content.fields import ContentSerializerField
 from lego.apps.files.fields import ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
