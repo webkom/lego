@@ -16,6 +16,6 @@ def group_for_event(event: Event, has_registrations_access: bool) -> str:
     return f"event-{'full' if has_registrations_access else 'limited'}-{event.pk}"
 
 
-def group_for_comment_target(content_target) -> str:
+def group_for_content_target(content_target) -> str:
     content_target_string = instance_to_string(content_target)
     return f"comment-{content_target_string}"
