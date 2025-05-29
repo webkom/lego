@@ -2,12 +2,7 @@ WS_STATUS_CONNECTED = "CONNECTED"
 WS_STATUS_CLOSED = "CLOSED"
 WS_STATUS_ERROR = "ERROR"
 
-WS_GROUP_TYPES = [
-    "global"
-    "user",
-    "event",
-    "comment"
-]
+WS_GROUP_TYPES = ["global" "user", "event", "comment"]
 
 WS_GROUP_JOIN_BEGIN = "Websockets.GROUP_JOIN.BEGIN"
 WS_GROUP_JOIN_SUCCESS = "Websockets.GROUP_JOIN.SUCCESS"

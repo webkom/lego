@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from lego.apps.comments.serializers.sockets import CommentSocketSerializer
-from lego.apps.websockets.notifiers import notify_group
 from lego.apps.websockets.groups import group_for_content_model
+from lego.apps.websockets.notifiers import notify_group
 
 if TYPE_CHECKING:
     from lego.apps.comments.models import Comment
