@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.events.fields import PublicEventField
 from lego.apps.events.models import Event
 from lego.apps.files.fields import FileField, ImageField
