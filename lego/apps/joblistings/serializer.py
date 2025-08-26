@@ -29,6 +29,7 @@ class JoblistingSerializer(BasisModelSerializer):
             "to_year",
             "created_at",
             "rolling_recruitment",
+            "is_pinned",
         )
 
 
@@ -60,6 +61,7 @@ class JoblistingDetailedSerializer(BasisModelSerializer):
             "youtube_url",
             "created_at",
             "rolling_recruitment",
+            "is_pinned",
         )
 
 
@@ -87,6 +89,7 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
             "application_url",
             "youtube_url",
             "rolling_recruitment",
+            "is_pinned",
         )
 
     def create(self, validated_data):
