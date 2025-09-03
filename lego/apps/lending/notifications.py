@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from lego.apps.lending.constants import LENDING_REQUEST_TRANSLATION_MAP
 from lego.apps.lending.models import LendingRequest, TimelineEntry
 from lego.apps.notifications.constants import (
