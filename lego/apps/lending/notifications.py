@@ -18,7 +18,7 @@ class LendingRequestNotification(Notification):
         lending_request = self.kwargs["lending_request"]
         lender = self.kwargs["lender"]
         return self._delay_mail(
-            to_email=lender.email,
+            to_email=lender.internal_email_address if lender.internal_email else lender.email,
             context={
                 "object_name": lending_request.lendable_object.title,
                 "object_id": lending_request.lendable_object.id,
@@ -43,7 +43,7 @@ class LendingRequestStatusUpdateNotification(Notification):
         timelineentry: TimelineEntry = self.kwargs["timelineentry"]
         recipient: User = self.kwargs["recipient"]
         return self._delay_mail(
-            to_email=recipient.email,
+            to_email=recipient.internal_email_address if recipient.internal_email else recipient.email,
             context={
                 "object_name": lending_request.lendable_object.title,
                 "object_id": lending_request.lendable_object.id,
