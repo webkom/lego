@@ -18,15 +18,21 @@ class LendingRequestNotification(Notification):
         lending_request = self.kwargs["lending_request"]
         lender = self.kwargs["lender"]
         return self._delay_mail(
-            to_email=lender.internal_email_address if lender.internal_email else lender.email,
+            to_email=(
+                lender.internal_email_address if lender.internal_email else lender.email
+            ),
             context={
                 "object_name": lending_request.lendable_object.title,
                 "object_id": lending_request.lendable_object.id,
                 "request_id": lending_request.id,
                 "lender": lender.first_name,
                 "lendee": self.user.first_name,
-                "start_date": lending_request.start_date,
-                "end_date": lending_request.end_date,
+                "start_date": lending_request.start_date.astimezone(
+                    ZoneInfo("Europe/Oslo")
+                ).strftime("%d.%m kl. %H:%M"),
+                "end_date": lending_request.end_date.astimezone(
+                    ZoneInfo("Europe/Oslo")
+                ).strftime("%d.%m kl. %H:%M"),
                 "text": lending_request.text,
             },
             subject=f"Ny forespørsel om utlån av {lending_request.lendable_object.title}",
@@ -43,7 +49,11 @@ class LendingRequestStatusUpdateNotification(Notification):
         timelineentry: TimelineEntry = self.kwargs["timelineentry"]
         recipient: User = self.kwargs["recipient"]
         return self._delay_mail(
-            to_email=recipient.internal_email_address if recipient.internal_email else recipient.email,
+            to_email=(
+                recipient.internal_email_address
+                if recipient.internal_email
+                else recipient.email
+            ),
             context={
                 "object_name": lending_request.lendable_object.title,
                 "object_id": lending_request.lendable_object.id,

@@ -252,9 +252,18 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         new_status = validated_data.get("status", old_status)
         instance = super().update(instance, validated_data)
         if new_status != old_status:
-            if new_status == LENDING_REQUEST_STATUSES["LENDING_CHANGES_RESOLVED"]["value"] and old_status != LENDING_REQUEST_STATUSES["LENDING_CHANGES_REQUESTED"]["value"]:
+            if (
+                new_status
+                == LENDING_REQUEST_STATUSES["LENDING_CHANGES_RESOLVED"]["value"]
+                and old_status
+                != LENDING_REQUEST_STATUSES["LENDING_CHANGES_REQUESTED"]["value"]
+            ):
                 raise serializers.ValidationError(
-                    {"status": ("You can not resolve a request that doesn't have changes requested")}
+                    {
+                        "status": (
+                            "You can not resolve a request that doesn't have changes requested"
+                        )
+                    }
                 )
 
             new_status_string = LENDING_REQUEST_TRANSLATION_MAP[new_status]
