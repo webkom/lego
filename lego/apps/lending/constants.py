@@ -8,6 +8,7 @@ LENDING_REQUEST_STATUSES = {
     "LENDING_DENIED": {"value": "denied"},
     "LENDING_CANCELLED": {"value": "cancelled"},
     "LENDING_CHANGES_REQUESTED": {"value": "changes_requested"},
+    "LENDING_CHANGES_RESOLVED": {"value": "changes_resolved"},
 }
 
 
@@ -24,11 +25,13 @@ LENDING_REQUEST_TRANSLATION_MAP = {
     "denied": "avslo forespørsel",
     "cancelled": "avbrøt forespørsel",
     "changes_requested": "forespurte endringer",
+    "changes_resolved": "løste endringer",
 }
 
 
 LENDING_REQUEST_USER_ACTIONS = [
     LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
+    LENDING_REQUEST_STATUSES["LENDING_CHANGES_RESOLVED"]["value"],
 ]
 
 LENDING_REQUEST_ADMIN_ACTIONS = [
