@@ -107,6 +107,29 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("endDate", response.json())
 
+    def test_set_changes_resolved_without_changes_requested(self):
+        """Users should be unable to set status to changes resolved if changes are not requested"""
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "lendable_object": self.lendable_object.pk,
+            "status": "unapproved",
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+        }
+
+        response = self.client.post(get_lending_request_list_url(), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(LendingRequest.objects.count(), 1)
+
+        patch_data = {
+            "status": "changes_resolved",
+        }
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(response.json()["id"]), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_user_edit_own_request_and_comment(self):
         """Users should be able to edit their own requests by first creating it via the API."""
         # 1) Authenticate as self.user
