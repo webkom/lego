@@ -142,7 +142,6 @@ class LendingRequestDetailSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
-            "text",
             "start_date",
             "end_date",
             "timeline_entries",
@@ -155,6 +154,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
     updated_by = PublicUserSerializer(read_only=True)
     lendable_object = LendableObjectField(queryset=LendableObject.objects.all())
     timeline_entries = TimelineEntrySerializer(many=True, read_only=True)
+    comment = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = LendingRequest
@@ -164,7 +164,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
-            "text",
+            "comment",
             "start_date",
             "end_date",
             "timeline_entries",
@@ -240,10 +240,6 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                     raise serializers.ValidationError(
                         {"status": ("You cannot cancel someone else's request.. ")}
                     )
-            if self.instance.created_by != user and attrs.get("text"):
-                raise serializers.ValidationError(
-                    {"text": ("You cannot edit someone else's request.. ")}
-                )
 
         return attrs
 
@@ -295,6 +291,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         return instance
 
     def create(self, validated_data: CreateLendingRequestType) -> LendingRequest:
+        comment = validated_data.pop("comment", "")
         instance: LendingRequest = super().create(validated_data)
 
         TimelineEntry.objects.create(
@@ -306,6 +303,14 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             is_system=True,
             status=LENDING_REQUEST_STATUSES["LENDING_CREATED"]["value"],
         )
+
+        if comment:
+            TimelineEntry.objects.create(
+                message=comment,
+                lending_request=instance,
+                is_system=False,
+                current_user=self.context.get("request").user,
+            )
 
         for lender in instance.lendable_object.can_edit_users.all():
             notification = LendingRequestNotification(

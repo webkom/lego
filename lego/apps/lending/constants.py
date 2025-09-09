@@ -47,7 +47,7 @@ class CreateLendingRequestType(TypedDict):
     updated_by: Optional[int]
     lendable_object: int  # Assuming this is a foreign key ID
     status: str
-    text: str
+    comment: str
     start_date: date
     end_date: date
     comments: list
