@@ -35,7 +35,6 @@ class LendingRequestNotification(Notification):
                 "end_date": lending_request.end_date.astimezone(
                     ZoneInfo("Europe/Oslo")
                 ).strftime("%d.%m kl. %H:%M"),
-                "text": lending_request.text,
             },
             subject=f"Ny forespørsel om utlån av {lending_request.lendable_object.title}",
             plain_template="lendingRequests/email/lending_request.txt",

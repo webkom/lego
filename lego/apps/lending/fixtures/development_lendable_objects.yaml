@@ -40,7 +40,6 @@
     status: "unapproved"
     start_date: "2023-12-01T12:00:00+01:00"
     end_date: "2023-12-03T16:00:00+01:00"
-    text: "Gill plis?"
     created_by: 3
   model: lending.LendingRequest
   pk: 1
@@ -50,7 +49,6 @@
     status: "approved"
     start_date: "2023-11-15T14:00:00+01:00"
     end_date: "2023-11-16T12:00:00+01:00"
-    text: "Må ha grill nå!"
     created_by: 3
   model: lending.LendingRequest
   pk: 2
@@ -60,7 +58,6 @@
     status: "denied"
     start_date: "2024-01-05T09:00:00+01:00"
     end_date: "2024-01-09T18:00:00+01:00"
-    text: "Til immball"
     created_by: 3
   model: lending.LendingRequest
   pk: 3
@@ -70,7 +67,6 @@
     status: "cancelled"
     start_date: "2023-08-12T08:00:00+02:00"
     end_date: "2023-08-15T20:00:00+02:00"
-    text: "Åre"
     created_by: 3
   model: lending.LendingRequest
   pk: 4
@@ -80,7 +76,6 @@
     status: "changes_requested"
     start_date: "2023-08-12T08:00:00+02:00"
     end_date: "2023-08-15T20:00:00+02:00"
-    text: "Trenger et telt til å telte"
     created_by: 3
   model: lending.LendingRequest
   pk: 4
