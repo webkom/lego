@@ -32,57 +32,13 @@ class SendTestCase(BaseTestCase):
         self.webkom_leader = membership.user
 
     @mock.patch("lego.apps.contact.send.send_email.delay")
-    def test_send_anonymous(self, mock_send_email):
-        """
-        Send in a contact form as not logged in user, set to be anonymous
-        """
-        anonymus_user = AnonymousUser()
-
-        send_message("title", "message", anonymus_user, True, self.webkom_group)
-        mock_send_email.assert_called_with(
-            to_email=[self.webkom_leader.email_address],
-            context={
-                "title": "title",
-                "message": "message",
-                "from_name": "Anonymous",
-                "from_email": "Unknown",
-                "recipient_group": self.webkom_group.__str__(),
-            },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
-            **default_values,
-        )
-        mock_send_email.assert_called_once()
-
-    @mock.patch("lego.apps.contact.send.send_email.delay")
-    def test_send_anonymous_user(self, mock_send_email):
-        """
-        Send in a contact form as not logged in user
-        """
-        anonymus_user = AnonymousUser()
-
-        send_message("title", "message", anonymus_user, False, self.webkom_group)
-        mock_send_email.assert_called_with(
-            to_email=[self.webkom_leader.email_address],
-            context={
-                "title": "title",
-                "message": "message",
-                "from_name": "Anonymous",
-                "from_email": "Unknown",
-                "recipient_group": self.webkom_group.__str__(),
-            },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
-            **default_values,
-        )
-        mock_send_email.assert_called_once()
-
-    @mock.patch("lego.apps.contact.send.send_email.delay")
     def test_send_user(self, mock_send_email):
         """
         Send in a contact form as logged in user, showing name
         """
         logged_in_user = User.objects.first()
 
-        send_message("title", "message", logged_in_user, False, self.webkom_group)
+        send_message("title", "message", logged_in_user, self.webkom_group)
         mock_send_email.assert_called_with(
             to_email=[self.webkom_leader.email_address],
             context={
@@ -98,43 +54,32 @@ class SendTestCase(BaseTestCase):
         mock_send_email.assert_called_once()
 
     @mock.patch("lego.apps.contact.send.send_email.delay")
-    def test_send_user_set_anonymous(self, mock_send_email):
+    def test_send_anonymous(self, mock_send_email):
         """
-        Send in a contact form as logged in user, set to be anonymous
+        Ensure anonymous users can not send messages
         """
-        logged_in_user = User.objects.first()
-
-        send_message("title", "message", logged_in_user, True, self.webkom_group)
-        mock_send_email.assert_called_with(
-            to_email=[self.webkom_leader.email_address],
-            context={
-                "title": "title",
-                "message": "message",
-                "from_name": "Anonymous",
-                "from_email": "Unknown",
-                "recipient_group": self.webkom_group.__str__(),
-            },
-            subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
-            **default_values,
-        )
-        mock_send_email.assert_called_once()
+        anonymus_user = AnonymousUser()
+        
+        with self.assertRaises(ValueError):
+            send_message("title", "message", anonymus_user, self.webkom_group)
+        mock_send_email.assert_not_called()
 
     @mock.patch("lego.apps.contact.send.send_email.delay")
     def test_send_to_hs(self, mock_send_email):
         """
         Send in a contact form to HS by passing `None` as recipient
         """
-        anonymus_user = AnonymousUser()
+        logged_in_user = User.objects.first()
         hs_group = AbakusGroup.objects.get(name="Hovedstyret")
 
-        send_message("title", "message", anonymus_user, True, None)
+        send_message("title", "message", logged_in_user, None)
         mock_send_email.assert_called_with(
             to_email=["hs@abakus.no"],
             context={
                 "title": "title",
                 "message": "message",
-                "from_name": "Anonymous",
-                "from_email": "Unknown",
+                "from_name": logged_in_user.full_name,
+                "from_email": logged_in_user.email_address,
                 "recipient_group": hs_group.__str__(),
             },
             subject=f"Ny henvendelse fra kontaktskjemaet til {hs_group.__str__()}",
@@ -151,14 +96,14 @@ class SendTestCase(BaseTestCase):
 
         self.webkom_group.add_user(logged_in_user, role=LEADER)
 
-        send_message("title", "message", logged_in_user, True, self.webkom_group)
+        send_message("title", "message", logged_in_user, self.webkom_group)
         mock_send_email.assert_called_with(
             to_email=[self.webkom_leader.email_address, logged_in_user.email_address],
             context={
                 "title": "title",
                 "message": "message",
-                "from_name": "Anonymous",
-                "from_email": "Unknown",
+                "from_name": logged_in_user.full_name,
+                "from_email": logged_in_user.email_address,
                 "recipient_group": self.webkom_group.__str__(),
             },
             subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",
@@ -175,14 +120,14 @@ class SendTestCase(BaseTestCase):
 
         self.webkom_group.add_user(logged_in_user, role=MEMBER)
 
-        send_message("title", "message", logged_in_user, True, self.webkom_group)
+        send_message("title", "message", logged_in_user, self.webkom_group)
         mock_send_email.assert_called_with(
             to_email=[self.webkom_leader.email_address],
             context={
                 "title": "title",
                 "message": "message",
-                "from_name": "Anonymous",
-                "from_email": "Unknown",
+                "from_name": logged_in_user.full_name,
+                "from_email": logged_in_user.email_address,
                 "recipient_group": self.webkom_group.__str__(),
             },
             subject=f"Ny henvendelse fra kontaktskjemaet til {self.webkom_group.__str__()}",

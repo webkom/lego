@@ -3,12 +3,14 @@ from lego.apps.users.models import AbakusGroup
 from lego.utils.tasks import send_email
 
 
-def send_message(title, message, user, anonymous, recipient_group):
+def send_message(title, message, user, recipient_group):
     """
     Send a message to HS when users posts to the contact form.
     Don't catch AbakusGroup.DoesNotExist, this notifies us when the group doesn't exist.
     """
-    anonymous = anonymous if user.is_authenticated else True
+    
+    if not user or user.is_anonymous:
+        raise ValueError("User must be authenticated")
 
     # Handle no recipient group as HS
     if not recipient_group:
@@ -16,16 +18,13 @@ def send_message(title, message, user, anonymous, recipient_group):
 
     recipient_emails = get_recipients(recipient_group)
 
-    from_name = "Anonymous" if anonymous else user.full_name
-    from_email = "Unknown" if anonymous else user.email_address
-
     send_email.delay(
         to_email=recipient_emails,
         context={
             "title": title,
             "message": message,
-            "from_name": from_name,
-            "from_email": from_email,
+            "from_name": user.full_name,
+            "from_email": user.email_address,
             "recipient_group": recipient_group.__str__(),
         },
         subject=f"Ny henvendelse fra kontaktskjemaet til {recipient_group.__str__()}",
