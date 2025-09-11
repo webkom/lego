@@ -59,7 +59,7 @@ class SendTestCase(BaseTestCase):
         Ensure anonymous users can not send messages
         """
         anonymus_user = AnonymousUser()
-        
+
         with self.assertRaises(ValueError):
             send_message("title", "message", anonymus_user, self.webkom_group)
         mock_send_email.assert_not_called()

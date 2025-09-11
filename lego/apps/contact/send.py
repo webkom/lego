@@ -8,7 +8,7 @@ def send_message(title, message, user, recipient_group):
     Send a message to HS when users posts to the contact form.
     Don't catch AbakusGroup.DoesNotExist, this notifies us when the group doesn't exist.
     """
-    
+
     if not user or user.is_anonymous:
         raise ValueError("User must be authenticated")
 
