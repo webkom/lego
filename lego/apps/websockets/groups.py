@@ -35,21 +35,4 @@ def verify_group_access(user: User, group):
         if user and content_target:
             return user.has_perm(LIST, content_target)
 
-    # if group_type == WS_GROUP_TYPE_USER:
-    #     user_id = rest
-    #     return user_id == str(user.pk)
-
-    # if group_type == WS_GROUP_TYPE_EVENT:
-    #     event_access, event_id = rest.split("-", 1)
-    #     """Not implemented"""
-
     return False
-
-
-def stringify_group(group):
-    pass
-
-    # if content_target:
-    #     return f"{group.type}-{content_target}"
-
-    # return str(group.type)

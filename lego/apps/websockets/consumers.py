@@ -22,12 +22,6 @@ class GroupConsumer(JsonWebsocketConsumer):
     user_groups = set()
     user = None
 
-    def debug(self, message):
-        if self.user:
-            print(f"[{self.user.username.upper()}] {message}")
-        else:
-            print(f"[NO USER IN SCOPE] {message}")
-
     def connect(self):
         user = self.scope["user"]
         for group in find_groups(user):
