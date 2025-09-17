@@ -8,6 +8,7 @@ BREAKFAST_TALK = "breakfast_talk"
 NEXUS_EVENT = "nexus_event"
 PARTY = "party"
 SOCIAL = "social"
+GALA = "gala"
 OTHER = "other"
 EVENT = "event"
 
@@ -20,6 +21,7 @@ EVENT_TYPES = (
     (NEXUS_EVENT, NEXUS_EVENT),
     (PARTY, PARTY),
     (SOCIAL, SOCIAL),
+    (GALA, GALA),
     (OTHER, OTHER),
     (EVENT, EVENT),
 )
@@ -33,6 +35,7 @@ EVENT_TYPE_TRANSLATIONS = {
     NEXUS_EVENT: "NEXUS-arrangement",
     PARTY: "Fest",
     SOCIAL: "Sosialt",
+    GALA: "Galla",
     OTHER: "Annet",
     EVENT: "Arrangement",
 }
