@@ -1,7 +1,10 @@
 from rest_framework import mixins, viewsets
 
 from lego.apps.comments.models import Comment
-from lego.apps.comments.serializers import CommentSerializer, UpdateCommentSerializer
+from lego.apps.comments.serializers.comments import (
+    CommentSerializer,
+    UpdateCommentSerializer,
+)
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 
 
