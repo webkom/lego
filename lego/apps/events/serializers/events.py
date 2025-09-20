@@ -135,7 +135,6 @@ class EventReadDetailedSerializer(
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
-    created_by = PublicUserSerializer()
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
 
@@ -177,7 +176,6 @@ class EventReadDetailedSerializer(
             "tags",
             "is_merged",
             "heed_penalties",
-            "created_by",
             "legacy_registration_count",
             "survey",
             "use_consent",
@@ -293,6 +291,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
     pools = PoolReadAuthSerializer(many=True)
     waiting_registrations = RegistrationReadSerializer(many=True)
     unanswered_surveys = serializers.SerializerMethodField()
+    created_by = PublicUserSerializer()
     responsible_users = PublicUserField(
         queryset=User.objects.all(),
         allow_null=False,
@@ -302,6 +301,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
 
     class Meta(EventReadUserDetailedSerializer.Meta):
         fields = EventReadUserDetailedSerializer.Meta.fields + (  # type: ignore
+            "created_by",
             "responsible_users",
             "waiting_registrations",
             "unanswered_surveys",
