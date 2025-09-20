@@ -29,8 +29,6 @@ class TagViewsTestCase(APITestCase):
                     "quote": 0,
                     "joblisting": 0,
                     "poll": 0,
-                    "forum": 0,
-                    "thread": 0,
                 },
             },
         )
