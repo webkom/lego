@@ -192,7 +192,7 @@ initial_tree = {
                         {"type": GROUP_REVUE},
                         {},
                     ],
-                    "RevyStyret": [
+                    "Revystyret": [
                         {"type": GROUP_BOARD},
                         {},
                     ],
