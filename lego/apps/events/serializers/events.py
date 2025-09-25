@@ -319,10 +319,17 @@ class EventAdministrateSerializer(EventReadSerializer, EventReadDetailedSerializ
     responsible_group = AbakusGroupField(
         queryset=AbakusGroup.objects.all(), required=False, allow_null=True
     )
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta(EventReadSerializer.Meta):
         fields = EventReadSerializer.Meta.fields + (  # type: ignore
             "pools",
+            "responsible_users",
             "unregistered",
             "waiting_registrations",
             "use_consent",
