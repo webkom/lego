@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "lego.utils",
     "lego.apps.achievements",
-    "lego.apps.user_commands",
     "lego.apps.action_handlers",
     "lego.apps.articles",
     "lego.apps.banners",
@@ -68,6 +67,7 @@ INSTALLED_APPS = [
     "lego.apps.surveys",
     "lego.apps.tags",
     "lego.apps.users",
+    "lego.apps.user_commands",
     "lego.apps.websockets",
 ]
 
