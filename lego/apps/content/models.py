@@ -46,7 +46,7 @@ class SlugModel(models.Model):
 
 class Content(SlugModel):
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     text = ContentField(allow_images=True)
     comments = GenericRelation(Comment)
     reactions = GenericRelation(Reaction)
