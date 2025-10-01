@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -45,12 +46,27 @@ class UserCommandViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"])
     def bulk_records(self, request):
         updates = request.data.get("updates", {})
-        for cmd_id, count in updates.item():
+
+        if not isinstance(updates, dict):
+            return Response({"error": "updates must be a dictionary"}, status=400)
+
+        objs_to_update = []
+
+        for command_id, count in updates.items():
+            try:
+                count = int(count)
+            except (ValueError, TypeError):
+                continue
+
             obj, _ = UserCommand.objects.get_or_create(
-                user=request.user, command_id=cmd_id
+                user=request.user, command_id=command_id, defaults={"usage_count": 0}
             )
-            obj.usage_count += int(count)
-            obj.save(update_fields=["usage_count", "last_used"])
+            obj.usage_count += count
+            obj.last_used = timezone.now()
+            objs_to_update.append(obj)
+
+        UserCommand.objects.bulk_update(objs_to_update, ["usage_count", "last_used"])
+
         return Response({"status": "ok"})
 
     @action(detail=False, methods=["get"])
