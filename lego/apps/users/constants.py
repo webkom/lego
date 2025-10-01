@@ -35,6 +35,7 @@ PHOTO_FILM_ADMIN = "photo_admin"
 GRAPHIC_ADMIN = "graphic_admin"
 SOCIAL_MEDIA_ADMIN = "social_media_admin"
 BOOKING_ADMIN = "booking_admin"
+PURCHASING_MANAGER = "purchasing_manager"
 
 ROLES = (
     (MEMBER, MEMBER),
@@ -64,6 +65,7 @@ ROLES = (
     (GRAPHIC_ADMIN, GRAPHIC_ADMIN),
     (SOCIAL_MEDIA_ADMIN, SOCIAL_MEDIA_ADMIN),
     (BOOKING_ADMIN, BOOKING_ADMIN),
+    (PURCHASING_MANAGER, PURCHASING_MANAGER),
 )
 
 DATA = "data"
