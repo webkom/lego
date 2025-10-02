@@ -74,7 +74,7 @@ class UserCommandViewSet(viewsets.ModelViewSet):
         qs = self.get_queryset()
         pinned = qs.filter(pinned_position__isnull=False).order_by("pinned_position")
         suggested = qs.exclude(pinned_position__isnull=False).order_by("-usage_count")[
-            :5
+            :3
         ]
         return Response(
             {
