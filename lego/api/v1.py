@@ -74,7 +74,6 @@ from lego.apps.surveys.views import (
     SurveyViewSet,
 )
 from lego.apps.tags.views import TagViewSet
-from lego.apps.user_commands.views import UserCommandViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
 from lego.apps.users.views.membership_history import MembershipHistoryViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
@@ -86,6 +85,7 @@ from lego.apps.users.views.password_reset import (
 )
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
+from lego.apps.users.views.user_command import UserCommandViewSet
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
