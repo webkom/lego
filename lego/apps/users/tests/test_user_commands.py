@@ -6,11 +6,11 @@ from lego.utils.test_utils import BaseAPITestCase
 
 
 def get_record_usage_url():
-    return reverse("api:user-command-record-usage")
+    return reverse("api:v1:user-command-record-usage")
 
 
 def get_suggestions_url():
-    return reverse("api:user-command-suggestions")
+    return reverse("api:v1:user-command-suggestions")
 
 
 def create_user(username="testuser"):

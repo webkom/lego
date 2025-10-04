@@ -3,8 +3,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from lego.apps.users.models import User
-
 
 class UserCommandViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
