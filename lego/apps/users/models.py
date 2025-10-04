@@ -410,7 +410,7 @@ class User(
     )
     achievements_score = models.FloatField(default=0, null=False, blank=False)
 
-    recent_commands = ArrayField(
+    command_suggestions = ArrayField(
         models.CharField(max_length=50),
         size=constants.COMMAND_BUFFER_LENGTH + constants.COMMAND_SUGGESTION_LENGTH,
         default=list,
@@ -583,27 +583,30 @@ class User(
         return list(unanswered_surveys.values_list("id", flat=True))
 
     def record_command_usage(self, command_id: str):
-        cmds = list(self.recent_commands or [])
+        suggestions = list(self.command_suggestions)
 
-        if command_id in cmds:
-            index = cmds.index(command_id)
+        if command_id in suggestions:
+            index = suggestions.index(command_id)
             if index > 0:
-                cmds[index - 1], cmds[index] = cmds[index], cmds[index - 1]
+                suggestions[index - 1], suggestions[index] = (
+                    suggestions[index],
+                    suggestions[index - 1],
+                )
         else:
             if (
-                len(cmds)
+                len(suggestions)
                 < constants.COMMAND_BUFFER_LENGTH + constants.COMMAND_SUGGESTION_LENGTH
             ):
-                cmds.append(command_id)
+                suggestions.append(command_id)
             else:
-                cmds[-1] = command_id
+                suggestions[-1] = command_id
 
-        self.recent_commands = cmds
-        self.save(update_fields=["recent_commands"])
-        return cmds
+        self.command_suggestions = suggestions
+        self.save(update_fields=["command_suggestions"])
+        return suggestions
 
     def get_command_suggestions(self):
-        cmds = self.recent_commands or []
+        cmds = self.command_suggestions or []
         return {"visible": cmds[:3], "buffer": cmds[3:]}
 
 
