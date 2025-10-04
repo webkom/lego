@@ -5,4 +5,4 @@ from lego.utils.serializers import BasisModelSerializer
 class UserCommandSerializer(BasisModelSerializer):
     class Meta:
         model = UserCommand
-        fields = ("command_id", "pinned_position", "usage_count", "last_used")
+        fields = ("command_id", "position", "last_used")
