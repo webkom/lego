@@ -8,7 +8,7 @@ class UserCommandViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=["post"])
-    def record_usage(self, request):
+    def use(self, request):
         command_id = request.data.get("command_id")
         if not command_id:
             return Response(
