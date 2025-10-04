@@ -124,7 +124,6 @@ router.register(
 router.register(r"company-semesters", SemesterViewSet, basename="company-semester")
 router.register(r"contact-form", ContactFormViewSet, basename="contact-form")
 router.register(r"device-apns", APNSDeviceViewSet)
-router.register(r"user-commands", UserCommandViewSet, basename="user-command")
 router.register(r"device-gcm", GCMDeviceViewSet)
 router.register(r"email-lists", EmailListViewSet, basename="email-lists")
 router.register(r"email-users", UserEmailViewSet, basename="email-users")
@@ -220,6 +219,7 @@ router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, basename="submission"
 )
 router.register(r"tags", TagViewSet)
+router.register(r"user-commands", UserCommandViewSet, basename="user-command")
 router.register(r"user-delete", UserDeleteViewSet, basename="user-delete")
 router.register(r"users", UsersViewSet)
 router.register(
