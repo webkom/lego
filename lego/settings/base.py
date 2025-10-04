@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     "lego.apps.surveys",
     "lego.apps.tags",
     "lego.apps.users",
-    "lego.apps.user_commands",
     "lego.apps.websockets",
 ]
 
