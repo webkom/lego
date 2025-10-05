@@ -607,7 +607,10 @@ class User(
 
     def get_command_suggestions(self):
         cmds = self.command_suggestions or []
-        return {"visible": cmds[:3], "buffer": cmds[3:]}
+        return {
+            "visible": cmds[: constants.COMMAND_SUGGESTION_LENGTH],
+            "buffer": cmds[constants.COMMAND_SUGGESTION_LENGTH :],
+        }
 
 
 class Penalty(BasisModel):
