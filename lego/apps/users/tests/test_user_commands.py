@@ -33,32 +33,34 @@ class UserCommandSuggestionsTestCase(BaseAPITestCase):
         self.assertEqual(self.user.command_suggestions, ["home"])
 
     def test_fill_up_to_five_slots(self):
-        for i in range(1, 6):
-            self.record(f"cmd{i}")
+        for cid in ["home", "profile", "events", "meetings", "lending"]:
+            self.record(cid)
         self.user.refresh_from_db()
         self.assertEqual(len(self.user.command_suggestions), 5)
         self.assertEqual(
-            self.user.command_suggestions, ["cmd1", "cmd2", "cmd3", "cmd4", "cmd5"]
+            self.user.command_suggestions,
+            ["home", "profile", "events", "meetings", "lending"],
         )
 
     def test_replaces_last_when_full(self):
-        for i in range(1, 6):
-            self.record(f"cmd{i}")
-        self.record("newcmd")
+        for cid in ["home", "profile", "events", "meetings", "lending"]:
+            self.record(cid)
+        self.record("quotes")
         self.user.refresh_from_db()
         self.assertEqual(
-            self.user.command_suggestions, ["cmd1", "cmd2", "cmd3", "cmd4", "newcmd"]
+            self.user.command_suggestions,
+            ["home", "profile", "events", "meetings", "quotes"],
         )
 
     def test_swap_up_on_reuse(self):
-        for cid in ["cmd1", "cmd2", "cmd3"]:
+        for cid in ["home", "profile", "events"]:
             self.record(cid)
-        self.record("cmd3")  # reuse last
+        self.record("events")  # reuse last
         self.user.refresh_from_db()
-        self.assertEqual(self.user.command_suggestions, ["cmd1", "cmd3", "cmd2"])
+        self.assertEqual(self.user.command_suggestions, ["home", "events", "profile"])
 
     def test_suggestions_endpoint(self):
-        for cid in ["a", "b", "c", "d", "e"]:
+        for cid in ["home", "profile", "events", "meetings", "lending"]:
             self.record(cid)
         response = self.client.get(get_suggestions_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -67,45 +69,66 @@ class UserCommandSuggestionsTestCase(BaseAPITestCase):
         visible_ids = data["visible"]
         buffer_ids = data["buffer"]
 
-        self.assertEqual(visible_ids, ["a", "b", "c"])
-        self.assertEqual(buffer_ids, ["d", "e"])
+        self.assertEqual(visible_ids, ["home", "profile", "events"])
+        self.assertEqual(buffer_ids, ["meetings", "lending"])
 
     def test_repeated_command_bubbles_to_front(self):
-        for cid in ["cmd1", "cmd2", "cmd3"]:
+        for cid in ["home", "profile", "events"]:
             self.record(cid)
-        # reuse cmd3 multiple times
-        self.record("cmd3")
-        self.record("cmd3")
+        self.record("events")
+        self.record("events")
         self.user.refresh_from_db()
-        self.assertEqual(self.user.command_suggestions[0], "cmd3")
+        self.assertEqual(self.user.command_suggestions[0], "events")
 
     def test_command_from_buffer_moves_into_visible(self):
-        # Fill 5 slots
-        for cid in ["a", "b", "c", "d", "e"]:
+        for cid in ["home", "profile", "events", "meetings", "lending"]:
             self.record(cid)
-        self.record("d")
+        self.record("meetings")
         self.user.refresh_from_db()
-        self.assertIn("d", self.user.command_suggestions[:3])
+        self.assertIn("meetings", self.user.command_suggestions[:3])
 
     def test_command_not_in_list_appends_to_end(self):
-        for cid in ["a", "b", "c", "d", "e"]:
+        for cid in ["home", "profile", "events", "meetings", "lending"]:
             self.record(cid)
-        self.record("z")
+        self.record("quotes")
         self.user.refresh_from_db()
-        self.assertEqual(self.user.command_suggestions[-1], "z")
-        self.assertNotIn("e", self.user.command_suggestions)
+        self.assertEqual(self.user.command_suggestions[-1], "quotes")
+        self.assertNotIn("lending", self.user.command_suggestions)
 
     def test_command_already_first_stays_first(self):
-        for cid in ["x", "y", "z"]:
+        for cid in ["home", "profile", "events"]:
             self.record(cid)
-        self.record("x")
+        self.record("home")
         self.user.refresh_from_db()
-        self.assertEqual(self.user.command_suggestions[0], "x")
+        self.assertEqual(self.user.command_suggestions[0], "home")
 
     def test_buffer_to_front_chain(self):
-        for cid in ["a", "b", "c", "d", "e"]:
+        for cid in ["home", "profile", "events", "meetings", "lending"]:
             self.record(cid)
-        # reuse "e" - should climb gradually towards front
-        self.record("e")
+        self.record("lending")
         self.user.refresh_from_db()
-        self.assertIn("e", self.user.command_suggestions[:4])  # no longer last
+        self.assertIn("lending", self.user.command_suggestions[:4])
+
+    def test_invalid_command_rejected(self):
+        self.record("home")
+        response = self.record("notarealcommand")
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        self.assertIn("error", data)
+        self.assertIn("Invalid", data["error"])
+        self.assertEqual(self.user.command_suggestions, ["home"])
+
+    def test_missing_command_id_returns_400(self):
+        response = self.client.post(get_record_usage_url(), {}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        self.assertIn("error", data)
+        self.assertIn("Missing", data["error"])
+
+    def test_valid_command_succeeds(self):
+        response = self.record("home")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertIn("home", self.user.command_suggestions)
