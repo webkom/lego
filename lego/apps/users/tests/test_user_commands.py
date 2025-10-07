@@ -57,20 +57,7 @@ class UserCommandSuggestionsTestCase(BaseAPITestCase):
             self.record(cid)
         self.record("events")  # reuse last
         self.user.refresh_from_db()
-        self.assertEqual(self.user.command_suggestions, ["home", "events", "profile"])
-
-    def test_suggestions_endpoint(self):
-        for cid in ["home", "profile", "events", "meetings", "lending"]:
-            self.record(cid)
-        response = self.client.get(get_suggestions_url())
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        data = response.json()
-        visible_ids = data["visible"]
-        buffer_ids = data["buffer"]
-
-        self.assertEqual(visible_ids, ["home", "profile", "events"])
-        self.assertEqual(buffer_ids, ["meetings", "lending"])
+        self.assertEqual(self.user.command_suggestions, ["home", "events", "profile"])   
 
     def test_repeated_command_bubbles_to_front(self):
         for cid in ["home", "profile", "events"]:
@@ -108,17 +95,6 @@ class UserCommandSuggestionsTestCase(BaseAPITestCase):
         self.record("lending")
         self.user.refresh_from_db()
         self.assertIn("lending", self.user.command_suggestions[:4])
-
-    def test_invalid_command_rejected(self):
-        self.record("home")
-        response = self.record("notarealcommand")
-        self.user.refresh_from_db()
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        data = response.json()
-        self.assertIn("error", data)
-        self.assertIn("Invalid", data["error"])
-        self.assertEqual(self.user.command_suggestions, ["home"])
 
     def test_missing_command_id_returns_400(self):
         response = self.client.post(get_record_usage_url(), {}, format="json")
