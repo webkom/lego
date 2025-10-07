@@ -3,38 +3,6 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
-VALID_COMMAND_IDS = {
-    "home",
-    "profile",
-    "events",
-    "meetings",
-    "lending",
-    "interestGroups",
-    "joblistings",
-    "companies",
-    "articles",
-    "gallery",
-    "quotes",
-    "trophies",
-    "theFund",
-    "developerBlog",
-    "settings",
-    "createMeetingNotice",
-    "createReceipt",
-    "createQuote",
-    "createAlbum",
-    "logout",
-}
-
-
-def validate_command_id(value: str):
-    """
-    Validate command_id in whitelist
-    """
-    if value not in VALID_COMMAND_IDS:
-        raise ValidationError(f"Invalid command_id: {value!r}")
-
-
 username_validator = validators.RegexValidator(
     r"^[a-zA-Z0-9_]+$",
     "Enter a valid username. This value may contain only letters, numbers and _ "
