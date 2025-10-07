@@ -57,7 +57,7 @@ class UserCommandSuggestionsTestCase(BaseAPITestCase):
             self.record(cid)
         self.record("events")  # reuse last
         self.user.refresh_from_db()
-        self.assertEqual(self.user.command_suggestions, ["home", "events", "profile"])   
+        self.assertEqual(self.user.command_suggestions, ["home", "events", "profile"])
 
     def test_repeated_command_bubbles_to_front(self):
         for cid in ["home", "profile", "events"]:
