@@ -58,6 +58,7 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     achievement_rank = serializers.IntegerField(read_only=True)
 
     def get_achievements_score(self, obj):
+
         return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
 
     class Meta(PublicUserSerializer.Meta):
@@ -195,7 +196,6 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     photo_consents = serializers.SerializerMethodField()
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
-    command_suggestions = serializers.SerializerMethodField()
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -230,10 +230,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         return username
 
     def get_achievements_score(self, obj):
-        return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
 
-    def get_command_suggestions(self, obj):
-        return obj.get_command_suggestions()
+        return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
 
     class Meta:
         model = User
@@ -269,7 +267,6 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "linkedin_id",
             "achievements",
             "achievements_score",
-            "command_suggestions",
         )
 
 

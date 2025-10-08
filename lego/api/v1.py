@@ -85,7 +85,6 @@ from lego.apps.users.views.password_reset import (
 )
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
-from lego.apps.users.views.user_command import UserCommandViewSet
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
@@ -219,7 +218,6 @@ router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, basename="submission"
 )
 router.register(r"tags", TagViewSet)
-router.register(r"user-commands", UserCommandViewSet, basename="user-command")
 router.register(r"user-delete", UserDeleteViewSet, basename="user-delete")
 router.register(r"users", UsersViewSet)
 router.register(

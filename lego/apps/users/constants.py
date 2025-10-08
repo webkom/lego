@@ -177,7 +177,3 @@ class PENALTY_TYPES(models.TextChoices):
     PRESENCE = "presence"
     PAYMENT = "payment"
     OTHER = "other"
-
-
-COMMAND_BUFFER_LENGTH = 2
-COMMAND_SUGGESTION_LENGTH = 3
