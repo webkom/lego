@@ -410,13 +410,6 @@ class User(
     )
     achievements_score = models.FloatField(default=0, null=False, blank=False)
 
-    command_suggestions = ArrayField(
-        models.CharField(max_length=50),
-        size=constants.COMMAND_BUFFER_LENGTH + constants.COMMAND_SUGGESTION_LENGTH,
-        default=list,
-        blank=True,
-    )
-
     objects = AbakusUserManager()  # type: ignore
 
     USERNAME_FIELD = "username"
@@ -581,33 +574,6 @@ class User(
             .prefetch_related("event__registrations", "submissions__user")
         )
         return list(unanswered_surveys.values_list("id", flat=True))
-
-    def record_command_usage(self, command_id: str):
-        suggestions = list(self.command_suggestions)
-
-        if command_id in suggestions:
-            index = suggestions.index(command_id)
-            if index > 0:
-                suggestions[index - 1], suggestions[index] = (
-                    suggestions[index],
-                    suggestions[index - 1],
-                )
-        else:
-            if (
-                len(suggestions)
-                < constants.COMMAND_BUFFER_LENGTH + constants.COMMAND_SUGGESTION_LENGTH
-            ):
-                suggestions.append(command_id)
-            else:
-                suggestions[-1] = command_id
-
-        self.command_suggestions = suggestions
-        self.save(update_fields=["command_suggestions"])
-        return suggestions
-
-    def get_command_suggestions(self):
-        cmds = self.command_suggestions or []
-        return cmds[: constants.COMMAND_SUGGESTION_LENGTH]
 
 
 class Penalty(BasisModel):
