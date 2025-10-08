@@ -195,9 +195,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     photo_consents = serializers.SerializerMethodField()
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
-    command_suggestions = serializers.ListField(
-        child=serializers.CharField(), read_only=True
-    )
+    command_suggestions = serializers.SerializerMethodField()
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -233,6 +231,9 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     def get_achievements_score(self, obj):
         return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
+
+    def get_command_suggestions(self, obj):
+        return obj.get_command_suggestions()
 
     class Meta:
         model = User
