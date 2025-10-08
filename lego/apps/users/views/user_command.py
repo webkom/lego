@@ -18,7 +18,3 @@ class UserCommandViewSet(viewsets.ViewSet):
 
         cmds = request.user.record_command_usage(command_id)
         return Response({"recent_commands": cmds})
-
-    @action(detail=False, methods=["get"])
-    def suggestions(self, request):
-        return Response(request.user.get_command_suggestions())
