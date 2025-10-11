@@ -4,13 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 
-from lego.apps.lending.constants import (
-    LENDING_CATEGORIES,
-    LENDING_REQUEST_STATUSES,
-    OTHER,
-    OUTDOORS,
-    PHOTOGRAPHY,
-)
+from lego.apps.lending.constants import LENDING_REQUEST_STATUSES, OUTDOORS, PHOTOGRAPHY
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
