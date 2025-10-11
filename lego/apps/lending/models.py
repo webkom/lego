@@ -2,9 +2,9 @@ from django.db import models
 
 from lego.apps.files.models import FileField
 from lego.apps.lending.constants import (
+    LENDING_CATEGORIES,
     LENDING_CHOICE_STATUSES,
     LENDING_REQUEST_STATUSES,
-    LENDING_CATEGORIES,
     OTHER,
 )
 from lego.apps.lending.permissions import (

@@ -48,7 +48,7 @@ class LendableObjectSerializer(BasisModelSerializer):
             "responsible_groups",
             "location",
             "can_lend",
-            "category"
+            "category",
         )
 
     def get_can_lend(self, obj):
