@@ -2,8 +2,10 @@ from django.db import models
 
 from lego.apps.files.models import FileField
 from lego.apps.lending.constants import (
+    LENDING_CATEGORIES,
     LENDING_CHOICE_STATUSES,
     LENDING_REQUEST_STATUSES,
+    OTHER,
 )
 from lego.apps.lending.permissions import (
     LendableObjectPermissionHandler,
@@ -20,6 +22,13 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
     description = models.TextField(null=False, blank=True)
     image = FileField(related_name="lendable_object_image")
     location = models.CharField(max_length=128, null=False, blank=True)
+    category = models.CharField(
+        max_length=64,
+        choices=LENDING_CATEGORIES,
+        default=OTHER,
+        null=False,
+        blank=False,
+    )
 
     class Meta:
         permission_handler = LendableObjectPermissionHandler()
