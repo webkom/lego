@@ -5,9 +5,7 @@ from django.utils import timezone
 from rest_framework import status
 
 from lego.apps.lending.constants import (
-    LENDING_CATEGORIES,
     LENDING_REQUEST_STATUSES,
-    OTHER,
     OUTDOORS,
     PHOTOGRAPHY,
 )
