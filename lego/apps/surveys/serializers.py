@@ -3,6 +3,7 @@ from typing import Iterator
 from django.db.transaction import atomic
 from rest_framework import exceptions, serializers
 
+from lego.apps.events.constants import PRESENCE_CHOICES
 from lego.apps.events.serializers.events import EventForSurveySerializer
 from lego.apps.surveys.constants import DISPLAY_TYPES, QUESTION_TYPES
 from lego.apps.surveys.models import Answer, Option, Question, Submission, Survey
@@ -84,10 +85,28 @@ class AnswerCreateAndUpdateSerializer(BasisModelSerializer):
 
 class SurveyReadSerializer(BasisModelSerializer):
     event = EventForSurveySerializer()
+    attended_by_self = serializers.SerializerMethodField()
 
     class Meta:
         model = Survey
-        fields = ("id", "title", "active_from", "event", "template_type", "is_template")
+        fields = (
+            "id",
+            "title",
+            "active_from",
+            "event",
+            "template_type",
+            "is_template",
+            "attended_by_self",
+        )
+
+    def get_attended_by_self(self, survey):
+        request = self.context.get("request", None)
+        if request and request.user.is_authenticated:
+            if survey and survey.event and survey.event.registrations:
+                return survey.event.registrations.filter(
+                    user=request.user, presence=PRESENCE_CHOICES.PRESENT
+                ).exists()
+        return False
 
 
 class SubmissionReadSerializer(BasisModelSerializer):
