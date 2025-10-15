@@ -454,24 +454,43 @@ class EventCreateAndUpdateSerializer(
             pools[0]["capacity"] = 0
         with transaction.atomic():
             if pools is not None:
-                existing_pools = list(instance.pools.all().values_list("id", flat=True))
+                existing_ids = set(instance.pools.values_list("id", flat=True))
                 for pool in pools:
                     pool_id = pool.get("id", None)
-                    if pool_id in existing_pools:
-                        existing_pools.remove(pool_id)
                     permission_groups = pool.pop("permission_groups")
-                    created_pool = Pool.objects.update_or_create(
-                        event=instance,
-                        id=pool_id,
-                        defaults={
-                            "name": pool.get("name"),
-                            "capacity": pool.get("capacity", 0),
-                            "activation_date": pool.get("activation_date"),
-                        },
-                    )[0]
-                    created_pool.permission_groups.set(permission_groups)
-                for pool_id in existing_pools:
-                    Pool.objects.get(id=pool_id).delete()
+                    perm_ids = [getattr(g, "id", g) for g in permission_groups]
+                    pool_instance = None
+                    if pool_id:
+                        pool_instance = (
+                            Pool.objects.filter(id=pool_id, event=instance)
+                            .select_for_update()
+                            .first()
+                        )
+                        existing_ids.discard(pool_id)
+                    pool_data = {
+                        "name": pool.get("name", getattr(pool_instance, "name", None)),
+                        "capacity": pool.get(
+                            "capacity", getattr(pool_instance, "capacity", 0)
+                        ),
+                        "activation_date": pool.get(
+                            "activation_date",
+                            getattr(pool_instance, "activation_date", None),
+                        ),
+                        "permission_groups": perm_ids,
+                    }
+                    ser = PoolCreateAndUpdateSerializer(
+                        instance=pool_instance,
+                        data=pool_data,
+                        context={**self.context, "event": instance},
+                        partial=True,
+                    )
+                    ser.is_valid(raise_exception=True)
+                    ser.save()
+                if existing_ids:
+                    for p in Pool.objects.filter(
+                        event=instance, id__in=existing_ids
+                    ).iterator():
+                        p.delete()
             return super().update(instance, validated_data)
 
 
