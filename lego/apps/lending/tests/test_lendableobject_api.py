@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 
-from lego.apps.lending.constants import LENDING_REQUEST_STATUSES
+from lego.apps.lending.constants import LENDING_REQUEST_STATUSES, OUTDOORS, PHOTOGRAPHY
 from lego.apps.lending.models import LendableObject, LendingRequest
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
@@ -116,6 +116,19 @@ class ListLendableObjectsTestCase(BaseAPITestCase):
         self.assertEquals(
             len(LendableObjectSerializer.Meta.fields), len(lendable_object.keys())
         )
+
+    def test_category_field_in_response(self):
+        self.permission_group.add_user(self.user)
+        self.client.force_authenticate(user=self.user)
+
+        lendable_object = create_lendable_object(category=PHOTOGRAPHY)
+        lendable_object.can_view_groups.add(self.permission_group)
+
+        response = self.client.get(get_list_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        first_obj = response.json()["results"][1]
+        self.assertIn("category", first_obj)
+        self.assertEqual(first_obj["category"], PHOTOGRAPHY)
 
 
 class RetrieveLendableObjectTestCase(BaseAPITestCase):
@@ -273,6 +286,23 @@ class CreateLendableObjectTestCase(BaseAPITestCase):
 
         lendable_object = LendableObject.objects.get(title="New title")
         self.assertEqual(lendable_object.title, "New title")
+
+    def test_create_lendable_object_with_category(self):
+        self.group.permissions = ["/sudo/admin/lendableobjects/create/"]
+        self.group.save()
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "title": "Turgrill",
+            "description": "Grill for utendørsbruk",
+            "category": OUTDOORS,
+        }
+
+        response = self.client.post(get_list_url(), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        lendable_object = LendableObject.objects.get(title="Turgrill")
+        self.assertEqual(lendable_object.category, OUTDOORS)
 
 
 class LendableObjectAvailabilityTestCase(BaseAPITestCase):
