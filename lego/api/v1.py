@@ -40,7 +40,6 @@ from lego.apps.followers.views import (
     FollowEventViewSet,
     FollowUserViewSet,
 )
-from lego.apps.forums.views import ForumsViewSet, ThreadViewSet
 from lego.apps.frontpage.views import FrontpageViewSet
 from lego.apps.gallery.views import GalleryPictureViewSet, GalleryViewSet
 from lego.apps.ical.viewsets import ICalTokenViewset, ICalViewset
@@ -86,6 +85,7 @@ from lego.apps.users.views.password_reset import (
 )
 from lego.apps.users.views.penalties import PenaltyViewSet
 from lego.apps.users.views.registration import UserRegistrationRequestViewSet
+from lego.apps.users.views.user_command import UserCommandViewSet
 from lego.apps.users.views.user_delete import UserDeleteViewSet
 from lego.apps.users.views.users import UsersViewSet
 from lego.utils.views import SiteMetaViewSet
@@ -153,8 +153,6 @@ router.register(r"files", FileViewSet)
 router.register(r"followers-company", FollowCompanyViewSet)
 router.register(r"followers-event", FollowEventViewSet)
 router.register(r"followers-user", FollowUserViewSet)
-router.register(r"forums", ForumsViewSet)
-router.register(r"forums/(?P<forum_pk>\d+)/threads", ThreadViewSet)
 router.register(r"frontpage", FrontpageViewSet, basename="frontpage")
 router.register(r"galleries", GalleryViewSet)
 router.register(r"galleries/(?P<gallery_pk>\d+)/pictures", GalleryPictureViewSet)
@@ -221,7 +219,7 @@ router.register(
     r"surveys/(?P<survey_pk>\d+)/submissions", SubmissionViewSet, basename="submission"
 )
 router.register(r"tags", TagViewSet)
-router.register(r"threads", ThreadViewSet)
+router.register(r"user-commands", UserCommandViewSet, basename="user-command")
 router.register(r"user-delete", UserDeleteViewSet, basename="user-delete")
 router.register(r"users", UsersViewSet)
 router.register(

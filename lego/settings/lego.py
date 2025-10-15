@@ -42,7 +42,7 @@ LDAP_GROUPS = [
     "Ordenen",
     "PR-ansvarlige",
     "Revy",
-    "RevyStyret",
+    "Revystyret",
     "xcom-data",
     "xcom-komtek",
     "Nestledere",

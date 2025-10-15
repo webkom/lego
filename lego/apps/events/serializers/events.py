@@ -85,12 +85,6 @@ class EventReadSerializer(
     registration_count = RegistrationCountField()
     total_capacity = TotalCapacityField()
     user_reg = serializers.SerializerMethodField()
-    responsible_users = PublicUserField(
-        queryset=User.objects.all(),
-        allow_null=False,
-        required=True,
-        many=True,
-    )
 
     class Meta:
         model = Event
@@ -115,7 +109,6 @@ class EventReadSerializer(
             "is_admitted",
             "survey",
             "is_priced",
-            "responsible_users",
             "is_foreign_language",
             "user_reg",
             "show_company_description",
@@ -142,15 +135,8 @@ class EventReadDetailedSerializer(
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
-    created_by = PublicUserSerializer()
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
-    responsible_users = PublicUserField(
-        queryset=User.objects.all(),
-        allow_null=False,
-        required=True,
-        many=True,
-    )
 
     class Meta:
         model = Event
@@ -190,13 +176,11 @@ class EventReadDetailedSerializer(
             "tags",
             "is_merged",
             "heed_penalties",
-            "created_by",
             "legacy_registration_count",
             "survey",
             "use_consent",
             "youtube_url",
             "mazemap_poi",
-            "responsible_users",
             "is_foreign_language",
             "show_company_description",
         )
@@ -307,9 +291,18 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
     pools = PoolReadAuthSerializer(many=True)
     waiting_registrations = RegistrationReadSerializer(many=True)
     unanswered_surveys = serializers.SerializerMethodField()
+    created_by = PublicUserSerializer()
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta(EventReadUserDetailedSerializer.Meta):
         fields = EventReadUserDetailedSerializer.Meta.fields + (  # type: ignore
+            "created_by",
+            "responsible_users",
             "waiting_registrations",
             "unanswered_surveys",
         )
@@ -326,10 +319,17 @@ class EventAdministrateSerializer(EventReadSerializer, EventReadDetailedSerializ
     responsible_group = AbakusGroupField(
         queryset=AbakusGroup.objects.all(), required=False, allow_null=True
     )
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta(EventReadSerializer.Meta):
         fields = EventReadSerializer.Meta.fields + (  # type: ignore
             "pools",
+            "responsible_users",
             "unregistered",
             "waiting_registrations",
             "use_consent",

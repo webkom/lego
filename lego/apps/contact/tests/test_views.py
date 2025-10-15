@@ -26,23 +26,6 @@ class ContactViewSetTestCase(BaseAPITestCase):
             {
                 "title": "title",
                 "message": "message",
-                "anonymous": True,
-                "captcha_response": "test",
-                "recipient_group": None,
-            },
-        )
-        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
-        mock_verify_captcha.assert_called_once()
-
-    @mock.patch("lego.apps.contact.views.send_message")
-    @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=True)
-    def test_without_auth_not_anonymous(self, mock_verify_captcha, mock_send_message):
-        response = self.client.post(
-            self.url,
-            {
-                "title": "title",
-                "message": "message",
-                "anonymous": False,
                 "captcha_response": "test",
                 "recipient_group": None,
             },
@@ -58,16 +41,13 @@ class ContactViewSetTestCase(BaseAPITestCase):
             {
                 "title": "title",
                 "message": "message",
-                "anonymous": True,
                 "captcha_response": "test",
                 "recipient_group": None,
             },
         )
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         mock_verify_captcha.assert_called_once()
-        mock_send_message.assert_called_once_with(
-            "title", "message", self.user, True, None
-        )
+        mock_send_message.assert_called_once_with("title", "message", self.user, None)
 
     @mock.patch("lego.apps.contact.views.send_message")
     @mock.patch("lego.apps.contact.serializers.verify_captcha", return_value=False)
@@ -78,7 +58,6 @@ class ContactViewSetTestCase(BaseAPITestCase):
             {
                 "title": "title",
                 "message": "message",
-                "anonymous": True,
                 "captcha_response": "test",
                 "recipient_group": None,
             },
@@ -99,13 +78,10 @@ class ContactViewSetTestCase(BaseAPITestCase):
             {
                 "title": "title",
                 "message": "message",
-                "anonymous": True,
                 "captcha_response": "test",
                 "recipient_group": webkom_id,
             },
         )
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         mock_verify_captcha.assert_called_once()
-        mock_send_message.assert_called_once_with(
-            "title", "message", self.user, True, webkom
-        )
+        mock_send_message.assert_called_once_with("title", "message", self.user, webkom)

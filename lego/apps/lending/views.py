@@ -1,9 +1,14 @@
+import calendar
+from datetime import datetime
+
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from lego.apps.lending.constants import LENDING_REQUEST_STATUSES
 from lego.apps.lending.filters import LendingRequestFilterSet
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.lending.serializers import (
@@ -34,6 +39,56 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 LendableObjectAdminSerializer if is_admin else LendableObjectSerializer
             )
         return LendableObjectSerializer
+
+    @action(detail=True, methods=["GET"])
+    def availability(self, request, *args, **kwargs):
+        """
+        Returns time ranges when the object is unavailable (has approved lending requests)
+        for a specified month and year.
+        """
+        lendable_object = self.get_object()
+
+        try:
+            month = int(request.query_params.get("month", ""))
+            year = int(request.query_params.get("year", ""))
+
+            if not 1 <= month <= 12:
+                return Response(
+                    {"detail": "Month must be between 1 and 12."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        except ValueError:
+            return Response(
+                {"detail": "Month and year must be valid integers."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        start_of_month = timezone.make_aware(datetime(year, month, 1))
+        last_day = calendar.monthrange(year, month)[1]
+        end_of_month = timezone.make_aware(datetime(year, month, last_day, 23, 59, 59))
+
+        approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
+
+        overlapping_requests = (
+            LendingRequest.objects.filter(
+                lendable_object=lendable_object, status=approved_status
+            )
+            .filter(Q(start_date__lte=end_of_month) & Q(end_date__gte=start_of_month))
+            .order_by("start_date")
+        )
+
+        unavailable_ranges = []
+        for request in overlapping_requests:
+            range_start = max(request.start_date, start_of_month)
+            range_end = min(request.end_date, end_of_month)
+
+            unavailable_ranges.append([range_start, range_end])
+
+        formatted_ranges = [
+            [start.isoformat(), end.isoformat()] for start, end in unavailable_ranges
+        ]
+
+        return Response(formatted_ranges)
 
 
 class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

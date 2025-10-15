@@ -35,6 +35,9 @@ PHOTO_FILM_ADMIN = "photo_admin"
 GRAPHIC_ADMIN = "graphic_admin"
 SOCIAL_MEDIA_ADMIN = "social_media_admin"
 BOOKING_ADMIN = "booking_admin"
+PURCHASING_MANAGER = "purchasing_manager"
+EVENT_MANAGER = "event_manager"
+SNACKOVERFLOW_MANAGER = "snackoverflow_manager"
 
 ROLES = (
     (MEMBER, MEMBER),
@@ -64,6 +67,9 @@ ROLES = (
     (GRAPHIC_ADMIN, GRAPHIC_ADMIN),
     (SOCIAL_MEDIA_ADMIN, SOCIAL_MEDIA_ADMIN),
     (BOOKING_ADMIN, BOOKING_ADMIN),
+    (PURCHASING_MANAGER, PURCHASING_MANAGER),
+    (EVENT_MANAGER, EVENT_MANAGER),
+    (SNACKOVERFLOW_MANAGER, SNACKOVERFLOW_MANAGER),
 )
 
 DATA = "data"
@@ -171,3 +177,7 @@ class PENALTY_TYPES(models.TextChoices):
     PRESENCE = "presence"
     PAYMENT = "payment"
     OTHER = "other"
+
+
+COMMAND_BUFFER_LENGTH = 2
+COMMAND_SUGGESTION_LENGTH = 3

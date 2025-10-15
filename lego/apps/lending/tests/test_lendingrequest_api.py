@@ -70,6 +70,7 @@ class LendingRequestTestCase(BaseAPITestCase):
             "status": "unapproved",
             "start_date": (now() + timedelta(days=1)).isoformat(),
             "end_date": (now() + timedelta(days=2)).isoformat(),
+            "comment": "En kommentar",
         }
 
         response = self.client.post(get_lending_request_list_url(), data)
@@ -106,6 +107,29 @@ class LendingRequestTestCase(BaseAPITestCase):
         response = self.client.post(get_lending_request_list_url(), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("endDate", response.json())
+
+    def test_set_changes_resolved_without_changes_requested(self):
+        """Users should be unable to set status to changes resolved if changes are not requested"""
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "lendable_object": self.lendable_object.pk,
+            "status": "unapproved",
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+        }
+
+        response = self.client.post(get_lending_request_list_url(), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(LendingRequest.objects.count(), 1)
+
+        patch_data = {
+            "status": "changes_resolved",
+        }
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(response.json()["id"]), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_edit_own_request_and_comment(self):
         """Users should be able to edit their own requests by first creating it via the API."""
@@ -505,24 +529,6 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
         self.assertIn("status", patch_response.data)
         self.assertIn(
             "You cannot cancel someone else's request", patch_response.data["status"][0]
-        )
-
-    def test_non_creator_cannot_update_text(self):
-        """
-        Verify that a user who did not create the lending request
-        cannot update its text field.
-        """
-        # Attempt to update the text as other_user.
-        self.edit_group.add_user(self.other_user)
-        self.client.force_authenticate(user=self.other_user)
-        patch_data = {"text": "Attempted update by non-creator."}
-        patch_response = self.client.patch(
-            get_lending_request_detail_url(self.request_id), patch_data
-        )
-        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("text", patch_response.data)
-        self.assertIn(
-            "You cannot edit someone else's request", patch_response.data["text"][0]
         )
 
     def test_creation_creates_system_linelineentry(self):

@@ -44,7 +44,6 @@ class LendingRequest(BasisModel):
     )
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    text = models.TextField(blank=False, null=True)
 
     class Meta:
         permission_handler = LendingRequestPermissionHandler()
