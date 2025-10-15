@@ -68,7 +68,7 @@ class WebsocketGroupTests(BaseTestCase):
 
     def test_initial_groups(self):
         """User should have certain groups initially"""
-        initial_groups = set(["global", group_for_user(self.user.pk)])
+        initial_groups = {"global", group_for_user(self.user.pk)}
 
         self.assertEquals(len(self.consumer.user_groups), 0)
         self.consumer.connect()
