@@ -54,7 +54,7 @@ class GroupConsumer(JsonWebsocketConsumer):
 
         if type == constants.WS_GROUP_LEAVE_BEGIN:
             group = payload.get("group")
-            if group in self.groups:
+            if group in self.user_groups:
                 AsyncToSync(self.channel_layer.group_discard)(group, self.channel_name)
                 self.user_groups.remove(group)
                 self.send_message(constants.WS_GROUP_LEAVE_SUCCESS)
