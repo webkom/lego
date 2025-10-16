@@ -112,6 +112,8 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
 
     def create(self, validated_data):
         event = validated_data.pop("event", None) or self.context.get("event")
+        if event is None:
+            raise serializers.ValidationError({"event": "Event context missing."})
         permission_groups = validated_data.pop("permission_groups")
         pool = Pool.objects.create(event=event, **validated_data)
         pool.permission_groups.set(permission_groups)
