@@ -798,6 +798,24 @@ class CreateEventsTestCase(BaseAPITestCase):
         self.assertEqual(0, event.can_view_groups.count())
         self.assertEqual(res_event["pools"], [])
 
+    def test_event_update_pool_permission_groups_after_activation(self):
+        """Test updating permission group after pool activation is not allowed"""
+        event = self.client.get(_get_detail_url(self.event_id)).json()
+        permission_group = AbakusGroup.objects.get(name="Abakus").id
+        pool = event["pools"][0]
+        pool["permissionGroups"] = [permission_group]
+        event_update_response = self.client.put(_get_detail_url(self.event_id), event)
+        self.assertEqual(event_update_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_event_update_pool_activation_date_after_activation(self):
+        """Test updating date after pool activation is not allowed"""
+        event = self.client.get(_get_detail_url(self.event_id)).json()
+        activation_date = timezone.now() + timedelta(days=2)
+        pool = event["pools"][0]
+        pool["activationDate"] = activation_date.isoformat()
+        event_update_response = self.client.put(_get_detail_url(self.event_id), event)
+        self.assertEqual(event_update_response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_event_correct_youtube_url(self):
         test_event = _test_event_data[0].copy()
         test_event["youtubeUrl"] = "https://www.youtube.com/watch?v=KrzIaRwAMvc"

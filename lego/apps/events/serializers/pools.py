@@ -90,10 +90,31 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
             "registrations": {"read_only": True},
         }
 
+    def validate(self, attrs):
+        instance = getattr(self, "instance", None)
+        if not instance:
+            return attrs
+        if "permission_groups" in attrs and instance.is_activated:
+            new_ids = {getattr(g, "id", g) for g in attrs["permission_groups"]}
+            old_ids = instance.permission_group_ids()
+            if new_ids != old_ids:
+                raise serializers.ValidationError(
+                    {
+                        "permission_groups": "Permission control is disabled for active pools."
+                    }
+                )
+        if "activation_date" in attrs and instance.is_activated:
+            if attrs["activation_date"] != instance.activation_date:
+                raise serializers.ValidationError(
+                    {"activation_date": "Time travel is disabled for active pools."}
+                )
+        return attrs
+
     def create(self, validated_data):
-        event = Event.objects.get(pk=self.context["view"].kwargs["event_pk"])
+        event = validated_data.pop("event", None) or self.context.get("event")
+        if event is None:
+            raise serializers.ValidationError({"event": "Event context missing."})
         permission_groups = validated_data.pop("permission_groups")
         pool = Pool.objects.create(event=event, **validated_data)
         pool.permission_groups.set(permission_groups)
-
         return pool
