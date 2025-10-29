@@ -88,7 +88,11 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             [
                 start.isoformat(),
                 end.isoformat(),
-                "" if (created_by is None or created_by.full_name() is None) else created_by.get_full_name(),
+                (
+                    ""
+                    if (created_by is None or created_by.full_name() is None)
+                    else created_by.get_full_name()
+                ),
                 "" if (created_by is None) else created_by.username,
             ]
             for start, end, created_by in unavailable_ranges
