@@ -82,10 +82,20 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             range_start = max(request.start_date, start_of_month)
             range_end = min(request.end_date, end_of_month)
 
-            unavailable_ranges.append([range_start, range_end])
+            unavailable_ranges.append([range_start, range_end, request.created_by])
 
         formatted_ranges = [
-            [start.isoformat(), end.isoformat()] for start, end in unavailable_ranges
+            [
+                start.isoformat(),
+                end.isoformat(),
+                (
+                    ""
+                    if (created_by is None or created_by.full_name() is None)
+                    else created_by.get_full_name()
+                ),
+                "" if (created_by is None) else created_by.username,
+            ]
+            for start, end, created_by in unavailable_ranges
         ]
 
         return Response(formatted_ranges)

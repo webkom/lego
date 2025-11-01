@@ -368,9 +368,21 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         self.assertEqual(len(response.json()), 1)
 
         unavailable_range = response.json()[0]
-        self.assertEqual(len(unavailable_range), 2)
+        self.assertEqual(len(unavailable_range), 4)
         self.assertEqual(unavailable_range[0], start_date.isoformat())
         self.assertEqual(unavailable_range[1], end_date.isoformat())
+        self.assertEqual(
+            unavailable_range[2],
+            (
+                ""
+                if (
+                    self.borrower is None
+                    or self.borrower.first_name is None
+                    or self.borrower.last_name is None
+                )
+                else self.borrower.get_full_name()
+            ).strip(),
+        )
 
     def test_non_approved_request_not_included(self):
         self.client.force_authenticate(user=self.user)
