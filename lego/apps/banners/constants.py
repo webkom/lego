@@ -6,7 +6,7 @@ BANNER_COLORS = {
     "ITDAGENE_BLUE": {"value": "itdageneBlue"},
     "BUDDYWEEK": {"value": "buddyweek2024"},
     "EASTER": {"value": "easter"},
-    "CHRISTMAS": {"value": "christmas"}
+    "CHRISTMAS": {"value": "christmas"},
 }
 
 BANNER_COLORS_DEFAULT = BANNER_COLORS["RED"]["value"]
