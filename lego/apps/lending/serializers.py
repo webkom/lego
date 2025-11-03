@@ -249,7 +249,6 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                     raise serializers.ValidationError(
                         {"status": ("You cannot approve your own request.. ")}
                     )
-            
 
         return attrs
 
