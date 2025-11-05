@@ -13,17 +13,17 @@ LENDING_REQUEST_STATUSES = {
 
 OUTDOORS = "outdoors"
 PHOTOGRAPHY = "photography"
-INSTRUMENT = "instrument"
-SPEAKER = "speaker"
+MUSIC = "music"
 FURNITURE = "furniture"
+SERVICES = "services"
 OTHER = "other"
 
 LENDING_CATEGORIES = (
     (OUTDOORS, OUTDOORS),
     (PHOTOGRAPHY, PHOTOGRAPHY),
-    (INSTRUMENT, INSTRUMENT),
-    (SPEAKER, SPEAKER),
+    (MUSIC, MUSIC),
     (FURNITURE, FURNITURE),
+    (SERVICES, SERVICES),
     (OTHER, OTHER),
 )
 
