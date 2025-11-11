@@ -712,3 +712,15 @@ class PhotoConsent(BasisModel):
     @staticmethod
     def get_semester(time: datetime):
         return constants.AUTUMN if time.month > 7 else constants.SPRING
+
+
+class ChristmasSlot(BasisModel):
+    slot = models.IntegerField(unique=True)
+    info = models.JSONField(default=dict)
+    answer = models.CharField(max_length=100)
+
+
+class ChristmasSlotUser(BasisModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    slot = models.ForeignKey(ChristmasSlot, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
