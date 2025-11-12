@@ -346,10 +346,17 @@ class PoolViewSet(
     serializer_class = PoolCreateAndUpdateSerializer
 
     def get_queryset(self):
-        event_id = self.kwargs.get("event_pk", None)
+        event_id = self.kwargs.get("event_pk")
         return Pool.objects.filter(event=event_id).prefetch_related(
             "permission_groups", "registrations"
         )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        event_id = self.kwargs.get("event_pk")
+        if event_id:
+            context["event"] = get_object_or_404(Event, pk=event_id)
+        return context
 
     def destroy(self, request, *args, **kwargs):
         try:
