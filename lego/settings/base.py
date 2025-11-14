@@ -141,6 +141,10 @@ OAUTH2_PROVIDER = {
             "brukernavn, profilbilde, epost, kjønn og dine medlemskap"
         ),
         "all": "Gir tilgang til all brukerinfo. Kan også gjøre ting som deg",
+        "aoc": (
+            "Minimal brukerinfo for Advent of Code leaderboard. "
+            "Gir lesetilgang til navn, brukernavn og GitHub-brukernavn"
+        ),
     },
 }
 

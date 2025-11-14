@@ -19,6 +19,7 @@ from lego.apps.users.serializers.registration import RegistrationConfirmationSer
 from lego.apps.users.serializers.users import (
     ChangeGradeSerializer,
     CurrentUserSerializer,
+    MinimalUserSerializer,
     Oauth2UserDataSerializer,
     PublicUserSerializer,
     PublicUserWithGroupsSerializer,
@@ -42,7 +43,13 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         Users should receive the CurrentUserSerializer if they try to get themselves or have the
         EDIT permission.
+
+        If ?minimal=true query parameter is provided on list action, return MinimalUserSerializer.
         """
+        # Support minimal query parameter for list actions
+        if self.action == "list" and self.request.query_params.get("minimal") == "true":
+            return MinimalUserSerializer
+
         if self.action in ["retrieve", "update", "partial_update"]:
             try:
                 instance = self.get_object()
@@ -75,15 +82,40 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=["GET"],
-        # The oauth lib will give permission if it has scope user
+        # The oauth lib will give permission if it has scope user or aoc
         permission_classes=[IsAuthenticated],
         serializer_class=Oauth2UserDataSerializer,
     )
     def oauth2_userdata(self, request):
         """
         Read-only endpoint used to retrieve information about the authenticated user.
+        Returns minimal data if the OAuth scope is 'aoc'.
         """
-        serializer = self.get_serializer(request.user)
+        # Check if the request is using the 'aoc' scope
+        # request.auth is the AccessToken object itself
+        token = request.auth if hasattr(request, 'auth') else None
+
+        print(f"oauth2_userdata called")
+        print(f"  request.auth: {request.auth}")
+        print(f"  token: {token}")
+        print(f"  token type: {type(token)}")
+
+        if token:
+            print(f"  token.scope: {token.scope}")
+            print(f"  token attributes: {dir(token)}")
+
+        scope = token.scope if token and hasattr(token, 'scope') else None
+        print(f"  final scope: {scope}")
+
+        if scope and 'aoc' in scope:
+            # Use minimal serializer for aoc scope
+            print(f"  -> Using MinimalUserSerializer for user {request.user.username}")
+            serializer = MinimalUserSerializer(request.user)
+        else:
+            # Use default OAuth2 serializer
+            print(f"  -> Using Oauth2UserDataSerializer for user {request.user.username}")
+            serializer = self.get_serializer(request.user)
+
         return Response(serializer.data)
 
     @action(

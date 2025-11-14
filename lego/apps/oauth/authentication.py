@@ -20,10 +20,20 @@ class Authentication(OAuth2Authentication):
         if token.allow_scopes(["all"]):
             return authentication
 
-        # Temporary only allow requests to the oauth2_userdata endpoint
+        # Allow "user" scope for oauth2_userdata endpoint
         if (
             token.allow_scopes(["user"])
             and request.path == "/api/v1/users/oauth2_userdata/"
         ):
             return authentication
+
+        # Allow "aoc" scope for oauth2_userdata and users list endpoints
+        if token.allow_scopes(["aoc"]):
+            allowed_paths = [
+                "/api/v1/users/oauth2_userdata/",
+                "/api/v1/users/"
+            ]
+            if request.path in allowed_paths:
+                return authentication
+
         return None

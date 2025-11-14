@@ -43,6 +43,23 @@ class PublicUserSerializer(serializers.ModelSerializer):
         read_only_fields = ("username",)
 
 
+class MinimalUserSerializer(serializers.ModelSerializer):
+    """
+    Minimal serializer for listing users with only essential fields.
+    Used by Advent of Code integration
+    """
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "full_name",
+            "github_username",
+        )
+        read_only_fields = fields
+
+
 class PublicUserWithAbakusGroupsSerializer(PublicUserSerializer):
     abakus_groups = PublicAbakusGroupSerializer(many=True)
 
@@ -164,6 +181,7 @@ class Oauth2UserDataSerializer(serializers.ModelSerializer):
             "is_abakus_member",
             "is_abakom_member",
             "memberships",
+            "github_username",
         )
 
     def get_is_student(self, user):

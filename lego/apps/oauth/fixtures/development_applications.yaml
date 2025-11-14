@@ -25,3 +25,21 @@
     updated: 2023-08-22 07:03:43.167059+00:00
     algorithm: ''
     description: Testopptak
+
+- model: oauth.APIApplication
+  pk: 3
+  fields:
+    client_id: aoc_leaderboard_client_id_12345
+    user: 1
+    redirect_uris: http://localhost:5173/auth/callback
+    client_type: public
+    authorization_grant_type: authorization-code
+    client_secret: aoc_leaderboard_secret_67890_abcdefghijklmnop
+    name: Advent of Code Leaderboard
+    skip_authorization: false
+    created: 2024-11-14 10:00:00.000000+00:00
+    updated: 2024-11-14 10:00:00.000000+00:00
+    algorithm: ''
+    description: Abakus Advent of Code Leaderboard Integration
+
+-

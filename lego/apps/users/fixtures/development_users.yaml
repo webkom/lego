@@ -7,6 +7,7 @@
     first_name: test
     last_name: user1
     email: test1@user.com
+    github_username: test1
     password: "pbkdf2_sha256$120000$YKmWfcu6Hqqv$e0yZQh91HMGZQBkElS3ZjW04rs2XCCK34DqK6P73N0g=" # Webkom123
     last_login: "2019-08-09T13:00:30+00:00"
 - model: users.User
@@ -17,6 +18,7 @@
     first_name: test
     last_name: user2
     email: test2@user.com
+    github_username: test2
     password: "pbkdf2_sha256$120000$YKmWfcu6Hqqv$e0yZQh91HMGZQBkElS3ZjW04rs2XCCK34DqK6P73N0g=" # Webkom123
     last_login: "2020-03-09T13:00:30+00:00"
 - model: users.User
@@ -28,6 +30,7 @@
     picture: "default_other_avatar.png"
     last_name: webkom
     email: webkom@aba.wtf
+    github_username: webkom
     password: "pbkdf2_sha256$120000$YKmWfcu6Hqqv$e0yZQh91HMGZQBkElS3ZjW04rs2XCCK34DqK6P73N0g=" # Webkom123
     last_login: "2021-03-09T13:00:30+00:00"
 - model: users.User
@@ -38,6 +41,7 @@
     picture: default_female_avatar.png
     last_name: bedkom
     email: bedkom@aba.wtf
+    github_username: bedkom
     password: "pbkdf2_sha256$120000$rhBO1zmtTZsr$smSDnW2pSOl7kac1ErGVJnRvB5fapOFBQnKqBKr/Q8g=" # Bedkom123
 - fields:
     email: jburke186@ekrubnylcaj.com
@@ -45,6 +49,7 @@
     gender: female
     last_name: Burke
     username: jaclynburke
+    github_username: jaclynburke
     password: "pbkdf2_sha256$120000$YKmWfcu6Hqqv$e0yZQh91HMGZQBkElS3ZjW04rs2XCCK34DqK6P73N0g=" # Webkom123
     last_login: "2021-03-09T13:00:30+00:00"
   model: users.User
