@@ -87,24 +87,27 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         formatted_ranges = []
         for i in range(len(unavailable_ranges)):
-            temp_list = []
             start, end, created_by = unavailable_ranges[i]
-            temp_list.append(start.isoformat())
-            temp_list.append(end.isoformat())
+            start_date = start.isoformat()
+            end_date = end.isoformat()
+            created_by_username = created_by
+            created_by_fullname = None
             if created_by is None:
-                temp_list.append(None)
+                created_by_fullname = None
             elif isinstance(created_by, str):
                 usr = User.objects.filter(username=created_by).first()
                 if usr:
-                    temp_list.append(usr.get_full_name())
+                    created_by_fullname = usr.get_full_name()
                 else:
-                    temp_list.append(None)
+                    created_by_fullname = None
             elif isinstance(created_by, User):
-                temp_list.append(created_by.get_full_name())
+                created_by_fullname = created_by.get_full_name()
             else:
-                temp_list.append(None)
-            temp_list.append(None if (created_by is None) else created_by.username)
-            formatted_ranges.append(temp_list)
+                created_by_fullname = None
+            created_by_username = None if (created_by is None) else created_by.username
+            formatted_ranges.append(
+                [start_date, end_date, created_by_username, created_by_fullname]
+            )
 
         return Response(formatted_ranges)
 
