@@ -531,6 +531,19 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
             "You cannot cancel someone else's request", patch_response.data["status"][0]
         )
 
+    def test_user_cant_approve_own_request(self):
+        """User should not be able to approve own request"""
+        self.client.force_authenticate(user=self.creator_user)
+        patch_data = {"status": "approved"}
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.request_id), patch_data
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("status", patch_response.data)
+        self.assertIn(
+            "You cannot approve your own request", patch_response.data["status"][0]
+        )
+
     def test_creation_creates_system_linelineentry(self):
         """
         Verify that when a lending request is created, a system message
@@ -556,7 +569,7 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
         """
         # Update the status as the creator.
         self.client.force_authenticate(user=self.creator_user)
-        patch_data = {"status": "approved"}
+        patch_data = {"status": "cancelled"}
         patch_response = self.client.patch(
             get_lending_request_detail_url(self.request_id), patch_data
         )
@@ -569,7 +582,7 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
 
         # Verify the timelineentry text matches the expected system message.
         # Expected text: "Status endret fra {translated old status} til {translated new status}."
-        expected_text = LENDING_REQUEST_TRANSLATION_MAP["approved"]
+        expected_text = LENDING_REQUEST_TRANSLATION_MAP["cancelled"]
         system_timelineentry = updated_request.timeline_entries.order_by(
             "created_at"
         ).last()

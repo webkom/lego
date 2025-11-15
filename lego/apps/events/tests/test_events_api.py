@@ -1000,6 +1000,31 @@ class PoolsTestCase(BaseAPITestCase):
         pool_response = self.client.delete(_get_pools_detail_url(1, pool.id))
         self.assertEqual(pool_response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_patch_permission_groups_in_pool_with_registrations(self):
+        """Test that change of permission group is not possible in pool with registrations"""
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        new_group = AbakusGroup.objects.get(name="Webkom")
+        pool_response = self.client.patch(
+            _get_pools_detail_url(1, 1),
+            {"permissionGroups": [new_group.id]},
+            format="json",
+        )
+        self.assertEqual(pool_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("permissionGroups", pool_response.json())
+
+    def test_patch_activation_date_in_pool_with_registrations(self):
+        """Test that change of activation date is not possible in pool with registrations"""
+        AbakusGroup.objects.get(name="Bedkom").add_user(self.abakus_user)
+        self.client.force_authenticate(self.abakus_user)
+        pool_response = self.client.patch(
+            _get_pools_detail_url(1, 1),
+            {"activationDate": timezone.now().isoformat()},
+            format="json",
+        )
+        self.assertEqual(pool_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("activationDate", pool_response.json())
+
 
 @mock.patch("lego.apps.events.views.verify_captcha", return_value=True)
 class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
