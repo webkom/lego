@@ -106,7 +106,7 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 created_by_fullname = None
             created_by_username = None if (created_by is None) else created_by.username
             formatted_ranges.append(
-                [start_date, end_date, created_by_username, created_by_fullname]
+                [start_date, end_date, created_by_fullname, created_by_username]
             )
 
         return Response(formatted_ranges)
