@@ -38,7 +38,7 @@ class ChristmasSlotUserViewSet(viewsets.ModelViewSet):
                 if christmas_slot.slot.slot == request.data.get("slot"):
                     return Response(f"Christmas slot {request.data.get('slot')} already exists", status=status.HTTP_200_OK)
             
-            ChristmasSlotUser.objects.create(slot=specific_slot, user=self.request.user, completed=True)
+            ChristmasSlotUser.objects.create(slot=specific_slot, user=self.request.user)
             return Response(f"User {self.request.user} created slot {specific_slot}", status=status.HTTP_201_CREATED)
         except:
             return Response(
