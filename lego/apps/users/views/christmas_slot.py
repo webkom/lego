@@ -2,7 +2,11 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.users.models import ChristmasSlot, ChristmasSlotUser
-from lego.apps.users.serializers.christmas_slot import ChristmasSlotUserSerializer, ChristmasSlotSerializer
+from lego.apps.users.serializers.christmas_slot import (
+    ChristmasSlotSerializer,
+    ChristmasSlotUserSerializer,
+)
+
 
 class ChristmasSlotViewSet(viewsets.ModelViewSet):
     queryset = ChristmasSlot.objects.all()
@@ -13,11 +17,19 @@ class ChristmasSlotViewSet(viewsets.ModelViewSet):
         slot = data.get("slot")
         answer = data.get("answer")
 
-        _, created = ChristmasSlot.objects.update_or_create(slot=slot, defaults={"answer": answer})
+        _, created = ChristmasSlot.objects.update_or_create(
+            slot=slot, defaults={"answer": answer}
+        )
 
         if created:
-            return Response({"message": f"Christmas slot {slot} created"}, status=status.HTTP_201_CREATED)
-        return Response({"message": f"Christmas slot {slot} updated"}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": f"Christmas slot {slot} created"},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {"message": f"Christmas slot {slot} updated"}, status=status.HTTP_200_OK
+        )
+
 
 class ChristmasSlotUserViewSet(viewsets.ModelViewSet):
     queryset = ChristmasSlotUser.objects.all()
@@ -29,13 +41,21 @@ class ChristmasSlotUserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         try:
             specific_slot = ChristmasSlot.objects.get(slot=request.data.get("slot"))
-            
+
             for christmas_slot in self.get_queryset():
                 if christmas_slot.slot.slot == request.data.get("slot"):
-                    return Response({"message": f"Christmas slot {request.data.get('slot')} already exists"}, status=status.HTTP_200_OK)
-            
+                    return Response(
+                        {
+                            "message": f"Christmas slot {request.data.get('slot')} already exists"
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+
             ChristmasSlotUser.objects.create(slot=specific_slot, user=self.request.user)
-            return Response({"message": f"User {self.request.user} created slot {specific_slot}"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"message": f"User {self.request.user} created slot {specific_slot}"},
+                status=status.HTTP_201_CREATED,
+            )
         except:
             return Response(
                 {"error": "Christmas slot does not exist"},
