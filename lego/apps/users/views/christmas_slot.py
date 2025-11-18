@@ -39,25 +39,29 @@ class ChristmasSlotUserViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(user=self.request.user.id)
 
     def create(self, request):
+        slot_value = request.data.get("slot")
+
         try:
-            specific_slot = ChristmasSlot.objects.get(slot=request.data.get("slot"))
-
-            for christmas_slot in self.get_queryset():
-                if christmas_slot.slot.slot == request.data.get("slot"):
-                    return Response(
-                        {
-                            "message": f"Christmas slot {request.data.get('slot')} already exists"
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-
-            ChristmasSlotUser.objects.create(slot=specific_slot, user=self.request.user)
-            return Response(
-                {"message": f"User {self.request.user} created slot {specific_slot}"},
-                status=status.HTTP_201_CREATED,
-            )
-        except:
+            specific_slot = ChristmasSlot.objects.get(slot=slot_value)
+        except ChristmasSlot.DoesNotExist:
             return Response(
                 {"error": "Christmas slot does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        for christmas_slot in self.get_queryset():
+            if christmas_slot.slot.slot == slot_value:
+                return Response(
+                    {"message": f"Christmas slot {slot_value} already exists"},
+                    status=status.HTTP_200_OK,
+                )
+
+        ChristmasSlotUser.objects.create(
+            slot=specific_slot,
+            user=self.request.user,
+        )
+
+        return Response(
+            {"message": f"User {self.request.user} created slot {specific_slot}"},
+            status=status.HTTP_201_CREATED,
+        )
