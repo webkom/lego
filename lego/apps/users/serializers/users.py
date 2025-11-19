@@ -202,7 +202,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         if "christmas_slots" in data:
             user.christmas_slots = data["christmas_slots"]
             user.save(update_fields=["christmas_slots"])
-        return super().update(user, data)
+        return user
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
