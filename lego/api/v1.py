@@ -75,10 +75,6 @@ from lego.apps.surveys.views import (
 )
 from lego.apps.tags.views import TagViewSet
 from lego.apps.users.views.abakus_groups import AbakusGroupViewSet
-from lego.apps.users.views.christmas_slot import (
-    ChristmasSlotUserViewSet,
-    ChristmasSlotViewSet,
-)
 from lego.apps.users.views.membership_history import MembershipHistoryViewSet
 from lego.apps.users.views.memberships import MembershipViewSet
 from lego.apps.users.views.oidc import OIDCViewSet
@@ -230,10 +226,6 @@ router.register(
     r"users-registration-request",
     UserRegistrationRequestViewSet,
     basename="user-registration",
-)
-router.register(r"christmas-slot", ChristmasSlotViewSet, basename="christmas-slot")
-router.register(
-    r"christmas-slot-user", ChristmasSlotUserViewSet, basename="christmas-slot-user"
 )
 router.register(r"oidc", OIDCViewSet, basename="oidc")
 router.register(r"webhooks-stripe", StripeWebhook, basename="webhooks-stripe")

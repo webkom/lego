@@ -6,15 +6,8 @@ from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
 from lego.apps.users import constants
-from lego.apps.users.models import (
-    AbakusGroup,
-    ChristmasSlotUser,
-    Penalty,
-    PhotoConsent,
-    User,
-)
+from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
-from lego.apps.users.serializers.christmas_slot import ChristmasSlotUserSerializer
 from lego.apps.users.serializers.memberships import (
     MembershipSerializer,
     PastMembershipSerializer,
@@ -203,7 +196,13 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
     command_suggestions = serializers.SerializerMethodField()
-    christmas_slots = serializers.SerializerMethodField()
+    christmas_slots = serializers.ListField(child=serializers.IntegerField())
+
+    def update(self, user, data):
+        if "christmas_slots" in data:
+            user.christmas_slots = data["christmas_slots"]
+            user.save(update_fields=["christmas_slots"])
+        return user
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -244,8 +243,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         return obj.get_command_suggestions()
 
     def get_christmas_slots(self, obj):
-        slots = ChristmasSlotUser.objects.filter(user=obj)
-        return ChristmasSlotUserSerializer(slots, many=True).data
+        return obj.get_christmas_slots()
 
     class Meta:
         model = User

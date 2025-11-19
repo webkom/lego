@@ -417,6 +417,8 @@ class User(
         blank=True,
     )
 
+    christmas_slots = ArrayField(models.IntegerField(), default=list, blank=True)
+
     objects = AbakusUserManager()  # type: ignore
 
     USERNAME_FIELD = "username"
@@ -609,6 +611,9 @@ class User(
         cmds = self.command_suggestions or []
         return cmds[: constants.COMMAND_SUGGESTION_LENGTH]
 
+    def get_christmas_slots(self):
+        return self.christmas_slots
+
 
 class Penalty(BasisModel):
     user = models.ForeignKey(User, related_name="penalties", on_delete=models.CASCADE)
@@ -712,13 +717,3 @@ class PhotoConsent(BasisModel):
     @staticmethod
     def get_semester(time: datetime):
         return constants.AUTUMN if time.month > 7 else constants.SPRING
-
-
-class ChristmasSlot(BasisModel):
-    slot = models.IntegerField(unique=True)
-    answer = models.CharField(max_length=100)
-
-
-class ChristmasSlotUser(BasisModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    slot = models.ForeignKey(ChristmasSlot, on_delete=models.CASCADE)
