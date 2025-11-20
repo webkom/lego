@@ -199,8 +199,11 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     christmas_slots = serializers.ListField(child=serializers.IntegerField())
 
     def update(self, user, data):
-        if "christmas_slots" in data:
-            user.christmas_slots = data["christmas_slots"]
+        christmas_slots = data.pop("christmas_slots", None)
+        user = super().update(user, data)
+
+        if christmas_slots is not None:
+            user.christmas_slots = christmas_slots
             user.save(update_fields=["christmas_slots"])
         return user
 
