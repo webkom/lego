@@ -196,6 +196,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
     command_suggestions = serializers.SerializerMethodField()
+    christmas_slots = serializers.ListField(child=serializers.IntegerField())
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -270,6 +271,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "achievements",
             "achievements_score",
             "command_suggestions",
+            "christmas_slots",
         )
 
 
