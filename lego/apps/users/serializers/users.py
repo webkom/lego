@@ -198,15 +198,6 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     command_suggestions = serializers.SerializerMethodField()
     christmas_slots = serializers.ListField(child=serializers.IntegerField())
 
-    def update(self, user, data):
-        christmas_slots = data.pop("christmas_slots", None)
-        user = super().update(user, data)
-
-        if christmas_slots is not None:
-            user.christmas_slots = christmas_slots
-            user.save(update_fields=["christmas_slots"])
-        return user
-
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
         return ical_token.token
@@ -244,9 +235,6 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     def get_command_suggestions(self, obj):
         return obj.get_command_suggestions()
-
-    def get_christmas_slots(self, obj):
-        return obj.get_christmas_slots()
 
     class Meta:
         model = User
