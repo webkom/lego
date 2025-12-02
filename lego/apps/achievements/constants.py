@@ -37,6 +37,7 @@ GENFORS_IDENTIFIER = "genfors_count"
 GALA_IDENTIFIER = "gala_count"
 COMPLETE_IDENTIFIER = "complete_profile"
 EASTER_IDENTIFIER = "easter_winner"
+CHRISTMAS_CALENDAR_IDENTIFIER = "christmas_calendar"
 
 # These are used for information about what counts as gala
 
@@ -295,6 +296,14 @@ EASTER_WINNER_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+CHRISTMAS_CALENDAR_ACHIEVEMENTS: AchievementCollection = {
+    "christmas_2025": {
+        "identifier": CHRISTMAS_CALENDAR_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+}
+
 
 HIDDEN_ACHIEVEMENTS = {
     **QUOTE_ACHIEVEMENTS,
@@ -303,7 +312,7 @@ HIDDEN_ACHIEVEMENTS = {
     **COMPLETE_ACHIEVEMENT,
 }
 
-MANUAL_ACHIEVEMENTS = {**EASTER_WINNER_ACHIEVEMENTS}
+MANUAL_ACHIEVEMENTS = {**EASTER_WINNER_ACHIEVEMENTS, **CHRISTMAS_CALENDAR_ACHIEVEMENTS}
 
 ACHIEVEMENTS = {
     **EVENT_ACHIEVEMENTS,
