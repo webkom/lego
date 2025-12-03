@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
@@ -229,6 +231,14 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError("Username exists")
 
         return username
+
+    def validate_christmas_slots(self, slots):
+        deadline = datetime(2025, 12, 31, 23, 59, 59)
+        if datetime.now() > deadline:
+            raise serializers.ValidationError(
+                "This field cannot be edited after 31st December 2025."
+            )
+        return slots
 
     def get_achievements_score(self, obj):
         return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
