@@ -531,18 +531,20 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
             "You cannot cancel someone else's request", patch_response.data["status"][0]
         )
 
-    def test_user_cant_approve_own_request(self):
-        """User should not be able to approve own request"""
+    def test_user_cannot_set_admin_only_statuses_on_own_request(self):
+        """User should not be able to set certain statuses if its their own request"""
         self.client.force_authenticate(user=self.creator_user)
-        patch_data = {"status": "approved"}
-        patch_response = self.client.patch(
-            get_lending_request_detail_url(self.request_id), patch_data
-        )
-        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("status", patch_response.data)
-        self.assertIn(
-            "You cannot approve your own request", patch_response.data["status"][0]
-        )
+        
+        for s in ("approved", "unapproved", "denied", "changes_requested"):
+            patch_data = {"status": s}
+            patch_response = self.client.patch(
+                get_lending_request_detail_url(self.request_id), patch_data
+            )
+            self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertIn("status", patch_response.data)
+            self.assertIn(
+                f"You cannot set {s} on your own request", patch_response.data["status"][0]
+            )
 
     def test_creation_creates_system_linelineentry(self):
         """
