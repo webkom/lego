@@ -15,7 +15,7 @@ def describe_results_with_charts(survey):
     charts_and_text_data = []
     submissions = Submission.objects.filter(survey=survey)
     for question in survey.questions.all():
-        # remove the line underneath if using text field answers in the report
+        # remove the two lines underneath if using text field answers in the report
         if question.question_type == TEXT_FIELD:
             continue
 
