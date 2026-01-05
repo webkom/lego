@@ -15,6 +15,10 @@ def describe_results_with_charts(survey):
     charts_and_text_data = []
     submissions = Submission.objects.filter(survey=survey)
     for question in survey.questions.all():
+        # remove the line underneath if using text field answers in the report
+        if question.question_type == TEXT_FIELD:
+            continue
+
         question_data = {
             "question_text": question.question_text,
             "pie_chart_base64": None,
@@ -103,14 +107,15 @@ def describe_results_with_charts(survey):
                 buf.close()
                 matplotlib.pyplot.close(fig)
 
-        else:
-            question_data["text_answers"] = [
-                answer.answer_text.strip()
-                for answer in Answer.objects.filter(question=question).exclude(
-                    hide_from_public=True
-                )
-                if answer.answer_text.strip()
-            ]
+        # If text field answers should be included in the report, uncomment below
+        # else:
+        #     question_data["text_answers"] = [
+        #         answer.answer_text.strip()
+        #         for answer in Answer.objects.filter(question=question).exclude(
+        #             hide_from_public=True
+        #         )
+        #         if answer.answer_text.strip()
+        #     ]
 
         charts_and_text_data.append(question_data)
     return charts_and_text_data
