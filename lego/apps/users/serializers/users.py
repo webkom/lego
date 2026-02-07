@@ -290,3 +290,19 @@ class ChangeGradeSerializer(serializers.Serializer):
         allow_null=True,
         queryset=AbakusGroup.objects.all().filter(type=constants.GROUP_GRADE),
     )
+
+class MinimalUserSerializer(serializers.ModelSerializer):
+    """
+    Minimal serializer for listing users with only essential fields.
+    Used by Advent of Code integration
+    """
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "full_name",
+            "github_username",
+        )
+        read_only_fields = fields
