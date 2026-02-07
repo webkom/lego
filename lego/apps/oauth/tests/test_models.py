@@ -88,6 +88,12 @@ class RedirectURIAllowedTestCase(BaseTestCase):
         )
         self.assertFalse(self.app.redirect_uri_allowed("https://example.com/callback"))
 
+    def test_global_wildcard(self):
+        self.app.redirect_uris = "https://*"
+        self.assertFalse(self.app.redirect_uri_allowed("https://example.com/callback"))
+        self.assertFalse(self.app.redirect_uri_allowed("/"))
+        self.assertFalse(self.app.redirect_uri_allowed("https://*.com"))
+
     def test_empty_uri(self):
         self.app.redirect_uris = "https://example.com/callback"
         self.assertFalse(self.app.redirect_uri_allowed(""))

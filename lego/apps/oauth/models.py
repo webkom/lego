@@ -29,6 +29,11 @@ class APIApplication(AbstractApplication):
         - https://*.example.com/callback
         - https://example.com/*
         - https://*.example.com/*
+
+        Not Allowed:
+        - *
+        - https://*
+        - https://*.com
         """
         if not uri:
             return False
@@ -43,6 +48,13 @@ class APIApplication(AbstractApplication):
 
         for allowed_uri in allowed_uris:
             parsed_allowed = urlparse(allowed_uri)
+
+            # Check to avoid universal links such as https://*, to avoid wildcard abuse
+            allowed_host = parsed_allowed.hostname or ""
+            if allowed_host == "*" or (
+                allowed_host.startswith("*.") and len(allowed_host.split(".")) < 3
+            ):
+                continue
 
             if parsed_allowed.scheme != parsed_uri.scheme:
                 continue
