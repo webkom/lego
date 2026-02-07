@@ -47,7 +47,9 @@ class APIApplication(AbstractApplication):
             if parsed_allowed.scheme != parsed_uri.scheme:
                 continue
 
-            if not fnmatch.fnmatch(parsed_uri.hostname or "", parsed_allowed.hostname or ""):
+            if not fnmatch.fnmatch(
+                parsed_uri.hostname or "", parsed_allowed.hostname or ""
+            ):
                 continue
 
             allowed_path = parsed_allowed.path or "/"
