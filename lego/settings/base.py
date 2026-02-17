@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "channels",
     "django_filters",
     "push_notifications",
+    "expo_notifications",
     "health_check",
     "phonenumber_field",
     "lego.utils",
@@ -186,6 +187,13 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     "GCM_ERROR_TIMEOUT": 30,
     "FCM_ERROR_TIMEOUT": 30,
 }
+
+EXPO_NOTIFICATIONS_TOKEN = None
+EXPO_NOTIFICATIONS_RECEIPT_CHECK_DELAY = datetime.timedelta(minutes=30)
+EXPO_NOTIFICATIONS_SENDING_TASK_MAX_RETRIES = 5
+EXPO_NOTIFICATIONS_SENDING_TASK_RETRY_DELAY = datetime.timedelta(seconds=30)
+EXPO_NOTIFICATIONS_CHECKING_TASK_MAX_RETIRES = 3
+EXPO_NOTIFICATIONS_CHECKING_TASK_RETRY_DELAY = datetime.timedelta(minutes=1)
 
 GSUITE_DELEGATED_ACCOUNT = os.environ.get("GSUITE_DELEGATED_ACCOUNT")
 SMTP_SSL_ENABLE = os.environ.get("SMTP_SSL_ENABLE") or False
