@@ -708,6 +708,39 @@ class CreateEventsTestCase(BaseAPITestCase):
         ]:
             self.assertEqual(res_event[key], expect_event[key])
 
+    def test_event_partial_update_tags_keeps_pools_with_registrations(self):
+        """Test patching tags does not implicitly delete pools with registrations."""
+        event = Event.objects.get(id=self.event_id)
+        pool = event.pools.first()
+        registration_user = get_dummy_users(1)[0]
+        Registration.objects.create(event=event, user=registration_user, pool=pool)
+
+        event_update_response = self.client.patch(
+            _get_detail_url(self.event_id), {"tags": ["trophy:gala"]}
+        )
+
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
+        event.refresh_from_db()
+        self.assertEqual(event.pools.count(), 1)
+        self.assertEqual(pool.registrations.count(), 1)
+        self.assertEqual(event_update_response.json()["tags"], ["trophy:gala"])
+
+    def test_event_partial_update_infinite_keeps_pool_when_pools_omitted(self):
+        """Test patching INFINITE events keeps existing pool when pools are omitted."""
+        event_response = self.client.post(
+            _get_list_url(), deepcopy(_test_event_data[4])
+        )
+        self.assertEqual(event_response.status_code, status.HTTP_201_CREATED)
+        event_id = event_response.json()["id"]
+
+        event_update_response = self.client.patch(
+            _get_detail_url(event_id), {"title": "PATCHED"}
+        )
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
+
+        event = Event.objects.get(id=event_id)
+        self.assertEqual(event.pools.count(), 1)
+
     def test_event_pinned_only_one(self):
         """Test that there is only one pinned event at a time"""
         self.client.patch(_get_detail_url(self.event_id), {"pinned": True})
