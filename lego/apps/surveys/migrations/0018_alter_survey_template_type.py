@@ -6,13 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
+<<<<<<< Updated upstream
         ('surveys', '0017_alter_survey_template_type'),
+=======
+        ("surveys", "0017_alter_survey_template_type"),
+>>>>>>> Stashed changes
     ]
 
     operations = [
         migrations.AlterField(
+<<<<<<< Updated upstream
             model_name='survey',
             name='template_type',
             field=models.CharField(blank=True, choices=[('company_presentation', 'company_presentation'), ('lunch_presentation', 'lunch_presentation'), ('alternative_presentation', 'alternative_presentation'), ('course', 'course'), ('breakfast_talk', 'breakfast_talk'), ('nexus_event', 'nexus_event'), ('party', 'party'), ('social', 'social'), ('gala', 'gala'), ('other', 'other'), ('event', 'event'), ('interesse_arrangement', 'interesse_arrangement')], max_length=30, null=True),
+=======
+            model_name="survey",
+            name="template_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("company_presentation", "company_presentation"),
+                    ("lunch_presentation", "lunch_presentation"),
+                    ("alternative_presentation", "alternative_presentation"),
+                    ("course", "course"),
+                    ("breakfast_talk", "breakfast_talk"),
+                    ("nexus_event", "nexus_event"),
+                    ("party", "party"),
+                    ("social", "social"),
+                    ("gala", "gala"),
+                    ("other", "other"),
+                    ("event", "event"),
+                    ("interesse_arrangement", "interesse_arrangement"),
+                ],
+                max_length=30,
+                null=True,
+            ),
+>>>>>>> Stashed changes
         ),
     ]
