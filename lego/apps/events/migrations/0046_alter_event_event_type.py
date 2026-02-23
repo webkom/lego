@@ -6,20 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-<<<<<<< Updated upstream
-        ('events', '0045_alter_event_description'),
-=======
         ("events", "0045_alter_event_description"),
->>>>>>> Stashed changes
     ]
 
     operations = [
         migrations.AlterField(
-<<<<<<< Updated upstream
-            model_name='event',
-            name='event_type',
-            field=models.CharField(choices=[('company_presentation', 'company_presentation'), ('lunch_presentation', 'lunch_presentation'), ('alternative_presentation', 'alternative_presentation'), ('course', 'course'), ('breakfast_talk', 'breakfast_talk'), ('nexus_event', 'nexus_event'), ('party', 'party'), ('social', 'social'), ('gala', 'gala'), ('other', 'other'), ('event', 'event'), ('interesse_arrangement', 'interesse_arrangement')], max_length=50),
-=======
             model_name="event",
             name="event_type",
             field=models.CharField(
@@ -39,6 +30,5 @@ class Migration(migrations.Migration):
                 ],
                 max_length=50,
             ),
->>>>>>> Stashed changes
         ),
     ]
