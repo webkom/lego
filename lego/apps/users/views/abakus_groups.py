@@ -1,4 +1,8 @@
-from rest_framework import viewsets
+from random import sample
+
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
@@ -44,3 +48,21 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return AbakusGroup.objects_with_text.prefetch_related("users").all()
 
         return self.queryset
+
+    @action(detail=False, methods=["GET"])
+    def random_interests(self, request):
+        queryset = self.get_queryset().filter(type="interesse", active=True)
+
+        values = queryset.values_list("pk", flat=True)
+        if not values:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        values = list(values)
+
+        if len(values) > 3:
+            values = sample(values, 3)
+
+        random_qs = queryset.filter(pk__in=values)
+
+        serializer = self.get_serializer(random_qs, many=True)
+        return Response(serializer.data)
