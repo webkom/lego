@@ -454,13 +454,13 @@ class EventCreateAndUpdateSerializer(
     def update(self, instance, validated_data):
         pools = validated_data.pop("pools", None)
         event_status_type = validated_data.get(
-            "event_status_type", Event._meta.get_field("event_status_type").default
+            "event_status_type", instance.event_status_type
         )
         if event_status_type == constants.TBA:
             pools = []
         elif event_status_type == constants.OPEN:
             pools = []
-        elif event_status_type == constants.INFINITE:
+        elif event_status_type == constants.INFINITE and pools:
             pools = [pools[0]]
             pools[0]["capacity"] = 0
         with transaction.atomic():
