@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 from unittest import mock
 
 from django.contrib.auth import authenticate
@@ -453,21 +453,20 @@ class RetrieveSelfTestCase(BaseAPITestCase):
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 1))
     def test_own_penalties_serializer(self, mock_now):
-        source = Event.objects.all().first()
+        event1 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now(),
+            end_time=mock_now(),
+        )
+
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=20),
             user=self.user,
             reason="test",
             weight=1,
-            source_event=source,
+            source_event=event1,
         )
-        Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59),
-            user=self.user,
-            reason="test",
-            weight=1,
-            source_event=source,
-        )
+
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("api:v1:user-me"))
 

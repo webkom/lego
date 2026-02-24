@@ -42,5 +42,9 @@ class UserPenaltyManager(PersistentModelManager):
     def valid(self):
         from lego.apps.users.models import Penalty
 
-        offset = Penalty.penalty_offset(timezone.now(), False)
-        return super().filter(created_at__gt=timezone.now() - offset)
+        valid_penalties = [
+            penalty.pk
+            for penalty in Penalty.objects.all()
+            if penalty.exact_expiration > timezone.now()
+        ]
+        return super().filter(pk__in=valid_penalties)
