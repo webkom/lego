@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 
 from lego.apps.files.models import FileField
 from lego.apps.lending.constants import (
@@ -42,6 +42,15 @@ class LendableObject(BasisModel, ObjectPermissionsModel):
         """
         return self._meta.permission_handler.has_object_permissions(user, VIEW, self)
 
+    def delete(self, using=None, force=False) -> tuple[int, dict[str, int]]:
+        if force:
+            return super().delete(using=using, force=force)
+
+        with transaction.atomic():
+            for lending_request in self.lendingrequest_set.all():
+                lending_request.delete(force=False)
+            return super().delete(using=using, force=force)
+
 
 class LendingRequest(BasisModel):
     lendable_object = models.ForeignKey(LendableObject, on_delete=models.CASCADE)
@@ -60,6 +69,15 @@ class LendingRequest(BasisModel):
             models.Index(fields=["created_by"]),
             models.Index(fields=["lendable_object"]),
         ]
+
+    def delete(self, using=None, force=False) -> tuple[int, dict[str, int]]:
+        if force:
+            return super().delete(using=using, force=force)
+
+        with transaction.atomic():
+            for timeline_entry in self.timeline_entries.all():
+                timeline_entry.delete(force=False)
+            return super().delete(using=using, force=force)
 
 
 class TimelineEntry(BasisModel):
