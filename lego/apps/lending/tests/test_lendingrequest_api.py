@@ -6,7 +6,7 @@ from lego.apps.lending.constants import (
     LENDING_REQUEST_STATUSES,
     LENDING_REQUEST_TRANSLATION_MAP,
 )
-from lego.apps.lending.models import LendableObject, LendingRequest
+from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -43,6 +43,40 @@ def create_lending_request(user, lendable_object, **kwargs):
         end_date=now() + timedelta(days=2),
         **kwargs,
     )
+
+
+class LendingRequestDeleteTestCase(BaseAPITestCase):
+    def setUp(self):
+        self.user = create_user()
+        self.group = AbakusGroup.objects.create(name="delete_group")
+        self.group.add_user(self.user)
+
+        self.lendable_object = create_lendable_object()
+        self.lendable_object.can_view_groups.add(self.group)
+        self.lendable_object.can_edit_groups.add(self.group)
+
+        self.lending_request = create_lending_request(self.user, self.lendable_object)
+        self.timeline_entry = TimelineEntry.objects.create(
+            lending_request=self.lending_request,
+            message="test timeline entry",
+            current_user=self.user,
+        )
+
+    def test_delete_lending_request_soft_cascades_to_timeline_entries(self):
+        self.lending_request.delete()
+
+        self.assertFalse(LendingRequest.objects.filter(pk=self.lending_request.pk).exists())
+        self.assertFalse(TimelineEntry.objects.filter(pk=self.timeline_entry.pk).exists())
+        self.assertTrue(
+            LendingRequest.all_objects.filter(
+                pk=self.lending_request.pk, deleted=True
+            ).exists()
+        )
+        self.assertTrue(
+            TimelineEntry.all_objects.filter(
+                pk=self.timeline_entry.pk, deleted=True
+            ).exists()
+        )
 
 
 class LendingRequestTestCase(BaseAPITestCase):

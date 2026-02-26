@@ -5,7 +5,7 @@ from django.utils import timezone
 from rest_framework import status
 
 from lego.apps.lending.constants import LENDING_REQUEST_STATUSES, OUTDOORS, PHOTOGRAPHY
-from lego.apps.lending.models import LendableObject, LendingRequest
+from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
     LendableObjectSerializer,
@@ -303,6 +303,69 @@ class CreateLendableObjectTestCase(BaseAPITestCase):
 
         lendable_object = LendableObject.objects.get(title="Turgrill")
         self.assertEqual(lendable_object.category, OUTDOORS)
+
+
+class DeleteLendableObjectTestCase(BaseAPITestCase):
+    def setUp(self):
+        self.user = create_user()
+        self.group = create_group()
+        self.group.add_user(self.user)
+
+        self.lendable_object = create_lendable_object()
+        self.lendable_object.can_edit_groups.add(self.group)
+
+        self.start_date = timezone.now() + timedelta(days=1)
+        self.end_date = timezone.now() + timedelta(days=2)
+        self.lending_request = create_lending_request(
+            lendable_object=self.lendable_object,
+            user=self.user,
+            start_date=self.start_date,
+            end_date=self.end_date,
+        )
+        self.timeline_entry = TimelineEntry.objects.create(
+            lending_request=self.lending_request,
+            message="test timeline entry",
+            current_user=self.user,
+        )
+
+    def test_delete_lendable_object_soft_cascades_to_requests_and_timeline_entries(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete(get_detail_url(self.lendable_object.pk))
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(LendableObject.objects.filter(pk=self.lendable_object.pk).exists())
+        self.assertFalse(LendingRequest.objects.filter(pk=self.lending_request.pk).exists())
+        self.assertFalse(TimelineEntry.objects.filter(pk=self.timeline_entry.pk).exists())
+
+        self.assertTrue(
+            LendableObject.all_objects.filter(
+                pk=self.lendable_object.pk, deleted=True
+            ).exists()
+        )
+        self.assertTrue(
+            LendingRequest.all_objects.filter(
+                pk=self.lending_request.pk, deleted=True
+            ).exists()
+        )
+        self.assertTrue(
+            TimelineEntry.all_objects.filter(
+                pk=self.timeline_entry.pk, deleted=True
+            ).exists()
+        )
+
+    def test_force_delete_lendable_object_hard_deletes_requests_and_timeline_entries(self):
+        self.lendable_object.delete(force=True)
+
+        self.assertFalse(
+            LendableObject.all_objects.filter(pk=self.lendable_object.pk).exists()
+        )
+        self.assertFalse(
+            LendingRequest.all_objects.filter(pk=self.lending_request.pk).exists()
+        )
+        self.assertFalse(
+            TimelineEntry.all_objects.filter(pk=self.timeline_entry.pk).exists()
+        )
 
 
 class LendableObjectAvailabilityTestCase(BaseAPITestCase):
