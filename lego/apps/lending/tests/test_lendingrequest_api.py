@@ -65,8 +65,12 @@ class LendingRequestDeleteTestCase(BaseAPITestCase):
     def test_delete_lending_request_soft_cascades_to_timeline_entries(self):
         self.lending_request.delete()
 
-        self.assertFalse(LendingRequest.objects.filter(pk=self.lending_request.pk).exists())
-        self.assertFalse(TimelineEntry.objects.filter(pk=self.timeline_entry.pk).exists())
+        self.assertFalse(
+            LendingRequest.objects.filter(pk=self.lending_request.pk).exists()
+        )
+        self.assertFalse(
+            TimelineEntry.objects.filter(pk=self.timeline_entry.pk).exists()
+        )
         self.assertTrue(
             LendingRequest.all_objects.filter(
                 pk=self.lending_request.pk, deleted=True

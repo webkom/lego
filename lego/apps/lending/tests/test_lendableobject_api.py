@@ -328,15 +328,23 @@ class DeleteLendableObjectTestCase(BaseAPITestCase):
             current_user=self.user,
         )
 
-    def test_delete_lendable_object_soft_cascades_to_requests_and_timeline_entries(self):
+    def test_delete_lendable_object_soft_cascades_to_requests_and_timeline_entries(
+        self,
+    ):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.delete(get_detail_url(self.lendable_object.pk))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(LendableObject.objects.filter(pk=self.lendable_object.pk).exists())
-        self.assertFalse(LendingRequest.objects.filter(pk=self.lending_request.pk).exists())
-        self.assertFalse(TimelineEntry.objects.filter(pk=self.timeline_entry.pk).exists())
+        self.assertFalse(
+            LendableObject.objects.filter(pk=self.lendable_object.pk).exists()
+        )
+        self.assertFalse(
+            LendingRequest.objects.filter(pk=self.lending_request.pk).exists()
+        )
+        self.assertFalse(
+            TimelineEntry.objects.filter(pk=self.timeline_entry.pk).exists()
+        )
 
         self.assertTrue(
             LendableObject.all_objects.filter(
@@ -354,7 +362,9 @@ class DeleteLendableObjectTestCase(BaseAPITestCase):
             ).exists()
         )
 
-    def test_force_delete_lendable_object_hard_deletes_requests_and_timeline_entries(self):
+    def test_force_delete_lendable_object_hard_deletes_requests_and_timeline_entries(
+        self,
+    ):
         self.lendable_object.delete(force=True)
 
         self.assertFalse(
