@@ -159,6 +159,6 @@ class EventAdminUnregistrationNotification(Notification):
         return self._delay_push(
             template="events/push/admin_unregistration.txt",
             context={"event": event.title},
-            title=f"Fjernet fra arrangement",
+            title="Fjernet fra arrangement",
             instance=event,
         )
