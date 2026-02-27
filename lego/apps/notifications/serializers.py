@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from expo_notifications.models import Device
+
 from lego.apps.events.serializers.events import EventReadSerializer
 from lego.apps.meetings.serializers import MeetingListSerializer
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -66,3 +68,17 @@ class AnnouncementDetailSerializer(BasisModelSerializer):
             "meeting_invitation_status",
         )
         read_only_fields = ("sent",)
+
+
+class ExpoDeviceSerializer(BasisModelSerializer):
+    class Meta:
+        model = Device
+        fields = ("push_token",)
+
+    def validate_push_token(self, token: str) -> str:
+        token = token.strip()
+
+        if not token.startswith("ExponentPushToken[") or not token.endswith("]"):
+            raise serializers.ValidationError("Invalid Expo Push Token")
+        
+        return token
