@@ -36,6 +36,7 @@ class EventBumpNotification(Notification):
         return self._delay_push(
             template="events/push/bump.txt",
             context={"event": event.title},
+            title="Flyttet opp fra venteliste",
             instance=event,
         )
 
@@ -71,6 +72,7 @@ class EventPaymentOverdueNotification(Notification):
         return self._delay_push(
             template="events/push/payment_overdue.txt",
             context={"event": event.title},
+            title="Ikke betalt påmelding til arrangement",
             instance=event,
         )
 
@@ -123,6 +125,7 @@ class EventAdminRegistrationNotification(Notification):
         return self._delay_push(
             template="events/push/admin_registration.txt",
             context={"event": event.title},
+            title="Adminpåmeldt til arrangement",
             instance=event,
         )
 
@@ -156,5 +159,6 @@ class EventAdminUnregistrationNotification(Notification):
         return self._delay_push(
             template="events/push/admin_unregistration.txt",
             context={"event": event.title},
+            title=f"Fjernet fra arrangement",
             instance=event,
         )

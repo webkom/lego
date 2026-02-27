@@ -53,6 +53,7 @@ class MeetingInvitationNotification(Notification):
                 "meeting_id": meeting.id,
                 "meeting_title": meeting.title,
             },
+            title="Invitasjon til møte",
             instance=meeting,
         )
 
@@ -106,5 +107,6 @@ class MeetingInvitationReminderNotification(Notification):
                 "meeting_title": meeting.title,
                 "meeting_start_time": start_time,
             },
+            title="Ikke svart på møteinnkalling",
             instance=meeting,
         )

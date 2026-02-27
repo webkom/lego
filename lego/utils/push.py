@@ -1,5 +1,6 @@
 from django.template.loader import render_to_string
 
+from expo_notifications.models import Device as ExpoDevice
 from push_notifications.models import APNSDevice, GCMDevice
 from structlog import get_logger
 
@@ -9,11 +10,12 @@ log = get_logger()
 
 
 class PushMessage:
-    def __init__(self, user, template, context, target=None):
+    def __init__(self, user, template, context, title, target=None):
         self.user = user
         self.template = template
         self.context = context
         self.target = target
+        self.title = title
 
     def _get_unread_count(self):
         feed = NotificationFeed
@@ -33,6 +35,12 @@ class PushMessage:
 
         gcm_devices = GCMDevice.objects.filter(user=self.user, active=True)
         apns_devices = APNSDevice.objects.filter(user=self.user, active=True)
+
+        [
+            device.messages.send(title=self.title, body=message)
+            for device in ExpoDevice.objects.all()
+            if device.user == self.user
+        ]
 
         log.info(
             "send_push",
