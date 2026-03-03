@@ -36,11 +36,8 @@ class PushMessage:
         gcm_devices = GCMDevice.objects.filter(user=self.user, active=True)
         apns_devices = APNSDevice.objects.filter(user=self.user, active=True)
 
-        [
-            device.messages.send(title=self.title, body=message)
-            for device in ExpoDevice.objects.all()
-            if device.user == self.user
-        ]
+        expo_device = ExpoDevice.objects.filter(user=self.user, is_active=True).first()
+        expo_device.messages.send(title=self.title, body=message)
 
         log.info(
             "send_push",
