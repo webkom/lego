@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
-from lego.apps.comments.serializers import CommentSerializer
+from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.companies.fields import CompanyField
 from lego.apps.companies.models import Company
 from lego.apps.content.fields import ContentSerializerField
@@ -85,12 +85,6 @@ class EventReadSerializer(
     registration_count = RegistrationCountField()
     total_capacity = TotalCapacityField()
     user_reg = serializers.SerializerMethodField()
-    responsible_users = PublicUserField(
-        queryset=User.objects.all(),
-        allow_null=False,
-        required=True,
-        many=True,
-    )
 
     class Meta:
         model = Event
@@ -115,7 +109,6 @@ class EventReadSerializer(
             "is_admitted",
             "survey",
             "is_priced",
-            "responsible_users",
             "is_foreign_language",
             "user_reg",
             "show_company_description",
@@ -142,15 +135,8 @@ class EventReadDetailedSerializer(
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
-    created_by = PublicUserSerializer()
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
-    responsible_users = PublicUserField(
-        queryset=User.objects.all(),
-        allow_null=False,
-        required=True,
-        many=True,
-    )
 
     class Meta:
         model = Event
@@ -190,13 +176,11 @@ class EventReadDetailedSerializer(
             "tags",
             "is_merged",
             "heed_penalties",
-            "created_by",
             "legacy_registration_count",
             "survey",
             "use_consent",
             "youtube_url",
             "mazemap_poi",
-            "responsible_users",
             "is_foreign_language",
             "show_company_description",
         )
@@ -307,9 +291,18 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
     pools = PoolReadAuthSerializer(many=True)
     waiting_registrations = RegistrationReadSerializer(many=True)
     unanswered_surveys = serializers.SerializerMethodField()
+    created_by = PublicUserSerializer()
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta(EventReadUserDetailedSerializer.Meta):
         fields = EventReadUserDetailedSerializer.Meta.fields + (  # type: ignore
+            "created_by",
+            "responsible_users",
             "waiting_registrations",
             "unanswered_surveys",
         )
@@ -326,10 +319,17 @@ class EventAdministrateSerializer(EventReadSerializer, EventReadDetailedSerializ
     responsible_group = AbakusGroupField(
         queryset=AbakusGroup.objects.all(), required=False, allow_null=True
     )
+    responsible_users = PublicUserField(
+        queryset=User.objects.all(),
+        allow_null=False,
+        required=True,
+        many=True,
+    )
 
     class Meta(EventReadSerializer.Meta):
         fields = EventReadSerializer.Meta.fields + (  # type: ignore
             "pools",
+            "responsible_users",
             "unregistered",
             "waiting_registrations",
             "use_consent",
@@ -435,43 +435,70 @@ class EventCreateAndUpdateSerializer(
         with transaction.atomic():
             event = super().create(validated_data)
             for pool in pools:
-                permission_groups = pool.pop("permission_groups")
-                created_pool = Pool.objects.create(event=event, **pool)
-                created_pool.permission_groups.set(permission_groups)
+                permission_groups = pool.get("permission_groups", [])
+                pool_data = {
+                    "name": pool.get("name"),
+                    "capacity": pool.get("capacity"),
+                    "activation_date": pool.get("activation_date"),
+                    "permission_groups": [
+                        getattr(gr, "id", gr) for gr in permission_groups
+                    ],
+                }
+                pool_serializer = PoolCreateAndUpdateSerializer(
+                    data=pool_data, context={**self.context, "event": event}
+                )
+                pool_serializer.is_valid(raise_exception=True)
+                pool_serializer.save()
             return event
 
     def update(self, instance, validated_data):
         pools = validated_data.pop("pools", None)
         event_status_type = validated_data.get(
-            "event_status_type", Event._meta.get_field("event_status_type").default
+            "event_status_type", instance.event_status_type
         )
         if event_status_type == constants.TBA:
             pools = []
         elif event_status_type == constants.OPEN:
             pools = []
-        elif event_status_type == constants.INFINITE:
+        elif event_status_type == constants.INFINITE and pools:
             pools = [pools[0]]
             pools[0]["capacity"] = 0
         with transaction.atomic():
             if pools is not None:
-                existing_pools = list(instance.pools.all().values_list("id", flat=True))
+                existing_ids = set(instance.pools.values_list("id", flat=True))
                 for pool in pools:
-                    pool_id = pool.get("id", None)
-                    if pool_id in existing_pools:
-                        existing_pools.remove(pool_id)
-                    permission_groups = pool.pop("permission_groups")
-                    created_pool = Pool.objects.update_or_create(
-                        event=instance,
-                        id=pool_id,
-                        defaults={
-                            "name": pool.get("name"),
-                            "capacity": pool.get("capacity", 0),
-                            "activation_date": pool.get("activation_date"),
-                        },
-                    )[0]
-                    created_pool.permission_groups.set(permission_groups)
-                for pool_id in existing_pools:
-                    Pool.objects.get(id=pool_id).delete()
+                    pool_id = pool.get("id")
+                    pool_instance = (
+                        Pool.objects.filter(id=pool_id, event=instance)
+                        .select_for_update()
+                        .first()
+                        if pool_id
+                        else None
+                    )
+                    if pool_instance:
+                        existing_ids.discard(pool_id)
+                    permission_groups = pool.get("permission_groups", [])
+                    pool_data = {
+                        "name": pool.get("name"),
+                        "capacity": pool.get("capacity"),
+                        "activation_date": pool.get("activation_date"),
+                        "permission_groups": [
+                            getattr(gr, "id", gr) for gr in permission_groups
+                        ],
+                    }
+                    pool_serializer = PoolCreateAndUpdateSerializer(
+                        instance=pool_instance,
+                        data=pool_data,
+                        context={**self.context, "event": instance},
+                        partial=True,
+                    )
+                    pool_serializer.is_valid(raise_exception=True)
+                    pool_serializer.save()
+                if existing_ids:
+                    for pool_obj in Pool.objects.filter(
+                        event=instance, id__in=existing_ids
+                    ).iterator():
+                        pool_obj.delete()
             return super().update(instance, validated_data)
 
 

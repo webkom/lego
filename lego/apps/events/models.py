@@ -849,6 +849,9 @@ class Pool(BasisModel):
         self.save(update_fields=["counter"])
         return self
 
+    def permission_group_ids(self) -> set[int]:
+        return set(self.permission_groups.values_list("id", flat=True))
+
     @abakus_cached_property
     def all_permission_groups(self):
         groups = self.permission_groups.all()

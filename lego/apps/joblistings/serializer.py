@@ -78,7 +78,6 @@ class JoblistingCreateAndUpdateSerializer(BasisModelSerializer):
             "company",
             "responsible",
             "contact_mail",
-            "description",
             "deadline",
             "visible_from",
             "visible_to",

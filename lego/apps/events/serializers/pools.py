@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from lego.apps.events.fields import RegistrationCountField
-from lego.apps.events.models import Event, Pool
+from lego.apps.events.models import Pool
 from lego.apps.events.serializers.registrations import (
     RegistrationPaymentReadSerializer,
     RegistrationReadDetailedAllergiesSerializer,
@@ -28,14 +28,6 @@ class PoolReadSerializer(BasisModelSerializer):
             "registration_count",
         )
         read_only = True
-
-    def create(self, validated_data):
-        event = Event.objects.get(pk=self.context["view"].kwargs["event_pk"])
-        permission_groups = validated_data.pop("permission_groups")
-        pool = Pool.objects.create(event=event, **validated_data)
-        pool.permission_groups.set(permission_groups)
-
-        return pool
 
 
 class PoolReadAuthSerializer(PoolReadSerializer):
@@ -90,10 +82,32 @@ class PoolCreateAndUpdateSerializer(BasisModelSerializer):
             "registrations": {"read_only": True},
         }
 
+    def validate(self, attrs):
+        instance = getattr(self, "instance", None)
+        if not instance or instance.registration_count < 1:
+            return attrs
+
+        if "permission_groups" in attrs:
+            new_ids = {getattr(gr, "id", gr) for gr in attrs["permission_groups"]}
+            old_ids = instance.permission_group_ids()
+            if new_ids != old_ids:
+                raise serializers.ValidationError(
+                    {
+                        "permission_groups": "Group edits are disabled for non-empty pools."
+                    }
+                )
+        if "activation_date" in attrs:
+            if attrs["activation_date"] != instance.activation_date:
+                raise serializers.ValidationError(
+                    {
+                        "activation_date": "Time travel is disabled for pools with registrations."
+                    }
+                )
+        return attrs
+
     def create(self, validated_data):
-        event = Event.objects.get(pk=self.context["view"].kwargs["event_pk"])
+        event = validated_data.pop("event", None) or self.context.get("event")
         permission_groups = validated_data.pop("permission_groups")
         pool = Pool.objects.create(event=event, **validated_data)
         pool.permission_groups.set(permission_groups)
-
         return pool

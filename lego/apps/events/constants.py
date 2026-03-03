@@ -11,6 +11,7 @@ SOCIAL = "social"
 GALA = "gala"
 OTHER = "other"
 EVENT = "event"
+INTEREST_EVENT = "interesse_arrangement"
 
 EVENT_TYPES = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
@@ -24,6 +25,7 @@ EVENT_TYPES = (
     (GALA, GALA),
     (OTHER, OTHER),
     (EVENT, EVENT),
+    (INTEREST_EVENT, INTEREST_EVENT),
 )
 
 EVENT_TYPE_TRANSLATIONS = {
@@ -38,6 +40,7 @@ EVENT_TYPE_TRANSLATIONS = {
     GALA: "Galla",
     OTHER: "Annet",
     EVENT: "Arrangement",
+    INTEREST_EVENT: "Interesse arrangement",
 }
 
 """

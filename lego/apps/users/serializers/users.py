@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
@@ -58,7 +60,6 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     achievement_rank = serializers.IntegerField(read_only=True)
 
     def get_achievements_score(self, obj):
-
         return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
 
     class Meta(PublicUserSerializer.Meta):
@@ -196,6 +197,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     photo_consents = serializers.SerializerMethodField()
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
+    command_suggestions = serializers.SerializerMethodField()
+    christmas_slots = serializers.ListField(child=serializers.IntegerField())
 
     def get_user_ical_token(self, user):
         ical_token = ICalToken.objects.get_or_create(user=user)[0]
@@ -229,9 +232,19 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
         return username
 
-    def get_achievements_score(self, obj):
+    def validate_christmas_slots(self, slots):
+        deadline = datetime(2025, 12, 31, 23, 59, 59)
+        if datetime.now() > deadline:
+            raise serializers.ValidationError(
+                "This field cannot be edited after 31st December 2025."
+            )
+        return slots
 
+    def get_achievements_score(self, obj):
         return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
+
+    def get_command_suggestions(self, obj):
+        return obj.get_command_suggestions()
 
     class Meta:
         model = User
@@ -267,6 +280,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "linkedin_id",
             "achievements",
             "achievements_score",
+            "command_suggestions",
+            "christmas_slots",
         )
 
 

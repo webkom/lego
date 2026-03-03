@@ -1,7 +1,9 @@
 from lego.apps.action_handlers.handler import Handler
 from lego.apps.action_handlers.registry import register_handler
+from lego.apps.comments.constants import SOCKET_ADD_SUCCESS, SOCKET_DELETE_SUCCESS
 from lego.apps.comments.models import Comment
 from lego.apps.comments.notifications import CommentReplyNotification
+from lego.apps.comments.websockets import notify_comment
 from lego.apps.feeds.activity import Activity
 from lego.apps.feeds.feed_manager import feed_manager
 from lego.apps.feeds.models import NotificationFeed, UserFeed
@@ -25,6 +27,7 @@ class CommentHandler(Handler):
         )
 
     def handle_create(self, instance, **kwargs):
+        notify_comment(SOCKET_ADD_SUCCESS, instance)
         activity = self.get_activity(instance)
         author = instance.created_by
         for feeds, recipients in self.get_feeds_and_recipients(instance):
@@ -47,6 +50,7 @@ class CommentHandler(Handler):
             reply_notification.notify()
 
     def handle_delete(self, instance, **kwargs):
+        notify_comment(SOCKET_DELETE_SUCCESS, instance)
         if not (
             isinstance(instance.parent, ObjectPermissionsModel)
             and not instance.parent.require_auth

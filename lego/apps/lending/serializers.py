@@ -48,6 +48,7 @@ class LendableObjectSerializer(BasisModelSerializer):
             "responsible_groups",
             "location",
             "can_lend",
+            "category",
         )
 
     def get_can_lend(self, obj):
@@ -239,6 +240,14 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                 ):
                     raise serializers.ValidationError(
                         {"status": ("You cannot cancel someone else's request.. ")}
+                    )
+                if (
+                    self.instance.created_by == user
+                    and new_status
+                    == LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
+                ):
+                    raise serializers.ValidationError(
+                        {"status": ("You cannot approve your own request.. ")}
                     )
 
         return attrs

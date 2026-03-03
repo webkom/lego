@@ -22,6 +22,7 @@ from lego.apps.lending.serializers import (
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
+from lego.apps.users.models import User
 
 
 class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -82,11 +83,31 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             range_start = max(request.start_date, start_of_month)
             range_end = min(request.end_date, end_of_month)
 
-            unavailable_ranges.append([range_start, range_end])
+            unavailable_ranges.append([range_start, range_end, request.created_by])
 
-        formatted_ranges = [
-            [start.isoformat(), end.isoformat()] for start, end in unavailable_ranges
-        ]
+        formatted_ranges = []
+        for i in range(len(unavailable_ranges)):
+            start, end, created_by = unavailable_ranges[i]
+            start_date = start.isoformat()
+            end_date = end.isoformat()
+            created_by_username = created_by
+            created_by_fullname = None
+            if created_by is None:
+                created_by_fullname = None
+            elif isinstance(created_by, str):
+                usr = User.objects.filter(username=created_by).first()
+                if usr:
+                    created_by_fullname = usr.get_full_name()
+                else:
+                    created_by_fullname = None
+            elif isinstance(created_by, User):
+                created_by_fullname = created_by.get_full_name()
+            else:
+                created_by_fullname = None
+            created_by_username = None if (created_by is None) else created_by.username
+            formatted_ranges.append(
+                [start_date, end_date, created_by_fullname, created_by_username]
+            )
 
         return Response(formatted_ranges)
 

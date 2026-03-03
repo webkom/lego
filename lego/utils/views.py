@@ -27,7 +27,6 @@ class SiteMetaViewSet(viewsets.ViewSet):
             "articles",
             "joblistings",
             "galleries",
-            "forums",
         ]
 
         # Whereas these require that a user has keyword permissions:
