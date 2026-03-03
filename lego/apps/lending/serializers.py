@@ -180,6 +180,8 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         - If it is a create request, status must be "unapproved".
         - If it is an edit request, and the user does NOT have 'edit' permission
           on the LendableObject, the status can only be "cancelled" or "unapproved".
+        - If it is an edit request and it is the requesting users own lendingrequest
+          the status cannot be "approved", "unapproved", "denied" or "changes_requested"
         """
         attrs = super().validate(attrs)
 
@@ -241,13 +243,17 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                     raise serializers.ValidationError(
                         {"status": ("You cannot cancel someone else's request.. ")}
                     )
-                if (
-                    self.instance.created_by == user
-                    and new_status
-                    == LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
-                ):
+                if self.instance.created_by == user and new_status in [
+                    LENDING_REQUEST_STATUSES[status]["value"]
+                    for status in (
+                        "LENDING_APPROVED",
+                        "LENDING_UNAPPROVED",
+                        "LENDING_DENIED",
+                        "LENDING_CHANGES_REQUESTED",
+                    )
+                ]:
                     raise serializers.ValidationError(
-                        {"status": ("You cannot approve your own request.. ")}
+                        {"status": (f"You cannot set {new_status} on your own request.. ")}
                     )
 
         return attrs
