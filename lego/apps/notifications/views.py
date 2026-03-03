@@ -114,6 +114,10 @@ class ExpoDeviceViewSet(viewsets.ViewSet):
             ExpoDeviceSerializer(device).data, status=status.HTTP_201_CREATED
         )
 
+    @decorators.action(detail=False, methods=["delete"], url_path="unregister")
+    def unregister(self, request):
+        Device.objects.filter(user=request.user).delete()
+        return Response(status=status.HTTP_200_OK)
 
 class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = AnnouncementDetailSerializer
