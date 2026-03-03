@@ -266,6 +266,10 @@ def _get_upcoming_url():
     return reverse("api:v1:event-upcoming")
 
 
+def _get_registration_eligibility_url(event_pk):
+    return reverse("api:v1:event-registration-eligibility", kwargs={"pk": event_pk})
+
+
 class ListEventsTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
@@ -500,6 +504,75 @@ class RetrieveEventsTestCase(BaseAPITestCase):
 
         event.register(Registration.objects.get_or_create(event=event, user=user)[0])
         self.assertEqual(event.number_of_registrations, 1)
+
+
+class RegistrationEligibilityTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        Event.objects.all().update(start_time=timezone.now() + timedelta(hours=3))
+        self.user = User.objects.get(pk=1)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
+
+    def test_requires_authentication(self):
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        res = self.client.get(_get_registration_eligibility_url(event.id))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_can_register_without_delay_and_waiting_list(self):
+        self.client.force_authenticate(self.user)
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.use_consent = False
+        event.save()
+
+        res = self.client.get(_get_registration_eligibility_url(event.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(res.json()["canRegisterNow"])
+        self.assertFalse(res.json()["isRegistrationDelayed"])
+        self.assertFalse(res.json()["willBeWaitingList"])
+        self.assertEqual(res.json()["delaySeconds"], 0)
+        self.assertIsNone(res.json()["delayUntil"])
+
+    def test_registration_is_delayed(self):
+        self.client.force_authenticate(self.user)
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.use_consent = False
+        event.save()
+        pool = event.pools.get(name="Abakusmember")
+        pool.activation_date = timezone.now()
+        pool.save()
+        Penalty.objects.create(
+            user=self.user, reason="test", weight=1, source_event=event
+        )
+
+        res = self.client.get(_get_registration_eligibility_url(event.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertFalse(res.json()["canRegisterNow"])
+        self.assertTrue(res.json()["isRegistrationDelayed"])
+        self.assertGreater(res.json()["delaySeconds"], 0)
+        self.assertIsNotNone(res.json()["delayUntil"])
+
+    def test_three_penalties_results_in_waiting_list(self):
+        self.client.force_authenticate(self.user)
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        event.use_consent = False
+        event.save()
+        Penalty.objects.create(
+            user=self.user, reason="test", weight=3, source_event=event
+        )
+
+        res = self.client.get(_get_registration_eligibility_url(event.id))
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(res.json()["canRegisterNow"])
+        self.assertTrue(res.json()["willBeWaitingList"])
 
 
 class CreateEventsTestCase(BaseAPITestCase):
