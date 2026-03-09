@@ -102,6 +102,7 @@ class SemesterStatus(TimeStampModel):
     class Meta:
         unique_together = ("semester", "company")
         permission_handler = NestedCompanyPermissionHandler()
+        ordering = ["-semester_id"]
 
 
 class CompanyContact(BasisModel):
