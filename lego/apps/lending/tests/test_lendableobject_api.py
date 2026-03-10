@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from urllib.parse import urlencode
 
 from django.urls import reverse
 from django.utils import timezone
@@ -25,6 +26,12 @@ def get_detail_url(pk):
 def get_availability_url(pk, month, year):
     base_url = reverse("api:v1:lendable-object-availability", kwargs={"pk": pk})
     return f"{base_url}?month={month}&year={year}"
+
+
+def get_available_url(start_date, end_date):
+    base_url = reverse("api:v1:lendable-object-available")
+    query_params = urlencode({"start_date": start_date, "end_date": end_date})
+    return f"{base_url}?{query_params}"
 
 
 def create_user(username="testuser", **kwargs):
@@ -464,5 +471,253 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         url = get_availability_url(self.lendable_object.pk, self.month, self.year)
         response = self.client.get(url)
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), [])
+
+
+class LendableObjectAvailableTestCase(BaseAPITestCase):
+    def setUp(self):
+        self.user = create_user()
+        self.group = create_group()
+        self.group.add_user(self.user)
+
+        self.obj1 = create_lendable_object()
+        self.obj2 = create_lendable_object()
+
+        self.approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
+        self.unapproved_status = LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"]
+
+        # Dates used across tests: interval [Mar 10, Mar 20)
+        self.start = "2026-03-10T00:00:00+00:00"
+        self.end = "2026-03-20T00:00:00+00:00"
+
+    def test_unauthenticated(self):
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_missing_start_date(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("api:v1:lendable-object-available") + "?end_date=" + self.end
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_missing_end_date(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("api:v1:lendable-object-available") + "?start_date=" + self.start
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_date_format(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url("not-a-date", "also-not-a-date"))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_start_date_equal_to_end_date(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.start))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_start_date_after_end_date(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.end, self.start))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_all_objects_available_when_no_approved_requests(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        all_ids = set(LendableObject.objects.values_list("id", flat=True))
+        self.assertEqual(set(response.json()), all_ids)
+
+    def test_object_with_approved_request_matching_interval_is_excluded(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 10)),
+            end_date=timezone.make_aware(datetime(2026, 3, 20)),
+            status=self.approved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
+
+    def test_object_with_approved_request_inside_interval_is_excluded(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 12)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.approved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
+
+    def test_object_with_approved_request_containing_interval_is_excluded(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 1)),
+            end_date=timezone.make_aware(datetime(2026, 3, 30)),
+            status=self.approved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
+
+    def test_object_with_request_ending_exactly_at_interval_start_is_still_available(
+        self,
+    ):
+        # end_date == query start_date → no overlap (strict inequality)
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 1)),
+            end_date=timezone.make_aware(datetime(2026, 3, 10)),
+            status=self.approved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(self.obj1.id, response.json())
+
+    def test_object_with_request_starting_exactly_at_interval_end_is_still_available(
+        self,
+    ):
+        # start_date == query end_date → no overlap (strict inequality)
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 20)),
+            end_date=timezone.make_aware(datetime(2026, 3, 25)),
+            status=self.approved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(self.obj1.id, response.json())
+
+    def test_object_with_unapproved_overlapping_request_is_still_available(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 5)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.unapproved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(self.obj1.id, response.json())
+
+    def test_object_with_overlapping_non_approved_statuses_is_still_available(self):
+        non_approved_statuses = [
+            LENDING_REQUEST_STATUSES["LENDING_CREATED"]["value"],
+            LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
+            LENDING_REQUEST_STATUSES["LENDING_DENIED"]["value"],
+            LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
+            LENDING_REQUEST_STATUSES["LENDING_CHANGES_REQUESTED"]["value"],
+            LENDING_REQUEST_STATUSES["LENDING_CHANGES_RESOLVED"]["value"],
+        ]
+
+        for status_value in non_approved_statuses:
+            with self.subTest(status=status_value):
+                create_lending_request(
+                    lendable_object=self.obj1,
+                    user=self.user,
+                    start_date=timezone.make_aware(datetime(2026, 3, 5)),
+                    end_date=timezone.make_aware(datetime(2026, 3, 15)),
+                    status=status_value,
+                )
+
+                self.client.force_authenticate(user=self.user)
+                response = self.client.get(get_available_url(self.start, self.end))
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertIn(self.obj1.id, response.json())
+
+    def test_object_with_mixed_approved_and_unapproved_overlaps_is_excluded(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 5)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.unapproved_status,
+        )
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 7)),
+            end_date=timezone.make_aware(datetime(2026, 3, 16)),
+            status=self.approved_status,
+        )
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(self.obj1.id, response.json())
+
+    def test_naive_datetime_input_is_accepted(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 12)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.approved_status,
+        )
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            get_available_url("2026-03-10T00:00:00", "2026-03-20T00:00:00")
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(self.obj1.id, response.json())
+
+    def test_timezone_offset_input_is_equivalent(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 12)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.approved_status,
+        )
+
+        self.client.force_authenticate(user=self.user)
+        baseline_response = self.client.get(get_available_url(self.start, self.end))
+        offset_response = self.client.get(
+            get_available_url(
+                "2026-03-10T01:00:00+01:00",
+                "2026-03-20T01:00:00+01:00",
+            )
+        )
+
+        self.assertEqual(baseline_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(offset_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(set(offset_response.json()), set(baseline_response.json()))
+
+    def test_all_objects_unavailable_when_all_booked(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 5)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.approved_status,
+        )
+        create_lending_request(
+            lendable_object=self.obj2,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 12)),
+            end_date=timezone.make_aware(datetime(2026, 3, 22)),
+            status=self.approved_status,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), [])
