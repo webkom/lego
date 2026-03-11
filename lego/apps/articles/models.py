@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import CharField, ManyToManyField
+from django.db.models import BooleanField, CharField, ManyToManyField
 
 from lego.apps.content.models import Content
 from lego.apps.files.models import FileField
@@ -15,6 +15,7 @@ class Article(Content, BasisModel, ObjectPermissionsModel):
         max_length=200, default="", validators=[youtube_validator], blank=True
     )
     authors = ManyToManyField(User)
+    wiggle = BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.pinned:
