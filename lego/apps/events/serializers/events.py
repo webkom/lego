@@ -495,6 +495,10 @@ class EventCreateAndUpdateSerializer(
                     pool_serializer.is_valid(raise_exception=True)
                     pool_serializer.save()
                 if existing_ids:
+                    if event_status_type in (constants.TBA, constants.OPEN):
+                        Registration.objects.filter(pool_id__in=existing_ids).update(
+                            pool=None
+                        )
                     for pool_obj in Pool.objects.filter(
                         event=instance, id__in=existing_ids
                     ).iterator():
