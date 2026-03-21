@@ -357,8 +357,28 @@ class LendingRequestTestCase(BaseAPITestCase):
     def test_list_lending_requests_can_be_sorted_newest_first(self):
         self.client.force_authenticate(user=self.user)
 
-        oldest_request = create_lending_request(self.user, self.lendable_object)
-        newest_request = create_lending_request(self.user, self.lendable_object)
+        oldest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=1)).isoformat(),
+                "end_date": (now() + timedelta(days=2)).isoformat(),
+            },
+        )
+        newest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=3)).isoformat(),
+                "end_date": (now() + timedelta(days=4)).isoformat(),
+            },
+        )
+
+        self.assertEqual(oldest_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(newest_response.status_code, status.HTTP_201_CREATED)
+
+        oldest_request = LendingRequest.objects.get(pk=oldest_response.data["id"])
+        newest_request = LendingRequest.objects.get(pk=newest_response.data["id"])
 
         oldest_created_at = now() - timedelta(days=2)
         newest_created_at = now() - timedelta(days=1)
@@ -383,8 +403,28 @@ class LendingRequestTestCase(BaseAPITestCase):
     def test_list_lending_requests_can_be_sorted_oldest_first(self):
         self.client.force_authenticate(user=self.user)
 
-        oldest_request = create_lending_request(self.user, self.lendable_object)
-        newest_request = create_lending_request(self.user, self.lendable_object)
+        oldest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=1)).isoformat(),
+                "end_date": (now() + timedelta(days=2)).isoformat(),
+            },
+        )
+        newest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=3)).isoformat(),
+                "end_date": (now() + timedelta(days=4)).isoformat(),
+            },
+        )
+
+        self.assertEqual(oldest_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(newest_response.status_code, status.HTTP_201_CREATED)
+
+        oldest_request = LendingRequest.objects.get(pk=oldest_response.data["id"])
+        newest_request = LendingRequest.objects.get(pk=newest_response.data["id"])
 
         oldest_created_at = now() - timedelta(days=2)
         newest_created_at = now() - timedelta(days=1)
