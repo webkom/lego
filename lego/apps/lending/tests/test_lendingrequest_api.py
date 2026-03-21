@@ -354,6 +354,58 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(results[0]["id"], request2.id)
         self.assertEqual(results[1]["id"], request3.id)
 
+    def test_list_lending_requests_can_be_sorted_newest_first(self):
+        self.client.force_authenticate(user=self.user)
+
+        oldest_request = create_lending_request(self.user, self.lendable_object)
+        newest_request = create_lending_request(self.user, self.lendable_object)
+
+        oldest_created_at = now() - timedelta(days=2)
+        newest_created_at = now() - timedelta(days=1)
+
+        LendingRequest.objects.filter(pk=oldest_request.pk).update(
+            created_at=oldest_created_at
+        )
+        LendingRequest.objects.filter(pk=newest_request.pk).update(
+            created_at=newest_created_at
+        )
+
+        response = self.client.get(
+            get_lending_request_list_url(), {"ordering": "-created_at"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            [request["id"] for request in response.json()["results"]],
+            [newest_request.id, oldest_request.id],
+        )
+
+    def test_list_lending_requests_can_be_sorted_oldest_first(self):
+        self.client.force_authenticate(user=self.user)
+
+        oldest_request = create_lending_request(self.user, self.lendable_object)
+        newest_request = create_lending_request(self.user, self.lendable_object)
+
+        oldest_created_at = now() - timedelta(days=2)
+        newest_created_at = now() - timedelta(days=1)
+
+        LendingRequest.objects.filter(pk=oldest_request.pk).update(
+            created_at=oldest_created_at
+        )
+        LendingRequest.objects.filter(pk=newest_request.pk).update(
+            created_at=newest_created_at
+        )
+
+        response = self.client.get(
+            get_lending_request_list_url(), {"ordering": "created_at"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            [request["id"] for request in response.json()["results"]],
+            [oldest_request.id, newest_request.id],
+        )
+
 
 class LendingRequestStatusTestCase(BaseAPITestCase):
     def setUp(self):

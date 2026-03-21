@@ -116,6 +116,12 @@ class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     permission_classes = [LegoPermissions, IsAuthenticated]
     filterset_class = LendingRequestFilterSet
 
+    def get_ordering(self):
+        ordering = self.request.query_params.get("ordering", None)
+        if ordering in ["created_at", "-created_at"]:
+            return ordering
+        return "created_at"
+
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
