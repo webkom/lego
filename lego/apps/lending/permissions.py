@@ -5,7 +5,7 @@ from lego.apps.permissions.permissions import PermissionHandler
 class LendableObjectPermissionHandler(PermissionHandler):
     default_keyword_permission = "/sudo/admin/lendableobjects/{perm}/"
 
-    safe_methods = [VIEW, LIST, "availability"]
+    safe_methods = [VIEW, LIST, "availability", "available"]
 
 
 class LendingRequestPermissionHandler(PermissionHandler):

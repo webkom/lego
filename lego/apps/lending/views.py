@@ -41,6 +41,63 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             )
         return LendableObjectSerializer
 
+    @action(detail=False, methods=["GET"])
+    def available(self, request, *args, **kwargs):
+        """
+        Returns a list of LendableObject IDs that have no approved lending request
+        overlapping the given [start_date, end_date) interval.
+
+        Query params:
+            start_date: ISO 8601 datetime string (e.g. 2026-03-10T00:00:00Z)
+            end_date:   ISO 8601 datetime string (e.g. 2026-03-20T00:00:00Z)
+        """
+
+        start_date_str = request.query_params.get("start_date", "")
+        end_date_str = request.query_params.get("end_date", "")
+        if not start_date_str or not end_date_str:
+            return Response(
+                {
+                    "detail": "Both start_date and end_date query parameters are required."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            start_date = datetime.fromisoformat(start_date_str)
+            end_date = datetime.fromisoformat(end_date_str)
+        except ValueError:
+            return Response(
+                {
+                    "detail": (
+                        "Invalid date format. Use ISO 8601 format "
+                        "(e.g. 2026-03-10T00:00:00Z)."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not timezone.is_aware(start_date):
+            start_date = timezone.make_aware(start_date)
+        if not timezone.is_aware(end_date):
+            end_date = timezone.make_aware(end_date)
+
+        if start_date >= end_date:
+            return Response(
+                {"detail": "start_date must be before end_date."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
+
+        unavailable_objects_ids = LendingRequest.objects.filter(
+            status=approved_status, start_date__lt=end_date, end_date__gt=start_date
+        ).values_list("lendable_object_id", flat=True)
+
+        available_ids = LendableObject.objects.exclude(
+            id__in=unavailable_objects_ids
+        ).values_list("id", flat=True)
+
+        return Response(list(available_ids))
+
     @action(detail=True, methods=["GET"])
     def availability(self, request, *args, **kwargs):
         """
