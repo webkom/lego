@@ -1,4 +1,5 @@
 from __future__ import annotations
+from lego.apps.events.registration_eligibility import RegistrationEligibility
 
 from datetime import date, datetime, timedelta
 from typing import Any, Optional
@@ -217,6 +218,81 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
     def get_absolute_url(self) -> str:
         return f"{settings.FRONTEND_URL}/events/{self.id}/"
+
+    def evaluate_registration_eligibility(
+        self,
+        user: User,
+        now: datetime | None = None,
+    ):
+        # Get current user pool
+        user_pools = self.get_possible_pools(user, future=False)
+
+        eligible_pools = []
+        # Call the can_register on each pool to check if the user can register now
+        for pool in user_pools:
+            can_register = self.can_register(user, pool)
+            if can_register:
+                eligible_pools.append(pool)
+
+        if len(eligible_pools) == 0:
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="no_active_pool",
+            )
+
+        penalties: int = 0
+        unanswered_surveys = user.unanswered_surveys()
+        if len(unanswered_surveys) > 0:
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="unanswered_surveys",
+            )
+
+        if self.heed_penalties:
+            penalties = user.number_of_penalties()
+
+        current_time = timezone.now()
+        if self.registration_close_time < current_time:
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="event_closed",
+            )
+
+        current_semester = AUTUMN if self.start_time.month > 7 else SPRING
+        if self.use_consent and not user.has_registered_photo_consents_for_semester(
+            self.start_time.year,
+            current_semester,
+        ):
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="no_photo_consents",
+            )
+        all_pools: QuerySet[Pool] = self.pools.all()
+        possible_pools = self.get_possible_pools(
+            user, all_pools=all_pools, is_admitted=self.registration.is_admitted
+        )
+        if not self.is_ready:
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="event_not_ready",
+            )
+        if not possible_pools:
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="no_available_pools",
+            )
+        earliest_reg: Optional[date] = self.get_earliest_registration_time(
+            user, possible_pools, penalties
+        )
+        if earliest_reg and earliest_reg > current_time:
+            return RegistrationEligibility(
+                can_register_now=False,
+                reason="not_open_yet",
+            )
+
+        return RegistrationEligibility(
+            can_register_now=True,
+        )
 
     def can_register(
         self,
