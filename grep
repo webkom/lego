@@ -1,0 +1,445 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.5  0.0  23232 13432 ?        Ss   21:10   0:01 /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+root           2  0.0  0.0      0     0 ?        S    21:10   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        S    21:10   0:00 [pool_workqueue_release]
+root           4  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-rcu_gp]
+root           5  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-sync_wq]
+root           6  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-kvfree_rcu_reclaim]
+root           7  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-slub_flushwq]
+root           8  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-netns]
+root           9  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/0:0-events]
+root          10  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/0:1-events]
+root          11  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/0:0H-events_highpri]
+root          12  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/u64:0-writeback]
+root          13  0.2  0.0      0     0 ?        I    21:10   0:00 [kworker/u64:1-comp_1.3.0]
+root          14  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-mm_percpu_wq]
+root          15  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/0]
+root          16  0.1  0.0      0     0 ?        I    21:10   0:00 [rcu_preempt]
+root          17  0.0  0.0      0     0 ?        S    21:10   0:00 [rcub/0]
+root          18  0.0  0.0      0     0 ?        S    21:10   0:00 [rcu_exp_par_gp_kthread_worker/0]
+root          19  0.0  0.0      0     0 ?        S    21:10   0:00 [rcu_exp_gp_kthread_worker]
+root          20  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/0]
+root          21  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/0]
+root          22  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/0]
+root          23  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/2]
+root          24  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/2]
+root          25  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/2]
+root          26  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/2]
+root          27  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/2:0-events]
+root          28  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/2:0H-events_highpri]
+root          29  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/4]
+root          30  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/4]
+root          31  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/4]
+root          32  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/4]
+root          33  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/4:0-events]
+root          34  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/4:0H-events_highpri]
+root          35  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/6]
+root          36  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/6]
+root          37  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/6]
+root          38  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/6]
+root          39  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:0-events]
+root          40  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/6:0H-events_highpri]
+root          41  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/8]
+root          42  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/8]
+root          43  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/8]
+root          44  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/8]
+root          45  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/8:0-events]
+root          46  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/8:0H-events_highpri]
+root          47  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/10]
+root          48  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/10]
+root          49  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/10]
+root          50  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/10]
+root          51  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/10:0-events]
+root          52  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/10:0H-events_highpri]
+root          53  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/12]
+root          54  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/12]
+root          55  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/12]
+root          56  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/12]
+root          57  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/12:0-events]
+root          58  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/12:0H-events_highpri]
+root          59  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/14]
+root          60  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/14]
+root          61  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/14]
+root          62  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/14]
+root          63  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/14:0-mm_percpu_wq]
+root          64  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/14:0H-events_highpri]
+root          65  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/1]
+root          66  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/1]
+root          67  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/1]
+root          68  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/1]
+root          69  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/1:0-events]
+root          70  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/1:0H-events_highpri]
+root          71  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/3]
+root          72  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/3]
+root          73  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/3]
+root          74  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/3]
+root          75  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/3:0-events]
+root          76  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/3:0H-events_highpri]
+root          77  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/5]
+root          78  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/5]
+root          79  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/5]
+root          80  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/5]
+root          81  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/5:0-events]
+root          82  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/5:0H-events_highpri]
+root          83  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/7]
+root          84  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/7]
+root          85  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/7]
+root          86  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/7]
+root          87  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/7:0-events]
+root          88  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/7:0H-events_highpri]
+root          89  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/9]
+root          90  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/9]
+root          91  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/9]
+root          92  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/9]
+root          93  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/9:0-events]
+root          94  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/9:0H-events_highpri]
+root          95  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/11]
+root          96  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/11]
+root          97  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/11]
+root          98  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/11]
+root          99  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/11:0-mm_percpu_wq]
+root         100  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/11:0H-events_highpri]
+root         101  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/13]
+root         102  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/13]
+root         103  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/13]
+root         104  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/13]
+root         105  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/13:0-events]
+root         106  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/13:0H-events_highpri]
+root         107  0.0  0.0      0     0 ?        S    21:10   0:00 [cpuhp/15]
+root         108  0.0  0.0      0     0 ?        S    21:10   0:00 [idle_inject/15]
+root         109  0.0  0.0      0     0 ?        S    21:10   0:00 [migration/15]
+root         110  0.0  0.0      0     0 ?        S    21:10   0:00 [ksoftirqd/15]
+root         111  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/15:0-pm]
+root         112  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/15:0H-events_highpri]
+root         113  0.0  0.0      0     0 ?        S    21:10   0:00 [kdevtmpfs]
+root         114  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-inet_frag_wq]
+root         115  0.0  0.0      0     0 ?        I    21:10   0:00 [rcu_tasks_kthread]
+root         116  0.0  0.0      0     0 ?        I    21:10   0:00 [rcu_tasks_rude_kthread]
+root         117  0.0  0.0      0     0 ?        I    21:10   0:00 [rcu_tasks_trace_kthread]
+root         118  0.0  0.0      0     0 ?        S    21:10   0:00 [kauditd]
+root         119  0.0  0.0      0     0 ?        S    21:10   0:00 [khungtaskd]
+root         120  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/u64:2-events_unbound]
+root         121  0.0  0.0      0     0 ?        S    21:10   0:00 [oom_reaper]
+root         122  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-writeback]
+root         123  0.1  0.0      0     0 ?        S    21:10   0:00 [kcompactd0]
+root         124  0.0  0.0      0     0 ?        SN   21:10   0:00 [ksmd]
+root         125  0.0  0.0      0     0 ?        SN   21:10   0:00 [khugepaged]
+root         126  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-kblockd]
+root         127  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-blkcg_punt_bio]
+root         128  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-kintegrityd]
+root         129  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/9-acpi]
+root         130  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/2:1-events]
+root         131  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/1:1-events]
+root         132  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-tpm_dev_wq]
+root         133  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-ata_sff]
+root         134  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-edac-poller]
+root         135  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-devfreq_wq]
+root         136  0.0  0.0      0     0 ?        S    21:10   0:00 [watchdogd]
+root         137  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-quota_events_unbound]
+root         138  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/2:1H-kblockd]
+root         139  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/25-AMD-Vi]
+root         140  0.0  0.0      0     0 ?        S    21:10   0:00 [kswapd0]
+root         141  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-kthrotld]
+root         142  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/u65:0-ttm]
+root         143  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/31-pciehp]
+root         144  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/33-pciehp]
+root         145  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-acpi_thermal_pm]
+root         146  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/u64:3-kvfree_rcu_reclaim]
+root         147  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:1-events]
+root         148  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/3:1-events]
+root         149  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/2:2-events]
+root         150  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-mld]
+root         151  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/3:1H-kblockd]
+root         152  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-ipv6_addrconf]
+root         153  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-kstrp]
+root         154  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/11:1-events]
+root         155  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/4:1-events]
+root         156  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/8:1-events]
+root         157  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/14:1-events]
+root         158  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/5:1-events]
+root         159  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/7:1-events]
+root         160  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/13:1-events]
+root         164  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-zswap-shrink]
+root         168  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/26-ACPI:Event]
+root         169  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/27-ACPI:Event]
+root         170  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/28-ACPI:Event]
+root         171  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/29-ACPI:Event]
+root         172  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/0:1H-kblockd]
+root         173  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/9:1-events]
+root         174  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/9:2-events]
+root         176  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/13:1H-kblockd]
+root         177  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/6:1H-kblockd]
+root         178  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/7:1H-kblockd]
+root         179  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/3:2-events]
+root         180  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/3:3-events]
+root         216  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/10:1H-kblockd]
+root         223  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/12:1H-kblockd]
+root         226  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/9:1H-kblockd]
+root         228  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/15:1H-kblockd]
+root         230  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/10:1-events]
+root         231  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/5:1H-kblockd]
+root         238  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/1:1H-kblockd]
+root         240  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/15:1-mm_percpu_wq]
+root         246  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/8:1H-kblockd]
+root         257  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/11:2-mm_percpu_wq]
+root         267  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/4:1H-kblockd]
+root         277  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/0:2-events]
+root         287  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/12:1-events]
+root         321  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/3:4-events]
+root         339  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/2:3-events]
+root         355  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/14:1H-kblockd]
+root         356  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/7:2-mm_percpu_wq]
+root         357  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/7:3-events]
+root         358  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/8:2-events]
+root         369  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/4:2-events]
+root         420  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/11:1H-kblockd]
+root         421  0.0  0.0      0     0 ?        S    21:10   0:00 [irq/47-WACF2200:00]
+root         422  0.2  0.0      0     0 ?        S    21:10   0:00 [irq/46-ELAN06FA:00]
+root         428  0.2  0.0      0     0 ?        I    21:10   0:00 [kworker/u64:4-flush-259:0]
+root         433  0.4  0.0      0     0 ?        I    21:10   0:01 [kworker/u64:5-events_unbound]
+root         435  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:2-mm_percpu_wq]
+root         437  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/12:2-events]
+root         439  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-nvme-wq]
+root         440  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-nvme-reset-wq]
+root         441  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-nvme-delete-wq]
+root         442  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-nvme-auth-wq]
+root         443  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/15:2-mm_percpu_wq]
+root         451  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-USBC000:00-con1]
+root         460  0.0  0.0      0     0 ?        S    21:10   0:00 [jbd2/nvme0n1p5-8]
+root         461  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-ext4-rsv-conversion]
+root         463  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-USBC000:00-con2]
+root         502  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:3-events]
+root         507  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:4-events]
+root         516  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/14:2-events]
+root         628  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:5-events]
+root         629  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:6-events]
+root         630  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:7-events]
+root         631  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/6:8]
+root         666  0.0  0.1  57588 25272 ?        Ss   21:10   0:00 /usr/lib/systemd/systemd-journald
+root         685  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/10:2-events]
+root         690  0.0  0.0  14976  5152 ?        Ss   21:10   0:00 /usr/lib/systemd/systemd-userdbd
+root         696  0.0  0.0      0     0 ?        S    21:10   0:00 [psimon]
+systemd+     699  0.0  0.0  89804  6808 ?        Ssl  21:10   0:00 /usr/lib/systemd/systemd-timesyncd
+root         705  0.1  0.0  39120 12052 ?        Ss   21:10   0:00 /usr/lib/systemd/systemd-udevd
+root         706  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/1:2-mm_percpu_wq]
+root         708  0.0  0.0      0     0 ?        S    21:10   0:00 [psimon]
+root         781  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-cfg80211]
+root         797  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/9:3-events]
+root         798  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/u65:1-ttm]
+root         801  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/u65:2-ttm]
+root         809  0.1  0.0      0     0 ?        S    21:10   0:00 [napi/phy0-0]
+root         810  0.0  0.0      0     0 ?        S    21:10   0:00 [napi/phy0-0]
+root         811  0.1  0.0      0     0 ?        S    21:10   0:00 [napi/phy0-0]
+root         825  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/0:3-events]
+root         826  0.0  0.0      0     0 ?        S    21:10   0:00 [mt76-tx phy0]
+root         829  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu-reset-dev]
+root         833  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-ttm]
+root         839  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/1:3-events]
+dbus         841  0.0  0.0   8760  4424 ?        Ss   21:10   0:00 /usr/bin/dbus-broker-launch --scope system --audit
+dbus         842  0.0  0.0   6588  5020 ?        S    21:10   0:00 dbus-broker --log 10 --controller 9 --machine-id 16d750d585874712ab84fccb89e238a1 --max-bytes 536870912 --max-fds 4096 --max-matches 131072 --audit
+root         843  0.2  0.1 418488 26904 ?        Ssl  21:10   0:00 /usr/bin/NetworkManager --no-daemon
+avahi        845  0.0  0.0   6708  4496 ?        Ss   21:10   0:00 avahi-daemon: running [frikks-linux.local]
+root         846  0.0  0.0  10516  5688 ?        Ss   21:10   0:00 /usr/lib/bluetooth/bluetoothd
+root         847  0.0  0.0 308940  9196 ?        Ssl  21:10   0:00 /usr/lib/boltd
+root         850  0.0  0.0 315124 10496 ?        Ssl  21:10   0:00 /usr/lib/iio-sensor-proxy
+root         854  0.0  0.0  16080  7692 ?        Ss   21:10   0:00 /usr/lib/systemd/systemd-logind
+polkitd      875  0.1  0.0 312036 12756 ?        Ssl  21:10   0:00 /usr/lib/polkit-1/polkitd --no-debug --log-level=notice
+avahi        879  0.0  0.0   6708  1516 ?        S    21:10   0:00 avahi-daemon: chroot helper
+root         900  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         901  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         902  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         903  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         904  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         905  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         906  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         907  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         908  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_rx_offload_wq]
+root         909  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-dm_vblank_control_workqueue]
+root         910  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-amdgpu_dm_hpd_wq]
+root         931  0.0  0.0      0     0 ?        S    21:10   0:00 [card1-crtc0]
+root         932  0.0  0.0      0     0 ?        S    21:10   0:00 [card1-crtc1]
+root         933  0.0  0.0      0     0 ?        S    21:10   0:00 [card1-crtc2]
+root         934  0.0  0.0      0     0 ?        S    21:10   0:00 [card1-crtc3]
+root         935  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-gfx_0.0.0]
+root         936  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-gfx_0.1.0]
+root         937  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.0.0]
+root         938  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.1.0]
+root         939  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.2.0]
+root         940  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.3.0]
+root         941  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.0.1]
+root         942  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.1.1]
+root         943  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.2.1]
+root         944  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-comp_1.3.1]
+root         945  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-sdma0]
+root         946  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-vcn_dec_0]
+root         947  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-vcn_enc_0.0]
+root         948  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-vcn_enc_0.1]
+root         949  0.0  0.0      0     0 ?        I<   21:10   0:00 [kworker/R-jpeg_dec]
+root         950  0.0  0.0  17328 11248 ?        Ss   21:10   0:00 /usr/bin/wpa_supplicant -u -s -O /run/wpa_supplicant
+root         956  0.0  0.0 384220 11476 ?        Ssl  21:10   0:00 /usr/bin/gdm
+root         957  0.0  0.0 309100  9484 ?        Ssl  21:10   0:00 /usr/lib/power-profiles-daemon
+root         967  0.0  0.0 309584  9684 ?        Ssl  21:10   0:00 /usr/lib/accounts-daemon
+root         977  0.0  0.0 175964 11628 ?        Sl   21:10   0:00 gdm-session-worker [pam/gdm-autologin]
+root         984  0.0  0.0      0     0 ?        S    21:10   0:00 [psimon]
+frikkern     986  0.1  0.0  22128 12368 ?        Ss   21:10   0:00 /usr/lib/systemd/systemd --user
+frikkern     988  0.0  0.0  23108  4196 ?        S    21:10   0:00 (sd-pam)
+root         991  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/11:3-events]
+frikkern     998  0.0  0.0 395424 11568 ?        SLsl 21:10   0:00 /usr/bin/gnome-keyring-daemon --foreground --components=pkcs11,secrets --control-directory=/run/user/1000/keyring
+frikkern    1003  0.0  0.0   8288  3852 ?        Ss   21:10   0:00 /usr/bin/dbus-broker-launch --scope user
+frikkern    1004  0.0  0.0   6308  4644 ?        S    21:10   0:00 dbus-broker --log 11 --controller 10 --machine-id 16d750d585874712ab84fccb89e238a1 --max-bytes 100000000000000 --max-fds 25000000000000 --max-matches 5000000000
+frikkern    1006  0.0  0.0 166640  5204 tty2     Ssl+ 21:10   0:00 /usr/lib/gdm-wayland-session /usr/bin/gnome-session
+frikkern    1014  0.0  0.0 163584  5564 tty2     Sl+  21:10   0:00 /usr/lib/gnome-session-init-worker gnome
+frikkern    1029  0.0  0.0  86884  4724 ?        Ssl  21:10   0:00 /usr/lib/gnome-session-ctl --monitor
+frikkern    1033  0.0  0.0 575960 13252 ?        Ssl  21:10   0:00 /usr/lib/gnome-session-service --session=gnome
+root        1038  0.0  0.0      0     0 ?        I    21:10   0:00 [kworker/11:4-events]
+frikkern    1060  9.1  2.3 9116140 333112 ?      Ssl  21:11   0:26 /usr/bin/gnome-shell
+frikkern    1066  0.0  0.0 325480 12008 ?        Ssl  21:11   0:00 /usr/lib/gvfsd
+frikkern    1072  0.0  0.0 396764  8396 ?        Sl   21:11   0:00 /usr/lib/gvfsd-fuse /run/user/1000/gvfs -f
+rtkit       1091  0.0  0.0  21884  3380 ?        SNsl 21:11   0:00 /usr/lib/rtkit-daemon
+frikkern    1119  0.0  0.0 380716  6928 ?        Ssl  21:11   0:00 /usr/lib/at-spi-bus-launcher
+frikkern    1125  0.0  0.0   8156  3812 ?        S    21:11   0:00 /usr/bin/dbus-broker-launch --config-file=/usr/share/defaults/at-spi2/accessibility.conf --scope user
+frikkern    1126  0.0  0.0   4324  2564 ?        S    21:11   0:00 dbus-broker --log 10 --controller 9 --machine-id 16d750d585874712ab84fccb89e238a1 --max-bytes 100000000000000 --max-fds 6400000 --max-matches 5000000000
+frikkern    1127  0.0  0.0 168324  6724 ?        Ssl  21:11   0:00 /usr/lib/at-spi2-registryd --use-gnome-session
+colord      1128  0.0  0.1 316360 16620 ?        Ssl  21:11   0:00 /usr/lib/colord
+frikkern    1140  0.0  0.0 305812  7440 ?        Ssl  21:11   0:00 /usr/lib/xdg-permission-store
+root        1162  0.0  0.0 317856 12412 ?        Ssl  21:11   0:00 /usr/lib/upowerd
+frikkern    1163  0.0  0.2 2734968 29356 ?       Ssl  21:11   0:00 /usr/bin/gjs -m /usr/share/gnome-shell/org.gnome.Shell.Notifications
+frikkern    1177  0.5  0.0 385500 13100 ?        Ssl  21:11   0:01 /usr/bin/ibus-daemon --panel disable
+frikkern    1178  0.0  0.0 289196 12508 ?        Ssl  21:11   0:00 /usr/lib/gsd-a11y-settings
+frikkern    1179  0.0  0.0 250172 10652 ?        Ssl  21:11   0:00 /usr/lib/gsd-color
+frikkern    1180  0.0  0.1 295440 14096 ?        Ssl  21:11   0:00 /usr/lib/gsd-datetime
+frikkern    1181  0.0  0.0 389060 11020 ?        Ssl  21:11   0:00 /usr/lib/gsd-housekeeping
+frikkern    1182  0.0  0.0 381620  8792 ?        Ssl  21:11   0:00 /usr/lib/gsd-keyboard
+frikkern    1184  0.0  0.1 577020 16024 ?        Ssl  21:11   0:00 /usr/lib/gsd-media-keys
+frikkern    1185  0.0  0.0 502580 13792 ?        Ssl  21:11   0:00 /usr/lib/gsd-power
+frikkern    1189  0.0  0.0 326464 13288 ?        Ssl  21:11   0:00 /usr/lib/gsd-print-notifications
+frikkern    1195  0.0  0.0 455488  9012 ?        Ssl  21:11   0:00 /usr/lib/gsd-rfkill
+frikkern    1198  0.0  0.0 168400  8312 ?        Ssl  21:11   0:00 /usr/lib/gsd-screensaver-proxy
+frikkern    1208  0.0  0.0 460520 12504 ?        Ssl  21:11   0:00 /usr/lib/gsd-sharing
+frikkern    1212  0.0  0.0 311512  7980 ?        Sl   21:11   0:00 /usr/lib/gsd-disk-utility-notify
+frikkern    1215  0.0  0.0 383796 10196 ?        Ssl  21:11   0:00 /usr/lib/gsd-smartcard
+frikkern    1218  0.0  0.0 251740 10756 ?        Ssl  21:11   0:00 /usr/lib/gsd-sound
+frikkern    1220  0.0  0.0 536084 10160 ?        Ssl  21:11   0:00 /usr/lib/gsd-usb-protection
+frikkern    1235  0.2  0.4 716088 62148 ?        Sl   21:11   0:00 /usr/bin/python /usr/bin/blueman-applet
+frikkern    1236  0.0  0.0 394572 12452 ?        Ssl  21:11   0:00 /usr/lib/gsd-wwan
+frikkern    1292  0.0  0.0 241412  8692 ?        Sl   21:11   0:00 /usr/lib/ibus/ibus-dconf
+frikkern    1300  0.7  0.2 540392 39184 ?        Sl   21:11   0:02 /usr/lib/ibus/ibus-extension-gtk3
+frikkern    1310  0.0  0.0 399552 12152 ?        Sl   21:11   0:00 /usr/lib/gsd-printer
+root        1329  0.0  0.0 477112 13020 ?        Ssl  21:11   0:00 /usr/lib/udisks2/udisksd
+frikkern    1337  0.0  0.0 306888  8572 ?        Ssl  21:11   0:00 /usr/lib/ibus/ibus-portal
+frikkern    1338  0.0  0.2 2734932 29012 ?       Ssl  21:11   0:00 /usr/bin/gjs -m /usr/share/gnome-shell/org.gnome.ScreenSaver
+frikkern    1373  0.0  0.1 770288 17848 ?        Ssl  21:11   0:00 /usr/lib/xdg-desktop-portal
+frikkern    1434  0.0  0.0 686740  8664 ?        Ssl  21:11   0:00 /usr/lib/xdg-document-portal
+root        1461  0.0  0.0   2580  2008 ?        Ss   21:11   0:00 fusermount3 -o rw,nosuid,nodev,fsname=portal,auto_unmount,subtype=portal -- /run/user/1000/doc
+frikkern    1481  0.0  0.1 102456 14564 ?        S<sl 21:11   0:00 /usr/bin/pipewire
+frikkern    1483  0.0  0.1 480584 20104 ?        S<sl 21:11   0:00 /usr/bin/wireplumber
+frikkern    1484  0.0  0.0  99136 10900 ?        S<sl 21:11   0:00 /usr/bin/pipewire-pulse
+frikkern    1487  0.0  0.2 729288 28064 ?        SNsl 21:11   0:00 /usr/lib/localsearch-3
+frikkern    1491  0.1  0.3 865856 45792 ?        Ssl  21:11   0:00 /usr/lib/xdg-desktop-portal-gnome
+frikkern    1506  0.0  0.1 433392 15408 ?        Ssl  21:11   0:00 /usr/lib/gvfs-udisks2-volume-monitor
+frikkern    1553  0.0  0.0 306584  8124 ?        Ssl  21:11   0:00 /usr/lib/gvfs-mtp-volume-monitor
+frikkern    1585  0.0  0.0 308624  8960 ?        Ssl  21:11   0:00 /usr/lib/gvfs-gphoto2-volume-monitor
+frikkern    1590  0.0  0.0 387852  9120 ?        Ssl  21:11   0:00 /usr/lib/gvfs-afc-volume-monitor
+root        1604  0.0  0.0      0     0 ?        S<   21:11   0:00 [krfcommd]
+frikkern    1608  0.2  0.0 167704  8844 ?        Sl   21:11   0:00 /usr/lib/ibus/ibus-engine-simple
+frikkern    1636  0.0  0.0 167280  7784 ?        Ssl  21:11   0:00 /usr/lib/gvfsd-metadata
+frikkern    2200  0.0  0.0  49160  7728 ?        Ss   21:11   0:00 /usr/lib/bluetooth/obexd
+frikkern    2204  0.2  0.4 565920 56816 ?        Rl   21:11   0:00 /usr/bin/python /usr/bin/blueman-tray
+frikkern    2218  0.0  0.2 530948 29644 ?        Ssl  21:11   0:00 /usr/lib/xdg-desktop-portal-gtk
+root        2232  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/2:4-events]
+root        2233  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/2:5-events]
+root        2234  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/2:6-events]
+root        2235  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/2:7]
+root        2239  0.0  0.0      0     0 ?        I<   21:11   0:00 [kworker/u65:3-ttm]
+root        2240  0.0  0.0      0     0 ?        I<   21:11   0:00 [kworker/u65:4]
+root        2252  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/1:4]
+frikkern    2422  0.0  0.0 547052 13088 ?        Sl   21:11   0:00 /usr/lib/gvfsd-trash --spawner :1.9 /org/gtk/gvfs/exec_spaw/0
+frikkern    2441  0.0  0.0 163696  5372 ?        Ssl  21:11   0:00 /usr/lib/dconf-service
+frikkern    2462  0.1  0.6 1610436 86280 ?       Sl   21:11   0:00 /usr/bin/kitty
+frikkern    2553  0.0  0.1 2139172 27232 ?       Sl   21:11   0:00 /usr/bin/kitten __atexit__
+frikkern    2555  0.0  0.1 223916 16176 pts/0    Ss+  21:11   0:00 /usr/bin/fish
+frikkern    2680  0.0  0.3 1143360 44372 ?       Sl   21:11   0:00 /usr/bin/Xwayland :0 -rootless -noreset -accessx -core -auth /run/user/1000/.mutter-Xwaylandauth.2GH1L3 -listenfd 4 -listenfd 5 -displayfd 6 -initfd 7 -byteswappedclients -enable-ei-portal
+frikkern    2720  0.0  0.1 251804 14452 ?        Ssl  21:11   0:00 /usr/lib/gsd-xsettings
+frikkern    2727  0.0  0.5 1614156 71980 ?       Sl   21:11   0:00 /usr/lib/mutter-x11-frames
+frikkern    2741  0.0  0.2 957152 28348 ?        Sl   21:11   0:00 /usr/lib/ibus/ibus-x11
+root        4151  0.0  0.0      0     0 ?        I<   21:11   0:00 [kworker/u65:5-ttm]
+root        4152  0.0  0.0      0     0 ?        I<   21:11   0:00 [kworker/u65:6-ttm]
+root        4153  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:3-events]
+root        4154  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/8:3-events]
+root        4155  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/8:4]
+root        4156  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/5:2-events]
+root        4159  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/10:3-events]
+frikkern    4191  4.7  1.6 1478626152 228576 ?   SLsl 21:11   0:13 /opt/visual-studio-code/code Webkom/abakus-app/ --ozone-platform-hint=wayland --disable-gpu
+frikkern    4217  0.0  0.3 34107476 52876 ?      S    21:11   0:00 /opt/visual-studio-code/code --type=zygote --no-zygote-sandbox
+frikkern    4218  0.0  0.3 34107460 52624 ?      S    21:11   0:00 /opt/visual-studio-code/code --type=zygote
+frikkern    4220  0.0  0.0 34107488 13356 ?      S    21:11   0:00 /opt/visual-studio-code/code --type=zygote
+frikkern    4242  0.0  0.0 33576228 3464 ?       Sl   21:11   0:00 /opt/visual-studio-code/chrome_crashpad_handler --monitor-self-annotation=ptype=crashpad-handler --no-rate-limit --database=/home/frikkern/.config/Code/Crashpad --url=appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=c34f3831-8362-49e5-b6d4-32b6e9c7e3b5&iid=c34f3831-8362-49e5-b6d4-32b6e9c7e3b5&sid=c34f3831-8362-49e5-b6d4-32b6e9c7e3b5 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.109.5 --annotation=lsb-release=EndeavourOS --annotation=plat=Linux --annotation=prod=Electron --annotation=ver=39.3.0 --initial-client-fd=48 --shared-client-connection
+frikkern    4266  146  3.2 34908420 458808 ?     Sl   21:11   6:43 /opt/visual-studio-code/code --type=zygote --no-zygote-sandbox
+frikkern    4275  0.8  0.5 50714220 83688 ?      Sl   21:11   0:02 /proc/self/exe --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708989122997041
+frikkern    4331 11.9  3.2 1463535648 458176 ?   Sl   21:11   0:33 /opt/visual-studio-code/code --type=zygote
+frikkern    4402  6.7  0.9 1461372480 128048 ?   Sl   21:11   0:18 /proc/self/exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708990997080739
+frikkern    4403  4.5  1.0 1461372920 147348 ?   Sl   21:11   0:12 /proc/self/exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708991934122588
+frikkern    4404  6.7  4.4 1478470876 621160 ?   Sl   21:11   0:18 /proc/self/exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --dns-result-order=ipv4first --experimental-network-inspection --inspect-port=0 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708992871164437
+frikkern    4468  1.4  0.8 1461389620 125004 ?   Sl   21:11   0:03 /proc/self/exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708993808206286
+frikkern    4488  0.0  0.1 291668 17376 pts/1    Ss   21:11   0:00 /usr/bin/fish --init-command source "/opt/visual-studio-code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration.fish"
+root        4520  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/5:3-events]
+root        4521  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/14:3]
+frikkern    4709  0.1  0.3 423060 44392 ?        Sl   21:11   0:00 /home/frikkern/.vscode/extensions/openai.chatgpt-26.304.20706-linux-x64/bin/linux-x86_64/codex app-server --analytics-default-enabled
+root        4770  0.2  0.0      0     0 ?        I    21:11   0:00 [kworker/u64:6-ext4-rsv-conversion]
+root        5251  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/3:5-events]
+root        5252  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/3:6]
+frikkern    5310 19.6  3.4 1463541948 488732 ?   Rl   21:11   0:52 /opt/visual-studio-code/code --type=zygote
+root        5318  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/15:3]
+root        5331  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/7:4]
+root        5350  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:4-events]
+root        5351  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:5-events]
+root        5352  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:6-events]
+root        5353  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:7-events]
+root        5354  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:8-events]
+root        5355  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:9-events]
+root        5356  0.0  0.0      0     0 ?        I    21:11   0:00 [kworker/4:10]
+frikkern    5357  0.2  0.7 1459588880 100484 ?   Sl   21:11   0:00 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/redhat.vscode-yaml-1.21.0/dist/languageserver.js --node-ipc --clientProcessId=4404
+frikkern    5383  7.8  5.0 1461691016 707104 ?   Sl   21:11   0:20 /proc/self/exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --dns-result-order=ipv4first --experimental-network-inspection --inspect-port=0 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708995682289984
+frikkern    5397  1.4  0.8 1478158324 125440 ?   Sl   21:11   0:03 /proc/self/exe --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=4242 --enable-crash-reporter=d219ff33-01d1-48a2-aef4-fd731be2dd58,no_channel --user-data-dir=/home/frikkern/.config/Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,10362789604432227797,12265044763339232541,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,EarlyEstablishGpuChannel,EstablishGpuChannelAsync --disable-features=CalculateNativeWinOcclusion,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --trace-process-track-uuid=3190708996619331833
+frikkern    5491  0.0  0.6 1459555284 88416 ?    Sl   21:11   0:00 /opt/visual-studio-code/code /opt/visual-studio-code/resources/app/extensions/json-language-features/server/dist/node/jsonServerMain --node-ipc --clientProcessId=4404
+frikkern    5510  0.0  0.0 412844 11996 ?        Ssl  21:11   0:00 adb -L tcp:5037 fork-server server --reply-fd 4
+frikkern    5516  0.0  0.3 1402784 45316 ?       Sl   21:11   0:00 node /usr/bin/deno lsp
+frikkern    5523  0.0  0.3 34944368 44368 ?      Sl   21:11   0:00 /usr/lib/node_modules/deno/deno lsp
+frikkern    5584  0.8  0.0   6904  5892 ?        S    21:11   0:02 /home/frikkern/.vscode/extensions/ms-python.python-2026.2.0-linux-x64/python-env-tools/bin/pet server
+frikkern    5673  0.1  0.3 423156 45988 ?        Sl   21:11   0:00 /home/frikkern/.vscode/extensions/openai.chatgpt-26.304.20706-linux-x64/bin/linux-x86_64/codex app-server --analytics-default-enabled
+frikkern    6061  0.3  0.9 1459589532 126972 ?   Sl   21:11   0:01 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/visualstudioexptteam.intellicode-api-usage-examples-0.2.9/dist/server/server.js --node-ipc --clientProcessId=5383
+frikkern    6062  0.7  0.0  40592  6368 ?        Sl   21:11   0:02 /home/frikkern/.vscode/extensions/ms-python.vscode-python-envs-1.20.1-linux-x64/python-env-tools/bin/pet server
+frikkern    6318  0.3  0.7 1459588068 106756 ?   Sl   21:11   0:00 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/bradlc.vscode-tailwindcss-0.14.29/dist/tailwindServer.js --node-ipc --clientProcessId=4404
+frikkern    6319  0.0  0.1 156272 15808 pts/2    Ss+  21:11   0:00 /usr/bin/fish --init-command source "/opt/visual-studio-code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration.fish"
+frikkern    6464  0.0  0.5 1459555220 83780 ?    Sl   21:11   0:00 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/dbaeumer.vscode-eslint-3.0.24/server/out/eslintServer.js --node-ipc --clientProcessId=4404
+frikkern    6783  0.2  0.7 1459588880 104752 ?   Sl   21:11   0:00 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/redhat.vscode-yaml-1.21.0/dist/languageserver.js --node-ipc --clientProcessId=5383
+frikkern    6855  0.4  0.7 1459588068 101340 ?   Sl   21:11   0:01 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/bradlc.vscode-tailwindcss-0.14.29/dist/tailwindServer.js --node-ipc --clientProcessId=5383
+frikkern    6865  0.2  0.3 136000 53192 ?        Sl   21:11   0:00 /home/frikkern/Webkom/lego/.venv/bin/python /home/frikkern/.vscode/extensions/ms-python.black-formatter-2025.2.0/bundled/tool/lsp_server.py --stdio
+frikkern    6866  0.2  0.3 135392 52896 ?        Sl   21:11   0:00 /home/frikkern/Webkom/lego/.venv/bin/python /home/frikkern/.vscode/extensions/ms-python.isort-2025.0.0/bundled/tool/lsp_server.py
+frikkern    6882  5.0  3.9 1483165480 547232 ?   Sl   21:11   0:12 /opt/visual-studio-code/code /home/frikkern/.vscode/extensions/ms-python.vscode-pylance-2026.1.1/dist/server.bundle.js --cancellationReceive=file:3551e81ff6db96985d82fb6e595172b57e146556b7 --node-ipc --clientProcessId=5383
+frikkern    7504  0.2  0.5 1515492 76388 pts/1   Sl+  21:12   0:00 npm exec expo run:android
+frikkern    7515  8.1  3.4 10486592 478216 pts/1 Sl+  21:12   0:18 node /home/frikkern/Webkom/abakus-app/node_modules/.bin/expo run:android
+frikkern    7600 58.2 13.0 11720588 1830328 ?    Ssl  21:12   2:11 /usr/lib/jvm/java-17-openjdk/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED -XX:MaxMetaspaceSize=512m -Xmx2048m -Dfile.encoding=UTF-8 -Duser.country=US -Duser.language=en -Duser.variant -cp /home/frikkern/.gradle/wrapper/dists/gradle-8.14.3-bin/cv11ve7ro1n3o1j4so8xd9n66/gradle-8.14.3/lib/gradle-daemon-main-8.14.3.jar -javaagent:/home/frikkern/.gradle/wrapper/dists/gradle-8.14.3-bin/cv11ve7ro1n3o1j4so8xd9n66/gradle-8.14.3/lib/agents/gradle-instrumentation-agent-8.14.3.jar org.gradle.launcher.daemon.bootstrap.GradleDaemon 8.14.3
+root        7770  0.0  0.0      0     0 ?        I    21:12   0:00 [kworker/5:4-mm_percpu_wq]
+frikkern    7843  0.3  0.1 361620 18256 pts/3    Ssl  21:12   0:00 /usr/bin/fish --init-command source "/opt/visual-studio-code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration.fish"
+root        8375  0.0  0.0      0     0 ?        I    21:12   0:00 [kworker/5:5]
+frikkern    8950  7.2  1.1 10116580 154724 pts/1 Sl+  21:12   0:14 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8954  7.0  0.9 10136668 139420 pts/1 Sl+  21:12   0:13 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8962  7.2  1.1 9980600 165924 pts/1  Sl+  21:12   0:14 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8964  7.1  1.0 10078368 150532 pts/1 Sl+  21:12   0:13 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8976  7.3  1.1 10018576 156620 pts/1 Sl+  21:12   0:14 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8978  7.0  1.1 10169212 166472 pts/1 Sl+  21:12   0:13 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8990  6.9  1.1 10084600 154616 pts/1 Sl+  21:12   0:13 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8997  7.1  1.0 9902476 146760 pts/1  Sl+  21:12   0:14 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    8999  6.9  1.1 10162476 155752 pts/1 Sl+  21:12   0:13 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    9007  6.9  1.1 9984372 153828 pts/1  Sl+  21:12   0:13 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/jest-worker/build/workers/processChild.js
+frikkern    9050  0.4  0.7 1737088 103548 pts/1  Sl+  21:12   0:00 /home/frikkern/.local/share/fnm/node-versions/v24.13.0/installation/bin/node /home/frikkern/Webkom/abakus-app/node_modules/nativewind/dist/metro/tailwind/v3/child.js
+root        9942  0.0  0.0  15572  5908 ?        S    21:13   0:00 systemd-userwork: waiting...
+root        9988  0.0  0.0      0     0 ?        I    21:13   0:00 [kworker/13:2-events]
+root        9989  0.0  0.0      0     0 ?        I    21:13   0:00 [kworker/13:3]
+root       10073  0.1  0.3 2379460 46248 ?       Ssl  21:13   0:00 /usr/bin/containerd
+root       10105  0.1  0.5 2794520 76040 ?       Ssl  21:13   0:00 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+root       10437  0.0  0.0  15568  5788 ?        S    21:13   0:00 systemd-userwork: waiting...
+root       10878  0.0  0.0  15568  5968 ?        S    21:13   0:00 systemd-userwork: waiting...
+root       12748  0.0  0.0      0     0 ?        I    21:15   0:00 [kworker/10:4]
+frikkern   13723  200  0.0  10128  6512 pts/3    R+   21:15   0:00 ps aux 5432
