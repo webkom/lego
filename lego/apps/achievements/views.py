@@ -1,10 +1,13 @@
+from pathlib import Path
 from django.db.models import Case, F, IntegerField, Q, Value, When
 from django.db.models.expressions import Window
 from django.db.models.functions import Rank
+from django.http import FileResponse
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from lego import settings
 from lego.apps.achievements.constants import (
     EVENT_RULES,
     EVENT_RULES_IDENTIFIER,
@@ -78,6 +81,40 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=["trace"], url_path="egg")
+    def egg(self, request, *args, **kwargs):
+        egg_path = (
+            Path(settings.BASE_DIR) / "assets/img/ab746f562e/mystery_[f340828e].png"
+        )
+
+        if not egg_path.exists():
+            return Response(
+                {"detail": "Egg file not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        response = FileResponse(
+            egg_path.open("rb"),
+            as_attachment=True,
+            filename="mystery_[f340828e].png",
+        )
+        response.status_code = 450
+        response.reason_phrase = "Blocked by Windows Parental Controls"
+        return response
+
+    @egg.mapping.get
+    @egg.mapping.post
+    @egg.mapping.put
+    @egg.mapping.patch
+    @egg.mapping.delete
+    @egg.mapping.head
+    @egg.mapping.options
+    def egg_payment_required(self, request, *args, **kwargs):
+        return Response(
+            {"detail": "Payment required."},
+            status=status.HTTP_402_PAYMENT_REQUIRED,
+        )
 
 
 class AchievementViewSet(viewsets.GenericViewSet):
