@@ -82,6 +82,23 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, url_path="easter")
+    def easter(self, request, *args, **kwargs):
+        egg_path = Path(settings.BASE_DIR) / "assets/img/ab746f562e/photograph.tiff"
+
+        if not egg_path.exists():
+            return Response(
+                {"detail": "Egg file not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        response = FileResponse(
+            egg_path.open("rb"),
+            as_attachment=True,
+            filename="photograph.tiff",
+        )
+        return response
+
     @action(detail=False, methods=["trace"], url_path="egg")
     def egg(self, request, *args, **kwargs):
         egg_path = (
