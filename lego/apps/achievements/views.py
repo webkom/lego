@@ -100,7 +100,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         )
         return response
 
-    @action(detail=False, methods=["trace"], url_path="egg")
+    @action(detail=False, methods=["delete"], url_path="egg")
     def egg(self, request, *args, **kwargs):
         egg_path = (
             Path(settings.BASE_DIR) / "assets/img/ab746f562e/mystery_[f340828e].png"
@@ -125,7 +125,6 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     @egg.mapping.post
     @egg.mapping.put
     @egg.mapping.patch
-    @egg.mapping.delete
     @egg.mapping.head
     @egg.mapping.options
     def egg_payment_required(self, request, *args, **kwargs):
