@@ -427,7 +427,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         start_date = self.start_of_month
         end_date = start_date + timedelta(days=10)
 
-        create_lending_request(
+        lending_request = create_lending_request(
             lendable_object=self.lendable_object,
             user=self.borrower,
             start_date=start_date,
@@ -441,9 +441,79 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         self.assertEqual(len(response.json()), 1)
 
         unavailable_range = response.json()[0]
-        self.assertEqual(len(unavailable_range), 4)
-        self.assertEqual(unavailable_range[0], start_date.isoformat())
-        self.assertEqual(unavailable_range[1], end_date.isoformat())
+        self.assertEqual(unavailable_range["startDate"], start_date.isoformat())
+        self.assertEqual(unavailable_range["endDate"], end_date.isoformat())
+        self.assertEqual(unavailable_range["createdByName"], self.borrower.username)
+        self.assertEqual(
+            unavailable_range["createdByUsername"], self.borrower.username
+        )
+        self.assertEqual(
+            unavailable_range["lendingRequestId"], lending_request.pk
+        )
+
+    def test_availability_hides_request_details_for_view_only_users(self):
+        viewer = create_user(username="viewer")
+        self.group.add_user(viewer)
+        self.lendable_object.can_edit_groups.remove(self.group)
+
+        start_date = self.start_of_month
+        end_date = start_date + timedelta(days=10)
+
+        lending_request = create_lending_request(
+            lendable_object=self.lendable_object,
+            user=self.borrower,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        self.client.force_authenticate(user=viewer)
+        url = get_availability_url(self.lendable_object.pk, self.month, self.year)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            [
+                {
+                    "startDate": start_date.isoformat(),
+                    "endDate": end_date.isoformat(),
+                }
+            ],
+        )
+
+    def test_availability_clamps_ranges_to_requested_month(self):
+        self.client.force_authenticate(user=self.user)
+
+        request_month = 4
+        request_year = 2026
+        start_date = timezone.make_aware(datetime(request_year, 3, 28))
+        end_date = timezone.make_aware(datetime(request_year, 4, 3))
+
+        create_lending_request(
+            lendable_object=self.lendable_object,
+            user=self.borrower,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        url = get_availability_url(self.lendable_object.pk, request_month, request_year)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            [
+                {
+                    "startDate": timezone.make_aware(
+                        datetime(request_year, request_month, 1)
+                    ).isoformat(),
+                    "endDate": end_date.isoformat(),
+                    "createdByName": self.borrower.username,
+                    "createdByUsername": self.borrower.username,
+                    "lendingRequestId": lending_request.pk,
+                }
+            ],
+        )
 
     def test_non_approved_request_not_included(self):
         self.client.force_authenticate(user=self.user)

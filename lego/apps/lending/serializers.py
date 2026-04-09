@@ -183,10 +183,18 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         """
         attrs = super().validate(attrs)
 
-        start_date = attrs.get("start_date")
-        end_date = attrs.get("end_date")
+        start_date = attrs.get("start_date", getattr(self.instance, "start_date", None))
+        end_date = attrs.get("end_date", getattr(self.instance, "end_date", None))
         lendable_object = attrs.get("lendable_object") or getattr(
             self.instance, "lendable_object", None
+        )
+        resulting_status = attrs.get(
+            "status",
+            getattr(
+                self.instance,
+                "status",
+                LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
+            ),
         )
         user = self.context["request"].user
 
@@ -199,6 +207,35 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             raise serializers.ValidationError(
                 {"lendable_object": "You do not have permission to lend this object."}
             )
+
+        if (
+            lendable_object
+            and start_date
+            and end_date
+            and resulting_status
+            not in (
+                LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
+                LENDING_REQUEST_STATUSES["LENDING_DENIED"]["value"],
+            )
+        ):
+            overlapping_requests = LendingRequest.objects.filter(
+                lendable_object=lendable_object,
+                status=LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"],
+                start_date__lt=end_date,
+                end_date__gt=start_date,
+            )
+
+            if self.instance is not None:
+                overlapping_requests = overlapping_requests.exclude(pk=self.instance.pk)
+
+            if overlapping_requests.exists():
+                raise serializers.ValidationError(
+                    {
+                        "start_date": (
+                            "The lendable object is unavailable in the selected period."
+                        )
+                    }
+                )
 
         if self.instance is None:
             if "status" in attrs and attrs["status"] not in (

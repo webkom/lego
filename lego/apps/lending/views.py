@@ -48,6 +48,7 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         for a specified month and year.
         """
         lendable_object = self.get_object()
+        user = request.user
 
         try:
             month = int(request.query_params.get("month", ""))
@@ -69,45 +70,37 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         end_of_month = timezone.make_aware(datetime(year, month, last_day, 23, 59, 59))
 
         approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
+        can_edit = lendable_object._meta.permission_handler.has_object_permissions(
+            user, EDIT, lendable_object
+        )
 
         overlapping_requests = (
             LendingRequest.objects.filter(
                 lendable_object=lendable_object, status=approved_status
             )
             .filter(Q(start_date__lte=end_of_month) & Q(end_date__gte=start_of_month))
+            .select_related("created_by")
             .order_by("start_date")
         )
 
-        unavailable_ranges = []
-        for request in overlapping_requests:
-            range_start = max(request.start_date, start_of_month)
-            range_end = min(request.end_date, end_of_month)
-
-            unavailable_ranges.append([range_start, range_end, request.created_by])
-
         formatted_ranges = []
-        for i in range(len(unavailable_ranges)):
-            start, end, created_by = unavailable_ranges[i]
-            start_date = start.isoformat()
-            end_date = end.isoformat()
-            created_by_username = created_by
-            created_by_fullname = None
-            if created_by is None:
-                created_by_fullname = None
-            elif isinstance(created_by, str):
-                usr = User.objects.filter(username=created_by).first()
-                if usr:
-                    created_by_fullname = usr.get_full_name()
-                else:
-                    created_by_fullname = None
-            elif isinstance(created_by, User):
-                created_by_fullname = created_by.get_full_name()
-            else:
-                created_by_fullname = None
-            created_by_username = None if (created_by is None) else created_by.username
-            formatted_ranges.append(
-                [start_date, end_date, created_by_fullname, created_by_username]
-            )
+        for lending_request in overlapping_requests:
+            created_by = lending_request.created_by
+            entry = {
+                "start_date": max(
+                    lending_request.start_date, start_of_month
+                ).isoformat(),
+                "end_date": min(lending_request.end_date, end_of_month).isoformat(),
+            }
+
+            if can_edit and isinstance(created_by, User):
+                entry["created_by_name"] = (
+                    created_by.get_full_name() or created_by.username
+                )
+                entry["created_by_username"] = created_by.username
+                entry["lending_request_id"] = lending_request.pk
+
+            formatted_ranges.append(entry)
 
         return Response(formatted_ranges)
 

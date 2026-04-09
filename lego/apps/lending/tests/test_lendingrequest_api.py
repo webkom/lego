@@ -536,6 +536,27 @@ class LendingRequestStatusTestCase(BaseAPITestCase):
         lending_request = LendingRequest.objects.get(id=request_id)
         self.assertEqual(lending_request.status, "unapproved")
 
+    def test_create_lending_request_overlapping_approved_request_is_rejected(self):
+        create_lending_request(
+            user=self.user_edit,
+            lendable_object=self.lendable_object,
+            status="approved",
+            start_date=now() + timedelta(days=3),
+            end_date=now() + timedelta(days=5),
+        )
+
+        self.client.force_authenticate(user=self.user_view_only)
+        data = {
+            "lendable_object": self.lendable_object.pk,
+            "start_date": (now() + timedelta(days=4)).isoformat(),
+            "end_date": (now() + timedelta(days=6)).isoformat(),
+        }
+
+        response = self.client.post(get_lending_request_list_url(), data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("start_date", response.data)
+
     #
     # UPDATE TESTS
     #
@@ -600,6 +621,65 @@ class LendingRequestStatusTestCase(BaseAPITestCase):
         # Confirm it's updated
         lending_request = LendingRequest.objects.get(id=request_id)
         self.assertEqual(lending_request.status, "approved")
+
+    def test_update_status_to_approved_with_overlapping_request_is_rejected(self):
+        create_lending_request(
+            user=self.user_edit,
+            lendable_object=self.lendable_object,
+            status="approved",
+            start_date=now() + timedelta(days=3),
+            end_date=now() + timedelta(days=5),
+        )
+
+        self.client.force_authenticate(user=self.user_view_only)
+        create_data = {
+            "lendable_object": self.lendable_object.pk,
+            "start_date": (now() + timedelta(days=4)).isoformat(),
+            "end_date": (now() + timedelta(days=6)).isoformat(),
+        }
+        create_response = self.client.post(get_lending_request_list_url(), create_data)
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+        request_id = create_response.data["id"]
+
+        self.client.force_authenticate(user=self.user_edit)
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(request_id), {"status": "approved"}
+        )
+
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("start_date", patch_response.data)
+
+    def test_update_single_boundary_into_overlapping_period_is_rejected(self):
+        existing_start = now() + timedelta(days=3)
+        existing_end = now() + timedelta(days=5)
+        create_lending_request(
+            user=self.user_edit,
+            lendable_object=self.lendable_object,
+            status="approved",
+            start_date=existing_start,
+            end_date=existing_end,
+        )
+
+        self.client.force_authenticate(user=self.user_view_only)
+        create_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=1)).isoformat(),
+                "end_date": (now() + timedelta(days=2)).isoformat(),
+            },
+        )
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+        request_id = create_response.data["id"]
+
+        self.client.force_authenticate(user=self.user_edit)
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(request_id),
+            {"end_date": (now() + timedelta(days=4)).isoformat()},
+        )
+
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("start_date", patch_response.data)
 
 
 class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
