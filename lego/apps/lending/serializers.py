@@ -91,7 +91,6 @@ class TimelineEntrySerializer(BasisModelSerializer):
 
 
 class TimelineEntryCreateAndUpdateSerializer(BasisModelSerializer):
-
     class Meta:
         model = TimelineEntry
         fields = (
@@ -214,14 +213,17 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             if "status" in attrs:
                 new_status = attrs["status"]
 
-                user_in_edit_group = False
+                user_can_edit = False
                 if lendable_object:
                     group_ids = [group.pk for group in user.all_groups]
-                    user_in_edit_group = lendable_object.can_edit_groups.filter(
-                        pk__in=group_ids
-                    ).exists()
+                    user_can_edit = (
+                        lendable_object.can_edit_users.filter(pk=user.pk).exists()
+                        or lendable_object.can_edit_groups.filter(
+                            pk__in=group_ids
+                        ).exists()
+                    )
 
-                if not user_in_edit_group and new_status not in (
+                if not user_can_edit and new_status not in (
                     LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"],
                     LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
                 ):
@@ -234,20 +236,20 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                         }
                     )
                 if (
+                    self.instance.created_by == user
+                    and new_status
+                    == LENDING_REQUEST_STATUSES["LENDING_CHANGES_REQUESTED"]["value"]
+                ):
+                    raise serializers.ValidationError(
+                        {"status": ("You cannot request changes for your own request.")}
+                    )
+                if (
                     self.instance.created_by != user
                     and new_status
                     == LENDING_REQUEST_STATUSES["LENDING_CANCELLED"]["value"]
                 ):
                     raise serializers.ValidationError(
                         {"status": ("You cannot cancel someone else's request.. ")}
-                    )
-                if (
-                    self.instance.created_by == user
-                    and new_status
-                    == LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
-                ):
-                    raise serializers.ValidationError(
-                        {"status": ("You cannot approve your own request.. ")}
                     )
 
         return attrs
