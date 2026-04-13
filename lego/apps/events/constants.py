@@ -11,7 +11,7 @@ SOCIAL = "social"
 GALA = "gala"
 OTHER = "other"
 EVENT = "event"
-INTEREST_EVENT = "interesse_arrangement"
+INTEREST_EVENT = "interest_event"
 
 EVENT_TYPES = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),

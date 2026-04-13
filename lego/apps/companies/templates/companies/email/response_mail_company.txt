@@ -10,7 +10,7 @@ Vi har notert oss interessen, samt hvilke typer arrangementer dere ønsker.
 
 {% if collaborations != "" %}Hvis dere får tilbud til arrangement med oss, kommer vi til å kontakte aktuelle linjeforeninger for å avtale nærmere.{% endif %}
 
-{% if readme %}Ser også at dere har huket av for annonsering i readme. Jeg legger derfor ved redaktøren av readme i tråden, slik at dere kan starte en dialog angående mulighetene for dette.{% endif %}
+{% if readme %}Ser også at dere har huket av for annonsering i readme. Jeg legger derfor redaktøren for readme til i tråden. Det er hovedsakelig bedriftskontakt som har ansvaret for annonser i readme.{% endif %}
 
 {% if comment|length > 10 %}Takk for utfyllende informasjon i kommentarfeltet!{% endif %}
 

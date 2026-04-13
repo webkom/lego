@@ -354,6 +354,98 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(results[0]["id"], request2.id)
         self.assertEqual(results[1]["id"], request3.id)
 
+    def test_list_lending_requests_can_be_sorted_newest_first(self):
+        self.client.force_authenticate(user=self.user)
+
+        oldest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=1)).isoformat(),
+                "end_date": (now() + timedelta(days=2)).isoformat(),
+            },
+        )
+        newest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=3)).isoformat(),
+                "end_date": (now() + timedelta(days=4)).isoformat(),
+            },
+        )
+
+        self.assertEqual(oldest_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(newest_response.status_code, status.HTTP_201_CREATED)
+
+        oldest_request = LendingRequest.objects.get(pk=oldest_response.data["id"])
+        newest_request = LendingRequest.objects.get(pk=newest_response.data["id"])
+
+        oldest_created_at = now() - timedelta(days=2)
+        newest_created_at = now() - timedelta(days=1)
+
+        LendingRequest.objects.filter(pk=oldest_request.pk).update(
+            created_at=oldest_created_at
+        )
+        LendingRequest.objects.filter(pk=newest_request.pk).update(
+            created_at=newest_created_at
+        )
+
+        response = self.client.get(
+            get_lending_request_list_url(), {"ordering": "-created_at"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            [request["id"] for request in response.json()["results"]],
+            [newest_request.id, oldest_request.id],
+        )
+
+    def test_list_lending_requests_can_be_sorted_oldest_first(self):
+        self.client.force_authenticate(user=self.user)
+
+        oldest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=1)).isoformat(),
+                "end_date": (now() + timedelta(days=2)).isoformat(),
+            },
+        )
+        newest_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=3)).isoformat(),
+                "end_date": (now() + timedelta(days=4)).isoformat(),
+            },
+        )
+
+        self.assertEqual(oldest_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(newest_response.status_code, status.HTTP_201_CREATED)
+
+        oldest_request = LendingRequest.objects.get(pk=oldest_response.data["id"])
+        newest_request = LendingRequest.objects.get(pk=newest_response.data["id"])
+
+        oldest_created_at = now() - timedelta(days=2)
+        newest_created_at = now() - timedelta(days=1)
+
+        LendingRequest.objects.filter(pk=oldest_request.pk).update(
+            created_at=oldest_created_at
+        )
+        LendingRequest.objects.filter(pk=newest_request.pk).update(
+            created_at=newest_created_at
+        )
+
+        response = self.client.get(
+            get_lending_request_list_url(), {"ordering": "created_at"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            [request["id"] for request in response.json()["results"]],
+            [oldest_request.id, newest_request.id],
+        )
+
 
 class LendingRequestStatusTestCase(BaseAPITestCase):
     def setUp(self):
@@ -569,17 +661,31 @@ class LendingRequestAdditionalPermissionTestCase(BaseAPITestCase):
             "You cannot cancel someone else's request", patch_response.data["status"][0]
         )
 
-    def test_user_cant_approve_own_request(self):
-        """User should not be able to approve own request"""
-        self.client.force_authenticate(user=self.creator_user)
-        patch_data = {"status": "approved"}
+    def test_user_without_edit_permission_cant_approve_own_request(self):
+        """A requester without edit permission should not be able to approve own request."""
+        view_only_user = User.objects.create(
+            username="view_only_user", email="view_only@abakus.no"
+        )
+        self.view_group.add_user(view_only_user)
+
+        self.client.force_authenticate(user=view_only_user)
+        create_data = {
+            "lendable_object": self.lendable_object.pk,
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+        }
+        create_response = self.client.post(get_lending_request_list_url(), create_data)
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+
         patch_response = self.client.patch(
-            get_lending_request_detail_url(self.request_id), patch_data
+            get_lending_request_detail_url(create_response.data["id"]),
+            {"status": "approved"},
         )
         self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("status", patch_response.data)
         self.assertIn(
-            "You cannot approve your own request", patch_response.data["status"][0]
+            "You cannot change the status to that value",
+            patch_response.data["status"][0],
         )
 
     def test_creation_creates_system_linelineentry(self):
@@ -692,3 +798,54 @@ class LendingRequestApprovalByDifferentUserTestCase(BaseAPITestCase):
         self.assertEqual(system_timelineentry.is_system, True)
         # Optionally check that the entry was created by the approver.
         self.assertEqual(system_timelineentry.created_by, self.approver_user)
+
+
+class LendingRequestApprovalByResponsibleUserTestCase(BaseAPITestCase):
+    def setUp(self):
+        self.responsible_user = User.objects.create(
+            username="responsible_user", email="responsible@example.com"
+        )
+        self.view_group = AbakusGroup.objects.create(name="responsible_view_group")
+        self.view_group.add_user(self.responsible_user)
+
+        self.lendable_object = LendableObject.objects.create(
+            title="Test Object", description="Testing object"
+        )
+        self.lendable_object.can_view_groups.add(self.view_group)
+        self.lendable_object.can_edit_users.add(self.responsible_user)
+
+        self.client.force_authenticate(user=self.responsible_user)
+        create_data = {
+            "lendable_object": self.lendable_object.pk,
+            "start_date": (now() + timedelta(days=1)).isoformat(),
+            "end_date": (now() + timedelta(days=2)).isoformat(),
+        }
+        create_response = self.client.post(get_lending_request_list_url(), create_data)
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+        self.request_id = create_response.data["id"]
+
+    def test_responsible_user_can_approve_own_request(self):
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.request_id), {"status": "approved"}
+        )
+
+        self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
+
+        lending_request = LendingRequest.objects.get(pk=self.request_id)
+        self.assertEqual(lending_request.status, "approved")
+
+    def test_responsible_user_cannot_request_changes_on_own_request(self):
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.request_id),
+            {"status": "changes_requested"},
+        )
+
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("status", patch_response.data)
+        self.assertIn(
+            "You cannot request changes for your own request.",
+            patch_response.data["status"][0],
+        )
+
+        lending_request = LendingRequest.objects.get(pk=self.request_id)
+        self.assertEqual(lending_request.status, "unapproved")
