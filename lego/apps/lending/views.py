@@ -2,6 +2,7 @@ import calendar
 from datetime import datetime
 
 from django.db.models import Q
+from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -61,15 +62,15 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        try:
-            start_date = datetime.fromisoformat(start_date_str)
-            end_date = datetime.fromisoformat(end_date_str)
-        except ValueError:
+        start_date = parse_datetime(start_date_str)
+        end_date = parse_datetime(end_date_str)
+        if start_date is None or end_date is None:
             return Response(
                 {
                     "detail": (
                         "Invalid date format. Use ISO 8601 format "
-                        "(e.g. 2026-03-10T00:00:00Z)."
+                        "(e.g. 2026-03-10T00:00:00Z or "
+                        "2026-03-10T00:00:00+00:00)."
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -90,9 +91,11 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         unavailable_objects_ids = LendingRequest.objects.filter(
             status=approved_status, start_date__lt=end_date, end_date__gt=start_date
-        ).values_list("lendable_object_id", flat=True)
+        ).values_list("lendable_object_id", flat=True).distinct()
 
-        available_ids = LendableObject.objects.exclude(
+        base_queryset = self.filter_queryset(self.get_queryset())
+
+        available_ids = base_queryset.exclude(
             id__in=unavailable_objects_ids
         ).values_list("id", flat=True)
 

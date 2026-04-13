@@ -483,6 +483,8 @@ class LendableObjectAvailableTestCase(BaseAPITestCase):
 
         self.obj1 = create_lendable_object()
         self.obj2 = create_lendable_object()
+        self.obj1.can_view_groups.add(self.group)
+        self.obj2.can_view_groups.add(self.group)
 
         self.approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
         self.unapproved_status = LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"]
