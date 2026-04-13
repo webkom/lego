@@ -21,6 +21,8 @@ def send_registration_reminder_mail(self, logger_context=None):
         activation_date__lte=timezone.now() + timedelta(minutes=60),
     ).prefetch_related("event", "event__followers", "event__followers__follower")
 
+    log.info("reminder_sent")
+
     for pool in pools:
         for followsevent in pool.event.followers.all():
             user = followsevent.follower

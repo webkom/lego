@@ -25,7 +25,7 @@ class RegistrationReminderNotification(Notification):
 
         return self._delay_push(
             template="followers/email/reminder.txt",
-            context={"first_name": self.user.first_name, "event": event.title},
-            title="Påminnelse",
+            context={"event": event.title},
+            title="Påmelding til arrangement",
             instance=event,
         )

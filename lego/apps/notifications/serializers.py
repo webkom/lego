@@ -71,10 +71,6 @@ class AnnouncementDetailSerializer(BasisModelSerializer):
 
 
 class ExpoDeviceSerializer(BasisModelSerializer):
-    class Meta:
-        model = Device
-        fields = ("push_token",)
-
     def validate_push_token(self, token: str) -> str:
         token = token.strip()
 
@@ -82,3 +78,7 @@ class ExpoDeviceSerializer(BasisModelSerializer):
             raise serializers.ValidationError("Invalid Expo Push Token")
 
         return token
+
+    class Meta:
+        model = Device
+        fields = ("push_token",)

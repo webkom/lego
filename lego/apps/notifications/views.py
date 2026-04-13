@@ -119,6 +119,7 @@ class ExpoDeviceViewSet(viewsets.ViewSet):
         Device.objects.filter(user=request.user).delete()
         return Response(status=status.HTTP_200_OK)
 
+
 class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     serializer_class = AnnouncementDetailSerializer
 
