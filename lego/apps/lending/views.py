@@ -62,12 +62,8 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        try:
-            start_date = parse_datetime(start_date_str)
-            end_date = parse_datetime(end_date_str)
-        except ValueError:
-            start_date = None
-            end_date = None
+        start_date = parse_datetime(start_date_str)
+        end_date = parse_datetime(end_date_str)
 
         if start_date is None or end_date is None:
             return Response(
