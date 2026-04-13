@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -62,9 +63,13 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
-            start_date = datetime.fromisoformat(start_date_str)
-            end_date = datetime.fromisoformat(end_date_str)
+            start_date = parse_datetime(start_date_str)
+            end_date = parse_datetime(end_date_str)
         except ValueError:
+            start_date = None
+            end_date = None
+
+        if start_date is None or end_date is None:
             return Response(
                 {
                     "detail": (
@@ -90,9 +95,9 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         unavailable_objects_ids = LendingRequest.objects.filter(
             status=approved_status, start_date__lt=end_date, end_date__gt=start_date
-        ).values_list("lendable_object_id", flat=True)
+        ).values_list("lendable_object_id", flat=True).distinct()
 
-        available_ids = LendableObject.objects.exclude(
+        available_ids = self.filter_queryset(self.get_queryset()).exclude(
             id__in=unavailable_objects_ids
         ).values_list("id", flat=True)
 
