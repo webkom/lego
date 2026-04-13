@@ -486,6 +486,10 @@ class LendableObjectAvailableTestCase(BaseAPITestCase):
         self.obj1.can_view_groups.add(self.group)
         self.obj2.can_view_groups.add(self.group)
 
+        # Grant the user view permission on both objects via group membership
+        self.obj1.can_view_groups.add(self.group)
+        self.obj2.can_view_groups.add(self.group)
+
         self.approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
         self.unapproved_status = LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"]
 
@@ -528,8 +532,8 @@ class LendableObjectAvailableTestCase(BaseAPITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(get_available_url(self.start, self.end))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        all_ids = set(LendableObject.objects.values_list("id", flat=True))
-        self.assertEqual(set(response.json()), all_ids)
+        self.assertIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
 
     def test_object_with_approved_request_matching_interval_is_excluded(self):
         create_lending_request(
@@ -703,6 +707,35 @@ class LendableObjectAvailableTestCase(BaseAPITestCase):
         self.assertEqual(baseline_response.status_code, status.HTTP_200_OK)
         self.assertEqual(offset_response.status_code, status.HTTP_200_OK)
         self.assertEqual(set(offset_response.json()), set(baseline_response.json()))
+
+    def test_utc_z_designator_input_is_accepted(self):
+        create_lending_request(
+            lendable_object=self.obj1,
+            user=self.user,
+            start_date=timezone.make_aware(datetime(2026, 3, 12)),
+            end_date=timezone.make_aware(datetime(2026, 3, 15)),
+            status=self.approved_status,
+        )
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            get_available_url("2026-03-10T00:00:00Z", "2026-03-20T00:00:00Z")
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
+
+    def test_objects_without_view_permission_excluded(self):
+        hidden_obj = create_lendable_object()  # no can_view_groups set for self.group
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(hidden_obj.id, response.json())
+        self.assertIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
 
     def test_all_objects_unavailable_when_all_booked(self):
         create_lending_request(
