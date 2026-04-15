@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallery', '0008_alter_gallery_can_edit_groups_and_more'),
+        ("gallery", "0008_alter_gallery_can_edit_groups_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gallery',
-            name='is_pinned',
+            model_name="gallery",
+            name="is_pinned",
             field=models.BooleanField(default=False),
         ),
     ]
