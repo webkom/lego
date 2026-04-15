@@ -33,7 +33,7 @@ linkedin_id_validator = validators.RegexValidator(
 
 name_validator = validators.RegexValidator(
     r"^[^\W\d_][\w '\-\.]*$",
-    "Enter a valid name. Names may only contain letters, spaces, hyphens, apostrophes, and periods.",
+    "Enter a valid name. Only letters, spaces, hyphens, apostrophes, and periods are allowed.",
     "invalid",
     flags=re.UNICODE,
 )
