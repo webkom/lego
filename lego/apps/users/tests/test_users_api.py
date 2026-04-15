@@ -382,6 +382,91 @@ class UpdateUsersAPITestCase(BaseAPITestCase):
         )
 
 
+class NameValidationTestCase(BaseAPITestCase):
+    """Test that first_name and last_name reject invisible/invalid characters."""
+
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
+
+    _base_registration_data = {
+        "username": "nametest_user",
+        "first_name": "Ola",
+        "last_name": "Nordmann",
+        "gender": constants.OTHER,
+        "password": "TestPassord",
+    }
+
+    def setUp(self):
+        self.user = User.objects.first()
+        self.new_email = "namevalidation@test.com"
+
+    def _register(self, first_name, last_name):
+        from lego.apps.users.registrations import Registrations
+
+        token = Registrations.generate_registration_token(self.new_email)
+        data = self._base_registration_data.copy()
+        data["first_name"] = first_name
+        data["last_name"] = last_name
+        url = f"{reverse('api:v1:user-list')}?token={token}"
+        return self.client.post(url, data)
+
+    def _patch_name(self, first_name=None, last_name=None):
+        self.client.force_authenticate(user=self.user)
+        payload = {}
+        if first_name is not None:
+            payload["firstName"] = first_name
+        if last_name is not None:
+            payload["lastName"] = last_name
+        return self.client.patch(_get_detail_url(self.user.username), payload)
+
+    # --- valid names ---
+
+    def test_simple_ascii_name_is_valid(self):
+        response = self._register("Ola", "Nordmann")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_norwegian_letters_are_valid(self):
+        response = self._patch_name(first_name="Bjørn", last_name="Ærlig")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_hyphenated_name_is_valid(self):
+        response = self._patch_name(first_name="Mary-Jane", last_name="van der Berg")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_apostrophe_name_is_valid(self):
+        response = self._patch_name(first_name="O'Brien", last_name="Mc'Fly")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_vietnamese_name_is_valid(self):
+        response = self._patch_name(first_name="Nguyễn", last_name="Văn")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # --- invalid names ---
+
+    def test_zero_width_space_first_name_is_rejected(self):
+        response = self._register("\u200b", "Nordmann")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_zero_width_space_last_name_is_rejected(self):
+        response = self._register("Ola", "\u200b")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_whitespace_only_name_is_rejected(self):
+        response = self._register("   ", "Nordmann")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_digits_only_name_is_rejected(self):
+        response = self._register("123", "Nordmann")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invisible_chars_via_patch_are_rejected(self):
+        response = self._patch_name(first_name="\u200b\u200c\u200d")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_emoji_name_is_rejected(self):
+        response = self._register("👾", "Nordmann")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
 class DeleteUsersAPITestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 

@@ -42,6 +42,7 @@ from .validators import (
     email_blacklist_validator,
     github_username_validator,
     linkedin_id_validator,
+    name_validator,
     student_username_validator,
     username_validator,
 )
@@ -362,8 +363,8 @@ class User(
         error_messages={"unique": "A user has already verified that student username."},
     )
     student_verification_status = models.BooleanField(null=True, blank=True)
-    first_name = models.CharField("first name", max_length=50, blank=False)
-    last_name = models.CharField("last name", max_length=30, blank=False)
+    first_name = models.CharField("first name", validators=[name_validator], max_length=50, blank=False)
+    last_name = models.CharField("last name", validators=[name_validator], max_length=30, blank=False)
     allergies = models.CharField("allergies", max_length=500, blank=True)
     selected_theme = models.CharField(
         "selected theme",
