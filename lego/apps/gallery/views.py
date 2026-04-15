@@ -23,7 +23,7 @@ class GalleryViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     queryset = Gallery.objects.all().select_related("event", "cover")
     filterset_class = GalleryFilterSet
     serializer_class = GallerySerializer
-    ordering = "-taken_at"
+    ordering = ["-is_pinned", "-taken_at"]
 
     def get_queryset(self):
         if self.action != "list":
