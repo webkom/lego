@@ -83,9 +83,13 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         for request in overlapping_requests:
             range_start = max(request.start_date, start_of_month)
             range_end = min(request.end_date, end_of_month)
-            canEditRequest = request._meta.permission_handler.has_perm(user, EDIT, request)
+            canEditRequest = request._meta.permission_handler.has_perm(
+                user, EDIT, request
+            )
 
-            unavailable_ranges.append([range_start, range_end, request.created_by, request.id, canEditRequest])
+            unavailable_ranges.append(
+                [range_start, range_end, request.created_by, request.id, canEditRequest]
+            )
 
         formatted_ranges = []
         for i in range(len(unavailable_ranges)):
@@ -108,7 +112,14 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 created_by_fullname = None
             created_by_username = None if (created_by is None) else created_by.username
             formatted_ranges.append(
-                [start_date, end_date, id, canEdit, created_by_fullname, created_by_username]
+                [
+                    start_date,
+                    end_date,
+                    id,
+                    canEdit,
+                    created_by_fullname,
+                    created_by_username,
+                ]
             )
 
         return Response(formatted_ranges)
