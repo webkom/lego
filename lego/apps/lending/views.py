@@ -2,7 +2,6 @@ import calendar
 from datetime import datetime
 
 from django.db.models import Q
-from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from rest_framework import mixins, status, viewsets
@@ -90,9 +89,13 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
 
-        unavailable_objects_ids = LendingRequest.objects.filter(
-            status=approved_status, start_date__lt=end_date, end_date__gt=start_date
-        ).values_list("lendable_object_id", flat=True).distinct()
+        unavailable_objects_ids = (
+            LendingRequest.objects.filter(
+                status=approved_status, start_date__lt=end_date, end_date__gt=start_date
+            )
+            .values_list("lendable_object_id", flat=True)
+            .distinct()
+        )
 
         base_queryset = self.filter_queryset(self.get_queryset())
 
