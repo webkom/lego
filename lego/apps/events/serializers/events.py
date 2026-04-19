@@ -71,6 +71,7 @@ class EventReadSerializer(
     TagSerializerMixin, BasisModelSerializer, ObjectPermissionsSerializerMixin
 ):
     company = CompanyField(queryset=Company.objects.all())
+    responsible_group = PublicAbakusGroupSerializer(read_only=True)
     cover = ImageField(required=False, options={"height": 500})
     cover_placeholder = ImageField(
         source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
@@ -103,6 +104,7 @@ class EventReadSerializer(
             "thumbnail",
             "total_capacity",
             "company",
+            "responsible_group",
             "registration_count",
             "tags",
             "activation_time",
