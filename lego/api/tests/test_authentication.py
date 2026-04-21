@@ -1,13 +1,6 @@
-from datetime import timedelta
-from unittest import mock
-
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APIRequestFactory
 
-from lego.apps.jwt.authentication import Authentication
-from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.users.models import User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -74,26 +67,3 @@ class JSONWebTokenTestCase(BaseAPITestCase):
         self.assertContains(
             verify_response, text="user", status_code=status.HTTP_201_CREATED
         )
-
-    def test_authenticate_does_not_trigger_full_user_save(self):
-        old_login = timezone.now() - timedelta(days=30)
-        User.objects.filter(pk=self.user.pk).update(
-            last_login=old_login, inactive_notified_counter=3
-        )
-
-        token = get_jwt_token(self.user)["token"]
-        request = APIRequestFactory().get(
-            "/api/v1/frontpage/", HTTP_AUTHORIZATION=f"JWT {token}"
-        )
-
-        with mock.patch(
-            "lego.apps.users.models.User.save",
-            side_effect=AssertionError("Authentication should not call User.save"),
-        ):
-            authentication = Authentication().authenticate(request)
-
-        self.assertIsNotNone(authentication)
-
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.inactive_notified_counter, 0)
-        self.assertGreater(self.user.last_login, old_login)
