@@ -294,6 +294,21 @@ EASTER_WINNER_ACHIEVEMENTS: AchievementCollection = {
         "requirement_function": lambda user: False,
         "level": 2,
     },
+    "easter_2026_participant": {
+        "identifier": EASTER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 3,
+    },
+    "easter_2026_contender": {
+        "identifier": EASTER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 4,
+    },
+    "easter_2026_winner": {
+        "identifier": EASTER_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 5,
+    },
 }
 
 CHRISTMAS_CALENDAR_ACHIEVEMENTS: AchievementCollection = {
