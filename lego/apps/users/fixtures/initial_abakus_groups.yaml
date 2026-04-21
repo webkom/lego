@@ -36,7 +36,7 @@
     show_badge: true
     active: true
     lft: 1
-    rght: 90
+    rght: 98
     tree_id: 2
     level: 0
 - model: users.abakusgroup
@@ -397,9 +397,81 @@
     show_badge: true
     active: true
     lft: 40
-    rght: 41
+    rght: 49
     tree_id: 2
     level: 1
+- model: users.abakusgroup
+  pk: 66
+  fields:
+    deleted: false
+    name: Abalan
+    description: ''
+    contact_email: ''
+    parent: 22
+    logo: null
+    type: interesse
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 41
+    rght: 42
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 67
+  fields:
+    deleted: false
+    name: Abacava
+    description: ''
+    contact_email: ''
+    parent: 22
+    logo: null
+    type: interesse
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 43
+    rght: 44
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 68
+  fields:
+    deleted: false
+    name: Abacraft
+    description: ''
+    contact_email: ''
+    parent: 22
+    logo: null
+    type: interesse
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 45
+    rght: 46
+    tree_id: 2
+    level: 2
+- model: users.abakusgroup
+  pk: 69
+  fields:
+    deleted: false
+    name: Abarun
+    description: ''
+    contact_email: ''
+    parent: 22
+    logo: null
+    type: interesse
+    text: ''
+    permissions: '[]'
+    show_badge: true
+    active: true
+    lft: 47
+    rght: 48
+    tree_id: 2
+    level: 2
 - model: users.abakusgroup
   pk: 23
   fields:
@@ -414,8 +486,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 42
-    rght: 43
+    lft: 50
+    rght: 51
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -432,8 +504,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 44
-    rght: 45
+    lft: 52
+    rght: 53
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -450,8 +522,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 46
-    rght: 47
+    lft: 54
+    rght: 55
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -468,8 +540,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 48
-    rght: 71
+    lft: 56
+    rght: 79
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -486,8 +558,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 49
-    rght: 50
+    lft: 57
+    rght: 58
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -504,8 +576,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 51
-    rght: 52
+    lft: 59
+    rght: 60
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -522,8 +594,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 53
-    rght: 54
+    lft: 61
+    rght: 62
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -540,8 +612,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 55
-    rght: 56
+    lft: 63
+    rght: 64
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -558,8 +630,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 57
-    rght: 58
+    lft: 65
+    rght: 66
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -576,8 +648,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 59
-    rght: 60
+    lft: 67
+    rght: 68
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -594,8 +666,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 61
-    rght: 62
+    lft: 69
+    rght: 70
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -612,8 +684,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 63
-    rght: 64
+    lft: 71
+    rght: 72
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -630,8 +702,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 65
-    rght: 66
+    lft: 73
+    rght: 74
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -648,8 +720,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 67
-    rght: 68
+    lft: 75
+    rght: 76
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -666,8 +738,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 69
-    rght: 70
+    lft: 77
+    rght: 78
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -684,8 +756,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 72
-    rght: 89
+    lft: 80
+    rght: 97
     tree_id: 2
     level: 1
 - model: users.abakusgroup
@@ -702,8 +774,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 73
-    rght: 74
+    lft: 81
+    rght: 82
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -720,8 +792,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 75
-    rght: 76
+    lft: 83
+    rght: 84
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -738,8 +810,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 77
-    rght: 78
+    lft: 85
+    rght: 86
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -756,8 +828,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 79
-    rght: 80
+    lft: 87
+    rght: 88
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -774,8 +846,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 81
-    rght: 82
+    lft: 89
+    rght: 90
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -792,8 +864,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 83
-    rght: 84
+    lft: 91
+    rght: 92
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -810,8 +882,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 85
-    rght: 86
+    lft: 93
+    rght: 94
     tree_id: 2
     level: 2
 - model: users.abakusgroup
@@ -828,8 +900,8 @@
     permissions: '[]'
     show_badge: true
     active: true
-    lft: 87
-    rght: 88
+    lft: 95
+    rght: 96
     tree_id: 2
     level: 2
 - model: users.abakusgroup

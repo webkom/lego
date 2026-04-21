@@ -169,3 +169,212 @@
       - boblee
     abakus_group:
       - Abakus
+
+# =======================
+# Abalan (2 members)
+# =======================
+- model: users.Membership
+  pk: 22
+  fields:
+    user:
+      - jaclynburke
+    abakus_group:
+      - Abalan
+    role: "leader"
+- model: users.Membership
+  pk: 23
+  fields:
+    user:
+      - jenniferbauer
+    abakus_group:
+      - Abalan
+
+# =======================
+# Abacava (5 members)
+# =======================
+- model: users.Membership
+  pk: 24
+  fields:
+    user:
+      - catherineholmes
+    abakus_group:
+      - Abacava
+    role: "leader"
+- model: users.Membership
+  pk: 25
+  fields:
+    user:
+      - mariavega
+    abakus_group:
+      - Abacava
+- model: users.Membership
+  pk: 26
+  fields:
+    user:
+      - emmabyrd
+    abakus_group:
+      - Abacava
+- model: users.Membership
+  pk: 27
+  fields:
+    user:
+      - morganfrazier
+    abakus_group:
+      - Abacava
+- model: users.Membership
+  pk: 28
+  fields:
+    user:
+      - kyliestevenson
+    abakus_group:
+      - Abacava
+
+# =======================
+# Abacraft (8 members)
+# =======================
+- model: users.Membership
+  pk: 29
+  fields:
+    user:
+      - bernardrojas
+    abakus_group:
+      - Abacraft
+    role: "leader"
+- model: users.Membership
+  pk: 30
+  fields:
+    user:
+      - irenelittle
+    abakus_group:
+      - Abacraft
+- model: users.Membership
+  pk: 31
+  fields:
+    user:
+      - taylerperkins
+    abakus_group:
+      - Abacraft
+- model: users.Membership
+  pk: 32
+  fields:
+    user:
+      - brittneyjennings
+    abakus_group:
+      - Abacraft
+- model: users.Membership
+  pk: 33
+  fields:
+    user:
+      - karinahayes
+    abakus_group:
+      - Abacraft
+- model: users.Membership
+  pk: 34
+  fields:
+    user:
+      - brittaniparker
+    abakus_group:
+      - Abacraft
+- model: users.Membership
+  pk: 35
+  fields:
+    user:
+      - claudiaross
+    abakus_group:
+      - Abacraft
+- model: users.Membership
+  pk: 36
+  fields:
+    user:
+      - brandenrobles
+    abakus_group:
+      - Abacraft
+
+# =======================
+# Abarun (12 members)
+# =======================
+- model: users.Membership
+  pk: 37
+  fields:
+    user:
+      - terrymarsh
+    abakus_group:
+      - Abarun
+    role: "leader"
+- model: users.Membership
+  pk: 38
+  fields:
+    user:
+      - ronaldcarlson
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 39
+  fields:
+    user:
+      - veronicapearson
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 40
+  fields:
+    user:
+      - rickystevenson
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 41
+  fields:
+    user:
+      - emileegoodman
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 42
+  fields:
+    user:
+      - davisbowers
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 43
+  fields:
+    user:
+      - taryndennis
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 44
+  fields:
+    user:
+      - delaneywong
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 45
+  fields:
+    user:
+      - lukecollins
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 46
+  fields:
+    user:
+      - rachaellong
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 47
+  fields:
+    user:
+      - jarredmoss
+    abakus_group:
+      - Abarun
+- model: users.Membership
+  pk: 48
+  fields:
+    user:
+      - haydenfoster
+    abakus_group:
+      - Abarun
