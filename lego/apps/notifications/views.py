@@ -105,10 +105,13 @@ class ExpoDeviceViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         push_token = serializer.validated_data["push_token"]
 
-        device, _ = Device.objects.update_or_create(
-            user=request.user, defaults={"push_token": push_token}
-        )
-
+        device = Device.objects.filter(user=request.user).order_by("pk").first()
+        if device:
+            device.push_token = push_token
+            device.is_active = True
+            device.save(update_fields=["push_token", "is_active"])
+        else:
+            device = Device.objects.create(user=request.user, push_token=push_token)
         Device.objects.filter(user=request.user).exclude(pk=device.pk).delete()
         return Response(
             ExpoDeviceSerializer(device).data, status=status.HTTP_201_CREATED
