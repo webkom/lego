@@ -125,3 +125,49 @@ class GrantTrophyCommandTestCase(BaseTestCase):
                 user__username="test1",
             ).exists()
         )
+
+    def test_grant_trophy_dry_run_does_not_write(self):
+        stdout = StringIO()
+
+        call_command(
+            "grant_trophy",
+            "--dry-run",
+            "christmas_2025",
+            "test1",
+            stdout=stdout,
+        )
+
+        self.assertFalse(
+            Achievement.objects.filter(
+                identifier=CHRISTMAS_CALENDAR_IDENTIFIER,
+                level=0,
+                user__username="test1",
+            ).exists()
+        )
+        self.assertIn(
+            'Would create trophy "christmas_2025" for "test1".',
+            stdout.getvalue(),
+        )
+
+    def test_grant_trophy_restores_soft_deleted_achievement(self):
+        user = User.objects.get(username="test1")
+        achievement = Achievement.objects.create(
+            user=user,
+            identifier=EASTER_IDENTIFIER,
+            level=0,
+        )
+        achievement.delete()
+
+        with patch("builtins.input", return_value="y"):
+            call_command("grant_trophy", "easter_2026_winner", "test1")
+
+        achievement.refresh_from_db()
+        self.assertFalse(achievement.deleted)
+        self.assertEqual(achievement.level, 5)
+        self.assertEqual(
+            Achievement.all_objects.filter(
+                user=user,
+                identifier=EASTER_IDENTIFIER,
+            ).count(),
+            1,
+        )

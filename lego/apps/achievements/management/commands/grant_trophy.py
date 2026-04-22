@@ -79,7 +79,7 @@ class Command(BaseCommand):
             for user in users:
                 username = user.username
                 achievements = list(
-                    Achievement.objects.select_for_update().filter(
+                    Achievement.all_objects.select_for_update().filter(
                         user=user,
                         identifier=identifier,
                     )
@@ -100,13 +100,22 @@ class Command(BaseCommand):
                             identifier=identifier,
                             level=level,
                         )
-                elif current_achievement.level != level:
-                    action = "update"
-                    if not dry_run:
-                        current_achievement.level = level
-                        current_achievement.save(update_fields=["level"])
                 else:
-                    action = "unchanged"
+                    update_fields = []
+                    if current_achievement.deleted:
+                        current_achievement.deleted = False
+                        update_fields.append("deleted")
+                    if current_achievement.level != level:
+                        current_achievement.level = level
+                        update_fields.append("level")
+
+                    if update_fields:
+                        action = "update"
+                    else:
+                        action = "unchanged"
+
+                    if update_fields and not dry_run:
+                        current_achievement.save(update_fields=update_fields)
 
                 results.append((username, action))
 
