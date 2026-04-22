@@ -6,7 +6,8 @@ from django.core.management.base import CommandError
 
 from lego.apps.achievements.constants import (
     CHRISTMAS_CALENDAR_IDENTIFIER,
-    EASTER_IDENTIFIER,
+    EASTER_2025_IDENTIFIER,
+    EASTER_2026_IDENTIFIER,
 )
 from lego.apps.achievements.models import Achievement
 from lego.apps.users.models import User
@@ -25,27 +26,56 @@ class GrantTrophyCommandTestCase(BaseTestCase):
         self.assertTrue(
             Achievement.objects.filter(
                 user=user,
-                identifier=EASTER_IDENTIFIER,
-                level=5,
+                identifier=EASTER_2026_IDENTIFIER,
+                level=2,
             ).exists()
         )
 
     def test_grant_trophy_updates_existing_manual_achievement(self):
         user = User.objects.get(username="test1")
-        Achievement.objects.create(user=user, identifier=EASTER_IDENTIFIER, level=0)
+        Achievement.objects.create(
+            user=user, identifier=EASTER_2026_IDENTIFIER, level=0
+        )
 
         with patch("builtins.input", return_value="y"):
             call_command("grant_trophy", "easter_2026_winner", "test1")
 
         self.assertEqual(
-            Achievement.objects.filter(user=user, identifier=EASTER_IDENTIFIER).count(),
+            Achievement.objects.filter(
+                user=user,
+                identifier=EASTER_2026_IDENTIFIER,
+            ).count(),
             1,
         )
         self.assertTrue(
             Achievement.objects.filter(
                 user=user,
-                identifier=EASTER_IDENTIFIER,
-                level=5,
+                identifier=EASTER_2026_IDENTIFIER,
+                level=2,
+            ).exists()
+        )
+
+    def test_grant_trophy_keeps_easter_trophies_from_other_years(self):
+        user = User.objects.get(username="test1")
+        Achievement.objects.create(
+            user=user, identifier=EASTER_2025_IDENTIFIER, level=1
+        )
+
+        with patch("builtins.input", return_value="y"):
+            call_command("grant_trophy", "easter_2026_winner", "test1")
+
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=user,
+                identifier=EASTER_2025_IDENTIFIER,
+                level=1,
+            ).exists()
+        )
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=user,
+                identifier=EASTER_2026_IDENTIFIER,
+                level=2,
             ).exists()
         )
 
@@ -153,7 +183,7 @@ class GrantTrophyCommandTestCase(BaseTestCase):
         user = User.objects.get(username="test1")
         achievement = Achievement.objects.create(
             user=user,
-            identifier=EASTER_IDENTIFIER,
+            identifier=EASTER_2026_IDENTIFIER,
             level=0,
         )
         achievement.delete()
@@ -163,11 +193,11 @@ class GrantTrophyCommandTestCase(BaseTestCase):
 
         achievement.refresh_from_db()
         self.assertFalse(achievement.deleted)
-        self.assertEqual(achievement.level, 5)
+        self.assertEqual(achievement.level, 2)
         self.assertEqual(
             Achievement.all_objects.filter(
                 user=user,
-                identifier=EASTER_IDENTIFIER,
+                identifier=EASTER_2026_IDENTIFIER,
             ).count(),
             1,
         )
