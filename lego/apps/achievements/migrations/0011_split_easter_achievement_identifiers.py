@@ -1,6 +1,5 @@
 from django.db import migrations, models
 
-
 FORWARD_EASTER_MAPPING = {
     ("easter_winner", 0): ("easter_2024", 0),
     ("easter_winner", 1): ("easter_2025", 0),
