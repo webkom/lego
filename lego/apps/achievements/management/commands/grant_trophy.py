@@ -14,9 +14,7 @@ class Command(BaseCommand):
             "trophy",
             nargs="?",
             choices=sorted(MANUAL_ACHIEVEMENTS),
-            help=(
-                "Manual trophy key, for example 'easter_2026_winner'."
-            ),
+            help=("Manual trophy key, for example 'easter_2026_winner'."),
         )
         parser.add_argument(
             "usernames",
