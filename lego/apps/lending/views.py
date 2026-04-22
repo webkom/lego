@@ -13,6 +13,7 @@ from lego.apps.lending.filters import LendingRequestFilterSet
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
+    LendableObjectAvailableQuerySerializer,
     LendableObjectSerializer,
     LendingRequestCreateAndUpdateSerializer,
     LendingRequestDetailSerializer,
@@ -40,6 +41,39 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 LendableObjectAdminSerializer if is_admin else LendableObjectSerializer
             )
         return LendableObjectSerializer
+
+    @action(detail=False, methods=["GET"])
+    def available(self, request, *args, **kwargs):
+        """
+        Returns a list of LendableObject IDs that have no approved lending request
+        overlapping the given [start_date, end_date) interval.
+
+        Query params:
+            start_date: ISO 8601 datetime string (e.g. 2026-03-10T00:00:00Z)
+            end_date:   ISO 8601 datetime string (e.g. 2026-03-20T00:00:00Z)
+        """
+        serializer = LendableObjectAvailableQuerySerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        start_date = serializer.validated_data["start_date"]
+        end_date = serializer.validated_data["end_date"]
+
+        approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
+
+        unavailable_objects_ids = (
+            LendingRequest.objects.filter(
+                status=approved_status, start_date__lt=end_date, end_date__gt=start_date
+            )
+            .values_list("lendable_object_id", flat=True)
+            .distinct()
+        )
+
+        base_queryset = self.filter_queryset(self.get_queryset())
+
+        available_ids = base_queryset.exclude(
+            id__in=unavailable_objects_ids
+        ).values_list("id", flat=True)
+
+        return Response(list(available_ids))
 
     @action(detail=True, methods=["GET"])
     def availability(self, request, *args, **kwargs):

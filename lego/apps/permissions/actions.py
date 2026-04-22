@@ -9,6 +9,7 @@ def action_to_permission(action):
 
     action_map = {
         "list": constants.LIST,
+        "available": constants.LIST,
         "create": constants.CREATE,
         "retrieve": constants.VIEW,
         "update": constants.EDIT,
