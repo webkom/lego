@@ -3,7 +3,6 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.dateparse import parse_datetime
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +13,7 @@ from lego.apps.lending.filters import LendingRequestFilterSet
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.lending.serializers import (
     LendableObjectAdminSerializer,
+    LendableObjectAvailableQuerySerializer,
     LendableObjectSerializer,
     LendingRequestCreateAndUpdateSerializer,
     LendingRequestDetailSerializer,
@@ -52,40 +52,10 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             start_date: ISO 8601 datetime string (e.g. 2026-03-10T00:00:00Z)
             end_date:   ISO 8601 datetime string (e.g. 2026-03-20T00:00:00Z)
         """
-
-        start_date_str = request.query_params.get("start_date", "")
-        end_date_str = request.query_params.get("end_date", "")
-        if not start_date_str or not end_date_str:
-            return Response(
-                {
-                    "detail": "Both start_date and end_date query parameters are required."
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        start_date = parse_datetime(start_date_str)
-        end_date = parse_datetime(end_date_str)
-        if start_date is None or end_date is None:
-            return Response(
-                {
-                    "detail": (
-                        "Invalid date format. Use ISO 8601 format "
-                        "(e.g. 2026-03-10T00:00:00Z or "
-                        "2026-03-10T00:00:00+00:00)."
-                    )
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if not timezone.is_aware(start_date):
-            start_date = timezone.make_aware(start_date)
-        if not timezone.is_aware(end_date):
-            end_date = timezone.make_aware(end_date)
-
-        if start_date >= end_date:
-            return Response(
-                {"detail": "start_date must be before end_date."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer = LendableObjectAvailableQuerySerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        start_date = serializer.validated_data["start_date"]
+        end_date = serializer.validated_data["end_date"]
 
         approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
 

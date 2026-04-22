@@ -31,6 +31,18 @@ class TimelineEntryAttrs(TypedDict, total=False):
     message: Optional[str]
 
 
+class LendableObjectAvailableQuerySerializer(serializers.Serializer):
+    start_date = serializers.DateTimeField()
+    end_date = serializers.DateTimeField()
+
+    def validate(self, attrs):
+        if attrs["start_date"] >= attrs["end_date"]:
+            raise serializers.ValidationError(
+                {"end_date": "End date must be after start date."}
+            )
+        return attrs
+
+
 class LendableObjectSerializer(BasisModelSerializer):
     image = ImageField(required=False, options={"height": 500})
     can_lend = serializers.SerializerMethodField()

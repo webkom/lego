@@ -535,6 +535,20 @@ class LendableObjectAvailableTestCase(BaseAPITestCase):
         self.assertIn(self.obj1.id, response.json())
         self.assertIn(self.obj2.id, response.json())
 
+    def test_keyword_list_permissions_can_access_available_for_all_objects(self):
+        self.group.permissions = ["/sudo/admin/lendableobjects/list/"]
+        self.group.save()
+
+        hidden_obj = create_lendable_object()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(get_available_url(self.start, self.end))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(self.obj1.id, response.json())
+        self.assertIn(self.obj2.id, response.json())
+        self.assertIn(hidden_obj.id, response.json())
+
     def test_object_with_approved_request_matching_interval_is_excluded(self):
         create_lending_request(
             lendable_object=self.obj1,
