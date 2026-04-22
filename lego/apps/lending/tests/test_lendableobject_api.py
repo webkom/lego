@@ -483,10 +483,7 @@ class LendableObjectAvailableTestCase(BaseAPITestCase):
 
         self.obj1 = create_lendable_object()
         self.obj2 = create_lendable_object()
-        self.obj1.can_view_groups.add(self.group)
-        self.obj2.can_view_groups.add(self.group)
 
-        # Grant the user view permission on both objects via group membership
         self.obj1.can_view_groups.add(self.group)
         self.obj2.can_view_groups.add(self.group)
 
