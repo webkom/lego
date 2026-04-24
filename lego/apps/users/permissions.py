@@ -71,7 +71,18 @@ class PreventPermissionElevation(LegoPermissions):
     def has_permission(self, request, view):
         if request.method in ["CREATE", "PUT", "PATCH"]:
             user = request.user
-            requested_permissions = request.data.get("permissions", [])
+            requested_permissions = list(request.data.get("permissions", []))
+
+            parent_id = request.data.get("parent")
+            if parent_id:
+                from lego.apps.users.models import AbakusGroup
+
+                try:
+                    parent = AbakusGroup.objects.get(id=parent_id)
+                except (AbakusGroup.DoesNotExist, ValueError, TypeError):
+                    return False
+                for group in parent.get_ancestors(include_self=True):
+                    requested_permissions += list(group.permissions)
 
             if not user.has_perms(requested_permissions):
                 return False
