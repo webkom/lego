@@ -48,3 +48,6 @@ class RegistrationReminderPushTestCase(BaseTestCase):
 
     def test_generate_push_template(self, send_push_mock):
         self.assertPushEquals(send_push_mock, "template", "followers/push/reminder.txt")
+
+    def test_generate_push_title(self, send_push_mock):
+        self.assertPushEquals(send_push_mock, "title", "Påmelding til arrangement")

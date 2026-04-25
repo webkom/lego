@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 
 from expo_notifications.models import Device
@@ -74,7 +76,7 @@ class ExpoDeviceSerializer(BasisModelSerializer):
     def validate_push_token(self, token: str) -> str:
         token = token.strip()
 
-        if not token.startswith("ExponentPushToken[") or not token.endswith("]"):
+        if not re.match(r"^ExponentPushToken\[.+\]$", token):
             raise serializers.ValidationError("Invalid Expo Push Token")
 
         return token

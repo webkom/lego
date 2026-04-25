@@ -110,12 +110,13 @@ class ExpoDeviceViewSet(viewsets.ViewSet):
             device.push_token = push_token
             device.is_active = True
             device.save(update_fields=["push_token", "is_active"])
+            status_code = status.HTTP_200_OK
         else:
             device = Device.objects.create(user=request.user, push_token=push_token)
+            status_code = status.HTTP_201_CREATED
+
         Device.objects.filter(user=request.user).exclude(pk=device.pk).delete()
-        return Response(
-            ExpoDeviceSerializer(device).data, status=status.HTTP_201_CREATED
-        )
+        return Response(ExpoDeviceSerializer(device).data, status=status_code)
 
     @decorators.action(detail=False, methods=["delete"], url_path="unregister")
     def unregister(self, request):

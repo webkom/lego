@@ -37,7 +37,8 @@ class PushMessage:
         apns_devices = APNSDevice.objects.filter(user=self.user, active=True)
 
         expo_device = ExpoDevice.objects.filter(user=self.user, is_active=True).first()
-        expo_device.messages.send(title=self.title, body=message)
+        if expo_device:
+            expo_device.messages.send(title=self.title, body=message)
 
         log.info(
             "send_push",

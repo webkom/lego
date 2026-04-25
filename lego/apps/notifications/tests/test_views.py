@@ -331,25 +331,23 @@ class ExpoDeviceViewSetTestCase(BaseAPITestCase):
     def test_create_device_rejects_invalid_token(self):
         self.client.force_authenticate(self.user)
 
-        response = self.client.post(self.url, {"pushToken": "invalid-token"})
+        def assertToken(token: str):
+            response = self.client.post(self.url, {"pushToken": token})
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertFalse(Device.objects.filter(user=self.user).exists())
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(Device.objects.filter(user=self.user).exists())
+        assertToken("invalid-token")
+        assertToken("ExpoPushToken[]")
 
     def test_create_device_replaces_existing_devices(self):
         self.client.force_authenticate(self.user)
-        Device.objects.create(
-            user=self.user, push_token="ExponentPushToken[old_token_one]"
-        )
-        Device.objects.create(
-            user=self.user, push_token="ExponentPushToken[old_token_two]"
-        )
+        Device.objects.create(user=self.user, push_token="ExponentPushToken[old_token]")
 
         new_token = "ExponentPushToken[new_token]"
 
         response = self.client.post(self.url, {"pushToken": new_token})
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Device.objects.filter(user=self.user).count(), 1)
         self.assertEqual(Device.objects.get(user=self.user).push_token, new_token)
 
