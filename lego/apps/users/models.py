@@ -406,7 +406,7 @@ class User(
     )
 
     linkedin_id = models.CharField(
-        max_length=71,
+        max_length=200,
         unique=False,
         null=True,
         blank=True,
