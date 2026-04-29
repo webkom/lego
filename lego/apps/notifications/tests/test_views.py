@@ -1,5 +1,7 @@
 from rest_framework import status
 
+from expo_notifications.models import Device
+
 from lego.apps.notifications import constants
 from lego.apps.notifications.models import Announcement
 from lego.apps.users.models import AbakusGroup, User
@@ -295,3 +297,71 @@ class AnnouncementViewSetTestCase(BaseAPITestCase):
         announcement = Announcement.objects.get(pk=10)
         recipients = announcement.lookup_recipients()
         self.assertEqual(len(recipients), 1)
+
+
+class ExpoDeviceViewSetTestCase(BaseAPITestCase):
+    fixtures = ["test_users.yaml"]
+
+    def setUp(self):
+        self.url = "/api/v1/device-expo/"
+        self.unregister_url = self.url + "unregister/"
+        self.user = User.objects.get(pk=1)
+        self.other_user = User.objects.get(pk=2)
+
+    def test_no_auth(self):
+        response = self.client.post(
+            self.url, {"pushToken": "ExponentPushToken[test_token]"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        response = self.client.delete(self.unregister_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_create_device(self):
+        self.client.force_authenticate(self.user)
+        token = "ExponentPushToken[test_token]"
+
+        response = self.client.post(self.url, {"pushToken": token})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json(), {"pushToken": token})
+        self.assertEqual(Device.objects.filter(user=self.user).count(), 1)
+        self.assertEqual(Device.objects.get(user=self.user).push_token, token)
+
+    def test_create_device_rejects_invalid_token(self):
+        self.client.force_authenticate(self.user)
+
+        def assertToken(token: str):
+            response = self.client.post(self.url, {"pushToken": token})
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertFalse(Device.objects.filter(user=self.user).exists())
+
+        assertToken("invalid-token")
+        assertToken("ExpoPushToken[]")
+
+    def test_create_device_replaces_existing_devices(self):
+        self.client.force_authenticate(self.user)
+        Device.objects.create(user=self.user, push_token="ExponentPushToken[old_token]")
+
+        new_token = "ExponentPushToken[new_token]"
+
+        response = self.client.post(self.url, {"pushToken": new_token})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Device.objects.filter(user=self.user).count(), 1)
+        self.assertEqual(Device.objects.get(user=self.user).push_token, new_token)
+
+    def test_unregister(self):
+        self.client.force_authenticate(self.user)
+        Device.objects.create(
+            user=self.user, push_token="ExponentPushToken[test_token]"
+        )
+        Device.objects.create(
+            user=self.other_user, push_token="ExponentPushToken[other_token]"
+        )
+
+        response = self.client.delete(self.unregister_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(Device.objects.filter(user=self.user).exists())
+        self.assertTrue(Device.objects.filter(user=self.other_user).exists())

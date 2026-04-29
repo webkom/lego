@@ -1,0 +1,1 @@
+Det er under en time til påmelding til {{ event }} starter.

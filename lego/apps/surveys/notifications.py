@@ -27,5 +27,6 @@ class SurveyNotification(Notification):
         return self._delay_push(
             template="surveys/push/survey.txt",
             context={"event": survey.event.title},
+            title="Spørreundersøkelse",
             instance=survey,
         )

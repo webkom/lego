@@ -1,7 +1,9 @@
 from rest_framework import decorators, exceptions, permissions, status, viewsets
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from expo_notifications.models import Device
 from push_notifications.api.rest_framework import (
     APNSDevice,
     APNSDeviceAuthorizedViewSet,
@@ -16,6 +18,7 @@ from .models import Announcement, NotificationSetting
 from .serializers import (
     AnnouncementDetailSerializer,
     AnnouncementListSerializer,
+    ExpoDeviceSerializer,
     NotificationSettingCreateSerializer,
     NotificationSettingSerializer,
 )
@@ -92,6 +95,33 @@ class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
         if self.request is None:
             return GCMDevice.objects.none()
         return GCMDevice.get_queryset()
+
+
+class ExpoDeviceViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        serializer = ExpoDeviceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        push_token = serializer.validated_data["push_token"]
+
+        device = Device.objects.filter(user=request.user).order_by("pk").first()
+        if device:
+            device.push_token = push_token
+            device.is_active = True
+            device.save(update_fields=["push_token", "is_active"])
+            status_code = status.HTTP_200_OK
+        else:
+            device = Device.objects.create(user=request.user, push_token=push_token)
+            status_code = status.HTTP_201_CREATED
+
+        Device.objects.filter(user=request.user).exclude(pk=device.pk).delete()
+        return Response(ExpoDeviceSerializer(device).data, status=status_code)
+
+    @decorators.action(detail=False, methods=["delete"], url_path="unregister")
+    def unregister(self, request):
+        Device.objects.filter(user=request.user).delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class AnnouncementViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
