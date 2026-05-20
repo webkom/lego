@@ -1512,6 +1512,28 @@ class AllergiesTestCase(BaseAPITestCase):
             .get("allergies")
         )
 
+    def test_allergies_endpoint_without_permission_returns_403(self):
+        user = User.objects.get(pk=2)
+        AbakusGroup.objects.get(name="Abakom").add_user(user)
+        self.client.force_authenticate(user)
+
+        event_response = self.client.get(f"{_get_detail_url(self.event.id)}allergies/")
+
+        self.assertEqual(event_response.status_code, status.HTTP_403_FORBIDDEN)
+        body = event_response.json()
+        for leaked_field in (
+            "pools",
+            "waiting_registrations",
+            "unregistered",
+            "responsible_users",
+        ):
+            self.assertNotIn(leaked_field, body)
+
+    def test_allergies_endpoint_unauthenticated_returns_401(self):
+        event_response = self.client.get(f"{_get_detail_url(self.event.id)}allergies/")
+
+        self.assertEqual(event_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class CreateAdminRegistrationTestCase(BaseAPITestCase):
     fixtures = [
