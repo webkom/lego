@@ -1459,3 +1459,198 @@
     require_auth: False
   model: events.Event
   pk: 54
+- fields:
+    description: Brettspill og pizza med interessegruppen.
+    end_time: '2026-06-10T20:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Abakus-kontoret
+    start_time: '2026-06-10T16:00:00+00:00'
+    text: '<p>En koselig kveld med brettspill og pizza.</p>'
+    title: Brettspillkveld med Koskom
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 55
+- fields:
+    description: Bli med på klatring i Trondheim!
+    end_time: '2026-06-13T20:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Trondheim klatresenter
+    start_time: '2026-06-13T17:00:00+00:00'
+    text: '<p>Vi møtes for en kveld med klatring og sosialt samvær.</p>'
+    title: Klatretur med interessegruppen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 56
+- fields:
+    description: LAN-kveld for alle gamere.
+    end_time: '2026-06-25T23:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Realfagbygget
+    start_time: '2026-06-25T17:00:00+00:00'
+    text: '<p>Ta med deg PC-en og bli med på LAN!</p>'
+    title: LAN-kveld med interessegruppen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 57
+- fields:
+    description: Bli med på fototur langs Nidelva med Fotogjengen.
+    end_time: '2026-07-02T20:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Nidelva
+    start_time: '2026-07-02T16:00:00+00:00'
+    text: '<p>Lær deg grunnleggende fotografering på en sosial fototur.</p>'
+    title: Fototur langs Nidelva
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 58
+- fields:
+    description: Filmkveld med popcorn og god stemning.
+    end_time: '2026-06-08T22:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Abakus-kontoret
+    start_time: '2026-06-08T19:00:00+00:00'
+    text: '<p>Vi ser film og koser oss sammen.</p>'
+    title: Filmkveld med Filmklubben
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 59
+- fields:
+    description: Rolig yogaøkt for alle nivåer.
+    end_time: '2026-06-13T16:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Idrettsbygget
+    start_time: '2026-06-13T14:00:00+00:00'
+    text: '<p>Ta med matte og godt humør.</p>'
+    title: Yoga med interessegruppen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 60
+- fields:
+    description: Sosial volleyballtrening for alle.
+    end_time: '2026-07-10T20:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Gløshaugen
+    start_time: '2026-07-10T18:00:00+00:00'
+    text: '<p>Alle nivåer er velkomne.</p>'
+    title: Volleyballtrening
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 61
+- fields:
+    description: Vennlig sjakkturnering for alle nivåer.
+    end_time: '2026-06-12T20:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Abakus-kontoret
+    start_time: '2026-06-12T18:00:00+00:00'
+    text: '<p>Ta med deg konkurranseinstinktet.</p>'
+    title: Sjakkturnering med Sjakkgruppa
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 62
+- fields:
+    description: Sosial boulderingøkt for alle.
+    end_time: '2026-06-09T21:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Trondheim klatresenter
+    start_time: '2026-06-09T19:00:00+00:00'
+    text: '<p>Klatring og pizza etterpå.</p>'
+    title: Bouldering med Klatregruppa
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 63
+- fields:
+    description: Ta med strikketøy og kos deg.
+    end_time: '2026-06-04T19:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Abakus-kontoret
+    start_time: '2026-06-04T17:00:00+00:00'
+    text: '<p>Strikk, prat og kaffe.</p>'
+    title: Strikkekafé
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 64
+- fields:
+    description: Rolig fellesløp for alle nivåer.
+    end_time: '2026-05-28T19:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Nidelva
+    start_time: '2026-05-28T18:00:00+00:00'
+    text: '<p>Vi løper en rolig runde sammen.</p>'
+    title: Løpetur langs Nidelva
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 65
+- fields:
+    description: Flere brettspill og snacks.
+    end_time: '2026-05-15T21:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Abakus-kontoret
+    start_time: '2026-05-15T19:00:00+00:00'
+    text: '<p>Andre runde med brettspill.</p>'
+    title: Brettspillkveld vol. 2
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 66
+- fields:
+    description: Lær redigering i Lightroom.
+    end_time: '2026-04-30T20:00:00+00:00'
+    event_type: interest_event
+    event_status_type: NORMAL
+    location: Realfagbygget
+    start_time: '2026-04-30T18:00:00+00:00'
+    text: '<p>Praktisk fotokurs for nybegynnere.</p>'
+    title: Fotokurs med Fotogjengen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 67
