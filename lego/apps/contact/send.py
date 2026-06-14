@@ -44,4 +44,5 @@ def get_recipients(recipient_group):
             role=LEADER
         ).select_related("user")
     ]
-    return [leader.email_address for leader in recipient_leaders]
+    # Sort for a deterministic recipient order (the query has no inherent ordering).
+    return sorted(leader.email_address for leader in recipient_leaders)
