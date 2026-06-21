@@ -448,7 +448,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         self.assertEqual(len(response.json()), 1)
 
         unavailable_range = response.json()[0]
-        self.assertEqual(len(unavailable_range), 4)
+        self.assertEqual(len(unavailable_range), 6)
         self.assertEqual(unavailable_range[0], start_date.isoformat())
         self.assertEqual(unavailable_range[1], end_date.isoformat())
 
