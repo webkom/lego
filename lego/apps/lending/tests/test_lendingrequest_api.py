@@ -354,6 +354,67 @@ class LendingRequestTestCase(BaseAPITestCase):
         self.assertEqual(results[0]["id"], request2.id)
         self.assertEqual(results[1]["id"], request3.id)
 
+    def test_filter_by_archived(self):
+        request_unarchived = create_lending_request(
+            user=self.user,
+            lendable_object=self.lendable_object,
+            archived=False,
+            status="approved",
+        )
+        request_archived = create_lending_request(
+            user=self.user,
+            lendable_object=self.lendable_object,
+            archived=True,
+            status="approved",
+        )
+
+        self.client.force_authenticate(user=self.editor_user)
+
+        archived_response = self.client.get(
+            reverse("api:v1:lending-request-admin"), {"archived": "true"}
+        )
+        self.assertEqual(archived_response.status_code, status.HTTP_200_OK)
+        archived_ids = [req["id"] for req in archived_response.json()["results"]]
+        self.assertEqual(archived_ids, [request_archived.id])
+
+        unarchived_response = self.client.get(
+            reverse("api:v1:lending-request-admin"), {"archived": "false"}
+        )
+        self.assertEqual(unarchived_response.status_code, status.HTTP_200_OK)
+        unarchived_ids = [req["id"] for req in unarchived_response.json()["results"]]
+        self.assertEqual(unarchived_ids, [request_unarchived.id])
+
+    def test_filter_by_archived_and_status(self):
+        request_approved_unarchived = create_lending_request(
+            user=self.user,
+            lendable_object=self.lendable_object,
+            archived=False,
+            status="approved",
+        )
+        create_lending_request(
+            user=self.user,
+            lendable_object=self.lendable_object,
+            archived=True,
+            status="approved",
+        )
+        create_lending_request(
+            user=self.user,
+            lendable_object=self.lendable_object,
+            archived=False,
+            status="cancelled",
+        )
+
+        self.client.force_authenticate(user=self.editor_user)
+
+        response = self.client.get(
+            reverse("api:v1:lending-request-admin"),
+            {"status": "approved", "archived": "false"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], request_approved_unarchived.id)
+
     def test_list_lending_requests_can_be_sorted_newest_first(self):
         self.client.force_authenticate(user=self.user)
 
@@ -849,3 +910,51 @@ class LendingRequestApprovalByResponsibleUserTestCase(BaseAPITestCase):
 
         lending_request = LendingRequest.objects.get(pk=self.request_id)
         self.assertEqual(lending_request.status, "unapproved")
+
+
+class LendingRequestPatchTestCase(BaseAPITestCase):
+    def setUp(self):
+        self.user = create_user()
+        self.group = AbakusGroup.objects.create(name="test_group")
+        self.group.add_user(self.user)
+
+        self.lendable_object = create_lendable_object()
+        self.lendable_object.can_view_groups.add(self.group)
+        self.lendable_object.can_edit_groups.add(self.group)
+
+        self.lending_request = create_lending_request(self.user, self.lendable_object)
+
+    def test_patch_lending_request_can_toggle_archived(self):
+        self.client.force_authenticate(user=self.user)
+
+        create_response = self.client.post(
+            get_lending_request_list_url(),
+            {
+                "lendable_object": self.lendable_object.pk,
+                "start_date": (now() + timedelta(days=1)).isoformat(),
+                "end_date": (now() + timedelta(days=2)).isoformat(),
+            },
+        )
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+        request_id = create_response.data["id"]
+
+        patch_true_response = self.client.patch(
+            get_lending_request_detail_url(request_id),
+            {"archived": True},
+        )
+        self.assertEqual(patch_true_response.status_code, status.HTTP_200_OK)
+        self.assertTrue(patch_true_response.data["archived"])
+
+        lending_request = LendingRequest.objects.get(pk=request_id)
+        self.assertTrue(lending_request.archived)
+
+        patch_false_response = self.client.patch(
+            get_lending_request_detail_url(request_id),
+            {"archived": False},
+        )
+        self.assertEqual(patch_false_response.status_code, status.HTTP_200_OK)
+        self.assertFalse(patch_false_response.data["archived"])
+
+        lending_request.refresh_from_db()
+        self.assertFalse(lending_request.archived)
+

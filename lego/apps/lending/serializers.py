@@ -134,6 +134,7 @@ class LendingRequestListSerializer(BasisModelSerializer):
             "id",
             "lendable_object",
             "status",
+            "archived",
             "start_date",
             "end_date",
         )
@@ -154,6 +155,7 @@ class LendingRequestDetailSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
+            "archived",
             "start_date",
             "end_date",
             "timeline_entries",
@@ -176,6 +178,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
+            "archived",
             "comment",
             "start_date",
             "end_date",

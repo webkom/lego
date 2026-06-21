@@ -1,4 +1,4 @@
-from django_filters import CharFilter, FilterSet
+from django_filters import BooleanFilter, CharFilter, FilterSet
 
 from lego.apps.lending.models import LendingRequest
 
@@ -6,6 +6,7 @@ from lego.apps.lending.models import LendingRequest
 class LendingRequestFilterSet(FilterSet):
 
     status = CharFilter(method="filter_lending_status")
+    archived = BooleanFilter(field_name="archived")
 
     def filter_lending_status(self, queryset, name, value):
         if not value:
@@ -20,4 +21,4 @@ class LendingRequestFilterSet(FilterSet):
 
     class Meta:
         model = LendingRequest
-        fields = ["status"]
+        fields = ["status", "archived"]
