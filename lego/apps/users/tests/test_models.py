@@ -244,71 +244,96 @@ class PenaltyTestCase(BaseTestCase):
 
     def setUp(self):
         self.test_user = User.objects.get(pk=1)
-        self.source = Event.objects.all().first()
 
     def test_create_penalty(self):
+        source = Event.objects.all().first()
         penalty = Penalty.objects.create(
-            user=self.test_user, reason="test", weight=1, source_event=self.source
+            user=self.test_user, reason="test", weight=1, source_event=source
         )
 
         self.assertEqual(self.test_user.number_of_penalties(), 1)
         self.assertEqual(self.test_user, penalty.user)
         self.assertEqual("test", penalty.reason)
         self.assertEqual(1, penalty.weight)
-        self.assertEqual(self.source, penalty.source_event)
-        self.assertEqual(self.source.id, penalty.source_event.id)
+        self.assertEqual(source, penalty.source_event)
+        self.assertEqual(source.id, penalty.source_event.id)
 
     def test_count_weights(self):
+        source = Event.objects.all().first()
         weights = [1, 2]
         for weight in weights:
             Penalty.objects.create(
                 user=self.test_user,
                 reason="test",
                 weight=weight,
-                source_event=self.source,
+                source_event=source,
             )
 
         self.assertEqual(self.test_user.number_of_penalties(), sum(weights))
 
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 10, 1))
     def test_only_count_active_penalties(self, mock_now):
+        event1 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=20),
+            end_time=mock_now() - timedelta(days=20),
+        )
+
+        event2 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=19, hours=23, minutes=59),
+            end_time=mock_now() - timedelta(days=19, hours=23, minutes=59),
+        )
+
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=20),
             user=self.test_user,
             reason="test",
             weight=1,
-            source_event=self.source,
+            source_event=event1,
         )
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=19, hours=23, minutes=59),
             user=self.test_user,
             reason="test",
             weight=1,
-            source_event=self.source,
+            source_event=event2,
         )
         self.assertEqual(self.test_user.number_of_penalties(), 1)
 
     @override_settings(PENALTY_IGNORE_WINTER=((12, 10), (1, 10)))
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 12, 10))
     def test_frozen_penalties_count_as_active_winter(self, mock_now):
-        # This penalty is created slightly less than 20 days from the freeze-point.
-        # It should be counted as active.
+        # This event is created slightly less than 20 days from the freeze-point.
+        # The penalty should be counted as active.
+        event1 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now().replace(day=1),
+            end_time=mock_now().replace(day=1),
+        )
+
         Penalty.objects.create(
             created_at=mock_now() - timedelta(days=20, hours=23, minutes=59),
             user=self.test_user,
             reason="active",
             weight=1,
-            source_event=self.source,
+            source_event=event1,
         )
 
-        # This penalty is created exactly 20 days from the freeze-point.
-        # It should be counted as inactive.
+        # This event is created exactly 20 days from the freeze-point.
+        # The penalty should be counted as inactive.
+        event2 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=21),
+            end_time=mock_now() - timedelta(days=21),
+        )
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=21),
             user=self.test_user,
             reason="inactive",
             weight=1,
-            source_event=self.source,
+            source_event=event2,
         )
 
         self.assertEqual(self.test_user.number_of_penalties(), 1)
@@ -317,24 +342,35 @@ class PenaltyTestCase(BaseTestCase):
     @override_settings(PENALTY_IGNORE_SUMMER=((6, 12), (8, 15)))
     @mock.patch("django.utils.timezone.now", return_value=fake_time(2016, 6, 12))
     def test_frozen_penalties_count_as_active_summer(self, mock_now):
-        # This penalty is created slightly less than 20 days from the freeze-point.
-        # It should be counted as active.
+        # This event is created slightly less than 20 days from the freeze-point.
+        # The penalty should be counted as active.
+        event1 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=19, hours=23, minutes=59),
+            end_time=mock_now() - timedelta(days=19, hours=23, minutes=59),
+        )
+
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=20, hours=23, minutes=59),
             user=self.test_user,
             reason="active",
             weight=1,
-            source_event=self.source,
+            source_event=event1,
         )
 
-        # This penalty is created exactly 20 days from the freeze-point.
-        # It should be counted as inactive.
+        # This event is created exactly 20 days from the freeze-point.
+        # The penalty should be counted as inactive.
+        event2 = Event.objects.create(
+            title="Another simple event",
+            event_type=0,
+            start_time=mock_now() - timedelta(days=21),
+            end_time=mock_now() - timedelta(days=21),
+        )
         Penalty.objects.create(
-            created_at=mock_now() - timedelta(days=21),
             user=self.test_user,
             reason="inactive",
             weight=1,
-            source_event=self.source,
+            source_event=event2,
         )
 
         self.assertEqual(self.test_user.number_of_penalties(), 1)
@@ -345,12 +381,18 @@ class PenaltyTestCase(BaseTestCase):
     def test_penalty_offset_is_calculated_correctly(self, mock_now):
         # This penalty is set to expire the day before the penalty freeze
         # It should not be active
+        event1 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now().replace(day=1),
+            end_time=mock_now().replace(day=1),
+        )
+
         inactive = Penalty.objects.create(
-            created_at=mock_now().replace(day=1),
             user=self.test_user,
             reason="inactive",
             weight=1,
-            source_event=self.source,
+            source_event=event1,
         )
         self.assertEqual(self.test_user.number_of_penalties(), 0)
         self.assertEqual(
@@ -358,12 +400,17 @@ class PenaltyTestCase(BaseTestCase):
         )
 
         # This penalty is set to expire the same day as the freeze
+        event2 = Event.objects.create(
+            title="A simple event",
+            event_type=0,
+            start_time=mock_now().replace(day=2),
+            end_time=mock_now().replace(day=2),
+        )
         active = Penalty.objects.create(
-            created_at=mock_now().replace(day=2),
             user=self.test_user,
             reason="active",
             weight=1,
-            source_event=self.source,
+            source_event=event2,
         )
         self.assertEqual(self.test_user.number_of_penalties(), 1)
         self.assertEqual(
