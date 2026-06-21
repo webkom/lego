@@ -7,6 +7,7 @@ from django.core import serializers
 from django.core.management import call_command
 from django.utils import timezone
 
+from lego.apps.events.constants import INTEREST_EVENT
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
@@ -115,7 +116,9 @@ class Command(BaseCommand):
 
     def update_event_dates(self):
         date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
-        for i, event in enumerate(Event.objects.all()):
+        # Interest events are dated separately (see update_interest_event_dates) so
+        # their authored offsets survive this positional logic.
+        for i, event in enumerate(Event.objects.exclude(event_type=INTEREST_EVENT)):
             event.start_time = date + timedelta(days=i - 10)
             event.end_time = date + timedelta(days=i - 10, hours=4)
             event.save()
@@ -134,6 +137,45 @@ class Command(BaseCommand):
                         days=i - j - 16
                     )
                 pool.save()
+
+        self.update_interest_event_dates()
+
+    def update_interest_event_dates(self):
+        """
+        Date interest events relative to `now`, like update_event_dates does for every
+        other event (their YAML dates are ignored placeholders). Offsets are grouped by
+        /interest-events bucket; negative = past. Each interest event sets a
+        responsible_group, so upcoming ones appear under 'Dine grupper' for members of
+        that group.
+        """
+        now = timezone.now()
+        offsets = [
+            # Earlier events
+            timedelta(days=-43),
+            timedelta(days=-28),
+            timedelta(days=-15),
+            timedelta(days=-9),
+            timedelta(days=-4),
+            timedelta(days=-3),
+            timedelta(days=-2),
+            timedelta(hours=-6),
+            # Events this week
+            timedelta(hours=2),
+            timedelta(hours=5),
+            # Coming events
+            timedelta(days=10),
+            timedelta(days=17),
+            timedelta(days=28),
+        ]
+        events = list(Event.objects.filter(event_type=INTEREST_EVENT).order_by("id"))
+        assert len(events) == len(
+            offsets
+        ), "interest-event offsets out of sync with fixtures"
+        for event, offset in zip(events, offsets, strict=True):
+            duration = event.end_time - event.start_time
+            event.start_time = now + offset
+            event.end_time = event.start_time + duration
+            event.save()
 
     def generate_groups(self):
         self.call_command(
