@@ -616,6 +616,15 @@ class CreateEventsTestCase(BaseAPITestCase):
         created_event = Event.objects.get(id=self.event_id)
         self.assertEqual(created_event.event_status_type, "INFINITE")
         self.assertEqual(len(created_event.pools.all()), 1)
+        self.assertEqual(created_event.pools.first().capacity, 10)
+
+    def test_event_creation_infinite_default_unlimited(self):
+        """Test that INFINITE events without a capacity default to unlimited"""
+        event_data = deepcopy(_test_event_data[4])
+        del event_data["pools"][0]["capacity"]
+        event_response = self.client.post(_get_list_url(), event_data)
+        self.assertEqual(event_response.status_code, status.HTTP_201_CREATED)
+        created_event = Event.objects.get(id=event_response.json()["id"])
         self.assertEqual(created_event.pools.first().capacity, 0)
 
     def test_event_create_no_event_status_type(self):

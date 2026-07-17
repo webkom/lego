@@ -433,7 +433,7 @@ class EventCreateAndUpdateSerializer(
             pools = []
         elif event_status_type == constants.INFINITE:
             pools = [pools[0]]
-            pools[0]["capacity"] = 0
+            pools[0].setdefault("capacity", 0)
         with transaction.atomic():
             event = super().create(validated_data)
             for pool in pools:
@@ -464,7 +464,7 @@ class EventCreateAndUpdateSerializer(
             pools = []
         elif event_status_type == constants.INFINITE and pools:
             pools = [pools[0]]
-            pools[0]["capacity"] = 0
+            pools[0].setdefault("capacity", 0)
         with transaction.atomic():
             if pools is not None:
                 existing_ids = set(instance.pools.values_list("id", flat=True))
