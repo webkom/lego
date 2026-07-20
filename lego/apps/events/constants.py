@@ -86,6 +86,7 @@ INTEREST_EVENT_CREATOR_FIELDS = frozenset(
         "id",
         "event_type",
         "title",
+        "description",
         "text",
         "start_time",
         "end_time",

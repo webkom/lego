@@ -2517,6 +2517,7 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         event = Event.objects.get(id=response.json()["id"])
+        self.assertEqual(event.description, "Ingress1")
         self.assertEqual(event.event_status_type, constants.INFINITE)
         self.assertFalse(event.use_captcha)
         self.assertFalse(event.heed_penalties)
