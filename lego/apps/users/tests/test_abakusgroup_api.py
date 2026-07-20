@@ -3,7 +3,7 @@ from rest_framework import status
 
 from lego.apps.users import constants
 from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST, LEADER
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -90,6 +90,22 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
             {"id": membership.pk, "role": constants.MEMBER},
         )
         self.assertIsNone(groups[non_member_group.pk]["userMembership"])
+
+    def test_user_membership_prefers_leader_role(self):
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+        group.add_user(self.user)
+        leader_membership = Membership.objects.create(
+            user=self.user, abakus_group=group, role=constants.LEADER
+        )
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(_get_list_url())
+
+        groups = {g["id"]: g for g in response.json()["results"]}
+        self.assertEqual(
+            groups[group.pk]["userMembership"],
+            {"id": leader_membership.pk, "role": constants.LEADER},
+        )
 
     def test_user_membership_inactive(self):
         group = AbakusGroup.objects.get(name="AbaBrygg")

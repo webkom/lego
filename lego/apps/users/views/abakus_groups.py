@@ -8,6 +8,7 @@ from lego.apps.users.filters import AbakusGroupFilterSet
 from lego.apps.users.models import AbakusGroup, Membership
 from lego.apps.users.permissions import PreventPermissionElevation
 from lego.apps.users.serializers.abakus_groups import (
+    MEMBERSHIP_ROLE_PRIORITY,
     DetailedAbakusGroupSerializer,
     PublicAbakusGroupSerializer,
     PublicDetailedAbakusGroupSerializer,
@@ -51,7 +52,7 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                     "membership_set",
                     queryset=Membership.objects.filter(
                         user=self.request.user, is_active=True
-                    ),
+                    ).order_by(MEMBERSHIP_ROLE_PRIORITY),
                     to_attr="user_membership",
                 )
             )
