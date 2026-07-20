@@ -2594,6 +2594,20 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         )
         self.assertLessEqual(pool.activation_date, timezone.now())
 
+    def test_exclude_event_type_filter(self):
+        """The event overview excludes interest events via exclude_event_type"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        response = self.client.get(
+            _get_list_url(), {"exclude_event_type": "interest_event", "page_size": 60}
+        )
+        self.assertNotIn(event_id, [e["id"] for e in response.json()["results"]])
+
+        response = self.client.get(_get_list_url(), {"page_size": 60})
+        self.assertIn(event_id, [e["id"] for e in response.json()["results"]])
+
     def test_capacity_only_pool_is_accepted(self):
         """The frontend sends interest event pools with only a capacity"""
         self.client.force_authenticate(self.leader)
