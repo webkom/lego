@@ -2594,6 +2594,44 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         )
         self.assertLessEqual(pool.activation_date, timezone.now())
 
+    def test_capacity_only_pool_is_accepted(self):
+        """The frontend sends interest event pools with only a capacity"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {**_test_interest_event_data, "pools": [{"capacity": 20}]},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        pool = Event.objects.get(id=response.json()["id"]).pools.get()
+        self.assertEqual(pool.capacity, 20)
+        self.assertEqual(
+            list(pool.permission_groups.values_list("name", flat=True)), ["Abakus"]
+        )
+        self.assertLessEqual(pool.activation_date, timezone.now())
+
+    def test_capacity_only_pool_edit(self):
+        """Capacity can be edited by sending only the pool id and capacity"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {**_test_interest_event_data, "pools": [{"capacity": 20}]},
+        )
+        event = Event.objects.get(id=response.json()["id"])
+        pool = event.pools.get()
+
+        response = self.client.patch(
+            _get_detail_url(event.id),
+            {
+                "eventType": "interest_event",
+                "responsibleGroup": 26,
+                "pools": [{"id": pool.id, "capacity": 30}],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        pool.refresh_from_db()
+        self.assertEqual(pool.capacity, 30)
+
     def test_leader_can_edit_own_event(self):
         """Leaders can edit interest events they created"""
         self.client.force_authenticate(self.leader)

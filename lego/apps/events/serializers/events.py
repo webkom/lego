@@ -415,6 +415,25 @@ class EventCreateAndUpdateSerializer(
             "show_company_description",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
 
+    def to_internal_value(self, data: Any) -> dict[str, Any]:
+        """
+        The frontend only sends id and capacity for interest event pools, so
+        the backend-owned pool fields get placeholders before field
+        validation. force_interest_event_pools replaces them in validate.
+        """
+        if isinstance(data, dict):
+            event_type = data.get(
+                "event_type", self.instance.event_type if self.instance else None
+            )
+            if event_type == constants.INTEREST_EVENT and data.get("pools"):
+                member_group_id = AbakusGroup.objects.get(name=MEMBER_GROUP).pk
+                for pool in data["pools"]:
+                    if isinstance(pool, dict):
+                        pool.setdefault("name", MEMBER_GROUP)
+                        pool.setdefault("activation_date", timezone.now())
+                        pool.setdefault("permission_groups", [member_group_id])
+        return super().to_internal_value(data)
+
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         """
         Check that start is before finish.
