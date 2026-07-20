@@ -56,7 +56,13 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
                 keys,
                 set(
                     fields
-                    + ["numberOfUsers", "contactEmail", "showBadge", "logoPlaceholder"]
+                    + [
+                        "numberOfUsers",
+                        "contactEmail",
+                        "showBadge",
+                        "logoPlaceholder",
+                        "userMembership",
+                    ]
                 ),
             )
 
@@ -66,6 +72,43 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
 
     def test_with_auth(self):
         self.successful_list(self.user)
+
+    def test_user_membership(self):
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+        membership = group.add_user(self.user)
+        non_member_group = AbakusGroup.objects.exclude(
+            pk__in=self.user.abakus_groups.values_list("pk", flat=True)
+        ).first()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(_get_list_url())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        groups = {g["id"]: g for g in response.json()["results"]}
+        self.assertEqual(
+            groups[group.pk]["userMembership"],
+            {"id": membership.pk, "role": constants.MEMBER},
+        )
+        self.assertIsNone(groups[non_member_group.pk]["userMembership"])
+
+    def test_user_membership_inactive(self):
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+        membership = group.add_user(self.user)
+        membership.is_active = False
+        membership.save()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(_get_list_url())
+
+        groups = {g["id"]: g for g in response.json()["results"]}
+        self.assertIsNone(groups[group.pk]["userMembership"])
+
+    def test_user_membership_without_auth(self):
+        response = self.client.get(_get_list_url())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for group in response.json()["results"]:
+            self.assertIsNone(group["userMembership"])
 
     def test_with_filter_type(self):
         """Groups can be filtered on multiple types"""

@@ -1,10 +1,11 @@
+from django.db.models import Prefetch, QuerySet
 from rest_framework import viewsets
 
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
 from lego.apps.users import constants
 from lego.apps.users.filters import AbakusGroupFilterSet
-from lego.apps.users.models import AbakusGroup
+from lego.apps.users.models import AbakusGroup, Membership
 from lego.apps.users.permissions import PreventPermissionElevation
 from lego.apps.users.serializers.abakus_groups import (
     DetailedAbakusGroupSerializer,
@@ -39,8 +40,19 @@ class AbakusGroupViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
 
         return DetailedAbakusGroupSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[AbakusGroup]:
         if self.action == "retrieve":
             return AbakusGroup.objects_with_text.prefetch_related("users").all()
 
-        return self.queryset
+        queryset = self.queryset
+        if self.request.user.is_authenticated:
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    "membership_set",
+                    queryset=Membership.objects.filter(
+                        user=self.request.user, is_active=True
+                    ),
+                    to_attr="user_membership",
+                )
+            )
+        return queryset

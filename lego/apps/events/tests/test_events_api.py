@@ -3,6 +3,7 @@ from datetime import timedelta
 from unittest import mock, skipIf
 
 from django.conf import settings
+from django.db import IntegrityError
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -2607,3 +2608,90 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
         response = self.client.post(_get_registrations_list_url(event.id), {})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class InterestEventRegistrationApiTestCase(BaseAPITransactionTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.leader, self.member = get_dummy_users(2)
+        interest_group = AbakusGroup.objects.get(pk=26)
+        interest_group.add_user(self.leader, role=LEADER)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.leader)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.member)
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.event = Event.objects.get(id=response.json()["id"])
+        Event.objects.filter(id=self.event.id).update(
+            start_time=timezone.now() + timedelta(hours=3),
+            end_time=timezone.now() + timedelta(hours=5),
+        )
+        self.client.force_authenticate(self.member)
+
+    @mock.patch("lego.apps.events.views.async_register")
+    def test_registration_is_synchronous(self, mocked_task):
+        """Interest event registrations are admitted in the request"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json()["status"], constants.SUCCESS_REGISTER)
+        self.assertIsNotNone(response.json()["pool"])
+        mocked_task.delay.assert_not_called()
+
+    @mock.patch("lego.apps.events.views.async_register")
+    def test_full_event_waitlists_synchronously(self, mocked_task):
+        """Full interest events waitlist in the request, without overselling"""
+        pool = self.event.pools.get()
+        pool.capacity = 1
+        pool.save()
+        self.client.force_authenticate(self.leader)
+        self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.client.force_authenticate(self.member)
+
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json()["status"], constants.SUCCESS_REGISTER)
+        self.assertIsNone(response.json()["pool"])
+        self.assertEqual(pool.registrations.count(), 1)
+        mocked_task.delay.assert_not_called()
+
+    def test_registration_after_start_fails(self):
+        """Registering after the event has started fails with an error"""
+        Event.objects.filter(id=self.event.id).update(
+            start_time=timezone.now() - timedelta(hours=1)
+        )
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        registration = Registration.objects.get(event=self.event, user=self.member)
+        self.assertEqual(registration.status, constants.FAILURE_REGISTER)
+
+    @mock.patch("lego.apps.events.views.async_register")
+    @mock.patch(
+        "lego.apps.events.models.Event.register", side_effect=IntegrityError("lock")
+    )
+    def test_falls_back_to_async_on_contention(self, mocked_register, mocked_task):
+        """Contention falls back to the async pipeline instead of failing"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.json()["status"], constants.PENDING_REGISTER)
+        mocked_task.delay.assert_called_once()
+
+    @mock.patch("lego.apps.events.views.async_unregister")
+    def test_unregistration_is_synchronous(self, mocked_task):
+        """Interest event unregistrations complete in the request"""
+        registration_response = self.client.post(
+            _get_registrations_list_url(self.event.id), {}
+        )
+        response = self.client.delete(
+            _get_registrations_detail_url(
+                self.event.id, registration_response.json()["id"]
+            )
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["status"], constants.SUCCESS_UNREGISTER)
+        mocked_task.delay.assert_not_called()

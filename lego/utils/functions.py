@@ -13,13 +13,13 @@ from lego.utils.models import BasisModel
 log = get_logger()
 
 
-def verify_captcha(captcha_response):
+def verify_captcha(captcha_response: str | None) -> bool:
     try:
         r = requests.post(
             settings.CAPTCHA_URL,
             {"secret": settings.CAPTCHA_KEY, "response": captcha_response},
         )
-        return r.json().get("success", False)
+        return bool(r.json().get("success", False))
     except requests.exceptions.RequestException as e:
         log.error(
             "captcha_validation_error",

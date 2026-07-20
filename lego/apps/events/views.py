@@ -1,4 +1,7 @@
-from django.db import transaction
+from collections.abc import Callable
+from typing import Any
+
+from django.db import IntegrityError, transaction
 from django.db.models import Count, Prefetch, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -6,6 +9,7 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import decorators, filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 
@@ -21,6 +25,7 @@ from lego.apps.events.exceptions import (
     APIPaymentExists,
     APIRegistrationExists,
     APIRegistrationsExistsInPool,
+    EventHasClosed,
     NoSuchPool,
     NoSuchRegistration,
     RegistrationExists,
@@ -51,6 +56,7 @@ from lego.apps.events.serializers.registrations import (
     RegistrationSearchSerializer,
 )
 from lego.apps.events.tasks import (
+    admit_registration,
     async_cancel_payment,
     async_initiate_payment,
     async_register,
@@ -58,6 +64,7 @@ from lego.apps.events.tasks import (
     async_unregister,
     check_for_bump_on_pool_creation_or_expansion,
     save_and_notify_payment,
+    withdraw_registration,
 )
 from lego.apps.events.websockets import notify_event_registration
 from lego.apps.files.constants import IMAGE
@@ -385,13 +392,15 @@ class RegistrationViewSet(
         event_id = self.kwargs.get("event_pk", None)
         return Registration.objects.filter(event=event_id).prefetch_related("user")
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         event_id = self.kwargs.get("event_pk", None)
         event = Event.objects.get(id=event_id)
 
-        if not get_permission_handler(Event).has_perm(request.user, VIEW, obj=event):
+        if not get_permission_handler(Event).has_perm(
+            request.user, VIEW, obj=event  # type: ignore[arg-type]
+        ):
             raise PermissionDenied()
 
         if event.use_captcha and not verify_captcha(
@@ -400,6 +409,7 @@ class RegistrationViewSet(
             raise ValidationError({"error": "Bad captcha"})
 
         current_user = request.user
+        is_interest_event = event.event_type == constants.INTEREST_EVENT
 
         with transaction.atomic():
             registration, is_new = Registration.objects.get_or_create(
@@ -420,23 +430,70 @@ class RegistrationViewSet(
             registration.status = constants.PENDING_REGISTER
             registration.feedback = feedback
             registration.save(current_user=current_user)
-            transaction.on_commit(lambda: async_register.delay(registration.id))
+            if not is_interest_event:
+                transaction.on_commit(lambda: async_register.delay(registration.id))
+
+        response_status: int = status.HTTP_202_ACCEPTED
+        if is_interest_event and self.sync_registration(
+            admit_registration,
+            registration.id,
+            constants.FAILURE_REGISTER,
+            async_register,
+        ):
+            response_status = status.HTTP_201_CREATED
+
         registration.refresh_from_db()
         registration_serializer = RegistrationReadSerializer(
             registration, context={"user": registration.user}
         )
-        return Response(
-            data=registration_serializer.data, status=status.HTTP_202_ACCEPTED
-        )
+        return Response(data=registration_serializer.data, status=response_status)
 
-    def destroy(self, request, *args, **kwargs):
+    def sync_registration(
+        self,
+        action: Callable[[int], Registration],
+        registration_id: int,
+        failure_status: str,
+        fallback_task: Any,
+    ) -> bool:
+        """
+        Run a registration action inside the request so interest event
+        responses carry the final outcome. On contention the async task is
+        enqueued instead, making the worst case the normal async pipeline.
+        """
+        try:
+            action(registration_id)
+            return True
+        except EventHasClosed as e:
+            Registration.objects.filter(id=registration_id).update(
+                status=failure_status
+            )
+            raise ValidationError({"error": "Arrangementet har startet"}) from e
+        except (ValueError, IntegrityError):
+            fallback_task.delay(registration_id)
+            return False
+
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         with transaction.atomic():
             instance = self.get_object()
+            is_interest_event = instance.event.event_type == constants.INTEREST_EVENT
             instance.status = constants.PENDING_UNREGISTER
             instance.save()
-            transaction.on_commit(lambda: async_unregister.delay(instance.id))
+            if not is_interest_event:
+                transaction.on_commit(lambda: async_unregister.delay(instance.id))
+
+        response_status: int = status.HTTP_202_ACCEPTED
+        if is_interest_event:
+            if self.sync_registration(
+                withdraw_registration,
+                instance.id,
+                constants.FAILURE_UNREGISTER,
+                async_unregister,
+            ):
+                response_status = status.HTTP_200_OK
+            instance.refresh_from_db()
+
         serializer = RegistrationReadSerializer(instance)
-        return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(data=serializer.data, status=response_status)
 
     def update(self, request, *args, **kwargs):
         registration = self.get_object()
