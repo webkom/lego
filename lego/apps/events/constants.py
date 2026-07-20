@@ -106,6 +106,7 @@ INTEREST_EVENT_FORCED_FIELDS: dict = {
     "registration_deadline_hours": 0,
     "unregistration_deadline_hours": 0,
     "can_view_groups": (),
+    "require_auth": False,
     "company": None,
     "show_company_description": False,
 }

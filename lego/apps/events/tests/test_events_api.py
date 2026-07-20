@@ -2635,6 +2635,7 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         self.assertEqual(list(event.responsible_users.all()), [])
         self.assertFalse(event.use_consent)
         self.assertFalse(event.is_priced)
+        self.assertFalse(event.require_auth)
         self.assertEqual(list(event.can_view_groups.all()), [])
 
     def test_cannot_move_event_to_group_not_led(self):
@@ -2713,6 +2714,55 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         pool.refresh_from_db()
         self.assertEqual(pool.capacity, 30)
+
+    def test_current_leaders_manage_their_groups_events(self):
+        """Leaders can edit and delete group events someone else created"""
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.get(_get_detail_url(event_id))
+        action_grant = response.json()["actionGrant"]
+        self.assertIn("edit", action_grant)
+        self.assertIn("delete", action_grant)
+        self.assertNotIn("administrate", action_grant)
+
+        response = self.client.patch(_get_detail_url(event_id), {"title": "Nytt"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.delete(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_leader_cannot_manage_other_groups_events(self):
+        """Leadership of one group grants nothing on another group's events"""
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(
+            _get_list_url(), {**_test_interest_event_data, "responsibleGroup": 27}
+        )
+        event_id = response.json()["id"]
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.get(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("edit", response.json()["actionGrant"])
+
+        # Denied actions on a specific event are hidden as 404 by get_object
+        response = self.client.patch(_get_detail_url(event_id), {"title": "Nytt"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = self.client.delete(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_interest_events_are_visible_to_members(self):
+        """Interest events are not hidden behind require_auth object permissions"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        self.client.force_authenticate(self.member)
+        response = self.client.get(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_leader_can_edit_own_event(self):
         """Leaders can edit interest events they created"""

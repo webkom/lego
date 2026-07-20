@@ -13,6 +13,32 @@ log = get_logger()
 class EventPermissionHandler(PermissionHandler["Event"]):
     perms_without_object = [CREATE, "administrate"]
 
+    def has_perm(
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs,
+    ):
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
+        if has_perm:
+            return True
+
+        # Interest events belong to the group, not the creator - the current
+        # leaders manage them even after leadership changes hands
+        if (
+            obj is not None
+            and perm in (EDIT, DELETE)
+            and obj.event_type == constants.INTEREST_EVENT
+        ):
+            return self.is_interest_group_leader(user, obj.responsible_group_id)
+
+        return False
+
     def event_type_keyword_permissions(self, event_type, perm):
         """
         Get the keyword permission string required for a permission for a specific event type
