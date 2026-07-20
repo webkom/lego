@@ -2516,6 +2516,11 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         response = self.client.post(_get_list_url(), _test_interest_event_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        response = self.client.get(_get_detail_url(response.json()["id"]))
+        action_grant = response.json()["actionGrant"]
+        self.assertIn("edit", action_grant)
+        self.assertNotIn("administrate", action_grant)
+
         event = Event.objects.get(id=response.json()["id"])
         self.assertEqual(event.description, "Ingress1")
         self.assertEqual(event.event_status_type, constants.INFINITE)

@@ -22,6 +22,13 @@ class EventPermissionHandler(PermissionHandler["Event"]):
         check_keyword_permissions=True,
         **kwargs,
     ):
+        # The administrate endpoints are keyword-gated without an object, so
+        # the action grant must not inherit the creator's object access
+        if perm == "administrate" and obj is not None:
+            from lego.apps.events.models import Event
+
+            obj, queryset = None, Event.objects.none()
+
         has_perm = super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
         )
