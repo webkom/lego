@@ -36,6 +36,8 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadSerializer,
 )
 from lego.apps.files.fields import File, ImageField
+from lego.apps.permissions.constants import CREATE
+from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.apps.users.constants import GROUP_GRADE, GROUP_INTEREST, MEMBER_GROUP
 from lego.apps.users.fields import AbakusGroupField, PublicUserField
@@ -460,19 +462,52 @@ class EventCreateAndUpdateSerializer(
                         "by an interest group"
                     }
                 )
+            self.validate_interest_event_group_change(data, instance)
             # Interest events are open to every Abakus member from creation
-            # until start, with no captcha, penalties, or feedback
-            # requirements. Registration already requires an authenticated
-            # member, so captcha adds friction without protection here.
-            data["event_status_type"] = constants.INFINITE
-            data["use_captcha"] = False
-            data["heed_penalties"] = False
-            data["feedback_required"] = False
-            data["registration_deadline_hours"] = 0
-            data["unregistration_deadline_hours"] = 0
+            # until start, always free, and never pinned. Creators only
+            # control the whitelisted content fields - see the contract in
+            # constants.py.
+            for field in (
+                set(data)
+                - constants.INTEREST_EVENT_CREATOR_FIELDS
+                - set(constants.INTEREST_EVENT_FORCED_FIELDS)
+            ):
+                data.pop(field)
+            data.update(constants.INTEREST_EVENT_FORCED_FIELDS)
             if not self.instance or "pools" in data:
                 data["pools"] = self.force_interest_event_pools(data.get("pools"))
         return data
+
+    def validate_interest_event_group_change(
+        self, data: dict[str, Any], instance: Event | None
+    ) -> None:
+        """
+        The permission layer only checks leadership of the responsible group
+        in request data, so a PATCH without event_type could move an event to
+        a group the requester does not lead.
+        """
+        if (
+            instance is None
+            or "responsible_group" not in data
+            or data["responsible_group"] == instance.responsible_group
+        ):
+            return
+        request = self.context.get("request")
+        if request is None or not request.user.is_authenticated:
+            return
+        handler = get_permission_handler(Event)
+        allowed = request.user.has_perm(
+            handler.event_type_keyword_permissions(constants.INTEREST_EVENT, CREATE)
+        ) or handler.is_interest_group_leader(
+            request.user, data["responsible_group"].pk
+        )
+        if not allowed:
+            raise serializers.ValidationError(
+                {
+                    "responsible_group": "You must be a leader of the "
+                    "responsible interest group"
+                }
+            )
 
     @staticmethod
     def force_interest_event_pools(

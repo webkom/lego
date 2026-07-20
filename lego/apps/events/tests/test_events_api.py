@@ -2594,6 +2594,74 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         )
         self.assertLessEqual(pool.activation_date, timezone.now())
 
+    def test_priced_and_pinned_are_forced_off(self):
+        """Interest events are always free and never pinned"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {
+                **_test_interest_event_data,
+                "isPriced": True,
+                "priceMember": 10000,
+                "pinned": True,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        event = Event.objects.get(id=response.json()["id"])
+        self.assertFalse(event.is_priced)
+        self.assertFalse(event.pinned)
+
+    def test_non_creator_fields_are_locked(self):
+        """Fields outside the interest event contract are dropped or forced"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {
+                **_test_interest_event_data,
+                "company": 1,
+                "responsibleUsers": [self.member.pk],
+                "useConsent": True,
+                "isPriced": True,
+                "priceMember": 10000,
+                "mergeTime": "2030-09-01T14:00:00Z",
+                "canViewGroups": [26],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        event = Event.objects.get(id=response.json()["id"])
+        self.assertIsNone(event.company)
+        self.assertEqual(list(event.responsible_users.all()), [])
+        self.assertFalse(event.use_consent)
+        self.assertFalse(event.is_priced)
+        self.assertEqual(list(event.can_view_groups.all()), [])
+
+    def test_cannot_move_event_to_group_not_led(self):
+        """A leader cannot re-home their event to a group they do not lead"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        response = self.client.patch(
+            _get_detail_url(event_id), {"responsibleGroup": 27}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Event.objects.get(id=event_id).responsible_group_id, 26)
+
+    def test_can_move_event_between_led_groups(self):
+        """A leader of both groups can move an event between them"""
+        AbakusGroup.objects.get(pk=27).add_user(self.leader, role=LEADER)
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        response = self.client.patch(
+            _get_detail_url(event_id), {"responsibleGroup": 27}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Event.objects.get(id=event_id).responsible_group_id, 27)
+
     def test_exclude_event_type_filter(self):
         """The event overview excludes interest events via exclude_event_type"""
         self.client.force_authenticate(self.leader)
