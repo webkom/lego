@@ -81,6 +81,7 @@ class EventPermissionHandler(PermissionHandler["Event"]):
             user=user,
             abakus_group_id=group_id,
             abakus_group__type=GROUP_INTEREST,
+            abakus_group__active=True,
             role__in=EDIT_ROLES,
             is_active=True,
         ).exists()

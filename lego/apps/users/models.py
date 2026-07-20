@@ -205,6 +205,34 @@ class AbakusGroup(MPTTModel, PersistentModel):
         for membership in memberships:
             membership.delete()
 
+    def reconcile_leadership(
+        self, exclude_membership_id: int | None = None, dry_run: bool = False
+    ) -> str | None:
+        if self.type != constants.GROUP_INTEREST or not self.active:
+            return None
+        active_memberships = Membership.objects.filter(
+            abakus_group=self, is_active=True
+        )
+        if active_memberships.filter(role=constants.LEADER).exists():
+            return None
+        successor = (
+            active_memberships.filter(role=constants.CO_LEADER)
+            .exclude(pk=exclude_membership_id)
+            .order_by("created_at")
+            .first()
+        )
+        if successor:
+            if not dry_run:
+                successor.role = constants.LEADER
+                successor.save()
+            return f"promote {successor.user.username}"
+        if active_memberships.filter(role=constants.CO_LEADER).exists():
+            return None
+        if not dry_run:
+            self.active = False
+            self.save()
+        return "deactivate"
+
     def natural_key(self):
         return (self.name,)
 

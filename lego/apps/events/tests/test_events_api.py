@@ -2532,6 +2532,14 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         )
         self.assertLessEqual(pool.activation_date, timezone.now())
 
+    def test_leader_cannot_create_for_inactive_group(self):
+        """Interest events cannot be created for deactivated interest groups"""
+        self.interest_group.active = False
+        self.interest_group.save()
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_leader_cannot_create_for_other_group(self):
         """Leaders cannot create interest events for groups they do not lead"""
         self.client.force_authenticate(self.leader)

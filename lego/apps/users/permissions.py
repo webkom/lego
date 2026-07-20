@@ -155,8 +155,8 @@ class MembershipPermissionHandler(PermissionHandler):
         if abakus_group.type in constants.OPEN_GROUPS:
             if perm == LIST:
                 return True
-            elif perm == DELETE:
-                # Leaders should be able to remove memberships.
+            elif perm in (EDIT, DELETE):
+                # Leaders should be able to change and remove memberships.
                 return abakus_group.memberships.filter(
                     user=user, role__in=EDIT_ROLES
                 ).exists()
