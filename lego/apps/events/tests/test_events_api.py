@@ -3,7 +3,7 @@ from datetime import timedelta
 from unittest import mock, skipIf
 
 from django.conf import settings
-from django.db import IntegrityError
+from django.db import IntegrityError, OperationalError
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -2866,6 +2866,21 @@ class InterestEventRegistrationApiTestCase(BaseAPITransactionTestCase):
     )
     def test_falls_back_to_async_on_contention(self, mocked_register, mocked_task):
         """Contention falls back to the async pipeline instead of failing"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.json()["status"], constants.PENDING_REGISTER)
+        mocked_task.delay.assert_called_once()
+
+    @mock.patch("lego.apps.events.views.async_register")
+    @mock.patch(
+        "lego.apps.events.models.Event.register",
+        side_effect=OperationalError("deadlock"),
+    )
+    def test_falls_back_to_async_on_unexpected_error(
+        self, mocked_register, mocked_task
+    ):
+        """No error may strand the registration in PENDING_REGISTER, as that
+        blocks every later attempt"""
         response = self.client.post(_get_registrations_list_url(self.event.id), {})
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(response.json()["status"], constants.PENDING_REGISTER)
