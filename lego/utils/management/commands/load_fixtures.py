@@ -186,9 +186,11 @@ class Command(BaseCommand):
             timedelta(days=41),
         ]
         events = list(Event.objects.filter(event_type=INTEREST_EVENT).order_by("id"))
-        assert len(events) == len(
-            offsets
-        ), "interest-event offsets out of sync with fixtures"
+        assert len(events) == len(offsets), (
+            f"{len(events)} interest event fixtures but {len(offsets)} offsets - "
+            "added or removed an interest event in development_events.yaml? "
+            "Update the offsets list above to match."
+        )
         for event, offset in zip(events, offsets, strict=True):
             duration = event.end_time - event.start_time
             event.start_time = now + offset
