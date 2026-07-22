@@ -472,7 +472,26 @@ class InterestGroupAPITestCase(BaseAPITestCase):
         self.assertEqual(co_leader.role, LEADER)
         self.assertTrue(self.interest_group.active)
 
-    def test_leader_demotion_to_member_deactivates_group(self):
+    def test_last_leader_cannot_demote_to_member(self):
+        """Role changes must leave a leader - leaving the group is the only
+        way out for the last leader"""
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": constants.MEMBER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        membership.refresh_from_db()
+        self.interest_group.refresh_from_db()
+        self.assertEqual(membership.role, LEADER)
+        self.assertTrue(self.interest_group.active)
+
+    def test_leader_demotion_to_member_with_co_leader_promotes(self):
+        """Demoting to member is fine when a co-leader can take over"""
+        co_leader = self.interest_group.add_user(self.abakule, role=constants.CO_LEADER)
         self.client.force_authenticate(user=self.leader)
         membership = Membership.objects.get(
             user=self.leader, abakus_group=self.interest_group
@@ -482,8 +501,10 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             {"role": constants.MEMBER},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        co_leader.refresh_from_db()
         self.interest_group.refresh_from_db()
-        self.assertFalse(self.interest_group.active)
+        self.assertEqual(co_leader.role, LEADER)
+        self.assertTrue(self.interest_group.active)
 
     def test_prevent_users_without_grade_cannot_join_interestgroup(self):
         self.client.force_authenticate(user=self.abakulingutenklasse)

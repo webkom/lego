@@ -60,12 +60,17 @@ class MembershipSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"user": "Cannot change the user of a membership."}
             )
+        # Role changes must leave a leader behind. Leaving the group
+        # (is_active=False or DELETE) is the deliberate exit path instead,
+        # where reconcile_leadership promotes a co-leader or deactivates the
+        # group.
         demotes_last_leader = (
             instance is not None
             and group.type == constants.GROUP_INTEREST
             and group.active
             and instance.role == constants.LEADER
-            and attrs.get("role") == constants.CO_LEADER
+            and "role" in attrs
+            and attrs["role"] != constants.LEADER
             and attrs.get("is_active", instance.is_active)
             and not Membership.objects.filter(
                 abakus_group=group, is_active=True, role__in=EDIT_ROLES
