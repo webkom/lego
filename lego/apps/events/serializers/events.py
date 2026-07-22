@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import HttpRequest
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
@@ -33,7 +34,7 @@ from lego.apps.events.serializers.registrations import (
 )
 from lego.apps.files.fields import File, ImageField
 from lego.apps.tags.serializers import TagSerializerMixin
-from lego.apps.users.constants import GROUP_GRADE
+from lego.apps.users.constants import GROUP_GRADE, GROUP_INTEREST, MEMBER_GROUP
 from lego.apps.users.fields import AbakusGroupField, PublicUserField
 from lego.apps.users.models import AbakusGroup, PhotoConsent, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -418,7 +419,56 @@ class EventCreateAndUpdateSerializer(
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
+
+        event_type = data.get(
+            "event_type", self.instance.event_type if self.instance else None
+        )
+        if event_type == constants.INTEREST_EVENT:
+            responsible_group = data.get(
+                "responsible_group",
+                self.instance.responsible_group if self.instance else None,
+            )
+            if not responsible_group or responsible_group.type != GROUP_INTEREST:
+                raise serializers.ValidationError(
+                    {
+                        "responsible_group": "Interest events must be organized "
+                        "by an interest group"
+                    }
+                )
+            # Interest events are open to every Abakus member from creation
+            # until start, with no captcha, capacity, penalties, or feedback
+            # requirements. Registration already requires an authenticated
+            # member, so captcha adds friction without protection here.
+            data["event_status_type"] = constants.INFINITE
+            data["use_captcha"] = False
+            data["heed_penalties"] = False
+            data["feedback_required"] = False
+            data["registration_deadline_hours"] = 0
+            data["unregistration_deadline_hours"] = 0
         return data
+
+    @staticmethod
+    def force_interest_event_pools(pools):
+        """
+        The single infinite pool on interest events is decided by the backend,
+        not the creator: open to every Abakus member immediately. Non-empty
+        pools keep their stored values, as edits to them are rejected by
+        PoolCreateAndUpdateSerializer.
+        """
+        abakus_group = AbakusGroup.objects.get(name=MEMBER_GROUP)
+        pools = pools or [{}]
+        for pool in pools:
+            pool.setdefault("name", MEMBER_GROUP)
+            existing = (
+                Pool.objects.filter(id=pool["id"]).first() if pool.get("id") else None
+            )
+            if existing and existing.registration_count > 0:
+                pool["activation_date"] = existing.activation_date
+                pool["permission_groups"] = list(existing.permission_groups.all())
+            else:
+                pool["activation_date"] = timezone.now()
+                pool["permission_groups"] = [abakus_group]
+        return pools
 
     def create(self, validated_data):
         pools = validated_data.pop("pools", [])
@@ -427,6 +477,8 @@ class EventCreateAndUpdateSerializer(
         )
         require_auth = validated_data.get("require_auth", False)
         validated_data["require_auth"] = require_auth
+        if validated_data.get("event_type") == constants.INTEREST_EVENT:
+            pools = self.force_interest_event_pools(pools)
         if event_status_type == constants.TBA:
             pools = []
         elif event_status_type == constants.OPEN:
@@ -458,6 +510,12 @@ class EventCreateAndUpdateSerializer(
         event_status_type = validated_data.get(
             "event_status_type", instance.event_status_type
         )
+        if (
+            validated_data.get("event_type", instance.event_type)
+            == constants.INTEREST_EVENT
+            and pools is not None
+        ):
+            pools = self.force_interest_event_pools(pools)
         if event_status_type == constants.TBA:
             pools = []
         elif event_status_type == constants.OPEN:

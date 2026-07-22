@@ -7,6 +7,7 @@ class EventsFilterSet(FilterSet):
     date_after = DateFilter("start_time", lookup_expr="gte")
     date_before = DateFilter("start_time", lookup_expr="lte")
     company = CharFilter("company")
+    responsible_group_type = CharFilter("responsible_group__type")
 
     class Meta:
         model = Event

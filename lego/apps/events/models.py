@@ -309,9 +309,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         user: User = registration.user
         penalties: int = 0
 
-        unanswered_surveys = user.unanswered_surveys()
-        if len(unanswered_surveys) > 0:
-            raise UnansweredSurveyException()
+        if self.event_type != constants.INTEREST_EVENT:
+            unanswered_surveys = user.unanswered_surveys()
+            if len(unanswered_surveys) > 0:
+                raise UnansweredSurveyException()
 
         if self.heed_penalties:
             penalties = user.number_of_penalties()

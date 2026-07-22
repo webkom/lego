@@ -105,6 +105,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action in ["list", "upcoming", "previous"]:
             queryset = Event.objects.select_related(
                 "company",
+                "responsible_group",
             ).prefetch_related(
                 "pools",
                 "pools__registrations",

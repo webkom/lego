@@ -2,10 +2,11 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from lego.apps.events.constants import INFINITE
-from lego.apps.events.exceptions import EventNotReady
+from lego.apps.events.constants import INFINITE, INTEREST_EVENT, PRESENCE_CHOICES
+from lego.apps.events.exceptions import EventNotReady, UnansweredSurveyException
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.followers.models import FollowEvent
+from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseTestCase
 
@@ -1047,6 +1048,70 @@ class RegistrationTestCase(BaseTestCase):
         registration = Registration.objects.get_or_create(event=event, user=user)[0]
         with self.assertRaises(EventNotReady):
             event.register(registration)
+
+
+class InterestEventRegistrationTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_companies.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        self.event.event_type = INTEREST_EVENT
+        self.event.heed_penalties = False
+        self.event.registration_deadline_hours = 0
+        self.event.start_time = timezone.now() + timedelta(hours=1)
+        self.event.end_time = timezone.now() + timedelta(hours=3)
+        self.event.save()
+
+        self.user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(self.user)
+
+    def test_can_register_right_before_start(self):
+        """Interest events have no registration deadline before start"""
+        registration = Registration.objects.get_or_create(
+            event=self.event, user=self.user
+        )[0]
+        self.event.register(registration)
+        self.assertIsNotNone(registration.pool)
+
+    def test_can_register_with_unanswered_survey(self):
+        """Unanswered surveys do not block interest event registration"""
+        attended = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        Registration.objects.get_or_create(
+            event=attended,
+            user=self.user,
+            defaults={"presence": PRESENCE_CHOICES.PRESENT},
+        )
+        Survey.objects.create(event=attended)
+        self.assertGreater(len(self.user.unanswered_surveys()), 0)
+
+        registration = Registration.objects.get_or_create(
+            event=self.event, user=self.user
+        )[0]
+        self.event.register(registration)
+        self.assertIsNotNone(registration.pool)
+
+    def test_unanswered_survey_still_blocks_normal_events(self):
+        """The survey gate stays in place for other event types"""
+        attended = Event.objects.get(title="POOLS_WITH_REGISTRATIONS")
+        Registration.objects.get_or_create(
+            event=attended,
+            user=self.user,
+            defaults={"presence": PRESENCE_CHOICES.PRESENT},
+        )
+        Survey.objects.create(event=attended)
+
+        self.event.event_type = "event"
+        self.event.save()
+        registration = Registration.objects.get_or_create(
+            event=self.event, user=self.user
+        )[0]
+        with self.assertRaises(UnansweredSurveyException):
+            self.event.register(registration)
 
 
 class InfiniteEventCapacityTestCase(BaseTestCase):

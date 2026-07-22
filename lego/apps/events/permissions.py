@@ -1,5 +1,6 @@
 from structlog import get_logger
 
+from lego.apps.events import constants
 from lego.apps.permissions.actions import action_to_permission
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
@@ -51,7 +52,38 @@ class EventPermissionHandler(PermissionHandler["Event"]):
         required_keyword_permissions = self.event_type_keyword_permissions(
             event_type, CREATE
         )
-        return user.has_perm(required_keyword_permissions)
+        if user.has_perm(required_keyword_permissions):
+            return True
+
+        if event_type == constants.INTEREST_EVENT:
+            return self.is_interest_group_leader(
+                user, request.data.get("responsible_group")
+            )
+
+        return False
+
+    def is_interest_group_leader(self, user, group_id):
+        """
+        Interest events require no keyword permissions - the leaders of the
+        interest group responsible for the event can create and edit it.
+        """
+        from lego.apps.users.constants import GROUP_INTEREST
+        from lego.apps.users.models import Membership
+        from lego.apps.users.permissions import EDIT_ROLES
+
+        if not user.is_authenticated or not group_id:
+            return False
+        try:
+            group_id = int(group_id)
+        except (TypeError, ValueError):
+            return False
+        return Membership.objects.filter(
+            user=user,
+            abakus_group_id=group_id,
+            abakus_group__type=GROUP_INTEREST,
+            role__in=EDIT_ROLES,
+            is_active=True,
+        ).exists()
 
 
 class RegistrationPermissionHandler(PermissionHandler):
