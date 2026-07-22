@@ -11,6 +11,9 @@ from lego.apps.events.constants import INTEREST_EVENT
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
+from lego.apps.users.fixtures.development_interest_groups import (
+    load_development_interest_groups,
+)
 from lego.apps.users.fixtures.initial_abakus_groups import load_abakus_groups
 from lego.apps.users.fixtures.test_abakus_groups import load_test_abakus_groups
 from lego.apps.users.models import AbakusGroup, User
@@ -61,6 +64,10 @@ class Command(BaseCommand):
             self.load_fixtures(["users/fixtures/development_users.yaml"])
             self.upload_development_files()
             log.info("Loading development fixtures:")
+            # Fake interest groups fill the group grid in development - kept
+            # out of initial_abakus_groups so the production seed data stays
+            # clean
+            load_development_interest_groups()
             self.load_fixtures(
                 [
                     "users/fixtures/development_users.yaml",
