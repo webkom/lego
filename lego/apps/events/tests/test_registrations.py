@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 
+from lego.apps.events.constants import INFINITE
 from lego.apps.events.exceptions import EventNotReady
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.followers.models import FollowEvent
@@ -1046,3 +1047,73 @@ class RegistrationTestCase(BaseTestCase):
         registration = Registration.objects.get_or_create(event=event, user=user)[0]
         with self.assertRaises(EventNotReady):
             event.register(registration)
+
+
+class InfiniteEventCapacityTestCase(BaseTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_companies.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        Event.objects.all().update(
+            start_time=timezone.now() + timedelta(hours=3),
+            merge_time=timezone.now() + timedelta(hours=12),
+        )
+        self.event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        self.event.event_status_type = INFINITE
+        self.event.save()
+
+        self.pool = self.event.pools.first()
+        for pool in self.event.pools.exclude(id=self.pool.id):
+            pool.delete()
+        self.pool.capacity = 2
+        self.pool.save()
+
+    def test_full_capped_event_waitlists(self):
+        """Registrations beyond a capped INFINITE pool go to the waiting list"""
+        users = get_dummy_users(3)
+        for user in users:
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            registration = Registration.objects.get_or_create(
+                event=self.event, user=user
+            )[0]
+            self.event.register(registration)
+
+        self.assertEqual(self.pool.registrations.count(), 2)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
+
+    def test_unregistration_bumps_waiting_list(self):
+        """Leaving a full capped INFINITE event bumps the first in line"""
+        users = get_dummy_users(3)
+        registrations = []
+        for user in users:
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            registration = Registration.objects.get_or_create(
+                event=self.event, user=user
+            )[0]
+            registrations.append(self.event.register(registration))
+
+        self.event.unregister(registrations[0])
+
+        self.assertEqual(self.pool.registrations.count(), 2)
+        self.assertEqual(self.event.waiting_registrations.count(), 0)
+        self.assertEqual(self.event.number_of_registrations, 2)
+
+    def test_uncapped_pool_never_waitlists(self):
+        """Capacity 0 still means unlimited"""
+        self.pool.capacity = 0
+        self.pool.save()
+
+        users = get_dummy_users(5)
+        for user in users:
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            registration = Registration.objects.get_or_create(
+                event=self.event, user=user
+            )[0]
+            self.event.register(registration)
+
+        self.assertEqual(self.pool.registrations.count(), 5)
+        self.assertEqual(self.event.waiting_registrations.count(), 0)

@@ -49,7 +49,9 @@ This even status type should be used for most events.
 """
 NORMAL = "NORMAL"
 """
-Events marked as INFINITE should have exactly 1 pool, with capacity set to 0.
+Events marked as INFINITE should have exactly 1 pool. Capacity 0 (the
+default) means unlimited; a capacity can be set to limit the number of spots,
+with the waiting list handling the overflow.
 A user _should_ be able to sign up to the event.
 There are no permissions (except Abakom).
 This even status type should be used for events such as Abakom Works, etc.

@@ -616,6 +616,15 @@ class CreateEventsTestCase(BaseAPITestCase):
         created_event = Event.objects.get(id=self.event_id)
         self.assertEqual(created_event.event_status_type, "INFINITE")
         self.assertEqual(len(created_event.pools.all()), 1)
+        self.assertEqual(created_event.pools.first().capacity, 10)
+
+    def test_event_creation_infinite_default_unlimited(self):
+        """Test that INFINITE events without a capacity default to unlimited"""
+        event_data = deepcopy(_test_event_data[4])
+        del event_data["pools"][0]["capacity"]
+        event_response = self.client.post(_get_list_url(), event_data)
+        self.assertEqual(event_response.status_code, status.HTTP_201_CREATED)
+        created_event = Event.objects.get(id=event_response.json()["id"])
         self.assertEqual(created_event.pools.first().capacity, 0)
 
     def test_event_create_no_event_status_type(self):
@@ -740,6 +749,43 @@ class CreateEventsTestCase(BaseAPITestCase):
 
         event = Event.objects.get(id=event_id)
         self.assertEqual(event.pools.count(), 1)
+
+    def test_event_partial_update_infinite_with_pools_keeps_capacity(self):
+        """Test patching INFINITE events with pools keeps the provided capacity."""
+        event_response = self.client.post(
+            _get_list_url(), deepcopy(_test_event_data[4])
+        )
+        self.assertEqual(event_response.status_code, status.HTTP_201_CREATED)
+        event_id = event_response.json()["id"]
+        pool = event_response.json()["pools"][0]
+
+        event_update_response = self.client.patch(
+            _get_detail_url(event_id), {"pools": [{**pool, "capacity": 5}]}
+        )
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
+
+        event = Event.objects.get(id=event_id)
+        self.assertEqual(event.pools.count(), 1)
+        self.assertEqual(event.pools.first().capacity, 5)
+
+    def test_event_partial_update_infinite_pools_without_capacity_unlimited(self):
+        """Test patching INFINITE events with a pool without capacity defaults to unlimited."""
+        event_response = self.client.post(
+            _get_list_url(), deepcopy(_test_event_data[4])
+        )
+        self.assertEqual(event_response.status_code, status.HTTP_201_CREATED)
+        event_id = event_response.json()["id"]
+        pool = event_response.json()["pools"][0]
+        del pool["capacity"]
+
+        event_update_response = self.client.patch(
+            _get_detail_url(event_id), {"pools": [pool]}
+        )
+        self.assertEqual(event_update_response.status_code, status.HTTP_200_OK)
+
+        event = Event.objects.get(id=event_id)
+        self.assertEqual(event.pools.count(), 1)
+        self.assertEqual(event.pools.first().capacity, 0)
 
     def test_event_pinned_only_one(self):
         """Test that there is only one pinned event at a time"""
