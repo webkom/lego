@@ -22,9 +22,15 @@ class EventPermissionHandler(PermissionHandler["Event"]):
         check_keyword_permissions=True,
         **kwargs,
     ):
-        # The administrate endpoints are keyword-gated without an object, so
-        # the action grant must not inherit the creator's object access
-        if perm == "administrate" and obj is not None:
+        # Interest event leaders and creators manage the event, not the
+        # attendee pages (allergies, payments) - administrate stays keyword
+        # gated and must not inherit the creator's object access. Other event
+        # types keep the object-based access their creators rely on.
+        if (
+            perm == "administrate"
+            and obj is not None
+            and obj.event_type == constants.INTEREST_EVENT
+        ):
             from lego.apps.events.models import Event
 
             obj, queryset = None, Event.objects.none()

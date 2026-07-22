@@ -1021,6 +1021,12 @@ class EventTypePermissionTestCase(BaseAPITestCase):
         self.event_id = self.event_response.json().pop("id", None)
         self.assertIsNone(self.event_id)
 
+    def test_creator_keeps_administrate_on_own_event(self):
+        """Creators without the administrate keyword keep object-based access
+        to the administrate pages - only interest events are stripped"""
+        response = self.client.get(_get_detail_url(self.event_id))
+        self.assertIn("administrate", response.json()["actionGrant"])
+
 
 class PoolsTestCase(BaseAPITestCase):
     fixtures = [
