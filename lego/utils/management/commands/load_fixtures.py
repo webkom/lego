@@ -173,6 +173,17 @@ class Command(BaseCommand):
             timedelta(days=10),
             timedelta(days=17),
             timedelta(days=28),
+            # More coming events (fixtures 68-77, appended in id order)
+            timedelta(days=3),
+            timedelta(days=5),
+            timedelta(days=5, hours=3),
+            timedelta(days=8),
+            timedelta(days=12),
+            timedelta(days=16),
+            timedelta(days=21),
+            timedelta(days=27),
+            timedelta(days=34),
+            timedelta(days=41),
         ]
         events = list(Event.objects.filter(event_type=INTEREST_EVENT).order_by("id"))
         assert len(events) == len(
