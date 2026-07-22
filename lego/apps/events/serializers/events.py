@@ -451,32 +451,38 @@ class EventCreateAndUpdateSerializer(
         instance = self.instance if isinstance(self.instance, Event) else None
         event_type = data.get("event_type", instance.event_type if instance else None)
         if event_type == constants.INTEREST_EVENT:
-            responsible_group = data.get(
-                "responsible_group",
-                instance.responsible_group if instance else None,
-            )
-            if not responsible_group or responsible_group.type != GROUP_INTEREST:
-                raise serializers.ValidationError(
-                    {
-                        "responsible_group": "Interest events must be organized "
-                        "by an interest group"
-                    }
-                )
-            self.validate_interest_event_group_change(data, instance)
-            # Interest events are open to every Abakus member from creation
-            # until start, always free, and never pinned. Creators only
-            # control the whitelisted content fields - see the contract in
-            # constants.py.
-            for field in (
-                set(data)
-                - constants.INTEREST_EVENT_CREATOR_FIELDS
-                - set(constants.INTEREST_EVENT_FORCED_FIELDS)
-            ):
-                data.pop(field)
-            data.update(constants.INTEREST_EVENT_FORCED_FIELDS)
-            if not self.instance or "pools" in data:
-                data["pools"] = self.force_interest_event_pools(data.get("pools"))
+            self.enforce_interest_event_contract(data, instance)
         return data
+
+    def enforce_interest_event_contract(
+        self, data: dict[str, Any], instance: Event | None
+    ) -> None:
+        """
+        Interest events are open to every Abakus member from creation until
+        start, always free, and never pinned. Creators only control the
+        whitelisted content fields - see the contract in constants.py.
+        """
+        responsible_group = data.get(
+            "responsible_group",
+            instance.responsible_group if instance else None,
+        )
+        if not responsible_group or responsible_group.type != GROUP_INTEREST:
+            raise serializers.ValidationError(
+                {
+                    "responsible_group": "Interest events must be organized "
+                    "by an interest group"
+                }
+            )
+        self.validate_interest_event_group_change(data, instance)
+        for field in (
+            set(data)
+            - constants.INTEREST_EVENT_CREATOR_FIELDS
+            - set(constants.INTEREST_EVENT_FORCED_FIELDS)
+        ):
+            data.pop(field)
+        data.update(constants.INTEREST_EVENT_FORCED_FIELDS)
+        if instance is None or "pools" in data:
+            data["pools"] = self.force_interest_event_pools(data.get("pools"))
 
     def validate_interest_event_group_change(
         self, data: dict[str, Any], instance: Event | None
