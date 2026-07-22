@@ -79,7 +79,7 @@ class AbakusGroupNameSerializer(serializers.ModelSerializer):
         fields = ("name", "id")
 
 
-class UserMembershipSerializer(serializers.ModelSerializer):
+class MembershipRoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         fields = ("id", "role")
@@ -112,7 +112,7 @@ class PublicListAbakusGroupSerializer(PublicAbakusGroupSerializer):
             )
         if not membership:
             return None
-        return UserMembershipSerializer(membership).data
+        return MembershipRoleSerializer(membership).data
 
 
 class PublicDetailedAbakusGroupSerializer(PublicListAbakusGroupSerializer):
