@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
-from lego.apps.events.constants import SUCCESS_UNREGISTER
+from lego.apps.events.constants import INTEREST_EVENT, SUCCESS_UNREGISTER
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.events import FrontpageEventSerializer
 from lego.apps.permissions.constants import LIST
@@ -58,6 +58,8 @@ class FrontpageViewSet(viewsets.ViewSet):
         queryset_events_base = (
             Event.objects.all()
             .filter(end_time__gt=timezone.now())
+            # Interest events live on their own page, like in the events list
+            .exclude(event_type=INTEREST_EVENT)
             .order_by("-pinned", "start_time", "id")
             .prefetch_related("pools", "pools__registrations", "company", "tags")
         )
