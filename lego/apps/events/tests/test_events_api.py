@@ -2580,6 +2580,20 @@ class CreateInterestEventTestCase(BaseAPITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_requires_description(self):
+        """Interest events must have a description"""
+        self.client.force_authenticate(self.leader)
+        for description in ("", " "):
+            response = self.client.post(
+                _get_list_url(),
+                {**_test_interest_event_data, "description": description},
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        payload = {**_test_interest_event_data}
+        del payload["description"]
+        response = self.client.post(_get_list_url(), payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_submitted_pool_is_forced_open(self):
         """Submitted pools keep their capacity but are opened to all of Abakus"""
         self.client.force_authenticate(self.leader)

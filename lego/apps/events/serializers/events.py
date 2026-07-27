@@ -473,6 +473,13 @@ class EventCreateAndUpdateSerializer(
                     "by an interest group"
                 }
             )
+        description = data.get(
+            "description", instance.description if instance else None
+        )
+        if not description or not description.strip():
+            raise serializers.ValidationError(
+                {"description": "Interest events must have a description"}
+            )
         self.validate_interest_event_group_change(data, instance)
         for field in (
             set(data)
