@@ -1,29 +1,37 @@
 from enum import Enum
 from unittest import mock
 
-from django.http import HttpResponseRedirect
 from rest_framework import status
+
+from authlib.integrations.base_client.errors import OAuthError
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.views.oidc import get_state_cache_key, oauth_cache
 from lego.utils.test_utils import BaseAPITestCase
 
 
 class MockFeideOAUTH:
     _auth_url = "https://auth.mock-feide.no/auth"
+    _state = "state"
 
     def __init__(self, token="valid_token"):
         self.token = token
 
-    def authorize_redirect(self, request, redirect_url):
-        return HttpResponseRedirect(self._auth_url)
+    def create_authorization_url(self, redirect_uri):
+        return {"url": self._auth_url, "state": self._state}
 
-    def authorize_access_token(self, request):
+    def fetch_access_token(self, **kwargs):
         return _token(self.token)
 
     def userinfo(self, **kwargs):
         uid = f"{kwargs.get('token')['access_token']}@ntnu.no"
         return {"https://n.feide.no/claims/eduPersonPrincipalName": uid}
+
+
+class MockFeideOAUTHInvalidGrant(MockFeideOAUTH):
+    def fetch_access_token(self, **kwargs):
+        raise OAuthError(error="invalid_grant")
 
 
 mockFeide = MockFeideOAUTH()
@@ -218,7 +226,15 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.abakus_group.add_user(self.user_with_student_confirmation)
         self.user_without_student_confirmation = User.objects.get(username="test2")
 
+        oauth_cache.delete(get_state_cache_key(self.user_with_student_confirmation.id))
+        oauth_cache.delete(
+            get_state_cache_key(self.user_without_student_confirmation.id)
+        )
+
         self.client.force_authenticate(self.user_without_student_confirmation)
+
+    def _authorize(self):
+        self.client.get(_get_oidc_authorize_url())
 
     def test_with_unauthenticated_user(self, *args):
         self.client.force_authenticate(None)
@@ -227,6 +243,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_data_1st(self, *args):
+        self._authorize()
         response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -244,6 +261,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK))
     def test_komtek_1st(self, *args):
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -262,6 +280,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA_MASTER)
     )
     def test_data_4th(self, *args):
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -282,6 +301,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.KOMTEK_MASTER)
     )
     def test_komtek_4th(self, *args):
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -302,6 +322,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.SECCLO_MASTER)
     )
     def test_secclo_master(self, *args):
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -322,6 +343,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.MULTI_OTHER)
     )
     def test_with_other_study_informatics(self, *args):
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -343,6 +365,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         You should keep your grade when re-authenticating
         """
         self.client.force_authenticate(self.user_with_student_confirmation)
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -366,6 +389,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         You should keep your validation status and grade when switching to indok
         """
         self.client.force_authenticate(self.user_with_student_confirmation)
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -389,6 +413,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         It should only be allowed to auth a single user with a feide account
         """
         self.client.force_authenticate(self.user_with_student_confirmation)
+        self._authorize()
         response = self.client.get(_get_validate_url())
 
         json = response.json()
@@ -399,6 +424,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         )
 
         self.client.force_authenticate(self.user_without_student_confirmation)
+        self._authorize()
         response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         json = response.json()
@@ -413,3 +439,42 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
                 pk=self.abakus_group.pk
             ).exists()
         )
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_without_prior_authorize(self, *args):
+        response = self.client.get(_get_validate_url())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json().get("status"), "error")
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_with_mismatching_state(self, *args):
+        self._authorize()
+        response = self.client.get(_get_oidc_validate_url("code", "wrong-state"))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json().get("status"), "error")
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_with_replayed_state(self, *args):
+        self._authorize()
+        first = self.client.get(_get_validate_url())
+        self.assertEqual(first.status_code, status.HTTP_200_OK)
+        second = self.client.get(_get_validate_url())
+        self.assertEqual(second.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
+    def test_with_state_from_another_user(self, *args):
+        """
+        The state is bound to the user who started the flow, so no session
+        cookie is required and another user cannot complete the flow
+        """
+        self._authorize()
+        self.client.force_authenticate(self.user_with_student_confirmation)
+        response = self.client.get(_get_validate_url())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTHInvalidGrant())
+    def test_with_rejected_authorization_code(self, *args):
+        self._authorize()
+        response = self.client.get(_get_validate_url())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json().get("status"), "error")

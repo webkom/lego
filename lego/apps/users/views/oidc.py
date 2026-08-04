@@ -11,7 +11,7 @@ from rest_framework.request import Request
 
 import requests
 import sentry_sdk
-from authlib.integrations.base_client.errors import MismatchingStateError
+from authlib.integrations.base_client.errors import OAuthError
 from authlib.integrations.django_client import OAuth
 from requests import Response
 from structlog import get_logger
@@ -32,6 +32,12 @@ oauth.register(
     server_metadata_url=settings.FEIDE_OIDC_CONFIGURATION_ENDPOINT,
     client_kwargs={"scope": "openid"},
 )
+
+FEIDE_STATE_TTL_SECONDS = 3600
+
+
+def get_state_cache_key(user_id: int) -> str:
+    return f"feide_oidc_state_{user_id}"
 
 
 def get_feide_groups(bearer: str) -> Response:
@@ -56,10 +62,22 @@ class OIDCViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=["GET"])
     def authorize(self, request: Request) -> JsonResponse:
+        user: User = request.user  # type: ignore[assignment]
         redirect_uri = f"{settings.FRONTEND_URL}/users/me/settings/student-confirmation"
-        auth_uri = oauth.feide.authorize_redirect(request, redirect_uri).url
+        authorization_data: dict[str, str] = oauth.feide.create_authorization_url(
+            redirect_uri
+        )
+        state_data: dict[str, str] = {
+            "state": authorization_data["state"],
+            "redirect_uri": redirect_uri,
+        }
+        if "code_verifier" in authorization_data:
+            state_data["code_verifier"] = authorization_data["code_verifier"]
+        oauth_cache.set(
+            get_state_cache_key(user.id), state_data, FEIDE_STATE_TTL_SECONDS
+        )
         return JsonResponse(
-            FeideAuthorizeSerializer({"url": auth_uri}).data,
+            FeideAuthorizeSerializer({"url": authorization_data["url"]}).data,
             status=status.HTTP_200_OK,
         )
 
@@ -69,36 +87,33 @@ class OIDCViewSet(viewsets.GenericViewSet):
 
         user: User = request.user  # type: ignore[assignment]
 
-        try:
-            token = oauth.feide.authorize_access_token(request)
-            userinfo = oauth.feide.userinfo(token=token)
-            principal_name = userinfo[
-                "https://n.feide.no/claims/eduPersonPrincipalName"
-            ]
-            uid = get_uid_from_principalName(principal_name)
-            if uid is None:
-                sentry_sdk.capture_message(
-                    "Could not extract student username from principal_name",
-                    "fatal",
-                    principle_name=principal_name,
-                )
-                validation_status = "error"
-            else:
-                try:
-                    validation_status = "success"
-                    with transaction.atomic():
-                        user.student_username = uid
-                        user.save()
+        code = request.query_params.get("code")
+        state = request.query_params.get("state")
 
-                except IntegrityError:
-                    return JsonResponse(
-                        {
-                            "status": "error",
-                            "detail": f"The feide account {uid} is already linked to another user",
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-        except MismatchingStateError as e:
+        cache_key = get_state_cache_key(user.id)
+        state_data: dict[str, str] | None = oauth_cache.get(cache_key)
+        oauth_cache.delete(cache_key)
+
+        if not code or state_data is None or state != state_data["state"]:
+            sentry_sdk.capture_message("Failed while validating access token", "fatal")
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "detail": "Error when validating OAUTH acccess token",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        token_params: dict[str, str] = {
+            "redirect_uri": state_data["redirect_uri"],
+            "code": code,
+        }
+        if "code_verifier" in state_data:
+            token_params["code_verifier"] = state_data["code_verifier"]
+
+        try:
+            token = oauth.feide.fetch_access_token(**token_params)
+        except OAuthError as e:
             sentry_sdk.capture_message("Failed while validating access token", "fatal")
             sentry_sdk.capture_exception(error=e)
             return JsonResponse(
@@ -108,6 +123,32 @@ class OIDCViewSet(viewsets.GenericViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        userinfo = oauth.feide.userinfo(token=token)
+        principal_name = userinfo["https://n.feide.no/claims/eduPersonPrincipalName"]
+        uid = get_uid_from_principalName(principal_name)
+        if uid is None:
+            sentry_sdk.capture_message(
+                "Could not extract student username from principal_name",
+                "fatal",
+                extras={"principal_name": principal_name},
+            )
+            validation_status = "error"
+        else:
+            try:
+                validation_status = "success"
+                with transaction.atomic():
+                    user.student_username = uid
+                    user.save()
+
+            except IntegrityError:
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "detail": f"The feide account {uid} is already linked to another user",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         try:
             groups_res = get_feide_groups(token["access_token"])
