@@ -7,7 +7,8 @@ from django.utils import timezone
 from structlog import get_logger
 
 from lego import celery_app
-from lego.apps.users.models import User
+from lego.apps.users import constants
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.notifications import DeletedUserNotification, InactiveNotification
 from lego.utils.tasks import AbakusTask, send_email
 
@@ -18,6 +19,21 @@ MIN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - 2 * 30
 MEDIAN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - ceil(
     (MAX_INACTIVE_DAYS - MIN_INACTIVE_DAYS) / 2
 )
+
+
+@celery_app.task(serializer="json", bind=True, base=AbakusTask)
+def reconcile_interest_group_leadership(
+    self: AbakusTask, logger_context: dict | None = None
+) -> None:
+    self.setup_logger(logger_context)
+
+    groups = AbakusGroup.objects.filter(type=constants.GROUP_INTEREST, active=True)
+    for group in groups:
+        action = group.reconcile_leadership()
+        if action:
+            log.info(
+                "interest_group_leadership_reconciled", group=group.name, action=action
+            )
 
 
 def send_inactive_notification(user):

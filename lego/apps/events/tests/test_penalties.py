@@ -361,7 +361,9 @@ class PenaltyTestCase(BaseTestCase):
         event.unregistration_deadline = timezone.now() - timedelta(days=1)
         event.save()
 
-        registration = event.registrations.first()
+        # Only pooled registrations are penalized, and the event also has a
+        # waiting list registration
+        registration = event.registrations.exclude(pool=None).first()
         penalties_before = registration.user.number_of_penalties()
 
         event.unregister(registration)

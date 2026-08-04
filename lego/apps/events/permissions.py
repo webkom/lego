@@ -1,5 +1,6 @@
 from structlog import get_logger
 
+from lego.apps.events import constants
 from lego.apps.permissions.actions import action_to_permission
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.constants import CREATE, DELETE, EDIT, VIEW
@@ -11,6 +12,45 @@ log = get_logger()
 
 class EventPermissionHandler(PermissionHandler["Event"]):
     perms_without_object = [CREATE, "administrate"]
+
+    def has_perm(
+        self,
+        user,
+        perm,
+        obj=None,
+        queryset=None,
+        check_keyword_permissions=True,
+        **kwargs,
+    ):
+        # Interest event leaders and creators manage the event, not the
+        # attendee pages (allergies, payments) - administrate stays keyword
+        # gated and must not inherit the creator's object access. Other event
+        # types keep the object-based access their creators rely on.
+        if (
+            perm == "administrate"
+            and obj is not None
+            and obj.event_type == constants.INTEREST_EVENT
+        ):
+            from lego.apps.events.models import Event
+
+            obj, queryset = None, Event.objects.none()
+
+        has_perm = super().has_perm(
+            user, perm, obj, queryset, check_keyword_permissions, **kwargs
+        )
+        if has_perm:
+            return True
+
+        # Interest events belong to the group, not the creator - the current
+        # leaders manage them even after leadership changes hands
+        if (
+            obj is not None
+            and perm in (EDIT, DELETE)
+            and obj.event_type == constants.INTEREST_EVENT
+        ):
+            return self.is_interest_group_leader(user, obj.responsible_group_id)
+
+        return False
 
     def event_type_keyword_permissions(self, event_type, perm):
         """
@@ -51,7 +91,39 @@ class EventPermissionHandler(PermissionHandler["Event"]):
         required_keyword_permissions = self.event_type_keyword_permissions(
             event_type, CREATE
         )
-        return user.has_perm(required_keyword_permissions)
+        if user.has_perm(required_keyword_permissions):
+            return True
+
+        if event_type == constants.INTEREST_EVENT:
+            return self.is_interest_group_leader(
+                user, request.data.get("responsible_group")
+            )
+
+        return False
+
+    def is_interest_group_leader(self, user, group_id):
+        """
+        Interest events require no keyword permissions - the leaders of the
+        interest group responsible for the event can create and edit it.
+        """
+        from lego.apps.users.constants import GROUP_INTEREST
+        from lego.apps.users.models import Membership
+        from lego.apps.users.permissions import EDIT_ROLES
+
+        if not user.is_authenticated or not group_id:
+            return False
+        try:
+            group_id = int(group_id)
+        except (TypeError, ValueError):
+            return False
+        return Membership.objects.filter(
+            user=user,
+            abakus_group_id=group_id,
+            abakus_group__type=GROUP_INTEREST,
+            abakus_group__active=True,
+            role__in=EDIT_ROLES,
+            is_active=True,
+        ).exists()
 
 
 class RegistrationPermissionHandler(PermissionHandler):

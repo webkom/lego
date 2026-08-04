@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
 
 from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
@@ -41,3 +42,14 @@ class MembershipViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         return super(MembershipViewSet, self).create(request, *args, **kwargs)
+
+    def perform_update(self, serializer: BaseSerializer[Membership]) -> None:
+        membership = serializer.save()
+        membership.abakus_group.reconcile_leadership(
+            exclude_membership_id=membership.pk
+        )
+
+    def perform_destroy(self, instance: Membership) -> None:
+        group = instance.abakus_group
+        super().perform_destroy(instance)
+        group.reconcile_leadership()
