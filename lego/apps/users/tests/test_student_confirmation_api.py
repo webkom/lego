@@ -1,13 +1,18 @@
+import json
 from enum import Enum
 from unittest import mock
+from urllib.parse import parse_qs, urlparse
 
+from django.conf import settings
 from rest_framework import status
+from rest_framework.test import APIClient
 
+import requests
 from authlib.integrations.base_client.errors import OAuthError
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.views.oidc import get_state_cache_key, oauth_cache
+from lego.apps.users.views.oidc import get_state_cache_key, oauth, oauth_cache
 from lego.utils.test_utils import BaseAPITestCase
 
 
@@ -478,3 +483,114 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         response = self.client.get(_get_validate_url())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json().get("status"), "error")
+
+
+FEIDE_METADATA = {
+    "issuer": "https://feide.test",
+    "authorization_endpoint": "https://feide.test/oauth/authorization",
+    "token_endpoint": "https://feide.test/oauth/token",
+    "userinfo_endpoint": "https://feide.test/openid/userinfo",
+    "jwks_uri": "https://feide.test/openid/jwks",
+}
+
+
+def _json_response(url, data):
+    response = requests.Response()
+    response.status_code = 200
+    response.url = url
+    response.headers["Content-Type"] = "application/json"
+    response._content = json.dumps(data).encode()
+    return response
+
+
+class FeideOIDCFlowTestCase(BaseAPITestCase):
+    """
+    Runs authorize and validate through the real authlib client against a
+    stubbed Feide, using a separate cookie-less client for each request.
+    The webapp calls the API cross-origin and never sends cookies, so this
+    guards against the flow depending on session state again (which broke
+    with the authlib >= 1.6 session-bound state)
+    """
+
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
+
+    def setUp(self):
+        self.abakus_group = AbakusGroup.objects.get(name="Abakus")
+        self.grade_data_1 = AbakusGroup.objects.create(
+            name=constants.FIRST_GRADE_DATA, type=constants.GROUP_GRADE
+        )
+        self.user = User.objects.get(username="test2")
+        self.feide_requests = []
+        self.original_client_id = oauth.feide.client_id
+        self.original_client_secret = oauth.feide.client_secret
+        self.original_server_metadata = oauth.feide.server_metadata
+        oauth.feide.client_id = "test-client-id"
+        oauth.feide.client_secret = "test-client-secret"
+        oauth.feide.server_metadata = {}
+
+    def tearDown(self):
+        oauth.feide.client_id = self.original_client_id
+        oauth.feide.client_secret = self.original_client_secret
+        oauth.feide.server_metadata = self.original_server_metadata
+
+    def _fake_feide_send(self, session, request, **kwargs):
+        self.feide_requests.append(request)
+        if request.url == settings.FEIDE_OIDC_CONFIGURATION_ENDPOINT:
+            return _json_response(request.url, FEIDE_METADATA)
+        if request.url == FEIDE_METADATA["token_endpoint"]:
+            body = parse_qs(request.body)
+            self.assertEqual(body["code"], ["test-code"])
+            self.assertEqual(body["grant_type"], ["authorization_code"])
+            return _json_response(
+                request.url,
+                {
+                    "access_token": "feide-access-token",
+                    "token_type": "Bearer",
+                    "expires_in": 3600,
+                },
+            )
+        if request.url == FEIDE_METADATA["userinfo_endpoint"]:
+            self.assertEqual(
+                request.headers.get("Authorization"), "Bearer feide-access-token"
+            )
+            return _json_response(
+                request.url,
+                {
+                    "https://n.feide.no/claims/eduPersonPrincipalName": "teststudent@ntnu.no"
+                },
+            )
+        if request.url == settings.FEIDE_GROUPS_ENDPOINT:
+            return _json_response(request.url, data_resp)
+        raise AssertionError(f"Unexpected request to {request.url}")
+
+    def test_flow_succeeds_without_session_cookies(self):
+        with mock.patch.object(
+            requests.sessions.Session,
+            "send",
+            autospec=True,
+            side_effect=self._fake_feide_send,
+        ):
+            authorize_client = APIClient()
+            authorize_client.force_authenticate(self.user)
+            authorize_response = authorize_client.get(_get_oidc_authorize_url())
+            self.assertEqual(authorize_response.status_code, status.HTTP_200_OK)
+
+            auth_url = authorize_response.json()["url"]
+            self.assertTrue(
+                auth_url.startswith(FEIDE_METADATA["authorization_endpoint"])
+            )
+            state = parse_qs(urlparse(auth_url).query)["state"][0]
+
+            validate_client = APIClient()
+            validate_client.force_authenticate(self.user)
+            self.assertEqual(len(validate_client.cookies), 0)
+            validate_response = validate_client.get(
+                _get_oidc_validate_url("test-code", state)
+            )
+
+        self.assertEqual(validate_response.status_code, status.HTTP_200_OK)
+        json_body = validate_response.json()
+        self.assertEqual(json_body["status"], "success")
+        self.assertEqual(json_body["studyProgrammes"], ["Computer Science"])
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.student_username, "teststudent")
