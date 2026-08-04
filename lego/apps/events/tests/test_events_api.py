@@ -2914,3 +2914,29 @@ class InterestEventRegistrationApiTestCase(BaseAPITransactionTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["status"], constants.SUCCESS_UNREGISTER)
         mocked_task.delay.assert_not_called()
+
+    def test_capacity_edit_preserves_registered_pool(self):
+        """Editing the capacity must not reopen or reset a pool that already
+        has registrations"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        pool = self.event.pools.get()
+        original_activation = pool.activation_date
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.patch(
+            _get_detail_url(self.event.id),
+            {
+                "eventType": "interest_event",
+                "responsibleGroup": 26,
+                "pools": [{"id": pool.id, "capacity": 30}],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        pool.refresh_from_db()
+        self.assertEqual(pool.capacity, 30)
+        self.assertEqual(pool.activation_date, original_activation)
+        self.assertEqual(
+            list(pool.permission_groups.values_list("name", flat=True)), ["Abakus"]
+        )
+        self.assertEqual(pool.registrations.count(), 1)
