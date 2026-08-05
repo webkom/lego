@@ -13,6 +13,7 @@ import requests
 import sentry_sdk
 from authlib.integrations.base_client.errors import OAuthError
 from authlib.integrations.django_client import OAuth
+from authlib.jose.errors import JoseError
 from requests import Response
 from structlog import get_logger
 
@@ -36,8 +37,8 @@ oauth.register(
 FEIDE_STATE_TTL_SECONDS = 3600
 
 
-def get_state_cache_key(user_id: int) -> str:
-    return f"feide_oidc_state_{user_id}"
+def get_state_cache_key(user_id: int, state: str) -> str:
+    return f"feide_oidc_state_{user_id}_{state}"
 
 
 def get_feide_groups(bearer: str) -> Response:
@@ -68,13 +69,13 @@ class OIDCViewSet(viewsets.GenericViewSet):
             redirect_uri
         )
         state_data: dict[str, str] = {
-            "state": authorization_data["state"],
+            "nonce": authorization_data["nonce"],
             "redirect_uri": redirect_uri,
         }
-        if "code_verifier" in authorization_data:
-            state_data["code_verifier"] = authorization_data["code_verifier"]
         oauth_cache.set(
-            get_state_cache_key(user.id), state_data, FEIDE_STATE_TTL_SECONDS
+            get_state_cache_key(user.id, authorization_data["state"]),
+            state_data,
+            FEIDE_STATE_TTL_SECONDS,
         )
         return JsonResponse(
             FeideAuthorizeSerializer({"url": authorization_data["url"]}).data,
@@ -90,36 +91,38 @@ class OIDCViewSet(viewsets.GenericViewSet):
         code = request.query_params.get("code")
         state = request.query_params.get("state")
 
-        cache_key = get_state_cache_key(user.id)
-        state_data: dict[str, str] | None = oauth_cache.get(cache_key)
-        oauth_cache.delete(cache_key)
+        state_data: dict[str, str] | None = None
+        if code and state:
+            cache_key = get_state_cache_key(user.id, state)
+            state_data = oauth_cache.get(cache_key)
+            if state_data is not None and not oauth_cache.delete(cache_key):
+                state_data = None
 
-        if not code or state_data is None or state != state_data["state"]:
-            sentry_sdk.capture_message("Failed while validating access token", "fatal")
+        if state_data is None:
+            sentry_sdk.capture_message(
+                "Feide validation attempted with unknown or already used state",
+                "warning",
+            )
             return JsonResponse(
                 {
                     "status": "error",
-                    "detail": "Error when validating OAUTH acccess token",
+                    "detail": "Error when validating OAuth access token",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        token_params: dict[str, str] = {
-            "redirect_uri": state_data["redirect_uri"],
-            "code": code,
-        }
-        if "code_verifier" in state_data:
-            token_params["code_verifier"] = state_data["code_verifier"]
-
         try:
-            token = oauth.feide.fetch_access_token(**token_params)
-        except OAuthError as e:
+            token = oauth.feide.fetch_access_token(
+                redirect_uri=state_data["redirect_uri"], code=code
+            )
+            oauth.feide.parse_id_token(token, nonce=state_data["nonce"])
+        except (OAuthError, JoseError) as e:
             sentry_sdk.capture_message("Failed while validating access token", "fatal")
             sentry_sdk.capture_exception(error=e)
             return JsonResponse(
                 {
                     "status": "error",
-                    "detail": "Error when validating OAUTH acccess token",
+                    "detail": "Error when validating OAuth access token",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

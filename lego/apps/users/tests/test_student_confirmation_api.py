@@ -1,4 +1,5 @@
 import json
+import time
 from enum import Enum
 from unittest import mock
 from urllib.parse import parse_qs, urlparse
@@ -9,25 +10,29 @@ from rest_framework.test import APIClient
 
 import requests
 from authlib.integrations.base_client.errors import OAuthError
+from authlib.jose import JsonWebKey, jwt as jose_jwt
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
-from lego.apps.users.views.oidc import get_state_cache_key, oauth, oauth_cache
+from lego.apps.users.views.oidc import oauth, oauth_cache
 from lego.utils.test_utils import BaseAPITestCase
 
 
 class MockFeideOAUTH:
     _auth_url = "https://auth.mock-feide.no/auth"
-    _state = "state"
 
-    def __init__(self, token="valid_token"):
+    def __init__(self, token="valid_token", state="state"):
         self.token = token
+        self._state = state
 
     def create_authorization_url(self, redirect_uri):
-        return {"url": self._auth_url, "state": self._state}
+        return {"url": self._auth_url, "state": self._state, "nonce": "nonce"}
 
     def fetch_access_token(self, **kwargs):
         return _token(self.token)
+
+    def parse_id_token(self, token, nonce):
+        return None
 
     def userinfo(self, **kwargs):
         uid = f"{kwargs.get('token')['access_token']}@ntnu.no"
@@ -231,10 +236,7 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
         self.abakus_group.add_user(self.user_with_student_confirmation)
         self.user_without_student_confirmation = User.objects.get(username="test2")
 
-        oauth_cache.delete(get_state_cache_key(self.user_with_student_confirmation.id))
-        oauth_cache.delete(
-            get_state_cache_key(self.user_without_student_confirmation.id)
-        )
+        oauth_cache.clear()
 
         self.client.force_authenticate(self.user_without_student_confirmation)
 
@@ -453,10 +455,39 @@ class ValidateOIDCAPITestCase(BaseAPITestCase):
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_with_mismatching_state(self, *args):
+        """
+        A stale or wrong callback must not consume the pending flow's state
+        """
         self._authorize()
         response = self.client.get(_get_oidc_validate_url("code", "wrong-state"))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json().get("status"), "error")
+
+        response = self.client.get(_get_validate_url())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json().get("status"), "success")
+
+    def test_completing_first_of_two_started_flows(self, *args):
+        """
+        Starting a second flow (e.g. another tab) must not invalidate the
+        first one
+        """
+        with mock.patch(
+            "lego.apps.users.views.oidc.oauth.feide",
+            MockFeideOAUTH(Token.DATA, state="state-a"),
+        ):
+            self._authorize()
+        with mock.patch(
+            "lego.apps.users.views.oidc.oauth.feide",
+            MockFeideOAUTH(Token.DATA, state="state-b"),
+        ):
+            self._authorize()
+        with mock.patch(
+            "lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA)
+        ):
+            response = self.client.get(_get_oidc_validate_url("code", "state-a"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json().get("status"), "success")
 
     @mock.patch("lego.apps.users.views.oidc.oauth.feide", MockFeideOAUTH(Token.DATA))
     def test_with_replayed_state(self, *args):
@@ -491,6 +522,7 @@ FEIDE_METADATA = {
     "token_endpoint": "https://feide.test/oauth/token",
     "userinfo_endpoint": "https://feide.test/openid/userinfo",
     "jwks_uri": "https://feide.test/openid/jwks",
+    "id_token_signing_alg_values_supported": ["RS256"],
 }
 
 
@@ -514,39 +546,62 @@ class FeideOIDCFlowTestCase(BaseAPITestCase):
 
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.jwk = JsonWebKey.generate_key("RSA", 2048, is_private=True)
+
     def setUp(self):
         self.abakus_group = AbakusGroup.objects.get(name="Abakus")
         self.grade_data_1 = AbakusGroup.objects.create(
             name=constants.FIRST_GRADE_DATA, type=constants.GROUP_GRADE
         )
         self.user = User.objects.get(username="test2")
-        self.feide_requests = []
-        self.original_client_id = oauth.feide.client_id
-        self.original_client_secret = oauth.feide.client_secret
-        self.original_server_metadata = oauth.feide.server_metadata
-        oauth.feide.client_id = "test-client-id"
-        oauth.feide.client_secret = "test-client-secret"
-        oauth.feide.server_metadata = {}
+        self.expected_nonce = None
+        for attribute, value in (
+            ("client_id", "test-client-id"),
+            ("client_secret", "test-client-secret"),
+            ("server_metadata", {}),
+        ):
+            patcher = mock.patch.object(oauth.feide, attribute, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
-    def tearDown(self):
-        oauth.feide.client_id = self.original_client_id
-        oauth.feide.client_secret = self.original_client_secret
-        oauth.feide.server_metadata = self.original_server_metadata
+    def _make_id_token(self):
+        now = int(time.time())
+        claims = {
+            "iss": FEIDE_METADATA["issuer"],
+            "sub": "feide-subject",
+            "aud": "test-client-id",
+            "iat": now,
+            "exp": now + 300,
+            "nonce": self.expected_nonce,
+        }
+        return jose_jwt.encode({"alg": "RS256"}, claims, self.jwk).decode()
 
     def _fake_feide_send(self, session, request, **kwargs):
-        self.feide_requests.append(request)
         if request.url == settings.FEIDE_OIDC_CONFIGURATION_ENDPOINT:
             return _json_response(request.url, FEIDE_METADATA)
+        if request.url == FEIDE_METADATA["jwks_uri"]:
+            return _json_response(request.url, {"keys": [self.jwk.as_dict()]})
         if request.url == FEIDE_METADATA["token_endpoint"]:
             body = parse_qs(request.body)
             self.assertEqual(body["code"], ["test-code"])
             self.assertEqual(body["grant_type"], ["authorization_code"])
+            self.assertEqual(
+                body["redirect_uri"],
+                [f"{settings.FRONTEND_URL}/users/me/settings/student-confirmation"],
+            )
+            self.assertTrue(
+                request.headers.get("Authorization", "").startswith("Basic ")
+            )
             return _json_response(
                 request.url,
                 {
                     "access_token": "feide-access-token",
                     "token_type": "Bearer",
                     "expires_in": 3600,
+                    "id_token": self._make_id_token(),
                 },
             )
         if request.url == FEIDE_METADATA["userinfo_endpoint"]:
@@ -563,6 +618,15 @@ class FeideOIDCFlowTestCase(BaseAPITestCase):
             return _json_response(request.url, data_resp)
         raise AssertionError(f"Unexpected request to {request.url}")
 
+    def _authorize_and_get_callback_params(self, client):
+        authorize_response = client.get(_get_oidc_authorize_url())
+        self.assertEqual(authorize_response.status_code, status.HTTP_200_OK)
+        auth_url = authorize_response.json()["url"]
+        self.assertTrue(auth_url.startswith(FEIDE_METADATA["authorization_endpoint"]))
+        query = parse_qs(urlparse(auth_url).query)
+        self.expected_nonce = query["nonce"][0]
+        return query["state"][0]
+
     def test_flow_succeeds_without_session_cookies(self):
         with mock.patch.object(
             requests.sessions.Session,
@@ -572,14 +636,7 @@ class FeideOIDCFlowTestCase(BaseAPITestCase):
         ):
             authorize_client = APIClient()
             authorize_client.force_authenticate(self.user)
-            authorize_response = authorize_client.get(_get_oidc_authorize_url())
-            self.assertEqual(authorize_response.status_code, status.HTTP_200_OK)
-
-            auth_url = authorize_response.json()["url"]
-            self.assertTrue(
-                auth_url.startswith(FEIDE_METADATA["authorization_endpoint"])
-            )
-            state = parse_qs(urlparse(auth_url).query)["state"][0]
+            state = self._authorize_and_get_callback_params(authorize_client)
 
             validate_client = APIClient()
             validate_client.force_authenticate(self.user)
@@ -594,3 +651,21 @@ class FeideOIDCFlowTestCase(BaseAPITestCase):
         self.assertEqual(json_body["studyProgrammes"], ["Computer Science"])
         self.user.refresh_from_db()
         self.assertEqual(self.user.student_username, "teststudent")
+
+    def test_id_token_with_wrong_nonce_is_rejected(self):
+        with mock.patch.object(
+            requests.sessions.Session,
+            "send",
+            autospec=True,
+            side_effect=self._fake_feide_send,
+        ):
+            client = APIClient()
+            client.force_authenticate(self.user)
+            state = self._authorize_and_get_callback_params(client)
+            self.expected_nonce = "attacker-controlled-nonce"
+            validate_response = client.get(_get_oidc_validate_url("test-code", state))
+
+        self.assertEqual(validate_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(validate_response.json()["status"], "error")
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.student_username)
