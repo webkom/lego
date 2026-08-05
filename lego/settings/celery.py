@@ -69,6 +69,10 @@ schedule = {
         "task": "lego.apps.meetings.tasks.generate_weekly_recurring_meetings",
         "schedule": crontab(hour=0, minute=0),
     },
+    "reconcile_interest_group_leadership": {
+        "task": "lego.apps.users.tasks.reconcile_interest_group_leadership",
+        "schedule": crontab(hour=5, minute=0),
+    },
 }
 
 app.conf.update(

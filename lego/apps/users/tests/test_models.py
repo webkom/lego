@@ -30,6 +30,60 @@ class AbakusGroupTestCase(BaseTestCase):
         self.assertEqual(self.non_committee, found_group)
 
 
+class ReconcileLeadershipTestCase(BaseTestCase):
+    fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
+
+    def setUp(self):
+        self.group = AbakusGroup.objects.get(name="AbaBrygg")
+        self.first = User.objects.get(username="test1")
+        self.second = User.objects.get(username="test2")
+
+    def test_promotes_oldest_co_leader(self):
+        oldest = self.group.add_user(self.first, role=constants.CO_LEADER)
+        self.group.add_user(self.second, role=constants.CO_LEADER)
+
+        action = self.group.reconcile_leadership()
+
+        oldest.refresh_from_db()
+        self.assertEqual(action, f"promote {self.first.username}")
+        self.assertEqual(oldest.role, constants.LEADER)
+        self.assertTrue(self.group.active)
+
+    def test_deactivates_group_without_leadership(self):
+        self.group.add_user(self.first)
+
+        action = self.group.reconcile_leadership()
+
+        self.assertEqual(action, "deactivate")
+        self.group.refresh_from_db()
+        self.assertFalse(self.group.active)
+
+    def test_dry_run_changes_nothing(self):
+        membership = self.group.add_user(self.first, role=constants.CO_LEADER)
+
+        action = self.group.reconcile_leadership(dry_run=True)
+
+        membership.refresh_from_db()
+        self.assertEqual(action, f"promote {self.first.username}")
+        self.assertEqual(membership.role, constants.CO_LEADER)
+
+    def test_noop_with_leader(self):
+        self.group.add_user(self.first, role=constants.LEADER)
+        self.assertIsNone(self.group.reconcile_leadership())
+
+    def test_noop_for_inactive_group(self):
+        self.group.active = False
+        self.group.save()
+        self.group.add_user(self.first, role=constants.CO_LEADER)
+        self.assertIsNone(self.group.reconcile_leadership())
+
+    def test_noop_for_non_interest_group(self):
+        webkom = AbakusGroup.objects.get(name="Webkom")
+        self.assertIsNone(webkom.reconcile_leadership())
+        webkom.refresh_from_db()
+        self.assertTrue(webkom.active)
+
+
 class AbakusGroupHierarchyTestCase(BaseTestCase):
     fixtures = ["initial_files.yaml", "initial_abakus_groups.yaml"]
 

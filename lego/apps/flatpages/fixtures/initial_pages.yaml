@@ -22,3 +22,14 @@
     slug: personvern
     category: personvern
     content: <p>GDPR og sånt</p>
+
+- model: flatpages.page
+  pk: 4
+  fields:
+    title: Praktisk informasjon om interessegrupper
+    slug: 39-praktisk-informasjon
+    category: grupper
+    require_auth: false
+    content: <p>Interessegrupper er lavterskel sosiale grupper i Abakus. Her
+      finner du praktisk informasjon om hvordan du starter en ny gruppe,
+      vekker en inaktiv gruppe til live, og hva som kreves av deg som leder.</p>

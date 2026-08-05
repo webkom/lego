@@ -47,7 +47,9 @@ class AdminRegistrationCreateAndUpdateSerializer(serializers.Serializer):
 
 
 class RegistrationCreateAndUpdateSerializer(BasisModelSerializer):
-    captcha_response = serializers.CharField(required=False)
+    # Blank is fine for events without captcha; verify_captcha rejects it
+    # for events that require one
+    captcha_response = serializers.CharField(required=False, allow_blank=True)
     payment_status = SetPaymentStatusField(
         required=False, choices=constants.PAYMENT_STATUS_CHOICES
     )

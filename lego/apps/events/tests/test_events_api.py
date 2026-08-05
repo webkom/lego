@@ -3,6 +3,7 @@ from datetime import timedelta
 from unittest import mock, skipIf
 
 from django.conf import settings
+from django.db import IntegrityError, OperationalError
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -21,7 +22,7 @@ from lego.apps.events.tasks import (
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.followers.models import FollowEvent
 from lego.apps.surveys.models import Submission, Survey
-from lego.apps.users.constants import GROUP_GRADE, PHOTO_CONSENT_DOMAINS
+from lego.apps.users.constants import GROUP_GRADE, LEADER, PHOTO_CONSENT_DOMAINS
 from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
 
@@ -1019,6 +1020,12 @@ class EventTypePermissionTestCase(BaseAPITestCase):
         self.assertEqual(self.event_response.status_code, 403)
         self.event_id = self.event_response.json().pop("id", None)
         self.assertIsNone(self.event_id)
+
+    def test_creator_keeps_administrate_on_own_event(self):
+        """Creators without the administrate keyword keep object-based access
+        to the administrate pages - only interest events are stripped"""
+        response = self.client.get(_get_detail_url(self.event_id))
+        self.assertIn("administrate", response.json()["actionGrant"])
 
 
 class PoolsTestCase(BaseAPITestCase):
@@ -2478,3 +2485,432 @@ class EventPhotoConsentTestCase(BaseAPITestCase):
                 [(c.year, c.semester, c.domain) for c in user_consents],
                 "The users consent should exist on the event response",
             )
+
+
+_test_interest_event_data = {
+    "title": "InterestEvent1",
+    "description": "Ingress1",
+    "text": "Ingress1",
+    "eventType": "interest_event",
+    "eventStatusType": "NORMAL",
+    "responsibleGroup": 26,
+    "location": "Abakus-kontoret",
+    "startTime": "2030-09-01T13:20:30Z",
+    "endTime": "2030-09-01T15:20:30Z",
+    "canViewGroups": [],
+}
+
+
+class CreateInterestEventTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.leader, self.member, self.admin = get_dummy_users(3)
+        self.interest_group = AbakusGroup.objects.get(pk=26)
+        self.interest_group.add_user(self.leader, role=LEADER)
+        self.interest_group.add_user(self.member)
+        AbakusGroup.objects.get(name="Webkom").add_user(self.admin)
+
+    def test_leader_can_create_for_own_group(self):
+        """Interest group leaders can create events for their own group"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.get(_get_detail_url(response.json()["id"]))
+        action_grant = response.json()["actionGrant"]
+        self.assertIn("edit", action_grant)
+        self.assertNotIn("administrate", action_grant)
+
+        event = Event.objects.get(id=response.json()["id"])
+        self.assertEqual(event.description, "Ingress1")
+        self.assertEqual(event.event_status_type, constants.INFINITE)
+        self.assertFalse(event.use_captcha)
+        self.assertFalse(event.heed_penalties)
+        self.assertFalse(event.feedback_required)
+        self.assertEqual(event.registration_deadline_hours, 0)
+        self.assertEqual(event.unregistration_deadline_hours, 0)
+
+        pool = event.pools.get()
+        self.assertEqual(pool.name, "Abakus")
+        self.assertEqual(pool.capacity, 0)
+        self.assertEqual(
+            list(pool.permission_groups.values_list("name", flat=True)), ["Abakus"]
+        )
+        self.assertLessEqual(pool.activation_date, timezone.now())
+
+    def test_leader_cannot_create_for_inactive_group(self):
+        """Interest events cannot be created for deactivated interest groups"""
+        self.interest_group.active = False
+        self.interest_group.save()
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_leader_cannot_create_for_other_group(self):
+        """Leaders cannot create interest events for groups they do not lead"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(), {**_test_interest_event_data, "responsibleGroup": 27}
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_member_cannot_create(self):
+        """Regular interest group members cannot create interest events"""
+        self.client.force_authenticate(self.member)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_keyword_admin_can_create(self):
+        """Users with keyword permissions can still create interest events"""
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_requires_interest_responsible_group(self):
+        """Interest events must be organized by an interest group"""
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(
+            _get_list_url(), {**_test_interest_event_data, "responsibleGroup": 20}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_requires_description(self):
+        """Interest events must have a description"""
+        self.client.force_authenticate(self.leader)
+        for description in ("", " "):
+            response = self.client.post(
+                _get_list_url(),
+                {**_test_interest_event_data, "description": description},
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        payload = {**_test_interest_event_data}
+        del payload["description"]
+        response = self.client.post(_get_list_url(), payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_submitted_pool_is_forced_open(self):
+        """Submitted pools keep their capacity but are opened to all of Abakus"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {
+                **_test_interest_event_data,
+                "pools": [
+                    {
+                        "name": "Egen pool",
+                        "capacity": 20,
+                        "activationDate": "2030-08-01T10:00:00Z",
+                        "permissionGroups": [26],
+                    }
+                ],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        pool = Event.objects.get(id=response.json()["id"]).pools.get()
+        self.assertEqual(pool.capacity, 20)
+        self.assertEqual(
+            list(pool.permission_groups.values_list("name", flat=True)), ["Abakus"]
+        )
+        self.assertLessEqual(pool.activation_date, timezone.now())
+
+    def test_priced_and_pinned_are_forced_off(self):
+        """Interest events are always free and never pinned"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {
+                **_test_interest_event_data,
+                "isPriced": True,
+                "priceMember": 10000,
+                "pinned": True,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        event = Event.objects.get(id=response.json()["id"])
+        self.assertFalse(event.is_priced)
+        self.assertFalse(event.pinned)
+
+    def test_non_creator_fields_are_locked(self):
+        """Fields outside the interest event contract are dropped or forced"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {
+                **_test_interest_event_data,
+                "company": 1,
+                "responsibleUsers": [self.member.pk],
+                "useConsent": True,
+                "isPriced": True,
+                "priceMember": 10000,
+                "mergeTime": "2030-09-01T14:00:00Z",
+                "canViewGroups": [26],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        event = Event.objects.get(id=response.json()["id"])
+        self.assertIsNone(event.company)
+        self.assertEqual(list(event.responsible_users.all()), [])
+        self.assertFalse(event.use_consent)
+        self.assertFalse(event.is_priced)
+        self.assertFalse(event.require_auth)
+        self.assertEqual(list(event.can_view_groups.all()), [])
+
+    def test_cannot_move_event_to_group_not_led(self):
+        """A leader cannot re-home their event to a group they do not lead"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        response = self.client.patch(
+            _get_detail_url(event_id), {"responsibleGroup": 27}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Event.objects.get(id=event_id).responsible_group_id, 26)
+
+    def test_can_move_event_between_led_groups(self):
+        """A leader of both groups can move an event between them"""
+        AbakusGroup.objects.get(pk=27).add_user(self.leader, role=LEADER)
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        response = self.client.patch(
+            _get_detail_url(event_id), {"responsibleGroup": 27}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Event.objects.get(id=event_id).responsible_group_id, 27)
+
+    def test_exclude_event_type_filter(self):
+        """The event overview excludes interest events via exclude_event_type"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        response = self.client.get(
+            _get_list_url(), {"exclude_event_type": "interest_event", "page_size": 60}
+        )
+        self.assertNotIn(event_id, [e["id"] for e in response.json()["results"]])
+
+        response = self.client.get(_get_list_url(), {"page_size": 60})
+        self.assertIn(event_id, [e["id"] for e in response.json()["results"]])
+
+    def test_capacity_only_pool_is_accepted(self):
+        """The frontend sends interest event pools with only a capacity"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {**_test_interest_event_data, "pools": [{"capacity": 20}]},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        pool = Event.objects.get(id=response.json()["id"]).pools.get()
+        self.assertEqual(pool.capacity, 20)
+        self.assertEqual(
+            list(pool.permission_groups.values_list("name", flat=True)), ["Abakus"]
+        )
+        self.assertLessEqual(pool.activation_date, timezone.now())
+
+    def test_capacity_only_pool_edit(self):
+        """Capacity can be edited by sending only the pool id and capacity"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(
+            _get_list_url(),
+            {**_test_interest_event_data, "pools": [{"capacity": 20}]},
+        )
+        event = Event.objects.get(id=response.json()["id"])
+        pool = event.pools.get()
+
+        response = self.client.patch(
+            _get_detail_url(event.id),
+            {
+                "eventType": "interest_event",
+                "responsibleGroup": 26,
+                "pools": [{"id": pool.id, "capacity": 30}],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        pool.refresh_from_db()
+        self.assertEqual(pool.capacity, 30)
+
+    def test_current_leaders_manage_their_groups_events(self):
+        """Leaders can edit and delete group events someone else created"""
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.get(_get_detail_url(event_id))
+        action_grant = response.json()["actionGrant"]
+        self.assertIn("edit", action_grant)
+        self.assertIn("delete", action_grant)
+        self.assertNotIn("administrate", action_grant)
+
+        response = self.client.patch(_get_detail_url(event_id), {"title": "Nytt"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.delete(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_leader_cannot_manage_other_groups_events(self):
+        """Leadership of one group grants nothing on another group's events"""
+        self.client.force_authenticate(self.admin)
+        response = self.client.post(
+            _get_list_url(), {**_test_interest_event_data, "responsibleGroup": 27}
+        )
+        event_id = response.json()["id"]
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.get(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("edit", response.json()["actionGrant"])
+
+        # Denied actions on a specific event are hidden as 404 by get_object
+        response = self.client.patch(_get_detail_url(event_id), {"title": "Nytt"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = self.client.delete(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_interest_events_are_visible_to_members(self):
+        """Interest events are not hidden behind require_auth object permissions"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        event_id = response.json()["id"]
+
+        self.client.force_authenticate(self.member)
+        response = self.client.get(_get_detail_url(event_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_leader_can_edit_own_event(self):
+        """Leaders can edit interest events they created"""
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.patch(
+            _get_detail_url(response.json()["id"]),
+            {
+                "title": "Nytt navn",
+                "eventType": "interest_event",
+                "responsibleGroup": 26,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["title"], "Nytt navn")
+
+    def test_anonymous_cannot_register(self):
+        """Registration requires an authenticated user"""
+        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
+        response = self.client.post(_get_registrations_list_url(event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class InterestEventRegistrationApiTestCase(BaseAPITransactionTestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_companies.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.leader, self.member = get_dummy_users(2)
+        interest_group = AbakusGroup.objects.get(pk=26)
+        interest_group.add_user(self.leader, role=LEADER)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.leader)
+        AbakusGroup.objects.get(name="Abakus").add_user(self.member)
+
+        self.client.force_authenticate(self.leader)
+        response = self.client.post(_get_list_url(), _test_interest_event_data)
+        self.event = Event.objects.get(id=response.json()["id"])
+        Event.objects.filter(id=self.event.id).update(
+            start_time=timezone.now() + timedelta(hours=3),
+            end_time=timezone.now() + timedelta(hours=5),
+        )
+        self.client.force_authenticate(self.member)
+
+    @mock.patch("lego.apps.events.views.async_register")
+    def test_registration_is_synchronous(self, mocked_task):
+        """Interest event registrations are admitted in the request"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json()["status"], constants.SUCCESS_REGISTER)
+        self.assertIsNotNone(response.json()["pool"])
+        mocked_task.delay.assert_not_called()
+
+    @mock.patch("lego.apps.events.views.async_register")
+    def test_full_event_waitlists_synchronously(self, mocked_task):
+        """Full interest events waitlist in the request, without overselling"""
+        pool = self.event.pools.get()
+        pool.capacity = 1
+        pool.save()
+        self.client.force_authenticate(self.leader)
+        self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.client.force_authenticate(self.member)
+
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json()["status"], constants.SUCCESS_REGISTER)
+        self.assertIsNone(response.json()["pool"])
+        self.assertEqual(pool.registrations.count(), 1)
+        mocked_task.delay.assert_not_called()
+
+    def test_registration_after_start_fails(self):
+        """Registering after the event has started fails with an error"""
+        Event.objects.filter(id=self.event.id).update(
+            start_time=timezone.now() - timedelta(hours=1)
+        )
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        registration = Registration.objects.get(event=self.event, user=self.member)
+        self.assertEqual(registration.status, constants.FAILURE_REGISTER)
+
+    @mock.patch("lego.apps.events.views.async_register")
+    @mock.patch(
+        "lego.apps.events.models.Event.register", side_effect=IntegrityError("lock")
+    )
+    def test_falls_back_to_async_on_contention(self, mocked_register, mocked_task):
+        """Contention falls back to the async pipeline instead of failing"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.json()["status"], constants.PENDING_REGISTER)
+        mocked_task.delay.assert_called_once()
+
+    @mock.patch("lego.apps.events.views.async_register")
+    @mock.patch(
+        "lego.apps.events.models.Event.register",
+        side_effect=OperationalError("deadlock"),
+    )
+    def test_falls_back_to_async_on_unexpected_error(
+        self, mocked_register, mocked_task
+    ):
+        """No error may strand the registration in PENDING_REGISTER, as that
+        blocks every later attempt"""
+        response = self.client.post(_get_registrations_list_url(self.event.id), {})
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.json()["status"], constants.PENDING_REGISTER)
+        mocked_task.delay.assert_called_once()
+
+    @mock.patch("lego.apps.events.views.async_unregister")
+    def test_unregistration_is_synchronous(self, mocked_task):
+        """Interest event unregistrations complete in the request"""
+        registration_response = self.client.post(
+            _get_registrations_list_url(self.event.id), {}
+        )
+        response = self.client.delete(
+            _get_registrations_detail_url(
+                self.event.id, registration_response.json()["id"]
+            )
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["status"], constants.SUCCESS_UNREGISTER)
+        mocked_task.delay.assert_not_called()

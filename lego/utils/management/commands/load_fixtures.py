@@ -11,6 +11,9 @@ from lego.apps.events.constants import INTEREST_EVENT
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
+from lego.apps.users.fixtures.development_interest_groups import (
+    load_development_interest_groups,
+)
 from lego.apps.users.fixtures.initial_abakus_groups import load_abakus_groups
 from lego.apps.users.fixtures.test_abakus_groups import load_test_abakus_groups
 from lego.apps.users.models import AbakusGroup, User
@@ -61,6 +64,10 @@ class Command(BaseCommand):
             self.load_fixtures(["users/fixtures/development_users.yaml"])
             self.upload_development_files()
             log.info("Loading development fixtures:")
+            # Fake interest groups fill the group grid in development - kept
+            # out of initial_abakus_groups so the production seed data stays
+            # clean
+            load_development_interest_groups()
             self.load_fixtures(
                 [
                     "users/fixtures/development_users.yaml",
@@ -166,11 +173,24 @@ class Command(BaseCommand):
             timedelta(days=10),
             timedelta(days=17),
             timedelta(days=28),
+            # More coming events (fixtures 68-77, appended in id order)
+            timedelta(days=3),
+            timedelta(days=5),
+            timedelta(days=5, hours=3),
+            timedelta(days=8),
+            timedelta(days=12),
+            timedelta(days=16),
+            timedelta(days=21),
+            timedelta(days=27),
+            timedelta(days=34),
+            timedelta(days=41),
         ]
         events = list(Event.objects.filter(event_type=INTEREST_EVENT).order_by("id"))
-        assert len(events) == len(
-            offsets
-        ), "interest-event offsets out of sync with fixtures"
+        assert len(events) == len(offsets), (
+            f"{len(events)} interest event fixtures but {len(offsets)} offsets - "
+            "added or removed an interest event in development_events.yaml? "
+            "Update the offsets list above to match."
+        )
         for event, offset in zip(events, offsets, strict=True):
             duration = event.end_time - event.start_time
             event.start_time = now + offset

@@ -378,3 +378,44 @@
       - haydenfoster
     abakus_group:
       - Abarun
+
+# =======================
+# Interest leader user (leader of Abalan, co-leader of Abacava)
+# =======================
+- model: users.Membership
+  pk: 49
+  fields:
+    user:
+      - interestleader
+    abakus_group:
+      - Users
+- model: users.Membership
+  pk: 50
+  fields:
+    user:
+      - interestleader
+    abakus_group:
+      - Abakus
+- model: users.Membership
+  pk: 51
+  fields:
+    user:
+      - interestleader
+    abakus_group:
+      - 5. klasse Datateknologi
+- model: users.Membership
+  pk: 52
+  fields:
+    user:
+      - interestleader
+    abakus_group:
+      - Abalan
+    role: "leader"
+- model: users.Membership
+  pk: 53
+  fields:
+    user:
+      - interestleader
+    abakus_group:
+      - Abacava
+    role: "co-leader"
