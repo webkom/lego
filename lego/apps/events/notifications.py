@@ -38,6 +38,7 @@ class EventBumpNotification(Notification):
             context={"event": event.title},
             title="Flyttet opp fra venteliste",
             instance=event,
+            data={"screen": "/authed/events/[id]", "params": {"id": str(event.id)}},
         )
 
 
@@ -127,6 +128,7 @@ class EventAdminRegistrationNotification(Notification):
             context={"event": event.title},
             title="Adminpåmeldt til arrangement",
             instance=event,
+            data={"screen": "/authed/events/[id]", "params": {"id": str(event.id)}}
         )
 
 
@@ -161,4 +163,5 @@ class EventAdminUnregistrationNotification(Notification):
             context={"event": event.title},
             title="Fjernet fra arrangement",
             instance=event,
+            data={"screen": "/authed/events/[id]", "params": {"id": str(event.id)}}
         )

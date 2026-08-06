@@ -28,4 +28,5 @@ class RegistrationReminderNotification(Notification):
             context={"event": event.title},
             title="Påmelding til arrangement",
             instance=event,
+            data={"screen": "/authed/events/[id]", "params": {"id": str(event.id)}}
         )
