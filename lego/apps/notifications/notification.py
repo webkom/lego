@@ -41,7 +41,7 @@ class Notification:
         """
         return send_email.delay(*args, **kwargs)
 
-    def _delay_push(self, template, context, title, instance=None):
+    def _delay_push(self, template, context, title, instance=None, data=None):
         """
         Helper for push messages. Does the work in a celery task.
         """
@@ -55,6 +55,7 @@ class Notification:
             title=title,
             template=template,
             context=context,
+            data=data
         )
 
     def generate_mail(self):

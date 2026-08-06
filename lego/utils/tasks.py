@@ -59,7 +59,7 @@ def send_email(self, logger_context=None, **kwargs):
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
-def send_push(self, user, title, target=None, logger_context=None, **kwargs):
+def send_push(self, user, title, target=None, data=None, logger_context=None, **kwargs):
     """
     Generic task to send push messages.
     """
@@ -69,6 +69,7 @@ def send_push(self, user, title, target=None, logger_context=None, **kwargs):
     kwargs["user"] = recipient
     kwargs["target"] = target
     kwargs["title"] = title
+    kwargs["data"] = data
 
     message = PushMessage(**kwargs)
 
