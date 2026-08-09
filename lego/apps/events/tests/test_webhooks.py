@@ -2,12 +2,15 @@ from unittest import mock
 
 from django.test import override_settings
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 import stripe
 from stripe.error import SignatureVerificationError
 
 from lego.apps.events.exceptions import WebhookDidNotFindRegistration
+from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import stripe_webhook_event
+from lego.apps.events.tests.utils import get_dummy_users
 from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
@@ -61,19 +64,108 @@ class StripeWebhookTestCase(BaseAPITestCase):
 
 
 class StripeWebhookEventTaskTestCase(BaseTestCase):
-    def stripe_event(self, payment_intent: dict) -> stripe.Event:
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_events.yaml",
+        "test_companies.yaml",
+    ]
+
+    def stripe_event(self, stripe_object: dict) -> stripe.Event:
         return stripe.Event.construct_from(
-            {"id": "evt_1", "data": {"object": payment_intent}}, "api_key"
+            {"id": "evt_1", "data": {"object": stripe_object}}, "api_key"
         )
 
+    def assert_ignored_as_external(self, mock_log, event_type: str) -> None:
+        mock_log.info.assert_called_once_with(
+            "stripe_webhook_ignored_external_payment",
+            event_id="evt_1",
+            event_type=event_type,
+        )
+
+    @mock.patch("lego.apps.events.tasks.log")
     @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
-    def test_ignores_payment_without_metadata(self, mock_retrieve):
+    def test_ignores_external_payment_without_metadata(self, mock_retrieve, mock_log):
         """Payments created outside LEGO on the shared Stripe account are ignored"""
         mock_retrieve.return_value = self.stripe_event(
             {"id": "pi_1", "amount": 84500, "status": "succeeded", "metadata": {}}
         )
 
         stripe_webhook_event(event_id="evt_1", event_type="payment_intent.succeeded")
+
+        self.assert_ignored_as_external(mock_log, "payment_intent.succeeded")
+
+    @mock.patch("lego.apps.events.tasks.log")
+    @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
+    def test_ignores_external_payment_with_foreign_metadata(
+        self, mock_retrieve, mock_log
+    ):
+        """External payments are ignored even when they carry their own metadata"""
+        mock_retrieve.return_value = self.stripe_event(
+            {
+                "id": "pi_1",
+                "amount": 84500,
+                "status": "succeeded",
+                "metadata": {"order_id": "42"},
+            }
+        )
+
+        stripe_webhook_event(event_id="evt_1", event_type="payment_intent.succeeded")
+
+        self.assert_ignored_as_external(mock_log, "payment_intent.succeeded")
+
+    @mock.patch("lego.apps.events.tasks.log")
+    @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
+    def test_ignores_external_refund(self, mock_retrieve, mock_log):
+        """Refunds of payments created outside LEGO are ignored"""
+        mock_retrieve.return_value = self.stripe_event(
+            {
+                "id": "ch_1",
+                "amount": 84500,
+                "amount_refunded": 84500,
+                "status": "succeeded",
+                "payment_intent": "pi_unknown",
+                "metadata": {},
+            }
+        )
+
+        stripe_webhook_event(event_id="evt_1", event_type="charge.refunded")
+
+        self.assert_ignored_as_external(mock_log, "charge.refunded")
+
+    @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
+    def test_raises_for_partial_lego_metadata(self, mock_retrieve):
+        """A LEGO payment with incomplete metadata must fail loudly, not be ignored"""
+        mock_retrieve.return_value = self.stripe_event(
+            {
+                "id": "pi_1",
+                "amount": 84500,
+                "status": "succeeded",
+                "last_payment_error": None,
+                "metadata": {"EVENT_ID": 1},
+            }
+        )
+
+        with self.assertRaises(ValidationError):
+            stripe_webhook_event(
+                event_id="evt_1", event_type="payment_intent.succeeded"
+            )
+
+    @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
+    def test_raises_for_lego_payment_with_stripped_metadata(self, mock_retrieve):
+        """A payment matching a registration's payment intent must fail loudly when
+        its metadata is gone, not be ignored as external"""
+        event = Event.objects.get(title="POOLS_AND_PRICED")
+        user = get_dummy_users(1)[0]
+        Registration.objects.create(event=event, user=user, payment_intent_id="pi_1")
+        mock_retrieve.return_value = self.stripe_event(
+            {"id": "pi_1", "amount": 84500, "status": "succeeded", "metadata": {}}
+        )
+
+        with self.assertRaises(ValidationError):
+            stripe_webhook_event(
+                event_id="evt_1", event_type="payment_intent.succeeded"
+            )
 
     @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
     def test_raises_when_lego_payment_has_no_registration(self, mock_retrieve):
@@ -85,8 +177,8 @@ class StripeWebhookEventTaskTestCase(BaseTestCase):
                 "status": "succeeded",
                 "last_payment_error": None,
                 "metadata": {
-                    "EVENT_ID": 1,
-                    "USER_ID": 1,
+                    "EVENT_ID": 999,
+                    "USER_ID": 999,
                     "USER": "Test User",
                     "EMAIL": "test@abakus.no",
                 },

@@ -520,8 +520,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 2)
 
 
-@skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
-class StripePaymentTestCase(BaseTestCase):
+class PricedEventTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
@@ -536,6 +535,12 @@ class StripePaymentTestCase(BaseTestCase):
         self.event.merge_time = timezone.now() + timedelta(hours=12)
         self.event.payment_due_date = timezone.now() + timedelta(days=2)
         self.event.save()
+
+
+@skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
+class StripePaymentTestCase(PricedEventTestCase):
+    def setUp(self):
+        super().setUp()
         self.registration = self.event.registrations.first()
 
     @mock.patch("lego.apps.events.tasks.save_and_notify_payment")
@@ -592,22 +597,7 @@ class StripePaymentTestCase(BaseTestCase):
         mock_initiate_payment.assert_not_called()
 
 
-class StripePaymentIntentMetadataTestCase(BaseTestCase):
-    fixtures = [
-        "test_abakus_groups.yaml",
-        "test_users.yaml",
-        "test_events.yaml",
-        "test_companies.yaml",
-    ]
-
-    def setUp(self):
-        self.event = Event.objects.get(title="POOLS_AND_PRICED")
-        self.event.start_time = timezone.now() + timedelta(days=1)
-        self.event.end_time = timezone.now() + timedelta(days=1, hours=2)
-        self.event.merge_time = timezone.now() + timedelta(hours=12)
-        self.event.payment_due_date = timezone.now() + timedelta(days=2)
-        self.event.save()
-
+class StripePaymentIntentMetadataTestCase(PricedEventTestCase):
     @mock.patch("lego.apps.events.tasks.stripe.PaymentIntent.create")
     def test_payment_intent_is_created_with_webhook_metadata(self, mock_create):
         """

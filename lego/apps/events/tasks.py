@@ -403,7 +403,20 @@ def check_for_bump_on_pool_creation_or_expansion(
     event.save(update_fields=["is_ready"])
 
 
-@celery_app.task(serializer="json", bind=True, base=AbakusTask)
+def is_lego_payment(metadata: dict | None, payment_intent_id: str | None) -> bool:
+    """
+    The Stripe account is shared with payments made outside LEGO, which the webhook must
+    ignore. A payment belongs to LEGO if it carries LEGO metadata or matches a
+    registration's payment intent.
+    """
+    if metadata and "EVENT_ID" in metadata:
+        return True
+    if not payment_intent_id:
+        return False
+    return Registration.objects.filter(payment_intent_id=payment_intent_id).exists()
+
+
+@celery_app.task(serializer="json", bind=True, base=AbakusTask)  # type: ignore[misc]
 def stripe_webhook_event(
     self: AbakusTask,
     event_id: str,
@@ -413,27 +426,27 @@ def stripe_webhook_event(
     """
     Task that handles webhook events from Stripe, and updates the users registration in accordance
     with the payment status.
-
-    Payments without metadata are created outside LEGO on the shared Stripe account and are
-    ignored.
     """
     self.setup_logger(logger_context)
     event = stripe.Event.retrieve(event_id)
-
-    if not event.data["object"].get("metadata"):
-        log.info(
-            "stripe_webhook_ignored_external_payment",
-            event_id=event_id,
-            event_type=event_type,
-        )
-        return
 
     if event_type in [
         constants.STRIPE_EVENT_INTENT_SUCCESS,
         constants.STRIPE_EVENT_INTENT_PAYMENT_FAILED,
         constants.STRIPE_EVENT_INTENT_PAYMENT_CANCELED,
     ]:
-        serializer = StripePaymentIntentSerializer(data=event.data["object"])
+        payment_intent = event.data["object"]
+        if not is_lego_payment(
+            payment_intent.get("metadata"), payment_intent.get("id")
+        ):
+            log.info(
+                "stripe_webhook_ignored_external_payment",
+                event_id=event_id,
+                event_type=event_type,
+            )
+            return
+
+        serializer = StripePaymentIntentSerializer(data=payment_intent)
         serializer.is_valid(raise_exception=True)
 
         metadata = serializer.data["metadata"]
@@ -468,7 +481,16 @@ def stripe_webhook_event(
         registration.save()
 
     elif event_type in [constants.STRIPE_EVENT_CHARGE_REFUNDED]:
-        serializer = StripeChargeSerializer(data=event.data["object"])
+        charge = event.data["object"]
+        if not is_lego_payment(charge.get("metadata"), charge.get("payment_intent")):
+            log.info(
+                "stripe_webhook_ignored_external_payment",
+                event_id=event_id,
+                event_type=event_type,
+            )
+            return
+
+        serializer = StripeChargeSerializer(data=charge)
         serializer.is_valid(raise_exception=True)
 
         metadata = serializer.data["metadata"]
