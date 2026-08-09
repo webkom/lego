@@ -3,9 +3,12 @@ from unittest import mock
 from django.test import override_settings
 from rest_framework import status
 
+import stripe
 from stripe.error import SignatureVerificationError
 
-from lego.utils.test_utils import BaseAPITestCase
+from lego.apps.events.exceptions import WebhookDidNotFindRegistration
+from lego.apps.events.tasks import stripe_webhook_event
+from lego.utils.test_utils import BaseAPITestCase, BaseTestCase
 
 
 @override_settings(STRIPE_WEBHOOK_SECRET="test_secret")
@@ -55,3 +58,42 @@ class StripeWebhookTestCase(BaseAPITestCase):
 
         response = self.client.post(self.url, payload, HTTP_STRIPE_SIGNATURE="valid")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class StripeWebhookEventTaskTestCase(BaseTestCase):
+    def stripe_event(self, payment_intent: dict) -> stripe.Event:
+        return stripe.Event.construct_from(
+            {"id": "evt_1", "data": {"object": payment_intent}}, "api_key"
+        )
+
+    @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
+    def test_ignores_payment_without_metadata(self, mock_retrieve):
+        """Payments created outside LEGO on the shared Stripe account are ignored"""
+        mock_retrieve.return_value = self.stripe_event(
+            {"id": "pi_1", "amount": 84500, "status": "succeeded", "metadata": {}}
+        )
+
+        stripe_webhook_event(event_id="evt_1", event_type="payment_intent.succeeded")
+
+    @mock.patch("lego.apps.events.tasks.stripe.Event.retrieve")
+    def test_raises_when_lego_payment_has_no_registration(self, mock_retrieve):
+        """Payments with LEGO metadata must match a registration"""
+        mock_retrieve.return_value = self.stripe_event(
+            {
+                "id": "pi_1",
+                "amount": 84500,
+                "status": "succeeded",
+                "last_payment_error": None,
+                "metadata": {
+                    "EVENT_ID": 1,
+                    "USER_ID": 1,
+                    "USER": "Test User",
+                    "EMAIL": "test@abakus.no",
+                },
+            }
+        )
+
+        with self.assertRaises(WebhookDidNotFindRegistration):
+            stripe_webhook_event(
+                event_id="evt_1", event_type="payment_intent.succeeded"
+            )

@@ -404,13 +404,29 @@ def check_for_bump_on_pool_creation_or_expansion(
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def stripe_webhook_event(self, event_id, event_type, logger_context=None):
+def stripe_webhook_event(
+    self: AbakusTask,
+    event_id: str,
+    event_type: str,
+    logger_context: dict | None = None,
+) -> None:
     """
     Task that handles webhook events from Stripe, and updates the users registration in accordance
     with the payment status.
+
+    Payments without metadata are created outside LEGO on the shared Stripe account and are
+    ignored.
     """
     self.setup_logger(logger_context)
     event = stripe.Event.retrieve(event_id)
+
+    if not event.data["object"].get("metadata"):
+        log.info(
+            "stripe_webhook_ignored_external_payment",
+            event_id=event_id,
+            event_type=event_type,
+        )
+        return
 
     if event_type in [
         constants.STRIPE_EVENT_INTENT_SUCCESS,
