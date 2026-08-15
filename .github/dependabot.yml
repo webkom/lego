@@ -1,8 +1,39 @@
 version: 2
+
 updates:
   - package-ecosystem: pip
     directory: "/"
     schedule:
-      interval: daily
-      time: "10:00"
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Oslo
     open-pull-requests-limit: 10
+    groups:
+      # mypy and its stubs are version-coupled and must move together.
+      typing:
+        patterns:
+          - "mypy"
+          - "mypy-extensions"
+          - "django-stubs"
+          - "django-stubs-ext"
+          - "djangorestframework-stubs"
+          - "types-*"
+      linting:
+        patterns:
+          - "black"
+          - "isort"
+          - "flake8"
+          - "flake8-*"
+      docs:
+        patterns:
+          - "sphinx"
+          - "sphinx-*"
+          - "sphinx_*"
+      # Catch-all for lockfile churn; majors stay ungrouped so they get reviewed.
+      routine:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
