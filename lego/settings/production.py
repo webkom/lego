@@ -87,10 +87,6 @@ LDAP_SERVER = env("LDAP_SERVER")
 LDAP_USER = env("LDAP_USER")
 LDAP_PASSWORD = env("LDAP_PASSWORD")
 
-# Analytics
-ANALYTICS_HOST = env("ANALYTICS_HOST", default=None)
-ANALYTICS_WRITE_KEY = env("ANALYTICS_WRITE_KEY", default="")
-
 # CORS
 CORS_ORIGIN_WHITELIST = ["http://127.0.0.1:3000", "http://localhost:3000"]
 CORS_ORIGIN_DOMAINS = env("CORS_ORIGIN_DOMAINS", default=["abakus.no"])
