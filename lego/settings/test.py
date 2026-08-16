@@ -62,8 +62,6 @@ CELERY_TASK_ALWAYS_EAGER = True
 
 CHANNEL_LAYERS["default"]["CONFIG"] = {"hosts": [f"redis://{CACHE}/5"]}
 
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-
 INSTALLED_APPS += ("lego.apps.permissions.tests",)
 INSTALLED_APPS.remove("django_extensions")
 INSTALLED_APPS.remove("corsheaders")

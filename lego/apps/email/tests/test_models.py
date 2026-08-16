@@ -70,7 +70,7 @@ class EmailListTestCase(BaseTestCase):
         group.save()
 
         test1 = User.objects.get(username="test1")
-        EmailAddress.objects.create(email="testbruker1", user=test1)
+        test1.internal_email = EmailAddress.objects.create(email="testbruker1")
         test1.save()
 
         test2 = User.objects.get(username="test2")

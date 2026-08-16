@@ -153,10 +153,8 @@ SEARCH_BACKEND = "postgres"
 
 TIME_ZONE = "UTC"
 USE_I18N = False
-USE_L10N = False
 USE_TZ = True
 
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
