@@ -169,7 +169,7 @@ THEMES = (
 LATE_PRESENCE_PENALTY_WEIGHT = 1
 
 
-class PENALTY_WEIGHTS(models.TextChoices):
+class PENALTY_WEIGHTS(models.IntegerChoices):
     LATE_PRESENCE = 1
 
 

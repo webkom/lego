@@ -50,9 +50,8 @@ CACHES = {
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     },
     "oauth": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{CACHE}:6379/9",
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "oauth",
     },
 }
 
