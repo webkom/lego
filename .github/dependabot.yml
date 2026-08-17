@@ -9,6 +9,26 @@ updates:
       time: "08:00"
       timezone: Europe/Oslo
     open-pull-requests-limit: 10
+    # Ranges, not whole packages, so patches below them still flow.
+    ignore:
+      # drops rest_framework/documentation.py, imported by lego/urls.py
+      - dependency-name: "djangorestframework"
+        versions: [">=3.17"]
+      # drops the DRF schema methods /api-docs/ needs
+      - dependency-name: "django-filter"
+        versions: [">=25.0"]
+      # drops BaseHealthCheckBackend
+      - dependency-name: "django-health-check"
+        versions: [">=3.21"]
+      # needs redis>=4.6
+      - dependency-name: "channels_redis"
+        versions: [">=4.2"]
+      # swappable model, irreversible secret hashing
+      - dependency-name: "django-oauth-toolkit"
+        versions: [">=2.0"]
+      # drops pkg_resources, imported by coreapi
+      - dependency-name: "setuptools"
+        versions: [">=82"]
     groups:
       # mypy and its stubs are version-coupled and must move together.
       typing:
@@ -34,6 +54,12 @@ updates:
       routine:
         patterns:
           - "*"
+        # celery broker stack; wanted, but needs its own PR
+        exclude-patterns:
+          - "redis"
+          - "hiredis"
+          - "celery"
+          - "kombu"
         update-types:
           - "minor"
           - "patch"
