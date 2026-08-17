@@ -42,7 +42,7 @@ django-push-notifications = "3.0.0"
 # Logging/errors
 structlog = "21.5.0"
 structlog-sentry = "1.4.0"
-sentry-sdk = "1.45.1"
+sentry-sdk = "2.68.0"
 #
 # channels
 channels = { version = "4.3.2", extras = ["daphne"] }
