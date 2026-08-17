@@ -79,6 +79,18 @@ class AutocompleteIndexTestCase(BaseTestCase):
     def test_autocomplete_handles_query_with_only_special_chars(self):
         self.assertEqual(self.autocomplete("&:*|"), [])
 
+    def test_autocomplete_ranks_prefix_matches_above_fuzzy_matches(self):
+        # Scores higher on whole-query trigram similarity than the exact match,
+        # but does not match the per-word prefixes "chris:* & ngu:*".
+        fuzzy_only = User.objects.create(
+            username="chrisa",
+            first_name="Chris",
+            last_name="Anderson",
+            email="chrisa@abakus.no",
+        )
+
+        self.assertEqual(self.autocomplete("chris ngu"), [self.user, fuzzy_only])
+
 
 class SearchAPITestCase(BaseAPITestCase):
     fixtures = ["test_abakus_groups.yaml", "test_users.yaml"]
@@ -101,6 +113,34 @@ class SearchAPITestCase(BaseAPITestCase):
         self.assertEqual(results[0]["id"], self.page.pk)
         self.assertEqual(results[0]["contentType"], "flatpages.page")
         self.assertEqual(results[0]["title"], "Webkomiteen")
+        # The old backends injected a literal "text" placeholder that clobbered
+        # real result fields named text.
+        self.assertNotIn("text", results[0])
+
+    def test_search_endpoint_deduplicates_types(self):
+        response = self.client.post(
+            "/api/v1/search-search/",
+            {"query": "webkomiteen", "types": ["flatpages.page", "flatpages.page"]},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+
+    def test_search_endpoint_rejects_too_long_query(self):
+        response = self.client.post(
+            "/api/v1/search-search/",
+            {"query": "a" * 10_000, "types": ["flatpages.page"]},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_autocomplete_endpoint_rejects_too_long_query(self):
+        response = self.client.post(
+            "/api/v1/search-autocomplete/",
+            {"query": "ab " * 5_000},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_autocomplete_endpoint(self):
         response = self.client.post(

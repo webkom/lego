@@ -8,7 +8,17 @@ from django.contrib.postgres.search import (
     SearchVector,
     TrigramWordSimilarity,
 )
-from django.db.models import Expression, F, Model, Q, QuerySet, TextField, Value
+from django.db.models import (
+    BooleanField,
+    Expression,
+    ExpressionWrapper,
+    F,
+    Model,
+    Q,
+    QuerySet,
+    TextField,
+    Value,
+)
 from django.db.models.expressions import Combinable
 from django.db.models.functions import Concat
 from rest_framework.serializers import Serializer
@@ -146,7 +156,7 @@ class SearchIndex:
             self.get_queryset()
             .annotate(lego_search=vector, lego_rank=SearchRank(vector, search_query))
             .filter(lego_search=search_query)
-            .order_by("-lego_rank", *self.search_ordering)
+            .order_by("-lego_rank", *self.search_ordering, "-pk")
         )
         return queryset
 
@@ -193,10 +203,23 @@ class SearchIndex:
                 lego_search=vector,
                 lego_similarity=TrigramWordSimilarity(cleaned, combined),
             )
+            # Exact prefix matches must rank above fuzzy-only matches: trigram
+            # similarity alone can score a typo-ish hit higher than the match the
+            # user is literally typing.
+            .annotate(
+                lego_prefix_match=ExpressionWrapper(
+                    Q(lego_search=prefix_query), output_field=BooleanField()
+                )
+            )
             .filter(
                 Q(lego_search=prefix_query)
                 | Q(lego_similarity__gt=self.autocomplete_similarity_threshold)
             )
-            .order_by("-lego_similarity", *self.autocomplete_ordering)
+            .order_by(
+                "-lego_prefix_match",
+                "-lego_similarity",
+                *self.autocomplete_ordering,
+                "-pk",
+            )
         )
         return queryset

@@ -30,8 +30,11 @@ class SearchBackend:
         content_types: Iterable[str] | None,
         autocomplete: bool = False,
     ) -> list[Model]:
-        if content_types is None or len(list(content_types)) == 0:
-            content_types = registry.index_registry.keys()
+        # Materialize and dedupe: duplicate types in the request must not multiply
+        # queries or skew the interleaving below.
+        content_types = list(dict.fromkeys(content_types or ()))
+        if not content_types:
+            content_types = list(registry.index_registry.keys())
 
         max_results_per_type = self.max_results
         results_by_content_type: dict[str, list[Model]] = {
@@ -83,7 +86,7 @@ class SearchBackend:
             else search_index.get_result_fields()
         )
         result = {field: serializer.data[field] for field in fields}
-        result.update({"id": object.pk, "content_type": content_type, "text": "text"})
+        result.update({"id": object.pk, "content_type": content_type})
         return result
 
     def serialize(
