@@ -14,8 +14,5 @@ class PageModelIndex(SearchIndex):
     search_fields = ("title", "slug", "content")
     autocomplete_fields = ("title", "slug")
 
-    def get_autocomplete(self, instance):
-        return [instance.title, instance.slug_field]
-
 
 register(PageModelIndex)

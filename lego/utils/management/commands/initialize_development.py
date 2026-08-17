@@ -14,10 +14,6 @@ class Command(BaseCommand):
     def run(self, *args, **options):
         self.stdout.write("Migrating...")
         management.call_command("migrate", verbosity=self.verbosity)
-        self.stdout.write("Migrating search...")
-        management.call_command("migrate_search", verbosity=self.verbosity)
-        self.stdout.write("Rebuilding indices...")
-        management.call_command("rebuild_index", verbosity=self.verbosity)
         self.stdout.write("Loading fixtures...")
         management.call_command(
             "load_fixtures", verbosity=self.verbosity, development=True

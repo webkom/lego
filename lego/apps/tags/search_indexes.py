@@ -14,8 +14,5 @@ class TagIndex(SearchIndex):
     autocomplete_fields = ("tag",)
     fallback_to_autocomplete = True
 
-    def get_autocomplete(self, instance):
-        return [instance.tag]
-
 
 register(TagIndex)

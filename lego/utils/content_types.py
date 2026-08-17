@@ -49,7 +49,7 @@ def string_to_instance(instance_string):
     return content_type.get_object_for_this_type(pk=id_string)
 
 
-def instance_to_content_type_string(instance):
+def instance_to_content_type_string(instance) -> str:
     """
     Convert a model instance to a string like app_label.model_name
     """

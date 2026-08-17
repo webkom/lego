@@ -21,14 +21,8 @@ class EventModelIndex(SearchIndex):
     autocomplete_fields = ("title",)
     search_fields = ("title", "description", "text")
 
-    def get_autocomplete(self, instance):
-        return instance.title
-
-    def search(self, query):
-        return super().search(query).order_by("-start_time")
-
-    def autocomplete(self, query):
-        return super().autocomplete(query).order_by("-start_time")
+    search_ordering = ("-start_time",)
+    autocomplete_ordering = ("-start_time",)
 
 
 register(EventModelIndex)

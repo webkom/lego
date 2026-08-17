@@ -17,6 +17,10 @@ if "DRONE" not in os.environ:
     for app in INSTALLED_APPS:
         MIGRATION_MODULES[app.split(".")[-1]] = None
 
+    # Keep the search app's migrations: they enable the pg_trgm extension
+    # needed by the autocomplete queries.
+    del MIGRATION_MODULES["search"]
+
 DEBUG = False
 SERVER_URL = "http://127.0.0.1:8000"
 FRONTEND_URL = "http://127.0.0.1:8000"
@@ -54,9 +58,6 @@ CACHES = {
         "LOCATION": "oauth",
     },
 }
-
-ELASTICSEARCH = "localhost"
-SEARCH_BACKEND = "postgres"
 
 CELERY_TASK_ALWAYS_EAGER = True
 

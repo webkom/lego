@@ -1,37 +1,54 @@
-from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.utils.encoding import force_str
+from __future__ import annotations
 
-from elasticsearch.helpers import BulkIndexError
+from typing import Any, Sequence
+
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector,
+    TrigramWordSimilarity,
+)
+from django.db.models import Expression, F, Model, Q, QuerySet, TextField, Value
+from django.db.models.expressions import Combinable
+from django.db.models.functions import Concat
+from rest_framework.serializers import Serializer
+
 from structlog import get_logger
 
-from . import backend
-
 log = get_logger()
+
+SEARCH_CONFIG = "norwegian"
 
 
 class SearchIndex:
     """
-    Base class for search indexes. Implement this class to index a model. Remeber to use the
-    register function to register the index.
+    Base class for search indexes. Implement this class to make a model searchable. Remember to
+    use the register function to register the index. Searches query the live database rows using
+    Postgres full text search, so there is no separate index to keep in sync.
     """
 
-    queryset = None
-    serializer_class = None
-    fallback_to_autocomplete = False
+    queryset: QuerySet | None = None
+    serializer_class: type[Serializer] | None = None
+    fallback_to_autocomplete: bool = False
 
-    def get_backend(self):
-        """
-        Return the backend used to handle changes by this index. You should know what you do if
-        you override this function. The search interface only supports one backend.
-        """
-        return backend.current_backend
+    search_fields: Sequence[str] | None = None
+    autocomplete_fields: Sequence[str] | None = None
+    result_fields: Sequence[str] | None = None
+    autocomplete_result_fields: Sequence[str] = ()
 
-    def get_queryset(self):
+    # Secondary orderings applied after rank/similarity, e.g. ("-start_time",)
+    search_ordering: tuple[str, ...] = ()
+    autocomplete_ordering: tuple[str, ...] = ()
+
+    # Minimum trigram word similarity for a fuzzy autocomplete match.
+    autocomplete_similarity_threshold: float = 0.4
+
+    def get_queryset(self) -> QuerySet:
         """
-        Get the queryset that should be indexed. Override this method or set a queryset attribute
-        on this class.
+        Get the queryset that should be searched. Override this method or set a queryset
+        attribute on this class.
         """
-        queryset = getattr(self, "queryset", None)
+        queryset = self.queryset
 
         if queryset is None:
             raise NotImplementedError(
@@ -40,19 +57,19 @@ class SearchIndex:
             )
         return queryset
 
-    def get_model(self):
+    def get_model(self) -> type[Model]:
         """
         Get the model this index is bound to.
         """
         queryset = self.get_queryset()
         return queryset.model
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> type[Serializer]:
         """
         Override this method or set the serializer_class attribute on the class to define the
         serializer.
         """
-        serializer_class = getattr(self, "serializer_class", None)
+        serializer_class = self.serializer_class
         if serializer_class is None:
             raise NotImplementedError(
                 "You must provide a 'get_serializer_class' function or a "
@@ -60,19 +77,11 @@ class SearchIndex:
             )
         return serializer_class
 
-    def get_filter_fields(self):
-        """
-        Returns an array of allowed fields to filter on. Returns a empty list by default. Override
-        this function or set the filter_fields variable on the class to change this.
-        """
-        filter_fields = getattr(self, "filter_fields", [])
-        return filter_fields
-
-    def get_result_fields(self):
+    def get_result_fields(self) -> Sequence[str]:
         """
         Returns a list of fields attached to the search result.
         """
-        result_fields = getattr(self, "result_fields", None)
+        result_fields = self.result_fields
         if result_fields is None:
             raise NotImplementedError(
                 "You must provide a 'get_result_fields' function or a "
@@ -80,51 +89,50 @@ class SearchIndex:
             )
         return result_fields
 
-    def get_autocomplete_result_fields(self):
+    def get_autocomplete_result_fields(self) -> Sequence[str]:
         """
         Returns a list of fields attached to the autocomplete result.
         """
-        result_fields = getattr(self, "autocomplete_result_fields", [])
-        return result_fields
+        return self.autocomplete_result_fields
 
-    def get_index_filter_fields(self):
-        """
-        Returns True if we want to index filter fields. Defaults to False.
-        """
-        index_filter_fields = getattr(self, "index_filter_fields", False)
-        return index_filter_fields
-
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer(self, *args: Any, **kwargs: Any) -> Serializer:
         """
         Return the serializer with args and kwargs.
         """
         serializer_class = self.get_serializer_class()
         return serializer_class(*args, **kwargs)
 
-    def get_autocomplete(self, instance):
-        """
-        Implement this method to support autocomplete on the model. This function should return
-        None, a string or a list of strings.
-        """
-        return None
-
-    def clean_query(self, query):
+    def clean_query(self, query: str) -> str:
         """
         Clean search query to prepare for pg search.
         Removes characters like &, | and other chars used in pg full text search.
         """
-        chars = ["&", "*", ":", "@", "|", "<", ">", "!"]
+        chars = ["&", "*", ":", "@", "|", "<", ">", "!", "(", ")", "'", "\\"]
         for char in chars:
             query = query.replace(char, "")
 
         return query
 
-    def search(self, query):
+    def _build_search_vector(
+        self, search_fields: Sequence[str], config: str = SEARCH_CONFIG
+    ) -> Expression:
         """
-        Uses the model to do a full search. This will use the database for search
-        Only works for PostgreSQL
+        Build a weighted search vector: the first field (usually the title) is weighted highest.
         """
-        search_fields = getattr(self, "search_fields", None)
+        vector: Expression = SearchVector(search_fields[0], weight="A", config=config)
+        if search_fields[1:]:
+            vector = vector + SearchVector(
+                *search_fields[1:], weight="B", config=config
+            )
+        return vector
+
+    def search(self, query: str) -> QuerySet:
+        """
+        Full text search on the model using the database. The Norwegian config stems both the
+        indexed text and the query, and results are ordered by relevance rank with
+        `search_ordering` as tiebreaker. Only works for PostgreSQL.
+        """
+        search_fields = self.search_fields
         if search_fields is None:
             if self.fallback_to_autocomplete:
                 return self.autocomplete(query)
@@ -132,113 +140,63 @@ class SearchIndex:
                 "You must provide a 'search_fields' attribute or override this method"
             )
 
-        return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
-            lego_search=SearchQuery(query)
+        vector = self._build_search_vector(search_fields)
+        search_query = SearchQuery(query, search_type="websearch", config=SEARCH_CONFIG)
+        queryset: QuerySet = (
+            self.get_queryset()
+            .annotate(lego_search=vector, lego_rank=SearchRank(vector, search_query))
+            .filter(lego_search=search_query)
+            .order_by("-lego_rank", *self.search_ordering)
         )
+        return queryset
 
-    def autocomplete(self, query):
+    def autocomplete(self, query: str) -> QuerySet:
         """
-        Uses the model to search with autocomplete. This will use the database for search
-        Only works for PostgreSQL
+        Autocomplete on the model using the database. Matches per-word prefixes across the
+        autocomplete fields (so "chris ngu" matches first name + last name) or, for typo
+        tolerance, trigram word similarity. Results are ordered by similarity with
+        `autocomplete_ordering` as tiebreaker. Only works for PostgreSQL.
         """
-        search_fields = getattr(self, "autocomplete_fields", None)
-        if search_fields is None:
+        autocomplete_fields = self.autocomplete_fields
+        if autocomplete_fields is None:
             raise NotImplementedError(
-                "You must provide a autocomplete_fields' attribute or override this method"
+                "You must provide a 'autocomplete_fields' attribute or override this method"
             )
 
         cleaned = self.clean_query(query)
-        return self.queryset.annotate(lego_search=SearchVector(*search_fields)).filter(
-            lego_search=SearchQuery(
-                ":* & ".join(cleaned.split() + [""]).strip("& ").strip(),
-                search_type="raw",
+        words = cleaned.split()
+        if not words:
+            return self.get_queryset().none()
+
+        # Names and titles should not be stemmed, so use the simple config for prefix matching.
+        vector = SearchVector(*autocomplete_fields, config="simple")
+        prefix_query = SearchQuery(
+            " & ".join(f"{word}:*" for word in words),
+            search_type="raw",
+            config="simple",
+        )
+
+        combined: Combinable
+        if len(autocomplete_fields) == 1:
+            combined = F(autocomplete_fields[0])
+        else:
+            expressions: list[Combinable] = []
+            for field in autocomplete_fields:
+                if expressions:
+                    expressions.append(Value(" "))
+                expressions.append(F(field))
+            combined = Concat(*expressions, output_field=TextField())
+
+        queryset: QuerySet = (
+            self.get_queryset()
+            .annotate(
+                lego_search=vector,
+                lego_similarity=TrigramWordSimilarity(cleaned, combined),
             )
+            .filter(
+                Q(lego_search=prefix_query)
+                | Q(lego_similarity__gt=self.autocomplete_similarity_threshold)
+            )
+            .order_by("-lego_similarity", *self.autocomplete_ordering)
         )
-
-    def should_update(self, instance):
-        """
-        Determine if an instance should be updated in the index.
-        """
-        return True
-
-    def prepare(self, instance):
-        """
-        Prepare instance for indexing, this function returns a dict in a specific format.
-        This is passed to the search-backend. The backend has to parse this and index it.
-        """
-        from lego.utils.content_types import instance_to_content_type_string
-
-        serializer = self.get_serializer(instance)
-        data = serializer.data
-
-        def get_filter_data(data):
-            get_func = data.get if self.get_index_filter_fields() else data.pop
-            filter_fields = self.get_filter_fields()
-            return {key: get_func(key) for key in filter_fields}
-
-        prepared_instance = {
-            "content_type": force_str(instance_to_content_type_string(instance)),
-            "pk": force_str(instance.pk),
-            "data": {
-                "autocomplete": self.get_autocomplete(instance),
-                "filters": {
-                    k: v for k, v in get_filter_data(data).items() if v or not v == ""
-                },
-                "fields": {k: v for k, v in data.items() if v or not v == ""},
-            },
-        }
-
-        return prepared_instance
-
-    def update(self):
-        """
-        Updates the entire index.
-        We do this in batch to optimize performance. NB: Requires automatic IDs.
-        """
-
-        def batch(queryset, func, chunk=100, start=0):
-            if not queryset.exists():
-                return
-
-            try:
-                while start < queryset.order_by("pk").last().pk:
-                    func(
-                        queryset.filter(pk__gt=start, pk__lte=start + chunk).iterator()
-                    )
-                    start += chunk
-            except TypeError:
-                func(queryset.all().iterator())
-
-        def prepare(result):
-            prepared = self.prepare(result)
-            return prepared["content_type"], prepared["pk"], prepared["data"]
-
-        def update_bulk(result_set):
-            try:
-                self.get_backend().update_many(map(prepare, result_set))
-            except BulkIndexError as e:
-                log.critical(e)
-
-        batch(self.get_queryset(), update_bulk)
-
-    def update_instance(self, instance):
-        """
-        Update a given instance in the index.
-        """
-        if not self.should_update(instance):
-            log.info("search_instance_update_rejected")
-            return
-
-        self.get_backend().update(**self.prepare(instance))
-
-    def remove_instance(self, pk):
-        """
-        Remove a single instance from the index. We use pks here because the instance may not
-        exists in the database.
-        """
-        from lego.utils.content_types import instance_to_content_type_string
-
-        self.get_backend().remove(
-            content_type=instance_to_content_type_string(self.get_model()),
-            pk=force_str(pk),
-        )
+        return queryset
