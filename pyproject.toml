@@ -20,7 +20,7 @@ celery = ">=5.4,<6"
 stripe = "3.4.0"
 boto3 = "1.28.1"
 beautifulsoup4 = "4.12.2"
-bleach = "5.0.1"
+bleach = "6.4.0"
 requests = "2.33.0"
 ldap3 = "2.9.1"
 google-api-python-client = "^2.155.0"
@@ -92,7 +92,7 @@ types-urllib3 = "1.26.25.13"
 types-python-dateutil = "2.8.19.13"
 
 [tool.poetry.group.formatting.dependencies]
-black = "24.10.0"
+black = "26.3.1"
 isort = "5.12.0"
 
 [tool.poetry.group.flake8.dependencies]
