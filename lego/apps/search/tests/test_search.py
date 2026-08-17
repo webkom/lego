@@ -48,10 +48,10 @@ class SearchIndexTestCase(BaseTestCase):
 class AutocompleteIndexTestCase(BaseTestCase):
     def setUp(self):
         self.user = User.objects.create(
-            username="chrisn",
-            first_name="Christoffer",
-            last_name="Nguyen",
-            email="chrisn@abakus.no",
+            username="aleksandern",
+            first_name="Aleksander",
+            last_name="Nygaard",
+            email="aleksandern@abakus.no",
         )
         self.other_user = User.objects.create(
             username="martah",
@@ -64,14 +64,14 @@ class AutocompleteIndexTestCase(BaseTestCase):
         return list(UserIndex().autocomplete(query))
 
     def test_autocomplete_matches_prefix(self):
-        self.assertEqual(self.autocomplete("chri"), [self.user])
+        self.assertEqual(self.autocomplete("alek"), [self.user])
 
     def test_autocomplete_matches_words_across_fields(self):
         # First name prefix + last name prefix.
-        self.assertEqual(self.autocomplete("chris ngu"), [self.user])
+        self.assertEqual(self.autocomplete("aleks nyg"), [self.user])
 
     def test_autocomplete_matches_typos_with_trigram_similarity(self):
-        self.assertEqual(self.autocomplete("christofer"), [self.user])
+        self.assertEqual(self.autocomplete("aleksender"), [self.user])
 
     def test_autocomplete_does_not_match_unrelated_query(self):
         self.assertEqual(self.autocomplete("zxqwerty"), [])
@@ -81,15 +81,15 @@ class AutocompleteIndexTestCase(BaseTestCase):
 
     def test_autocomplete_ranks_prefix_matches_above_fuzzy_matches(self):
         # Scores higher on whole-query trigram similarity than the exact match,
-        # but does not match the per-word prefixes "chris:* & ngu:*".
+        # but does not match the per-word prefixes "aleks:* & nyg:*".
         fuzzy_only = User.objects.create(
-            username="chrisa",
-            first_name="Chris",
-            last_name="Anderson",
-            email="chrisa@abakus.no",
+            username="aleksb",
+            first_name="Aleks",
+            last_name="Bergman",
+            email="aleksb@abakus.no",
         )
 
-        self.assertEqual(self.autocomplete("chris ngu"), [self.user, fuzzy_only])
+        self.assertEqual(self.autocomplete("aleks nyg"), [self.user, fuzzy_only])
 
 
 class SearchAPITestCase(BaseAPITestCase):

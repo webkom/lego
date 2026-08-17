@@ -163,7 +163,7 @@ class SearchIndex:
     def autocomplete(self, query: str) -> QuerySet:
         """
         Autocomplete on the model using the database. Matches per-word prefixes across the
-        autocomplete fields (so "chris ngu" matches first name + last name) or, for typo
+        autocomplete fields (so "aleks nyg" matches first name + last name) or, for typo
         tolerance, trigram word similarity. Results are ordered by similarity with
         `autocomplete_ordering` as tiebreaker. Only works for PostgreSQL.
         """
