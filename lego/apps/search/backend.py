@@ -1,90 +1,104 @@
+from __future__ import annotations
+
+from typing import Iterable
+
+from django.db.models import Model
+
 from . import registry
+from .index import SearchIndex
 
 
 class SearchBackend:
     """
-    Base class for search backends. A backend needs to implement all methods on this class to work
-    like it should.
+    Postgres-backed search. Queries the live database rows through the registered search
+    indexes, so there is no separate search index to maintain or keep in sync.
     """
 
-    @property
-    def name(self):
-        raise NotImplementedError("Please set the name property on the class.")
+    name = "postgres"
 
-    def set_up(self):
+    max_results = 10
+
+    def get_search_index(self, content_type: str) -> SearchIndex | None:
         """
-        This method is called when the backend instance is created. Use this method to do any
-        startup configuration.
-        """
-        pass
-
-    def serialize(self, objects, search_type="autocomplete"):
-        raise NotImplementedError("Backend needs to implement serialize.")
-
-    def get_django_object(self, el):
-        raise NotImplementedError("Backend needs to implement get_django_object.")
-
-    def get_search_index(self, content_type):
-        """
-        Return the search_index used to index a content_type.
+        Return the search_index registered for a content_type.
         """
         return registry.get_content_type_index(content_type)
 
-    def migrate(self):
-        """
-        This function is used when the 'migrate_search' management command is called.
-        Use this function to perform any preparation of the backend before we index items.
-        """
-        pass
+    def _search(
+        self,
+        query: str,
+        content_types: Iterable[str] | None,
+        autocomplete: bool = False,
+    ) -> list[Model]:
+        # Materialize and dedupe: duplicate types in the request must not multiply
+        # queries or skew the interleaving below.
+        content_types = list(dict.fromkeys(content_types or ()))
+        if not content_types:
+            content_types = list(registry.index_registry.keys())
 
-    def update_many(self, tuple_list):
-        """
-        Bulk update items. Used by the update function by default.
-        The tuple_list us a list of tuples containing ('content_type', 'pk', 'data')
-        """
-        raise NotImplementedError("Please implement the update_many function.")
+        max_results_per_type = self.max_results
+        results_by_content_type: dict[str, list[Model]] = {
+            content_type: [] for content_type in content_types
+        }
+        for content_type in content_types:
+            search_index = self.get_search_index(content_type)
+            if search_index is None:
+                continue
+            if autocomplete:
+                db_results = search_index.autocomplete(query)[:max_results_per_type]
+            else:
+                db_results = search_index.search(query)[:max_results_per_type]
+            results_by_content_type[content_type] = list(db_results)
 
-    def update(self, content_type, pk, data):
-        return self.update_many([(content_type, pk, data)])
+        # Interleave results so results are not only of one type if there are many matches
+        results = []
+        for _ in range(max_results_per_type):
+            for content_type in content_types:
+                if len(results_by_content_type[content_type]):
+                    results.append(results_by_content_type[content_type].pop(0))
 
-    def remove_many(self, tuple_list):
-        """
-        Bulk remove items from backend. The remove function uses this function by default.
-        The tuple_list is a list of tuples containing ('content_type', 'pk')
-        """
-        raise NotImplementedError("Please implement the remove_many function.")
+        return results
 
-    def remove(self, content_type, pk):
-        return self.remove_many([(content_type, pk)])
+    def search(
+        self,
+        query: str,
+        content_types: list[str] | None = None,
+        filters: dict | None = None,
+    ) -> list[Model]:
+        return self._search(query, content_types)
 
-    def clear(self):
-        """
-        Clear all items handled by this backend.
-        """
-        raise NotImplementedError("Please implement the clear function.")
+    def autocomplete(
+        self, query: str, content_types: list[str] | None = None
+    ) -> list[Model]:
+        return self._search(query, content_types, autocomplete=True)
 
-    def search(self, query, content_types=None, filters=None):
-        """
-        Search on a string 'query', use content_type or/and filters to filter the search.
-        """
-        raise NotImplementedError("Please implement the search function.")
+    def serialize_object(self, object: Model, search_type: str) -> dict:
+        from lego.utils.content_types import instance_to_content_type_string
 
-    def autocomplete(self, query, content_types=None):
-        """
-        Autocomplete on a string 'query', use content_type or/and filters to filter the search.
-        """
-        raise NotImplementedError("Please implement the autocomplete function.")
+        content_type = instance_to_content_type_string(object)
+        search_index = self.get_search_index(content_type)
+        if search_index is None:
+            raise ValueError(f"No search index registered for {content_type}")
+        serializer = search_index.get_serializer(object)
+        fields = (
+            search_index.get_autocomplete_result_fields()
+            if search_type == "autocomplete"
+            else search_index.get_result_fields()
+        )
+        result = {field: serializer.data[field] for field in fields}
+        result.update({"id": object.pk, "content_type": content_type})
+        return result
+
+    def serialize(
+        self, objects: list[Model], search_type: str = "autocomplete"
+    ) -> list[dict]:
+        return [
+            self.serialize_object(object, search_type)
+            for object in objects[: self.max_results]
+        ]
+
+    def get_django_object(self, el: Model) -> Model:
+        return el
 
 
-"""
-The current backend is initialized on startup in the apps.py file. This is the search backend used
-to index objects.
-"""
-current_backend = None
-
-
-def get_current_backend():
-    """
-    Return the current initialized backend.
-    """
-    return current_backend
+current_backend = SearchBackend()

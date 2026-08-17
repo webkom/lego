@@ -1,4 +1,7 @@
+from typing import Any
+
 from rest_framework import permissions, viewsets
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .search import autocomplete, search
@@ -15,7 +18,7 @@ class SearchViewSet(viewsets.ViewSet):
 
     permission_classes = [permissions.AllowAny]
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = QuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(list(search(user=self.request.user, **serializer.data)))
@@ -30,7 +33,7 @@ class AutocompleteViewSet(viewsets.ViewSet):
 
     permission_classes = [permissions.AllowAny]
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = AutocompleteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(list(autocomplete(user=self.request.user, **serializer.data)))

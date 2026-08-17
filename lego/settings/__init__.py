@@ -8,7 +8,6 @@ DAPHNE_SERVER = "daphne" in sys.argv[0]
 from .base import *  # noqa
 from .lego import *  # noqa
 from .rest_framework import *  # noqa
-from .search import *  # noqa
 from .logging import *  # noqa
 
 if TESTING:

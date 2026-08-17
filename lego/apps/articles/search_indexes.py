@@ -14,14 +14,8 @@ class ArticleModelIndex(SearchIndex):
     search_fields = ("title", "text", "description")
     autocomplete_fields = ("title",)
 
-    def get_autocomplete(self, instance):
-        return instance.title
-
-    def search(self, query):
-        return super().search(query).order_by("-created_at")
-
-    def autocomplete(self, query):
-        return super().autocomplete(query).order_by("-created_at")
+    search_ordering = ("-created_at",)
+    autocomplete_ordering = ("-created_at",)
 
 
 register(ArticleModelIndex)
