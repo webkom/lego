@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     "mptt",
     "channels",
     "django_filters",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     "push_notifications",
     "expo_notifications",
     "health_check",

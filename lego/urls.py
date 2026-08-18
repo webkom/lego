@@ -3,15 +3,14 @@ from django.conf.urls import include
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, re_path
 from django.views.generic import TemplateView
-from rest_framework.documentation import include_docs_urls
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_jwt.views import (
     obtain_jwt_token,
     refresh_jwt_token,
     verify_jwt_token,
 )
 
-from lego.api.urls import urlpatterns as api
 from lego.utils.types import URLList
 
 jwt_urlpatterns: URLList = [
@@ -35,14 +34,11 @@ urlpatterns: URLList = [
     re_path(r"^api/", include("lego.api.urls", namespace="api")),
     re_path(r"^authorization/", include(authorization_urlpatterns)),  # type: ignore
     re_path(r"^health/", include("health_check.urls")),
+    re_path(r"^api-docs/schema/$", SpectacularAPIView.as_view(), name="schema"),
     re_path(
-        r"^api-docs/",
-        include_docs_urls(
-            title=settings.SITE["name"],
-            description=settings.SITE["slogan"],
-            patterns=api,  # type: ignore
-            schema_url="/api",
-        ),
+        r"^api-docs/$",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="api-docs",
     ),
     re_path(
         r"^$", TemplateView.as_view(template_name="landing.html"), name="landing_page"

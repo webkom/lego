@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
 
 from celery.canvas import chain
+from drf_spectacular.utils import extend_schema
 from structlog import get_logger
 
 from lego.apps.events import constants
@@ -183,6 +184,9 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         if self.action == "retrieve":
             user: User = self.request.user
             pk = self.kwargs.get("pk", None)
+            if pk is None:
+                # No object to check against, e.g. during schema generation.
+                return EventReadUserDetailedSerializer
             event = (
                 Event.objects.get(id=pk) if pk.isdigit() else Event.objects.get(slug=pk)
             )
@@ -268,6 +272,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         response = request_plausible_statistics(event)
         return Response(response.json())
 
+    @extend_schema(request=None, responses=RegistrationPaymentReadSerializer)
     @decorators.action(detail=True, methods=["POST"], serializer_class=BaseSerializer)
     def payment(self, request, *args, **kwargs):
         event_id = self.kwargs.get("pk", None)
