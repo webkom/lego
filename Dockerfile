@@ -30,6 +30,14 @@ ENV RELEASE=${RELEASE}
 # PYTHONPATH alone is enough to run the app.
 ENV UV_PROJECT_ENVIRONMENT=/usr/local
 
+# weasyprint loads pango at runtime to render the survey PDF. python:3.11
+# happens to ship it, but nothing here asked for it, so a slimmer base would
+# drop it and PDF export would start failing in production with a green build.
+RUN set -e \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends libpango-1.0-0 libpangoft2-1.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir /app
 COPY pyproject.toml /app/pyproject.toml
 COPY uv.lock /app/uv.lock
@@ -38,7 +46,9 @@ WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /usr/local/bin/uv
 
 RUN set -e \
-    && uv sync --frozen --no-default-groups --group docs --group prod
+    && uv sync --frozen --no-default-groups --group docs --group prod \
+    # Fail the build, rather than a request in production, if pango goes missing.
+    && python -c "import weasyprint"
 
 COPY . /app/
 
