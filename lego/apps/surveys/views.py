@@ -10,8 +10,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from weasyprint import HTML
-
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
@@ -121,6 +119,10 @@ class SurveyViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         html_string = render_to_string(
             "surveys/pdf/survey_report_template.html", context
         )
+
+        # Imported here so that loading the URLconf does not require pango,
+        # which weasyprint links at import time.
+        from weasyprint import HTML
 
         pdf = HTML(string=html_string).write_pdf()
 
