@@ -35,7 +35,7 @@ COPY pyproject.toml /app/pyproject.toml
 COPY uv.lock /app/uv.lock
 WORKDIR /app
 
-RUN pip install uv==0.11.6
+COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /usr/local/bin/uv
 
 RUN set -e \
     && uv sync --frozen --no-default-groups --group docs --group prod

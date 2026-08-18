@@ -53,3 +53,14 @@ updates:
         update-types:
           - "minor"
           - "patch"
+
+  # Base images in the Dockerfile. Dependabot reads Dockerfiles, not .drone.yml,
+  # so the uv pinned in the Drone steps is still bumped by hand.
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Oslo
+    open-pull-requests-limit: 5
