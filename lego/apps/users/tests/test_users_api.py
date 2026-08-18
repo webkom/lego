@@ -190,6 +190,17 @@ class CreateUsersAPITestCase(BaseAPITestCase):
         response = self.client.post(_get_registration_token_url(token), invalid_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_with_reserved_username(self):
+        for username in ["register", "secure", "users", "weblog"]:
+            with self.subTest(username=username):
+                token = self.create_token(f"reserved_{username}@test.com")
+                invalid_data = self._test_registration_data.copy()
+                invalid_data["username"] = username
+                response = self.client.post(
+                    _get_registration_token_url(token), invalid_data
+                )
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_with_email_as_username(self):
         token = self.create_token(self.new_email_other)
         invalid_data = self._test_registration_data.copy()
