@@ -24,12 +24,16 @@ steps:
       event: push
     environment:
       LANG: C.UTF-8
+      DJANGO_SETTINGS_MODULE: lego.settings
+      PYTHONPATH: /drone/src
       DATABASE: database
       CACHE: cache
     depends_on:
       - setup
     commands:
-      - tox -e missing-migrations
+      - pip install -q uv==0.11.6
+      - uv run --frozen --no-default-groups python manage.py migrate
+      - uv run --frozen --no-default-groups python manage.py missing_migrations
 
   - name: tests
     image: abakus/lego-testbase:python3.11
@@ -37,12 +41,19 @@ steps:
       event: push
     environment:
       LANG: C.UTF-8
+      DJANGO_SETTINGS_MODULE: lego.settings
+      # sitecustomize.py is at the repo root and is what starts coverage in the
+      # subprocesses spawned by --parallel. Both of these are load-bearing.
+      PYTHONPATH: /drone/src
+      COVERAGE_PROCESS_START: /drone/src/.coveragerc
       DATABASE: database
       CACHE: cache
     depends_on:
       - setup
     commands:
-      - tox -e tests -- --parallel
+      - pip install -q uv==0.11.6
+      - uv run --frozen --no-default-groups --group coverage
+        coverage run --source=lego manage.py test --parallel
 
   - name: isort
     image: abakus/lego-testbase:python3.11
@@ -53,7 +64,8 @@ steps:
     depends_on:
       - setup
     commands:
-      - tox -e isort
+      - pip install -q uv==0.11.6
+      - uv run --frozen --only-group formatting isort -c lego
 
   - name: flake8
     image: abakus/lego-testbase:python3.11
@@ -64,7 +76,8 @@ steps:
     depends_on:
       - setup
     commands:
-      - tox -e flake8
+      - pip install -q uv==0.11.6
+      - uv run --frozen --only-group flake8 flake8
 
   - name: black
     image: abakus/lego-testbase:python3.11
@@ -76,7 +89,8 @@ steps:
     depends_on:
       - setup
     commands:
-      - tox -e black
+      - pip install -q uv==0.11.6
+      - uv run --frozen --only-group formatting black --check lego
 
   - name: mypy
     image: abakus/lego-testbase:python3.11
@@ -85,10 +99,13 @@ steps:
       event: push
     environment:
       LANG: C.UTF-8
+      DJANGO_SETTINGS_MODULE: lego.settings
+      PYTHONPATH: /drone/src
     depends_on:
       - setup
     commands:
-      - tox -e mypy
+      - pip install -q uv==0.11.6
+      - uv run --frozen --group coverage --group mypy --group docs --group prod mypy .
     failure: ignore
 
   - name: docs
@@ -97,10 +114,13 @@ steps:
       event: push
     environment:
       LANG: C.UTF-8
+      PYTHONPATH: /drone/src:/drone/src/docs
     depends_on:
       - setup
     commands:
-      - tox -e docs
+      - pip install -q uv==0.11.6
+      - cd docs && uv run --frozen --project /drone/src --no-default-groups --group docs
+        sphinx-build -T -b html -d _build/doctrees . _build/html
 
   - name: coverage
     image: abakus/lego-testbase:python3.11
@@ -114,7 +134,10 @@ steps:
     depends_on:
       - tests
     commands:
-      - tox -e coverage
+      - pip install -q uv==0.11.6
+      - uv run --frozen --only-group coverage coverage combine
+      - uv run --frozen --only-group coverage coverage report --fail-under=75
+      - uv run --frozen --only-group coverage coverage xml
       # Upload coverage to Codecov
       - codecov -t ${CODECOV_TOKEN} -f "coverage.xml"
 
@@ -185,9 +208,3 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
   - name: cache
     image: redis
-
----
-kind: signature
-hmac: 87a834845750f0a38aae3351dca1d348c29087b22614d93e7671f00f0c71368d
-
-...

@@ -20,7 +20,7 @@ class LendingRequestPermissionHandler(PermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         if not user.is_authenticated:
             return False

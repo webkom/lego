@@ -26,16 +26,19 @@ ENV PYTHONUNBUFFERED=1
 ENV ENV_CONFIG=1
 ENV RELEASE=${RELEASE}
 
+# Install into the image's own interpreter rather than a virtualenv, so that
+# PYTHONPATH alone is enough to run the app.
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+
 RUN mkdir /app
 COPY pyproject.toml /app/pyproject.toml
-COPY poetry.lock /app/poetry.lock
+COPY uv.lock /app/uv.lock
 WORKDIR /app
 
-RUN pip install poetry==1.8.5
+RUN pip install uv==0.11.6
 
 RUN set -e \
-    && poetry config virtualenvs.create false \
-    && poetry install --with prod --without dev,coverage,mypy,formatting,flake8
+    && uv sync --frozen --no-default-groups --group docs --group prod
 
 COPY . /app/
 

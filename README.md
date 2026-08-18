@@ -12,16 +12,15 @@
 
 ## Getting started
 
-LEGO requires `python3.11`, `python3.11-venv`, `docker` and `poetry`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `docker` and `uv`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
 
 ### Initial setup (only needed once)
 
 ```bash
 $ git clone git@github.com:webkom/lego.git && cd lego/
-$ python3.11 -m venv .venv
 $ echo "from .development import *" > lego/settings/local.py
+$ uv sync
 $ source .venv/bin/activate
-$ poetry install
 $ docker compose up -d
 $ python manage.py initialize_development
 ```
@@ -39,7 +38,7 @@ $ python manage.py runserver
 ```bash
 # Note 1: Whenever you switch branches you might need to make minor changes
 
-$ poetry install # If the branch has changes in the dependencies
+$ uv sync # If the branch has changes in the dependencies
 $ python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
@@ -49,18 +48,18 @@ $ python manage.py makemigrations # Creates one or more new files that must be c
 # Remember to format generated migrations! (using e.g. `make fixme`)
 ```
 
-**`poetry.lock` conflicts**
+**`uv.lock` conflicts**
 
-If you have updated dependencies it's likely you might get conflicts in the Poetry lock file.
+If you have updated dependencies it's likely you might get conflicts in the uv lock file.
 This solution should resolve most conflicts quite well:
 
 ```bash
 $ git rebase origin/master
 
 # If conflicts
-$ git checkout --theirs poetry.lock
+$ git checkout --theirs uv.lock
 
-$ poetry lock --no-update
+$ uv lock
 
 # The conflicts should be resolved
 ```
@@ -80,13 +79,15 @@ $ make fixme
 To check if it is formatted properly, run:
 
 ```bash
-$ tox -e isort -e black -e flake8
+$ uv run --only-group formatting isort -c lego
+$ uv run --only-group formatting black --check lego
+$ uv run --only-group flake8 flake8
 ```
 
 To check if it is typed properly, run:
 
 ```bash
-$ tox -e mypy
+$ uv run --group mypy --group prod mypy .
 ```
 
 ## Tests
@@ -107,17 +108,15 @@ If you want to check your test coverage, you can do the following
 
 ```bash
 # Run all tests in LEGO. Remember to add the recommended flags mentioned above
-$ tox -e tests --
-# or run without tox
-$ coverage run --source=lego ./manage.py test
+$ uv run --group coverage coverage run --source=lego ./manage.py test
 
 # If you now have multiple coverage files or a .coverage.* file, you'll have to combine it in order to output report
-$ coverage combine
+$ uv run --group coverage coverage combine
 
 # Then you can output the full coverage report
-$ coverage report
+$ uv run --group coverage coverage report
 # or a small one that only contains the things you are interested in
-$ coverage report | grep [some string]
+$ uv run --group coverage coverage report | grep [some string]
 ```
 
 ## Deployment

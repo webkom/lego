@@ -34,7 +34,6 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
-.tox/
 .coverage
 .cache
 nosetests.xml
@@ -56,6 +55,7 @@ target/
 # Pycharm
 .idea/
 
+.venv/
 venv/
 lego/settings/local.py
 lego/files
