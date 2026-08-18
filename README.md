@@ -19,18 +19,17 @@ LEGO requires `python3.11`, `docker` and `uv`. Services like Postgres, Redis, Th
 ```bash
 $ git clone git@github.com:webkom/lego.git && cd lego/
 $ echo "from .development import *" > lego/settings/local.py
-$ uv sync
-$ source .venv/bin/activate
 $ docker compose up -d
-$ python manage.py initialize_development
+$ uv run python manage.py initialize_development
 ```
 
-### Activate and run (every time)
+`uv run` creates `.venv` on first use and re-syncs it against `uv.lock`, so there is nothing to install up front and nothing to activate.
+
+### Run (every time)
 
 ```bash
-$ source .venv/bin/activate
 $ docker compose up -d
-$ python manage.py runserver
+$ uv run python manage.py runserver
 ```
 
 #### Notes
@@ -38,12 +37,11 @@ $ python manage.py runserver
 ```bash
 # Note 1: Whenever you switch branches you might need to make minor changes
 
-$ uv sync # If the branch has changes in the dependencies
-$ python manage.py migrate # If the branch has a database in another state than yours
+$ uv run python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
 
-$ python manage.py makemigrations # Creates one or more new files that must be commited
+$ uv run python manage.py makemigrations # Creates one or more new files that must be commited
 
 # Remember to format generated migrations! (using e.g. `make fixme`)
 ```
@@ -144,6 +142,15 @@ $ apt-get install libpq-dev python3-dev
 ```
 
 > For MACOS you need to `brew install postgresql`
+
+Exporting a survey as PDF needs `pango`, which `weasyprint` loads at runtime. On
+MACOS install it with `brew install pango`. If it still fails to load, uv has
+picked a python whose dylib path does not include homebrew's; rebuild the venv
+against homebrew's interpreter:
+
+```bash
+$ rm -rf .venv && uv sync --python "$(brew --prefix)/bin/python3.11"
+```
 
 If you get ld: library not found for -lssl
 
