@@ -835,7 +835,7 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
-markers = {main = "sys_platform == \"win32\" or platform_system == \"Windows\"", docs = "sys_platform == \"win32\"", formatting = "platform_system == \"Windows\"", prod = "platform_system == \"Windows\""}
+markers = {main = "platform_system == \"Windows\" or sys_platform == \"win32\"", docs = "sys_platform == \"win32\"", formatting = "platform_system == \"Windows\"", prod = "platform_system == \"Windows\""}
 
 [[package]]
 name = "constantly"
@@ -1853,26 +1853,29 @@ woff = ["brotli (>=1.0.1) ; platform_python_implementation == \"CPython\"", "bro
 
 [[package]]
 name = "google-api-core"
-version = "2.11.0"
+version = "2.33.0"
 description = "Google API client core library"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "google-api-core-2.11.0.tar.gz", hash = "sha256:4b9bb5d5a380a0befa0573b302651b8a9a89262c1730e37bf423cec511804c22"},
-    {file = "google_api_core-2.11.0-py3-none-any.whl", hash = "sha256:ce222e27b0de0d7bc63eb043b956996d6dccab14cc3b690aaea91c9cc99dc16e"},
+    {file = "google_api_core-2.33.0-py3-none-any.whl", hash = "sha256:a2e22a0c1d0f03eafff1858b38cf46f832d5902b0c052235bf0ab8402929fbdc"},
+    {file = "google_api_core-2.33.0.tar.gz", hash = "sha256:3a36bcc3e319783f4c97da41f6f45ea6ffcaa55848e341de16e09cb70243c2bb"},
 ]
 
 [package.dependencies]
-google-auth = ">=2.14.1,<3.0.dev0"
-googleapis-common-protos = ">=1.56.2,<2.0.dev0"
-protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<5.0.0.dev0"
-requests = ">=2.18.0,<3.0.0.dev0"
+google-auth = ">=2.14.1,<3.0.0"
+googleapis-common-protos = ">=1.63.2,<2.0.0"
+proto-plus = [
+    {version = ">=1.24.0,<2.0.0", markers = "python_version < \"3.13\""},
+    {version = ">=1.25.0,<2.0.0", markers = "python_version >= \"3.13\""},
+]
+protobuf = ">=5.29.6,<8.0.0"
+requests = ">=2.33.0,<3.0.0"
 
 [package.extras]
-grpc = ["grpcio (>=1.33.2,<2.0.dev0)", "grpcio (>=1.49.1,<2.0.dev0) ; python_version >= \"3.11\"", "grpcio-status (>=1.33.2,<2.0.dev0)", "grpcio-status (>=1.49.1,<2.0.dev0) ; python_version >= \"3.11\""]
-grpcgcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
-grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
+async-rest = ["aiohttp (>=3.13.4)", "google-auth[aiohttp] (>=2.14.1,<3.0.0)"]
+grpc = ["grpcio (>=1.41.0,<2.0.0)", "grpcio (>=1.49.1,<2.0.0) ; python_version >= \"3.11\"", "grpcio (>=1.75.1,<2.0.0) ; python_version >= \"3.14\"", "grpcio-status (>=1.41.0,<2.0.0)", "grpcio-status (>=1.49.1,<2.0.0) ; python_version >= \"3.11\"", "grpcio-status (>=1.75.1,<2.0.0) ; python_version >= \"3.14\""]
 
 [[package]]
 name = "google-api-python-client"
@@ -1936,21 +1939,21 @@ httplib2 = ">=0.19.0"
 
 [[package]]
 name = "googleapis-common-protos"
-version = "1.59.0"
+version = "1.75.0"
 description = "Common protobufs used in Google APIs"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "googleapis-common-protos-1.59.0.tar.gz", hash = "sha256:4168fcb568a826a52f23510412da405abd93f4d23ba544bb68d943b14ba3cb44"},
-    {file = "googleapis_common_protos-1.59.0-py2.py3-none-any.whl", hash = "sha256:b287dc48449d1d41af0c69f4ea26242b5ae4c3d7249a38b0984c86a4caffff1f"},
+    {file = "googleapis_common_protos-1.75.0-py3-none-any.whl", hash = "sha256:961ed60399c457ceb0ee8f285a84c870aabc9c6a832b9d37bb281b5bebde43ed"},
+    {file = "googleapis_common_protos-1.75.0.tar.gz", hash = "sha256:53a062ff3c32552fbd62c11fe23768b78e4ddf0494d5e5fd97d3f4689c75fbbd"},
 ]
 
 [package.dependencies]
-protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<5.0.0.dev0"
+protobuf = ">=4.25.8,<8.0.0"
 
 [package.extras]
-grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
+grpc = ["grpcio (>=1.44.0,<2.0.0)"]
 
 [[package]]
 name = "hiredis"
@@ -3321,26 +3324,42 @@ files = [
 wcwidth = "*"
 
 [[package]]
-name = "protobuf"
-version = "4.22.3"
-description = ""
+name = "proto-plus"
+version = "1.28.2"
+description = "Beautiful, Pythonic protocol buffers"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "protobuf-4.22.3-cp310-abi3-win32.whl", hash = "sha256:8b54f56d13ae4a3ec140076c9d937221f887c8f64954673d46f63751209e839a"},
-    {file = "protobuf-4.22.3-cp310-abi3-win_amd64.whl", hash = "sha256:7760730063329d42a9d4c4573b804289b738d4931e363ffbe684716b796bde51"},
-    {file = "protobuf-4.22.3-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:d14fc1a41d1a1909998e8aff7e80d2a7ae14772c4a70e4bf7db8a36690b54425"},
-    {file = "protobuf-4.22.3-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:70659847ee57a5262a65954538088a1d72dfc3e9882695cab9f0c54ffe71663b"},
-    {file = "protobuf-4.22.3-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:13233ee2b9d3bd9a5f216c1fa2c321cd564b93d8f2e4f521a85b585447747997"},
-    {file = "protobuf-4.22.3-cp37-cp37m-win32.whl", hash = "sha256:ecae944c6c2ce50dda6bf76ef5496196aeb1b85acb95df5843cd812615ec4b61"},
-    {file = "protobuf-4.22.3-cp37-cp37m-win_amd64.whl", hash = "sha256:d4b66266965598ff4c291416be429cef7989d8fae88b55b62095a2331511b3fa"},
-    {file = "protobuf-4.22.3-cp38-cp38-win32.whl", hash = "sha256:f08aa300b67f1c012100d8eb62d47129e53d1150f4469fd78a29fa3cb68c66f2"},
-    {file = "protobuf-4.22.3-cp38-cp38-win_amd64.whl", hash = "sha256:f2f4710543abec186aee332d6852ef5ae7ce2e9e807a3da570f36de5a732d88e"},
-    {file = "protobuf-4.22.3-cp39-cp39-win32.whl", hash = "sha256:7cf56e31907c532e460bb62010a513408e6cdf5b03fb2611e4b67ed398ad046d"},
-    {file = "protobuf-4.22.3-cp39-cp39-win_amd64.whl", hash = "sha256:e0e630d8e6a79f48c557cd1835865b593d0547dce221c66ed1b827de59c66c97"},
-    {file = "protobuf-4.22.3-py3-none-any.whl", hash = "sha256:52f0a78141078077cfe15fe333ac3e3a077420b9a3f5d1bf9b5fe9d286b4d881"},
-    {file = "protobuf-4.22.3.tar.gz", hash = "sha256:23452f2fdea754a8251d0fc88c0317735ae47217e0d27bf330a30eec2848811a"},
+    {file = "proto_plus-1.28.2-py3-none-any.whl", hash = "sha256:b874236fcac2358f601e4330bcb76cb8b89c851303ccf4078408b3d4774d1c52"},
+    {file = "proto_plus-1.28.2.tar.gz", hash = "sha256:26d843eb99c1e32fdf1d20ff0faae56607f7748fe774acf9ecd5cfe6c6472501"},
+]
+
+[package.dependencies]
+protobuf = ">=4.25.8,<8.0.0"
+
+[package.extras]
+testing = ["google-api-core (>=1.31.5)"]
+
+[[package]]
+name = "protobuf"
+version = "5.29.6"
+description = ""
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "protobuf-5.29.6-cp310-abi3-win32.whl", hash = "sha256:62e8a3114992c7c647bce37dcc93647575fc52d50e48de30c6fcb28a6a291eb1"},
+    {file = "protobuf-5.29.6-cp310-abi3-win_amd64.whl", hash = "sha256:7e6ad413275be172f67fdee0f43484b6de5a904cc1c3ea9804cb6fe2ff366eda"},
+    {file = "protobuf-5.29.6-cp38-abi3-macosx_10_9_universal2.whl", hash = "sha256:b5a169e664b4057183a34bdc424540e86eea47560f3c123a0d64de4e137f9269"},
+    {file = "protobuf-5.29.6-cp38-abi3-manylinux2014_aarch64.whl", hash = "sha256:a8866b2cff111f0f863c1b3b9e7572dc7eaea23a7fae27f6fc613304046483e6"},
+    {file = "protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl", hash = "sha256:e3387f44798ac1106af0233c04fb8abf543772ff241169946f698b3a9a3d3ab9"},
+    {file = "protobuf-5.29.6-cp38-cp38-win32.whl", hash = "sha256:36ade6ff88212e91aef4e687a971a11d7d24d6948a66751abc1b3238648f5d05"},
+    {file = "protobuf-5.29.6-cp38-cp38-win_amd64.whl", hash = "sha256:831e2da16b6cc9d8f1654c041dd594eda43391affd3c03a91bea7f7f6da106d6"},
+    {file = "protobuf-5.29.6-cp39-cp39-win32.whl", hash = "sha256:cb4c86de9cd8a7f3a256b9744220d87b847371c6b2f10bde87768918ef33ba49"},
+    {file = "protobuf-5.29.6-cp39-cp39-win_amd64.whl", hash = "sha256:76e07e6567f8baf827137e8d5b8204b6c7b6488bbbff1bf0a72b383f77999c18"},
+    {file = "protobuf-5.29.6-py3-none-any.whl", hash = "sha256:6b9edb641441b2da9fa8f428760fc136a49cf97a52076010cf22a2ff73438a86"},
+    {file = "protobuf-5.29.6.tar.gz", hash = "sha256:da9ee6a5424b6b30fd5e45c5ea663aef540ca95f9ad99d1e887e819cdf9b8723"},
 ]
 
 [[package]]
