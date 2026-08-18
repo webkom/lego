@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("lending", "0005_alter_lendingrequest_status_and_more"),
     ]

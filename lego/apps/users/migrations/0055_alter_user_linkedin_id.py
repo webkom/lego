@@ -5,7 +5,6 @@ import lego.utils.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0054_alter_user_first_name_alter_user_last_name"),
     ]

@@ -4,7 +4,6 @@ from lego.apps.lending.models import LendingRequest
 
 
 class LendingRequestFilterSet(FilterSet):
-
     status = CharFilter(method="filter_lending_status")
 
     def filter_lending_status(self, queryset, name, value):

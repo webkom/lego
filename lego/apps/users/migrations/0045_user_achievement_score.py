@@ -13,7 +13,6 @@ def populate_achievements_score(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0044_alter_membership_role_alter_membershiphistory_role"),
     ]

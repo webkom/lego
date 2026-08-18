@@ -16,7 +16,6 @@ def create_user(username="testuser", **kwargs):
 
 
 class MockConsumer(GroupConsumer):
-
     def __init__(self, user):
         super().__init__(user)
         self.scope = {"user": user}
@@ -55,7 +54,6 @@ def get_restricted_groups(user):
 
 
 class WebsocketGroupTests(BaseTestCase):
-
     fixtures = ["test_users.yaml", "test_meetings.yaml"]
 
     def setUp(self):

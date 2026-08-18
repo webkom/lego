@@ -15,7 +15,6 @@ def migrate_thursday_event(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("companies", "0033_alter_companyinterest_other_offers"),
     ]

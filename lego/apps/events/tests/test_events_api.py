@@ -1265,7 +1265,7 @@ class RegistrationsTransactionTestCase(BaseAPITransactionTestCase):
         self.assertIsNone(registration.pool)
         self.assertEqual(registration.status, constants.SUCCESS_UNREGISTER)
         with self.assertRaises(FollowEvent.DoesNotExist):
-            FollowEvent.objects.get(follower=self.abakus_user, target=event),
+            (FollowEvent.objects.get(follower=self.abakus_user, target=event),)
 
 
 @mock.patch("lego.apps.events.views.verify_captcha", return_value=True)

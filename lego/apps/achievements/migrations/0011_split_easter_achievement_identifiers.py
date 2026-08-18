@@ -45,7 +45,6 @@ def backwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("achievements", "0010_alter_achievement_identifier"),
     ]

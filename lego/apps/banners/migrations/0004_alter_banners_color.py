@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("banners", "0003_banners_countdown_end_date_and_more"),
     ]

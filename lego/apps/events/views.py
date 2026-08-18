@@ -407,7 +407,9 @@ class RegistrationViewSet(
         event = Event.objects.get(id=event_id)
 
         if not get_permission_handler(Event).has_perm(
-            request.user, VIEW, obj=event  # type: ignore[arg-type]
+            request.user,  # type: ignore[arg-type]
+            VIEW,
+            obj=event,  # type: ignore[arg-type]
         ):
             raise PermissionDenied()
 

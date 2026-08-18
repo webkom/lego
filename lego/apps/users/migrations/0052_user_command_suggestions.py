@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0051_alter_membership_role_alter_membershiphistory_role"),
     ]

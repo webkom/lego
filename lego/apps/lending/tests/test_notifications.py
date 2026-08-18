@@ -27,7 +27,6 @@ def create_lendable_object(**kwargs):
 
 @patch("lego.utils.email.django_send_mail")
 class LendingRequestNotificationTestCase(BaseAPITestCase):
-
     def setUp(self):
 
         self.lendee = create_user("lendee")

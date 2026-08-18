@@ -29,7 +29,6 @@ class FeatureFlagAdminSerializer(BasisModelSerializer):
 
 
 class FeatureFlagPublicSerializer(BasisModelSerializer):
-
     can_see_flag = serializers.SerializerMethodField(read_only=True)
 
     def get_can_see_flag(self, obj: FeatureFlag):

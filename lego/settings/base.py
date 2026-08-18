@@ -208,7 +208,8 @@ FEIDE_GROUPS_ENDPOINT = "https://groups-api.dataporten.no/groups/me/groups"
 
 if os.environ.get("GSUITE_CREDENTIALS"):
     GSUITE_CREDENTIALS = json.loads(
-        base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")), strict=False  # type: ignore
+        base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")),  # type: ignore[arg-type]
+        strict=False,
     )
 else:
     GSUITE_CREDENTIALS = None

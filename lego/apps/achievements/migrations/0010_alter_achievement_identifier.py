@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("achievements", "0009_remove_achievement_unique_user_identifier_and_more"),
     ]

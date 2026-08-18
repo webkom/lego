@@ -10,7 +10,6 @@ from lego.utils.test_utils import BaseTestCase
 
 
 class GenerateRecurringMeetingsTestCase(BaseTestCase):
-
     def setUp(self):
         """Create all necessary test data instead of relying on fixtures."""
 
