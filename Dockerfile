@@ -1,4 +1,4 @@
-FROM getsentry/sentry-cli:1.63 AS sentry
+FROM getsentry/sentry-cli:2.41 AS sentry
 
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
