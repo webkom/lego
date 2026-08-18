@@ -30,24 +30,26 @@ updates:
           - "django-stubs-ext"
           - "djangorestframework-stubs"
           - "types-*"
-      linting:
-        patterns:
-          - "ruff"
       docs:
         patterns:
           - "sphinx"
           - "sphinx-*"
           - "sphinx_*"
+          # sphinx-* does not match these; they are sphinx's own machinery.
+          - "sphinxcontrib-*"
       # Catch-all for lockfile churn; majors stay ungrouped so they get reviewed.
       routine:
         patterns:
           - "*"
-        # celery broker stack; wanted, but needs its own PR
         exclude-patterns:
+          # celery broker stack; wanted, but needs its own PR
           - "redis"
           - "hiredis"
           - "celery"
           - "kombu"
+          # ruff is 0.x, so a rule or formatter change arrives as a minor bump.
+          # preview is on, which widens that surface. Keep it reviewable alone.
+          - "ruff"
         update-types:
           - "minor"
           - "patch"
