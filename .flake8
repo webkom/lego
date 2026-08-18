@@ -1,7 +1,7 @@
 [flake8]
 exclude =
+    .venv/*,
     venv/*,
-    .tox/*,
     lego/settings/local.py,
     migrations,
     wsgi.py,

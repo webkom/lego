@@ -20,7 +20,7 @@ class GalleryPicturePermissionHandler(PermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         # This will force queryset-filtering on LIST
         if perm is LIST:

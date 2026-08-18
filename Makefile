@@ -15,9 +15,9 @@ ci_settings:
 	echo "from .test import *" > lego/settings/local.py
 
 fixme:
-	docker run --rm -v "${PWD}:/code" -it abakus/lego-testbase:python3.11 "bash" "-c" "cd /code && tmpdir=$(mktemp -d) && python -m venv $$tmpdir/venv && . $$tmpdir/venv/bin/activate && poetry install --only formatting && isort lego && black lego && rm -rf $$tmpdir"
+	docker run --rm -v "${PWD}:/code" -it abakus/lego-testbase:python3.11 "bash" "-c" "cd /code && pip install -q uv==0.11.6 && uv run --frozen --only-group formatting isort lego && uv run --frozen --only-group formatting black lego"
 
 devenv:
-	docker run --net=host --rm -v "${PWD}:/code" -it abakus/lego-testbase:python3.11 "bash" "-c" "cd /code && poetry install && exec bash"
+	docker run --net=host --rm -v "${PWD}:/code" -it abakus/lego-testbase:python3.11 "bash" "-c" "cd /code && pip install -q uv==0.11.6 && uv sync --frozen --all-groups && exec bash"
 
 .PHONY: help docs ci_settings fixme devenv

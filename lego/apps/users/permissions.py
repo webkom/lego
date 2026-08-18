@@ -24,7 +24,7 @@ class UserPermissionHandler(PermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         is_self = self.is_self(perm, user, obj)
         if is_self:
@@ -49,7 +49,7 @@ class AbakusGroupPermissionHandler(PermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         if perm == DELETE:
             return False
@@ -101,7 +101,7 @@ class MembershipPermissionHandler(PermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         has_perm = super().has_perm(
             user, perm, obj, queryset, check_keyword_permissions, **kwargs
