@@ -32,10 +32,7 @@ updates:
           - "types-*"
       linting:
         patterns:
-          - "black"
-          - "isort"
-          - "flake8"
-          - "flake8-*"
+          - "ruff"
       docs:
         patterns:
           - "sphinx"

@@ -219,8 +219,10 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         expected_data = {
             "permissions": {
                 "1": [
-                    "Keyword permissions can only contain forward slashes and letters "
-                    "and must begin and end with a forward slash"
+                    (
+                        "Keyword permissions can only contain forward slashes "
+                        "and letters and must begin and end with a forward slash"
+                    )
                 ]
             }
         }

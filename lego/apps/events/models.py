@@ -690,7 +690,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 spots_left=Sum("capacity") - Sum("registrations__count")
             )["spots_left"]
 
-        return sum([pool.spots_left() for pool in pools])
+        return sum(pool.spots_left() for pool in pools)
 
     @property
     def is_merged(self) -> bool:
@@ -728,13 +728,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     @property
     def total_capacity(self) -> int:
         """Prefetch friendly calculation of the total possible capacity of the event."""
-        return sum([pool.capacity for pool in self.pools.all()])
+        return sum(pool.capacity for pool in self.pools.all())
 
     @property
     def registration_count(self) -> int:
         """Prefetch friendly counting of registrations for an event."""
         return sum(
-            [pool.registrations.all().count() for pool in self.pools.all()],
+            (pool.registrations.all().count() for pool in self.pools.all()),
             self.legacy_registration_count,
         )
 

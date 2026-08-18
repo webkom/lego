@@ -46,7 +46,7 @@ class SiteMetaViewSet(viewsets.ViewSet):
             "users": (User, CREATE),
         }
 
-        is_allowed = {entity: True for entity in allow_anonymous_entities}
+        is_allowed = dict.fromkeys(allow_anonymous_entities, True)
         for entity, (model, permission) in permission_entities.items():
             is_allowed[entity] = user.has_perm(permission, model)
         if user.is_authenticated and user.memberships:

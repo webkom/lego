@@ -84,13 +84,7 @@ mypy = [
     "types-urllib3==1.26.25.13",
     "types-python-dateutil==2.8.19.13",
 ]
-formatting = ["black==26.3.1", "isort==5.12.0"]
-flake8 = [
-    "flake8==6.0.0",
-    "flake8-bugbear==23.3.23",
-    "flake8-comprehensions==3.10.1",
-    "flake8-print>=5.0.0,<6",
-]
+lint = ["ruff==0.16.3"]
 docs = ["sphinx==6.2.1", "sphinx_rtd_theme==1.2.1"]
 prod = ["uwsgi==2.0.22", "flower==1.2.0"]
 
@@ -105,27 +99,39 @@ package = false
 django_settings_module = "lego.settings"
 
 
-[tool.isort]
-profile = "black"
-skip_gitignore = true
-default_section = "THIRDPARTY"
-known_first_party = "lego"
-known_django = ["django", "rest_framework", "django_filters"]
-sections = [
-    "FUTURE",
-    "STDLIB",
-    "DJANGO",
-    "THIRDPARTY",
-    "FIRSTPARTY",
-    "LOCALFOLDER",
+[tool.ruff]
+# The formatter wraps at 88, black's old width. E501 stays at 100 (below), so a
+# line the formatter cannot split - a URL, a long string - does not fail CI.
+line-length = 88
+extend-exclude = ["lego/settings/local.py", "docs"]
+
+[tool.ruff.lint]
+# preview carries B909, which is the only rule here that catches a real bug.
+preview = true
+exclude = ["**/migrations/**", "**/wsgi.py"]
+select = ["B", "C4", "C90", "E", "F", "I", "ISC", "T20", "W"]
+ignore = ["C901"]
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 100
+
+[tool.ruff.lint.mccabe]
+max-complexity = 18
+
+[tool.ruff.lint.per-file-ignores]
+"lego/utils/management/commands/benchmark_registration.py" = ["T20"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["lego"]
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
 ]
-combine_as_imports = true
 
-
-[tool.flake8]
-config_file = ".flake8"
-
-
-# [tool.black]
-# target-version = ['py311']
-# line-length = 88
+[tool.ruff.lint.isort.sections]
+django = ["django", "rest_framework", "django_filters"]

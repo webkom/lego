@@ -55,31 +55,7 @@ steps:
       - uv run --frozen --no-default-groups --group coverage
         coverage run --source=lego manage.py test --parallel
 
-  - name: isort
-    image: abakus/lego-testbase:python3.11
-    when:
-      event: push
-    environment:
-      LANG: C.UTF-8
-    depends_on:
-      - setup
-    commands:
-      - pip install -q uv==0.11.6
-      - uv run --frozen --only-group formatting isort -c lego
-
-  - name: flake8
-    image: abakus/lego-testbase:python3.11
-    when:
-      event: push
-    environment:
-      LANG: C.UTF-8
-    depends_on:
-      - setup
-    commands:
-      - pip install -q uv==0.11.6
-      - uv run --frozen --only-group flake8 flake8
-
-  - name: black
+  - name: ruff
     image: abakus/lego-testbase:python3.11
     pull: true
     when:
@@ -90,7 +66,8 @@ steps:
       - setup
     commands:
       - pip install -q uv==0.11.6
-      - uv run --frozen --only-group formatting black --check lego
+      - uv run --frozen --only-group lint ruff check lego
+      - uv run --frozen --only-group lint ruff format --check lego
 
   - name: mypy
     image: abakus/lego-testbase:python3.11
@@ -151,9 +128,7 @@ steps:
     depends_on:
       - missing-migrations
       - tests
-      - isort
-      - flake8
-      - black
+      - ruff
       - mypy
       - docs
       - coverage

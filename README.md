@@ -68,9 +68,9 @@ $ uv lock
 
 ## Code Style
 
-This codebase uses the PEP 8 code style. We enforce this with `isort`, `black` & `flake8`. In addition to the standards outlined in PEP 8, we have a few guidelines (see `pyproject.toml` for more info):
+This codebase uses the PEP 8 code style. We enforce this with `ruff`. In addition to the standards outlined in PEP 8, we have a few guidelines (see `pyproject.toml` for more info):
 
-Format the code with `isort` & `black`
+Format the code with `ruff`
 
 ```bash
 $ make fixme
@@ -79,9 +79,8 @@ $ make fixme
 To check if it is formatted properly, run:
 
 ```bash
-$ uv run --only-group formatting isort -c lego
-$ uv run --only-group formatting black --check lego
-$ uv run --only-group flake8 flake8
+$ uv run --only-group lint ruff check lego
+$ uv run --only-group lint ruff format --check lego
 ```
 
 To check if it is typed properly, run:
