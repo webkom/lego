@@ -673,11 +673,14 @@ wheels = [
 
 [[package]]
 name = "django-ipware"
-version = "5.0.0"
+version = "7.0.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/fc/bf/bdcac27530f4e49dcca5b8e6a195043063af6654102be7a97c3711be3d7f/django-ipware-5.0.0.tar.gz", hash = "sha256:4fa5607ee85e12ee5e158bc7569ff1e134fb1579681aa1ff3f0ed04be21be153", size = 9136, upload-time = "2023-03-05T14:22:59.21Z" }
+dependencies = [
+    { name = "python-ipware" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/23/64/c7e4791edf01ba483cce444770b3e6a930ba12195ba1eeb37b5bf6dce8a8/django-ipware-7.0.1.tar.gz", hash = "sha256:d9ec43d2bf7cdf216fed8d494a084deb5761a54860a53b2e74346a4f384cff47", size = 6827, upload-time = "2024-04-19T20:02:49.257Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/a4/084313da382677b31e040d411c9c30725ece03bda4f8977aedd069ad05bf/django_ipware-5.0.0-py2.py3-none-any.whl", hash = "sha256:80b52a3f571a371519cc552798f1015b934dd5dd7738bfad87e101e861bd21b8", size = 9424, upload-time = "2023-03-05T14:22:57.572Z" },
+    { url = "https://files.pythonhosted.org/packages/11/33/bf539925b102d68200da5b1d3eacb8aa5d5d9a065972e8b8724d0d53bb0d/django_ipware-7.0.1-py2.py3-none-any.whl", hash = "sha256:db16bbee920f661ae7f678e4270460c85850f03c6761a4eaeb489bdc91f64709", size = 6425, upload-time = "2024-04-19T20:02:47.469Z" },
 ]
 
 [[package]]
@@ -1382,7 +1385,7 @@ requires-dist = [
     { name = "django-filter", specifier = "==24.3" },
     { name = "django-health-check", specifier = "==3.20.0" },
     { name = "django-ical", specifier = "==1.9.1" },
-    { name = "django-ipware", specifier = "==5.0.0" },
+    { name = "django-ipware", specifier = "==7.0.1" },
     { name = "django-mptt", specifier = "==0.18.0" },
     { name = "django-oauth-toolkit", specifier = "==1.6.3" },
     { name = "django-phonenumber-field", extras = ["phonenumberslite"], specifier = "==8.5.0" },
@@ -1879,6 +1882,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4c/c4/13b4776ea2d76c115c1d1b84579f3764ee6d57204f6be27119f13a61d0a9/python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86", size = 357324, upload-time = "2021-07-14T08:19:19.783Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9", size = 247702, upload-time = "2021-07-14T08:19:18.161Z" },
+]
+
+[[package]]
+name = "python-ipware"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/60/da4426c3e9aee56f08b24091a9e85a0414260f928f97afd0013dfbd0332f/python_ipware-3.0.0.tar.gz", hash = "sha256:9117b1c4dddcb5d5ca49e6a9617de2fc66aec2ef35394563ac4eecabdf58c062", size = 16609, upload-time = "2024-04-19T20:00:58.938Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/08/bd/ccd7416fdb30f104ddf6cfd8ee9f699441c7d9880a26f9b3089438adee05/python_ipware-3.0.0-py3-none-any.whl", hash = "sha256:fc936e6e7ec9fcc107f9315df40658f468ac72f739482a707181742882e36b60", size = 10761, upload-time = "2024-04-19T20:00:57.171Z" },
 ]
 
 [[package]]
