@@ -208,3 +208,8 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
   - name: cache
     image: redis
+---
+kind: signature
+hmac: 3d42a4659cc40d0febc2da80bde76f05d00116c0e9311542c05b0832234ba53e
+
+...
