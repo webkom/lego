@@ -1,9 +1,24 @@
+from unittest import skipIf
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from lego.apps.surveys.models import Survey
 from lego.apps.users.models import AbakusGroup, User
+
+
+def _weasyprint_available():
+    """weasyprint loads pango through cffi, so importing it fails without it."""
+    try:
+        import weasyprint  # noqa: F401
+    except (ImportError, OSError):
+        return False
+    return True
+
+
+WEASYPRINT = _weasyprint_available()
+SKIP_REASON = "weasyprint could not load pango. Install it to run this test."
 
 
 def _get_list_url():
@@ -462,6 +477,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    @skipIf(not WEASYPRINT, SKIP_REASON)
     def test_survey_export_admin_pdf(self):
         """Test that admins can export a survey as pdf"""
         self.client.force_authenticate(user=self.admin_user)
@@ -487,6 +503,7 @@ class SurveyViewSetTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    @skipIf(not WEASYPRINT, SKIP_REASON)
     def test_survey_export_admin_pdf_larger_survey(self):
         """Test that admins can export a survey as pdf"""
         self.client.force_authenticate(user=self.admin_user)
