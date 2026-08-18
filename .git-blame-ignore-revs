@@ -1,0 +1,10 @@
+# Commits to skip when running git blame, so that a line's history points at
+# whoever wrote the code rather than at a mass reformat.
+#
+# Local git needs this enabled once per clone:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub applies it automatically.
+
+# Format with ruff, replacing black. Whitespace, quote style and wrapping only,
+# except for two relocated "# type: ignore" comments put back on their line.
+0f093d35ae50cfee096c628d850581a62b73606a
