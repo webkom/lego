@@ -10,6 +10,7 @@ from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
     AsyncRegister,
+    async_initiate_payment,
     async_register,
     async_retrieve_payment,
     bump_waiting_users_to_new_pool,
@@ -519,8 +520,7 @@ class PenaltyExpiredTestCase(BaseTestCase):
         self.assertEqual(self.event.number_of_registrations, 2)
 
 
-@skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
-class StripePaymentTestCase(BaseTestCase):
+class PricedEventTestCase(BaseTestCase):
     fixtures = [
         "test_abakus_groups.yaml",
         "test_users.yaml",
@@ -535,6 +535,12 @@ class StripePaymentTestCase(BaseTestCase):
         self.event.merge_time = timezone.now() + timedelta(hours=12)
         self.event.payment_due_date = timezone.now() + timedelta(days=2)
         self.event.save()
+
+
+@skipIf(not stripe.api_key, "No API Key set. Set STRIPE_TEST_KEY in ENV to run test.")
+class StripePaymentTestCase(PricedEventTestCase):
+    def setUp(self):
+        super().setUp()
         self.registration = self.event.registrations.first()
 
     @mock.patch("lego.apps.events.tasks.save_and_notify_payment")
@@ -589,6 +595,32 @@ class StripePaymentTestCase(BaseTestCase):
         ]
         async_register(registration.id)
         mock_initiate_payment.assert_not_called()
+
+
+class StripePaymentIntentMetadataTestCase(PricedEventTestCase):
+    @mock.patch("lego.apps.events.tasks.stripe.PaymentIntent.create")
+    def test_payment_intent_is_created_with_webhook_metadata(self, mock_create):
+        """
+        stripe_webhook_event ignores payments without metadata, so every payment
+        intent LEGO creates must carry the full metadata contract.
+        """
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+
+        async_initiate_payment(registration.id)
+
+        self.assertEqual(
+            mock_create.call_args.kwargs["metadata"],
+            {
+                "EVENT_ID": self.event.id,
+                "USER_ID": user.id,
+                "USER": user.full_name,
+                "EMAIL": user.email,
+            },
+        )
 
 
 class PaymentDueTestCase(BaseTestCase):
