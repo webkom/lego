@@ -1,7 +1,7 @@
+from datetime import timedelta
+
 from django.utils import timezone
 from rest_framework import status
-
-from datetime import timedelta
 
 from oauth2_provider.models import AccessToken
 
