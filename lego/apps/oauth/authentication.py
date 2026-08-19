@@ -27,14 +27,10 @@ class Authentication(OAuth2Authentication):
         if token.allow_scopes(["all"]):
             return authentication
 
-        # Paths a `user`-scoped token may reach. Everything else requires `all`.
+        # Paths accessible to 'user' scoped tokens. All other endpoints require 'all'
         #
-        # search-autocomplete is read-only and already AllowAny for session
-        # users, and every hit is filtered through `has_permission` before it is
-        # returned, so a token here sees no more than the person holding it
-        # would see in the web UI. It is allowlisted so applications like
-        # admissions can let a signed-in member look someone up by name without
-        # holding an `all`-scoped credential of their own.
+        # Is needed to allow client applications (like admissions) to search users without
+        # holding 'all' access
         if token.allow_scopes(["user"]) and request.path in USER_SCOPE_PATHS:
             return authentication
         return None
