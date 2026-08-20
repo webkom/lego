@@ -134,6 +134,7 @@ class LendingRequestListSerializer(BasisModelSerializer):
             "id",
             "lendable_object",
             "status",
+            "archived",
             "start_date",
             "end_date",
         )
@@ -154,6 +155,7 @@ class LendingRequestDetailSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
+            "archived",
             "start_date",
             "end_date",
             "timeline_entries",
@@ -176,6 +178,7 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
             "updated_by",
             "lendable_object",
             "status",
+            "archived",
             "comment",
             "start_date",
             "end_date",
@@ -209,6 +212,16 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
         if lendable_object and not lendable_object.can_lend(user):
             raise serializers.ValidationError(
                 {"lendable_object": "You do not have permission to lend this object."}
+            )
+
+        if (
+            "archived" in attrs
+            and self.instance is not None
+            and attrs["archived"] != self.instance.archived
+            and self.instance.created_by != user
+        ):
+            raise serializers.ValidationError(
+                {"archived": "You can only archive your own requests."}
             )
 
         if self.instance is None:
