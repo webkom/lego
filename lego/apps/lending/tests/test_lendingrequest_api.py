@@ -958,3 +958,42 @@ class LendingRequestPatchTestCase(BaseAPITestCase):
         lending_request.refresh_from_db()
         self.assertFalse(lending_request.archived)
 
+    def test_patch_archived_by_other_user_is_rejected(self):
+        other_user = create_user(username="responsible_user")
+        self.group.add_user(other_user)
+        self.client.force_authenticate(user=other_user)
+
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.lending_request.id),
+            {"archived": True},
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("archived", patch_response.data)
+        self.assertIn(
+            "You can only archive your own requests.",
+            patch_response.data["archived"][0],
+        )
+
+        self.lending_request.refresh_from_db()
+        self.assertFalse(self.lending_request.archived)
+
+    def test_patch_by_other_user_with_unchanged_archived_is_allowed(self):
+        other_user = create_user(username="responsible_user")
+        self.group.add_user(other_user)
+        self.client.force_authenticate(user=other_user)
+
+        patch_response = self.client.patch(
+            get_lending_request_detail_url(self.lending_request.id),
+            {
+                "archived": False,
+                "status": LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"],
+            },
+        )
+        self.assertEqual(patch_response.status_code, status.HTTP_200_OK)
+
+        self.lending_request.refresh_from_db()
+        self.assertFalse(self.lending_request.archived)
+        self.assertEqual(
+            self.lending_request.status,
+            LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"],
+        )

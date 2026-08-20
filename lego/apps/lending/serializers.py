@@ -214,6 +214,16 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                 {"lendable_object": "You do not have permission to lend this object."}
             )
 
+        if (
+            "archived" in attrs
+            and self.instance is not None
+            and attrs["archived"] != self.instance.archived
+            and self.instance.created_by != user
+        ):
+            raise serializers.ValidationError(
+                {"archived": "You can only archive your own requests."}
+            )
+
         if self.instance is None:
             if "status" in attrs and attrs["status"] not in (
                 LENDING_REQUEST_STATUSES["LENDING_UNAPPROVED"]["value"],
