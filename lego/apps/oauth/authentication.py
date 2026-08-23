@@ -22,6 +22,23 @@ class Authentication(OAuth2Authentication):
         if not authentication:
             return None
         user, token = authentication
+
+        if user is None:
+            # django-oauth-toolkit (<2.0) issues client_credentials tokens
+            # without a user. Such machine tokens act as the application's
+            # owner, so the owner's permissions are the credential's ceiling.
+            application = token.application
+            if (
+                application.authorization_grant_type
+                != application.GRANT_CLIENT_CREDENTIALS
+                or application.client_type != application.CLIENT_CONFIDENTIAL
+            ):
+                return None
+            user = application.user
+            if user is None or not user.is_active:
+                return None
+            authentication = (user, token)
+
         log.bind(current_user=user.id)
 
         if token.allow_scopes(["all"]):
