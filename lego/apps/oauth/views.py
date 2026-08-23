@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import mixins, permissions, viewsets
 
 from oauth2_provider.models import AccessToken
@@ -47,6 +48,9 @@ class AccessTokenViewSet(
         if self.request is None:
             return AccessToken.objects.none()
 
-        return AccessToken.objects.filter(user=self.request.user).select_related(
-            "application"
-        )
+        # Machine (client_credentials) tokens have user=None; the owning
+        # application's user can see and revoke them.
+        return AccessToken.objects.filter(
+            Q(user=self.request.user)
+            | Q(user__isnull=True, application__user=self.request.user)
+        ).select_related("application")

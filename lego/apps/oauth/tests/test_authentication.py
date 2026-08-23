@@ -7,7 +7,7 @@ from rest_framework import status
 from oauth2_provider.models import AccessToken
 
 from lego.apps.oauth.models import APIApplication
-from lego.apps.users.models import User
+from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
 
@@ -60,12 +60,8 @@ class UserScopeAuthenticationTestCase(BaseAPITestCase):
 
 
 class ClientCredentialsAuthenticationTestCase(BaseAPITestCase):
-    """A user-less (client_credentials) token acts as the application's owner.
-
-    django-oauth-toolkit issues client_credentials tokens with no user, so
-    the application's owner is the identity such machine tokens act as -
-    the owner's permissions are the credential's ceiling.
-    """
+    """A user-less (client_credentials) token acts as the application's
+    owner, whose permissions are the credential's ceiling."""
 
     fixtures = ["test_users.yaml", "test_applications.yaml"]
 
@@ -123,10 +119,19 @@ class ClientCredentialsAuthenticationTestCase(BaseAPITestCase):
 
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
+    def test_machine_token_is_refused_when_owner_is_soft_deleted(self):
+        """The soft delete leaves is_active=True; `deleted` has its own check."""
+        application = self._machine_application()
+        self.owner.delete()
+
+        response = self.client.get(
+            "/api/v1/users/oauth2_userdata/",
+            HTTP_AUTHORIZATION=self._machine_token(application),
+        )
+
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
     def test_user_less_token_is_refused_for_non_machine_applications(self):
-        """The owner mapping is only for confidential client_credentials
-        applications; a user-less token from any other application type must
-        never inherit the owner's permissions."""
         password_app = APIApplication.objects.get(pk=1)
 
         response = self.client.get(
@@ -136,18 +141,60 @@ class ClientCredentialsAuthenticationTestCase(BaseAPITestCase):
 
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-    def test_client_credentials_grant_round_trip(self):
-        """The exact flow a machine client (like the admissions roster sync)
-        performs: fetch a token with the client_credentials grant, then call
-        the API with it."""
-        secret = "machine-secret"
-        application = APIApplication.objects.create(
-            user=self.owner,
-            client_type=APIApplication.CLIENT_CONFIDENTIAL,
-            authorization_grant_type=APIApplication.GRANT_CLIENT_CREDENTIALS,
-            name="machine client",
-            client_secret=secret,
+    def test_user_less_token_is_refused_for_confidential_password_application(self):
+        """Pins the grant-type half of the guard on its own."""
+        application = self._machine_application(
+            authorization_grant_type=APIApplication.GRANT_PASSWORD,
         )
+
+        response = self.client.get(
+            "/api/v1/users/oauth2_userdata/",
+            HTTP_AUTHORIZATION=self._machine_token(application),
+        )
+
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_user_less_token_is_refused_for_public_client_credentials_application(self):
+        """Pins the client-type half of the guard on its own."""
+        application = self._machine_application(
+            client_type=APIApplication.CLIENT_PUBLIC,
+        )
+
+        response = self.client.get(
+            "/api/v1/users/oauth2_userdata/",
+            HTTP_AUTHORIZATION=self._machine_token(application),
+        )
+
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_machine_token_flows_through_the_owner_permission_stack(self):
+        """A keyword permission granted to the owner works through a machine
+        token on a real endpoint - and is refused without it."""
+        token = self._machine_token(self._machine_application())
+        target = AbakusGroup.objects.create(name="Roster target")
+
+        response = self.client.get(
+            f"/api/v1/groups/{target.pk}/memberships/",
+            HTTP_AUTHORIZATION=token,
+        )
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        sync_group = AbakusGroup.objects.create(
+            name="Roster sync",
+            permissions=["/sudo/admin/groups/list/"],
+        )
+        sync_group.add_user(self.owner)
+
+        response = self.client.get(
+            f"/api/v1/groups/{target.pk}/memberships/",
+            HTTP_AUTHORIZATION=token,
+        )
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_client_credentials_grant_round_trip(self):
+        """The exact flow a machine client performs."""
+        secret = "machine-secret"
+        application = self._machine_application(client_secret=secret)
 
         token_response = self.client.post(
             "/authorization/oauth2/token/",

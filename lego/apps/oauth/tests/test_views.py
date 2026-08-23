@@ -1,7 +1,11 @@
+from datetime import timedelta
+
+from django.utils import timezone
 from rest_framework import status
 
 from oauth2_provider.models import AccessToken
 
+from lego.apps.oauth.models import APIApplication
 from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -42,6 +46,45 @@ class OauthViewsTestCase(BaseAPITestCase):
         """Make sure a user can't delete a token owned by a other user."""
         self.client.force_authenticate(self.user)
         response = self.client.delete("{base_url}2/".format(base_url=self.url))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def _machine_token(self):
+        application = APIApplication.objects.create(
+            user=self.user,
+            client_type=APIApplication.CLIENT_CONFIDENTIAL,
+            authorization_grant_type=APIApplication.GRANT_CLIENT_CREDENTIALS,
+            name="machine client",
+        )
+        return AccessToken.objects.create(
+            application=application,
+            user=None,
+            token="machine-token",
+            scope="all",
+            expires=timezone.now() + timedelta(days=1),
+        )
+
+    def test_owner_can_list_and_revoke_machine_tokens(self):
+        machine_token = self._machine_token()
+
+        self.client.force_authenticate(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ids = [token["id"] for token in response.json()["results"]]
+        self.assertIn(machine_token.id, ids)
+
+        response = self.client.delete(f"{self.url}{machine_token.id}/")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(AccessToken.objects.filter(id=machine_token.id).exists())
+
+    def test_machine_tokens_are_hidden_from_other_users(self):
+        machine_token = self._machine_token()
+
+        self.client.force_authenticate(User.objects.get(id=2))
+        response = self.client.get(self.url)
+        ids = [token["id"] for token in response.json()["results"]]
+        self.assertNotIn(machine_token.id, ids)
+
+        response = self.client.delete(f"{self.url}{machine_token.id}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
@@ -97,6 +140,29 @@ class OauthApplicationViewsTestCase(BaseAPITestCase):
         }
         response = self.client.post(self.url, application)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_machine_application_cannot_be_edited(self):
+        """The forced fields in the serializer would silently downgrade it."""
+        self.client.force_authenticate(self.user)
+        Membership.objects.create(
+            user=self.user,
+            abakus_group=AbakusGroup.objects.get(name="APIApplicationTest"),
+        )
+        machine = APIApplication.objects.create(
+            user=self.user,
+            client_type=APIApplication.CLIENT_CONFIDENTIAL,
+            authorization_grant_type=APIApplication.GRANT_CLIENT_CREDENTIALS,
+            name="machine client",
+        )
+
+        response = self.client.patch(f"{self.url}{machine.pk}/", {"name": "renamed"})
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        machine.refresh_from_db()
+        self.assertEqual("machine client", machine.name)
+        self.assertEqual(
+            APIApplication.GRANT_CLIENT_CREDENTIALS, machine.authorization_grant_type
+        )
 
     def test_delete_application(self):
         """Make sure permitted users can delete applications."""

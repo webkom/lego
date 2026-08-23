@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from oauth2_provider.models import AccessToken
 
@@ -28,6 +29,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
         """
         Save application with secure parameters.
         """
+        if (
+            isinstance(self.instance, APIApplication)
+            and self.instance.authorization_grant_type
+            == APIApplication.GRANT_CLIENT_CREDENTIALS
+        ):
+            # The forced fields below would silently downgrade a machine
+            # application; those are managed from the shell only.
+            raise PermissionDenied(
+                "Maskinapplikasjoner (client_credentials) kan ikke endres her."
+            )
         request = self.context["request"]
         kwargs["user"] = request.user
         kwargs.update(
