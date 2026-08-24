@@ -2,7 +2,7 @@ from math import ceil
 from typing import Any
 
 from django.db import transaction
-from django.db.models import Count, Prefetch, Q
+from django.db.models import Count, Prefetch, Q, Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -75,139 +75,53 @@ from lego.utils.functions import request_plausible_statistics, verify_captcha
 
 
 def get_registration_eligibility(event: Event, user: User) -> dict[str, Any]:
-    can_register_status = event.evaluate_registration_eligibility(user=user)
-    print("Can register: ", can_register_status)
+    current_time = timezone.now()
+    can_register_status = event.evaluate_registration_eligibility(
+        user=user, current_time=current_time
+    )
 
-    return can_register_status
-    # now = timezone.now()
-    # registration = event.registrations.filter(user=user).first()
+    penalties = 0
+    if event.heed_penalties:
+        offset = user.penalties.model.penalty_offset(current_time, forwards=False)
+        penalties = (
+            user.penalties.filter(created_at__gt=current_time - offset).aggregate(
+                Sum("weight")
+            )["weight__sum"]
+            or 0
+        )
 
-    # if registration and registration.status in [
-    #     constants.PENDING_REGISTER,
-    #     constants.SUCCESS_REGISTER,
-    # ]:
-    #     return {
-    #         "can_register_now": False,
-    #         "is_registration_delayed": False,
-    #         "delay_until": None,
-    #         "delay_seconds": 0,
-    #         "will_be_waiting_list": registration.pool is None,
-    #         "reason": "already_registered",
-    #     }
+    delay_until = can_register_status.delay_until
+    if (
+        delay_until is None
+        and can_register_status.reason == "not_open_yet"
+        and user.is_authenticated
+    ):
+        possible_pools = event.get_possible_pools(user, future=True)
+        if possible_pools:
+            delay_until = event.get_earliest_registration_time(
+                user, possible_pools, penalties
+            )
 
-    # if event.registration_close_time < now:
-    #     return {
-    #         "can_register_now": False,
-    #         "is_registration_delayed": False,
-    #         "delay_until": None,
-    #         "delay_seconds": 0,
-    #         "will_be_waiting_list": False,
-    #         "reason": "registration_closed",
-    #     }
+    delay_seconds = can_register_status.delay_seconds
+    if delay_until is not None and delay_seconds is None:
+        delay_seconds = max(0, ceil((delay_until - current_time).total_seconds()))
 
-    # if user.unanswered_surveys():
-    #     return {
-    #         "can_register_now": False,
-    #         "is_registration_delayed": False,
-    #         "delay_until": None,
-    #         "delay_seconds": 0,
-    #         "will_be_waiting_list": False,
-    #         "reason": "unanswered_surveys",
-    #     }
+    is_registration_delayed = can_register_status.is_registration_delayed
+    if is_registration_delayed is None:
+        is_registration_delayed = can_register_status.reason == "not_open_yet"
 
-    # if not event.is_ready:
-    #     return {
-    #         "can_register_now": False,
-    #         "is_registration_delayed": False,
-    #         "delay_until": None,
-    #         "delay_seconds": 0,
-    #         "will_be_waiting_list": False,
-    #         "reason": "event_not_ready",
-    #     }
+    will_be_waiting_list = can_register_status.will_be_waiting_list
+    if will_be_waiting_list is None:
+        will_be_waiting_list = can_register_status.can_register_now and penalties >= 3
 
-    # current_semester = AUTUMN if event.start_time.month > 7 else SPRING
-    # if event.use_consent and not user.has_registered_photo_consents_for_semester(
-    #     event.start_time.year, current_semester
-    # ):
-    #     return {
-    #         "can_register_now": False,
-    #         "is_registration_delayed": False,
-    #         "delay_until": None,
-    #         "delay_seconds": 0,
-    #         "will_be_waiting_list": False,
-    #         "reason": "missing_photo_consents",
-    #     }
-
-    # is_admitted = event.is_admitted(user)
-    # all_pools = event.pools.all()
-    # possible_pools_now = event.get_possible_pools(
-    #     user, all_pools=all_pools, is_admitted=is_admitted
-    # )
-    # possible_pools_future = event.get_possible_pools(
-    #     user, future=True, all_pools=all_pools, is_admitted=is_admitted
-    # )
-
-    # if not possible_pools_future.exists():
-    #     return {
-    #         "can_register_now": False,
-    #         "is_registration_delayed": False,
-    #         "delay_until": None,
-    #         "delay_seconds": 0,
-    #         "will_be_waiting_list": False,
-    #         "reason": "no_available_pools",
-    #     }
-
-    # penalties = user.number_of_penalties() if event.heed_penalties else 0
-    # earliest_registration_time = event.get_earliest_registration_time(
-    #     user, pools=possible_pools_future, penalties=penalties
-    # )
-    # is_registration_delayed = bool(
-    #     earliest_registration_time and earliest_registration_time > now
-    # )
-    # delay_seconds = (
-    #     ceil((earliest_registration_time - now).total_seconds())
-    #     if is_registration_delayed
-    #     else 0
-    # )
-
-    # can_register_now = possible_pools_now.exists() and not is_registration_delayed
-
-    # pools_for_waiting_list_eval = (
-    #     possible_pools_now if possible_pools_now.exists() else possible_pools_future
-    # )
-    # will_be_waiting_list = False
-    # if penalties >= 3:
-    #     will_be_waiting_list = True
-    # elif pools_for_waiting_list_eval.count() == 1:
-    #     will_be_waiting_list = pools_for_waiting_list_eval[0].is_full
-    # elif event.is_merged:
-    #     if possible_pools_now.exists():
-    #         will_be_waiting_list = event.is_full
-    #     else:
-    #         will_be_waiting_list = event.get_is_full(
-    #             queryset=pools_for_waiting_list_eval
-    #         )
-    # else:
-    #     _, open_pools = event.calculate_full_pools(pools_for_waiting_list_eval)
-    #     will_be_waiting_list = len(open_pools) == 0
-
-    # return {
-    #     "can_register_now": can_register_now,
-    #     "is_registration_delayed": is_registration_delayed,
-    #     "delay_until": earliest_registration_time if is_registration_delayed else None,
-    #     "delay_seconds": delay_seconds,
-    #     "will_be_waiting_list": will_be_waiting_list,
-    #     "reason": (
-    #         None
-    #         if can_register_now
-    #         else (
-    #             "registration_delayed"
-    #             if is_registration_delayed
-    #             else "cannot_register_now"
-    #         )
-    #     ),
-    # }
-
+    return {
+        "canRegisterNow": can_register_status.can_register_now,
+        "reason": can_register_status.reason,
+        "isRegistrationDelayed": is_registration_delayed,
+        "delayUntil": delay_until,
+        "delaySeconds": delay_seconds or 0,
+        "willBeWaitingList": will_be_waiting_list,
+    }
 
 class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     filterset_class = EventsFilterSet

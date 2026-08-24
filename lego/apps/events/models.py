@@ -24,6 +24,10 @@ from lego.apps.events.exceptions import (
     RegistrationsExistInPool,
     UnansweredSurveyException,
 )
+from lego.apps.surveys.models import (
+    Survey
+)
+
 from lego.apps.events.permissions import (
     EventPermissionHandler,
     RegistrationPermissionHandler,
@@ -222,8 +226,10 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
     def evaluate_registration_eligibility(
         self,
         user: User,
-        now: datetime | None = None,
+        current_time: Optional[datetime] = None,
     ):
+
+        current_time = current_time or timezone.now()
         # Get current user pool
         user_pools = self.get_possible_pools(user, future=False)
 
@@ -249,9 +255,14 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             )
 
         if self.heed_penalties:
-            penalties = user.number_of_penalties()
+            offset = Penalty.penalty_offset(current_time, forwards=False)
+            penalties = (
+                Penalty.objects.filter(
+                    user=user, created_at__gt=current_time - offset
+                ).aggregate(Sum("weight"))["weight__sum"]
+                or 0
+            )
 
-        current_time = timezone.now()
         if self.registration_close_time < current_time:
             return RegistrationEligibility(
                 can_register_now=False,
@@ -269,7 +280,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             )
         all_pools: QuerySet[Pool] = self.pools.all()
         possible_pools = self.get_possible_pools(
-            user, all_pools=all_pools, is_admitted=self.registration.is_admitted
+            user, all_pools=all_pools, is_admitted=self.is_admitted(user)
         )
         if not self.is_ready:
             return RegistrationEligibility(
@@ -1139,3 +1150,37 @@ class Registration(BasisModel):
             setattr(self, key, value)
         self.save(update_fields=kwargs.keys())
         return self
+
+class RegistrationEligibilityCache(BasisModel):
+    class Reason(models.TextChoices):
+        NONE = "none", "None"
+        NO_ACTIVE_POOL = "no_active_pool", "No active pool"
+        UNANSWERED_SURVEYS = "unanswered_surveys", "Unanswered surveys"
+        EVENT_CLOSED = "event_closed", "Event closed"
+        NO_PHOTO_CONSENTS = "no_photo_consents", "No photo consents"
+        EVENT_NOT_READY = "event_not_ready", "Event not ready"
+        NO_AVAILABLE_POOLS = "no_available_pools", "No available pools"
+        NOT_OPEN_YET = "not_open_yet", "Not open yet"
+
+    user = models.ForeignKey(
+        User, related_name="registration_eligibilities", on_delete=models.CASCADE 
+    )
+    event = models.ForeignKey(
+        Event, related_name="registration_eligibilities", on_delete=models.CASCADE
+    )
+
+    can_register_now = models.BooleanField(null=False)
+    will_be_waiting_list = models.BooleanField(null=False) 
+    is_registration_delayed = models.BooleanField(null=False)
+
+    reason = models.CharField(max_length=64, choices=Reason.choises, null=True)
+    delay_until = models.DateTimeField(null=True)
+    unanswered_surveys = models.ForeignKey(Survey, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "event"], name="uniq_req_elig_cache")
+        ]
+        # indexes = [
+        #     models.Index(fields=["event", "user"])
+        # ]

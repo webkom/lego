@@ -29,6 +29,10 @@ schedule = {
         "task": "lego.apps.events.tasks.notify_event_creator_when_payment_overdue",
         "schedule": crontab(hour=9, minute=0),
     },
+    "generate_event_registration_eligibility_cache": {
+        "task": "lego.apps.events.tasks.create_user_registration_signup_eligibility_cache",
+        "schedule": crontab(minute="*/30"),
+    },
     "sync-external-systems": {
         "task": "lego.apps.external_sync.tasks.sync_external_systems",
         "schedule": crontab(hour="*", minute=0),
