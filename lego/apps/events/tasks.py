@@ -27,6 +27,8 @@ from lego.apps.events.websockets import (
 )
 from lego.utils.tasks import AbakusTask
 
+from lego.apps.users.models import User
+
 log = get_logger()
 
 
@@ -590,3 +592,21 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
                 event_id=event.id,
                 creator=event.created_by,
             )
+@celery_app.task(serializer="json",bind=True, base=AbakusTask)
+def create_user_registration_signup_eligibility_cache(self, logger_context=None):
+    self.setup_logger(logger_context) 
+
+    
+
+    
+def generate_event_registration_eligibility_cache(event_id):
+    events = Event.objects.filter(
+        activation_date__gt=timezone.now(),
+        activation_date__lte=timezone.now() + timedelta(minutes=60),
+    )
+
+    users = User.objects.all() 
+
+    for event in events:
+        for user in users:
+            eligibility = Event.evaluate_registration_eligibility(events, user, event.start_time)
