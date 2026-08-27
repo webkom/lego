@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from lego.apps.articles.filters import ArticleFilterSet
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import (
-    DetailedArticleAdminSerializer,
+    AuthDetailedArticleSerializer,
     DetailedArticleSerializer,
     PublicArticleSerializer,
 )
@@ -27,18 +27,17 @@ class ArticlesViewSet(AllowedPermissionsMixin, ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.select_related("created_by").prefetch_related("tags")
 
-        if self.action == "list":
-            return queryset
-
-        return queryset.prefetch_related(
-            "comments", "comments__created_by", *OBJECT_PERMISSIONS_FIELDS
-        )
+        if self.request and self.request.user.is_authenticated:
+            return queryset.prefetch_related(
+                "comments", "comments__created_by", *OBJECT_PERMISSIONS_FIELDS
+            )
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
             return PublicArticleSerializer
         if self.request and self.request.user.is_authenticated:
-            return DetailedArticleAdminSerializer
+            return AuthDetailedArticleSerializer
 
         return super().get_serializer_class()
 

@@ -132,7 +132,6 @@ class EventReadSerializer(
 class EventReadDetailedSerializer(
     TagSerializerMixin, BasisModelSerializer, ObjectPermissionsSerializerMixin
 ):
-    comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
     cover = ImageField(required=False, options={"height": 500})
     cover_placeholder = ImageField(
@@ -161,7 +160,6 @@ class EventReadDetailedSerializer(
             "event_type",
             "event_status_type",
             "location",
-            "comments",
             "content_target",
             "start_time",
             "end_time",
@@ -300,6 +298,7 @@ class EventReadUserDetailedSerializer(EventReadDetailedSerializer):
 
 
 class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
+    comments = CommentSerializer(read_only=True, many=True)
     pools = PoolReadAuthSerializer(many=True)
     waiting_registrations = RegistrationReadSerializer(many=True)
     unanswered_surveys = serializers.SerializerMethodField()
@@ -313,6 +312,7 @@ class EventReadAuthUserDetailedSerializer(EventReadUserDetailedSerializer):
 
     class Meta(EventReadUserDetailedSerializer.Meta):
         fields = EventReadUserDetailedSerializer.Meta.fields + (  # type: ignore
+            "comments",
             "created_by",
             "responsible_users",
             "waiting_registrations",
