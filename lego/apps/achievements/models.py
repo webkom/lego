@@ -1,5 +1,6 @@
 from django.db import models
 
+from lego.apps.achievements.constants import RankType
 from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
 from lego.apps.users.models import User
 from lego.utils.models import BasisModel
@@ -39,4 +40,31 @@ class Achievement(BasisModel):
             models.UniqueConstraint(
                 fields=["user", "identifier", "level"], name="unique_user_identifier"
             )
+        ]
+
+
+class RankSnapshot(models.Model):
+    """
+    A sparse history of a user's rank for a given ranking type. A row is only
+    written when the rank actually changes from the previous snapshot, so to
+    find a user's rank on any given day, look up the most recent snapshot
+    with date <= that day.
+    """
+
+    user = models.ForeignKey(
+        "users.User", related_name="rank_snapshots", on_delete=models.CASCADE
+    )
+    type = models.CharField(max_length=30, choices=RankType.choices)
+    rank = models.PositiveIntegerField()
+    value = models.FloatField()
+    date = models.DateField(db_index=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "type", "date"], name="unique_user_type_rank_date"
+            )
+        ]
+        indexes = [
+            models.Index(fields=["user", "type", "date"]),
         ]

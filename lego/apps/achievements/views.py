@@ -1,6 +1,19 @@
-from django.db.models import Case, F, IntegerField, Q, Value, When
+from datetime import timedelta
+
+from django.db.models import (
+    Case,
+    Count,
+    F,
+    IntegerField,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
 from django.db.models.expressions import Window
 from django.db.models.functions import Rank
+from django.utils import timezone
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,8 +23,9 @@ from lego.apps.achievements.constants import (
     EVENT_RULES_IDENTIFIER,
     KEYPRESS_ORDER,
     KEYPRESS_ORDER_IDENTIFIER,
+    RankType,
 )
-from lego.apps.achievements.models import Achievement
+from lego.apps.achievements.models import Achievement, RankSnapshot
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.serializers import KeypressOrderSerializer
 from lego.apps.achievements.tasks import run_all_promotions
@@ -26,22 +40,48 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = AchievementLeaderboardPagination
 
-    # The reason for not using a django filter is due to how django compiles SQL
-    # making it impossible to compute global rank
+    # AchievementLeaderboardPagination.ordering is only a default - the cursor
+    # pagination always calls this to decide sort order, otherwise it would
+    # always order by achievements_score regardless of the selected rank_type.
+    def get_ordering(self):
+        return "achievement_rank"
+
+    # Rank can't be computed via a Window() and then filtered in the same
+    # queryset - Django compiles the filter before the window function,
+    # so it silently changes what the window sees. Compute rank unfiltered
+    # first, then bake it into the filtered queryset via Case/When.
     def get_queryset(self):
-        distinct_user_ids = (
-            User.objects.filter(achievements__isnull=False)
-            .values_list("id", flat=True)
-            .distinct()
-        )
+        rank_type = self.request.query_params.get("type", RankType.ACHIEVEMENT_SCORE)
+        if rank_type not in RankType.values:
+            rank_type = RankType.ACHIEVEMENT_SCORE  # fall back rather than 500
 
-        qs = User.objects.filter(id__in=distinct_user_ids).annotate(
-            achievement_rank=Window(
-                expression=Rank(), order_by=F("achievements_score").desc()
+        today = timezone.now().date()
+        week_ago = today - timedelta(days=7)
+        month_ago = today - timedelta(days=30)
+
+        if rank_type == RankType.EVENT_COUNT:
+            base_qs = User.objects.annotate(event_count=Count("registrations"))
+            distinct_user_ids = base_qs.filter(event_count__gt=0).values_list(
+                "id", flat=True
             )
-        )
+            order_expr = F("event_count").desc()
+            rank_source_qs = base_qs.filter(id__in=distinct_user_ids).annotate(
+                achievement_rank=Window(expression=Rank(), order_by=order_expr)
+            )
+        else:
+            distinct_user_ids = (
+                User.objects.filter(achievements__isnull=False)
+                .values_list("id", flat=True)
+                .distinct()
+            )
+            order_expr = F("achievements_score").desc()
+            rank_source_qs = User.objects.filter(id__in=distinct_user_ids).annotate(
+                achievement_rank=Window(expression=Rank(), order_by=order_expr)
+            )
 
-        global_rank_mapping = {user.id: user.achievement_rank for user in qs}
+        global_rank_mapping = {
+            user.id: user.achievement_rank for user in rank_source_qs
+        }
 
         qs_filter = User.objects.filter(id__in=distinct_user_ids)
 
@@ -61,11 +101,38 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 membership__is_active=True, membership__abakus_group__in=group_ids
             )
 
+        def rank_as_of(date, snapshot_type=rank_type):
+            return Subquery(
+                RankSnapshot.objects.filter(
+                    user=OuterRef("pk"), type=snapshot_type, date__lte=date
+                )
+                .order_by("-date")
+                .values("rank")[:1]
+            )
+
+        # event_count is always sourced from the snapshot table, regardless
+        # of which type is currently being ranked by - computing it live via
+        # Count("registrations") on every request (in addition to whatever
+        # the rank_type branch above already does) is the exact cost this
+        # was meant to avoid.
+        event_count = Subquery(
+            RankSnapshot.objects.filter(
+                user=OuterRef("pk"), type=RankType.EVENT_COUNT, date__lte=today
+            )
+            .order_by("-date")
+            .values("value")[:1]
+        )
+
         cases = [
             When(pk=pk, then=Value(rank)) for pk, rank in global_rank_mapping.items()
         ]
         annotated_qs = qs_filter.annotate(
-            achievement_rank=Case(*cases, default=Value(0), output_field=IntegerField())
+            achievement_rank=Case(
+                *cases, default=Value(0), output_field=IntegerField()
+            ),
+            rank_week_ago=rank_as_of(week_ago),
+            rank_month_ago=rank_as_of(month_ago),
+            event_count=event_count,
         )
 
         return annotated_qs.order_by("achievement_rank")

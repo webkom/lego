@@ -1,6 +1,8 @@
 from collections.abc import Callable
 from typing import Any, TypedDict
 
+from django.db import models
+
 from lego.apps.achievements.verification import (
     check_complete_profile,
     check_event_generic,
@@ -22,7 +24,14 @@ class Achievement(TypedDict):
 
 AchievementCollection = dict[str, Achievement]
 
+
+class RankType(models.TextChoices):
+    ACHIEVEMENT_SCORE = "achievement_score", "Achievement score"
+    EVENT_COUNT = "event_count", "Event count"
+
+
 # Remember to update rarity list in /utils/calculation_utils.py when adding new achievement
+
 
 EVENT_IDENTIFIER = "event_count"
 EVENT_RANK_IDENTIFIER = "event_rank"
