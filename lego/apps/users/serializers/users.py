@@ -58,6 +58,9 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     achievements = AchievementSerializer(many=True)
     achievements_score = serializers.SerializerMethodField()
     achievement_rank = serializers.IntegerField(read_only=True)
+    event_count = serializers.IntegerField(read_only=True)
+    rank_week_ago = serializers.IntegerField(read_only=True, allow_null=True)
+    rank_month_ago = serializers.IntegerField(read_only=True, allow_null=True)
 
     def get_achievements_score(self, obj):
         return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
@@ -69,6 +72,9 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
             "achievements",
             "achievements_score",
             "achievement_rank",
+            "rank_week_ago",
+            "rank_month_ago",
+            "event_count",
         )
 
 

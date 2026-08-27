@@ -65,6 +65,10 @@ schedule = {
         "task": "lego.apps.achievements.tasks.run_all_promotions",
         "schedule": crontab(hour=4, minute=0, day_of_week=0),
     },
+    "run_leaderboard_snapshot_daily": {
+        "task": "lego.apps.achievements.tasks.snapshot_leaderboard_ranks",
+        "schedule": crontab(hour=2, minute=0),
+    },
     "generate_weekly_recurring_meetings": {
         "task": "lego.apps.meetings.tasks.generate_weekly_recurring_meetings",
         "schedule": crontab(hour=0, minute=0),
