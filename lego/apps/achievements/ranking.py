@@ -10,6 +10,7 @@ def _ordered_values_for(rank_type: str):
     if rank_type == RankType.ACHIEVEMENT_SCORE:
         return (
             User.objects.filter(achievements__isnull=False)
+            .distinct()
             .order_by("-achievements_score")
             .values_list("id", "achievements_score")
         )
