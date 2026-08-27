@@ -40,6 +40,12 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = AchievementLeaderboardPagination
 
+    # AchievementLeaderboardPagination.ordering is only a default - the cursor
+    # pagination always calls this to decide sort order, otherwise it would
+    # always order by achievements_score regardless of the selected rank_type.
+    def get_ordering(self):
+        return "achievement_rank"
+
     # Rank can't be computed via a Window() and then filtered in the same
     # queryset - Django compiles the filter before the window function,
     # so it silently changes what the window sees. Compute rank unfiltered

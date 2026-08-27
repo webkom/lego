@@ -68,6 +68,18 @@ class LeaderBoardEventCountTestCase(BaseAPITestCase):
         self.assertEqual(by_id[self.users[2].id]["achievement_rank"], 2)
         self.assertEqual(by_id[self.users[0].id]["achievement_rank"], 3)
 
+    def test_event_count_results_are_returned_in_rank_order(self):
+        _register_for_n_events(self.users[0], 1)
+        _register_for_n_events(self.users[1], 10)
+        _register_for_n_events(self.users[2], 5)
+
+        res = self._get(type=RankType.EVENT_COUNT)
+
+        returned_ids = [row["id"] for row in res.data["results"]]
+        self.assertEqual(
+            returned_ids, [self.users[1].id, self.users[2].id, self.users[0].id]
+        )
+
     def test_event_count_field_is_null_until_a_snapshot_has_been_taken(self):
         _register_for_n_events(self.users[0], 4)
 
