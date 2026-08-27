@@ -15,7 +15,10 @@
   fields:
     client_id: sC6GkHr8GS2OSRpFzKL2aASnz2eTPLYqK8TAGihF
     user: 3
-    redirect_uris: http://127.0.0.1:5000/complete/lego/
+    redirect_uris: |-
+      http://127.0.0.1:5000/complete/lego/
+      http://127.0.0.1:5002/complete/lego/
+      http://localhost:5002/complete/lego/
     client_type: public
     authorization_grant_type: authorization-code
     client_secret: fBySp20wgSEcxGmFFHB8BHEqjGu0oU0e1QmDyQ7bU8GZLFsa3GIPAbXyYlbOxnwslZLKGEQJr96i9u50bL4Iq1wWQrmDPoUc8P7nJHAENbrw1l5HblOgDkoKvxPKHnk2
