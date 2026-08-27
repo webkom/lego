@@ -53,10 +53,10 @@ class CursorPagination(RFCursorPagination):
                 'nearly-unique field on the model, such as "-created" or "pk".'
             )
 
-        assert isinstance(
-            ordering, (six.string_types, list, tuple)
-        ), "Invalid ordering. Expected string or tuple, but got {type}".format(
-            type=type(ordering).__name__
+        assert isinstance(ordering, (six.string_types, list, tuple)), (
+            "Invalid ordering. Expected string or tuple, but got {type}".format(
+                type=type(ordering).__name__
+            )
         )
 
         if isinstance(ordering, six.string_types):

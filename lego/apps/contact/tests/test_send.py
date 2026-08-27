@@ -98,7 +98,9 @@ class SendTestCase(BaseTestCase):
 
         send_message("title", "message", logged_in_user, self.webkom_group)
         mock_send_email.assert_called_with(
-            to_email=[self.webkom_leader.email_address, logged_in_user.email_address],
+            to_email=sorted(
+                [self.webkom_leader.email_address, logged_in_user.email_address]
+            ),
             context={
                 "title": "title",
                 "message": "message",

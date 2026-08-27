@@ -45,5 +45,6 @@ class AnnouncementNotification(Notification):
         return self._delay_push(
             template="notifications/push/announcement.txt",
             context={"sender": sender},
+            title=f"Kunngjøring fra {sender}",
             instance=announcement,
         )

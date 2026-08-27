@@ -1,3 +1,6 @@
+import re
+from urllib.parse import unquote
+
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -24,9 +27,19 @@ github_username_validator = validators.RegexValidator(
     "Enter a valid GitHub username.",
 )
 
-linkedin_id_validator = validators.RegexValidator(
-    r"^[a-zA-Z0-9-]{0,70}$",
-    "Enter a valid LinkedIn ID.",
+
+def linkedin_id_validator(value):
+    url_match = re.search(r"linkedin\.com/in/([^/?#]+)", value)
+    id_part = url_match.group(1) if url_match else value
+    if not re.match(r"^[a-zA-Z0-9À-ɏ-]{0,70}$", unquote(id_part)):
+        raise ValidationError("Enter a valid LinkedIn ID.")
+
+
+name_validator = validators.RegexValidator(
+    r"^[^\W\d_][\w '\-\.]*$",
+    "Enter a valid name. Only letters, spaces, hyphens, apostrophes, and periods are allowed.",
+    "invalid",
+    flags=re.UNICODE,
 )
 
 

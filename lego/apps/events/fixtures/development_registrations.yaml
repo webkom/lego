@@ -6766,3 +6766,1794 @@
     status: 'SUCCESS_REGISTER'
   model: events.Registration
   pk: 750
+- fields:
+    event: 55
+    pool: 83
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 2
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1001
+- fields:
+    event: 55
+    pool: 83
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 3
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1002
+- fields:
+    event: 55
+    pool: 83
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 4
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1003
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 5
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1004
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 6
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1005
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 7
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1006
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 8
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1007
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 9
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1008
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 10
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1009
+- fields:
+    event: 57
+    pool: 85
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 11
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1010
+- fields:
+    event: 58
+    pool: 86
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 12
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1011
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 13
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1012
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 14
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1013
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 15
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1014
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 16
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1015
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 17
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1016
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 18
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1017
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 19
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1018
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 20
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1019
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 21
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1020
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 22
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1021
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 23
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1022
+- fields:
+    event: 59
+    pool: 87
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 24
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1023
+- fields:
+    event: 60
+    pool: 88
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 25
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1024
+- fields:
+    event: 60
+    pool: 88
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 26
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1025
+- fields:
+    event: 60
+    pool: 88
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 27
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1026
+- fields:
+    event: 60
+    pool: 88
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 28
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1027
+- fields:
+    event: 60
+    pool: 88
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 29
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1028
+- fields:
+    event: 61
+    pool: 89
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 30
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1029
+- fields:
+    event: 61
+    pool: 89
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 31
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1030
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 32
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1031
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 33
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1032
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 34
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1033
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 35
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1034
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 36
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1035
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 37
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1036
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 38
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1037
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 39
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1038
+- fields:
+    event: 62
+    pool: 90
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 40
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1039
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 41
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1040
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 42
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1041
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 43
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1042
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 44
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1043
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 45
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1044
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 46
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1045
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 47
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1046
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 48
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1047
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 49
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1048
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 50
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1049
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 51
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1050
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 52
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1051
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 53
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1052
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 54
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1053
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 55
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1054
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 56
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1055
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 57
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1056
+- fields:
+    event: 64
+    pool: 92
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 58
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1057
+- fields:
+    event: 65
+    pool: 93
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 2
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1058
+- fields:
+    event: 65
+    pool: 93
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 3
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1059
+- fields:
+    event: 65
+    pool: 93
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 4
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1060
+- fields:
+    event: 65
+    pool: 93
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 5
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1061
+- fields:
+    event: 66
+    pool: 94
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 6
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1062
+- fields:
+    event: 66
+    pool: 94
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 7
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1063
+- fields:
+    event: 66
+    pool: 94
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 8
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1064
+- fields:
+    event: 66
+    pool: 94
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 9
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1065
+- fields:
+    event: 66
+    pool: 94
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 10
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1066
+- fields:
+    event: 66
+    pool: 94
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 11
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1067
+- fields:
+    event: 67
+    pool: 95
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 12
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1068
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 13
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1069
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 14
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1070
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 15
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1071
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 16
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1072
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 17
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1073
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 18
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1074
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 19
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1075
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 20
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1076
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 21
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1077
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 22
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1078
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 23
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1079
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 24
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1080
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 25
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1081
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 26
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1082
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 27
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1083
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 28
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1084
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 29
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1085
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 30
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1086
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 31
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1087
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 32
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1088
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 33
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1089
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 34
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1090
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 35
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1091
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 36
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1092
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 37
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1093
+- fields:
+    event: 68
+    pool: 96
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 38
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1094
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 39
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1095
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 40
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1096
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 41
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1097
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 42
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1098
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 43
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1099
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 44
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1100
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 45
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1101
+- fields:
+    event: 69
+    pool: 97
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 46
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1102
+- fields:
+    event: 70
+    pool: 98
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 47
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1103
+- fields:
+    event: 70
+    pool: 98
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 48
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1104
+- fields:
+    event: 70
+    pool: 98
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 49
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1105
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 50
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1106
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 51
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1107
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 52
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1108
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 53
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1109
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 54
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1110
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 55
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1111
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 56
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1112
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 57
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1113
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 58
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1114
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 2
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1115
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 3
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1116
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 4
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1117
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 5
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1118
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 6
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1119
+- fields:
+    event: 71
+    pool: 99
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 7
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1120
+- fields:
+    event: 72
+    pool: 100
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 8
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1121
+- fields:
+    event: 72
+    pool: 100
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 9
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1122
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 10
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1123
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 11
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1124
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 12
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1125
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 13
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1126
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 14
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1127
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 15
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1128
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 16
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1129
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 17
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1130
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 18
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1131
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 19
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1132
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 20
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1133
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 21
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1134
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 22
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1135
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 23
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1136
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 24
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1137
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 25
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1138
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 26
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1139
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 27
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1140
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 28
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1141
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 29
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1142
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 30
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1143
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 31
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1144
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 32
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1145
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 33
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1146
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 34
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1147
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 35
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1148
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 36
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1149
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 37
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1150
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 38
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1151
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 39
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1152
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 40
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1153
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 41
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1154
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 42
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1155
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 43
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1156
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 44
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1157
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 45
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1158
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 46
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1159
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 47
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1160
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 48
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1161
+- fields:
+    event: 73
+    pool: 101
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 49
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1162
+- fields:
+    event: 74
+    pool: 102
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 50
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1163
+- fields:
+    event: 74
+    pool: 102
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 51
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1164
+- fields:
+    event: 74
+    pool: 102
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 52
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1165
+- fields:
+    event: 74
+    pool: 102
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 53
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1166
+- fields:
+    event: 74
+    pool: 102
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 54
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1167
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 55
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1168
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 56
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1169
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 57
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1170
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 58
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1171
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 2
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1172
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 3
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1173
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 4
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1174
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 5
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1175
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 6
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1176
+- fields:
+    event: 75
+    pool: 103
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 7
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1177
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 8
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1178
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 9
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1179
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 10
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1180
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 11
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1181
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 12
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1182
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 13
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1183
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 14
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1184
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 15
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1185
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 16
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1186
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 17
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1187
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 18
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1188
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 19
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1189
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 20
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1190
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 21
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1191
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 22
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1192
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 23
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1193
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 24
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1194
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 25
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1195
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 26
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1196
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 27
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1197
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 28
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1198
+- fields:
+    event: 77
+    pool: 105
+    registration_date: '2026-01-05T12:00:00+00:00'
+    unregistration_date: null
+    user: 29
+    status: 'SUCCESS_REGISTER'
+  model: events.Registration
+  pk: 1199

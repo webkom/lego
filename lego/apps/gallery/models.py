@@ -26,6 +26,7 @@ class Gallery(BasisModel, ObjectPermissionsModel):
     location = models.CharField(max_length=64)
     taken_at = models.DateField(null=True)
     photographers = models.ManyToManyField("users.User")
+    is_pinned = models.BooleanField(default=False)
 
     event = models.ForeignKey(
         "events.Event", related_name="galleries", null=True, on_delete=models.SET_NULL

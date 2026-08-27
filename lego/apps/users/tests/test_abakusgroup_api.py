@@ -3,7 +3,7 @@ from rest_framework import status
 
 from lego.apps.users import constants
 from lego.apps.users.constants import GROUP_COMMITTEE, GROUP_INTEREST, LEADER
-from lego.apps.users.models import AbakusGroup, User
+from lego.apps.users.models import AbakusGroup, Membership, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -56,7 +56,13 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
                 keys,
                 set(
                     fields
-                    + ["numberOfUsers", "contactEmail", "showBadge", "logoPlaceholder"]
+                    + [
+                        "numberOfUsers",
+                        "contactEmail",
+                        "showBadge",
+                        "logoPlaceholder",
+                        "userMembership",
+                    ]
                 ),
             )
 
@@ -66,6 +72,59 @@ class ListAbakusGroupAPITestCase(BaseAPITestCase):
 
     def test_with_auth(self):
         self.successful_list(self.user)
+
+    def test_user_membership(self):
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+        membership = group.add_user(self.user)
+        non_member_group = AbakusGroup.objects.exclude(
+            pk__in=self.user.abakus_groups.values_list("pk", flat=True)
+        ).first()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(_get_list_url())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        groups = {g["id"]: g for g in response.json()["results"]}
+        self.assertEqual(
+            groups[group.pk]["userMembership"],
+            {"id": membership.pk, "role": constants.MEMBER},
+        )
+        self.assertIsNone(groups[non_member_group.pk]["userMembership"])
+
+    def test_user_membership_prefers_leader_role(self):
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+        group.add_user(self.user)
+        leader_membership = Membership.objects.create(
+            user=self.user, abakus_group=group, role=constants.LEADER
+        )
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(_get_list_url())
+
+        groups = {g["id"]: g for g in response.json()["results"]}
+        self.assertEqual(
+            groups[group.pk]["userMembership"],
+            {"id": leader_membership.pk, "role": constants.LEADER},
+        )
+
+    def test_user_membership_inactive(self):
+        group = AbakusGroup.objects.get(name="AbaBrygg")
+        membership = group.add_user(self.user)
+        membership.is_active = False
+        membership.save()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(_get_list_url())
+
+        groups = {g["id"]: g for g in response.json()["results"]}
+        self.assertIsNone(groups[group.pk]["userMembership"])
+
+    def test_user_membership_without_auth(self):
+        response = self.client.get(_get_list_url())
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for group in response.json()["results"]:
+            self.assertIsNone(group["userMembership"])
 
     def test_with_filter_type(self):
         """Groups can be filtered on multiple types"""
@@ -160,8 +219,10 @@ class CreateAbakusGroupAPITestCase(BaseAPITestCase):
         expected_data = {
             "permissions": {
                 "1": [
-                    "Keyword permissions can only contain forward slashes and letters "
-                    "and must begin and end with a forward slash"
+                    (
+                        "Keyword permissions can only contain forward slashes "
+                        "and letters and must begin and end with a forward slash"
+                    )
                 ]
             }
         }
@@ -325,6 +386,127 @@ class InterestGroupAPITestCase(BaseAPITestCase):
             {"user": self.abakommer.pk, "role": "member"},
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_leader_can_promote_member_to_co_leader(self):
+        membership = self.interest_group.add_user(self.abakule)
+        self.client.force_authenticate(user=self.leader)
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": constants.CO_LEADER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        membership.refresh_from_db()
+        self.assertEqual(membership.role, constants.CO_LEADER)
+
+    def test_member_cannot_change_own_role(self):
+        membership = self.interest_group.add_user(self.abakule)
+        self.client.force_authenticate(user=self.abakule)
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": LEADER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_leader_cannot_move_membership_to_another_user(self):
+        membership = self.interest_group.add_user(self.abakule)
+        self.client.force_authenticate(user=self.leader)
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"user": self.abakommer.pk},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_leader_leaving_deactivates_group(self):
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.delete(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk)
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.interest_group.refresh_from_db()
+        self.assertFalse(self.interest_group.active)
+
+    def test_leader_leaving_promotes_co_leader(self):
+        co_leader = self.interest_group.add_user(self.abakule, role=constants.CO_LEADER)
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.delete(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk)
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        co_leader.refresh_from_db()
+        self.interest_group.refresh_from_db()
+        self.assertEqual(co_leader.role, LEADER)
+        self.assertTrue(self.interest_group.active)
+
+    def test_last_leader_cannot_demote_to_co_leader(self):
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": constants.CO_LEADER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        membership.refresh_from_db()
+        self.assertEqual(membership.role, LEADER)
+
+    def test_leader_demotion_promotes_remaining_co_leader(self):
+        co_leader = self.interest_group.add_user(self.abakule, role=constants.CO_LEADER)
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": constants.CO_LEADER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        membership.refresh_from_db()
+        co_leader.refresh_from_db()
+        self.interest_group.refresh_from_db()
+        self.assertEqual(membership.role, constants.CO_LEADER)
+        self.assertEqual(co_leader.role, LEADER)
+        self.assertTrue(self.interest_group.active)
+
+    def test_last_leader_cannot_demote_to_member(self):
+        """Role changes must leave a leader - leaving the group is the only
+        way out for the last leader"""
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": constants.MEMBER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        membership.refresh_from_db()
+        self.interest_group.refresh_from_db()
+        self.assertEqual(membership.role, LEADER)
+        self.assertTrue(self.interest_group.active)
+
+    def test_leader_demotion_to_member_with_co_leader_promotes(self):
+        """Demoting to member is fine when a co-leader can take over"""
+        co_leader = self.interest_group.add_user(self.abakule, role=constants.CO_LEADER)
+        self.client.force_authenticate(user=self.leader)
+        membership = Membership.objects.get(
+            user=self.leader, abakus_group=self.interest_group
+        )
+        response = self.client.patch(
+            _get_membership_detail_url(self.interest_group.pk, membership.pk),
+            {"role": constants.MEMBER},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        co_leader.refresh_from_db()
+        self.interest_group.refresh_from_db()
+        self.assertEqual(co_leader.role, LEADER)
+        self.assertTrue(self.interest_group.active)
 
     def test_prevent_users_without_grade_cannot_join_interestgroup(self):
         self.client.force_authenticate(user=self.abakulingutenklasse)

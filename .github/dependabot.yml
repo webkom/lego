@@ -1,8 +1,66 @@
 version: 2
+
 updates:
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/"
     schedule:
-      interval: daily
-      time: "10:00"
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Oslo
     open-pull-requests-limit: 10
+    # Ranges, not whole packages, so patches below them still flow.
+    ignore:
+      # drops BaseHealthCheckBackend
+      - dependency-name: "django-health-check"
+        versions: [">=3.21"]
+      # needs redis>=4.6
+      - dependency-name: "channels_redis"
+        versions: [">=4.2"]
+      # swappable model, irreversible secret hashing
+      - dependency-name: "django-oauth-toolkit"
+        versions: [">=2.0"]
+    groups:
+      # mypy and its stubs are version-coupled and must move together.
+      typing:
+        patterns:
+          - "mypy"
+          - "mypy-extensions"
+          - "django-stubs"
+          - "django-stubs-ext"
+          - "djangorestframework-stubs"
+          - "types-*"
+      docs:
+        patterns:
+          - "sphinx"
+          - "sphinx-*"
+          - "sphinx_*"
+          # sphinx-* does not match these; they are sphinx's own machinery.
+          - "sphinxcontrib-*"
+      # Catch-all for lockfile churn; majors stay ungrouped so they get reviewed.
+      routine:
+        patterns:
+          - "*"
+        exclude-patterns:
+          # celery broker stack; wanted, but needs its own PR
+          - "redis"
+          - "hiredis"
+          - "celery"
+          - "kombu"
+          # ruff is 0.x, so a rule or formatter change arrives as a minor bump.
+          # preview is on, which widens that surface. Keep it reviewable alone.
+          - "ruff"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Base images in the Dockerfile. Dependabot reads Dockerfiles, not .drone.yml,
+  # so the uv pinned in the Drone steps is still bumped by hand.
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Oslo
+    open-pull-requests-limit: 5

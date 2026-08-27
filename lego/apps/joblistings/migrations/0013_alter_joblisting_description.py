@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("joblistings", "0012_joblisting_is_pinned"),
     ]

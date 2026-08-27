@@ -12,26 +12,24 @@
 
 ## Getting started
 
-LEGO requires `python3.11`, `python3.11-venv`, `docker` and `poetry`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `docker` and `uv`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
 
 ### Initial setup (only needed once)
 
 ```bash
 $ git clone git@github.com:webkom/lego.git && cd lego/
-$ python3.11 -m venv .venv
 $ echo "from .development import *" > lego/settings/local.py
-$ source .venv/bin/activate
-$ poetry install
 $ docker compose up -d
-$ python manage.py initialize_development
+$ uv run python manage.py initialize_development
 ```
 
-### Activate and run (every time)
+`uv run` creates `.venv` on first use and re-syncs it against `uv.lock`, so there is nothing to install up front and nothing to activate.
+
+### Run (every time)
 
 ```bash
-$ source .venv/bin/activate
 $ docker compose up -d
-$ python manage.py runserver
+$ uv run python manage.py runserver
 ```
 
 #### Notes
@@ -39,28 +37,27 @@ $ python manage.py runserver
 ```bash
 # Note 1: Whenever you switch branches you might need to make minor changes
 
-$ poetry install # If the branch has changes in the dependencies
-$ python manage.py migrate # If the branch has a database in another state than yours
+$ uv run python manage.py migrate # If the branch has a database in another state than yours
 
 # Note 2: When you make changes to models, or constants used by models, you need to create new migrations
 
-$ python manage.py makemigrations # Creates one or more new files that must be commited
+$ uv run python manage.py makemigrations # Creates one or more new files that must be commited
 
 # Remember to format generated migrations! (using e.g. `make fixme`)
 ```
 
-**`poetry.lock` conflicts**
+**`uv.lock` conflicts**
 
-If you have updated dependencies it's likely you might get conflicts in the Poetry lock file.
+If you have updated dependencies it's likely you might get conflicts in the uv lock file.
 This solution should resolve most conflicts quite well:
 
 ```bash
 $ git rebase origin/master
 
 # If conflicts
-$ git checkout --theirs poetry.lock
+$ git checkout --theirs uv.lock
 
-$ poetry lock --no-update
+$ uv lock
 
 # The conflicts should be resolved
 ```
@@ -69,9 +66,9 @@ $ poetry lock --no-update
 
 ## Code Style
 
-This codebase uses the PEP 8 code style. We enforce this with `isort`, `black` & `flake8`. In addition to the standards outlined in PEP 8, we have a few guidelines (see `pyproject.toml` for more info):
+This codebase uses the PEP 8 code style. We enforce this with `ruff`. In addition to the standards outlined in PEP 8, we have a few guidelines (see `pyproject.toml` for more info):
 
-Format the code with `isort` & `black`
+Format the code with `ruff`
 
 ```bash
 $ make fixme
@@ -80,13 +77,14 @@ $ make fixme
 To check if it is formatted properly, run:
 
 ```bash
-$ tox -e isort -e black -e flake8
+$ uv run --only-group lint ruff check lego
+$ uv run --only-group lint ruff format --check lego
 ```
 
 To check if it is typed properly, run:
 
 ```bash
-$ tox -e mypy
+$ uv run --group mypy --group prod mypy .
 ```
 
 ## Tests
@@ -107,17 +105,15 @@ If you want to check your test coverage, you can do the following
 
 ```bash
 # Run all tests in LEGO. Remember to add the recommended flags mentioned above
-$ tox -e tests --
-# or run without tox
-$ coverage run --source=lego ./manage.py test
+$ uv run --group coverage coverage run --source=lego ./manage.py test
 
 # If you now have multiple coverage files or a .coverage.* file, you'll have to combine it in order to output report
-$ coverage combine
+$ uv run --group coverage coverage combine
 
 # Then you can output the full coverage report
-$ coverage report
+$ uv run --group coverage coverage report
 # or a small one that only contains the things you are interested in
-$ coverage report | grep [some string]
+$ uv run --group coverage coverage report | grep [some string]
 ```
 
 ## Deployment
@@ -135,14 +131,6 @@ How to deploy:
 
 Ansible will automatically run the playbook for deploying the new build to `staging` or `production` based on the target selected in step 6.
 
-<details><summary><code>Testing with elasticsearch</code></summary>
-
-### Testing with elasticsearch
-
-By default, development and production uses postgres for search. We can still enable elasticsearch backend in prod, so you can test things locally with elasticsearch. In order to do so, you need to run elasticsearch from `docker-compose.extra.yml` by running `docker-compose -f docker-compose.extra.yml up -d`. Then you need to run lego with the env variable `SEARCH_BACKEND=elasticsearch`. You might need to run the migrate_search and rebuild_index commands to get elasticsearch up to date.
-
-</details>
-
 <details><summary><code>Debugging</code></summary>
 
 ### Debugging
@@ -155,10 +143,13 @@ $ apt-get install libpq-dev python3-dev
 
 > For MACOS you need to `brew install postgresql`
 
-If you get an error while running initialize_development mentioning `elasticsearch`, you probably need to run the following code, and then start over from `docker-compose up -d`. [Read why and how to make it permanent on Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
+Exporting a survey as PDF needs `pango`, which `weasyprint` loads at runtime. On
+MACOS install it with `brew install pango`. If it still fails to load, uv has
+picked a python whose dylib path does not include homebrew's; rebuild the venv
+against homebrew's interpreter:
 
 ```bash
-$ sysctl -w vm.max_map_count=262144
+$ rm -rf .venv && uv sync --python "$(brew --prefix)/bin/python3.11"
 ```
 
 If you get ld: library not found for -lssl

@@ -9,7 +9,6 @@ import lego.apps.content.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("meetings", "0009_alter_meeting_created_by_alter_meeting_updated_by_and_more"),

@@ -1,1 +1,1 @@
-Du har fått en prikk med vekt {{ weight }} fra {{ event }}.
+Du har fått {{ weight }} prikk fra {{ event }}.

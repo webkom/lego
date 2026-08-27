@@ -106,7 +106,8 @@ OTHER_SENSITIVE_NAMES = [
     "pricing",
     "privacy",
     "profile",
-    "register" "secure",
+    "register",
+    "secure",
     "signup",
     "ssl",
     "status",
@@ -114,7 +115,8 @@ OTHER_SENSITIVE_NAMES = [
     "terms",
     "tos",
     "user",
-    "users" "weblog",
+    "users",
+    "weblog",
     "work",
 ]
 

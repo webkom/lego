@@ -1,6 +1,7 @@
 from smtplib import SMTPException
 
 from celery.app.task import Task
+from celery.utils.time import get_exponential_backoff_interval
 from push_notifications.exceptions import NotificationError
 from structlog import get_context, get_logger
 
@@ -55,11 +56,16 @@ def send_email(self, logger_context=None, **kwargs):
         message.send()
     except SMTPException as e:
         log.error("email_task_exception", exc_info=True, extra=kwargs)
-        raise self.retry(exc=e, countdown=2**self.request.retries) from e
+        raise self.retry(
+            exc=e,
+            countdown=get_exponential_backoff_interval(
+                factor=60, retries=self.request.retries, maximum=1800, full_jitter=True
+            ),
+        ) from e
 
 
 @celery_app.task(bind=True, max_retries=5, base=AbakusTask)
-def send_push(self, user, target=None, logger_context=None, **kwargs):
+def send_push(self, user, title, target=None, logger_context=None, **kwargs):
     """
     Generic task to send push messages.
     """
@@ -68,6 +74,7 @@ def send_push(self, user, target=None, logger_context=None, **kwargs):
     recipient = User.objects.get(id=user)
     kwargs["user"] = recipient
     kwargs["target"] = target
+    kwargs["title"] = title
 
     message = PushMessage(**kwargs)
 
@@ -75,4 +82,9 @@ def send_push(self, user, target=None, logger_context=None, **kwargs):
         message.send()
     except NotificationError as e:
         log.error("push_task_exception", exec_info=True, extra=kwargs)
-        raise self.retry(exc=e, countdown=2**self.request.retries) from e
+        raise self.retry(
+            exc=e,
+            countdown=get_exponential_backoff_interval(
+                factor=60, retries=self.request.retries, maximum=1800, full_jitter=True
+            ),
+        ) from e

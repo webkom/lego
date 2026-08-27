@@ -1,7 +1,11 @@
+from typing import Any
+
 from rest_framework import serializers
 
+from lego.apps.users import constants
 from lego.apps.users.fields import PublicUserField
 from lego.apps.users.models import AbakusGroup, Membership, MembershipHistory, User
+from lego.apps.users.permissions import EDIT_ROLES
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
 
 
@@ -49,8 +53,37 @@ class MembershipSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("created_at", "abakus_group")
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         group = AbakusGroup.objects.get(pk=self.context["view"].kwargs["group_pk"])
+        instance = self.instance if isinstance(self.instance, Membership) else None
+        if instance is not None and "user" in attrs and attrs["user"] != instance.user:
+            raise serializers.ValidationError(
+                {"user": "Cannot change the user of a membership."}
+            )
+        # Role changes must leave a leader behind. Leaving the group
+        # (is_active=False or DELETE) is the deliberate exit path instead,
+        # where reconcile_leadership promotes a co-leader or deactivates the
+        # group.
+        demotes_last_leader = (
+            instance is not None
+            and group.type == constants.GROUP_INTEREST
+            and group.active
+            and instance.role == constants.LEADER
+            and "role" in attrs
+            and attrs["role"] != constants.LEADER
+            and attrs.get("is_active", instance.is_active)
+            and not Membership.objects.filter(
+                abakus_group=group, is_active=True, role__in=EDIT_ROLES
+            )
+            .exclude(pk=instance.pk)
+            .exists()
+        )
+        if demotes_last_leader:
+            raise serializers.ValidationError(
+                {
+                    "role": "Interest groups must have a leader. Promote someone else first."
+                }
+            )
         return {"abakus_group": group, **attrs}
 
 

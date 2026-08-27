@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("events", "0043_alter_registration_presence_and_more"),
         ("surveys", "0015_alter_survey_options"),

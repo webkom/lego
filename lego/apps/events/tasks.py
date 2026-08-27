@@ -80,27 +80,63 @@ class Payment(AbakusTask):
                 )
 
 
+def admit_registration(registration_id: int) -> Registration:
+    """
+    The registration pipeline: lock, admit, notify, and kick off payment.
+    Shared by async_register and the synchronous interest-event path in
+    RegistrationViewSet - error handling is up to the caller.
+    """
+    with transaction.atomic():
+        registration = Registration.objects.select_for_update().get(id=registration_id)
+        registration.event.register(registration)
+        transaction.on_commit(
+            lambda: notify_event_registration(
+                constants.SOCKET_REGISTRATION_SUCCESS, registration
+            )
+        )
+    if registration.can_pay:
+        chain(
+            async_initiate_payment.s(registration_id),
+            save_and_notify_payment.s(registration_id),
+        ).delay()
+    return registration
+
+
+def withdraw_registration(registration_id: int) -> Registration:
+    """
+    The unregistration counterpart to admit_registration.
+    """
+    registration = Registration.objects.get(id=registration_id)
+    pool_id = registration.pool_id
+    with transaction.atomic():
+        registration.event.unregister(registration)
+        activation_time = registration.event.get_earliest_registration_time(
+            registration.user
+        )
+        transaction.on_commit(
+            lambda: notify_event_registration(
+                constants.SOCKET_UNREGISTRATION_SUCCESS,
+                registration,
+                from_pool=pool_id,
+                activation_time=activation_time,
+            )
+        )
+    if (
+        registration.payment_intent_id
+        and registration.payment_status != constants.PAYMENT_SUCCESS
+    ):
+        async_cancel_payment.delay(registration_id)
+    return registration
+
+
 @celery_app.task(base=AsyncRegister, bind=True)
 def async_register(self, registration_id, logger_context=None):
     self.setup_logger(logger_context)
 
     try:
-        with transaction.atomic():
-            self.registration = Registration.objects.select_for_update().get(
-                id=registration_id
-            )
-            self.registration.event.register(self.registration)
-            transaction.on_commit(
-                lambda: notify_event_registration(
-                    constants.SOCKET_REGISTRATION_SUCCESS, self.registration
-                )
-            )
+        self.registration = Registration.objects.get(id=registration_id)
+        admit_registration(registration_id)
         log.info("registration_success", registration_id=self.registration.id)
-        if self.registration.can_pay:
-            chain(
-                async_initiate_payment.s(registration_id),
-                save_and_notify_payment.s(registration_id),
-            ).delay()
 
     except EventHasClosed as e:
         log.warn(
@@ -120,26 +156,8 @@ def async_unregister(self, registration_id, logger_context=None):
     self.setup_logger(logger_context)
 
     registration = Registration.objects.get(id=registration_id)
-    pool_id = registration.pool_id
     try:
-        with transaction.atomic():
-            registration.event.unregister(registration)
-            activation_time = registration.event.get_earliest_registration_time(
-                registration.user
-            )
-            transaction.on_commit(
-                lambda: notify_event_registration(
-                    constants.SOCKET_UNREGISTRATION_SUCCESS,
-                    registration,
-                    from_pool=pool_id,
-                    activation_time=activation_time,
-                )
-            )
-        if (
-            registration.payment_intent_id
-            and registration.payment_status != constants.PAYMENT_SUCCESS
-        ):
-            async_cancel_payment.delay(registration_id)
+        withdraw_registration(registration_id)
         log.info("unregistration_success", registration_id=registration.id)
     except EventHasClosed as e:
         log.warn(

@@ -57,6 +57,7 @@ from lego.apps.meetings.views import (
 from lego.apps.notifications.views import (
     AnnouncementViewSet,
     APNSDeviceViewSet,
+    ExpoDeviceViewSet,
     GCMDeviceViewSet,
     NotificationSettingsViewSet,
 )
@@ -125,6 +126,7 @@ router.register(r"company-semesters", SemesterViewSet, basename="company-semeste
 router.register(r"contact-form", ContactFormViewSet, basename="contact-form")
 router.register(r"device-apns", APNSDeviceViewSet)
 router.register(r"device-gcm", GCMDeviceViewSet)
+router.register(r"device-expo", ExpoDeviceViewSet, basename="device-expo")
 router.register(r"email-lists", EmailListViewSet, basename="email-lists")
 router.register(r"email-users", UserEmailViewSet, basename="email-users")
 router.register(r"emojis", EmojiViewSet, basename="emoji")

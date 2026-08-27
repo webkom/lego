@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("companies", "0029_remove_company_previous_contacts_and_more"),
     ]

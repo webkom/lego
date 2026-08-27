@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("quotes", "0007_alter_quote_created_by_alter_quote_updated_by"),
     ]

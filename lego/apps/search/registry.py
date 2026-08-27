@@ -1,12 +1,21 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from django.db.models import Model
+
+if TYPE_CHECKING:
+    from .index import SearchIndex
+
 """
 The index_registry dict keeps the mapping between SearchIndexes and models.
 'players.player': PlayerIndex
 """
 
-index_registry = {}
+index_registry: dict[str, SearchIndex] = {}
 
 
-def register_search_index(search_index_cls):
+def register_search_index(search_index_cls: type[SearchIndex]) -> None:
     """
     Register the search index in our index registry.
     """
@@ -17,7 +26,7 @@ def register_search_index(search_index_cls):
     index_registry[instance_to_content_type_string(model)] = search_index
 
 
-def get_model_index(instance):
+def get_model_index(instance: Model) -> SearchIndex | None:
     """
     Return the index responsible for this instance. Returns None if no index is registered.
     """
@@ -26,7 +35,7 @@ def get_model_index(instance):
     return index_registry.get(instance_to_content_type_string(instance))
 
 
-def get_content_type_index(content_type):
+def get_content_type_index(content_type: str) -> SearchIndex | None:
     """
     Return a index based on a content_type identifier string.
     """

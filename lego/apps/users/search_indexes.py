@@ -20,14 +20,6 @@ class UserIndex(SearchIndex):
     autocomplete_fields = ("first_name", "last_name", "username")
     fallback_to_autocomplete = True
 
-    def get_autocomplete(self, instance):
-        return [
-            instance.username,
-            instance.full_name,
-            instance.last_name,
-            instance.first_name,
-        ]
-
 
 register(UserIndex)
 
@@ -40,9 +32,6 @@ class GroupIndex(SearchIndex):
 
     autocomplete_fields = ("name",)
     fallback_to_autocomplete = True
-
-    def get_autocomplete(self, instance):
-        return [instance.name] + instance.name.split(" ")
 
 
 register(GroupIndex)

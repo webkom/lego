@@ -1,13 +1,14 @@
 from math import ceil
 
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils import timezone
 
 from structlog import get_logger
 
 from lego import celery_app
-from lego.apps.users.models import User
+from lego.apps.users import constants
+from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.notifications import DeletedUserNotification, InactiveNotification
 from lego.utils.tasks import AbakusTask, send_email
 
@@ -18,6 +19,27 @@ MIN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - 2 * 30
 MEDIAN_INACTIVE_DAYS = MAX_INACTIVE_DAYS - ceil(
     (MAX_INACTIVE_DAYS - MIN_INACTIVE_DAYS) / 2
 )
+
+
+@celery_app.task(serializer="json", bind=True, base=AbakusTask)
+def reconcile_interest_group_leadership(
+    self: AbakusTask, logger_context: dict | None = None
+) -> None:
+    self.setup_logger(logger_context)
+
+    groups = AbakusGroup.objects.filter(type=constants.GROUP_INTEREST, active=True)
+    for group in groups:
+        action = group.reconcile_leadership()
+        if action:
+            log.info(
+                "interest_group_leadership_reconciled", group=group.name, action=action
+            )
+
+
+def users_in_inactivity_flow() -> QuerySet[User]:
+    """Application owners are exempt: deleting one CASCADE-deletes the
+    application, and machine usage never updates last_login."""
+    return User.objects.exclude(oauth_apiapplication__isnull=False)
 
 
 def send_inactive_notification(user):
@@ -31,7 +53,7 @@ def send_inactive_notification(user):
 def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
     self.setup_logger(logger_context)
 
-    users_to_delete: list[User] = User.objects.filter(
+    users_to_delete: list[User] = users_in_inactivity_flow().filter(
         Q(last_login__lte=timezone.now() - timezone.timedelta(days=MAX_INACTIVE_DAYS))
         & Q(inactive_notified_counter__gte=4)
     )
@@ -64,14 +86,14 @@ def send_inactive_reminder_mail_and_delete_users(self, logger_context=None):
             html_template="users/email/list_of_deleted_users.html",
         )
 
-    users_to_notifiy_weekly = User.objects.filter(
+    users_to_notifiy_weekly = users_in_inactivity_flow().filter(
         last_login__lte=timezone.now() - timezone.timedelta(days=MEDIAN_INACTIVE_DAYS)
     )
 
     for user in users_to_notifiy_weekly:
         send_inactive_notification(user)
 
-    users_to_notifiy_montly = User.objects.filter(
+    users_to_notifiy_montly = users_in_inactivity_flow().filter(
         Q(last_login__lte=timezone.now() - timezone.timedelta(days=MIN_INACTIVE_DAYS))
         & Q(inactive_notified_counter=0)
     )

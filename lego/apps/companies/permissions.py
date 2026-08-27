@@ -25,7 +25,7 @@ class NestedCompanyPermissionHandler(CompanyPermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         from lego.apps.companies.models import Company
 

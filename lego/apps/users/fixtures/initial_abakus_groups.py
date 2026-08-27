@@ -2,6 +2,7 @@ from lego.apps.users.constants import (
     GROUP_BOARD,
     GROUP_COMMITTEE,
     GROUP_GRADE,
+    GROUP_INTEREST,
     GROUP_ORDAINED,
     GROUP_OTHER,
     GROUP_REVUE,
@@ -151,7 +152,12 @@ initial_tree = {
             ],
             "Interessegrupper": [
                 {"description": "Super-gruppe for alle interessegrupper i Abakus"},
-                {},
+                {
+                    "Abalan": [{"type": GROUP_INTEREST}, {}],
+                    "Abacava": [{"type": GROUP_INTEREST}, {}],
+                    "Abacraft": [{"type": GROUP_INTEREST}, {}],
+                    "Abarun": [{"type": GROUP_INTEREST}, {}],
+                },
             ],
             "Kasserere": [
                 {"description": "Gruppe for alle økonomiansvarlige i Abakus"},

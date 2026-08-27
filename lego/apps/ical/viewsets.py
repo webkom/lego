@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
+from lego.apps.events.constants import INTEREST_EVENT
 from lego.apps.events.models import Event
 from lego.apps.ical import constants, utils
 from lego.apps.ical.authentication import ICalTokenAuthentication
@@ -120,7 +121,12 @@ class ICalViewset(viewsets.ViewSet):
 
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
-            request.user, Event.objects.all().filter(end_time__gt=timezone.now())
+            request.user,
+            # Interest events have no registration opening to be reminded of -
+            # they are open from the moment they are created
+            Event.objects.all()
+            .filter(end_time__gt=timezone.now())
+            .exclude(event_type=INTEREST_EVENT),
         )
 
         for event in events:
@@ -154,10 +160,15 @@ class ICalViewset(viewsets.ViewSet):
         permission_handler = get_permission_handler(Event)
         events = permission_handler.filter_queryset(
             request.user,
-            Event.objects.all().filter(
+            # Interest events stay out of the general feed, like on the
+            # frontpage and event list. Registered users get them through
+            # the personal feed via their FollowEvent.
+            Event.objects.all()
+            .filter(
                 end_time__gt=timezone.now()
                 - timedelta(days=constants.HISTORY_BACKWARDS_IN_DAYS)
-            ),
+            )
+            .exclude(event_type=INTEREST_EVENT),
         )
 
         utils.add_events_to_ical_feed(feed, events)

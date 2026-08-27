@@ -10,7 +10,6 @@ def set_is_template(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("events", "0041_alter_event_event_type"),
         ("surveys", "0012_alter_survey_template_type"),

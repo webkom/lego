@@ -9,7 +9,6 @@ def migrate_kid_to_nexus(apps, _):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("events", "0040_alter_registration_presence"),
     ]

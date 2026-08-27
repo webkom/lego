@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("achievements", "0002_alter_achievement_options_and_more"),
     ]

@@ -7,9 +7,13 @@ from django.core import serializers
 from django.core.management import call_command
 from django.utils import timezone
 
+from lego.apps.events.constants import INTEREST_EVENT
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.files.storage import storage
+from lego.apps.users.fixtures.development_interest_groups import (
+    load_development_interest_groups,
+)
 from lego.apps.users.fixtures.initial_abakus_groups import load_abakus_groups
 from lego.apps.users.fixtures.test_abakus_groups import load_test_abakus_groups
 from lego.apps.users.models import AbakusGroup, User
@@ -60,6 +64,10 @@ class Command(BaseCommand):
             self.load_fixtures(["users/fixtures/development_users.yaml"])
             self.upload_development_files()
             log.info("Loading development fixtures:")
+            # Fake interest groups fill the group grid in development - kept
+            # out of initial_abakus_groups so the production seed data stays
+            # clean
+            load_development_interest_groups()
             self.load_fixtures(
                 [
                     "users/fixtures/development_users.yaml",
@@ -115,7 +123,9 @@ class Command(BaseCommand):
 
     def update_event_dates(self):
         date = timezone.now().replace(hour=16, minute=15, second=0, microsecond=0)
-        for i, event in enumerate(Event.objects.all()):
+        # Interest events are dated separately (see update_interest_event_dates) so
+        # their authored offsets survive this positional logic.
+        for i, event in enumerate(Event.objects.exclude(event_type=INTEREST_EVENT)):
             event.start_time = date + timedelta(days=i - 10)
             event.end_time = date + timedelta(days=i - 10, hours=4)
             event.save()
@@ -134,6 +144,58 @@ class Command(BaseCommand):
                         days=i - j - 16
                     )
                 pool.save()
+
+        self.update_interest_event_dates()
+
+    def update_interest_event_dates(self):
+        """
+        Date interest events relative to `now`, like update_event_dates does for every
+        other event (their YAML dates are ignored placeholders). Offsets are grouped by
+        /interest-events bucket; negative = past. Each interest event sets a
+        responsible_group, so upcoming ones appear under 'Dine grupper' for members of
+        that group.
+        """
+        now = timezone.now()
+        offsets = [
+            # Earlier events
+            timedelta(days=-43),
+            timedelta(days=-28),
+            timedelta(days=-15),
+            timedelta(days=-9),
+            timedelta(days=-4),
+            timedelta(days=-3),
+            timedelta(days=-2),
+            timedelta(hours=-6),
+            # Events this week
+            timedelta(hours=2),
+            timedelta(hours=5),
+            # Coming events
+            timedelta(days=10),
+            timedelta(days=17),
+            timedelta(days=28),
+            # More coming events (fixtures 68-77, appended in id order)
+            timedelta(days=3),
+            timedelta(days=5),
+            timedelta(days=5, hours=3),
+            timedelta(days=8),
+            timedelta(days=12),
+            timedelta(days=16),
+            timedelta(days=21),
+            timedelta(days=27),
+            timedelta(days=34),
+            timedelta(days=41),
+        ]
+        events = list(Event.objects.filter(event_type=INTEREST_EVENT).order_by("id"))
+        assert len(events) == len(offsets), (
+            f"{len(events)} interest event fixtures but {len(offsets)} offsets - "
+            "added or removed an interest event in development_events.yaml? "
+            "Update the offsets list above to match."
+        )
+        for event, offset in zip(events, offsets, strict=True):
+            duration = event.end_time - event.start_time
+            event.start_time = now + offset
+            event.end_time = event.start_time + duration
+            event.save()
 
     def generate_groups(self):
         self.call_command(

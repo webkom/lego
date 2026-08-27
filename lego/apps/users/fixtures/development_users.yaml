@@ -533,3 +533,14 @@
     last_name: lee swagger
     email: boblee@swagger.com
     password: "pbkdf2_sha256$120000$rhBO1zmtTZsr$smSDnW2pSOl7kac1ErGVJnRvB5fapOFBQnKqBKr/Q8g=" # Bedkom123
+- model: users.User
+  pk: 59
+  fields:
+    username: interestleader
+    student_username: interestleader
+    gender: female
+    first_name: interesse
+    last_name: leder
+    email: interestleader@aba.wtf
+    password: "pbkdf2_sha256$120000$YKmWfcu6Hqqv$e0yZQh91HMGZQBkElS3ZjW04rs2XCCK34DqK6P73N0g=" # Webkom123
+    last_login: "2026-01-01T13:00:30+00:00"

@@ -32,21 +32,21 @@ class MembershipHistoryViewSet(
     def delete(self, request, **kwargs):
         try:
             group = AbakusGroup.objects.get(id=kwargs["pk"])
-            user_membership_history = MembershipHistory.objects.filter(
-                user__id=request.user.id, abakus_group__id=group.id
+        except AbakusGroup.DoesNotExist:
+            return Response(
+                {"result": "Group not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-            if group.type == GROUP_INTEREST and len(user_membership_history) != 0:
-                name = user_membership_history[0].abakus_group.name
-                user_membership_history.delete()
-                return Response(
-                    {"result": f"{name} got deleted"}, status=status.HTTP_200_OK
-                )
+        user_membership_history = MembershipHistory.objects.filter(
+            user__id=request.user.id, abakus_group__id=group.id
+        )
+
+        if group.type == GROUP_INTEREST and user_membership_history.exists():
+            name = user_membership_history[0].abakus_group.name
+            user_membership_history.delete()
             return Response(
-                {"result": "Nothing to delete"}, status=status.HTTP_400_BAD_REQUEST
+                {"result": f"{name} got deleted"}, status=status.HTTP_200_OK
             )
-        except Exception as e:
-            return Response(
-                {"result": f"Unexpected error: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        return Response(
+            {"result": "Nothing to delete"}, status=status.HTTP_400_BAD_REQUEST
+        )

@@ -94,9 +94,8 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         )
 
         self.client.force_authenticate(user)
-        request_body = {"group_id": 0}
-        response = self.client.delete(self.url, request_body)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        response = self.client.delete("/api/v1/membership-history/0/")
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertTrue(
             MembershipHistory.objects.filter(user=user, abakus_group=group).exists()
         )
@@ -106,8 +105,7 @@ class MembershipHistoryViewSetTestCase(BaseAPITestCase):
         group = AbakusGroup.objects.get(id=26)
 
         self.client.force_authenticate(user)
-        request_body = {"group_id": 26}
-        response = self.client.delete(self.url, request_body)
+        response = self.client.delete(f"/api/v1/membership-history/{group.id}/")
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertFalse(
             MembershipHistory.objects.filter(user=user, abakus_group=group).exists()

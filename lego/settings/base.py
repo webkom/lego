@@ -27,7 +27,10 @@ INSTALLED_APPS = [
     "mptt",
     "channels",
     "django_filters",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     "push_notifications",
+    "expo_notifications",
     "health_check",
     "phonenumber_field",
     "lego.utils",
@@ -148,14 +151,10 @@ ROOT_URLCONF = "lego.urls"
 
 WSGI_APPLICATION = "lego.wsgi.application"
 
-SEARCH_BACKEND = "postgres"
-
 TIME_ZONE = "UTC"
 USE_I18N = False
-USE_L10N = False
 USE_TZ = True
 
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
@@ -187,6 +186,13 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     "FCM_ERROR_TIMEOUT": 30,
 }
 
+EXPO_NOTIFICATIONS_TOKEN = os.environ.get("EXPO_NOTIFICATIONS_TOKEN")
+EXPO_NOTIFICATIONS_RECEIPT_CHECK_DELAY = datetime.timedelta(minutes=30)
+EXPO_NOTIFICATIONS_SENDING_TASK_MAX_RETRIES = 5
+EXPO_NOTIFICATIONS_SENDING_TASK_RETRY_DELAY = datetime.timedelta(seconds=30)
+EXPO_NOTIFICATIONS_CHECKING_TASK_MAX_RETIRES = 3
+EXPO_NOTIFICATIONS_CHECKING_TASK_RETRY_DELAY = datetime.timedelta(minutes=1)
+
 GSUITE_DELEGATED_ACCOUNT = os.environ.get("GSUITE_DELEGATED_ACCOUNT")
 SMTP_SSL_ENABLE = os.environ.get("SMTP_SSL_ENABLE") or False
 SMTP_SSL_CERTIFICATE = os.environ.get("SMTP_SSL_CERTIFICATE")
@@ -202,7 +208,8 @@ FEIDE_GROUPS_ENDPOINT = "https://groups-api.dataporten.no/groups/me/groups"
 
 if os.environ.get("GSUITE_CREDENTIALS"):
     GSUITE_CREDENTIALS = json.loads(
-        base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")), strict=False  # type: ignore
+        base64.b64decode(os.environ.get("GSUITE_CREDENTIALS")),  # type: ignore[arg-type]
+        strict=False,
     )
 else:
     GSUITE_CREDENTIALS = None

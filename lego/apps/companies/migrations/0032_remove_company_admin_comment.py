@@ -23,7 +23,6 @@ def create_comment_with_old_admin_comment(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("companies", "0031_rename_student_studentcompanycontact_user"),
     ]

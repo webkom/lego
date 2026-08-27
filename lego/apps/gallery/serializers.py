@@ -44,6 +44,7 @@ class GalleryListSerializer(BasisModelSerializer):
             "taken_at",
             "created_at",
             "picture_count",
+            "is_pinned",
         )
 
     def get_picture_count(self, gallery):
@@ -99,6 +100,7 @@ class GallerySerializer(BasisModelSerializer):
             "created_at",
             "event",
             "photographers",
+            "is_pinned",
             "cover",
             "public_metadata",
         )

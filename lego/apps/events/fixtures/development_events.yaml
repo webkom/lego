@@ -1459,3 +1459,418 @@
     require_auth: False
   model: events.Event
   pk: 54
+- fields:
+    description: Brettspill og pizza med interessegruppen.
+    end_time: '2026-06-10T20:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-06-10T16:00:00+00:00'
+    text: '<p>En koselig kveld med brettspill og pizza.</p>'
+    title: Brettspillkveld med Koskom
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 55
+- fields:
+    description: Bli med på klatring i Trondheim!
+    end_time: '2026-06-13T20:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Trondheim klatresenter
+    start_time: '2026-06-13T17:00:00+00:00'
+    text: '<p>Vi møtes for en kveld med klatring og sosialt samvær.</p>'
+    title: Klatretur med interessegruppen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 56
+- fields:
+    description: LAN-kveld for alle gamere.
+    end_time: '2026-06-25T23:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Realfagbygget
+    start_time: '2026-06-25T17:00:00+00:00'
+    text: '<p>Ta med deg PC-en og bli med på LAN!</p>'
+    title: LAN-kveld med interessegruppen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 57
+- fields:
+    description: Bli med på fototur langs Nidelva med Fotogjengen.
+    end_time: '2026-07-02T20:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Nidelva
+    start_time: '2026-07-02T16:00:00+00:00'
+    text: '<p>Lær deg grunnleggende fotografering på en sosial fototur.</p>'
+    title: Fototur langs Nidelva
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 58
+- fields:
+    description: Filmkveld med popcorn og god stemning.
+    end_time: '2026-06-08T22:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-06-08T19:00:00+00:00'
+    text: '<p>Vi ser film og koser oss sammen.</p>'
+    title: Filmkveld med Filmklubben
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 59
+- fields:
+    description: Rolig yogaøkt for alle nivåer.
+    end_time: '2026-06-13T16:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Idrettsbygget
+    start_time: '2026-06-13T14:00:00+00:00'
+    text: '<p>Ta med matte og godt humør.</p>'
+    title: Yoga med interessegruppen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 60
+- fields:
+    description: Sosial volleyballtrening for alle.
+    end_time: '2026-07-10T20:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Gløshaugen
+    start_time: '2026-07-10T18:00:00+00:00'
+    text: '<p>Alle nivåer er velkomne.</p>'
+    title: Volleyballtrening
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 61
+- fields:
+    description: Vennlig sjakkturnering for alle nivåer.
+    end_time: '2026-06-12T20:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-06-12T18:00:00+00:00'
+    text: '<p>Ta med deg konkurranseinstinktet.</p>'
+    title: Sjakkturnering med Sjakkgruppa
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 62
+- fields:
+    description: Sosial boulderingøkt for alle.
+    end_time: '2026-06-09T21:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Trondheim klatresenter
+    start_time: '2026-06-09T19:00:00+00:00'
+    text: '<p>Klatring og pizza etterpå.</p>'
+    title: Bouldering med Klatregruppa
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 63
+- fields:
+    description: Ta med strikketøy og kos deg.
+    end_time: '2026-06-04T19:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-06-04T17:00:00+00:00'
+    text: '<p>Strikk, prat og kaffe.</p>'
+    title: Strikkekafé
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 64
+- fields:
+    description: Rolig fellesløp for alle nivåer.
+    end_time: '2026-05-28T19:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Nidelva
+    start_time: '2026-05-28T18:00:00+00:00'
+    text: '<p>Vi løper en rolig runde sammen.</p>'
+    title: Løpetur langs Nidelva
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 65
+- fields:
+    description: Flere brettspill og snacks.
+    end_time: '2026-05-15T21:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-05-15T19:00:00+00:00'
+    text: '<p>Andre runde med brettspill.</p>'
+    title: Brettspillkveld vol. 2
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 66
+- fields:
+    description: Lær redigering i Lightroom.
+    end_time: '2026-04-30T20:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Realfagbygget
+    start_time: '2026-04-30T18:00:00+00:00'
+    text: '<p>Praktisk fotokurs for nybegynnere.</p>'
+    title: Fotokurs med Fotogjengen
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 67
+- fields:
+    description: Turnering i Counter-Strike 2 for alle nivåer.
+    end_time: '2026-08-05T21:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: P15
+    start_time: '2026-08-05T18:00:00+00:00'
+    text: '<p>Vi setter opp lag på stedet, og alle nivåer er velkomne.</p>'
+    title: CS2-turnering med Abalan
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 68
+- fields:
+    description: Smaking av høstens viner med god stemning.
+    end_time: '2026-08-07T21:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Kjelleren
+    start_time: '2026-08-07T19:00:00+00:00'
+    text: '<p>Fem viner, litt ost og en veldig entusiastisk quiz.</p>'
+    title: 'Vinsmaking: Høstens viner'
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 69
+- fields:
+    description: Vi bygger videre på Gløshaugen i Minecraft.
+    end_time: '2026-08-07T23:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-08-07T20:00:00+00:00'
+    text: '<p>Bli med på byggekveld på serveren, alle kan bidra.</p>'
+    title: Byggekveld på Abacraft-serveren
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 70
+- fields:
+    description: Intervalltrening for alle som vil bli raskere.
+    end_time: '2026-08-10T19:30:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Lade idrettspark
+    start_time: '2026-08-10T18:00:00+00:00'
+    text: '<p>Vi løper intervaller sammen, og deler oss inn etter tempo.</p>'
+    title: Intervalltrening med Abarun
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 71
+- fields:
+    description: Mario Kart-turnering med premier til vinneren.
+    end_time: '2026-08-12T22:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: P15
+    start_time: '2026-08-12T19:00:00+00:00'
+    text: '<p>Blå skall, tårer og en veldig fortjent vinner.</p>'
+    title: Mario Kart-kveld
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 72
+- fields:
+    description: Ost og vin i hyggelige omgivelser.
+    end_time: '2026-08-14T22:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Kjelleren
+    start_time: '2026-08-14T19:00:00+00:00'
+    text: '<p>Vi smaker oss gjennom et utvalg oster med passende viner.</p>'
+    title: Ost og vin-kveld
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 73
+- fields:
+    description: Lær deg redstone fra bunnen av.
+    end_time: '2026-08-18T21:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Realfagbygget
+    start_time: '2026-08-18T18:00:00+00:00'
+    text: '<p>Workshop for deg som vil lære redstone, fra enkle dører til
+      kalkulatorer.</p>'
+    title: Redstone-workshop
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 68
+    require_auth: False
+  model: events.Event
+  pk: 74
+- fields:
+    description: Rolig løpetur til Estenstadhytta med kaffepause på toppen.
+    end_time: '2026-08-22T13:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Moholt
+    start_time: '2026-08-22T10:00:00+00:00'
+    text: '<p>Vi løper i praterunde-tempo, og ingen løper alene.</p>'
+    title: Løpetur til Estenstadhytta
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 69
+    require_auth: False
+  model: events.Event
+  pk: 75
+- fields:
+    description: LAN-helg for deg som vil game, se turneringer eller bare henge.
+    end_time: '2026-08-29T00:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: P15
+    start_time: '2026-08-28T16:00:00+00:00'
+    text: '<p>Ta med egen rigg eller lån konsollkroken. Kiosk og pizza.</p>'
+    title: 'LAN-helg: Høstutgaven'
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 66
+    require_auth: False
+  model: events.Event
+  pk: 76
+- fields:
+    description: Cava og quiz med lag satt sammen på stedet.
+    end_time: '2026-09-04T22:00:00+00:00'
+    event_type: interest_event
+    use_captcha: false
+    registration_deadline_hours: 0
+    heed_penalties: false
+    event_status_type: INFINITE
+    location: Abakus-kontoret
+    start_time: '2026-09-04T19:00:00+00:00'
+    text: '<p>Quizmaster stiller med spørsmålene, vi stiller med cavaen.</p>'
+    title: Cava- og quizkveld
+    cover: test_event_cover.png
+    created_by: 3
+    responsible_group: 67
+    require_auth: False
+  model: events.Event
+  pk: 77

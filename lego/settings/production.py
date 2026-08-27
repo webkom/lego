@@ -63,12 +63,6 @@ CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 # Channels
 CHANNEL_LAYERS["default"]["CONFIG"] = {"hosts": [env("CHANNELS_REDIS_URL")]}
 
-# Elasticsearch
-ELASTICSEARCH = env("ELASTICSEARCH_HOST")
-SEARCH_INDEX = env("SEARCH_INDEX", default="lego-search")
-# Search
-SEARCH_BACKEND = env("SEARCH_BACKEND", default="postgres")
-
 # Optional AWS entrypoint for minio
 AWS_ENTRYPOINT = env("AWS_ENTRYPOINT", default=None)
 
@@ -86,10 +80,6 @@ PLAUSIBLE_KEY = env("PLAUSIBLE_KEY")
 LDAP_SERVER = env("LDAP_SERVER")
 LDAP_USER = env("LDAP_USER")
 LDAP_PASSWORD = env("LDAP_PASSWORD")
-
-# Analytics
-ANALYTICS_HOST = env("ANALYTICS_HOST", default=None)
-ANALYTICS_WRITE_KEY = env("ANALYTICS_WRITE_KEY", default="")
 
 # CORS
 CORS_ORIGIN_WHITELIST = ["http://127.0.0.1:3000", "http://localhost:3000"]

@@ -11,7 +11,6 @@ from lego.apps.companies.models import (
 
 
 class AdminCompanyFilterSet(FilterSet):
-
     name = CharFilter(method="filter_name")
     student_contacts = CharFilter(method="filter_student_contacts")
     status = CharFilter(method="filter_semester_status")

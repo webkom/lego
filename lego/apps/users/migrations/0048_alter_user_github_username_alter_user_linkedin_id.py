@@ -7,7 +7,6 @@ import lego.utils.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("users", "0047_membershiphistory_users_membe_user_id_94537a_idx"),
     ]

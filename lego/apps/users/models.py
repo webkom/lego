@@ -42,6 +42,7 @@ from .validators import (
     email_blacklist_validator,
     github_username_validator,
     linkedin_id_validator,
+    name_validator,
     student_username_validator,
     username_validator,
 )
@@ -204,6 +205,34 @@ class AbakusGroup(MPTTModel, PersistentModel):
         for membership in memberships:
             membership.delete()
 
+    def reconcile_leadership(
+        self, exclude_membership_id: int | None = None, dry_run: bool = False
+    ) -> str | None:
+        if self.type != constants.GROUP_INTEREST or not self.active:
+            return None
+        active_memberships = Membership.objects.filter(
+            abakus_group=self, is_active=True
+        )
+        if active_memberships.filter(role=constants.LEADER).exists():
+            return None
+        successor = (
+            active_memberships.filter(role=constants.CO_LEADER)
+            .exclude(pk=exclude_membership_id)
+            .order_by("created_at")
+            .first()
+        )
+        if successor:
+            if not dry_run:
+                successor.role = constants.LEADER
+                successor.save()
+            return f"promote {successor.user.username}"
+        if active_memberships.filter(role=constants.CO_LEADER).exists():
+            return None
+        if not dry_run:
+            self.active = False
+            self.save()
+        return "deactivate"
+
     def natural_key(self):
         return (self.name,)
 
@@ -362,8 +391,12 @@ class User(
         error_messages={"unique": "A user has already verified that student username."},
     )
     student_verification_status = models.BooleanField(null=True, blank=True)
-    first_name = models.CharField("first name", max_length=50, blank=False)
-    last_name = models.CharField("last name", max_length=30, blank=False)
+    first_name = models.CharField(
+        "first name", validators=[name_validator], max_length=50, blank=False
+    )
+    last_name = models.CharField(
+        "last name", validators=[name_validator], max_length=30, blank=False
+    )
     allergies = models.CharField("allergies", max_length=500, blank=True)
     selected_theme = models.CharField(
         "selected theme",
@@ -401,7 +434,7 @@ class User(
     )
 
     linkedin_id = models.CharField(
-        max_length=71,
+        max_length=200,
         unique=False,
         null=True,
         blank=True,

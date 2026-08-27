@@ -1,6 +1,9 @@
+from typing import Any
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import HttpRequest
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import CharField
 
@@ -17,6 +20,7 @@ from lego.apps.events.fields import (
     RegistrationCountField,
     SpotsLeftField,
     TotalCapacityField,
+    WaitingRegistrationCountField,
 )
 from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.serializers.pools import (
@@ -32,8 +36,10 @@ from lego.apps.events.serializers.registrations import (
     RegistrationReadSerializer,
 )
 from lego.apps.files.fields import File, ImageField
+from lego.apps.permissions.constants import CREATE
+from lego.apps.permissions.utils import get_permission_handler
 from lego.apps.tags.serializers import TagSerializerMixin
-from lego.apps.users.constants import GROUP_GRADE
+from lego.apps.users.constants import GROUP_GRADE, GROUP_INTEREST, MEMBER_GROUP
 from lego.apps.users.fields import AbakusGroupField, PublicUserField
 from lego.apps.users.models import AbakusGroup, PhotoConsent, User
 from lego.apps.users.serializers.abakus_groups import PublicAbakusGroupSerializer
@@ -71,6 +77,7 @@ class EventReadSerializer(
     TagSerializerMixin, BasisModelSerializer, ObjectPermissionsSerializerMixin
 ):
     company = CompanyField(queryset=Company.objects.all())
+    responsible_group = PublicAbakusGroupSerializer(read_only=True)
     cover = ImageField(required=False, options={"height": 500})
     cover_placeholder = ImageField(
         source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
@@ -103,6 +110,7 @@ class EventReadSerializer(
             "thumbnail",
             "total_capacity",
             "company",
+            "responsible_group",
             "registration_count",
             "tags",
             "activation_time",
@@ -135,6 +143,8 @@ class EventReadDetailedSerializer(
     pools = PoolReadSerializer(many=True)
     active_capacity = serializers.ReadOnlyField()
     text = ContentSerializerField()
+    registration_count = RegistrationCountField()
+    waiting_registration_count = WaitingRegistrationCountField()
     registration_close_time = serializers.DateTimeField(read_only=True)
     unregistration_close_time = serializers.DateTimeField(read_only=True)
 
@@ -157,6 +167,8 @@ class EventReadDetailedSerializer(
             "end_time",
             "merge_time",
             "pools",
+            "registration_count",
+            "waiting_registration_count",
             "registration_close_time",
             "registration_deadline_hours",
             "unregistration_close_time",
@@ -405,7 +417,26 @@ class EventCreateAndUpdateSerializer(
             "show_company_description",
         ) + ObjectPermissionsSerializerMixin.Meta.fields
 
-    def validate(self, data):
+    def to_internal_value(self, data: Any) -> dict[str, Any]:
+        """
+        The frontend only sends id and capacity for interest event pools, so
+        the backend-owned pool fields get placeholders before field
+        validation. force_interest_event_pools replaces them in validate.
+        """
+        if isinstance(data, dict):
+            event_type = data.get(
+                "event_type", self.instance.event_type if self.instance else None
+            )
+            if event_type == constants.INTEREST_EVENT and data.get("pools"):
+                member_group_id = AbakusGroup.objects.get(name=MEMBER_GROUP).pk
+                for pool in data["pools"]:
+                    if isinstance(pool, dict):
+                        pool.setdefault("name", MEMBER_GROUP)
+                        pool.setdefault("activation_date", timezone.now())
+                        pool.setdefault("permission_groups", [member_group_id])
+        return super().to_internal_value(data)
+
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         """
         Check that start is before finish.
         """
@@ -416,7 +447,103 @@ class EventCreateAndUpdateSerializer(
                         "end_time": "User does not have the required permissions for time travel"
                     }
                 )
+
+        instance = self.instance if isinstance(self.instance, Event) else None
+        event_type = data.get("event_type", instance.event_type if instance else None)
+        if event_type == constants.INTEREST_EVENT:
+            self.enforce_interest_event_contract(data, instance)
         return data
+
+    def enforce_interest_event_contract(
+        self, data: dict[str, Any], instance: Event | None
+    ) -> None:
+        """
+        Interest events are open to every Abakus member from creation until
+        start, always free, and never pinned. Creators only control the
+        whitelisted content fields - see the contract in constants.py.
+        """
+        responsible_group = data.get(
+            "responsible_group",
+            instance.responsible_group if instance else None,
+        )
+        if not responsible_group or responsible_group.type != GROUP_INTEREST:
+            raise serializers.ValidationError(
+                {
+                    "responsible_group": "Interest events must be organized "
+                    "by an interest group"
+                }
+            )
+        description = data.get(
+            "description", instance.description if instance else None
+        )
+        if not description or not description.strip():
+            raise serializers.ValidationError(
+                {"description": "Interest events must have a description"}
+            )
+        self.validate_interest_event_group_change(data, instance)
+        for field in (
+            set(data)
+            - constants.INTEREST_EVENT_CREATOR_FIELDS
+            - set(constants.INTEREST_EVENT_FORCED_FIELDS)
+        ):
+            data.pop(field)
+        data.update(constants.INTEREST_EVENT_FORCED_FIELDS)
+        if instance is None or "pools" in data:
+            data["pools"] = self.force_interest_event_pools(data.get("pools"))
+
+    def validate_interest_event_group_change(
+        self, data: dict[str, Any], instance: Event | None
+    ) -> None:
+        """
+        The permission layer only checks leadership of the responsible group
+        in request data, so a PATCH without event_type could move an event to
+        a group the requester does not lead.
+        """
+        if (
+            instance is None
+            or "responsible_group" not in data
+            or data["responsible_group"] == instance.responsible_group
+        ):
+            return
+        request = self.context.get("request")
+        if request is None or not request.user.is_authenticated:
+            return
+        handler = get_permission_handler(Event)
+        allowed = request.user.has_perm(
+            handler.event_type_keyword_permissions(constants.INTEREST_EVENT, CREATE)
+        ) or handler.is_interest_group_leader(
+            request.user, data["responsible_group"].pk
+        )
+        if not allowed:
+            raise serializers.ValidationError(
+                {
+                    "responsible_group": "You must be a leader of the "
+                    "responsible interest group"
+                }
+            )
+
+    @staticmethod
+    def force_interest_event_pools(
+        pools: list[dict[str, Any]] | None,
+    ) -> list[dict[str, Any]]:
+        """
+        The single pool on interest events is decided by the backend, not the
+        creator: open to every Abakus member immediately, with the creator's
+        capacity kept. A non-empty pool keeps its stored values, as edits to
+        it are rejected by PoolCreateAndUpdateSerializer.
+        """
+        pool = (pools or [{}])[0]
+        pool.setdefault("name", MEMBER_GROUP)
+        existing = (
+            Pool.objects.filter(id=pool["id"]).first() if pool.get("id") else None
+        )
+        if existing and existing.registration_count > 0:
+            pool["activation_date"] = existing.activation_date
+            pool["permission_groups"] = list(existing.permission_groups.all())
+        else:
+            pool["activation_date"] = timezone.now()
+            pool["permission_groups"] = [AbakusGroup.objects.get(name=MEMBER_GROUP)]
+        return [pool]
 
     def create(self, validated_data):
         pools = validated_data.pop("pools", [])
@@ -431,7 +558,7 @@ class EventCreateAndUpdateSerializer(
             pools = []
         elif event_status_type == constants.INFINITE:
             pools = [pools[0]]
-            pools[0]["capacity"] = 0
+            pools[0].setdefault("capacity", 0)
         with transaction.atomic():
             event = super().create(validated_data)
             for pool in pools:
@@ -462,7 +589,7 @@ class EventCreateAndUpdateSerializer(
             pools = []
         elif event_status_type == constants.INFINITE and pools:
             pools = [pools[0]]
-            pools[0]["capacity"] = 0
+            pools[0].setdefault("capacity", 0)
         with transaction.atomic():
             if pools is not None:
                 existing_ids = set(instance.pools.values_list("id", flat=True))

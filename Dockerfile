@@ -1,14 +1,14 @@
-FROM getsentry/sentry-cli:1.63 as sentry
+FROM getsentry/sentry-cli:1.63 AS sentry
 
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 ARG RELEASE
 
-ENV SENTRY_AUTH_TOKEN ${SENTRY_AUTH_TOKEN}
-ENV SENTRY_ORG ${SENTRY_ORG}
-ENV SENTRY_PROJECT ${SENTRY_PROJECT}
-ENV RELEASE ${RELEASE}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV SENTRY_ORG=${SENTRY_ORG}
+ENV SENTRY_PROJECT=${SENTRY_PROJECT}
+ENV RELEASE=${RELEASE}
 
 RUN sentry-cli releases new ${RELEASE}
 RUN sentry-cli releases finalize ${RELEASE}
@@ -20,22 +20,35 @@ LABEL org.opencontainers.image.authors="webkom@abakus.no"
 
 ARG RELEASE
 
-ENV PYTHONPATH /app/
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH=/app/
+ENV PYTHONUNBUFFERED=1
 
-ENV ENV_CONFIG 1
-ENV RELEASE ${RELEASE}
+ENV ENV_CONFIG=1
+ENV RELEASE=${RELEASE}
+
+# Install into the image's own interpreter rather than a virtualenv, so that
+# PYTHONPATH alone is enough to run the app.
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+
+# weasyprint loads pango at runtime to render the survey PDF. python:3.11
+# happens to ship it, but nothing here asked for it, so a slimmer base would
+# drop it and PDF export would start failing in production with a green build.
+RUN set -e \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends libpango-1.0-0 libpangoft2-1.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /app
 COPY pyproject.toml /app/pyproject.toml
-COPY poetry.lock /app/poetry.lock
+COPY uv.lock /app/uv.lock
 WORKDIR /app
 
-RUN pip install poetry==1.8.5
+COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /usr/local/bin/uv
 
 RUN set -e \
-    && poetry config virtualenvs.create false \
-    && poetry install --with prod --without dev,coverage,mypy,formatting,flake8
+    && uv sync --frozen --no-default-groups --group docs --group prod \
+    # Fail the build, rather than a request in production, if pango goes missing.
+    && python -c "import weasyprint"
 
 COPY . /app/
 

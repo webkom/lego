@@ -16,7 +16,10 @@ def send_survey_mail(self, logger_context=None):
     self.setup_logger(logger_context)
 
     surveys = Survey.objects.filter(
-        active_from__lte=timezone.now(), sent=False, template_type=None
+        active_from__lte=timezone.now(),
+        sent=False,
+        is_template=False,
+        event__isnull=False,
     )
     for survey in surveys.all():
         for registration in survey.event.registrations.filter(

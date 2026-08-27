@@ -9,7 +9,6 @@ import lego.apps.files.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [

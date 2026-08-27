@@ -1,8 +1,18 @@
+from typing import Any
+
+from django.db.models import Case, IntegerField, When
 from rest_framework import serializers
 
 from lego.apps.files.fields import ImageField
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, Membership
+
+MEMBERSHIP_ROLE_PRIORITY = Case(
+    When(role=constants.LEADER, then=0),
+    When(role=constants.CO_LEADER, then=1),
+    default=2,
+    output_field=IntegerField(),
+)
 
 
 class DetailedAbakusGroupSerializer(serializers.ModelSerializer):
@@ -69,12 +79,40 @@ class AbakusGroupNameSerializer(serializers.ModelSerializer):
         fields = ("name", "id")
 
 
+class MembershipRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Membership
+        fields = ("id", "role")
+
+
 class PublicListAbakusGroupSerializer(PublicAbakusGroupSerializer):
     logo = ImageField(required=False, options={"height": 400, "width": 400})
+    user_membership = serializers.SerializerMethodField()
 
     class Meta:
         model = AbakusGroup
-        fields = PublicAbakusGroupSerializer.Meta.fields + ("number_of_users",)
+        fields = PublicAbakusGroupSerializer.Meta.fields + (
+            "number_of_users",
+            "user_membership",
+        )
+
+    def get_user_membership(self, group: AbakusGroup) -> dict[str, Any] | None:
+        if hasattr(group, "user_membership"):
+            membership = group.user_membership[0] if group.user_membership else None
+        else:
+            request = self.context.get("request", None)
+            if not request or not request.user.is_authenticated:
+                return None
+            membership = (
+                Membership.objects.filter(
+                    abakus_group=group, user=request.user, is_active=True
+                )
+                .order_by(MEMBERSHIP_ROLE_PRIORITY)
+                .first()
+            )
+        if not membership:
+            return None
+        return MembershipRoleSerializer(membership).data
 
 
 class PublicDetailedAbakusGroupSerializer(PublicListAbakusGroupSerializer):

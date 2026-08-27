@@ -36,7 +36,9 @@ PENALTY_IDENTIFIER = "penalty_period"
 GENFORS_IDENTIFIER = "genfors_count"
 GALA_IDENTIFIER = "gala_count"
 COMPLETE_IDENTIFIER = "complete_profile"
-EASTER_IDENTIFIER = "easter_winner"
+EASTER_2024_IDENTIFIER = "easter_2024"
+EASTER_2025_IDENTIFIER = "easter_2025"
+EASTER_2026_IDENTIFIER = "easter_2026"
 CHRISTMAS_CALENDAR_IDENTIFIER = "christmas_calendar"
 
 # These are used for information about what counts as gala
@@ -280,17 +282,32 @@ KEYPRESS_ORDER: AchievementCollection = {
 
 EASTER_WINNER_ACHIEVEMENTS: AchievementCollection = {
     "easter_2024": {
-        "identifier": EASTER_IDENTIFIER,
+        "identifier": EASTER_2024_IDENTIFIER,
         "requirement_function": lambda user: False,
         "level": 0,
     },
     "easter_2025_contender": {
-        "identifier": EASTER_IDENTIFIER,
+        "identifier": EASTER_2025_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+    "easter_2025": {
+        "identifier": EASTER_2025_IDENTIFIER,
         "requirement_function": lambda user: False,
         "level": 1,
     },
-    "easter_2025": {
-        "identifier": EASTER_IDENTIFIER,
+    "easter_2026_participant": {
+        "identifier": EASTER_2026_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+    "easter_2026_contender": {
+        "identifier": EASTER_2026_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 1,
+    },
+    "easter_2026_winner": {
+        "identifier": EASTER_2026_IDENTIFIER,
         "requirement_function": lambda user: False,
         "level": 2,
     },

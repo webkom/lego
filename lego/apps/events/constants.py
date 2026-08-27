@@ -11,7 +11,7 @@ SOCIAL = "social"
 GALA = "gala"
 OTHER = "other"
 EVENT = "event"
-INTEREST_EVENT = "interesse_arrangement"
+INTEREST_EVENT = "interest_event"
 
 EVENT_TYPES = (
     (COMPANY_PRESENTATION, COMPANY_PRESENTATION),
@@ -49,7 +49,9 @@ This even status type should be used for most events.
 """
 NORMAL = "NORMAL"
 """
-Events marked as INFINITE should have exactly 1 pool, with capacity set to 0.
+Events marked as INFINITE should have exactly 1 pool. Capacity 0 (the
+default) means unlimited; a capacity can be set to limit the number of spots,
+with the waiting list handling the overflow.
 A user _should_ be able to sign up to the event.
 There are no permissions (except Abakom).
 This even status type should be used for events such as Abakom Works, etc.
@@ -71,6 +73,44 @@ This is the default even status type.
 """
 TBA = "TBA"
 EVENT_STATUS_TYPES = ((NORMAL, NORMAL), (INFINITE, INFINITE), (OPEN, OPEN), (TBA, TBA))
+
+"""
+The complete contract for interest events, enforced by
+EventCreateAndUpdateSerializer: creators (interest group leaders) control the
+CREATOR_FIELDS, the FORCED_FIELDS always get these values, and any other
+event field is dropped from the payload. New event fields are therefore
+locked for interest events until explicitly added here.
+"""
+INTEREST_EVENT_CREATOR_FIELDS = frozenset(
+    {
+        "id",
+        "event_type",
+        "title",
+        "description",
+        "text",
+        "start_time",
+        "end_time",
+        "location",
+        "mazemap_poi",
+        "responsible_group",
+        "pools",
+    }
+)
+INTEREST_EVENT_FORCED_FIELDS: dict = {
+    "event_status_type": INFINITE,
+    "use_captcha": False,
+    "heed_penalties": False,
+    "feedback_required": False,
+    "feedback_description": "",
+    "is_priced": False,
+    "pinned": False,
+    "registration_deadline_hours": 0,
+    "unregistration_deadline_hours": 0,
+    "can_view_groups": (),
+    "require_auth": False,
+    "company": None,
+    "show_company_description": False,
+}
 
 
 class PRESENCE_CHOICES(models.TextChoices):

@@ -15,7 +15,7 @@ class CommentPermissionHandler(PermissionHandler):
         obj=None,
         queryset=None,
         check_keyword_permissions=True,
-        **kwargs
+        **kwargs,
     ):
         can_access_target = False
         if user.is_authenticated and perm == CREATE:

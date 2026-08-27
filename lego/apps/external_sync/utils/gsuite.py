@@ -41,7 +41,7 @@ class GSuiteLib:
         )
 
     def get_user(self, user_key):
-        return self.client.users().get(userKey=user_key).execute()
+        return self.client.users().get(userKey=user_key).execute(num_retries=5)
 
     def user_exists(self, user_key):
         try:
@@ -66,7 +66,7 @@ class GSuiteLib:
                     "emails": [{"address": email, "type": "other"}],
                 }
             )
-            .execute()
+            .execute(num_retries=5)
         )
 
     def update_user(
@@ -85,7 +85,7 @@ class GSuiteLib:
                     "emails": [{"address": email, "type": "other"}],
                 },
             )
-            .execute()
+            .execute(num_retries=5)
         )
 
     def delete_user(self, user_key):
@@ -96,7 +96,7 @@ class GSuiteLib:
             return (
                 self.client.users()
                 .update(userKey=user_key, body={"suspended": True})
-                .execute()
+                .execute(num_retries=5)
             )
 
     def get_all_users(self):
@@ -108,7 +108,7 @@ class GSuiteLib:
         request = api.list(domain="abakus.no", query="isSuspended=false")
 
         while request is not None:
-            users_response = request.execute()
+            users_response = request.execute(num_retries=5)
 
             remote_users = users_response.get("users", [])
             users = users + remote_users
@@ -118,7 +118,7 @@ class GSuiteLib:
         return users
 
     def get_group(self, group_key):
-        return self.client.groups().get(groupKey=group_key).execute()
+        return self.client.groups().get(groupKey=group_key).execute(num_retries=5)
 
     def group_exists(self, group_key):
         try:
@@ -133,14 +133,14 @@ class GSuiteLib:
         return (
             self.client.groups()
             .insert(body={"name": name, "email": group_key})
-            .execute()
+            .execute(num_retries=5)
         )
 
     def update_group(self, group_key, name):
         return (
             self.client.groups()
             .update(groupKey=group_key, body={"name": name})
-            .execute()
+            .execute(num_retries=5)
         )
 
     def get_members(self, group_key):
@@ -150,7 +150,7 @@ class GSuiteLib:
             request = api.list(groupKey=group_key)
 
             while request is not None:
-                members_response = request.execute()
+                members_response = request.execute(num_retries=5)
 
                 remote_members = members_response.get("members", [])
                 members = members + remote_members
@@ -181,7 +181,7 @@ class GSuiteLib:
             return (
                 self.client.members()
                 .insert(groupKey=group_key, body={"role": role, "email": user_key})
-                .execute()
+                .execute(num_retries=5)
             )
         except HttpError as e:
             if e.resp.status == 404:
@@ -196,7 +196,7 @@ class GSuiteLib:
             return (
                 self.client.members()
                 .delete(groupKey=group_key, memberKey=user_key)
-                .execute()
+                .execute(num_retries=5)
             )
         except HttpError as e:
             if e.resp.status == 404:

@@ -9,7 +9,6 @@ def migrate_kid_to_nexus(apps, _):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("surveys", "0011_alter_survey_template_type"),
     ]

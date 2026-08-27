@@ -47,7 +47,7 @@ CACHES = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 INTERNAL_IPS = ["127.0.0.1"]
-INSTALLED_APPS += ["coverage", "debug_toolbar"]
+INSTALLED_APPS += ["debug_toolbar"]
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.history.HistoryPanel",
@@ -82,15 +82,10 @@ THUMBOR_SECURITY_KEY = "lego-dev"
 CELERY_BROKER_URL = "redis://127.0.0.1"
 CELERY_TASK_ALWAYS_EAGER = True
 
-ELASTICSEARCH = "127.0.0.1"
-SEARCH_BACKEND = os.environ.get("SEARCH_BACKEND", "postgres")
-
 LDAP_SERVER = "127.0.0.1:389"
 LDAP_USER = "cn=admin,dc=abakus,dc=no"
 LDAP_PASSWORD = "admin"
 
-CORS_ORIGIN_WHITELIST = list(
-    {"http://127.0.0.1:3000", "http://localhost:3000", "http://*:3000"}
-)
 
 SEARCH_INDEX = "lego-search"
+CORS_ORIGIN_WHITELIST = list({"http://127.0.0.1:3000", "http://localhost:3000", "http://*:3000"})

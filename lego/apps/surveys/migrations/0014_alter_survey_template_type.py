@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("surveys", "0013_survey_is_template_alter_survey_event"),
     ]

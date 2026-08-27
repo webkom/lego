@@ -85,9 +85,12 @@ class FeedBase(models.Model):
         activity_store.
         """
         if isinstance(self.activity_store, list):
-            for raw_activity in self.activity_store:
-                if raw_activity.get("activity_id") == str(activity.activity_id):
-                    self.activity_store.remove(raw_activity)
+            activity_id = str(activity.activity_id)
+            self.activity_store = [
+                raw_activity
+                for raw_activity in self.activity_store
+                if raw_activity.get("activity_id") != activity_id
+            ]
         if self.last_activity:
             self.ordering_key = self.last_activity.activity_id
         else:
