@@ -91,6 +91,18 @@ class SnapshotRankTypeTestCase(BaseTestCase):
         self.assertEqual(ranks[self.users[0].id], 2)
         self.assertEqual(ranks[self.users[1].id], 2)
 
+    def test_snapshot_deduplicates_users_with_multiple_achievements(self):
+        _give_achievement(self.users[0], QUOTE_IDENTIFIER, 0)
+        _give_achievement(self.users[0], EVENT_IDENTIFIER, 3)
+
+        created = snapshot_rank_type(RankType.ACHIEVEMENT_SCORE)
+
+        self.assertEqual(created, 1)
+        rows = RankSnapshot.objects.filter(
+            type=RankType.ACHIEVEMENT_SCORE, user=self.users[0]
+        )
+        self.assertEqual(rows.count(), 1)
+
     def test_unknown_rank_type_raises(self):
         with self.assertRaises(ValueError):
             snapshot_rank_type("not_a_real_type")
