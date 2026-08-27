@@ -70,6 +70,21 @@ class TagsTestCase(BaseAPITestCase):
         self.assertTrue(tag in res.json().pop("tags"))
         self.assertIsNotNone(Tag.objects.filter(tag=tag).first())
 
+    def test_add_tag_with_diacritics(self):
+        pk = 1
+        event = self.client.get(event_api._get_detail_url(pk))
+        event_data = event.json()
+        del event_data["cover"]
+
+        tag = "blåbærsyltetøy-café-señor"
+        self.assertIsNone(Tag.objects.filter(tag=tag).first())
+
+        event_data["tags"] = [tag]
+        res = self.client.put(event_api._get_detail_url(pk), event_data)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(tag in res.json().pop("tags"))
+        self.assertIsNotNone(Tag.objects.filter(tag=tag).first())
+
     def test_add_invalid_tags(self):
         pk = 1
         event = self.client.get(event_api._get_detail_url(pk))
