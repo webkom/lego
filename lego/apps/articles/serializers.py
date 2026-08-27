@@ -50,10 +50,12 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "youtube_url",
         )
 
+
 class AuthDetailedArticleSerializer(
     ObjectPermissionsSerializerMixin, DetailedArticleSerializer
 ):
     comments = CommentSerializer(read_only=True, many=True)
+
     class Meta:
         model = Article
         fields = (

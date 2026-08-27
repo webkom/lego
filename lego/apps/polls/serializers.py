@@ -2,9 +2,8 @@ from typing import Iterator
 
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import IntegerField
 
-from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.polls.models import Option, Poll
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.utils.serializers import BasisModelSerializer

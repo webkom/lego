@@ -81,8 +81,10 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
         gallery = Gallery.objects.get(pk=self.context["view"].kwargs["gallery_pk"])
         return {"gallery": gallery, **attrs}
 
+
 class AuthGalleryPictureSerializer(GalleryPictureSerializer):
     comments = CommentSerializer(read_only=True, many=True)
+
     class Meta:
         model = GalleryPicture
         fields = GalleryPictureSerializer.Meta.fields + ("comments",)

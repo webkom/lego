@@ -11,11 +11,11 @@ from lego.apps.permissions.constants import OBJECT_PERMISSIONS_FIELDS
 
 from .models import Gallery, GalleryPicture
 from .serializers import (
+    AuthGalleryPictureSerializer,
     GalleryAdminSerializer,
     GalleryListSerializer,
     GalleryMetadataSerializer,
     GalleryPictureSerializer,
-    AuthGalleryPictureSerializer,
     GallerySerializer,
 )
 
@@ -70,9 +70,7 @@ class GalleryPictureViewSet(viewsets.ModelViewSet):
     """
 
     queryset = (
-        GalleryPicture.objects.all()
-        .select_related("file")
-        .prefetch_related("taggees")
+        GalleryPicture.objects.all().select_related("file").prefetch_related("taggees")
     )
     serializer_class = GalleryPictureSerializer
     pagination_class = GalleryPicturePagination
