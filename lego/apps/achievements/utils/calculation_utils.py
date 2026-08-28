@@ -88,3 +88,7 @@ def calculate_user_rank(user):
         score += (value + 1 + (achievement.level * delta)) * weight
 
     return score if MAX_POSSIBLE_SCORE else 0
+
+
+def achievement_score_percentage(score: float) -> float:
+    return round(score / MAX_POSSIBLE_SCORE * 100, 2)

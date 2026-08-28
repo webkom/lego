@@ -20,6 +20,14 @@ def _leaderboard_url():
     return reverse("api:v1:achievements-list")
 
 
+def _distribution_url():
+    return reverse("api:v1:achievements-distribution")
+
+
+def _rank_history_url():
+    return reverse("api:v1:achievements-rank-history")
+
+
 def _give_achievement(user, identifier, level):
     Achievement.objects.create(user=user, identifier=identifier, level=level)
 
@@ -182,3 +190,115 @@ class LeaderBoardRankHistoryTestCase(BaseAPITestCase):
         row = next(r for r in res.data["results"] if r["id"] == self.user.id)
         self.assertIsNone(row["event_count"]["rank_week_ago"])
         self.assertIsNone(row["event_count"]["rank_month_ago"])
+
+
+class LeaderBoardDistributionTestCase(BaseAPITestCase):
+    fixtures = ["test_abakus_groups.yaml"]
+
+    def setUp(self):
+        self.users = get_dummy_users(4)
+        self.client.force_authenticate(self.users[0])
+
+    def _get(self, **params):
+        return self.client.get(_distribution_url(), params)
+
+    def test_achievement_score_distribution_bins_all_scored_users(self):
+        _give_achievement(self.users[0], QUOTE_IDENTIFIER, 0)  # score 2
+        _give_achievement(self.users[1], EVENT_IDENTIFIER, 3)  # score 4.3
+        # users[2], users[3] have no achievements -> excluded
+
+        res = self._get(type=RankType.ACHIEVEMENT_SCORE)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["total_count"], 2)
+        self.assertEqual(sum(b["count"] for b in res.data["bins"]), 2)
+
+    def test_achievement_score_distribution_reports_requesting_users_value_and_percentile(
+        self,
+    ):
+        _give_achievement(self.users[0], QUOTE_IDENTIFIER, 0)  # lowest score
+        _give_achievement(self.users[1], EVENT_IDENTIFIER, 5)  # highest score
+
+        res = self._get(type=RankType.ACHIEVEMENT_SCORE)
+
+        self.assertIsNotNone(res.data["your_value"])
+        # users[0] has the lowest score of the 2 scored users -> 0th percentile.
+        self.assertEqual(res.data["percentile"], 0.0)
+
+    def test_event_count_distribution_excludes_users_with_no_registrations(self):
+        _register_for_n_events(self.users[0], 2)
+        _register_for_n_events(self.users[1], 5)
+        # users[2] has no registrations -> excluded from the distribution
+        snapshot_rank_type(RankType.EVENT_COUNT)
+
+        res = self._get(type=RankType.EVENT_COUNT)
+
+        self.assertEqual(res.data["total_count"], 2)
+        self.assertEqual(res.data["your_value"], 2)
+
+    def test_event_count_distribution_is_empty_before_any_snapshot_has_been_taken(self):
+        _register_for_n_events(self.users[0], 2)
+
+        res = self._get(type=RankType.EVENT_COUNT)
+
+        # event_count is read from the RankSnapshot cache, not computed live,
+        # so it stays empty until the daily snapshot task has run at least once.
+        self.assertEqual(res.data["total_count"], 0)
+        self.assertIsNone(res.data["your_value"])
+        self.assertIsNone(res.data["percentile"])
+
+    def test_distribution_is_empty_when_no_users_have_a_value(self):
+        res = self._get(type=RankType.ACHIEVEMENT_SCORE)
+
+        self.assertEqual(res.data["bins"], [])
+        self.assertEqual(res.data["total_count"], 0)
+        self.assertIsNone(res.data["your_value"])
+        self.assertIsNone(res.data["percentile"])
+
+
+class LeaderBoardRankHistoryEndpointTestCase(BaseAPITestCase):
+    fixtures = ["test_abakus_groups.yaml"]
+
+    def setUp(self):
+        self.users = get_dummy_users(2)
+        self.client.force_authenticate(self.users[0])
+
+    def _get(self, **params):
+        return self.client.get(_rank_history_url(), params)
+
+    def test_returns_only_the_requesting_users_snapshots_in_date_order(self):
+        today = timezone.now().date()
+        RankSnapshot.objects.create(
+            user=self.users[0],
+            type=RankType.EVENT_COUNT,
+            rank=3,
+            value=1,
+            date=today - timedelta(days=10),
+        )
+        RankSnapshot.objects.create(
+            user=self.users[0],
+            type=RankType.EVENT_COUNT,
+            rank=1,
+            value=2,
+            date=today,
+        )
+        RankSnapshot.objects.create(
+            user=self.users[1],
+            type=RankType.EVENT_COUNT,
+            rank=1,
+            value=5,
+            date=today,
+        )
+
+        res = self._get(type=RankType.EVENT_COUNT)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            [row["rank"] for row in res.data],
+            [3, 1],
+        )
+
+    def test_empty_without_any_snapshots(self):
+        res = self._get(type=RankType.EVENT_COUNT)
+
+        self.assertEqual(res.data, [])

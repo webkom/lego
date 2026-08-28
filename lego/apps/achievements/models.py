@@ -17,16 +17,11 @@ class Achievement(BasisModel):
 
     @property
     def percentage(self):
-        total_users = User.objects.count() or 1
-        achievement_users = (
-            Achievement.objects.filter(
-                identifier=self.identifier, level__gte=self.level
-            )
-            .values("user")
-            .distinct()
-            .count()
-        )
-        return (achievement_users / total_users) * 100
+        # Local import to avoid a circular import - ranking.py imports this
+        # module for RankSnapshot/Achievement at module load time.
+        from lego.apps.achievements.ranking import rarity_percentage
+
+        return rarity_percentage(self.identifier, self.level)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

@@ -27,7 +27,16 @@ from lego.apps.achievements.constants import (
 )
 from lego.apps.achievements.models import Achievement, RankSnapshot
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
-from lego.apps.achievements.serializers import KeypressOrderSerializer
+from lego.apps.achievements.ranking import (
+    build_histogram,
+    current_values_for,
+    rarity_by_identifier_and_level,
+    rarity_lookup,
+)
+from lego.apps.achievements.serializers import (
+    KeypressOrderSerializer,
+    RankSnapshotSerializer,
+)
 from lego.apps.achievements.tasks import run_all_promotions
 from lego.apps.events.constants import SUCCESS_REGISTER
 from lego.apps.permissions.api.permissions import LegoPermissions
@@ -46,6 +55,13 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         if rank_type not in RankType.values:
             rank_type = RankType.ACHIEVEMENT_SCORE  # fall back rather than 500
         return rank_type
+
+    def get_serializer_context(self):
+        # Computed once per request instead of once per achievement - see
+        # AchievementSerializer.get_percentage.
+        context = super().get_serializer_context()
+        context["rarity_lookup"] = rarity_lookup()
+        return context
 
     # AchievementLeaderboardPagination.ordering is only a default - the cursor
     # pagination always calls this to decide sort order, otherwise it would
@@ -178,11 +194,52 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(
+        detail=False, methods=["GET"], permission_classes=[permissions.IsAuthenticated]
+    )
+    def distribution(self, request, *args, **kwargs):
+        rank_type = self._get_rank_type()
+        values_by_user = current_values_for(rank_type)
+        values = list(values_by_user.values())
+
+        your_value = values_by_user.get(request.user.id)
+        percentile = None
+        if your_value is not None and values:
+            percentile = round(
+                sum(value < your_value for value in values) / len(values) * 100, 1
+            )
+
+        return Response(
+            {
+                "bins": build_histogram(values),
+                "total_count": len(values),
+                "your_value": your_value,
+                "percentile": percentile,
+            }
+        )
+
+    @action(
+        detail=False, methods=["GET"], permission_classes=[permissions.IsAuthenticated]
+    )
+    def rank_history(self, request, *args, **kwargs):
+        rank_type = self._get_rank_type()
+        snapshots = RankSnapshot.objects.filter(
+            user=request.user, type=rank_type
+        ).order_by("date")
+        return Response(RankSnapshotSerializer(snapshots, many=True).data)
+
 
 class AchievementViewSet(viewsets.GenericViewSet):
     permission_classes = [LegoPermissions, permissions.IsAuthenticated]
     queryset = Achievement.objects.none()
     serializer_class = KeypressOrderSerializer
+
+    @action(
+        detail=False, methods=["GET"], permission_classes=[permissions.IsAuthenticated]
+    )
+    def rarity(self, request, *args, **kwargs):
+        """% of users who have earned each achievement, per level."""
+        return Response(rarity_by_identifier_and_level())
 
     @action(
         detail=False, methods=["POST"], permission_classes=[permissions.IsAuthenticated]
