@@ -1,8 +1,9 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils import timezone
 
 from lego.apps.achievements.constants import RankType
 from lego.apps.achievements.models import RankSnapshot
+from lego.apps.events.constants import SUCCESS_REGISTER
 from lego.apps.users.models import User
 
 
@@ -16,7 +17,16 @@ def _ordered_values_for(rank_type: str):
         )
     if rank_type == RankType.EVENT_COUNT:
         return (
-            User.objects.annotate(event_count=Count("registrations"))
+            User.objects.annotate(
+                event_count=Count(
+                    "registrations",
+                    filter=Q(
+                        registrations__status=SUCCESS_REGISTER,
+                        registrations__event__end_time__lte=timezone.now(),
+                        registrations__pool__isnull=False,
+                    ),
+                )
+            )
             .order_by("-event_count")
             .values_list("id", "event_count")
         )
