@@ -99,6 +99,7 @@ class GCMDeviceViewSet(GCMDeviceAuthorizedViewSet):
 
 class ExpoDeviceViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
+    serializer_class = ExpoDeviceSerializer
 
     def create(self, request):
         serializer = ExpoDeviceSerializer(data=request.data)

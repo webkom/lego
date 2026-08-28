@@ -55,7 +55,7 @@ class Notification:
             title=title,
             template=template,
             context=context,
-            data=data
+            data=data,
         )
 
     def generate_mail(self):
