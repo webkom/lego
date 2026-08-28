@@ -29,6 +29,7 @@ from lego.apps.achievements.models import Achievement, RankSnapshot
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.serializers import KeypressOrderSerializer
 from lego.apps.achievements.tasks import run_all_promotions
+from lego.apps.events.constants import SUCCESS_REGISTER
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.constants import CREATE
 from lego.apps.users.models import User
@@ -60,7 +61,16 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         month_ago = today - timedelta(days=30)
 
         if rank_type == RankType.EVENT_COUNT:
-            base_qs = User.objects.annotate(event_count=Count("registrations"))
+            base_qs = User.objects.annotate(
+                event_count=Count(
+                    "registrations",
+                    filter=Q(
+                        registrations__status=SUCCESS_REGISTER,
+                        registrations__event__end_time__lte=timezone.now(),
+                        registrations__pool__isnull=False,
+                    ),
+                )
+            )
             distinct_user_ids = base_qs.filter(event_count__gt=0).values_list(
                 "id", flat=True
             )
