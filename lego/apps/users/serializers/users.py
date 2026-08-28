@@ -56,24 +56,35 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     past_memberships = PastMembershipSerializer(many=True)
     memberships = MembershipSerializer(many=True)
     achievements = AchievementSerializer(many=True)
-    achievements_score = serializers.SerializerMethodField()
-    achievement_rank = serializers.IntegerField(read_only=True)
-    event_count = serializers.IntegerField(read_only=True)
-    rank_week_ago = serializers.IntegerField(read_only=True, allow_null=True)
-    rank_month_ago = serializers.IntegerField(read_only=True, allow_null=True)
+    achievement_score = serializers.SerializerMethodField()
+    event_count = serializers.SerializerMethodField()
 
-    def get_achievements_score(self, obj):
-        return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
+    def get_achievement_score(self, obj):
+        return {
+            "value": round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2),
+            "rank": getattr(obj, "achievement_score_rank", None),
+            "rank_week_ago": getattr(obj, "achievement_score_rank_week_ago", None),
+            "rank_month_ago": getattr(obj, "achievement_score_rank_month_ago", None),
+        }
+
+    def get_event_count(self, obj):
+        # These annotations only exist on the leaderboard queryset - a plain
+        # User (e.g. from the regular users endpoint) has no event count data.
+        if not hasattr(obj, "event_count"):
+            return None
+        return {
+            "value": obj.event_count,
+            "rank": getattr(obj, "event_count_rank", None),
+            "rank_week_ago": getattr(obj, "event_count_rank_week_ago", None),
+            "rank_month_ago": getattr(obj, "event_count_rank_month_ago", None),
+        }
 
     class Meta(PublicUserSerializer.Meta):
         fields = PublicUserWithAbakusGroupsSerializer.Meta.fields + (  # type: ignore
             "past_memberships",
             "memberships",
             "achievements",
-            "achievements_score",
-            "achievement_rank",
-            "rank_week_ago",
-            "rank_month_ago",
+            "achievement_score",
             "event_count",
         )
 
