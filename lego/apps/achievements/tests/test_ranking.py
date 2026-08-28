@@ -10,7 +10,8 @@ from lego.apps.achievements.constants import (
 from lego.apps.achievements.models import Achievement, RankSnapshot
 from lego.apps.achievements.ranking import snapshot_rank_type
 from lego.apps.achievements.tasks import snapshot_leaderboard_ranks
-from lego.apps.events.models import Event, Registration
+from lego.apps.events.constants import SUCCESS_REGISTER
+from lego.apps.events.models import Event, Pool, Registration
 from lego.apps.events.tests.utils import get_dummy_users
 from lego.utils.test_utils import BaseTestCase
 
@@ -26,7 +27,15 @@ def _register_for_n_events(user, n):
             start_time=timezone.now() - timedelta(days=10),
             end_time=timezone.now() - timedelta(days=9),
         )
-        Registration.objects.create(event=event, user=user)
+        pool = Pool.objects.create(
+            name="Pool",
+            capacity=1,
+            event=event,
+            activation_date=timezone.now() - timedelta(days=11),
+        )
+        Registration.objects.create(
+            event=event, user=user, pool=pool, status=SUCCESS_REGISTER
+        )
 
 
 class SnapshotRankTypeTestCase(BaseTestCase):
