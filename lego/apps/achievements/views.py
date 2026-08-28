@@ -50,9 +50,15 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     # AchievementLeaderboardPagination.ordering is only a default - the cursor
     # pagination always calls this to decide sort order, otherwise it would
     # always order by achievements_score regardless of the selected rank_type.
+    #
+    # "id" is appended as a tiebreaker: the rank field is a SQL RANK() output,
+    # so many rows share the same value, and cursor pagination needs a fully
+    # deterministic ordering to compute a stable position/offset - otherwise
+    # ties can be returned in a different order on each request.
     def get_ordering(self):
         is_event_count = self._get_rank_type() == RankType.EVENT_COUNT
-        return "event_count_rank" if is_event_count else "achievement_score_rank"
+        field = "event_count_rank" if is_event_count else "achievement_score_rank"
+        return (field, "id")
 
     # Rank can't be computed via a Window() and then filtered in the same
     # queryset - Django compiles the filter before the window function,
@@ -161,7 +167,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             event_count=event_count_value,
         )
 
-        return annotated_qs.order_by(self.get_ordering())
+        return annotated_qs.order_by(*self.get_ordering())
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
