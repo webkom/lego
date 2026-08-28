@@ -73,9 +73,9 @@ class LeaderBoardEventCountTestCase(BaseAPITestCase):
         res = self._get(type=RankType.EVENT_COUNT)
 
         by_id = {row["id"]: row for row in res.data["results"]}
-        self.assertEqual(by_id[self.users[1].id]["achievement_rank"], 1)
-        self.assertEqual(by_id[self.users[2].id]["achievement_rank"], 2)
-        self.assertEqual(by_id[self.users[0].id]["achievement_rank"], 3)
+        self.assertEqual(by_id[self.users[1].id]["event_count"]["rank"], 1)
+        self.assertEqual(by_id[self.users[2].id]["event_count"]["rank"], 2)
+        self.assertEqual(by_id[self.users[0].id]["event_count"]["rank"], 3)
 
     def test_event_count_results_are_returned_in_rank_order(self):
         _register_for_n_events(self.users[0], 1)
@@ -95,7 +95,7 @@ class LeaderBoardEventCountTestCase(BaseAPITestCase):
         res = self._get(type=RankType.EVENT_COUNT)
 
         by_id = {row["id"]: row for row in res.data["results"]}
-        self.assertIsNone(by_id[self.users[0].id]["event_count"])
+        self.assertIsNone(by_id[self.users[0].id]["event_count"]["value"])
 
     def test_event_count_field_reflects_the_latest_snapshot_value(self):
         _register_for_n_events(self.users[0], 4)
@@ -104,7 +104,7 @@ class LeaderBoardEventCountTestCase(BaseAPITestCase):
         res = self._get(type=RankType.EVENT_COUNT)
 
         by_id = {row["id"]: row for row in res.data["results"]}
-        self.assertEqual(by_id[self.users[0].id]["event_count"], 4)
+        self.assertEqual(by_id[self.users[0].id]["event_count"]["value"], 4)
 
     def test_invalid_type_falls_back_to_achievement_score(self):
         _give_achievement(self.users[1], QUOTE_IDENTIFIER, 0)
@@ -124,8 +124,9 @@ class LeaderBoardEventCountTestCase(BaseAPITestCase):
 
         by_id = {row["id"]: row for row in res.data["results"]}
         self.assertNotIn(self.users[2].id, by_id)
-        self.assertEqual(by_id[self.users[1].id]["achievement_rank"], 1)
-        self.assertEqual(by_id[self.users[0].id]["achievement_rank"], 2)
+        self.assertEqual(by_id[self.users[1].id]["achievement_score"]["rank"], 1)
+        self.assertEqual(by_id[self.users[0].id]["achievement_score"]["rank"], 2)
+        self.assertIsNone(by_id[self.users[1].id]["event_count"]["rank"])
 
 
 class LeaderBoardRankHistoryTestCase(BaseAPITestCase):
@@ -169,9 +170,9 @@ class LeaderBoardRankHistoryTestCase(BaseAPITestCase):
 
         row = next(r for r in res.data["results"] if r["id"] == self.user.id)
         # week_ago cutoff (today-7) only reaches back to the 20-days-old snapshot.
-        self.assertEqual(row["rank_week_ago"], 3)
+        self.assertEqual(row["event_count"]["rank_week_ago"], 3)
         # month_ago cutoff (today-30) only reaches back to the 40-days-old snapshot.
-        self.assertEqual(row["rank_month_ago"], 5)
+        self.assertEqual(row["event_count"]["rank_month_ago"], 5)
 
     def test_rank_week_and_month_ago_are_null_without_snapshots(self):
         _register_for_n_events(self.user, 1)
@@ -179,5 +180,5 @@ class LeaderBoardRankHistoryTestCase(BaseAPITestCase):
         res = self._get(type=RankType.EVENT_COUNT)
 
         row = next(r for r in res.data["results"] if r["id"] == self.user.id)
-        self.assertIsNone(row["rank_week_ago"])
-        self.assertIsNone(row["rank_month_ago"])
+        self.assertIsNone(row["event_count"]["rank_week_ago"])
+        self.assertIsNone(row["event_count"]["rank_month_ago"])

@@ -41,20 +41,25 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = AchievementLeaderboardPagination
 
+    def _get_rank_type(self):
+        rank_type = self.request.query_params.get("type", RankType.ACHIEVEMENT_SCORE)
+        if rank_type not in RankType.values:
+            rank_type = RankType.ACHIEVEMENT_SCORE  # fall back rather than 500
+        return rank_type
+
     # AchievementLeaderboardPagination.ordering is only a default - the cursor
     # pagination always calls this to decide sort order, otherwise it would
     # always order by achievements_score regardless of the selected rank_type.
     def get_ordering(self):
-        return "achievement_rank"
+        is_event_count = self._get_rank_type() == RankType.EVENT_COUNT
+        return "event_count_rank" if is_event_count else "achievement_score_rank"
 
     # Rank can't be computed via a Window() and then filtered in the same
     # queryset - Django compiles the filter before the window function,
     # so it silently changes what the window sees. Compute rank unfiltered
     # first, then bake it into the filtered queryset via Case/When.
     def get_queryset(self):
-        rank_type = self.request.query_params.get("type", RankType.ACHIEVEMENT_SCORE)
-        if rank_type not in RankType.values:
-            rank_type = RankType.ACHIEVEMENT_SCORE  # fall back rather than 500
+        rank_type = self._get_rank_type()
 
         today = timezone.now().date()
         week_ago = today - timedelta(days=7)
@@ -76,7 +81,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
             order_expr = F("event_count").desc()
             rank_source_qs = base_qs.filter(id__in=distinct_user_ids).annotate(
-                achievement_rank=Window(expression=Rank(), order_by=order_expr)
+                live_rank=Window(expression=Rank(), order_by=order_expr)
             )
         else:
             distinct_user_ids = (
@@ -86,12 +91,10 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
             order_expr = F("achievements_score").desc()
             rank_source_qs = User.objects.filter(id__in=distinct_user_ids).annotate(
-                achievement_rank=Window(expression=Rank(), order_by=order_expr)
+                live_rank=Window(expression=Rank(), order_by=order_expr)
             )
 
-        global_rank_mapping = {
-            user.id: user.achievement_rank for user in rank_source_qs
-        }
+        global_rank_mapping = {user.id: user.live_rank for user in rank_source_qs}
 
         qs_filter = User.objects.filter(id__in=distinct_user_ids)
 
@@ -111,7 +114,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 membership__is_active=True, membership__abakus_group__in=group_ids
             )
 
-        def rank_as_of(date, snapshot_type=rank_type):
+        def rank_as_of(date, snapshot_type):
             return Subquery(
                 RankSnapshot.objects.filter(
                     user=OuterRef("pk"), type=snapshot_type, date__lte=date
@@ -120,12 +123,12 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 .values("rank")[:1]
             )
 
-        # event_count is always sourced from the snapshot table, regardless
-        # of which type is currently being ranked by - computing it live via
-        # Count("registrations") on every request (in addition to whatever
-        # the rank_type branch above already does) is the exact cost this
-        # was meant to avoid.
-        event_count = Subquery(
+        # event_count's value is always sourced from the snapshot table,
+        # regardless of which type is currently being ranked by - computing
+        # it live via Count("registrations") on every request (in addition
+        # to whatever the rank_type branch above already does) is the exact
+        # cost this was meant to avoid.
+        event_count_value = Subquery(
             RankSnapshot.objects.filter(
                 user=OuterRef("pk"), type=RankType.EVENT_COUNT, date__lte=today
             )
@@ -136,16 +139,29 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         cases = [
             When(pk=pk, then=Value(rank)) for pk, rank in global_rank_mapping.items()
         ]
+        live_rank = Case(*cases, default=Value(0), output_field=IntegerField())
+        no_rank = Value(None, output_field=IntegerField())
+
+        # Only the requested type's live rank is computed above (the window
+        # query is what's fragile/expensive) - the other type's rank is left
+        # null. History for both types is cheap either way, it's just a
+        # snapshot lookup, so both are always populated.
+        is_event_count = rank_type == RankType.EVENT_COUNT
         annotated_qs = qs_filter.annotate(
-            achievement_rank=Case(
-                *cases, default=Value(0), output_field=IntegerField()
+            achievement_score_rank=no_rank if is_event_count else live_rank,
+            event_count_rank=live_rank if is_event_count else no_rank,
+            achievement_score_rank_week_ago=rank_as_of(
+                week_ago, RankType.ACHIEVEMENT_SCORE
             ),
-            rank_week_ago=rank_as_of(week_ago),
-            rank_month_ago=rank_as_of(month_ago),
-            event_count=event_count,
+            achievement_score_rank_month_ago=rank_as_of(
+                month_ago, RankType.ACHIEVEMENT_SCORE
+            ),
+            event_count_rank_week_ago=rank_as_of(week_ago, RankType.EVENT_COUNT),
+            event_count_rank_month_ago=rank_as_of(month_ago, RankType.EVENT_COUNT),
+            event_count=event_count_value,
         )
 
-        return annotated_qs.order_by("achievement_rank")
+        return annotated_qs.order_by(self.get_ordering())
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
