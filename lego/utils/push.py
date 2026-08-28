@@ -10,12 +10,13 @@ log = get_logger()
 
 
 class PushMessage:
-    def __init__(self, user, template, context, title, target=None):
+    def __init__(self, user, template, context, title, target=None, data=None):
         self.user = user
         self.template = template
         self.context = context
         self.target = target
         self.title = title
+        self.data = data
 
     def _get_unread_count(self):
         feed = NotificationFeed
@@ -38,7 +39,7 @@ class PushMessage:
 
         expo_device = ExpoDevice.objects.filter(user=self.user, is_active=True).first()
         if expo_device:
-            expo_device.messages.send(title=self.title, body=message)
+            expo_device.messages.send(title=self.title, body=message, data=self.data)
 
         log.info(
             "send_push",
