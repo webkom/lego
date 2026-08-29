@@ -10,6 +10,7 @@ from lego.apps.achievements.constants import (
     EVENT_PRICE_ACHIEVEMENTS,
     EVENT_PRICE_IDENTIFIER,
     EVENT_RANK_ACHIEVEMENTS,
+    EVENT_RANK_IDENTIFIER,
     GALA_ACHIEVEMENTS,
     GALA_IDENTIFIER,
     GENFORS_ACHIEVEMENTS,
@@ -17,6 +18,8 @@ from lego.apps.achievements.constants import (
     MEETING_ACHIEVEMENTS,
     PENALTY_ACHIEVEMENTS,
     PENALTY_IDENTIFIER,
+    PERFECT_WEEK_ACHIEVEMENTS,
+    PERFECT_WEEK_IDENTIFIER,
     POLL_ACHIEVEMENTS,
     POLL_IDENTIFIER,
     QUOTE_ACHIEVEMENTS,
@@ -24,6 +27,7 @@ from lego.apps.achievements.constants import (
     AchievementCollection,
 )
 from lego.apps.achievements.models import Achievement
+from lego.apps.achievements.utils.calculation_utils import calculate_user_rank
 from lego.apps.events.constants import SUCCESS_REGISTER
 from lego.apps.events.models import Registration
 from lego.apps.meetings.models import Meeting
@@ -96,7 +100,7 @@ def check_leveled_promotions(
 
 def check_rank_promotions():
     def get_top_rank_users() -> dict:
-        top_users = list(
+        counts = list(
             Registration.objects.filter(
                 status=SUCCESS_REGISTER,
                 event__end_time__lte=timezone.now(),
@@ -104,10 +108,22 @@ def check_rank_promotions():
             )
             .values("user")
             .annotate(event_count=Count("id"))
-            .order_by("-event_count")[:3]
+            .order_by("-event_count", "user")
         )
-        # Map user IDs to their rank (1, 2, or 3)
-        return {entry["user"]: idx + 1 for idx, entry in enumerate(top_users)}
+
+        # Rank by distinct value (dense rank), not by row position - otherwise
+        # users tied for 3rd place would have their achievement handed out
+        # arbitrarily to whichever of them happened to land in the first 3 rows.
+        top_values = sorted({entry["event_count"] for entry in counts}, reverse=True)[
+            :3
+        ]
+        rank_by_value = {value: idx + 1 for idx, value in enumerate(top_values)}
+
+        return {
+            entry["user"]: rank_by_value[entry["event_count"]]
+            for entry in counts
+            if entry["event_count"] in rank_by_value
+        }
 
     # Define a mapping from rank numbers to achievement keys
     rank_to_key = {
@@ -117,42 +133,40 @@ def check_rank_promotions():
     }
 
     current_top_ranks = get_top_rank_users()
-    for user in User.objects.all():
-        user_rank = current_top_ranks.get(user.id)
-        if user_rank:
-            rank_key = rank_to_key[user_rank]  # Get the corresponding achievement key
-            rank_data = EVENT_RANK_ACHIEVEMENTS[rank_key]
-            achievement_exists = Achievement.objects.filter(
-                identifier=rank_data["identifier"], user=user
-            ).exists()
 
-            # Grant the achievement if the user does not have it
-            if not achievement_exists:
-                Achievement.objects.get_or_create(
-                    identifier=rank_data["identifier"],
-                    level=rank_data["level"],
-                    user=user,
-                )
-            # The achiv exists so we update instead
-            else:
-                Achievement.objects.filter(
-                    identifier=rank_data["identifier"], user=user
-                ).update(level=rank_data["level"])
-        else:
-            # If the user is not in top 3, remove their rank achievements if they have any
-            for _, rank_data in EVENT_RANK_ACHIEVEMENTS.items():
-                achievement_exists = Achievement.objects.filter(
-                    identifier=rank_data["identifier"],
-                    level=rank_data["level"],
-                    user=user,
-                ).exists()
+    # Anyone no longer in the top 3 loses the achievement. There are normally
+    # very few of these rows, so iterating instead of a bulk .delete() is cheap
+    # and lets achievements_score get recalculated too (a bulk delete bypasses
+    # Achievement.save(), same issue as .update() below).
+    departing = Achievement.objects.filter(identifier=EVENT_RANK_IDENTIFIER).exclude(
+        user_id__in=current_top_ranks.keys()
+    )
+    for achievement in departing:
+        user = achievement.user
+        achievement.delete(force=True)
+        user.achievements_score = calculate_user_rank(user)
+        user.save(update_fields=["achievements_score"])
 
-                if achievement_exists:
-                    Achievement.objects.filter(
-                        identifier=rank_data["identifier"],
-                        level=rank_data["level"],
-                        user=user,
-                    ).delete(force=True)
+    # Only the users currently in the top 3 (by value, so ties can mean more
+    # than 3 people) need touching - looping over every user was needless
+    # O(all users) work for a change that only ever affects a handful of rows.
+    for user_id, rank in current_top_ranks.items():
+        rank_data = EVENT_RANK_ACHIEVEMENTS[rank_to_key[rank]]
+        achievement = Achievement.objects.filter(
+            identifier=rank_data["identifier"], user_id=user_id
+        ).first()
+
+        if achievement is None:
+            Achievement.objects.create(
+                identifier=rank_data["identifier"],
+                level=rank_data["level"],
+                user_id=user_id,
+            )
+        elif achievement.level != rank_data["level"]:
+            # .save(), not .update() - a bulk update bypasses Achievement.save(),
+            # which is what recalculates the user's achievements_score.
+            achievement.level = rank_data["level"]
+            achievement.save()
 
 
 def check_meeting_hidden(owner: User, user: User, meeting: Meeting):
@@ -198,6 +212,12 @@ def check_complete_user_profile(user: User) -> None:
     check_leveled_promotions(user.id, COMPLETE_IDENTIFIER, COMPLETE_ACHIEVEMENT)
 
 
+def check_perfect_week_related_single_user(user: User) -> None:
+    check_leveled_promotions(
+        user.id, PERFECT_WEEK_IDENTIFIER, PERFECT_WEEK_ACHIEVEMENTS
+    )
+
+
 def check_all_promotions() -> None:
     for user in User.objects.all():
         check_quote_related_single_user(user)
@@ -207,5 +227,6 @@ def check_all_promotions() -> None:
         check_genfors_related_single_user(user)
         check_complete_user_profile(user)
         check_gala_related_single_user(user)
+        check_perfect_week_related_single_user(user)
 
     check_rank_promotions()
