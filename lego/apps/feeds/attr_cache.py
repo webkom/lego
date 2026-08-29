@@ -30,6 +30,7 @@ class AttrCache:
         "users.abakusgroup": attr_renderers.render_abakus_group,
         "events.registration": attr_renderers.render_registration,
         "restricted.restrictedmail": attr_renderers.render_restricted_mail,
+        "achievements.achievement": attr_renderers.render_achievement,
     }
 
     RELATED_FIELDS = {"meetings.meetinginvitation": ["meeting"]}

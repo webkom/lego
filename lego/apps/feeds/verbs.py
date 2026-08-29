@@ -141,3 +141,12 @@ class AdminUnregistrationVerb(Verb):
 
 
 register(AdminUnregistrationVerb)
+
+
+class TrophyVerb(Verb):
+    id = 15
+    infinitive = "trophy"
+    aggregation_group = "{verb}-{object_content_type}-{object_id}"
+
+
+register(TrophyVerb)
