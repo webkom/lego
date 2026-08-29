@@ -3,7 +3,7 @@ from datetime import datetime
 from rest_framework import exceptions, serializers
 
 from lego.apps.achievements.serializers import AchievementSerializer
-from lego.apps.achievements.utils.calculation_utils import MAX_POSSIBLE_SCORE
+from lego.apps.achievements.utils.calculation_utils import achievement_score_percentage
 from lego.apps.email.serializers import PublicEmailListSerializer
 from lego.apps.files.fields import ImageField
 from lego.apps.ical.models import ICalToken
@@ -61,7 +61,7 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
 
     def get_achievement_score(self, obj):
         return {
-            "value": round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2),
+            "value": achievement_score_percentage(obj.achievements_score),
             "rank": getattr(obj, "achievement_score_rank", None),
             "rank_week_ago": getattr(obj, "achievement_score_rank_week_ago", None),
             "rank_month_ago": getattr(obj, "achievement_score_rank_month_ago", None),
@@ -258,7 +258,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         return slots
 
     def get_achievements_score(self, obj):
-        return round((obj.achievements_score / MAX_POSSIBLE_SCORE) * 100, 2)
+        return achievement_score_percentage(obj.achievements_score)
 
     def get_command_suggestions(self, obj):
         return obj.get_command_suggestions()

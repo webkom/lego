@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from structlog import get_logger
 
 from lego.apps.achievements.promotion import check_complete_user_profile
+from lego.apps.achievements.ranking import rarity_lookup
 from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
@@ -61,6 +62,14 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
             return RegistrationConfirmationSerializer
 
         return super().get_serializer_class()
+
+    def get_serializer_context(self):
+        # Computed once per request instead of once per achievement in the
+        # user's achievements list - see AchievementSerializer.get_percentage.
+        context = super().get_serializer_context()
+        if self.action in ["retrieve", "update", "partial_update"]:
+            context["rarity_lookup"] = rarity_lookup()
+        return context
 
     def get_permissions(self):
         """
