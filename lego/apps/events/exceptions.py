@@ -87,7 +87,7 @@ class PoolCounterNotEqualToRegistrationCount(ValueError):
 
 
 class WebhookDidNotFindRegistration(ValueError):
-    def __init__(self, event_id, metadata):
+    def __init__(self, event_id: str, metadata: dict) -> None:
         message = (
             f"Stripe webhook with ID: {event_id} for event {metadata['EVENT_ID']} tried "
             f"getting registration for user {metadata['USER']}, but did not find any!"
