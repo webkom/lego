@@ -306,6 +306,7 @@ class ListEventsTestCase(BaseAPITestCase):
 class RetrieveEventsTestCase(BaseAPITestCase):
     fixtures = [
         "test_abakus_groups.yaml",
+        "test_comments.yaml",
         "test_companies.yaml",
         "test_users.yaml",
         "test_events.yaml",
@@ -335,6 +336,15 @@ class RetrieveEventsTestCase(BaseAPITestCase):
         event_response = self.client.get(_get_detail_url(1))
         for pool in event_response.json()["pools"]:
             self.assertIsNone(pool.get("registrations", None))
+
+    def test_unauth_cant_see_comments(self):
+        event_response = self.client.get(_get_detail_url(4))
+        self.assertNotIn("comments", event_response.json())
+
+    def test_auth_can_see_comments(self):
+        self.client.force_authenticate(self.abakus_user)
+        event_response = self.client.get(_get_detail_url(4))
+        self.assertIn("comments", event_response.json())
 
     def test_abakus_see_registrations(self):
         """Tests that a user that is allowed to register for the event can see the registrations"""

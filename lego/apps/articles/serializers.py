@@ -16,7 +16,6 @@ from lego.utils.serializers import (
 
 
 class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
     cover = ImageField(required=False, options={"height": 500})
     cover_placeholder = ImageField(
         source="cover", required=False, options={"height": 50, "filters": ["blur(20)"]}
@@ -42,7 +41,6 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
             "cover_placeholder",
             "authors",
             "description",
-            "comments",
             "content_target",
             "tags",
             "content",
@@ -53,14 +51,17 @@ class DetailedArticleSerializer(TagSerializerMixin, BasisModelSerializer):
         )
 
 
-class DetailedArticleAdminSerializer(
+class AuthDetailedArticleSerializer(
     ObjectPermissionsSerializerMixin, DetailedArticleSerializer
 ):
+    comments = CommentSerializer(read_only=True, many=True)
+
     class Meta:
         model = Article
         fields = (
             DetailedArticleSerializer.Meta.fields
             + ObjectPermissionsSerializerMixin.Meta.fields
+            + ("comments",)
         )
 
 

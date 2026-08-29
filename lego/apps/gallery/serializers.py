@@ -59,7 +59,6 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
         options={"height": 200, "width": 300, "smart": True},
     )
     raw_file = FileField(source="file", read_only=True)
-    comments = CommentSerializer(read_only=True, many=True)
     content_target = CharField(read_only=True)
     taggees = PublicUserField(many=True, queryset=User.objects.all(), required=False)
 
@@ -74,7 +73,6 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
             "file",
             "thumbnail",
             "raw_file",
-            "comments",
             "content_target",
         )
         read_only_fields = ("raw_file", "thumbnail", "gallery")
@@ -82,6 +80,14 @@ class GalleryPictureSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         gallery = Gallery.objects.get(pk=self.context["view"].kwargs["gallery_pk"])
         return {"gallery": gallery, **attrs}
+
+
+class AuthGalleryPictureSerializer(GalleryPictureSerializer):
+    comments = CommentSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = GalleryPicture
+        fields = GalleryPictureSerializer.Meta.fields + ("comments",)
 
 
 class GallerySerializer(BasisModelSerializer):

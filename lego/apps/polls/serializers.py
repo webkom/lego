@@ -2,9 +2,8 @@ from typing import Iterator
 
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import IntegerField
 
-from lego.apps.comments.serializers.comments import CommentSerializer
 from lego.apps.polls.models import Option, Poll
 from lego.apps.tags.serializers import TagSerializerMixin
 from lego.utils.serializers import BasisModelSerializer
@@ -27,9 +26,6 @@ class OptionUpdateSerializer(OptionSerializer):
 
 
 class PollSerializer(BasisModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    content_target = CharField(read_only=True)
-
     options = HiddenResultsOptionSerializer(many=True)
     total_votes = IntegerField(read_only=True)
 
@@ -51,17 +47,12 @@ class PollSerializer(BasisModelSerializer):
             "results_hidden",
             "total_votes",
             "tags",
-            "comments",
-            "content_target",
             "has_answered",
             "pinned",
         )
 
 
 class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
-    comments = CommentSerializer(read_only=True, many=True)
-    content_target = CharField(read_only=True)
-
     options = OptionSerializer(many=True)
     total_votes = IntegerField(read_only=True)
 
@@ -82,8 +73,6 @@ class DetailedPollSerializer(TagSerializerMixin, BasisModelSerializer):
             "options",
             "results_hidden",
             "total_votes",
-            "comments",
-            "content_target",
             "tags",
             "has_answered",
             "pinned",
