@@ -79,3 +79,11 @@ def render_registration(registration):
 
 def render_restricted_mail(restrictedmail):
     return {"id": restrictedmail.id}
+
+
+def render_achievement(achievement):
+    return {
+        "id": achievement.id,
+        "identifier": achievement.identifier,
+        "level": achievement.level,
+    }
