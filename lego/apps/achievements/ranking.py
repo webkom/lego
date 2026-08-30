@@ -47,15 +47,28 @@ def _compute_ranks(users_ordered_by_value):
         yield user_id, rank, value
 
 
+def latest_snapshot_values(
+    rank_type: str, field: str, **filters
+) -> dict[int, int | float]:
+    """
+    {user_id: <field>} from each user's most recent RankSnapshot matching
+    the given filters. RankSnapshot is a sparse history - a row only exists
+    when a user's rank/value actually changed - so "the most recent row
+    matching these filters" correctly answers "what was this field as of
+    that filter" even when a user has no row exactly on a given date.
+    """
+    return dict(
+        RankSnapshot.objects.filter(type=rank_type, **filters)
+        .order_by("user_id", "-date")
+        .distinct("user_id")
+        .values_list("user_id", field)
+    )
+
+
 def snapshot_rank_type(rank_type: str) -> int:
     today = timezone.now().date()
 
-    latest_by_user = dict(
-        RankSnapshot.objects.filter(type=rank_type)
-        .order_by("user_id", "-date")
-        .distinct("user_id")
-        .values_list("user_id", "rank")
-    )
+    latest_by_user = latest_snapshot_values(rank_type, "rank")
 
     to_create = [
         RankSnapshot(
@@ -86,12 +99,7 @@ def current_values_for(rank_type: str) -> dict[int, float]:
             ).values_list("id", "achievements_score")
         }
     if rank_type == RankType.EVENT_COUNT:
-        return dict(
-            RankSnapshot.objects.filter(type=rank_type, value__gt=0)
-            .order_by("user_id", "-date")
-            .distinct("user_id")
-            .values_list("user_id", "value")
-        )
+        return latest_snapshot_values(rank_type, "value", value__gt=0)
     raise ValueError(f"Unknown rank type: {rank_type}")
 
 

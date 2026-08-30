@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from lego.apps.achievements.constants import ACHIEVEMENT_IDENTIFIERS
 from lego.apps.achievements.models import Achievement, RankSnapshot
 from lego.utils.serializers import BasisModelSerializer
 
@@ -39,3 +40,25 @@ class KeypressOrderSerializer(serializers.Serializer):
     code = serializers.ListField(
         child=serializers.IntegerField(),
     )
+
+
+class AchievementGrantSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    identifier = serializers.ChoiceField(choices=ACHIEVEMENT_IDENTIFIERS)
+    level = serializers.IntegerField(min_value=0)
+    reason = serializers.CharField(allow_blank=False, trim_whitespace=True)
+
+
+class AchievementRevokeSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    identifier = serializers.ChoiceField(choices=ACHIEVEMENT_IDENTIFIERS)
+    reason = serializers.CharField(allow_blank=False, trim_whitespace=True)
+
+
+class AchievementGrantBulkSerializer(serializers.Serializer):
+    user_ids = serializers.ListField(
+        child=serializers.IntegerField(), allow_empty=False
+    )
+    identifier = serializers.ChoiceField(choices=ACHIEVEMENT_IDENTIFIERS)
+    level = serializers.IntegerField(min_value=0)
+    reason = serializers.CharField(allow_blank=False, trim_whitespace=True)
