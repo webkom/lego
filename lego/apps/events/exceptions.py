@@ -78,8 +78,6 @@ class EventNotReady(ValueError):
 
 
 class PoolCounterNotEqualToRegistrationCount(ValueError):
-    MAX_POOLS_IN_MESSAGE = 10
-
     def __init__(self, mismatches):
         """
         :param mismatches: list of (pool_id, event_id, counter, registration_count)
@@ -101,15 +99,10 @@ class PoolCounterNotEqualToRegistrationCount(ValueError):
             super().__init__(f"{details[0]}!")
             return
 
-        listed = details[: self.MAX_POOLS_IN_MESSAGE]
-        remaining = len(details) - len(listed)
-        message = (
+        super().__init__(
             f"{len(details)} pools have a counter that does not match their "
-            f"registration count: " + "; ".join(listed)
+            f"registration count: " + "; ".join(details)
         )
-        if remaining:
-            message += f"; and {remaining} more"
-        super().__init__(message)
 
 
 class WebhookDidNotFindRegistration(ValueError):
