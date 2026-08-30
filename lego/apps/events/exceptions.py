@@ -78,37 +78,11 @@ class EventNotReady(ValueError):
 
 
 class PoolCounterNotEqualToRegistrationCount(ValueError):
-    MAX_POOLS_IN_MESSAGE = 10
-
-    def __init__(self, mismatches):
-        """
-        :param mismatches: list of (pool_id, event_id, counter, registration_count)
-        """
-        # Celery and pickle rebuild exceptions as cls(*args), and args hold the message.
-        if isinstance(mismatches, str):
-            self.mismatches = []
-            super().__init__(mismatches)
-            return
-
-        self.mismatches = mismatches
-        details = [
-            f"Pool {pool_id} for event {event_id} was supposed to have "
-            f"{counter} registrations, but has {registration_count}"
-            for pool_id, event_id, counter, registration_count in mismatches
-        ]
-
-        if len(details) == 1:
-            super().__init__(f"{details[0]}!")
-            return
-
-        listed = details[: self.MAX_POOLS_IN_MESSAGE]
-        remaining = len(details) - len(listed)
+    def __init__(self, pool, registration_count, event):
         message = (
-            f"{len(details)} pools have a counter that does not match their "
-            f"registration count: " + "; ".join(listed)
+            f"Pool {pool.id} for event {event.id} was supposed to have "
+            f"{pool.counter} registrations, but has {registration_count}!"
         )
-        if remaining:
-            message += f"; and {remaining} more"
         super().__init__(message)
 
 

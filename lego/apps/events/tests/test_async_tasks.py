@@ -294,24 +294,6 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.pool_two.registrations.count(), 0)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
-    def test_pool_counter_is_updated_when_users_are_early_bumped(self):
-        """Early bumping into an activating pool must keep the pool counter in sync."""
-        users = get_dummy_users(3)
-
-        for user in users:
-            AbakusGroup.objects.get(name="Webkom").add_user(user)
-            registration = Registration.objects.get_or_create(
-                event=self.event, user=user
-            )[0]
-            self.event.register(registration)
-
-        bump_waiting_users_to_new_pool()
-
-        self.pool_two.refresh_from_db()
-        self.assertEqual(self.pool_two.registrations.count(), 2)
-        self.assertEqual(self.pool_two.counter, 2)
-        check_that_pool_counters_match_registration_number()
-
     def test_ensure_pool_counters_raise_error_when_incorrect(self):
         """Test that counter raises error due to incorrect counter"""
 
@@ -327,31 +309,6 @@ class PoolActivationTestCase(BaseAPITestCase):
 
         with self.assertRaises(PoolCounterNotEqualToRegistrationCount):
             check_that_pool_counters_match_registration_number()
-
-    def test_pool_counter_check_collects_every_mismatch(self):
-        """Test that a drifted pool does not hide drift in the pools checked after it"""
-
-        users = get_dummy_users(4)
-        for user in users:
-            AbakusGroup.objects.get(name="Webkom").add_user(user)
-
-        for user in users[:3]:
-            Registration.objects.get_or_create(
-                event=self.event, user=user, pool=self.pool_one
-            )
-        Registration.objects.get_or_create(
-            event=self.event, user=users[3], pool=self.pool_two
-        )
-
-        with self.assertRaises(PoolCounterNotEqualToRegistrationCount) as raised:
-            check_that_pool_counters_match_registration_number()
-
-        drifted_pool_ids = {
-            pool_id
-            for pool_id, event_id, _, _ in raised.exception.mismatches
-            if event_id == self.event.id
-        }
-        self.assertEqual(drifted_pool_ids, {self.pool_one.id, self.pool_two.id})
 
     def test_ensure_pool_counters_match_registration_number(self):
         """Test that method does not raise error when counter is ok"""

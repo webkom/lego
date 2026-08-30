@@ -6,7 +6,7 @@ from typing import Any, Optional
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import CharField, Count, F, ManyToManyField, QuerySet, Sum
+from django.db.models import CharField, Count, ManyToManyField, QuerySet, Sum
 from django.utils import timezone
 
 from lego.apps.action_handlers.events import handle_event
@@ -463,16 +463,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     new_pool: Optional[Pool] = None
                     if to_pool:
                         new_pool = to_pool
+                        new_pool.increment()
                     else:
                         for pool in self.pools.select_for_update().all():
                             if self.can_register(first_waiting.user, pool):
                                 new_pool = pool
+                                new_pool.increment()
                                 break
-                    if new_pool:
-                        first_waiting.move_to_pool(new_pool)
-                    else:
-                        first_waiting.pool = None
-                        first_waiting.save(update_fields=["pool"])
+                    first_waiting.pool = new_pool
+                    first_waiting.save(update_fields=["pool"])
                     handle_event(first_waiting, "bump")
 
     def early_bump(self, opening_pool: Pool) -> None:
@@ -489,7 +488,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if self.heed_penalties and reg.user.number_of_penalties() >= 3:
                 continue
             if self.can_register(reg.user, opening_pool, future=True):
-                reg.move_to_pool(opening_pool)
+                reg.pool = opening_pool
+                reg.save()
                 handle_event(reg, "bump")
         self.check_for_bump_or_rebalance(opening_pool)
 
@@ -510,7 +510,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if self.heed_penalties and reg.user.number_of_penalties() >= 3:
                     continue
                 if self.can_register(reg.user, pool, future=True):
-                    reg.move_to_pool(pool)
+                    reg.pool = pool
+                    reg.save()
                     handle_event(reg, "bump")
             self.check_for_bump_or_rebalance(pool)
 
@@ -555,7 +556,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if group in user_groups:
                     moveable = True
             if moveable:
-                old_registration.move_to_pool(to_pool)
+                old_registration.pool = to_pool
+                old_registration.save()
                 self.bump(to_pool=from_pool)
                 bumped = True
         return bumped
@@ -839,19 +841,13 @@ class Pool(BasisModel):
         return self.registrations.count()
 
     def increment(self) -> Pool:
-        return self._adjust_counter(1)
+        self.counter += 1
+        self.save(update_fields=["counter"])
+        return self
 
     def decrement(self) -> Pool:
-        return self._adjust_counter(-1)
-
-    def _adjust_counter(self, delta: int) -> Pool:
-        """
-        Adjust relative to the stored value, since callers often hold a Pool loaded
-        before other registrations were processed. `all_objects` so the write reaches
-        soft-deleted rows too, matching the unfiltered `refresh_from_db`.
-        """
-        Pool.all_objects.filter(pk=self.pk).update(counter=F("counter") + delta)
-        self.refresh_from_db(fields=["counter"])
+        self.counter -= 1
+        self.save(update_fields=["counter"])
         return self
 
     def permission_group_ids(self) -> set[int]:
@@ -1025,27 +1021,6 @@ class Registration(BasisModel):
             status=constants.SUCCESS_REGISTER,
             **kwargs,
         )
-
-    def move_to_pool(self, to_pool: Pool) -> Registration:
-        """
-        Move a registration into `to_pool`, keeping both pool counters in sync.
-        Every path that changes a registration's pool must go through here, or
-        `Pool.counter` drifts away from the real registration count.
-
-        :param to_pool: The pool the registration is moved into.
-        :return: The registration (in `to_pool`)
-        """
-        from_pool = self.pool
-        if from_pool == to_pool:
-            return self
-
-        with transaction.atomic():
-            if from_pool:
-                from_pool.decrement()
-            to_pool.increment()
-            self.pool = to_pool
-            self.save(update_fields=["pool"])
-        return self
 
     def add_to_waiting_list(self, **kwargs: Any) -> Registration:
         return self.set_values(

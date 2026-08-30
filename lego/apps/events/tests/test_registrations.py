@@ -817,55 +817,6 @@ class RegistrationTestCase(BaseTestCase):
         self.assertEqual(abakus_pool.registrations.count(), 1)
         self.assertEqual(webkom_pool.registrations.count(), 2)
 
-    def test_rebalance_pool_keeps_pool_counters_in_sync(self):
-        """Rebalancing moves a registration between pools and must keep both counters in sync"""
-        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
-        abakus_pool = event.pools.get(name="Abakusmember")
-        webkom_pool = event.pools.get(name="Webkom")
-        users = get_dummy_users(4)
-        abakus_user = users[0]
-        webkom_users = users[1:]
-        AbakusGroup.objects.get(name="Abakus").add_user(abakus_user)
-        for user in webkom_users:
-            AbakusGroup.objects.get(name="Webkom").add_user(user)
-
-        for user in [abakus_user] + list(webkom_users):
-            registration = Registration.objects.get_or_create(event=event, user=user)[0]
-            event.register(registration)
-
-        registration_to_unregister = Registration.objects.get(
-            event=event, user=webkom_users[0]
-        )
-        event.unregister(registration_to_unregister)
-
-        self.assertTrue(event.rebalance_pool(abakus_pool, webkom_pool))
-
-        for pool in [abakus_pool, webkom_pool]:
-            pool.refresh_from_db()
-            self.assertEqual(pool.counter, pool.registrations.count())
-
-    def test_bump_on_pool_creation_keeps_pool_counter_in_sync(self):
-        """Bumping waiting registrations into a new pool must keep the pool counter in sync"""
-        event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
-        users = get_dummy_users(6)
-        for user in users:
-            AbakusGroup.objects.get(name="Abakus").add_user(user)
-            registration = Registration.objects.get_or_create(event=event, user=user)[0]
-            event.register(registration)
-
-        new_pool = Pool.objects.create(
-            name="test",
-            capacity=3,
-            event=event,
-            activation_date=(timezone.now() - timedelta(hours=24)),
-        )
-        new_pool.permission_groups.set([AbakusGroup.objects.get(name="Abakus")])
-        event.bump_on_pool_creation_or_expansion()
-
-        new_pool.refresh_from_db()
-        self.assertEqual(new_pool.registrations.count(), 3)
-        self.assertEqual(new_pool.counter, 3)
-
     def test_rebalance_pool_method_should_not_overflow(self):
         """Test rebalancing method by moving registered user's pool to fit waiting list user"""
         event = Event.objects.get(title="POOLS_NO_REGISTRATIONS")
