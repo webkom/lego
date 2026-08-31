@@ -610,6 +610,7 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
         Q(merge_time__gte=timezone.now()) | Q(merge_time__isnull=True),
     ).values_list("id", flat=True)
 
+    mismatches = []
     for event_id in events_ids:
         with transaction.atomic():
             locked_event = Event.objects.select_for_update().get(pk=event_id)
@@ -617,7 +618,17 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
             for pool in locked_pools:
                 registration_count = pool.registrations.count()
                 if pool.counter != registration_count:
-                    log.critical("pool_counter_not_equal_registration_count", pool=pool)
-                    raise PoolCounterNotEqualToRegistrationCount(
-                        pool, registration_count, locked_event
+                    log.critical(
+                        "pool_counter_not_equal_registration_count",
+                        pool_id=pool.id,
+                        pool_name=pool.name,
+                        event_id=locked_event.id,
+                        counter=pool.counter,
+                        registration_count=registration_count,
                     )
+                    mismatches.append(
+                        (pool.id, locked_event.id, pool.counter, registration_count)
+                    )
+
+    if mismatches:
+        raise PoolCounterNotEqualToRegistrationCount(mismatches)
