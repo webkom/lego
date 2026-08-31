@@ -15,7 +15,7 @@ RUN sentry-cli releases finalize ${RELEASE}
 RUN sentry-cli releases deploys ${RELEASE} new -e "staging"
 RUN sentry-cli releases deploys ${RELEASE} new -e "production"
 
-FROM python:3.11
+FROM python:3.14
 LABEL org.opencontainers.image.authors="webkom@abakus.no"
 
 ARG RELEASE
