@@ -62,6 +62,7 @@ class LendingRequest(BasisModel):
     )
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    archived = models.BooleanField(default=False, blank=True, null=False)
 
     class Meta:
         permission_handler = LendingRequestPermissionHandler()
