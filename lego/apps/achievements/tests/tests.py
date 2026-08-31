@@ -166,33 +166,152 @@ class RankPromotionTestCase(BaseTestCase):
             "User2 should initially have rank 2 achievement",
         )
 
-        # Register user2 for more events to surpass user1
-        for i in range(15, 20):
+        # Register user2 for the rest of the events (9 -> 19), decisively
+        # surpassing user1's 14 rather than tying it.
+        for i in range(10, 20):
             event = Event.objects.get(pk=i)
             registration = Registration.objects.create(event=event, user=self.user2)
             event.register(registration)
             event.end_time = timezone.now() - timezone.timedelta(days=2)
             event.save()
 
-        transaction.on_commit(lambda: check_all_promotions())
-        # Ensure rankings are updated
-        transaction.on_commit(
-            lambda: self.assertTrue(
-                Achievement.objects.filter(
-                    user=self.user2, identifier="event_rank", level=2
-                ).exists(),
-                "User2 should now have rank 1 achievement",
-            )
+        # NOTE: previously this used transaction.on_commit(), but Django's plain
+        # TestCase wraps each test in an atomic block that's rolled back rather
+        # than committed, so on_commit callbacks registered here never actually
+        # ran - these assertions were dead code. Call directly instead.
+        check_all_promotions()
+
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=self.user2, identifier="event_rank", level=2
+            ).exists(),
+            "User2 should now have rank 1 achievement",
+        )
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=self.user1, identifier="event_rank", level=1
+            ).exists(),
+            "User1 should now have rank 2 achievement",
         )
 
-        transaction.on_commit(
-            lambda: self.assertTrue(
-                Achievement.objects.filter(
-                    user=self.user1, identifier="event_rank_2", level=1
-                ).exists(),
-                "User1 should now have rank 2 achievement",
+    def test_score_updates_when_rank_changes(self):
+        """
+        Regression test: check_rank_promotions() used to change an existing
+        rank achievement's level with a bulk .update(), which bypasses
+        Achievement.save() and left achievements_score stale.
+        """
+        self.user2.refresh_from_db()
+        score_before = self.user2.achievements_score
+
+        # Register user2 for the rest of the events (9 -> 19), decisively
+        # surpassing user1's 14 rather than tying it.
+        for i in range(10, 20):
+            event = Event.objects.get(pk=i)
+            registration = Registration.objects.create(event=event, user=self.user2)
+            event.register(registration)
+            event.end_time = timezone.now() - timezone.timedelta(days=2)
+            event.save()
+
+        check_rank_promotions()
+
+        self.assertTrue(
+            Achievement.objects.filter(
+                user=self.user2, identifier=EVENT_RANK_IDENTIFIER, level=2
+            ).exists()
+        )
+        self.user2.refresh_from_db()
+        self.assertGreater(self.user2.achievements_score, score_before)
+
+    def test_achievement_removed_and_score_drops_when_leaving_top_three(self):
+        """
+        Regression test: check_rank_promotions() used to remove a stale rank
+        achievement with a bulk .delete(), which also bypasses
+        Achievement.save() and left achievements_score stale.
+        """
+        self.user1.refresh_from_db()
+        score_with_rank = self.user1.achievements_score
+        self.assertGreater(score_with_rank, 0)
+
+        # Three more users, each with a distinct event count higher than
+        # user1's 14, occupying all 3 rank tiers and pushing user1 and user2
+        # out entirely (equal counts would only occupy a single shared tier).
+        challengers = get_dummy_users(3)
+        for user, event_count in zip(challengers, (19, 18, 17), strict=True):
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            for i in range(1, event_count + 1):
+                event = Event.objects.get(pk=i)
+                registration = Registration.objects.create(event=event, user=user)
+                event.register(registration)
+                event.end_time = timezone.now() - timezone.timedelta(days=2)
+                event.save()
+
+        check_rank_promotions()
+
+        self.assertFalse(
+            Achievement.objects.filter(
+                user=self.user1, identifier=EVENT_RANK_IDENTIFIER
+            ).exists()
+        )
+        self.user1.refresh_from_db()
+        self.assertLess(self.user1.achievements_score, score_with_rank)
+
+    def test_at_most_three_distinct_tiers_rewarded(self):
+        """
+        Ties mean more than 3 achievement rows is fine (everyone tied for a
+        podium spot gets it), but never more than 3 distinct rank tiers
+        (1st/2nd/3rd) should ever be represented.
+        """
+        for user in get_dummy_users(3):
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            for i in range(1, 20):
+                event = Event.objects.get(pk=i)
+                registration = Registration.objects.create(event=event, user=user)
+                event.register(registration)
+                event.end_time = timezone.now() - timezone.timedelta(days=2)
+                event.save()
+
+        check_rank_promotions()
+
+        levels = set(
+            Achievement.objects.filter(identifier=EVENT_RANK_IDENTIFIER).values_list(
+                "level", flat=True
             )
         )
+        self.assertLessEqual(len(levels), 3)
+        # All three challengers register for the same 19 events and tie for
+        # 1st place - all three should get the level 2 (rank 1) achievement.
+        self.assertEqual(
+            Achievement.objects.filter(
+                identifier=EVENT_RANK_IDENTIFIER, level=2
+            ).count(),
+            3,
+        )
+
+    def test_tied_users_at_third_place_both_get_the_achievement(self):
+        """
+        Regression test: check_rank_promotions() used to rank by row position
+        (top 3 rows) rather than by value, so users tied for 3rd place could
+        arbitrarily miss out on the achievement depending on row order.
+        """
+        tied_users = get_dummy_users(2)
+        for user in tied_users:
+            AbakusGroup.objects.get(name="Abakus").add_user(user)
+            for i in range(1, 6):  # 5 events each - fewer than user2's 9
+                event = Event.objects.get(pk=i)
+                registration = Registration.objects.create(event=event, user=user)
+                event.register(registration)
+                event.end_time = timezone.now() - timezone.timedelta(days=2)
+                event.save()
+
+        check_rank_promotions()
+
+        for user in tied_users:
+            self.assertTrue(
+                Achievement.objects.filter(
+                    user=user, identifier=EVENT_RANK_IDENTIFIER, level=0
+                ).exists(),
+                f"{user.username} is tied for 3rd place and should have the achievement",
+            )
 
 
 class GenforsAchievementTestCase(BaseTestCase):

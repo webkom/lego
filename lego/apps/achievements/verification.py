@@ -1,7 +1,7 @@
 import itertools
 from datetime import datetime, timedelta
 
-from django.db.models import Q, Sum
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import ExtractYear
 from django.db.models.manager import BaseManager
 from django.utils import timezone
@@ -12,7 +12,7 @@ from lego.apps.events.constants import (
     PRESENCE_CHOICES,
     SUCCESS_REGISTER,
 )
-from lego.apps.events.models import Registration
+from lego.apps.events.models import Event, Registration
 from lego.apps.polls.models import Poll
 from lego.apps.quotes.models import Quote
 from lego.apps.users.models import Penalty, User
@@ -163,3 +163,106 @@ def check_total_event_payment_over(user: User, price: int):
         or 0
     )
     return total_paid > price
+
+
+PERFECT_WEEK_MIN_EVENTS = 3
+PERFECT_WEEK_ATTENDANCE_THRESHOLD = (
+    0.85  # allow a few missed check-ins to still count as "tracked"
+)
+
+
+def _week_start(dt):
+    d = timezone.localtime(dt).date()
+    return d - timedelta(days=d.weekday())
+
+
+def _eligible_events_by_week(user: User) -> dict:
+    # Events with registration the user was in the audience for (group-wise), by week
+    user_group_ids = {g.id for g in user.all_groups}
+    if not user_group_ids:
+        return {}
+
+    events = (
+        Event.objects.filter(pools__isnull=False, end_time__lte=timezone.now())
+        .distinct()
+        .prefetch_related("pools__permission_groups")
+    )
+    by_week: dict = {}
+    for event in events:
+        audience = {
+            g.id for pool in event.pools.all() for g in pool.permission_groups.all()
+        }
+        if audience & user_group_ids:
+            by_week.setdefault(_week_start(event.start_time), []).append(event.id)
+    return by_week
+
+
+def _tracked_events(event_ids) -> set:
+    # Events where attendance was actually (mostly) taken
+    stats = (
+        Registration.objects.filter(
+            event_id__in=event_ids, status=SUCCESS_REGISTER, pool__isnull=False
+        )
+        .values("event_id")
+        .annotate(
+            total=Count("id"),
+            known=Count("id", filter=~Q(presence=PRESENCE_CHOICES.UNKNOWN)),
+        )
+    )
+    return {
+        row["event_id"]
+        for row in stats
+        if row["total"]
+        and row["known"] / row["total"] >= PERFECT_WEEK_ATTENDANCE_THRESHOLD
+    }
+
+
+def _fully_attended(registration, tracked_event_ids: set) -> bool:
+    if (
+        registration is None
+        or registration.status != SUCCESS_REGISTER
+        or not registration.pool_id
+    ):
+        return False
+    if registration.event_id in tracked_event_ids and registration.presence not in (
+        PRESENCE_CHOICES.PRESENT,
+        PRESENCE_CHOICES.LATE,
+    ):
+        return False
+    if registration.event.is_priced and registration.payment_status not in (
+        PAYMENT_SUCCESS,
+        PAYMENT_MANUAL,
+    ):
+        return False
+    return True
+
+
+def check_perfect_week(user: User, weeks: int) -> bool:
+    """
+    True if the user ever had a `weeks`-long run of calendar weeks where each
+    week had at least PERFECT_WEEK_MIN_EVENTS events they were eligible for
+    (group-wise), and they fully attended (and paid, if priced) every one.
+    """
+    events_by_week = _eligible_events_by_week(user)
+    if not events_by_week:
+        return False
+
+    event_ids = [eid for ids in events_by_week.values() for eid in ids]
+    tracked_event_ids = _tracked_events(event_ids)
+    registrations = {
+        r.event_id: r
+        for r in Registration.objects.filter(
+            user=user, event_id__in=event_ids
+        ).select_related("event")
+    }
+
+    def week_ok(week) -> bool:
+        ids = events_by_week.get(week, [])
+        return len(ids) >= PERFECT_WEEK_MIN_EVENTS and all(
+            _fully_attended(registrations.get(eid), tracked_event_ids) for eid in ids
+        )
+
+    for start in sorted(events_by_week):
+        if all(week_ok(start + timedelta(weeks=i)) for i in range(weeks)):
+            return True
+    return False
