@@ -13,7 +13,7 @@ dependencies = [
     "pyyaml==6.0.1",
     "redis==4.5.5",
     "hiredis==2.2.3",
-    "celery>=5.4,<6",
+    "celery>=5.6.3,<6",
     "stripe==3.4.0",
     "boto3==1.28.1",
     "beautifulsoup4==4.12.2",
