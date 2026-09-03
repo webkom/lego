@@ -70,19 +70,19 @@ dependencies = [
 dev = ["django-debug-toolbar==4.1.0", "tblib>=1.7.0,<2"]
 coverage = ["coverage==7.4.1"]
 mypy = [
-    "mypy==1.15.0",
-    "mypy-extensions==1.0.0",
-    "django-stubs==5.2.0",
-    "djangorestframework-stubs==3.16.0",
-    "types-bleach==6.1.0.0",
-    "types-docutils==0.20.0.1",
+    "mypy==2.3.1",
+    "mypy-extensions==1.1.0",
+    "django-stubs==6.1.0",
+    "djangorestframework-stubs==3.18.1",
+    "types-bleach==6.4.0.20260728",
+    "types-docutils==0.23.0.20260827",
     "types-Markdown==3.4.2.9",
-    "types-python-slugify==8.0.0.3",
+    "types-python-slugify==8.0.2.20240310",
     "types-PyYAML==6.0.12.10",
-    "types-requests==2.31.0.1",
-    "types-six==1.16.21.8",
-    "types-urllib3==1.26.25.13",
-    "types-python-dateutil==2.8.19.13",
+    "types-requests==2.33.0.20260712",
+    "types-six==1.17.0.20260724",
+    "types-urllib3==1.26.25.14",
+    "types-python-dateutil==2.9.0.20260807",
 ]
 lint = ["ruff==0.16.3"]
 docs = ["sphinx==6.2.1", "sphinx_rtd_theme==1.2.1"]
