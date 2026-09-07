@@ -7,6 +7,7 @@ from django.db.models.manager import BaseManager
 from django.utils import timezone
 
 from lego.apps.events.constants import (
+    INTEREST_EVENT,
     PAYMENT_MANUAL,
     PAYMENT_SUCCESS,
     PRESENCE_CHOICES,
@@ -183,7 +184,11 @@ def _eligible_events_by_week(user: User) -> dict:
         return {}
 
     events = (
-        Event.objects.filter(pools__isnull=False, end_time__lte=timezone.now())
+        Event.objects.filter(
+            pools__isnull=False,
+            end_time__lte=timezone.now(),
+        )
+        .exclude(event_type=INTEREST_EVENT)
         .distinct()
         .prefetch_related("pools__permission_groups")
     )
