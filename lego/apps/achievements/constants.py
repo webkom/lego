@@ -7,6 +7,7 @@ from lego.apps.achievements.verification import (
     check_complete_profile,
     check_event_generic,
     check_longest_period_without_penalties,
+    check_perfect_week,
     check_poll_responses,
     check_total_event_payment_over,
     check_total_galas,
@@ -49,6 +50,7 @@ EASTER_2024_IDENTIFIER = "easter_2024"
 EASTER_2025_IDENTIFIER = "easter_2025"
 EASTER_2026_IDENTIFIER = "easter_2026"
 CHRISTMAS_CALENDAR_IDENTIFIER = "christmas_calendar"
+PERFECT_WEEK_IDENTIFIER = "perfect_week"
 
 # These are used for information about what counts as gala
 
@@ -281,6 +283,19 @@ GALA_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+PERFECT_WEEK_ACHIEVEMENTS: AchievementCollection = {
+    "perfect_week_1": {
+        "identifier": PERFECT_WEEK_IDENTIFIER,
+        "requirement_function": lambda user: check_perfect_week(user=user, weeks=1),
+        "level": 0,
+    },
+    "perfect_week_2": {
+        "identifier": PERFECT_WEEK_IDENTIFIER,
+        "requirement_function": lambda user: check_perfect_week(user=user, weeks=2),
+        "level": 1,
+    },
+}
+
 KEYPRESS_ORDER: AchievementCollection = {
     "keypress_order": {
         "identifier": KEYPRESS_ORDER_IDENTIFIER,
@@ -351,6 +366,7 @@ ACHIEVEMENTS = {
     **PENALTY_ACHIEVEMENTS,
     **GENFORS_ACHIEVEMENTS,
     **GALA_ACHIEVEMENTS,
+    **PERFECT_WEEK_ACHIEVEMENTS,
 }
 
 
