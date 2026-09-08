@@ -629,6 +629,7 @@ def check_that_pool_counters_match_registration_number(self, logger_context=None
 @celery_app.task(serializer="json",bind=True, base=AbakusTask)
 def create_user_registration_signup_eligibility_cache(self, logger_context=None):
     self.setup_logger(logger_context) 
+    # Create a cache of registration eligibility for all users and events that are opening for registration in the next hour.
 
     
 

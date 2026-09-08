@@ -29,13 +29,13 @@ from lego.apps.events.exceptions import (APIEventNotFound, APIEventNotPriced,
                                          RegistrationExists,
                                          RegistrationsExistInPool)
 from lego.apps.events.filters import EventsFilterSet
-from lego.apps.events.models import Event, Pool, Registration
+from lego.apps.events.models import Event, Pool, Registration, RegistrationEligibilityCache
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
     EventAdministrateAllergiesSerializer, EventAdministrateSerializer,
     EventCreateAndUpdateSerializer, EventReadAuthUserDetailedSerializer,
     EventReadSerializer, EventReadUserDetailedSerializer,
-    ImageGallerySerializer, populate_event_registration_users_with_grade)
+    ImageGallerySerializer, populate_event_registration_users_with_grade, RegistrationEligibilitySerializer)
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
     AdminRegistrationCreateAndUpdateSerializer, AdminUnregisterSerializer,
@@ -62,51 +62,49 @@ log = get_logger()
 
 
 def get_registration_eligibility(event: Event, user: User) -> dict[str, Any]:
+    """
+        Retrieves the registration eligibility for a given event and user. Returns a cached result if available, otherwise computes the eligibility and caches it for future use. 
+    """
+
+    # Retrieve registration eligibility from cache if available
+    cached_eligibility = RegistrationEligibilityCache.objects.filter(event=event, user=user).first()
+    if cached_eligibility is not None:
+        # Handle the cached eligibility
+        return {
+            "canRegisterNow": cached_eligibility.can_register_now,
+            "reason": cached_eligibility.reason,
+            "isRegistrationDelayed": cached_eligibility.is_registration_delayed,
+            "delayUntil": cached_eligibility.delay_until,
+            "willBeWaitingList": cached_eligibility.will_be_waiting_list,
+        }
+    
+    # Cached entry not found, compute eligibility and cache it
     current_time = timezone.now()
     can_register_status = event.evaluate_registration_eligibility(
         user=user, current_time=current_time
     )
 
-    penalties = 0
-    if event.heed_penalties:
-        offset = user.penalties.model.penalty_offset(current_time, forwards=False)
-        penalties = (
-            user.penalties.filter(created_at__gt=current_time - offset).aggregate(
-                Sum("weight")
-            )["weight__sum"]
-            or 0
-        )
-
-    delay_until = can_register_status.delay_until
-    if (
-        delay_until is None
-        and can_register_status.reason == "not_open_yet"
-        and user.is_authenticated
-    ):
-        possible_pools = event.get_possible_pools(user, future=True)
-        if possible_pools:
-            delay_until = event.get_earliest_registration_time(
-                user, possible_pools, penalties
-            )
-
-    delay_seconds = can_register_status.delay_seconds
-    if delay_until is not None and delay_seconds is None:
-        delay_seconds = max(0, ceil((delay_until - current_time).total_seconds()))
 
     is_registration_delayed = can_register_status.is_registration_delayed
-    if is_registration_delayed is None:
-        is_registration_delayed = can_register_status.reason == "not_open_yet"
-
+    delay_until = can_register_status.delay_until
     will_be_waiting_list = can_register_status.will_be_waiting_list
-    if will_be_waiting_list is None:
-        will_be_waiting_list = can_register_status.can_register_now and penalties >= 3
+
+    # Save the computed eligibility to the cache for future use
+    RegistrationEligibilityCache.objects.create(
+        event=event,
+        user=user,
+        can_register_now=can_register_status.can_register_now,
+        reason=can_register_status.reason,
+        is_registration_delayed=is_registration_delayed,
+        delay_until=delay_until,
+        will_be_waiting_list=will_be_waiting_list,
+    )
 
     return {
         "canRegisterNow": can_register_status.can_register_now,
         "reason": can_register_status.reason,
         "isRegistrationDelayed": is_registration_delayed,
         "delayUntil": delay_until,
-        "delaySeconds": delay_seconds or 0,
         "willBeWaitingList": will_be_waiting_list,
     }
 
@@ -377,6 +375,7 @@ class EventViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @extend_schema(responses=RegistrationEligibilitySerializer)
     @decorators.action(
         detail=True,
         methods=["GET"],

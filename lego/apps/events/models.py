@@ -1171,10 +1171,10 @@ class RegistrationEligibilityCache(BasisModel):
     )
 
     can_register_now = models.BooleanField(null=False)
-    will_be_waiting_list = models.BooleanField(null=False) 
-    is_registration_delayed = models.BooleanField(null=False)
+    will_be_waiting_list = models.BooleanField(null=True) 
+    is_registration_delayed = models.BooleanField(null=True)
 
-    reason = models.CharField(max_length=64, choices=Reason.choises, null=True)
+    reason = models.CharField(max_length=64, choices=Reason.choices, null=True)
     delay_until = models.DateTimeField(null=True)
     unanswered_surveys = models.ForeignKey(Survey, null=True, on_delete=models.SET_NULL)
 
