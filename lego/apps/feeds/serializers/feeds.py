@@ -1,5 +1,9 @@
 from rest_framework import serializers
 
+from drf_spectacular.utils import extend_schema_field
+
+from lego.apps.feeds.context import resolve_context
+
 
 class FeedActivitySerializer(serializers.Serializer):
     activity_id = serializers.CharField(read_only=True)
@@ -21,6 +25,11 @@ class AggregatedFeedSerializer(serializers.Serializer):
     activities = FeedActivitySerializer(many=True)
     activity_count = serializers.IntegerField()
     actor_ids = serializers.ListField(child=serializers.CharField())
+    context = serializers.SerializerMethodField()
+
+    @extend_schema_field(serializers.DictField())
+    def get_context(self, obj):
+        return resolve_context(obj, self.context.get("attr_lookup", {}))
 
 
 class MarkSerializer(serializers.Serializer):

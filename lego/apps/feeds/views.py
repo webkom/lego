@@ -1,9 +1,8 @@
-from typing import List
-
 from rest_framework import decorators, permissions, status, viewsets
 from rest_framework.response import Response
 
 from lego.apps.feeds.attr_cache import AttrCache
+from lego.apps.feeds.context import collect_refs
 
 from .feed_manager import feed_manager
 from .models import NotificationFeed, PersonalFeed, UserFeed
@@ -22,59 +21,28 @@ class FeedViewSet(viewsets.GenericViewSet):
     ordering = "-updated_at"
     serializer_class = AggregatedFeedSerializer
 
-    @staticmethod
-    def attach_metadata(data: List[dict]) -> List[dict]:
-        """
-        Map over the feed here to attach more information to each element.
-        """
-        content_strings = set()
-
-        for item in data:
-            activities = item.get("activities")
-            if activities:
-                # Aggregated Activity
-                for activity in activities:
-                    target = activity.get("target")
-                    object = activity.get("object")
-                    actor = activity.get("actor")
-                    content_strings.add(target) if target else None
-                    content_strings.add(object) if object else None
-                    content_strings.add(actor) if actor else None
-
-        if content_strings:
-            cache = AttrCache()
-            lookup = cache.bulk_lookup(content_strings)
-
-        for item in data:
-            context = {}
-
-            activities = item.get("activities")
-            if activities:
-                # Aggregated Activity
-                for activity in activities:
-                    target = activity.get("target")
-                    object = activity.get("object")
-                    actor = activity.get("actor")
-                    if target in lookup.keys():
-                        context[target] = lookup[target]
-                    if object in lookup.keys():
-                        context[object] = lookup[object]
-                    if actor in lookup.keys():
-                        context[actor] = lookup[actor]
-            item["context"] = context
-
-        return data
-
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(self.attach_metadata(serializer.data))
+        data = list(page if page is not None else queryset)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(self.attach_metadata(serializer.data))
+        all_refs = set()
+        for item in data:
+            all_refs |= collect_refs(item)
+
+        lookup = AttrCache().bulk_lookup(all_refs) if all_refs else {}
+
+        serializer_context = self.get_serializer_context()
+        serializer_context["attr_lookup"] = lookup
+
+        if page is not None:
+            serializer = self.get_serializer(
+                data, many=True, context=serializer_context
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(data, many=True, context=serializer_context)
+        return Response(serializer.data)
 
 
 class FeedMarkerViewSet(viewsets.GenericViewSet):
