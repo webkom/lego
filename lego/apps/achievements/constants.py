@@ -28,7 +28,9 @@ AchievementCollection = dict[str, Achievement]
 
 class RankType(models.TextChoices):
     ACHIEVEMENT_SCORE = "achievement_score", "Achievement score"
+    ACHIEVEMENT_SCORE_ACTIVE = "achievement_score_active", "Achievement score (active)"
     EVENT_COUNT = "event_count", "Event count"
+    EVENT_COUNT_ACTIVE = "event_count_active", "Event count (active)"
 
 
 # Remember to update rarity list in /utils/calculation_utils.py when adding new achievement

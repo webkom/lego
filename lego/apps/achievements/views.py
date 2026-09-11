@@ -33,8 +33,10 @@ from lego.apps.achievements.constants import (
 from lego.apps.achievements.models import Achievement, RankSnapshot
 from lego.apps.achievements.pagination import AchievementLeaderboardPagination
 from lego.apps.achievements.ranking import (
+    ACTIVE_RANK_TYPES,
     build_histogram,
     current_values_for,
+    filter_active_users,
     latest_snapshot_values,
     rarity_by_identifier_and_level,
     rarity_lookup,
@@ -59,6 +61,13 @@ from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 TROPHY_GRANT_ALL_FLAG_IDENTIFIER = "trophy-grant-all"
 MANUAL_ACHIEVEMENT_IDENTIFIERS = {
     data["identifier"] for data in MANUAL_ACHIEVEMENTS.values()
+}
+
+RANK_FIELD_BY_TYPE = {
+    RankType.ACHIEVEMENT_SCORE: "achievement_score_rank",
+    RankType.ACHIEVEMENT_SCORE_ACTIVE: "achievement_score_active_rank",
+    RankType.EVENT_COUNT: "event_count_rank",
+    RankType.EVENT_COUNT_ACTIVE: "event_count_active_rank",
 }
 
 
@@ -168,8 +177,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     # deterministic ordering to compute a stable position/offset - otherwise
     # ties can be returned in a different order on each request.
     def get_ordering(self):
-        is_event_count = self._get_rank_type() == RankType.EVENT_COUNT
-        field = "event_count_rank" if is_event_count else "achievement_score_rank"
+        field = RANK_FIELD_BY_TYPE[self._get_rank_type()]
         return (field, "id")
 
     # Rank can't be computed via a Window() and then filtered in the same
@@ -181,7 +189,8 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     # Window(Rank()) query - the fragile/expensive part - is only written
     # once.
     def _live_rank_data(self, rank_type):
-        if rank_type == RankType.EVENT_COUNT:
+        is_active = rank_type in ACTIVE_RANK_TYPES
+        if rank_type in (RankType.EVENT_COUNT, RankType.EVENT_COUNT_ACTIVE):
             base_qs = User.objects.annotate(
                 event_count=Count(
                     "registrations",
@@ -192,6 +201,8 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                     ),
                 )
             )
+            if is_active:
+                base_qs = filter_active_users(base_qs)
             distinct_user_ids = base_qs.filter(event_count__gt=0).values_list(
                 "id", flat=True
             )
@@ -200,11 +211,10 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 live_rank=Window(expression=Rank(), order_by=order_expr)
             )
         else:
-            distinct_user_ids = (
-                User.objects.filter(achievements__isnull=False)
-                .values_list("id", flat=True)
-                .distinct()
-            )
+            base_qs = User.objects.filter(achievements__isnull=False)
+            if is_active:
+                base_qs = filter_active_users(base_qs)
+            distinct_user_ids = base_qs.values_list("id", flat=True).distinct()
             order_expr = F("achievements_score").desc()
             rank_source_qs = User.objects.filter(id__in=distinct_user_ids).annotate(
                 live_rank=Window(expression=Rank(), order_by=order_expr)
@@ -212,6 +222,17 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         global_rank_mapping = {user.id: user.live_rank for user in rank_source_qs}
         return global_rank_mapping, distinct_user_ids
+
+    def _filter_by_group_ids(self, qs, param_name):
+        group_ids_str = self.request.query_params.get(param_name)
+        if not group_ids_str:
+            return qs
+        group_ids = [
+            int(p.strip()) for p in group_ids_str.split(",") if p.strip().isdigit()
+        ]
+        return qs.filter(
+            membership__is_active=True, membership__abakus_group__in=group_ids
+        )
 
     def get_queryset(self):
         rank_type = self._get_rank_type()
@@ -231,14 +252,8 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 | Q(last_name__icontains=user_full_name)
             )
 
-        group_ids_str = self.request.query_params.get("abakusGroupIds")
-        if group_ids_str:
-            group_ids = [
-                int(p.strip()) for p in group_ids_str.split(",") if p.strip().isdigit()
-            ]
-            qs_filter = qs_filter.filter(
-                membership__is_active=True, membership__abakus_group__in=group_ids
-            )
+        qs_filter = self._filter_by_group_ids(qs_filter, "abakusGroupIds")
+        qs_filter = self._filter_by_group_ids(qs_filter, "programGroupIds")
 
         def rank_as_of(date, snapshot_type):
             return Subquery(
@@ -266,24 +281,18 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             When(pk=pk, then=Value(rank)) for pk, rank in global_rank_mapping.items()
         ]
         live_rank = Case(*cases, default=Value(0), output_field=IntegerField())
-        no_rank = Value(None, output_field=IntegerField())
 
-        # Only the requested type's live rank is computed above (the window
-        # query is what's fragile/expensive) - the other type's rank is left
-        # null. History for both types is cheap either way, it's just a
-        # snapshot lookup, so both are always populated.
-        is_event_count = rank_type == RankType.EVENT_COUNT
+        requested_field = RANK_FIELD_BY_TYPE[rank_type]
+        rank_fields = {}
+        for type_, field in RANK_FIELD_BY_TYPE.items():
+            rank_fields[field] = (
+                live_rank if field == requested_field else rank_as_of(today, type_)
+            )
+            rank_fields[f"{field}_week_ago"] = rank_as_of(week_ago, type_)
+            rank_fields[f"{field}_month_ago"] = rank_as_of(month_ago, type_)
+
         annotated_qs = qs_filter.annotate(
-            achievement_score_rank=no_rank if is_event_count else live_rank,
-            event_count_rank=live_rank if is_event_count else no_rank,
-            achievement_score_rank_week_ago=rank_as_of(
-                week_ago, RankType.ACHIEVEMENT_SCORE
-            ),
-            achievement_score_rank_month_ago=rank_as_of(
-                month_ago, RankType.ACHIEVEMENT_SCORE
-            ),
-            event_count_rank_week_ago=rank_as_of(week_ago, RankType.EVENT_COUNT),
-            event_count_rank_month_ago=rank_as_of(month_ago, RankType.EVENT_COUNT),
+            **rank_fields,
             event_count=event_count_value,
         )
 
