@@ -8,32 +8,43 @@ from lego.apps.achievements.utils.calculation_utils import (
     achievement_score_percentage,
 )
 from lego.apps.events.constants import SUCCESS_REGISTER
+from lego.apps.users.constants import GROUP_GRADE
 from lego.apps.users.models import User
+
+ACTIVE_RANK_TYPES = {RankType.ACHIEVEMENT_SCORE_ACTIVE, RankType.EVENT_COUNT_ACTIVE}
+
+
+def filter_active_users(qs):
+    return qs.filter(abakus_groups__type=GROUP_GRADE).distinct()
+
+
+def _filter_if_active(qs, rank_type: str):
+    return filter_active_users(qs) if rank_type in ACTIVE_RANK_TYPES else qs
 
 
 def _ordered_values_for(rank_type: str):
-    if rank_type == RankType.ACHIEVEMENT_SCORE:
+    if rank_type in (RankType.ACHIEVEMENT_SCORE, RankType.ACHIEVEMENT_SCORE_ACTIVE):
+        qs = _filter_if_active(
+            User.objects.filter(achievements__isnull=False), rank_type
+        )
         return (
-            User.objects.filter(achievements__isnull=False)
-            .distinct()
+            qs.distinct()
             .order_by("-achievements_score")
             .values_list("id", "achievements_score")
         )
-    if rank_type == RankType.EVENT_COUNT:
-        return (
-            User.objects.annotate(
-                event_count=Count(
-                    "registrations",
-                    filter=Q(
-                        registrations__status=SUCCESS_REGISTER,
-                        registrations__event__end_time__lte=timezone.now(),
-                        registrations__pool__isnull=False,
-                    ),
-                )
+    if rank_type in (RankType.EVENT_COUNT, RankType.EVENT_COUNT_ACTIVE):
+        qs = User.objects.annotate(
+            event_count=Count(
+                "registrations",
+                filter=Q(
+                    registrations__status=SUCCESS_REGISTER,
+                    registrations__event__end_time__lte=timezone.now(),
+                    registrations__pool__isnull=False,
+                ),
             )
-            .order_by("-event_count")
-            .values_list("id", "event_count")
         )
+        qs = _filter_if_active(qs, rank_type)
+        return qs.order_by("-event_count").values_list("id", "event_count")
     raise ValueError(f"Unknown rank type: {rank_type}")
 
 
@@ -91,14 +102,15 @@ def current_values_for(rank_type: str) -> dict[int, float]:
     from the daily RankSnapshot cache instead of aggregating Registrations
     on every request (see the cost comment on LeaderBoardViewSet.get_queryset).
     """
-    if rank_type == RankType.ACHIEVEMENT_SCORE:
+    if rank_type in (RankType.ACHIEVEMENT_SCORE, RankType.ACHIEVEMENT_SCORE_ACTIVE):
+        qs = _filter_if_active(
+            User.objects.filter(achievements__isnull=False), rank_type
+        )
         return {
             user_id: achievement_score_percentage(score)
-            for user_id, score in User.objects.filter(
-                achievements__isnull=False
-            ).values_list("id", "achievements_score")
+            for user_id, score in qs.values_list("id", "achievements_score")
         }
-    if rank_type == RankType.EVENT_COUNT:
+    if rank_type in (RankType.EVENT_COUNT, RankType.EVENT_COUNT_ACTIVE):
         return latest_snapshot_values(rank_type, "value", value__gt=0)
     raise ValueError(f"Unknown rank type: {rank_type}")
 
