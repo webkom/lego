@@ -77,15 +77,6 @@ class EventNotReady(ValueError):
     pass
 
 
-class PoolCounterNotEqualToRegistrationCount(ValueError):
-    def __init__(self, pool, registration_count, event):
-        message = (
-            f"Pool {pool.id} for event {event.id} was supposed to have "
-            f"{pool.counter} registrations, but has {registration_count}!"
-        )
-        super().__init__(message)
-
-
 class WebhookDidNotFindRegistration(ValueError):
     def __init__(self, event_id, metadata):
         message = (
