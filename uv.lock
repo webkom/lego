@@ -1424,7 +1424,7 @@ dev = [
 ]
 docs = [
     { name = "sphinx", specifier = "==6.2.1" },
-    { name = "sphinx-rtd-theme", specifier = "==1.2.1" },
+    { name = "sphinx-rtd-theme", specifier = "==3.1.0" },
 ]
 lint = [{ name = "ruff", specifier = "==0.16.3" }]
 mypy = [
@@ -2138,16 +2138,16 @@ wheels = [
 
 [[package]]
 name = "sphinx-rtd-theme"
-version = "1.2.1"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
     { name = "sphinx" },
     { name = "sphinxcontrib-jquery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/79/0b25a26c2103457553530c45d0f5408e3ca19c02274f170d86607d0b805c/sphinx_rtd_theme-1.2.1.tar.gz", hash = "sha256:cf9a7dc0352cf179c538891cb28d6fad6391117d4e21c891776ab41dd6c8ff70", size = 2784128, upload-time = "2023-05-23T09:22:24.124Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/84/68/a1bfbf38c0f7bccc9b10bbf76b94606f64acb1552ae394f0b8285bfaea25/sphinx_rtd_theme-3.1.0.tar.gz", hash = "sha256:b44276f2c276e909239a4f6c955aa667aaafeb78597923b1c60babc76db78e4c", size = 7620915, upload-time = "2026-01-12T16:03:31.17Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c2/73/946cdd32f29c87843edaa059b9fc52ab9267d1137b3a76dee1d59d02a01a/sphinx_rtd_theme-1.2.1-py2.py3-none-any.whl", hash = "sha256:2cc9351176cbf91944ce44cefd4fab6c3b76ac53aa9e15d6db45a3229ad7f866", size = 2824802, upload-time = "2023-05-23T09:22:20.313Z" },
+    { url = "https://files.pythonhosted.org/packages/87/c7/b5c8015d823bfda1a346adb2c634a2101d50bb75d421eb6dcb31acd25ebc/sphinx_rtd_theme-3.1.0-py2.py3-none-any.whl", hash = "sha256:1785824ae8e6632060490f67cf3a72d404a85d2d9fc26bce3619944de5682b89", size = 7655617, upload-time = "2026-01-12T16:03:28.101Z" },
 ]
 
 [[package]]
