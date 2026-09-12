@@ -78,12 +78,31 @@ class EventNotReady(ValueError):
 
 
 class PoolCounterNotEqualToRegistrationCount(ValueError):
-    def __init__(self, pool, registration_count, event):
-        message = (
-            f"Pool {pool.id} for event {event.id} was supposed to have "
-            f"{pool.counter} registrations, but has {registration_count}!"
+    def __init__(self, mismatches):
+        """
+        :param mismatches: list of (pool_id, event_id, counter, registration_count)
+        """
+        # Celery and pickle rebuild exceptions as cls(*args), and args hold the message.
+        if isinstance(mismatches, str):
+            self.mismatches = []
+            super().__init__(mismatches)
+            return
+
+        self.mismatches = mismatches
+        details = [
+            f"Pool {pool_id} for event {event_id} was supposed to have "
+            f"{counter} registrations, but has {registration_count}"
+            for pool_id, event_id, counter, registration_count in mismatches
+        ]
+
+        if len(details) == 1:
+            super().__init__(f"{details[0]}!")
+            return
+
+        super().__init__(
+            f"{len(details)} pools have a counter that does not match their "
+            f"registration count: " + "; ".join(details)
         )
-        super().__init__(message)
 
 
 class WebhookDidNotFindRegistration(ValueError):
