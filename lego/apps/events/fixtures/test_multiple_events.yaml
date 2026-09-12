@@ -768,7 +768,6 @@
     name: Abakusmember
     capacity: 0
     event: 55
-    counter: 0
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
