@@ -8,7 +8,7 @@ readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
     "django==5.2.17",
-    "ipython==8.29.0",
+    "ipython==9.16.1",
     "psycopg2-binary==2.9.6",
     "pyyaml==6.0.1",
     "redis==4.5.5",
