@@ -8,6 +8,7 @@ from django.utils import timezone
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (
     EventReadDetailedSocketSerializer,
+    RegistrationAttendanceSocketSerializer,
     RegistrationPaymentInitiateSocketSerializer,
     RegistrationPaymentReadErrorSerializer,
     RegistrationPaymentReadSocketSerializer,
@@ -116,3 +117,14 @@ def notify_event_updated(event: Event, **kwargs):
 
     notify_group(full_access_group, serializer.data)
     notify_group(limited_access_group, serializer.data)
+
+
+def notify_user_of_registered_attendance(registration: Registration, **kwargs):
+    event = registration.event
+    user = registration.user
+    group = group_for_user(user.pk)
+    serializer = RegistrationAttendanceSocketSerializer(
+        {"type": "Websockets.TRANSIENT.ATTENDANCE_REGISTERED", "payload": event, "meta": kwargs},
+        context={"user": user},
+    )
+    notify_group(group, serializer.data)
