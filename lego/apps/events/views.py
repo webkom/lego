@@ -68,7 +68,10 @@ from lego.apps.events.tasks import (
     save_and_notify_payment,
     withdraw_registration,
 )
-from lego.apps.events.websockets import notify_event_registration
+from lego.apps.events.websockets import (
+    notify_event_registration,
+    notify_user_of_registered_attendance,
+)
 from lego.apps.files.constants import IMAGE
 from lego.apps.files.models import File
 from lego.apps.permissions.api.filters import LegoPermissionFilter
@@ -692,5 +695,6 @@ class RegistrationSearchViewSet(
 
         reg.presence = constants.PRESENCE_CHOICES.PRESENT
         reg.save()
+        notify_user_of_registered_attendance(reg)
         data = RegistrationSearchReadSerializer(reg).data
         return Response(data=data, status=status.HTTP_200_OK)
