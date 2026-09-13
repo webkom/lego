@@ -8,8 +8,8 @@ from .feed_manager import feed_manager
 from .models import NotificationFeed, PersonalFeed, UserFeed
 from .serializers.feeds import (
     AggregatedFeedSerializer,
-    AggregatedMarkedFeedSerializer,
     MarkSerializer,
+    NotificationDataSerializer,
 )
 
 
@@ -50,8 +50,6 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
     Feed class with marker support
     """
 
-    serializer_class = AggregatedMarkedFeedSerializer
-
     @decorators.action(detail=False, serializer_class=MarkSerializer, methods=["POST"])
     def mark_all(self, request):
         """
@@ -82,7 +80,9 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @decorators.action(detail=False, methods=["GET"])
+    @decorators.action(
+        detail=False, serializer_class=NotificationDataSerializer, methods=["GET"]
+    )
     def notification_data(self, request):
         feed = self.get_queryset().model
         return Response(feed.get_notification_data(self.request.user.id))

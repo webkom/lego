@@ -40,3 +40,8 @@ class MarkSerializer(serializers.Serializer):
 class AggregatedMarkedFeedSerializer(AggregatedFeedSerializer):
     read = serializers.BooleanField(source="is_read")
     seen = serializers.BooleanField(source="is_seen")
+
+
+class NotificationDataSerializer(serializers.Serializer):
+    unread_count = serializers.IntegerField()
+    unseen_count = serializers.IntegerField()
