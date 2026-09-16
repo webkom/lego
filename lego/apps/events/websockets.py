@@ -124,7 +124,11 @@ def notify_user_of_registered_attendance(registration: Registration, **kwargs):
     user = registration.user
     group = group_for_user(user.pk)
     serializer = RegistrationAttendanceSocketSerializer(
-        {"type": "Websockets.TRANSIENT.ATTENDANCE_REGISTERED", "payload": event, "meta": kwargs},
+        {
+            "type": "Websockets.TRANSIENT.ATTENDANCE_REGISTERED",
+            "payload": event,
+            "meta": kwargs,
+        },
         context={"user": user},
     )
     notify_group(group, serializer.data)
