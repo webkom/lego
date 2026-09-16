@@ -183,10 +183,12 @@ def _eligible_events_by_week(user: User) -> dict:
     if not user_group_ids:
         return {}
 
+    # only fully elapsed weeks - a partial in-progress week shouldn't count
+    current_week_start = _week_start(timezone.now())
+
     events = (
         Event.objects.filter(
             pools__isnull=False,
-            end_time__lte=timezone.now(),
         )
         .exclude(event_type=INTEREST_EVENT)
         .distinct()
@@ -194,11 +196,14 @@ def _eligible_events_by_week(user: User) -> dict:
     )
     by_week: dict = {}
     for event in events:
+        week = _week_start(event.start_time)
+        if week >= current_week_start:
+            continue
         audience = {
             g.id for pool in event.pools.all() for g in pool.permission_groups.all()
         }
         if audience & user_group_ids:
-            by_week.setdefault(_week_start(event.start_time), []).append(event.id)
+            by_week.setdefault(week, []).append(event.id)
     return by_week
 
 

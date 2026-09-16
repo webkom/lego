@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest import mock
 
 from django.utils import timezone
 
@@ -143,6 +144,15 @@ class CheckPerfectWeekTestCase(BaseTestCase):
             payment_status=PAYMENT_SUCCESS
         )
         self.assertTrue(check_perfect_week(self.user, weeks=1))
+
+    def test_in_progress_week_not_counted_even_if_past_events_are_perfect(self):
+        mid_week = BASE_MONDAY + timedelta(days=2, hours=6)
+        self._fill_week(BASE_MONDAY, 3)
+        _create_event(BASE_MONDAY + timedelta(days=3), self.group)
+        _create_event(BASE_MONDAY + timedelta(days=4), self.group)
+
+        with mock.patch("django.utils.timezone.now", return_value=mid_week):
+            self.assertFalse(check_perfect_week(self.user, weeks=1))
 
     def test_two_week_window_requires_both_weeks_independently(self):
         self._fill_week(BASE_MONDAY, 3)
