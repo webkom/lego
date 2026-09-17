@@ -67,7 +67,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["django-debug-toolbar==4.1.0", "tblib>=1.7.0,<2"]
+dev = ["django-debug-toolbar==7.1.1", "tblib>=1.7.0,<2"]
 coverage = ["coverage==7.4.1"]
 mypy = [
     "mypy==1.15.0",

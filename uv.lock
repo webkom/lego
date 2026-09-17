@@ -586,15 +586,15 @@ wheels = [
 
 [[package]]
 name = "django-debug-toolbar"
-version = "4.1.0"
+version = "7.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "sqlparse" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9b/e0/9a439dd58ac27ceaecce015fe57916bbd84dbbaf7ca3208c122b46c7d3ff/django_debug_toolbar-4.1.0.tar.gz", hash = "sha256:f57882e335593cb8e74c2bda9f1116bbb9ca8fc0d81b50a75ace0f83de5173c7", size = 116377, upload-time = "2023-05-16T06:46:00.074Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/da/df67a8e407ab6141affee4ee5cb2704403b9d5465cc35abbb42f5190a3fa/django_debug_toolbar-7.1.1.tar.gz", hash = "sha256:2fb4093d95e6f87258606c55f4d2aa45d1847b17a415525a9dceac02e937a836", size = 363531, upload-time = "2026-08-14T13:18:47.219Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/11/22ae178ae870945970250bdad22530583384b3438be87e08c075016f3b07/django_debug_toolbar-4.1.0-py3-none-any.whl", hash = "sha256:a0b532ef5d52544fd745d1dcfc0557fa75f6f0d1962a8298bd568427ef2fa436", size = 222480, upload-time = "2023-05-16T06:46:23.879Z" },
+    { url = "https://files.pythonhosted.org/packages/de/c8/f473a965186510233129c2ab22e4808a1938afcbe9a287145d17693adf70/django_debug_toolbar-7.1.1-py3-none-any.whl", hash = "sha256:e1385b22fb17bff4dc51cf782679a7926676405e8d013ada1e3d8a6bfc47fdb3", size = 304387, upload-time = "2026-08-14T13:18:45.642Z" },
 ]
 
 [[package]]
@@ -1419,7 +1419,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 coverage = [{ name = "coverage", specifier = "==7.4.1" }]
 dev = [
-    { name = "django-debug-toolbar", specifier = "==4.1.0" },
+    { name = "django-debug-toolbar", specifier = "==7.1.1" },
     { name = "tblib", specifier = ">=1.7.0,<2" },
 ]
 docs = [
