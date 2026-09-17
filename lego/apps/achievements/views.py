@@ -71,6 +71,14 @@ RANK_FIELD_BY_TYPE = {
 }
 
 
+def _event_count_filter():
+    return Q(
+        registrations__status=SUCCESS_REGISTER,
+        registrations__event__end_time__lte=timezone.now(),
+        registrations__pool__isnull=False,
+    )
+
+
 def _trophy_grant_all_enabled(user) -> bool:
     flag = FeatureFlag.objects.filter(
         identifier=TROPHY_GRANT_ALL_FLAG_IDENTIFIER
@@ -192,14 +200,7 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         is_active = rank_type in ACTIVE_RANK_TYPES
         if rank_type in (RankType.EVENT_COUNT, RankType.EVENT_COUNT_ACTIVE):
             base_qs = User.objects.annotate(
-                event_count=Count(
-                    "registrations",
-                    filter=Q(
-                        registrations__status=SUCCESS_REGISTER,
-                        registrations__event__end_time__lte=timezone.now(),
-                        registrations__pool__isnull=False,
-                    ),
-                )
+                event_count=Count("registrations", filter=_event_count_filter())
             )
             if is_active:
                 base_qs = filter_active_users(base_qs)
@@ -264,19 +265,6 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 .values("rank")[:1]
             )
 
-        # event_count's value is always sourced from the snapshot table,
-        # regardless of which type is currently being ranked by - computing
-        # it live via Count("registrations") on every request (in addition
-        # to whatever the rank_type branch above already does) is the exact
-        # cost this was meant to avoid.
-        event_count_value = Subquery(
-            RankSnapshot.objects.filter(
-                user=OuterRef("pk"), type=RankType.EVENT_COUNT, date__lte=today
-            )
-            .order_by("-date")
-            .values("value")[:1]
-        )
-
         cases = [
             When(pk=pk, then=Value(rank)) for pk, rank in global_rank_mapping.items()
         ]
@@ -291,19 +279,26 @@ class LeaderBoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             rank_fields[f"{field}_week_ago"] = rank_as_of(week_ago, type_)
             rank_fields[f"{field}_month_ago"] = rank_as_of(month_ago, type_)
 
-        annotated_qs = qs_filter.annotate(
-            **rank_fields,
-            event_count=event_count_value,
-        )
+        return qs_filter.annotate(**rank_fields).order_by(*self.get_ordering())
 
-        return annotated_qs.order_by(*self.get_ordering())
+    # scoped to the page, not the full queryset, to avoid a full-table GROUP BY
+    def _attach_event_counts(self, users):
+        counts = dict(
+            User.objects.filter(id__in=[u.id for u in users])
+            .annotate(event_count=Count("registrations", filter=_event_count_filter()))
+            .values_list("id", "event_count")
+        )
+        for user in users:
+            user.event_count = counts.get(user.id, 0)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
+            self._attach_event_counts(page)
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
+        self._attach_event_counts(queryset)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
