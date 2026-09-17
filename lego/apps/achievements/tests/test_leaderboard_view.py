@@ -97,22 +97,23 @@ class LeaderBoardEventCountTestCase(BaseAPITestCase):
             returned_ids, [self.users[1].id, self.users[2].id, self.users[0].id]
         )
 
-    def test_event_count_field_is_null_until_a_snapshot_has_been_taken(self):
+    def test_event_count_field_is_live_without_any_snapshot(self):
         _register_for_n_events(self.users[0], 4)
-
-        res = self._get(type=RankType.EVENT_COUNT)
-
-        by_id = {row["id"]: row for row in res.data["results"]}
-        self.assertIsNone(by_id[self.users[0].id]["ranking"]["event_count"]["value"])
-
-    def test_event_count_field_reflects_the_latest_snapshot_value(self):
-        _register_for_n_events(self.users[0], 4)
-        snapshot_rank_type(RankType.EVENT_COUNT)
 
         res = self._get(type=RankType.EVENT_COUNT)
 
         by_id = {row["id"]: row for row in res.data["results"]}
         self.assertEqual(by_id[self.users[0].id]["ranking"]["event_count"]["value"], 4)
+
+    def test_event_count_field_reflects_registrations_made_after_a_snapshot(self):
+        _register_for_n_events(self.users[0], 4)
+        snapshot_rank_type(RankType.EVENT_COUNT)
+        _register_for_n_events(self.users[0], 2)
+
+        res = self._get(type=RankType.EVENT_COUNT)
+
+        by_id = {row["id"]: row for row in res.data["results"]}
+        self.assertEqual(by_id[self.users[0].id]["ranking"]["event_count"]["value"], 6)
 
     def test_invalid_type_falls_back_to_achievement_score(self):
         _give_achievement(self.users[1], QUOTE_IDENTIFIER, 0)
