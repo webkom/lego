@@ -1,14 +1,9 @@
-import calendar
-from datetime import datetime
-
 from django.db.models import Q
-from django.utils import timezone
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from lego.apps.lending.constants import LENDING_REQUEST_STATUSES
 from lego.apps.lending.filters import LendingRequestFilterSet
 from lego.apps.lending.models import LendableObject, LendingRequest, TimelineEntry
 from lego.apps.lending.serializers import (
@@ -23,7 +18,6 @@ from lego.apps.lending.serializers import (
 from lego.apps.permissions.api.permissions import LegoPermissions
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT
-from lego.apps.users.models import User
 
 
 class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
@@ -57,21 +51,13 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         start_date = serializer.validated_data["start_date"]
         end_date = serializer.validated_data["end_date"]
 
-        approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
-
-        unavailable_objects_ids = (
-            LendingRequest.objects.filter(
-                status=approved_status, start_date__lt=end_date, end_date__gt=start_date
-            )
-            .values_list("lendable_object_id", flat=True)
-            .distinct()
-        )
+        unavailable_ids = LendableObject.unavailable_ids(start_date, end_date)
 
         base_queryset = self.filter_queryset(self.get_queryset())
 
-        available_ids = base_queryset.exclude(
-            id__in=unavailable_objects_ids
-        ).values_list("id", flat=True)
+        available_ids = base_queryset.exclude(id__in=unavailable_ids).values_list(
+            "id", flat=True
+        )
 
         return Response(list(available_ids))
 
@@ -98,52 +84,7 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        start_of_month = timezone.make_aware(datetime(year, month, 1))
-        last_day = calendar.monthrange(year, month)[1]
-        end_of_month = timezone.make_aware(datetime(year, month, last_day, 23, 59, 59))
-
-        approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
-
-        overlapping_requests = (
-            LendingRequest.objects.filter(
-                lendable_object=lendable_object, status=approved_status
-            )
-            .filter(Q(start_date__lte=end_of_month) & Q(end_date__gte=start_of_month))
-            .order_by("start_date")
-        )
-
-        unavailable_ranges = []
-        for request in overlapping_requests:
-            range_start = max(request.start_date, start_of_month)
-            range_end = min(request.end_date, end_of_month)
-
-            unavailable_ranges.append([range_start, range_end, request.created_by])
-
-        formatted_ranges = []
-        for i in range(len(unavailable_ranges)):
-            start, end, created_by = unavailable_ranges[i]
-            start_date = start.isoformat()
-            end_date = end.isoformat()
-            created_by_username = created_by
-            created_by_fullname = None
-            if created_by is None:
-                created_by_fullname = None
-            elif isinstance(created_by, str):
-                usr = User.objects.filter(username=created_by).first()
-                if usr:
-                    created_by_fullname = usr.get_full_name()
-                else:
-                    created_by_fullname = None
-            elif isinstance(created_by, User):
-                created_by_fullname = created_by.get_full_name()
-            else:
-                created_by_fullname = None
-            created_by_username = None if (created_by is None) else created_by.username
-            formatted_ranges.append(
-                [start_date, end_date, created_by_fullname, created_by_username]
-            )
-
-        return Response(formatted_ranges)
+        return Response(lendable_object.availability(month, year))
 
 
 class LendingRequestViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):

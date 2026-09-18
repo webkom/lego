@@ -61,10 +61,21 @@ class LendableObjectSerializer(BasisModelSerializer):
             "location",
             "can_lend",
             "category",
+            "lendable_objects",
         )
 
     def get_can_lend(self, obj):
         return obj.can_lend(self.context["request"].user)
+
+    def validate_lendable_objects(self, value):
+        if self.instance is not None:
+            for child in value:
+                if child.contains(self.instance):
+                    raise serializers.ValidationError(
+                        "A bundle cannot contain itself, directly or through nested "
+                        "bundles."
+                    )
+        return value
 
 
 class LendableObjectAdminSerializer(
@@ -276,6 +287,22 @@ class LendingRequestCreateAndUpdateSerializer(BasisModelSerializer):
                     raise serializers.ValidationError(
                         {"status": ("You cannot cancel someone else's request.. ")}
                     )
+
+                if new_status == LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]:
+                    final_start_date = start_date or self.instance.start_date
+                    final_end_date = end_date or self.instance.end_date
+                    if lendable_object and not lendable_object.is_available(
+                        final_start_date,
+                        final_end_date,
+                        exclude_request_id=self.instance.id,
+                    ):
+                        raise serializers.ValidationError(
+                            {
+                                "lendable_object": (
+                                    "This object is not available for the selected dates."
+                                )
+                            }
+                        )
 
         return attrs
 
