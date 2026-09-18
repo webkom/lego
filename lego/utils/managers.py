@@ -21,7 +21,7 @@ class PersistentModelQuerySet(models.QuerySet):
                 instances = super().select_for_update()
                 for instance in instances:
                     pre_delete.send(sender=instance.__class__, instance=instance)
-                delete_result = instances.delete()
+                delete_result = instances.update(deleted=True)
                 for instance in instances:
                     post_delete.send(sender=instance.__class__, instance=instance)
                 return delete_result
