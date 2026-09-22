@@ -27,6 +27,7 @@ class PaymentErrorSerialzer(MetaSerializer):
 
 class EventWebsocketSerializer(WebsocketSerializer):
     meta = MetaSerializer()
+    payload = {}
 
 
 class RegistrationReadSocketSerializer(EventWebsocketSerializer):
