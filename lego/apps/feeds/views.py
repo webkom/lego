@@ -8,6 +8,7 @@ from .feed_manager import feed_manager
 from .models import NotificationFeed, PersonalFeed, UserFeed
 from .serializers.feeds import (
     AggregatedFeedSerializer,
+    AggregatedMarkedFeedSerializer,
     MarkSerializer,
     NotificationDataSerializer,
 )
@@ -124,6 +125,7 @@ class NotificationsViewSet(FeedMarkerViewSet, FeedViewSet):
     """
 
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = AggregatedMarkedFeedSerializer
 
     def get_queryset(self):
         if self.request is None:
