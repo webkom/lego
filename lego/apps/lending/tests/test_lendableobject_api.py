@@ -434,7 +434,7 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         start_date = self.start_of_month
         end_date = start_date + timedelta(days=10)
 
-        create_lending_request(
+        lending_request = create_lending_request(
             lendable_object=self.lendable_object,
             user=self.borrower,
             start_date=start_date,
@@ -446,11 +446,11 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
-
         unavailable_range = response.json()[0]
-        self.assertEqual(len(unavailable_range), 4)
-        self.assertEqual(unavailable_range[0], start_date.isoformat())
-        self.assertEqual(unavailable_range[1], end_date.isoformat())
+        self.assertEqual(len(unavailable_range), 5)
+        self.assertEqual(unavailable_range["start"], start_date.isoformat())
+        self.assertEqual(unavailable_range["end"], end_date.isoformat())
+        self.assertEqual(unavailable_range["requestId"], lending_request.id)
 
     def test_non_approved_request_not_included(self):
         self.client.force_authenticate(user=self.user)
