@@ -5,12 +5,14 @@ from typing import TYPE_CHECKING
 
 from django.utils import timezone
 
+from lego.apps.events import constants
 from lego.apps.events.models import Event
 from lego.apps.events.serializers.sockets import (
     EventReadDetailedSocketSerializer,
     RegistrationPaymentInitiateSocketSerializer,
     RegistrationPaymentReadErrorSerializer,
     RegistrationPaymentReadSocketSerializer,
+    RegistrationPresenceSocketSerializer,
     RegistrationReadAnonymizedSocketSerializer,
     RegistrationReadSocketSerializer,
 )
@@ -62,6 +64,17 @@ def notify_event_registration(action_type: str, registration: Registration, **kw
 
     notify_group(full_access_group, full_serializer.data)
     notify_group(partial_access_group, partial_serializer.data)
+
+
+def notify_registration_presence(registration: Registration) -> None:
+    serializer = RegistrationPresenceSocketSerializer(
+        {
+            "type": constants.SOCKET_PRESENCE_SUCCESS,
+            "payload": registration,
+            "meta": {"event_id": registration.event.id},
+        }
+    )
+    notify_group(group_for_event(registration.event, True), serializer.data)
 
 
 def notify_user_payment_initiated(

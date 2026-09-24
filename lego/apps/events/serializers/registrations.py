@@ -81,6 +81,13 @@ class RegistrationAnonymizedReadSerializer(BasisModelSerializer):
         read_only = True
 
 
+class RegistrationPresenceReadSerializer(BasisModelSerializer):
+    class Meta:
+        model = Registration
+        fields = ("id", "presence", "presence_date")
+        read_only = True
+
+
 class RegistrationPublicReadSerializer(BasisModelSerializer):
     user = PublicUserWithAbakusGroupsSerializer()
 
@@ -111,6 +118,7 @@ class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
     class Meta(RegistrationPublicReadSerializer.Meta):
         fields = RegistrationPublicReadSerializer.Meta.fields + (  # type: ignore
             "presence",
+            "presence_date",
             "LEGACY_photo_consent",
         )
 
@@ -145,6 +153,7 @@ class RegistrationReadDetailedSerializer(BasisModelSerializer):
             "pool",
             "event",
             "presence",
+            "presence_date",
             "feedback",
             "status",
             "registration_date",

@@ -861,6 +861,7 @@ class Registration(BasisModel):
     )
     registration_date = models.DateTimeField(db_index=True, null=True)
     unregistration_date = models.DateTimeField(null=True)
+    presence_date = models.DateTimeField(null=True)
     feedback = models.CharField(max_length=255, blank=True)
     admin_registration_reason = models.CharField(max_length=255, blank=True)
     admin_unregistration_reason = models.CharField(max_length=255, blank=True)
@@ -941,6 +942,7 @@ class Registration(BasisModel):
             raise ValueError("Illegal presence choice")
 
         self.presence = presence
+        self.presence_date = timezone.now()
         self.handle_user_penalty(presence)
         self.save()
 

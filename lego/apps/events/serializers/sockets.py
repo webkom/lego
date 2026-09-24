@@ -4,6 +4,7 @@ from lego.apps.events.serializers.events import EventReadDetailedSerializer
 from lego.apps.events.serializers.registrations import (
     RegistrationAnonymizedReadSerializer,
     RegistrationPaymentReadSerializer,
+    RegistrationPresenceReadSerializer,
     RegistrationPublicReadSerializer,
 )
 from lego.apps.feeds.serializers.sockets import WebsocketSerializer
@@ -35,6 +36,10 @@ class RegistrationReadSocketSerializer(EventWebsocketSerializer):
 
 class RegistrationReadAnonymizedSocketSerializer(EventWebsocketSerializer):
     payload = RegistrationAnonymizedReadSerializer()  # type: ignore
+
+
+class RegistrationPresenceSocketSerializer(EventWebsocketSerializer):
+    payload = RegistrationPresenceReadSerializer()  # type: ignore[assignment]
 
 
 class RegistrationPaymentReadSocketSerializer(EventWebsocketSerializer):

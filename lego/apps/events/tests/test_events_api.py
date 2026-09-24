@@ -20,6 +20,7 @@ from lego.apps.events.tasks import (
     stripe_webhook_event,
 )
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
+from lego.apps.events.websockets import notify_registration_presence
 from lego.apps.followers.models import FollowEvent
 from lego.apps.surveys.models import Submission, Survey
 from lego.apps.users.constants import GROUP_GRADE, LEADER, PHOTO_CONSENT_DOMAINS
@@ -2180,6 +2181,83 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertNotEqual(res.json().get("user", None), None)
+
+    @mock.patch("lego.apps.events.views.notify_registration_presence")
+    def test_register_presence_notifies(self, mock_notify):
+        registration = Registration.objects.get(user=self.users[0], event=self.event)
+        with self.captureOnCommitCallbacks(execute=True):
+            self.client.post(
+                _get_registration_search_url(self.event.pk),
+                {"username": self.users[0].username},
+            )
+        mock_notify.assert_called_once_with(registration)
+
+    def test_register_presence_sets_presence_date(self):
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"username": self.users[0].username},
+        )
+        registration = Registration.objects.get(user=self.users[0], event=self.event)
+        self.assertIsNotNone(registration.presence_date)
+        self.assertIsNotNone(res.json()["presenceDate"])
+
+    def test_update_presence_sets_presence_date(self):
+        registration = Registration.objects.get(user=self.users[0], event=self.event)
+        self.client.patch(
+            _get_registrations_detail_url(self.event.pk, registration.pk),
+            {"presence": constants.PRESENCE_CHOICES.LATE},
+        )
+        registration.refresh_from_db()
+        self.assertIsNotNone(registration.presence_date)
+
+    @mock.patch("lego.apps.events.views.notify_registration_presence")
+    def test_failed_search_does_not_notify(self, mock_notify):
+        with self.captureOnCommitCallbacks(execute=True):
+            self.client.post(
+                _get_registration_search_url(self.event.pk),
+                {"username": self.webkom_user.username},
+            )
+        mock_notify.assert_not_called()
+
+    @mock.patch("lego.apps.events.views.notify_registration_presence")
+    def test_update_presence_notifies(self, mock_notify):
+        registration = Registration.objects.get(user=self.users[0], event=self.event)
+        with self.captureOnCommitCallbacks(execute=True):
+            res = self.client.patch(
+                _get_registrations_detail_url(self.event.pk, registration.pk),
+                {"presence": constants.PRESENCE_CHOICES.PRESENT},
+            )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        mock_notify.assert_called_once_with(registration)
+
+    @mock.patch("lego.apps.events.views.notify_registration_presence")
+    def test_update_without_presence_does_not_notify(self, mock_notify):
+        registration = Registration.objects.get(user=self.users[0], event=self.event)
+        with self.captureOnCommitCallbacks(execute=True):
+            res = self.client.patch(
+                _get_registrations_detail_url(self.event.pk, registration.pk),
+                {"feedback": "Vegetar"},
+            )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        mock_notify.assert_not_called()
+
+    @mock.patch("lego.apps.events.websockets.notify_group")
+    def test_notify_registration_presence_message(self, mock_notify_group):
+        registration = Registration.objects.get(user=self.users[0], event=self.event)
+        registration.set_presence(constants.PRESENCE_CHOICES.PRESENT)
+
+        notify_registration_presence(registration)
+
+        mock_notify_group.assert_called_once()
+        group, message = mock_notify_group.call_args.args
+        self.assertEqual(group, f"event-full-{self.event.pk}")
+        self.assertEqual(message["type"], constants.SOCKET_PRESENCE_SUCCESS)
+        self.assertEqual(message["payload"]["id"], registration.pk)
+        self.assertEqual(
+            message["payload"]["presence"], constants.PRESENCE_CHOICES.PRESENT
+        )
+        self.assertIsNotNone(message["payload"]["presence_date"])
+        self.assertEqual(message["meta"]["event_id"], self.event.pk)
 
     def test_nonexistent_user(self):
         self.client.force_authenticate(self.webkom_user)
