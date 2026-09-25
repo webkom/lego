@@ -22,6 +22,7 @@ from lego.apps.events.tasks import (
 from lego.apps.events.tests.utils import get_dummy_users, make_penalty_expire
 from lego.apps.followers.models import FollowEvent
 from lego.apps.surveys.models import Submission, Survey
+from lego.apps.users.abaid import generate_token
 from lego.apps.users.constants import GROUP_GRADE, LEADER, PHOTO_CONSENT_DOMAINS
 from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.utils.test_utils import BaseAPITestCase, BaseAPITransactionTestCase
@@ -2176,6 +2177,15 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
+            {"qr": generate_token(self.users[0])},
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(res.json().get("user", None), None)
+
+    def test_register_presence_by_username(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
             {"username": self.users[0].username},
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -2190,7 +2200,16 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.assertEqual(res.json()["errorCode"], "no_user")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_no_username(self):
+    def test_invalid_qr(self):
+        self.client.force_authenticate(self.webkom_user)
+        res = self.client.post(
+            _get_registration_search_url(self.event.pk),
+            {"qr": "not-a-real-token"},
+        )
+        self.assertEqual(res.json()["errorCode"], "invalid_qr")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_no_username_or_qr(self):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(_get_registration_search_url(self.event.pk), {})
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2199,7 +2218,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.webkom_user.username},
+            {"qr": generate_token(self.webkom_user)},
         )
         self.assertEqual(res.json()["errorCode"], "not_registered")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2208,7 +2227,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.users[0])
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -2216,12 +2235,12 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.client.force_authenticate(self.webkom_user)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.json()["errorCode"], "already_present")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2232,7 +2251,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.assertEqual(reg.status, constants.SUCCESS_UNREGISTER)
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.json()["errorCode"], "unregistered")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2243,7 +2262,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         reg.save()
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.json()["errorCode"], "not_properly_registered")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2254,7 +2273,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         reg.save()
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.json()["errorCode"], "waitlisted")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2265,7 +2284,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         reg.save()
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.json()["errorCode"], "late_or_absent")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -2275,7 +2294,7 @@ class RegistrationSearchTestCase(BaseAPITestCase):
         self.event.save()
         res = self.client.post(
             _get_registration_search_url(self.event.pk),
-            {"username": self.users[0].username},
+            {"qr": generate_token(self.users[0])},
         )
         self.assertEqual(res.json()["errorCode"], "missing_payment")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

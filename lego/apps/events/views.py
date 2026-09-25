@@ -78,6 +78,7 @@ from lego.apps.permissions.api.filters import LegoPermissionFilter
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import EDIT, VIEW
 from lego.apps.permissions.utils import get_permission_handler
+from lego.apps.users.abaid import validate_token
 from lego.apps.users.models import PhotoConsent, User
 from lego.utils.functions import request_plausible_statistics, verify_captcha
 
@@ -608,17 +609,29 @@ class RegistrationSearchViewSet(
         event_id = self.kwargs.get("event_pk", None)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        username = serializer.data["username"]
+        qr = serializer.validated_data.get("qr")
+        username = serializer.validated_data.get("username")
+
+        if qr:
+            user_id = validate_token(qr)
+            if user_id is None:
+                raise ValidationError(
+                    {
+                        "error": "The QR code is invalid or has expired.",
+                        "error_code": "invalid_qr",
+                    }
+                )
+            lookup, not_found = {"pk": user_id}, f"There is no user with id {user_id}"
+        else:
+            lookup, not_found = (
+                {"username": username},
+                f"There is no user with username {username}",
+            )
 
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(**lookup)
         except User.DoesNotExist as e:
-            raise ValidationError(
-                {
-                    "error": f"There is no user with username {username}",
-                    "error_code": "no_user",
-                }
-            ) from e
+            raise ValidationError({"error": not_found, "error_code": "no_user"}) from e
 
         try:
             reg = self.get_queryset().get(user=user)
