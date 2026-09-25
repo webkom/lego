@@ -10,7 +10,8 @@ from rest_framework.test import APIClient
 
 import requests
 from authlib.integrations.base_client.errors import OAuthError
-from authlib.jose import JsonWebKey, jwt as jose_jwt
+from joserfc import jwt as jose_jwt
+from joserfc.jwk import RSAKey
 
 from lego.apps.users import constants
 from lego.apps.users.models import AbakusGroup, User
@@ -549,7 +550,7 @@ class FeideOIDCFlowTestCase(BaseAPITestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.jwk = JsonWebKey.generate_key("RSA", 2048, is_private=True)
+        cls.jwk = RSAKey.generate_key(2048)
 
     def setUp(self):
         self.abakus_group = AbakusGroup.objects.get(name="Abakus")
@@ -577,13 +578,15 @@ class FeideOIDCFlowTestCase(BaseAPITestCase):
             "exp": now + 300,
             "nonce": self.expected_nonce,
         }
-        return jose_jwt.encode({"alg": "RS256"}, claims, self.jwk).decode()
+        return jose_jwt.encode({"alg": "RS256"}, claims, self.jwk)
 
     def _fake_feide_send(self, session, request, **kwargs):
         if request.url == settings.FEIDE_OIDC_CONFIGURATION_ENDPOINT:
             return _json_response(request.url, FEIDE_METADATA)
         if request.url == FEIDE_METADATA["jwks_uri"]:
-            return _json_response(request.url, {"keys": [self.jwk.as_dict()]})
+            return _json_response(
+                request.url, {"keys": [self.jwk.as_dict(private=False)]}
+            )
         if request.url == FEIDE_METADATA["token_endpoint"]:
             body = parse_qs(request.body)
             self.assertEqual(body["code"], ["test-code"])
