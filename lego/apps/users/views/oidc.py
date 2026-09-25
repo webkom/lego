@@ -13,7 +13,7 @@ import requests
 import sentry_sdk
 from authlib.integrations.base_client.errors import OAuthError
 from authlib.integrations.django_client import OAuth
-from authlib.jose.errors import JoseError
+from joserfc.errors import JoseError
 from requests import Response
 from structlog import get_logger
 

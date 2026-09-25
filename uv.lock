@@ -1407,6 +1407,7 @@ dependencies = [
     { name = "hiredis" },
     { name = "icalendar" },
     { name = "ipython" },
+    { name = "joserfc" },
     { name = "ldap3" },
     { name = "libthumbor" },
     { name = "markdown" },
@@ -1493,6 +1494,7 @@ requires-dist = [
     { name = "hiredis", specifier = "==3.4.1" },
     { name = "icalendar", specifier = "==7.3.0" },
     { name = "ipython", specifier = "==9.17.1" },
+    { name = "joserfc", specifier = ">=1.7.5,<2" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "libthumbor", specifier = "==2.0.2" },
     { name = "markdown", specifier = "==3.8.1" },
@@ -1783,7 +1785,7 @@ name = "pexpect"
 version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess" },
+    { name = "ptyprocess", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e5/9b/ff402e0e930e70467a7178abb7c128709a30dfb22d8777c043e501bc1b10/pexpect-4.8.0.tar.gz", hash = "sha256:fc65a43959d153d0114afe13997d439c22823a27cefceb5ff35c2178c6784c0c", size = 157037, upload-time = "2020-01-21T16:37:05.861Z" }
 wheels = [
