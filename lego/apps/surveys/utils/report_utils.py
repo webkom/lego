@@ -49,17 +49,15 @@ def describe_results_with_charts(survey):
             except ValueError:
                 question_data["average"] = None
 
-            if question.display_type == PIE_CHART:
-                filtered_labels_counts = [
-                    (label, count)
-                    for label, count in zip(labels, counts, strict=True)
-                    if count > 0
-                ]
-
-                filtered_labels, filtered_counts = (
-                    zip(*filtered_labels_counts, strict=True)
-                    if filtered_labels_counts
-                    else ([], [])
+            # A pie of nothing has no wedges to draw, and matplotlib raises on it.
+            if question.display_type == PIE_CHART and any(counts):
+                filtered_labels, filtered_counts = zip(
+                    *[
+                        (label, count)
+                        for label, count in zip(labels, counts, strict=True)
+                        if count > 0
+                    ],
+                    strict=True,
                 )
 
                 colors = ["#E21617", "#3366FF", "#41ec8b", "#f5a524", "#b94cfb"] * (
