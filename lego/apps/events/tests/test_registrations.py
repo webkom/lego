@@ -571,7 +571,6 @@ class RegistrationTestCase(BaseTestCase):
 
         pool.refresh_from_db()
 
-        self.assertEqual(pool.counter, pool.registrations.count())
         self.assertEqual(pool.registrations.count(), pool_size_before)
         self.assertEqual(event.number_of_registrations, event_size_before)
         self.assertEqual(event.waiting_registrations.count(), waiting_list_before - 1)

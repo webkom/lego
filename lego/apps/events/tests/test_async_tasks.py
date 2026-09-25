@@ -6,7 +6,7 @@ from django.utils import timezone
 import stripe
 
 from lego.apps.events import constants
-from lego.apps.events.exceptions import PoolCounterNotEqualToRegistrationCount
+from lego.apps.events.exceptions import EventHasClosed
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.tasks import (
     AsyncRegister,
@@ -14,7 +14,6 @@ from lego.apps.events.tasks import (
     async_retrieve_payment,
     bump_waiting_users_to_new_pool,
     check_events_for_registrations_with_expired_penalties,
-    check_that_pool_counters_match_registration_number,
     notify_event_creator_when_payment_overdue,
     notify_user_when_payment_soon_overdue,
     set_all_events_ready_and_bump,
@@ -87,7 +86,8 @@ class AsyncRegisterTestCase(BaseAPITestCase):
         )
 
     def test_async_register_on_failure(self):
-        """"""
+        """on_failure must not clobber a registration that already
+        succeeded before some later, unrelated step failed."""
 
         user = get_dummy_users(1)[0]
         AbakusGroup.objects.get(name="Abakus").add_user(user)
@@ -98,28 +98,60 @@ class AsyncRegisterTestCase(BaseAPITestCase):
 
         async_register(registration.id)
 
-        with mock.patch("lego.utils.tasks.AbakusTask") as mocked_cls:
-            with mock.patch("celery.app.task.Task.request") as mocked_request:
-                mocked_request.return_value = mocked_request
-                mocked_request.retries = 3
+        task = AsyncRegister()
+        task.registration = registration
 
-                mocked_cls._get_request.return_value = mocked_request
-                task = AsyncRegister()
-                task.max_retries = 3
+        self.assertEqual(self.event.number_of_registrations, 1)
+        self.assertEqual(
+            self.event.registrations.first().status, constants.SUCCESS_REGISTER
+        )
 
-                task.registration = registration
+        task.on_failure()
 
-                self.assertEqual(self.event.number_of_registrations, 1)
-                self.assertEqual(
-                    self.event.registrations.first().status, constants.SUCCESS_REGISTER
-                )
+        self.assertEqual(self.event.number_of_registrations, 1)
+        self.assertEqual(
+            self.event.registrations.first().status, constants.SUCCESS_REGISTER
+        )
 
-                task.on_failure()
+    def test_async_register_on_failure_marks_failure(self):
+        """on_failure must mark FAILURE_REGISTER even on an immediate,
+        non-retried failure -- the old retries==max_retries guard's bug."""
 
-                self.assertEqual(self.event.number_of_registrations, 1)
-                self.assertEqual(
-                    self.event.registrations.first().status, constants.SUCCESS_REGISTER
-                )
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        registration.status = constants.PENDING_REGISTER
+        registration.save()
+
+        task = AsyncRegister()
+        task.registration = registration
+
+        task.on_failure()
+
+        registration.refresh_from_db()
+        self.assertEqual(registration.status, constants.FAILURE_REGISTER)
+
+    def test_async_register_event_has_closed_propagates(self):
+        """EventHasClosed must propagate out of async_register instead of
+        being swallowed, so on_failure (tested above) actually runs."""
+
+        self.event.start_time = timezone.now() + timedelta(minutes=1)
+        self.event.save()
+
+        user = get_dummy_users(1)[0]
+        AbakusGroup.objects.get(name="Abakus").add_user(user)
+
+        registration = Registration.objects.get_or_create(event=self.event, user=user)[
+            0
+        ]
+        registration.status = constants.PENDING_REGISTER
+        registration.save()
+
+        with self.assertRaises(EventHasClosed):
+            async_register(registration.id)
 
 
 class PoolActivationTestCase(BaseAPITestCase):
@@ -253,6 +285,35 @@ class PoolActivationTestCase(BaseAPITestCase):
         self.assertEqual(self.pool_two.registrations.count(), 0)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
 
+    def test_isnt_bumped_before_penalty_delay_elapses(self):
+        """Users with 1-2 penalties must wait out the penalty registration
+        delay before being early-bumped -- previously early_bump ignored
+        this delay entirely and would bump them immediately."""
+        filler, on_time_user, penalized_user = get_dummy_users(3)
+
+        for user in (filler, on_time_user, penalized_user):
+            AbakusGroup.objects.get(name="Webkom").add_user(user)
+
+        Penalty.objects.create(
+            user=penalized_user, reason="test", weight=1, source_event=self.event
+        )
+
+        for user in (filler, on_time_user, penalized_user):
+            registration = Registration.objects.get_or_create(
+                event=self.event, user=user
+            )[0]
+            self.event.register(registration)
+
+        # `filler` takes pool_one's only slot; the other two land in the waiting list.
+        self.assertEqual(self.pool_one.registrations.count(), 1)
+        self.assertEqual(self.event.waiting_registrations.count(), 2)
+
+        bump_waiting_users_to_new_pool()
+
+        self.assertEqual(self.pool_two.registrations.count(), 1)
+        self.assertEqual(self.pool_two.registrations.first().user, on_time_user)
+        self.assertEqual(self.event.waiting_registrations.count(), 1)
+
     def test_isnt_bumped_if_activation_is_far_into_the_future(self):
         """Users should not be bumped if the pool is activated more than
         35 minutes in the future."""
@@ -293,44 +354,6 @@ class PoolActivationTestCase(BaseAPITestCase):
 
         self.assertEqual(self.pool_two.registrations.count(), 0)
         self.assertEqual(self.event.waiting_registrations.count(), 1)
-
-    def test_ensure_pool_counters_raise_error_when_incorrect(self):
-        """Test that counter raises error due to incorrect counter"""
-
-        users = get_dummy_users(3)
-
-        for user in users:
-            AbakusGroup.objects.get(name="Webkom").add_user(user)
-            Registration.objects.get_or_create(
-                event=self.event, user=user, pool=self.pool_one
-            )
-
-        self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
-
-        with self.assertRaises(PoolCounterNotEqualToRegistrationCount):
-            check_that_pool_counters_match_registration_number()
-
-    def test_ensure_pool_counters_match_registration_number(self):
-        """Test that method does not raise error when counter is ok"""
-
-        self.assertEqual(self.pool_one.registrations.count(), self.pool_one.counter)
-        check_that_pool_counters_match_registration_number()
-
-    def test_pool_counter_check_ignore_merged_events(self):
-        """Test that counter raises error due to incorrect counter"""
-
-        self.event.merge_time = timezone.now() - timedelta(days=1)
-        self.event.save()
-        users = get_dummy_users(3)
-
-        for user in users:
-            AbakusGroup.objects.get(name="Webkom").add_user(user)
-            reg = Registration.objects.get_or_create(event=self.event, user=user)[0]
-            self.event.register(reg)
-
-        self.assertGreater(self.pool_one.registrations.count(), self.pool_one.counter)
-
-        check_that_pool_counters_match_registration_number()
 
     def test_set_all_events_ready_and_bump(self):
         """Test that events are set as ready when task is complete"""

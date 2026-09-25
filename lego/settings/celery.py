@@ -33,10 +33,6 @@ schedule = {
         "task": "lego.apps.external_sync.tasks.sync_external_systems",
         "schedule": crontab(hour="*", minute=0),
     },
-    "check-that-pool-counters-match-registration-number": {
-        "task": "lego.apps.events.tasks.check_that_pool_counters_match_registration_number",
-        "schedule": crontab(hour="*", minute=0),
-    },
     "notify_user_about_new_survey": {
         "task": "lego.apps.surveys.tasks.send_survey_mail",
         "schedule": crontab(minute="*/10"),

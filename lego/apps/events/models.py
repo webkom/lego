@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
-from typing import Any, Optional
+from typing import Any, Iterator, Optional
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -117,16 +117,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         return self.title
 
     def save(self, *args: Any, **kwargs: Any) -> None:
-        """
-        By re-setting the pool counters on save, we can ensure that counters are updated if an
-        event that has been merged gets un-merged. We want to avoid having to increment counters
-        when registering after merge_time for performance reasons
-        """
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            for pool in self.pools.select_for_update().all():
-                pool.counter = pool.registrations.count()
-                pool.save(update_fields=["counter"])
+        super().save(*args, **kwargs)
 
         if self.pinned:
             for pinned_item in Event.objects.filter(pinned=True).exclude(pk=self.pk):
@@ -176,9 +167,6 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 raise RegistrationExists()
 
             if pool:
-                locked_pool = Pool.objects.select_for_update().get(pk=pool.id)
-                locked_pool.increment()
-
                 registration.add_direct_to_pool(
                     pool,
                     feedback=feedback,
@@ -444,9 +432,8 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             if self.is_merged:
                 self.bump()
             elif not open_pool.is_full:
-                for registration in self.waiting_registrations:
-                    if open_pool in self.get_possible_pools(registration.user):
-                        return self.bump(to_pool=open_pool)
+                if next(self.get_eligible_waiting_registrations(pool=open_pool), None):
+                    return self.bump(to_pool=open_pool)
                 self.try_to_rebalance(open_pool=open_pool)
 
     def bump(self, to_pool: Optional[Pool] = None) -> None:
@@ -463,15 +450,12 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                     new_pool: Optional[Pool] = None
                     if to_pool:
                         new_pool = to_pool
-                        new_pool.increment()
                     else:
                         for pool in self.pools.select_for_update().all():
                             if self.can_register(first_waiting.user, pool):
                                 new_pool = pool
-                                new_pool.increment()
                                 break
-                    first_waiting.pool = new_pool
-                    first_waiting.save(update_fields=["pool"])
+                    first_waiting.move_to_pool(new_pool)
                     handle_event(first_waiting, "bump")
 
     def early_bump(self, opening_pool: Pool) -> None:
@@ -482,15 +466,13 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
 
         :param opening_pool: The pool about to be activated.
         """
-        for reg in self.waiting_registrations:
+        for reg in self.get_eligible_waiting_registrations(
+            pool=opening_pool, future=True
+        ):
             if opening_pool.is_full:
                 break
-            if self.heed_penalties and reg.user.number_of_penalties() >= 3:
-                continue
-            if self.can_register(reg.user, opening_pool, future=True):
-                reg.pool = opening_pool
-                reg.save()
-                handle_event(reg, "bump")
+            reg.move_to_pool(opening_pool)
+            handle_event(reg, "bump")
         self.check_for_bump_or_rebalance(opening_pool)
 
     def bump_on_pool_creation_or_expansion(self) -> None:
@@ -502,17 +484,15 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
         This method does the same as `early_bump`, but only accepts people that can be bumped now,
         not people that can be bumped in the future.
         """
-        open_pools: list[Pool] = [pool for pool in self.pools.all() if not pool.is_full]
+        open_pools: list[Pool] = [
+            pool for pool in self.pools.select_for_update().all() if not pool.is_full
+        ]
         for pool in open_pools:
-            for reg in self.waiting_registrations:
+            for reg in self.get_eligible_waiting_registrations(pool=pool, future=True):
                 if self.is_full or pool.is_full:
                     break
-                if self.heed_penalties and reg.user.number_of_penalties() >= 3:
-                    continue
-                if self.can_register(reg.user, pool, future=True):
-                    reg.pool = pool
-                    reg.save()
-                    handle_event(reg, "bump")
+                reg.move_to_pool(pool)
+                handle_event(reg, "bump")
             self.check_for_bump_or_rebalance(pool)
 
     def try_to_rebalance(self, open_pool: Pool) -> None:
@@ -556,8 +536,7 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
                 if group in user_groups:
                     moveable = True
             if moveable:
-                old_registration.pool = to_pool
-                old_registration.save()
+                old_registration.move_to_pool(to_pool)
                 self.bump(to_pool=from_pool)
                 bumped = True
         return bumped
@@ -579,42 +558,55 @@ class Event(Content, BasisModel, ObjectPermissionsModel):
             },
         )[0]
 
+    def get_eligible_waiting_registrations(
+        self,
+        pool: Optional[Pool] = None,
+        future: bool = False,
+    ) -> Iterator[Registration]:
+        """
+        Yields waiting_registrations, in order, eligible to be admitted to
+        `pool` (or, if None, eligible in general -- the merged-event case,
+        where the caller checks permission per-pool afterward).
+
+        :param pool: Restrict to users with permission for this pool. If
+                      None, permission is not checked here.
+        :param future: Passed through to can_register -- True skips the
+                        pool's activation_date check (early_bump and
+                        bump_on_pool_creation_or_expansion admit ahead of
+                        the normal activation moment).
+        """
+        now = timezone.now()
+        for registration in self.waiting_registrations:
+            if self.heed_penalties:
+                penalties = registration.user.number_of_penalties()
+                if penalties >= 3:
+                    continue
+                # With a pool given, can_register() below covers activation timing;
+                # without one (merged case), only this check does.
+                if penalties > 0 or pool is None:
+                    earliest_reg = self.get_earliest_registration_time(
+                        registration.user, [pool] if pool else None, penalties
+                    )
+                    if not earliest_reg or earliest_reg >= now:
+                        continue
+            if pool is not None and not self.can_register(
+                registration.user, pool, future=future
+            ):
+                continue
+            yield registration
+
     def pop_from_waiting_list(
         self, to_pool: Optional[Pool] = None
     ) -> Registration | None:
         """
-        Pops the first user in the waiting list that can join `to_pool`.
-        If `from_pool=None`, pops the first user in the waiting list overall.
+        Pops the first user in the waiting list eligible for `to_pool`.
+        If `to_pool=None`, pops the first eligible user overall (post-merge
+        -- the caller checks permission per-pool afterward).
 
         :param to_pool: The pool we are bumping to. If post-merge, there is no pool.
         :return: The registration that is first in line for said pool.
         """
-
-        if to_pool:
-            for registration in self.waiting_registrations:
-                if self.heed_penalties:
-                    penalties: int = registration.user.number_of_penalties()
-                    earliest_reg: Optional[date] = self.get_earliest_registration_time(
-                        registration.user, [to_pool], penalties
-                    )
-                    if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
-                        if self.can_register(registration.user, to_pool):
-                            return registration
-                elif self.can_register(registration.user, to_pool):
-                    return registration
-            return None
-
-        if self.heed_penalties:
-            for registration in self.waiting_registrations:
-                penalties = registration.user.number_of_penalties()
-                earliest_reg = self.get_earliest_registration_time(
-                    registration.user, None, penalties
-                )
-                if penalties < 3 and earliest_reg and earliest_reg < timezone.now():
-                    return registration
-            return None
-
-        return self.waiting_registrations.first()
+        return next(self.get_eligible_waiting_registrations(pool=to_pool), None)
 
     @staticmethod
     def has_pool_permission(user: User, pool: Pool) -> bool:
@@ -812,8 +804,6 @@ class Pool(BasisModel):
     activation_date = models.DateTimeField()
     permission_groups = models.ManyToManyField(AbakusGroup)
 
-    counter = models.PositiveSmallIntegerField(default=0)
-
     class Meta:
         ordering = ["id"]
 
@@ -839,16 +829,6 @@ class Pool(BasisModel):
     @property
     def registration_count(self) -> int:
         return self.registrations.count()
-
-    def increment(self) -> Pool:
-        self.counter += 1
-        self.save(update_fields=["counter"])
-        return self
-
-    def decrement(self) -> Pool:
-        self.counter -= 1
-        self.save(update_fields=["counter"])
-        return self
 
     def permission_group_ids(self) -> set[int]:
         return set(self.permission_groups.values_list("id", flat=True))
@@ -1002,15 +982,17 @@ class Registration(BasisModel):
             self.delete_presence_penalties_for_event()
 
     def add_to_pool(self, pool: Pool) -> Registration:
-        allowed: bool = False
+        # Admission must happen inside the same locked transaction as
+        # the capacity check, or two concurrent callers can both pass it.
         with transaction.atomic():
             locked_pool: Pool = Pool.objects.select_for_update().get(pk=pool.id)
-            if locked_pool.capacity == 0 or locked_pool.counter < locked_pool.capacity:
-                locked_pool.increment()
-                allowed = True
+            allowed = locked_pool.capacity == 0 or (
+                locked_pool.registrations.count() < locked_pool.capacity
+            )
 
-        if allowed:
-            return self.add_direct_to_pool(pool)
+            if allowed:
+                return self.add_direct_to_pool(pool)
+
         return self.add_to_waiting_list()
 
     def add_direct_to_pool(self, pool: Pool, **kwargs: Any) -> Registration:
@@ -1031,6 +1013,9 @@ class Registration(BasisModel):
             **kwargs,
         )
 
+    def move_to_pool(self, pool: Optional[Pool]) -> Registration:
+        return self.set_values(pool=pool)
+
     def unregister(
         self,
         is_merged: bool = False,
@@ -1044,13 +1029,6 @@ class Registration(BasisModel):
         if followEvent is not None:
             followEvent.delete()
 
-        # We do not care about the counter if the event is merged or pool is None
-        if self.pool and not is_merged:
-            with transaction.atomic():
-                locked_pool: Pool = Pool.objects.select_for_update().get(
-                    pk=self.pool.id
-                )
-                locked_pool.decrement()
         return self.set_values(
             pool=None,
             unregistration_date=timezone.now(),

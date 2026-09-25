@@ -56,27 +56,33 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
     past_memberships = PastMembershipSerializer(many=True)
     memberships = MembershipSerializer(many=True)
     achievements = AchievementSerializer(many=True)
-    achievement_score = serializers.SerializerMethodField()
-    event_count = serializers.SerializerMethodField()
+    ranking = serializers.SerializerMethodField()
 
-    def get_achievement_score(self, obj):
-        return {
-            "value": achievement_score_percentage(obj.achievements_score),
-            "rank": getattr(obj, "achievement_score_rank", None),
-            "rank_week_ago": getattr(obj, "achievement_score_rank_week_ago", None),
-            "rank_month_ago": getattr(obj, "achievement_score_rank_month_ago", None),
-        }
+    def get_ranking(self, obj):
+        def entry(rank_field, value):
+            return {
+                "value": value,
+                "rank": getattr(obj, rank_field, None),
+                "rank_week_ago": getattr(obj, f"{rank_field}_week_ago", None),
+                "rank_month_ago": getattr(obj, f"{rank_field}_month_ago", None),
+            }
 
-    def get_event_count(self, obj):
-        # These annotations only exist on the leaderboard queryset - a plain
-        # User (e.g. from the regular users endpoint) has no event count data.
-        if not hasattr(obj, "event_count"):
-            return None
+        achievement_value = achievement_score_percentage(obj.achievements_score)
+
+        has_event_count = hasattr(obj, "event_count")
+        event_entry = (
+            (lambda rank_field: entry(rank_field, obj.event_count))
+            if has_event_count
+            else (lambda rank_field: None)
+        )
+
         return {
-            "value": obj.event_count,
-            "rank": getattr(obj, "event_count_rank", None),
-            "rank_week_ago": getattr(obj, "event_count_rank_week_ago", None),
-            "rank_month_ago": getattr(obj, "event_count_rank_month_ago", None),
+            "achievement_score": entry("achievement_score_rank", achievement_value),
+            "achievement_score_active": entry(
+                "achievement_score_active_rank", achievement_value
+            ),
+            "event_count": event_entry("event_count_rank"),
+            "event_count_active": event_entry("event_count_active_rank"),
         }
 
     class Meta(PublicUserSerializer.Meta):
@@ -84,8 +90,7 @@ class PublicUserWithGroupsSerializer(PublicUserWithAbakusGroupsSerializer):
             "past_memberships",
             "memberships",
             "achievements",
-            "achievement_score",
-            "event_count",
+            "ranking",
         )
 
 

@@ -205,7 +205,6 @@
     name: Abakusmember
     capacity: 2
     event: 1
-    counter: 2
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
@@ -256,7 +255,6 @@
     name: Abakusmember
     capacity: 3
     event: 5
-    counter: 3
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
@@ -267,7 +265,6 @@
     name: Abakusmember
     capacity: 0
     event: 9
-    counter: 0
     activation_date: "2011-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
@@ -278,7 +275,6 @@
     name: Abakusmember
     capacity: 2
     event: 10
-    counter: 1
     activation_date: "2019-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus
@@ -289,7 +285,6 @@
     name: Abakusmember
     capacity: 1
     event: 13
-    counter: 1
     activation_date: "2019-09-01T13:20:30+03:00"
     permission_groups:
       - - Abakus

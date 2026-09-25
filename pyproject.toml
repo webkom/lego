@@ -8,12 +8,12 @@ readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
     "django==5.2.17",
-    "ipython==8.29.0",
+    "ipython==9.16.1",
     "psycopg2-binary==2.9.6",
     "pyyaml==6.0.1",
     "redis==4.5.5",
     "hiredis==3.4.1",
-    "celery>=5.4,<6",
+    "celery>=5.6.3,<6",
     "stripe==3.4.0",
     "boto3==1.28.1",
     "beautifulsoup4==4.12.2",
@@ -24,7 +24,7 @@ dependencies = [
     "google-auth>=2.37.0,<3",
     "libthumbor==2.0.2",
     "django-health-check==3.20.0",
-    "djangorestframework==3.16.1",
+    "djangorestframework==3.17.2",
     "drf-jwt==1.19.2",
     "djangorestframework-camel-case==1.4.2",
     "drf-spectacular==0.30.0",
@@ -35,13 +35,13 @@ dependencies = [
     "django-mptt==0.18.0",
     "django-filter==24.3",
     "django-environ==0.14.0",
-    "django-redis==6.0.0",
+    "django-redis==7.0.0",
     "django-ipware==5.0.0",
     "django-phonenumber-field[phonenumberslite]==8.5.0",
     "django-push-notifications==3.0.0",
     #
     # Logging/errors
-    "structlog==21.5.0",
+    "structlog==26.1.0",
     "structlog-sentry==1.4.0",
     "sentry-sdk==2.68.0",
     #
@@ -61,31 +61,31 @@ dependencies = [
     "Pygments==2.20.0",
     "Markdown==3.8.1",
     "authlib>=1.6.12,<2",
-    "weasyprint>=68.0,<69",
+    "weasyprint>=70.0,<71",
     "matplotlib>=3.9.2,<4",
     "django-expo-notifications>=0.7.0,<0.8",
 ]
 
 [dependency-groups]
-dev = ["django-debug-toolbar==4.1.0", "tblib>=1.7.0,<2"]
+dev = ["django-debug-toolbar==7.1.1", "tblib>=1.7.0,<2"]
 coverage = ["coverage==7.4.1"]
 mypy = [
-    "mypy==1.15.0",
-    "mypy-extensions==1.0.0",
-    "django-stubs==5.2.0",
-    "djangorestframework-stubs==3.16.0",
-    "types-bleach==6.1.0.0",
-    "types-docutils==0.20.0.1",
+    "mypy==2.3.1",
+    "mypy-extensions==1.1.0",
+    "django-stubs==6.1.1",
+    "djangorestframework-stubs==3.18.1",
+    "types-bleach==6.4.0.20260728",
+    "types-docutils==0.23.0.20260917",
     "types-Markdown==3.4.2.9",
-    "types-python-slugify==8.0.0.3",
+    "types-python-slugify==8.0.2.20240310",
     "types-PyYAML==6.0.12.10",
-    "types-requests==2.31.0.1",
-    "types-six==1.16.21.8",
-    "types-urllib3==1.26.25.13",
-    "types-python-dateutil==2.8.19.13",
+    "types-requests==2.33.0.20260906",
+    "types-six==1.17.0.20260724",
+    "types-urllib3==1.26.25.14",
+    "types-python-dateutil==2.9.0.20260807",
 ]
 lint = ["ruff==0.16.3"]
-docs = ["sphinx==6.2.1", "sphinx_rtd_theme==1.2.1"]
+docs = ["sphinx==6.2.1", "sphinx_rtd_theme==3.1.0"]
 prod = ["uwsgi==2.0.22", "flower==1.2.0"]
 
 

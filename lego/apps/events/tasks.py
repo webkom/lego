@@ -2,7 +2,6 @@ import uuid
 from datetime import timedelta
 
 from django.db import IntegrityError, transaction
-from django.db.models import Q
 from django.utils import timezone
 
 import stripe
@@ -12,11 +11,7 @@ from structlog import get_logger
 from lego import celery_app
 from lego.apps.action_handlers.events import handle_event
 from lego.apps.events import constants
-from lego.apps.events.exceptions import (
-    EventHasClosed,
-    PoolCounterNotEqualToRegistrationCount,
-    WebhookDidNotFindRegistration,
-)
+from lego.apps.events.exceptions import EventHasClosed, WebhookDidNotFindRegistration
 from lego.apps.events.models import Event, Registration
 from lego.apps.events.notifications import EventPaymentOverdueCreatorNotification
 from lego.apps.events.serializers.registrations import (
@@ -41,19 +36,18 @@ class AsyncRegister(AbakusTask):
     registration = None
 
     def on_failure(self, *args):
-        if self.request.retries == self.max_retries:
-            with transaction.atomic():
-                registration = Registration.objects.select_for_update().get(
-                    id=self.registration.id
-                )
-                if registration.status != constants.SUCCESS_REGISTER:
-                    registration.status = constants.FAILURE_REGISTER
-                    registration.save()
-            notify_user_registration(
-                constants.SOCKET_REGISTRATION_FAILURE,
-                self.registration,
-                error_message="Registrering feilet",
+        with transaction.atomic():
+            registration = Registration.objects.select_for_update().get(
+                id=self.registration.id
             )
+            if registration.status != constants.SUCCESS_REGISTER:
+                registration.status = constants.FAILURE_REGISTER
+                registration.save()
+        notify_user_registration(
+            constants.SOCKET_REGISTRATION_FAILURE,
+            self.registration,
+            error_message="Registrering feilet",
+        )
 
 
 class Payment(AbakusTask):
@@ -142,6 +136,7 @@ def async_register(self, registration_id, logger_context=None):
             exception=e,
             registration_id=self.registration.id,
         )
+        raise
     except (ValueError, IntegrityError) as e:
         log.error(
             "registration_error", exception=e, registration_id=self.registration.id
@@ -396,11 +391,12 @@ def check_for_bump_on_pool_creation_or_expansion(
     """Task checking for bumps when event and pools are updated"""
     self.setup_logger(logger_context)
 
-    # Event is locked using the instance field "is_ready"
-    event = Event.objects.get(pk=event_id)
-    event.bump_on_pool_creation_or_expansion()
-    event.is_ready = True
-    event.save(update_fields=["is_ready"])
+    with transaction.atomic():
+        locked_event = Event.objects.select_for_update().get(pk=event_id)
+        locked_event.bump_on_pool_creation_or_expansion()
+
+    locked_event.is_ready = True
+    locked_event.save(update_fields=["is_ready"])
 
 
 @celery_app.task(serializer="json", bind=True, base=AbakusTask)
@@ -594,30 +590,3 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
                 event_id=event.id,
                 creator=event.created_by,
             )
-
-
-@celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def check_that_pool_counters_match_registration_number(self, logger_context=None):
-    """
-    Task that checks whether pools counters are in sync with number of registrations. We do not
-    enforce this check for events that are merged, hence the merge_time filter, because
-    incrementing the counter decreases the registration performance
-    """
-    self.setup_logger(logger_context)
-
-    events_ids = Event.objects.filter(
-        Q(start_time__gte=timezone.now()),
-        Q(merge_time__gte=timezone.now()) | Q(merge_time__isnull=True),
-    ).values_list("id", flat=True)
-
-    for event_id in events_ids:
-        with transaction.atomic():
-            locked_event = Event.objects.select_for_update().get(pk=event_id)
-            locked_pools = locked_event.pools.select_for_update().all()
-            for pool in locked_pools:
-                registration_count = pool.registrations.count()
-                if pool.counter != registration_count:
-                    log.critical("pool_counter_not_equal_registration_count", pool=pool)
-                    raise PoolCounterNotEqualToRegistrationCount(
-                        pool, registration_count, locked_event
-                    )
