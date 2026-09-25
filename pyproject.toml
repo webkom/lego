@@ -61,7 +61,7 @@ dependencies = [
     "Pygments==2.20.0",
     "Markdown==3.8.1",
     "authlib>=1.6.12,<2",
-    "weasyprint>=68.0,<69",
+    "weasyprint>=70.0,<71",
     "matplotlib>=3.9.2,<4",
     "django-expo-notifications>=0.7.0,<0.8",
 ]
