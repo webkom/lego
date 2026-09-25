@@ -94,6 +94,9 @@ prod = ["uwsgi==2.0.31", "flower==1.2.0"]
 # LEGO is an application, not a distributable package. It is imported from the
 # source tree via PYTHONPATH, so there is nothing to build or install.
 package = false
+# autobahn >= 26 unions zope interfaces at import time, which needs
+# zope.interface >= 7, but does not declare it. Without this, daphne fails to start.
+constraint-dependencies = ["zope.interface>=7"]
 
 
 [tool.django-stubs]
