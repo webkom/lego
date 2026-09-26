@@ -63,7 +63,7 @@ CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 # Channels
 CHANNEL_LAYERS["default"]["CONFIG"] = {"hosts": [env("CHANNELS_REDIS_URL")]}
 
-# Optional AWS entrypoint for minio
+# Optional entrypoint for S3-compatible storage such as Garage
 AWS_ENTRYPOINT = env("AWS_ENTRYPOINT", default=None)
 
 # Stripe

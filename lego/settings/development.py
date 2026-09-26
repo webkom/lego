@@ -71,8 +71,8 @@ REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += [  # type: ignore
 ]
 
 AWS_ACCESS_KEY_ID = "lego-dev"
-AWS_SECRET_ACCESS_KEY = "lego-dev"
-AWS_REGION = "us-east-1"
+AWS_SECRET_ACCESS_KEY = "lego-dev-secret-key"
+AWS_REGION = "eu-north-1"
 AWS_S3_BUCKET = "lego"
 AWS_ENTRYPOINT = "http://127.0.0.1:9000"
 
