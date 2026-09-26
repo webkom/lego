@@ -11,7 +11,7 @@ class StorageTestCase(BaseTestCase):
         with self.settings(
             AWS_ACCESS_KEY_ID="lego-test",
             AWS_SECRET_ACCESS_KEY="lego-test-secret-key",
-            AWS_REGION="us-east-1",
+            AWS_REGION="eu-north-1",
         ):
             self.storage = Storage()
 
