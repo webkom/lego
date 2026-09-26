@@ -41,22 +41,10 @@ from lego.apps.events.filters import EventsFilterSet
 from lego.apps.events.models import Event, Pool, Registration, RegistrationEligibilityCache
 from lego.apps.events.permissions import EventTypePermission
 from lego.apps.events.serializers.events import (
-<<<<<<< HEAD
-    EventAdministrateAllergiesSerializer,
-    EventAdministrateSerializer,
-    EventCreateAndUpdateSerializer,
-    EventReadAuthUserDetailedSerializer,
-    EventReadSerializer,
-    EventReadUserDetailedSerializer,
-    ImageGallerySerializer,
-    populate_event_registration_users_with_grade,
-)
-=======
     EventAdministrateAllergiesSerializer, EventAdministrateSerializer,
     EventCreateAndUpdateSerializer, EventReadAuthUserDetailedSerializer,
     EventReadSerializer, EventReadUserDetailedSerializer,
     ImageGallerySerializer, populate_event_registration_users_with_grade, RegistrationEligibilitySerializer)
->>>>>>> f8feb644 (idunno)
 from lego.apps.events.serializers.pools import PoolCreateAndUpdateSerializer
 from lego.apps.events.serializers.registrations import (
     AdminRegistrationCreateAndUpdateSerializer,
