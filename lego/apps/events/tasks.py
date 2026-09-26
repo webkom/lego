@@ -593,35 +593,6 @@ def notify_event_creator_when_payment_overdue(self, logger_context=None):
                 creator=event.created_by,
             )
 
-
-@celery_app.task(serializer="json", bind=True, base=AbakusTask)
-def check_that_pool_counters_match_registration_number(self, logger_context=None):
-    """
-    Task that checks whether pools counters are in sync with number of registrations. We do not
-    enforce this check for events that are merged, hence the merge_time filter, because
-    incrementing the counter decreases the registration performance
-    """
-    self.setup_logger(logger_context)
-
-    events_ids = Event.objects.filter(
-        Q(start_time__gte=timezone.now()),
-        Q(merge_time__gte=timezone.now()) | Q(merge_time__isnull=True),
-    ).values_list("id", flat=True)
-
-    for event_id in events_ids:
-        with transaction.atomic():
-            locked_event = Event.objects.select_for_update().get(pk=event_id)
-            locked_pools = locked_event.pools.select_for_update().all()
-            for pool in locked_pools:
-                registration_count = pool.registrations.count()
-                if pool.counter != registration_count:
-                    log.critical("pool_counter_not_equal_registration_count", pool=pool)
-                    raise PoolCounterNotEqualToRegistrationCount(
-                        pool, registration_count, locked_event
-                    )
-
-
-
 @celery_app.task(serializer="json",bind=True, base=AbakusTask)
 def create_user_registration_signup_eligibility_cache(self, logger_context=None):
     self.setup_logger(logger_context) 
