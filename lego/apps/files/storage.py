@@ -7,20 +7,22 @@ from django.utils.crypto import get_random_string
 
 import boto3
 from botocore import exceptions
+from botocore.config import Config
 
 
 class Storage:
-    def __init__(self):
+    def __init__(self) -> None:
         self.session = boto3.Session(
             aws_access_key_id=getattr(settings, "AWS_ACCESS_KEY_ID", None),
             aws_secret_access_key=getattr(settings, "AWS_SECRET_ACCESS_KEY", None),
             region_name=getattr(settings, "AWS_REGION", None),
         )
+        config = Config(signature_version="s3v4")
         self.client = self.session.client(
-            "s3", endpoint_url=getattr(settings, "AWS_ENTRYPOINT", None)
+            "s3", endpoint_url=getattr(settings, "AWS_ENTRYPOINT", None), config=config
         )
         self.resource = self.session.resource(
-            "s3", endpoint_url=getattr(settings, "AWS_ENTRYPOINT", None)
+            "s3", endpoint_url=getattr(settings, "AWS_ENTRYPOINT", None), config=config
         )
 
     def generate_upload_url(self, bucket, key, redirect_url):
@@ -94,6 +96,26 @@ class Storage:
             bucket = self.resource.Bucket(bucket)
             bucket.create(ACL=acl)
             return bucket
+        except exceptions.ClientError:
+            pass
+
+    def set_development_cors(self, bucket: str) -> None:
+        """
+        Allow browsers on any origin to upload to and read from the bucket
+        """
+        try:
+            self.client.put_bucket_cors(
+                Bucket=bucket,
+                CORSConfiguration={
+                    "CORSRules": [
+                        {
+                            "AllowedOrigins": ["*"],
+                            "AllowedMethods": ["GET", "HEAD", "POST", "PUT"],
+                            "AllowedHeaders": ["*"],
+                        }
+                    ]
+                },
+            )
         except exceptions.ClientError:
             pass
 

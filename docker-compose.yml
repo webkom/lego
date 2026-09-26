@@ -1,5 +1,3 @@
-version: '3.5'
-
 services:
 
   postgres:
@@ -21,14 +19,17 @@ services:
     links:
       - postgres
 
-  minio:
-    image: minio/minio
+  garage:
+    image: dxflrs/garage:v2.3.0
     ports:
-      - '127.0.0.1:9000:9000'
+      - '127.0.0.1:9000:3900'
     environment:
-      - MINIO_ACCESS_KEY=lego-dev
-      - MINIO_SECRET_KEY=lego-dev
-    command: server /export
+      - GARAGE_DEFAULT_ACCESS_KEY=lego-dev
+      - GARAGE_DEFAULT_SECRET_KEY=lego-dev-secret-key
+      - GARAGE_DEFAULT_BUCKET=lego
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+    command: ["/garage", "-c", "/etc/garage.toml", "server", "--single-node", "--default-bucket"]
 
   redis:
     image: redis:latest
@@ -49,10 +50,8 @@ services:
       ALLOW_UNSAFE_URL: 1
       ALLOW_OLD_URLS: 0
       AWS_ACCESS_KEY_ID: 'lego-dev'
-      AWS_SECRET_ACCESS_KEY: 'lego-dev'
+      AWS_SECRET_ACCESS_KEY: 'lego-dev-secret-key'
       TC_AWS_LOADER_BUCKET: lego
-      TC_AWS_REGION: us-east-1
-      TC_AWS_ENDPOINT: "http://minio:9000"
+      TC_AWS_REGION: eu-north-1
+      TC_AWS_ENDPOINT: "http://garage:3900"
       LOADER: tc_aws.loaders.s3_loader
-    links:
-      - minio
