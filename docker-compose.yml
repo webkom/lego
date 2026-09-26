@@ -29,7 +29,7 @@ services:
       - GARAGE_DEFAULT_BUCKET=lego
     volumes:
       - ./garage.toml:/etc/garage.toml:ro
-    command: ["/garage", "-c", "/etc/garage.toml", "server", "--single-node", "--default-bucket"]
+    command: ["/garage", "server", "--single-node", "--default-bucket"]
 
   redis:
     image: redis:latest
