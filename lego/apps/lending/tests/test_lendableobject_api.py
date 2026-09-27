@@ -452,6 +452,99 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         self.assertEqual(unavailable_range["end"], end_date.isoformat())
         self.assertEqual(unavailable_range["requestId"], lending_request.id)
 
+    def test_date_range_includes_overlapping_lending_request(self):
+        self.client.force_authenticate(user=self.user)
+
+        start_date = self.start_of_month - timedelta(days=5)
+        end_date = self.start_of_month + timedelta(days=5)
+
+        lending_request = create_lending_request(
+            lendable_object=self.lendable_object,
+            user=self.borrower,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        date_after = self.start_of_month.strftime("%Y-%m-%d")
+        date_before = (self.start_of_month + timedelta(days=10)).strftime("%Y-%m-%d")
+
+        url = (
+            reverse(
+                "api:v1:lendable-object-availability",
+                kwargs={"pk": self.lendable_object.pk},
+            )
+            + f"?date_after={date_after}&date_before={date_before}"
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+
+        unavailable_range = response.json()[0]
+
+        self.assertEqual(unavailable_range["start"], self.start_of_month.isoformat())
+        self.assertEqual(
+            unavailable_range["end"],
+            (self.start_of_month + timedelta(days=5)).isoformat(),
+        )
+        self.assertEqual(unavailable_range["requestId"], lending_request.id)
+
+    def test_date_range_includes_requests_on_date_before(self):
+        self.client.force_authenticate(user=self.user)
+
+        date_before = self.start_of_month + timedelta(days=10)
+        start_date = date_before + timedelta(hours=12)
+        end_date = date_before + timedelta(hours=18)
+
+        lending_request = create_lending_request(
+            lendable_object=self.lendable_object,
+            user=self.borrower,
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+        date_after = self.start_of_month.strftime("%Y-%m-%d")
+        date_before_string = date_before.strftime("%Y-%m-%d")
+
+        url = (
+            reverse(
+                "api:v1:lendable-object-availability",
+                kwargs={"pk": self.lendable_object.pk},
+            )
+            + f"?date_after={date_after}&date_before={date_before_string}"
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+
+        unavailable_range = response.json()[0]
+
+        self.assertEqual(unavailable_range["start"], start_date.isoformat())
+        self.assertEqual(unavailable_range["end"], end_date.isoformat())
+        self.assertEqual(unavailable_range["requestId"], lending_request.id)
+
+    def test_date_range_requires_both_dates(self):
+        self.client.force_authenticate(user=self.user)
+
+        url = (
+            reverse(
+                "api:v1:lendable-object-availability",
+                kwargs={"pk": self.lendable_object.pk},
+            )
+            + f"?date_after={self.start_of_month.strftime('%Y-%m-%d')}"
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json(),
+            {"detail": "Both date_after and date_before are required."},
+        )
+
     def test_non_approved_request_not_included(self):
         self.client.force_authenticate(user=self.user)
 
