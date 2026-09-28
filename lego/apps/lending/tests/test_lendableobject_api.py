@@ -23,9 +23,9 @@ def get_detail_url(pk):
     return reverse("api:v1:lendable-object-detail", kwargs={"pk": pk})
 
 
-def get_availability_url(pk, month, year):
+def get_availability_url(pk, date_after, date_before):
     base_url = reverse("api:v1:lendable-object-availability", kwargs={"pk": pk})
-    return f"{base_url}?month={month}&year={year}"
+    return f"{base_url}?date_after={date_after}&date_before={date_before}"
 
 
 def get_available_url(start_date, end_date):
@@ -407,8 +407,19 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         self.user.save()
 
     def test_unauthenticated(self):
-        url = get_availability_url(self.lendable_object.pk, self.month, self.year)
+        date_after = self.start_of_month.strftime("%Y-%m-%d")
+        date_before = (
+            self.start_of_month + timedelta(days=10)
+        ).strftime("%Y-%m-%d")
+
+        url = get_availability_url(
+            self.lendable_object.pk,
+            date_after,
+            date_before,
+        )
+
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_authenticated_without_permissions(self):
@@ -416,17 +427,20 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         user_without_perms = create_user(username="nopermuser")
         self.client.force_authenticate(user=user_without_perms)
 
-        url = get_availability_url(self.lendable_object.pk, self.month, self.year)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        date_after = self.start_of_month.strftime("%Y-%m-%d")
+        date_before = (
+            self.start_of_month + timedelta(days=10)
+        ).strftime("%Y-%m-%d")
 
-    def test_invalid_month_parameter(self):
-        self.client.force_authenticate(user=self.user)
-        # Test with month=13 (invalid)
-        url = get_availability_url(self.lendable_object.pk, 13, self.year)
+        url = get_availability_url(
+            self.lendable_object.pk,
+            date_after,
+            date_before,
+        )
+
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {"detail": "Month must be between 1 and 12."})
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_single_lending_request(self):
         self.client.force_authenticate(user=self.user)
@@ -441,12 +455,19 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
             end_date=end_date,
         )
 
-        url = get_availability_url(self.lendable_object.pk, self.month, self.year)
+        url = get_availability_url(
+            self.lendable_object.pk,
+            self.start_of_month.strftime("%Y-%m-%d"),
+            end_date.strftime("%Y-%m-%d"),
+        )
+
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
+
         unavailable_range = response.json()[0]
+
         self.assertEqual(len(unavailable_range), 5)
         self.assertEqual(unavailable_range["start"], start_date.isoformat())
         self.assertEqual(unavailable_range["end"], end_date.isoformat())
@@ -466,14 +487,14 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         )
 
         date_after = self.start_of_month.strftime("%Y-%m-%d")
-        date_before = (self.start_of_month + timedelta(days=10)).strftime("%Y-%m-%d")
+        date_before = (
+            self.start_of_month + timedelta(days=10)
+        ).strftime("%Y-%m-%d")
 
-        url = (
-            reverse(
-                "api:v1:lendable-object-availability",
-                kwargs={"pk": self.lendable_object.pk},
-            )
-            + f"?date_after={date_after}&date_before={date_before}"
+        url = get_availability_url(
+            self.lendable_object.pk,
+            date_after,
+            date_before,
         )
 
         response = self.client.get(url)
@@ -483,7 +504,10 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
 
         unavailable_range = response.json()[0]
 
-        self.assertEqual(unavailable_range["start"], self.start_of_month.isoformat())
+        self.assertEqual(
+            unavailable_range["start"],
+            self.start_of_month.isoformat(),
+        )
         self.assertEqual(
             unavailable_range["end"],
             (self.start_of_month + timedelta(days=5)).isoformat(),
@@ -507,12 +531,10 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
         date_after = self.start_of_month.strftime("%Y-%m-%d")
         date_before_string = date_before.strftime("%Y-%m-%d")
 
-        url = (
-            reverse(
-                "api:v1:lendable-object-availability",
-                kwargs={"pk": self.lendable_object.pk},
-            )
-            + f"?date_after={date_after}&date_before={date_before_string}"
+        url = get_availability_url(
+            self.lendable_object.pk,
+            date_after,
+            date_before_string,
         )
 
         response = self.client.get(url)
@@ -529,12 +551,14 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
     def test_date_range_requires_both_dates(self):
         self.client.force_authenticate(user=self.user)
 
+        base_url = reverse(
+            "api:v1:lendable-object-availability",
+            kwargs={"pk": self.lendable_object.pk},
+        )
+
         url = (
-            reverse(
-                "api:v1:lendable-object-availability",
-                kwargs={"pk": self.lendable_object.pk},
-            )
-            + f"?date_after={self.start_of_month.strftime('%Y-%m-%d')}"
+            f"{base_url}"
+            f"?date_after={self.start_of_month.strftime('%Y-%m-%d')}"
         )
 
         response = self.client.get(url)
@@ -561,7 +585,12 @@ class LendableObjectAvailabilityTestCase(BaseAPITestCase):
             status=non_approved_status,
         )
 
-        url = get_availability_url(self.lendable_object.pk, self.month, self.year)
+        url = get_availability_url(
+            self.lendable_object.pk,
+            self.start_of_month.strftime("%Y-%m-%d"),
+            end_date.strftime("%Y-%m-%d"),
+        )
+
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

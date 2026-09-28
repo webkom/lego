@@ -1,4 +1,3 @@
-import calendar
 from datetime import datetime
 
 from django.db.models import Q
@@ -78,12 +77,10 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=["GET"])
     def availability(self, request, *args, **kwargs):
         """
-        Returns time ranges when the object is unavailable (has approved lending requests)
-        for a specified month and year, or for a specified date range.
+        Returns time ranges when the object is unavailable (has approved lending
+        requests) for a specified date range.
 
         Query params:
-            year: Calendar year (used with month)
-            month: Calendar month (used with year)
             date_after: Start date of the requested range (YYYY-MM-DD)
             date_before: End date of the requested range (YYYY-MM-DD)
         """
@@ -92,51 +89,29 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         date_after = request.query_params.get("date_after")
         date_before = request.query_params.get("date_before")
 
-        if date_after or date_before:
-            if not date_after or not date_before:
-                return Response(
-                    {"detail": "Both date_after and date_before are required."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        if not date_after or not date_before:
+            return Response(
+                {"detail": "Both date_after and date_before are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-            try:
-                start_of_range = timezone.make_aware(
-                    datetime.strptime(date_after, "%Y-%m-%d")
-                )
-                end_of_range = timezone.make_aware(
-                    datetime.strptime(date_before, "%Y-%m-%d")
-                ).replace(hour=23, minute=59, second=59)
-            except ValueError:
-                return Response(
-                    {"detail": "date_after and date_before must be valid dates."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            if start_of_range > end_of_range:
-                return Response(
-                    {"detail": "date_after must be before or equal to date_before."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            try:
-                month = int(request.query_params.get("month", ""))
-                year = int(request.query_params.get("year", ""))
-
-                if not 1 <= month <= 12:
-                    return Response(
-                        {"detail": "Month must be between 1 and 12."},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-            except ValueError:
-                return Response(
-                    {"detail": "Month and year must be valid integers."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            start_of_range = timezone.make_aware(datetime(year, month, 1))
-            last_day = calendar.monthrange(year, month)[1]
+        try:
+            start_of_range = timezone.make_aware(
+                datetime.strptime(date_after, "%Y-%m-%d")
+            )
             end_of_range = timezone.make_aware(
-                datetime(year, month, last_day, 23, 59, 59)
+                datetime.strptime(date_before, "%Y-%m-%d")
+            ).replace(hour=23, minute=59, second=59)
+        except ValueError:
+            return Response(
+                {"detail": "date_after and date_before must be valid dates."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if start_of_range > end_of_range:
+            return Response(
+                {"detail": "date_after must be before or equal to date_before."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
