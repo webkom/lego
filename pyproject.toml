@@ -76,7 +76,7 @@ mypy = [
     "django-stubs==6.1.1",
     "djangorestframework-stubs==3.18.1",
     "types-bleach==6.4.0.20260728",
-    "types-docutils==0.23.0.20260917",
+    "types-docutils==0.23.0.20260923",
     "types-Markdown==3.4.2.9",
     "types-python-slugify==8.0.2.20240310",
     "types-PyYAML==6.0.12.10",
