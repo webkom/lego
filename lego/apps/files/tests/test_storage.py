@@ -39,7 +39,7 @@ class StorageTestCase(BaseTestCase):
                 "CORSRules": [
                     {
                         "AllowedOrigins": ["*"],
-                        "AllowedMethods": ["GET", "HEAD", "POST", "PUT"],
+                        "AllowedMethods": ["GET", "POST"],
                         "AllowedHeaders": ["*"],
                     }
                 ]

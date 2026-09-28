@@ -110,7 +110,7 @@ class Storage:
                     "CORSRules": [
                         {
                             "AllowedOrigins": ["*"],
-                            "AllowedMethods": ["GET", "HEAD", "POST", "PUT"],
+                            "AllowedMethods": ["GET", "POST"],
                             "AllowedHeaders": ["*"],
                         }
                     ]
