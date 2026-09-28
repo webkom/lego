@@ -952,7 +952,7 @@ wheels = [
 
 [[package]]
 name = "flower"
-version = "1.2.0"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "celery" },
@@ -961,9 +961,9 @@ dependencies = [
     { name = "pytz" },
     { name = "tornado" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6b/d4/d50e8937e3eeb7736285f81f17b0190b0c30f4249336e507364bbfd2fb97/flower-1.2.0.tar.gz", hash = "sha256:46493c7e8d9ca2167e8a46eb97ae8d280997cb40a81993230124d74f0fe40bac", size = 1974801, upload-time = "2022-08-07T09:23:22.656Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/f9/3474dea8439722ff59804caba62532d08f147a2ffdf8cd8c8773e4b43faa/flower-2.2.0.tar.gz", hash = "sha256:c4f4751942ff8b5069e6604a136e073b860971b7658859bdc61da1dc17a4bb32", size = 1109093, upload-time = "2026-09-22T14:15:03.703Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/40/6f/5b87834b82ac21d940b3415e22778f4a69dfc8ad0842b6b66e573723c65a/flower-1.2.0-py2.py3-none-any.whl", hash = "sha256:ae2977cf7343c526cf44def8c7e7173db8dedb8249b91ba4b88cfd18e7a2d486", size = 410704, upload-time = "2022-08-07T09:23:19.592Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/b6/650f730380002b78bcb488c0df96477dbdc57470731682587d6bc4951abf/flower-2.2.0-py2.py3-none-any.whl", hash = "sha256:374cbdd92282576ffab66b0da3c3038a2ba1ec34b343b8197dca2e85ce4209f1", size = 407554, upload-time = "2026-09-22T14:15:01.656Z" },
 ]
 
 [[package]]
@@ -1507,7 +1507,7 @@ mypy = [
     { name = "types-urllib3", specifier = "==1.26.25.14" },
 ]
 prod = [
-    { name = "flower", specifier = "==1.2.0" },
+    { name = "flower", specifier = "==2.2.0" },
     { name = "uwsgi", specifier = "==2.0.31" },
 ]
 

@@ -87,7 +87,7 @@ mypy = [
 ]
 lint = ["ruff==0.16.3"]
 docs = ["sphinx==6.2.1", "sphinx_rtd_theme==3.1.0"]
-prod = ["uwsgi==2.0.31", "flower==1.2.0"]
+prod = ["uwsgi==2.0.31", "flower==2.2.0"]
 
 
 [tool.uv]
