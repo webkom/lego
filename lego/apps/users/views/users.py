@@ -13,6 +13,7 @@ from lego.apps.jwt.handlers import get_jwt_token
 from lego.apps.permissions.api.views import AllowedPermissionsMixin
 from lego.apps.permissions.constants import CREATE, EDIT
 from lego.apps.users import constants
+from lego.apps.users.abaid import generate_token
 from lego.apps.users.models import AbakusGroup, User
 from lego.apps.users.registrations import Registrations
 from lego.apps.users.serializers.photo_consents import PhotoConsentSerializer
@@ -107,6 +108,15 @@ class UsersViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
         """
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        permission_classes=[IsAuthenticated],
+        url_path="me/qr",
+    )
+    def qr(self, request):
+        return Response({"qr": generate_token(request.user)})
 
     def create(self, request, *args, **kwargs):
         """

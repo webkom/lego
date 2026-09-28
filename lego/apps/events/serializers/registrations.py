@@ -116,7 +116,15 @@ class RegistrationSearchReadSerializer(RegistrationPublicReadSerializer):
 
 
 class RegistrationSearchSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    qr = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+
+    def validate(self, data):
+        if not data.get("qr") and not data.get("username"):
+            raise serializers.ValidationError(
+                {"error": "Either qr or username is required.", "error_code": "no_user"}
+            )
+        return data
 
 
 class RegistrationConsentSerializer(serializers.Serializer):

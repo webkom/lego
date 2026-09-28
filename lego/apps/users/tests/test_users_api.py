@@ -8,6 +8,7 @@ from rest_framework import status
 from lego.apps.events.models import Event
 from lego.apps.files.models import File
 from lego.apps.users import constants
+from lego.apps.users.abaid import validate_token
 from lego.apps.users.constants import AUTUMN, SOCIAL_MEDIA_DOMAIN, WEBSITE_DOMAIN
 from lego.apps.users.models import AbakusGroup, Penalty, PhotoConsent, User
 from lego.apps.users.registrations import Registrations
@@ -574,6 +575,29 @@ class RetrieveSelfTestCase(BaseAPITestCase):
         )
         self.assertEqual(len(response.json()["penalties"]), 1)
         self.assertEqual(len(response.json()["penalties"][0]), 7)
+
+
+class AbaIdQrTestCase(BaseAPITestCase):
+    fixtures = [
+        "test_abakus_groups.yaml",
+        "test_users.yaml",
+        "test_companies.yaml",
+        "test_events.yaml",
+    ]
+
+    def setUp(self):
+        self.user = User.objects.get(pk=1)
+
+    def test_qr_unauthed(self):
+        response = self.client.get(reverse("api:v1:user-qr"))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_qr_roundtrips_to_own_user(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse("api:v1:user-qr"))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(validate_token(response.json()["qr"]), self.user.pk)
 
 
 class UpdatePhotoConsentTestCase(BaseAPITestCase):
