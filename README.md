@@ -12,7 +12,7 @@
 
 ## Getting started
 
-LEGO requires `python3.11`, `docker` and `uv`. Services like Postgres, Redis, Thumbor and Minio run inside docker.
+LEGO requires `python3.11`, `docker` and `uv`. Services like Postgres, Redis, Thumbor and Garage run inside docker.
 
 ### Initial setup (only needed once)
 

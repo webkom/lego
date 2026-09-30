@@ -101,9 +101,10 @@ class Command(BaseCommand):
         """
         # Prepare storage bucket for development.
         # We skip this in production, where the bucket needs to be created manually.
-        uploads_bucket = getattr(settings, "AWS_S3_BUCKET", None)
+        uploads_bucket = settings.AWS_S3_BUCKET
         log.info(f"Makes sure the {uploads_bucket} bucket exists")
         storage.create_bucket(uploads_bucket)
+        storage.set_development_cors(uploads_bucket)
         assets_folder = os.path.join(settings.BASE_DIR, "../assets")
         user = User.objects.get(pk=1)
         for file in os.listdir(assets_folder):
