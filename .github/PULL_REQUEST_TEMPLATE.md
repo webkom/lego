@@ -4,7 +4,7 @@
 
 ---
 
-# Testing
+## Testing
 - [ ] The code quality is at a minimum required level of quality, readability, and performance.
 - [ ] I have thoroughly tested my changes.
 
