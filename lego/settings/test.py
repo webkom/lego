@@ -32,6 +32,11 @@ stripe.api_key = os.environ.get("STRIPE_TEST_KEY")
 CAPTCHA_KEY = os.environ.get("CAPTCHA_KEY") or "1x0000000000000000000000000000000AA"
 ABAID_SECRET_KEY = "test-dummy-abaid-secret"
 
+# Explicit dummies so boto3 never falls back to the developer's own ~/.aws config.
+AWS_ACCESS_KEY_ID = "lego-test"
+AWS_SECRET_ACCESS_KEY = "lego-test"
+AWS_REGION = "eu-north-1"
+
 # Work-around for a weird bug where the tests would crash with -v=3 (verbosity):
 OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
 
