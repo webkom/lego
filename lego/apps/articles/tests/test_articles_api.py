@@ -6,6 +6,7 @@ from rest_framework import status
 
 from lego.apps.articles.models import Article
 from lego.apps.articles.serializers import PublicArticleSerializer
+from lego.apps.tags.models import Tag
 from lego.apps.users.models import AbakusGroup, User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -99,6 +100,38 @@ class ListArticlesTestCase(BaseAPITestCase):
         response = self.client.get(get_list_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()["results"]), 3)
+
+    def create_tags(self, *tags):
+        for tag in tags:
+            Tag.objects.get_or_create(tag=tag)
+
+    def test_filter_single_tag(self):
+        self.create_tags("weekly", "social")
+        self.public_article.tags.add("weekly")
+        create_article(require_auth=False).tags.add("social")
+        response = self.client.get(get_list_url(), {"tag": "weekly"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()["results"]
+        self.assertEqual([a["id"] for a in results], [self.public_article.id])
+
+    def test_filter_multiple_tags_returns_union(self):
+        self.create_tags("weekly", "social", "other")
+        self.public_article.tags.add("weekly", "social")
+        social_article = create_article(require_auth=False)
+        social_article.tags.add("social")
+        create_article(require_auth=False).tags.add("other")
+        response = self.client.get(get_list_url(), {"tag": "weekly, social"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ids = sorted(a["id"] for a in response.json()["results"])
+        self.assertEqual(ids, sorted([self.public_article.id, social_article.id]))
+
+    def test_filter_only_separators_returns_all(self):
+        self.create_tags("weekly")
+        self.public_article.tags.add("weekly")
+        create_article(require_auth=False)
+        response = self.client.get(get_list_url(), {"tag": " , "})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["results"]), 2)
 
 
 class RetrieveArticlesTestCase(BaseAPITestCase):
