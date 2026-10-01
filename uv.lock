@@ -1474,7 +1474,7 @@ requires-dist = [
     { name = "redis", specifier = "==4.5.5" },
     { name = "requests", specifier = "==2.34.2" },
     { name = "sentry-sdk", specifier = "==2.70.0" },
-    { name = "stripe", specifier = "==3.4.0" },
+    { name = "stripe", specifier = "==15.6.1" },
     { name = "structlog", specifier = "==26.1.0" },
     { name = "structlog-sentry", specifier = "==1.4.0" },
     { name = "weasyprint", specifier = ">=70.0,<71" },
@@ -2357,14 +2357,15 @@ wheels = [
 
 [[package]]
 name = "stripe"
-version = "3.4.0"
+version = "15.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1c/a6/5efcbd2870867f7cb719d5c7630e7e80fbd023b2ad50bad89e30f41b3315/stripe-3.4.0.tar.gz", hash = "sha256:5dc37defd9d65e053022dabcb659e7362b058a7af74047ee58518a2907a761f2", size = 246528, upload-time = "2022-06-17T19:22:56.811Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/a6/02ea2b4e1b57913ae2e68801bf2168120bec97206782a781599339abfd64/stripe-15.6.1.tar.gz", hash = "sha256:9f3986aa960419041aba9c76191746bdf2c342c95892acfbf6edb500ab006d31", size = 1569005, upload-time = "2026-09-01T18:44:41.751Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/b8/83947d23fa14dd72b22b48c29e8e1526d7521db88ff7eea25e07ec705e40/stripe-3.4.0-py2.py3-none-any.whl", hash = "sha256:baead81078913f170df57b2c5ffb05f0b6a1c6eaea8dd9a25922c7025916768d", size = 229252, upload-time = "2022-06-17T19:22:53.808Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/4b/cd2d7ad83a3f49300cb3cc69ae102de68de792035bf31b0383e1c6563ec3/stripe-15.6.1-py3-none-any.whl", hash = "sha256:b33e1ea76462d7289e5fe755a1132b82099151bfb31e961021655471e6d216bf", size = 2218765, upload-time = "2026-09-01T18:44:39.706Z" },
 ]
 
 [[package]]
