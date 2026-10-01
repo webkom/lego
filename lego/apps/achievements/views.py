@@ -1,7 +1,7 @@
 import hashlib
 import heapq
 import hmac
-import json
+import re
 import time
 from datetime import timedelta
 from typing import NamedTuple
@@ -442,9 +442,7 @@ class AchievementViewSet(viewsets.GenericViewSet):
         signature = request.headers.get("X-Azart-Signature", "")
         if (
             not settings.AZART_SECRET_KEY
-            or not timestamp.isascii()
-            or not timestamp.isdigit()
-            or len(timestamp) > 12
+            or not re.fullmatch(r"[0-9]{1,12}", timestamp)
             or abs(time.time() - int(timestamp)) > settings.AZART_SIGNATURE_MAX_AGE
         ):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -456,13 +454,16 @@ class AchievementViewSet(viewsets.GenericViewSet):
         if not hmac.compare_digest(signature.encode(), expected.encode()):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        try:
-            username = json.loads(body)["username"]
-        except (ValueError, TypeError, KeyError):
+        username = request.data.get("username")
+        if not username:
             return Response(
                 {"detail": "username is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        if Achievement.objects.filter(
+            user__username=username, identifier=CHARITY_CASINO_2026_IDENTIFIER
+        ).exists():
+            return Response(status=status.HTTP_200_OK)
         try:
             target_user = User.objects.get(username=username)
         except User.DoesNotExist:
