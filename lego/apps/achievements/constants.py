@@ -53,6 +53,7 @@ EASTER_2025_IDENTIFIER = "easter_2025"
 EASTER_2026_IDENTIFIER = "easter_2026"
 CHRISTMAS_CALENDAR_IDENTIFIER = "christmas_calendar"
 PERFECT_WEEK_IDENTIFIER = "perfect_week"
+CHARITY_CASINO_2026_IDENTIFIER = "charity_event_2026"
 
 # These are used for information about what counts as gala
 
@@ -347,6 +348,14 @@ CHRISTMAS_CALENDAR_ACHIEVEMENTS: AchievementCollection = {
     },
 }
 
+CHARITY_CASINO_ACHIEVEMENTS: AchievementCollection = {
+    "charity_2026": {
+        "identifier": CHARITY_CASINO_2026_IDENTIFIER,
+        "requirement_function": lambda user: False,
+        "level": 0,
+    },
+}
+
 
 HIDDEN_ACHIEVEMENTS = {
     **QUOTE_ACHIEVEMENTS,
@@ -369,6 +378,7 @@ ACHIEVEMENTS = {
     **GENFORS_ACHIEVEMENTS,
     **GALA_ACHIEVEMENTS,
     **PERFECT_WEEK_ACHIEVEMENTS,
+    **CHARITY_CASINO_ACHIEVEMENTS,
 }
 
 

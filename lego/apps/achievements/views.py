@@ -1,7 +1,12 @@
+import hashlib
 import heapq
+import hmac
+import json
+import time
 from datetime import timedelta
 from typing import NamedTuple
 
+from django.conf import settings
 from django.db.models import (
     Case,
     Count,
@@ -23,6 +28,7 @@ from rest_framework.response import Response
 import sentry_sdk
 
 from lego.apps.achievements.constants import (
+    CHARITY_CASINO_2026_IDENTIFIER,
     EVENT_RULES,
     EVENT_RULES_IDENTIFIER,
     KEYPRESS_ORDER,
@@ -423,6 +429,51 @@ class AchievementViewSet(viewsets.GenericViewSet):
             else:
                 return Response(status=status.HTTP_304_NOT_MODIFIED)
         return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+    @action(
+        detail=False,
+        methods=["POST"],
+        authentication_classes=[],
+        permission_classes=[permissions.AllowAny],
+    )
+    def azart(self, request, *args, **kwargs):
+        body = request.body
+        timestamp = request.headers.get("X-Azart-Timestamp", "")
+        signature = request.headers.get("X-Azart-Signature", "")
+        if (
+            not settings.AZART_SECRET_KEY
+            or not timestamp.isascii()
+            or not timestamp.isdigit()
+            or len(timestamp) > 12
+            or abs(time.time() - int(timestamp)) > settings.AZART_SIGNATURE_MAX_AGE
+        ):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        expected = hmac.new(
+            settings.AZART_SECRET_KEY.encode(),
+            timestamp.encode() + b"." + body,
+            hashlib.sha256,
+        ).hexdigest()
+        if not hmac.compare_digest(signature.encode(), expected.encode()):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            username = json.loads(body)["username"]
+        except (ValueError, TypeError, KeyError):
+            return Response(
+                {"detail": "username is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        _, created = _grant_achievement(target_user, CHARITY_CASINO_2026_IDENTIFIER, 0)
+        return Response(
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        )
 
     @action(
         detail=False,
