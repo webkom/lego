@@ -7,6 +7,7 @@ from datetime import timedelta
 from typing import NamedTuple
 
 from django.conf import settings
+from django.db import transaction
 from django.db.models import (
     Case,
     Count,
@@ -468,20 +469,22 @@ class AchievementViewSet(viewsets.GenericViewSet):
                 {"detail": "username is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        if Achievement.objects.filter(
-            user__username=username, identifier=CHARITY_CASINO_2026_IDENTIFIER
-        ).exists():
-            return Response(status=status.HTTP_200_OK)
-        try:
-            target_user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return Response(
-                {"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND
+        with transaction.atomic():
+            try:
+                target_user = User.objects.select_for_update().get(username=username)
+            except User.DoesNotExist:
+                return Response(
+                    {"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND
+                )
+            # The frontend derives the trophy pattern from the id
+            existing, _ = Achievement.all_objects.filter(
+                user=target_user, identifier=CHARITY_CASINO_2026_IDENTIFIER
+            ).delete()
+            Achievement.objects.create(
+                user=target_user, identifier=CHARITY_CASINO_2026_IDENTIFIER, level=0
             )
-
-        _, created = _grant_achievement(target_user, CHARITY_CASINO_2026_IDENTIFIER, 0)
         return Response(
-            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
+            status=status.HTTP_200_OK if existing else status.HTTP_201_CREATED
         )
 
     @action(

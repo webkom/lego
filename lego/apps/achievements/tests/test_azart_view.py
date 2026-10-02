@@ -49,19 +49,20 @@ class AzartAchievementTestCase(BaseAPITestCase):
             user=self.user, identifier=CHARITY_CASINO_2026_IDENTIFIER, level=0
         ).exists()
 
-    def test_valid_signature_grants_once(self):
+    def test_rewin_replaces_achievement_with_new_id(self):
+        def achievements():
+            return Achievement.all_objects.filter(
+                user=self.user, identifier=CHARITY_CASINO_2026_IDENTIFIER
+            )
+
         self.assertEqual(
             self._post({"username": "test1"}).status_code, status.HTTP_201_CREATED
         )
+        first_id = achievements().get().id
         self.assertEqual(
             self._post({"username": "test1"}).status_code, status.HTTP_200_OK
         )
-        self.assertEqual(
-            Achievement.objects.filter(
-                user=self.user, identifier=CHARITY_CASINO_2026_IDENTIFIER
-            ).count(),
-            1,
-        )
+        self.assertNotEqual(achievements().get().id, first_id)
 
     def test_inactive_flag_does_not_grant(self):
         self.flag.is_active = False
