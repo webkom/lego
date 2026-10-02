@@ -65,6 +65,7 @@ from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 
 TROPHY_GRANT_ALL_FLAG_IDENTIFIER = "trophy-grant-all"
+CASINO_TROPHY_FLAG_IDENTIFIER = "casino-26-trophy"
 MANUAL_ACHIEVEMENT_IDENTIFIERS = {
     data["identifier"] for data in MANUAL_ACHIEVEMENTS.values()
 }
@@ -453,6 +454,13 @@ class AchievementViewSet(viewsets.GenericViewSet):
         ).hexdigest()
         if not hmac.compare_digest(signature.encode(), expected.encode()):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if not FeatureFlag.objects.filter(
+            identifier=CASINO_TROPHY_FLAG_IDENTIFIER, is_active=True
+        ).exists():
+            return Response(
+                {"detail": "Casino trophy is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         username = request.data.get("username")
         if not username:

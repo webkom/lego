@@ -9,6 +9,8 @@ from rest_framework import status
 
 from lego.apps.achievements.constants import CHARITY_CASINO_2026_IDENTIFIER
 from lego.apps.achievements.models import Achievement
+from lego.apps.achievements.views import CASINO_TROPHY_FLAG_IDENTIFIER
+from lego.apps.featureflags.models import FeatureFlag
 from lego.apps.users.models import User
 from lego.utils.test_utils import BaseAPITestCase
 
@@ -22,6 +24,9 @@ class AzartAchievementTestCase(BaseAPITestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="test1")
+        self.flag = FeatureFlag.objects.create(
+            identifier=CASINO_TROPHY_FLAG_IDENTIFIER, is_active=True
+        )
 
     def _post(self, payload, timestamp=None, key=None):
         body = json.dumps(payload).encode()
@@ -57,6 +62,13 @@ class AzartAchievementTestCase(BaseAPITestCase):
             ).count(),
             1,
         )
+
+    def test_inactive_flag_does_not_grant(self):
+        self.flag.is_active = False
+        self.flag.save()
+        response = self._post({"username": "test1"})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(self._has_achievement())
 
     def test_wrong_key_rejected(self):
         response = self._post({"username": "test1"}, key="wrong")
