@@ -1476,7 +1476,7 @@ requires-dist = [
     { name = "sentry-sdk", specifier = "==2.70.0" },
     { name = "stripe", specifier = "==3.4.0" },
     { name = "structlog", specifier = "==26.1.0" },
-    { name = "structlog-sentry", specifier = "==1.4.0" },
+    { name = "structlog-sentry", specifier = "==2.2.1" },
     { name = "weasyprint", specifier = ">=70.0,<71" },
 ]
 
@@ -2378,14 +2378,15 @@ wheels = [
 
 [[package]]
 name = "structlog-sentry"
-version = "1.4.0"
+version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "sentry-sdk" },
+    { name = "structlog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/92/32/74b16a1972180453bcd90f57a4285c68ad0101127a499f5425c3492b4cd5/structlog-sentry-1.4.0.tar.gz", hash = "sha256:5fc6cfab71b858d71433e68cc5af79a396e72015003931507e340b3687ebb0a8", size = 6573, upload-time = "2021-03-08T19:49:35.646Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a9/c8/a6d66c4a691a47c9c572ab84640012bb70c8c4f710763bd544236d98f278/structlog_sentry-2.2.1.tar.gz", hash = "sha256:78cf8751c7712e361d9d5e82fcde6c3f692a67e3e67068ccdd46448014636138", size = 6855, upload-time = "2024-11-12T14:31:51.695Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/a7/04c3289f8fdc5e51918b8aab43a41e7699a3b18c5dab371c7c34c9eba758/structlog_sentry-1.4.0-py3-none-any.whl", hash = "sha256:04627538e13bb0719a8806353279d40c1d1afb3eb2053817820754b9a08814a7", size = 9268, upload-time = "2021-03-08T19:49:37.372Z" },
+    { url = "https://files.pythonhosted.org/packages/e3/ba/1b1226db704c16426d59e1fcbeaf5138dbc5a50d424aab92b453d33add47/structlog_sentry-2.2.1-py3-none-any.whl", hash = "sha256:868c82348bc18b7d51ef8f878c57e82835c1758dba38f7589fa02a267096a95d", size = 11218, upload-time = "2024-11-12T14:31:50.594Z" },
 ]
 
 [[package]]
