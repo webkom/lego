@@ -1,4 +1,3 @@
-import calendar
 from datetime import datetime
 
 from django.db.models import Q
@@ -78,56 +77,75 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=["GET"])
     def availability(self, request, *args, **kwargs):
         """
-        Returns time ranges when the object is unavailable (has approved lending requests)
-        for a specified month and year.
+        Returns time ranges when the object is unavailable (has approved lending
+        requests) for a specified date range.
+
+        Query params:
+            date_after: Start date of the requested range (YYYY-MM-DD)
+            date_before: End date of the requested range (YYYY-MM-DD)
         """
         lendable_object = self.get_object()
 
-        try:
-            month = int(request.query_params.get("month", ""))
-            year = int(request.query_params.get("year", ""))
+        date_after = request.query_params.get("date_after")
+        date_before = request.query_params.get("date_before")
 
-            if not 1 <= month <= 12:
-                return Response(
-                    {"detail": "Month must be between 1 and 12."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except ValueError:
+        if not date_after or not date_before:
             return Response(
-                {"detail": "Month and year must be valid integers."},
+                {"detail": "Both date_after and date_before are required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        start_of_month = timezone.make_aware(datetime(year, month, 1))
-        last_day = calendar.monthrange(year, month)[1]
-        end_of_month = timezone.make_aware(datetime(year, month, last_day, 23, 59, 59))
+        try:
+            start_of_range = timezone.make_aware(
+                datetime.strptime(date_after, "%Y-%m-%d")
+            )
+            end_of_range = timezone.make_aware(
+                datetime.strptime(date_before, "%Y-%m-%d")
+            ).replace(hour=23, minute=59, second=59)
+        except ValueError:
+            return Response(
+                {"detail": "date_after and date_before must be valid dates."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if start_of_range > end_of_range:
+            return Response(
+                {"detail": "date_after must be before or equal to date_before."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         approved_status = LENDING_REQUEST_STATUSES["LENDING_APPROVED"]["value"]
 
         overlapping_requests = (
             LendingRequest.objects.filter(
-                lendable_object=lendable_object, status=approved_status
+                lendable_object=lendable_object,
+                status=approved_status,
             )
-            .filter(Q(start_date__lte=end_of_month) & Q(end_date__gte=start_of_month))
+            .filter(Q(start_date__lte=end_of_range) & Q(end_date__gte=start_of_range))
             .order_by("start_date")
         )
 
         unavailable_ranges = []
+
         for request in overlapping_requests:
-            range_start = max(request.start_date, start_of_month)
-            range_end = min(request.end_date, end_of_month)
+            range_start = max(request.start_date, start_of_range)
+            range_end = min(request.end_date, end_of_range)
 
             unavailable_ranges.append(
                 [range_start, range_end, request.created_by, request.id]
             )
 
         formatted_ranges = []
+
         for i in range(len(unavailable_ranges)):
             start, end, created_by, request_id = unavailable_ranges[i]
+
             start_date = start.isoformat()
             end_date = end.isoformat()
+
             created_by_username = created_by
             created_by_fullname = None
+
             if created_by is None:
                 created_by_fullname = None
             elif isinstance(created_by, str):
@@ -140,7 +158,9 @@ class LendableObjectViewSet(AllowedPermissionsMixin, viewsets.ModelViewSet):
                 created_by_fullname = created_by.get_full_name()
             else:
                 created_by_fullname = None
+
             created_by_username = None if (created_by is None) else created_by.username
+
             formatted_ranges.append(
                 {
                     "start": start_date,
