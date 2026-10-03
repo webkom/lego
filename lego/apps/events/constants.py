@@ -94,7 +94,7 @@ INTEREST_EVENT_CREATOR_FIELDS = frozenset(
         "mazemap_poi",
         "responsible_group",
         "pools",
-        "cover"
+        "cover",
     }
 )
 INTEREST_EVENT_FORCED_FIELDS: dict = {
