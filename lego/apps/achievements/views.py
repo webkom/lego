@@ -1,7 +1,13 @@
+import hashlib
 import heapq
+import hmac
+import re
+import time
 from datetime import timedelta
 from typing import NamedTuple
 
+from django.conf import settings
+from django.db import transaction
 from django.db.models import (
     Case,
     Count,
@@ -23,6 +29,7 @@ from rest_framework.response import Response
 import sentry_sdk
 
 from lego.apps.achievements.constants import (
+    CHARITY_CASINO_2026_IDENTIFIER,
     EVENT_RULES,
     EVENT_RULES_IDENTIFIER,
     KEYPRESS_ORDER,
@@ -59,6 +66,7 @@ from lego.apps.users.models import User
 from lego.apps.users.serializers.users import PublicUserWithGroupsSerializer
 
 TROPHY_GRANT_ALL_FLAG_IDENTIFIER = "trophy-grant-all"
+CASINO_TROPHY_FLAG_IDENTIFIER = "casino-26-trophy"
 MANUAL_ACHIEVEMENT_IDENTIFIERS = {
     data["identifier"] for data in MANUAL_ACHIEVEMENTS.values()
 }
@@ -423,6 +431,61 @@ class AchievementViewSet(viewsets.GenericViewSet):
             else:
                 return Response(status=status.HTTP_304_NOT_MODIFIED)
         return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+    @action(
+        detail=False,
+        methods=["POST"],
+        authentication_classes=[],
+        permission_classes=[permissions.AllowAny],
+    )
+    def azart(self, request, *args, **kwargs):
+        body = request.body
+        timestamp = request.headers.get("X-Azart-Timestamp", "")
+        signature = request.headers.get("X-Azart-Signature", "")
+        if (
+            not settings.AZART_SECRET_KEY
+            or not re.fullmatch(r"[0-9]{1,12}", timestamp)
+            or abs(time.time() - int(timestamp)) > settings.AZART_SIGNATURE_MAX_AGE
+        ):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        expected = hmac.new(
+            settings.AZART_SECRET_KEY.encode(),
+            timestamp.encode() + b"." + body,
+            hashlib.sha256,
+        ).hexdigest()
+        if not hmac.compare_digest(signature.encode(), expected.encode()):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if not FeatureFlag.objects.filter(
+            identifier=CASINO_TROPHY_FLAG_IDENTIFIER, is_active=True
+        ).exists():
+            return Response(
+                {"detail": "Casino trophy is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        username = request.data.get("username")
+        if not username:
+            return Response(
+                {"detail": "username is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        with transaction.atomic():
+            try:
+                target_user = User.objects.select_for_update().get(username=username)
+            except User.DoesNotExist:
+                return Response(
+                    {"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND
+                )
+            # The frontend derives the trophy pattern from the id
+            existing, _ = Achievement.all_objects.filter(
+                user=target_user, identifier=CHARITY_CASINO_2026_IDENTIFIER
+            ).delete()
+            Achievement.objects.create(
+                user=target_user, identifier=CHARITY_CASINO_2026_IDENTIFIER, level=0
+            )
+        return Response(
+            status=status.HTTP_200_OK if existing else status.HTTP_201_CREATED
+        )
 
     @action(
         detail=False,

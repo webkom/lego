@@ -31,6 +31,7 @@ stripe.api_key = os.environ.get("STRIPE_TEST_KEY")
 
 CAPTCHA_KEY = os.environ.get("CAPTCHA_KEY") or "1x0000000000000000000000000000000AA"
 ABAID_SECRET_KEY = "test-dummy-abaid-secret"
+AZART_SECRET_KEY = "test-dummy-azart-secret"
 
 # Explicit dummies so boto3 never falls back to the developer's own ~/.aws config.
 AWS_ACCESS_KEY_ID = "lego-test"
