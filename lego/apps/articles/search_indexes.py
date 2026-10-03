@@ -9,7 +9,7 @@ class ArticleModelIndex(SearchIndex):
     queryset = Article.objects.all()
     serializer_class = SearchArticleSerializer
     result_fields = ("title", "description", "cover")
-    autocomplete_result_fields = ("title",)
+    autocomplete_result_fields = ("title", "created_at")
 
     search_fields = ("title", "text", "description")
     autocomplete_fields = ("title",)
