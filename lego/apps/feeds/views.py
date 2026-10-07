@@ -77,7 +77,9 @@ class FeedMarkerViewSet(viewsets.GenericViewSet):
         feed = self.get_queryset().model
         seen = serializer.validated_data["seen"]
         read = serializer.validated_data["read"]
-        feed.mark_all(self.request.user.id, str(pk), seen, read)
+
+        activity_ids = [a.activity_id for a in self.get_object().activities]
+        feed.mark_activities(self.request.user.id, activity_ids, seen, read)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
