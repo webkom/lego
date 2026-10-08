@@ -13,31 +13,6 @@ from lego.apps.companies.models import (
 class AdminCompanyFilterSet(FilterSet):
     name = CharFilter(method="filter_name")
     student_contacts = CharFilter(method="filter_student_contacts")
-    status = CharFilter(method="filter_semester_status")
-
-    def filter_semester_status(self, queryset, name, value):
-        if not value:
-            return queryset
-
-        statuses = [
-            status.strip()
-            for status in self.request.query_params.get("status", "").split(",")
-        ]
-        semester_id = self.request.query_params.get("semester_id")
-
-        if statuses and all(statuses):
-            status_q = Q()
-            for status in statuses:
-                status_q |= Q(
-                    semester_statuses__semester_id=semester_id,
-                    semester_statuses__contacted_status__contains=[status],
-                )
-
-            filtered_queryset = queryset.filter(status_q)
-
-            return filtered_queryset
-
-        return queryset
 
     def filter_name(self, queryset, name, value):
         if not value:
@@ -72,12 +47,11 @@ class AdminCompanyFilterSet(FilterSet):
 
     class Meta:
         model = Company
-        fields = ["name", "status", "student_contacts"]
+        fields = ["name", "student_contacts"]
 
 
 class CompanyFilterSet(FilterSet):
     search = CharFilter(method="filter_search")
-    show_inactive = BooleanFilter(method="filter_inactive")
 
     def filter_search(self, queryset, name, value):
         if not value:
@@ -86,14 +60,9 @@ class CompanyFilterSet(FilterSet):
             Q(name__icontains=value) | Q(description__icontains=value)
         )
 
-    def filter_inactive(self, queryset, name, value):
-        if not value:
-            return queryset.filter(active=True)
-        return queryset
-
     class Meta:
         model = Company
-        fields = ["search", "show_inactive"]
+        fields = ["search"]
 
 
 class SemesterFilterSet(FilterSet):
